@@ -1,38 +1,127 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: blogPosts
+    // Fields: title (string), slug (string), description (string), coverImage (string), content (string), tags (list), createdAt (timestamp), author (string)
+    //
+    // Collection: users
+    // Fields: uid (string), email (string), role (string: admin|user)
+    //
+    // Collection: projects
+    // Fields: title (string), category (string), description (string), image (string), video (string), tech (list), caseStudy (string), link (string), createdAt (timestamp)
+    //
+    // Collection: contacts
+    // Fields: name (string), email (string), subject (string), message (string), timestamp (timestamp)
+    //
+    // ===============================================================
+
     // Helper Functions
     function isAuthenticated() {
       return request.auth != null;
     }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
     function isAdmin() {
       return isAuthenticated() && 
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
          request.auth.token.email == "ap8779370@gmail.com");
     }
 
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUrl(url) {
+      return url is string && (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // Domain Validators
+    function isValidBlogPost(data) {
+      return hasRequiredFields(['title', 'slug', 'content', 'createdAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.slug is string && data.slug.size() > 0 && data.slug.size() < 200 &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 50000 &&
+             (data.description == null || (data.description is string && data.description.size() < 1000)) &&
+             (data.coverImage == null || isValidUrl(data.coverImage)) &&
+             data.createdAt is timestamp &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp);
+    }
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email', 'role']) &&
+             data.uid == request.auth.uid &&
+             data.email == request.auth.token.email &&
+             data.role in ['admin', 'user'];
+    }
+
+    function isValidProject(data) {
+      return hasRequiredFields(['title', 'category', 'description', 'image', 'createdAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.category is string && data.category.size() > 0 && data.category.size() < 100 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 2000 &&
+             isValidUrl(data.image) &&
+             data.createdAt is timestamp &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp);
+    }
+
+    function isValidContact(data) {
+      return hasRequiredFields(['name', 'email', 'subject', 'message', 'timestamp']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.subject is string && data.subject.size() >= 0 && data.subject.size() < 200 &&
+             isValidEmail(data.email) &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 5000 &&
+             data.timestamp is timestamp;
+    }
+
     // Blog Posts
     match /blogPosts/{postId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin() && isValidBlogPost(request.resource.data);
+      allow update: if isAdmin() && isValidBlogPost(request.resource.data) && 
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
     }
 
     // Projects
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin() && isValidProject(request.resource.data);
+      allow update: if isAdmin() && isValidProject(request.resource.data) &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
     }
 
     // Contacts
     match /contacts/{contactId} {
-      allow create: if true;
+      allow create: if isValidContact(request.resource.data);
       allow read, update, delete: if isAdmin();
     }
 
     // Users
     match /users/{userId} {
       allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow write: if isAdmin();
+      // Only allow users to create their own profile as 'user' role, or admin to create any
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    (request.resource.data.role == 'user' || isAdmin());
+      // Only admin can change roles
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) &&
+                    (request.resource.data.role == resource.data.role || isAdmin());
+      allow delete: if isAdmin();
     }
   }
 }

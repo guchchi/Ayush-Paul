@@ -4,7 +4,69 @@ import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, u
 import { Menu, X, Github, Linkedin, Youtube, ExternalLink, Mail, Phone, MapPin, Code, Cpu, Palette, Sparkles, Rocket, BookOpen, MessageSquare, ArrowRight, ArrowLeft, ChevronRight, Star, Globe, Home, User, Layers, Search, Plus, Trash2, Edit, LogOut, LogIn, Clock, Calendar, Tag } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/src/lib/utils";
-import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, ref, uploadBytes, getDownloadURL } from "./firebase";
+import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, getDocFromServer } from "./firebase";
+
+// --- Firestore Error Handling ---
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId: string | undefined;
+    email: string | null | undefined;
+    emailVerified: boolean | undefined;
+    isAnonymous: boolean | undefined;
+    tenantId: string | null | undefined;
+    providerInfo: {
+      providerId: string;
+      displayName: string | null;
+      email: string | null;
+      photoUrl: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData.map(provider => ({
+        providerId: provider.providerId,
+        displayName: provider.displayName,
+        email: provider.email,
+        photoUrl: provider.photoURL
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
+
+function formatDate(date: any) {
+  if (!date) return "N/A";
+  if (typeof date === "string") return new Date(date).toLocaleDateString();
+  if (date && typeof date === "object" && "seconds" in date) {
+    return new Date(date.seconds * 1000).toLocaleDateString();
+  }
+  return new Date(date).toLocaleDateString();
+}
 
 // --- Components ---
 
@@ -649,7 +711,7 @@ const Projects = () => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProjects(data);
     }, (error) => {
-      console.error("Firestore Error: ", error);
+      handleFirestoreError(error, OperationType.GET, "projects");
     });
     return () => unsubscribe();
   }, []);
@@ -1009,7 +1071,7 @@ const BlogSection = () => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(data);
     }, (error) => {
-      console.error("Firestore Error: ", error);
+      handleFirestoreError(error, OperationType.GET, "blogPosts");
     });
     return () => unsubscribe();
   }, []);
@@ -1043,7 +1105,7 @@ const BlogSection = () => {
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary">{post.tags?.[0]}</span>
-                    <span className="text-[10px] text-white/40 uppercase tracking-widest">{new Date(post.createdAt).toLocaleDateString()}</span>
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest">{formatDate(post.createdAt)}</span>
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors">{post.title}</h3>
                   <p className="text-white/60 text-sm line-clamp-2">{post.description}</p>
@@ -1090,7 +1152,7 @@ const BlogSection = () => {
                       {selectedPost.tags?.[0]}
                     </span>
                     <span className="text-white/60 text-sm flex items-center gap-2">
-                      <Calendar size={14} /> {new Date(selectedPost.createdAt).toLocaleDateString()}
+                      <Calendar size={14} /> {formatDate(selectedPost.createdAt)}
                     </span>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-white">{selectedPost.title}</h2>
@@ -1131,6 +1193,8 @@ const BlogPage = () => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(data);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "blogPosts");
     });
     return () => unsubscribe();
   }, []);
@@ -1191,7 +1255,7 @@ const BlogPage = () => {
                 <div className="p-8 flex-1 flex flex-col">
                   <div className="flex items-center gap-4 mb-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">{post.tags?.[0]}</span>
-                    <span className="text-xs text-white/40 uppercase tracking-widest">{new Date(post.createdAt).toLocaleDateString()}</span>
+                    <span className="text-xs text-white/40 uppercase tracking-widest">{formatDate(post.createdAt)}</span>
                   </div>
                   <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors">{post.title}</h3>
                   <p className="text-white/60 mb-6 line-clamp-3">{post.description}</p>
@@ -1220,6 +1284,8 @@ const BlogPostPage = () => {
         setPost({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
       }
       setLoading(false);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "blogPosts");
     });
     return () => unsubscribe();
   }, [slug]);
@@ -1239,7 +1305,7 @@ const BlogPostPage = () => {
             <div className="flex flex-wrap items-center gap-6 mb-8">
               <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
                 <Calendar size={16} className="text-brand-primary" />
-                {new Date(post.createdAt).toLocaleDateString()}
+                {formatDate(post.createdAt)}
               </div>
               <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
                 <Clock size={16} className="text-brand-primary" />
@@ -1349,16 +1415,22 @@ const AdminDashboard = ({ user }: { user: any }) => {
     const qBlogs = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
     const unsubscribeBlogs = onSnapshot(qBlogs, (snapshot) => {
       setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "blogPosts");
     });
 
     const qProjects = query(collection(db, "projects"), orderBy("createdAt", "desc"));
     const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
       setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "projects");
     });
 
     const qMessages = query(collection(db, "contacts"), orderBy("timestamp", "desc"));
     const unsubscribeMessages = onSnapshot(qMessages, (snapshot) => {
       setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "contacts");
     });
 
     return () => {
@@ -1399,7 +1471,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
     const postData = {
       ...blogFormData,
       tags: blogFormData.tags.split(",").map(t => t.trim()).filter(t => t),
-      updatedAt: new Date().toISOString(),
+      updatedAt: serverTimestamp(),
       author: user.email
     };
 
@@ -1409,15 +1481,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
       } else {
         await setDoc(doc(collection(db, "blogPosts")), {
           ...postData,
-          createdAt: new Date().toISOString()
+          createdAt: serverTimestamp()
         });
       }
       setIsEditing(false);
       setCurrentPost(null);
       setBlogFormData({ title: "", slug: "", description: "", coverImage: "", content: "", tags: "", published: true });
     } catch (error) {
-      console.error("Save error:", error);
-      alert("Failed to save post.");
+      handleFirestoreError(error, currentPost ? OperationType.UPDATE : OperationType.CREATE, "blogPosts");
     }
   };
 
@@ -1426,7 +1497,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
     const projectData = {
       ...projectFormData,
       tech: projectFormData.tech.split(",").map(t => t.trim()).filter(t => t),
-      updatedAt: new Date().toISOString()
+      updatedAt: serverTimestamp()
     };
 
     try {
@@ -1435,22 +1506,25 @@ const AdminDashboard = ({ user }: { user: any }) => {
       } else {
         await setDoc(doc(collection(db, "projects")), {
           ...projectData,
-          createdAt: new Date().toISOString()
+          createdAt: serverTimestamp()
         });
       }
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
     } catch (error) {
-      console.error("Save error:", error);
-      alert("Failed to save project.");
+      handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
     }
   };
 
   const handleDelete = async (id: string, collectionName: string) => {
     const itemType = collectionName === "blogPosts" ? "post" : collectionName === "projects" ? "project" : "message";
     if (window.confirm(`Are you sure you want to delete this ${itemType}?`)) {
-      await deleteDoc(doc(db, collectionName, id));
+      try {
+        await deleteDoc(doc(db, collectionName, id));
+      } catch (error) {
+        handleFirestoreError(error, OperationType.DELETE, collectionName);
+      }
     }
   };
 
@@ -1705,7 +1779,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     <div>
                       <h3 className="text-xl font-bold mb-1">{post.title}</h3>
                       <div className="flex items-center gap-4 text-xs text-white/40 font-bold uppercase tracking-widest">
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span>{formatDate(post.createdAt)}</span>
                         <span className={cn("px-2 py-0.5 rounded-md", post.published ? "bg-green-500/10 text-green-500" : "bg-yellow-500/10 text-yellow-500")}>
                           {post.published ? "Published" : "Draft"}
                         </span>
@@ -1748,7 +1822,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <h3 className="text-xl font-bold mb-1">{project.title}</h3>
                       <div className="flex items-center gap-4 text-xs text-white/40 font-bold uppercase tracking-widest">
                         <span>{project.category}</span>
-                        <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+                        <span>{formatDate(project.createdAt)}</span>
                       </div>
                     </div>
                   </div>
@@ -1898,12 +1972,7 @@ const Contact = () => {
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error: any) {
-      console.error("Error submitting contact form:", error);
-      setStatus("error");
-      // Log more details for debugging
-      if (error.code === 'permission-denied') {
-        console.error("Permission denied. Check firestore.rules");
-      }
+      handleFirestoreError(error, OperationType.CREATE, "contacts");
     } finally {
       setIsSubmitting(false);
     }
@@ -2061,6 +2130,55 @@ const Footer = () => {
   );
 };
 
+// --- Error Boundary ---
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      let errorMessage = "Something went wrong.";
+      try {
+        const parsedError = JSON.parse(this.state.error.message);
+        if (parsedError.error) {
+          errorMessage = `Firestore Error: ${parsedError.error} (Operation: ${parsedError.operationType})`;
+        }
+      } catch (e) {
+        errorMessage = this.state.error.message || errorMessage;
+      }
+
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] text-white p-6 text-center">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-6">
+            <X className="text-red-500" size={32} />
+          </div>
+          <h1 className="text-2xl font-display font-bold mb-4">Application Error</h1>
+          <p className="text-white/60 max-w-md mb-8">{errorMessage}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-8 py-3 bg-brand-primary text-black font-bold rounded-lg hover:bg-brand-primary/80 transition-all"
+          >
+            Reload Application
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 // --- Main App ---
 
 export default function App() {
@@ -2068,6 +2186,19 @@ export default function App() {
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
   const [konami, setKonami] = useState<string[]>([]);
   const konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+
+  useEffect(() => {
+    const testConnection = async () => {
+      try {
+        await getDocFromServer(doc(db, 'test', 'connection'));
+      } catch (error) {
+        if(error instanceof Error && error.message.includes('the client is offline')) {
+          console.error("Please check your Firebase configuration. ");
+        }
+      }
+    };
+    testConnection();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -2093,8 +2224,9 @@ export default function App() {
   };
 
   return (
-    <Router>
-      <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen text-white overflow-x-hidden">
+    <ErrorBoundary>
+      <Router>
+        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen text-white overflow-x-hidden">
         
         <Routes>
           <Route path="/" element={
@@ -2131,5 +2263,6 @@ export default function App() {
         </Routes>
       </div>
     </Router>
+    </ErrorBoundary>
   );
 }
