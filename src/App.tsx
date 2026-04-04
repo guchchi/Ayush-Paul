@@ -555,8 +555,8 @@ const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => void })
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-sm">
-      <div className="bg-[#0A0A0A]/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 flex items-center justify-between px-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
+      <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 flex items-center justify-between px-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
         {navItems.map((item) => (
           item.onClick ? (
             <button
@@ -812,24 +812,21 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
               Available for Startup Collaborations
             </div>
 
-            <h1 className="text-5xl md:text-8xl lg:text-9xl font-display font-extrabold tracking-tight mb-8 leading-[0.95] text-white">
-              <div className="h-[1.2em] flex items-center justify-center">
-                <Typewriter
-                  options={{
-                    strings: ['AI Developer', 'Robotics Builder', 'Startup Creator', 'Problem Solver'],
-                    autoStart: true,
-                    loop: true,
-                    wrapperClassName: "text-white",
-                    cursorClassName: "text-brand-primary neon-glow-blue"
-                  }}
-                />
-              </div>
-              <span className="text-brand-primary italic neon-glow-blue">& Robotics</span> Innovator
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tight mb-8 leading-tight text-white">
+              Building Ideas Into <span className="text-brand-primary italic neon-glow-blue">Reality</span>
             </h1>
 
-            <p className="text-lg md:text-2xl text-white/40 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
-              Ayush Paul — A visionary student entrepreneur crafting the next generation of <span className="text-brand-primary/80">AI-powered applications</span> and <span className="text-brand-secondary/80">Robotics solutions</span> for global clients.
-            </p>
+            <div className="text-lg md:text-2xl text-white/60 max-w-2xl mx-auto mb-12 font-medium leading-relaxed h-[1.5em] flex items-center justify-center">
+              <Typewriter
+                options={{
+                  strings: ['AI Developer', 'Robotics Builder', 'Startup Creator', 'Problem Solver'],
+                  autoStart: true,
+                  loop: true,
+                  wrapperClassName: "text-white/80",
+                  cursorClassName: "text-brand-primary neon-glow-blue"
+                }}
+              />
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
               <MagneticButton 
@@ -874,9 +871,9 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
       {/* Decorative Side Elements */}
       <div className="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 space-y-8">
         {[
-          { icon: <Github />, href: "https://github.com/guchchi" },
-          { icon: <Linkedin />, href: "https://www.linkedin.com/in/paulayush/" },
-          { icon: <Youtube />, href: "https://www.youtube.com/@ALX-17" }
+          { icon: <Github />, href: "https://github.com/guchchi", hoverColor: "hover:text-green-500" },
+          { icon: <Linkedin />, href: "https://www.linkedin.com/in/paulayush/", hoverColor: "hover:text-blue-700" },
+          { icon: <Youtube />, href: "https://www.youtube.com/@ALX-17", hoverColor: "hover:text-red-600" }
         ].map((item, i) => (
           <motion.a
             key={i}
@@ -886,7 +883,7 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2 + i * 0.1 }}
-            className="block text-white/20 hover:text-brand-primary transition-colors"
+            className={cn("block text-white/20 transition-colors", item.hoverColor)}
           >
             {item.icon}
           </motion.a>
@@ -3762,12 +3759,12 @@ const Footer = () => {
             </p>
             <div className="flex items-center gap-6">
               {[
-                { icon: <Linkedin size={24} />, href: "https://www.linkedin.com/in/paulayush/" },
-                { icon: <Github size={24} />, href: "https://github.com/guchchi" },
-                { icon: <Youtube size={24} />, href: "https://www.youtube.com/@ALX-17" },
-                { icon: <Mail size={24} />, href: "mailto:hello@ayushpaul.in" }
+                { icon: <Linkedin size={24} />, href: "https://www.linkedin.com/in/paulayush/", hoverColor: "hover:text-blue-700 hover:bg-blue-700/10 hover:border-blue-700/20" },
+                { icon: <Github size={24} />, href: "https://github.com/guchchi/", hoverColor: "hover:text-green-500 hover:bg-green-500/10 hover:border-green-500/20" },
+                { icon: <Youtube size={24} />, href: "https://www.youtube.com/@ALX-17", hoverColor: "hover:text-red-600 hover:bg-red-600/10 hover:border-red-600/20" },
+                { icon: <Mail size={24} />, href: "mailto:hello@ayushpaul.in", hoverColor: "hover:text-brand-primary hover:bg-brand-primary/10 hover:border-brand-primary/20" }
               ].map((item, i) => (
-                <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white/40 hover:text-brand-primary hover:bg-brand-primary/10 transition-all border border-white/5">
+                <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className={cn("w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white/40 transition-all border border-white/5", item.hoverColor)}>
                   {item.icon}
                 </a>
               ))}
