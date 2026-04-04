@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import { 
   Menu, X, Github, Linkedin, Youtube, ExternalLink, Mail, Phone, MapPin, Code, Cpu, Palette, Sparkles, Rocket, BookOpen, MessageSquare, ArrowRight, ArrowLeft, ChevronRight, Star, Globe, Home, User, Layers, Search, Plus, Trash2, Edit, LogOut, LogIn, Clock, Calendar, Tag,
-  CheckCircle2, Zap, TrendingUp, ChevronUp, Monitor, Video, Terminal, Command, Briefcase, Award, Activity, Shield, Coffee, Lightbulb,
+  CheckCircle2, Zap, TrendingUp, ChevronUp, Monitor, Video, Terminal, Command, Briefcase, Award, Activity, Shield, Coffee, Lightbulb, Heart, CreditCard, Loader2,
   GripVertical, Bold, Italic, Underline, List, ListOrdered, Quote, Minus, Type, Image as ImageIcon, Layout, Settings, Wand2, Eye, Save, Send, History, BarChart3, Filter, MoreVertical, Copy, Link as LinkIcon, FileText, Share2, Info, AlertCircle
 } from "lucide-react";
 import Typewriter from 'typewriter-effect';
@@ -842,6 +842,8 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
               >
                 <a href="#hire" className="w-full h-full flex items-center justify-center">Start a Project</a>
               </MagneticButton>
+
+              <SupportButton />
             </div>
 
             {/* Social Proof Strip */}
@@ -1668,6 +1670,7 @@ const LandingPage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
       <SectionReveal><BlogSection /></SectionReveal>
       <SectionReveal><Testimonials /></SectionReveal>
       <SectionReveal><Contact /></SectionReveal>
+      <SectionReveal><Newsletter /></SectionReveal>
     </motion.div>
   );
 };
@@ -2413,10 +2416,11 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   );
 };
 
-const SEOPanel = ({ data, setData, blocks }: { 
+const SEOPanel = ({ data, setData, blocks, onAIAction }: { 
   data: SEOData, 
   setData: React.Dispatch<React.SetStateAction<SEOData>>,
-  blocks: Block[]
+  blocks: Block[],
+  onAIAction: (id: string, action: string) => void
 }) => {
   const [score, setScore] = useState(0);
   const [issues, setIssues] = useState<string[]>([]);
@@ -2451,7 +2455,15 @@ const SEOPanel = ({ data, setData, blocks }: {
       <div className="grid lg:grid-cols-2 gap-12">
         <div className="space-y-8">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">SEO Title</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">SEO Title</label>
+              <button 
+                onClick={() => onAIAction('', 'title')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
             <input 
               type="text"
               value={data.title}
@@ -2466,7 +2478,15 @@ const SEOPanel = ({ data, setData, blocks }: {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Meta Description</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Meta Description</label>
+              <button 
+                onClick={() => onAIAction('', 'summary')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
             <textarea 
               value={data.description}
               onChange={(e) => setData({ ...data, description: e.target.value })}
@@ -2480,7 +2500,15 @@ const SEOPanel = ({ data, setData, blocks }: {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Focus Keyword</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Focus Keyword</label>
+              <button 
+                onClick={() => onAIAction('', 'keywords')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
             <input 
               type="text"
               value={data.keywords}
@@ -2542,33 +2570,43 @@ const SEOPanel = ({ data, setData, blocks }: {
 
 const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: string) => void, isProcessing: boolean }) => {
   const actions = [
-    { id: 'improve', label: 'Improve Writing', icon: <Sparkles size={16} /> },
-    { id: 'grammar', label: 'Fix Grammar', icon: <CheckCircle2 size={16} /> },
-    { id: 'expand', label: 'Expand Paragraph', icon: <Plus size={16} /> },
-    { id: 'simplify', label: 'Simplify Text', icon: <Minus size={16} /> },
-    { id: 'summary', label: 'Generate Summary', icon: <FileText size={16} /> },
-    { id: 'keywords', label: 'SEO Keywords', icon: <Tag size={16} /> },
-    { id: 'headings', label: 'Suggest Headings', icon: <Layout size={16} /> },
+    { id: 'improve', label: 'Improve Writing', icon: <Sparkles size={16} />, desc: 'Enhance clarity and tone' },
+    { id: 'grammar', label: 'Fix Grammar', icon: <CheckCircle2 size={16} />, desc: 'Correct errors instantly' },
+    { id: 'expand', label: 'Expand Paragraph', icon: <Plus size={16} />, desc: 'Add more detail and depth' },
+    { id: 'simplify', label: 'Simplify Text', icon: <Minus size={16} />, desc: 'Make it easier to read' },
+    { id: 'summary', label: 'Generate Summary', icon: <FileText size={16} />, desc: 'Create meta description' },
+    { id: 'keywords', label: 'SEO Keywords', icon: <Tag size={16} />, desc: 'Suggest target keywords' },
+    { id: 'headings', label: 'Suggest Headings', icon: <Layout size={16} />, desc: 'Optimize structure' },
   ];
 
   return (
-    <div className="p-6 bg-brand-primary/5 border border-brand-primary/20 rounded-3xl">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-          <Wand2 size={18} />
-        </div>
-        <h3 className="font-bold">AI Writing Assistant</h3>
-        {isProcessing && <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin ml-auto" />}
+    <div className="p-8 rounded-[40px] glass-card border border-white/10 space-y-8">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold flex items-center gap-2">
+          <Sparkles size={18} className="text-brand-primary" /> AI Writing Assistant
+        </h3>
+        {isProcessing && (
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
+            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Processing...
+          </div>
+        )}
       </div>
-      <div className="flex flex-wrap gap-3">
+      
+      <div className="grid grid-cols-1 gap-3">
         {actions.map((action) => (
           <button
             key={action.id}
             onClick={() => onAction(action.id)}
             disabled={isProcessing}
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-white/60 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="group p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-brand-primary hover:border-brand-primary transition-all text-left disabled:opacity-50"
           >
-            {action.icon} {action.label}
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-black group-hover:bg-white/20 transition-all">
+                {action.icon}
+              </div>
+              <span className="text-sm font-bold group-hover:text-black transition-colors">{action.label}</span>
+            </div>
+            <p className="text-[10px] text-white/40 group-hover:text-black/60 ml-11 transition-colors">{action.desc}</p>
           </button>
         ))}
       </div>
@@ -2685,9 +2723,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
         case 'grammar': prompt = `Fix any grammar or spelling mistakes in the following text:\n\n${targetContent}`; break;
         case 'expand': prompt = `Expand on the following paragraph, adding more technical detail and depth:\n\n${targetContent}`; break;
         case 'simplify': prompt = `Simplify the following text to make it easier to read for beginners:\n\n${targetContent}`; break;
-        case 'summary': prompt = `Generate a concise summary (max 160 characters) for the following blog content:\n\n${targetContent}`; break;
-        case 'keywords': prompt = `Suggest 5-10 SEO keywords for the following content:\n\n${targetContent}`; break;
+        case 'summary': prompt = `Generate a concise summary (max 160 characters) for the following blog content. This will be used as a meta description:\n\n${targetContent}`; break;
+        case 'keywords': prompt = `Suggest 5-10 SEO keywords for the following content. Return them as a comma-separated list:\n\n${targetContent}`; break;
         case 'headings': prompt = `Suggest a better heading hierarchy for the following content:\n\n${targetContent}`; break;
+        case 'title': prompt = `Suggest a catchy, SEO-friendly title for a blog post with the following content:\n\n${targetContent}`; break;
       }
 
       const response = await ai.models.generateContent({
@@ -2701,8 +2740,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
         setBlocks(blocks.map(b => b.id === blockId ? { ...b, content: result } : b));
       } else if (action === 'summary') {
         setSeoData({ ...seoData, description: result });
+        setBlogFormData({ ...blogFormData, description: result });
       } else if (action === 'keywords') {
         setSeoData({ ...seoData, keywords: result });
+        setBlogFormData({ ...blogFormData, tags: result });
+      } else if (action === 'title') {
+        setSeoData({ ...seoData, title: result });
+        setBlogFormData({ ...blogFormData, title: result, slug: generateSlug(result) });
       }
     } catch (error) {
       console.error("AI Action failed:", error);
@@ -3082,7 +3126,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                         </div>
                         <h3 className="text-2xl font-bold">SEO Optimization</h3>
                       </div>
-                      <SEOPanel data={seoData} setData={setSeoData} blocks={blocks} />
+                      <SEOPanel data={seoData} setData={setSeoData} blocks={blocks} onAIAction={(id, action) => handleAIAction(action, id)} />
                     </div>
                   </div>
 
@@ -3743,6 +3787,73 @@ const Contact = () => {
   );
 };
 
+const Newsletter = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      await addDoc(collection(db, "newsletter"), {
+        email,
+        subscribedAt: serverTimestamp()
+      });
+      setStatus('success');
+      setEmail("");
+    } catch (error) {
+      console.error("Newsletter error:", error);
+      setStatus('error');
+    }
+  };
+
+  return (
+    <section className="py-24 relative overflow-hidden">
+      <div className="container mx-auto px-6">
+        <div className="max-w-4xl mx-auto p-12 md:p-24 rounded-[60px] glass-card border border-white/10 relative overflow-hidden text-center">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent" />
+          
+          <div className="relative z-10 space-y-8">
+            <div className="w-20 h-20 rounded-3xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mx-auto mb-8">
+              <Mail size={40} />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tighter">Stay in the <span className="text-brand-primary">Loop</span></h2>
+            <p className="text-xl text-white/40 max-w-xl mx-auto">Get exclusive insights on AI, Robotics, and Startup building delivered straight to your inbox.</p>
+            
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto relative group">
+              <input 
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-6 outline-none focus:border-brand-primary transition-all text-lg"
+                required
+              />
+              <button 
+                type="submit"
+                disabled={status === 'loading'}
+                className="absolute right-2 top-2 bottom-2 px-8 bg-brand-primary text-black rounded-xl font-bold hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+              >
+                {status === 'loading' ? 'Joining...' : 'Join Now'}
+              </button>
+            </form>
+            
+            {status === 'success' && (
+              <p className="text-green-500 font-bold animate-bounce">Welcome to the inner circle! Check your inbox soon.</p>
+            )}
+            {status === 'error' && (
+              <p className="text-red-500 font-bold">Something went wrong. Please try again later.</p>
+            )}
+            
+            <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">No spam. Only high-signal tech insights.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Footer = () => {
   return (
     <footer className="py-24 border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
@@ -3918,12 +4029,366 @@ const ScrollToTopButton = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={scrollToTop}
-          className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-[100] w-14 h-14 rounded-full bg-white text-black shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
+          className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-[100] w-14 h-14 rounded-full glass-card flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
         >
           <ChevronUp size={24} className="group-hover:-translate-y-1 transition-transform" />
         </motion.button>
       )}
     </AnimatePresence>
+  );
+};
+
+const SupportModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const [loading, setLoading] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const tiers = [
+    { id: 1, name: "Supporter", price: 99, icon: <Heart size={24} />, desc: "A small token of appreciation" },
+    { id: 2, name: "Coffee Support", price: 299, icon: <Coffee size={24} />, desc: "Keep the code flowing with caffeine" },
+    { id: 3, name: "Premium Supporter", price: 999, icon: <Sparkles size={24} />, desc: "Ultimate support for my journey" },
+  ];
+
+  const handleSupport = async (tier: typeof tiers[0]) => {
+    setLoading(tier.id);
+    setError(null);
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: tier.price, tierName: tier.name }),
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+    } catch (err: any) {
+      console.error("Payment Error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
+      setLoading(null);
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative w-full max-w-lg glass-card rounded-[40px] border border-white/10 overflow-hidden"
+          >
+            <div className="p-8 border-b border-white/10 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Support My Work</h2>
+                <p className="text-white/40 text-sm mt-1">Choose a tier to support my projects</p>
+              </div>
+              <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-8 space-y-4">
+              {error && (
+                <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm flex items-center gap-3">
+                  <AlertCircle size={18} />
+                  {error}
+                </div>
+              )}
+
+              {tiers.map((tier) => (
+                <button
+                  key={tier.id}
+                  disabled={loading !== null}
+                  onClick={() => handleSupport(tier)}
+                  className="w-full p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-brand-primary/50 hover:bg-white/10 transition-all flex items-center justify-between group disabled:opacity-50"
+                >
+                  <div className="flex items-center gap-4 text-left">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
+                      {tier.icon}
+                    </div>
+                    <div>
+                      <div className="font-bold text-lg">{tier.name}</div>
+                      <div className="text-sm text-white/40">{tier.desc}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-brand-primary">₹{tier.price}</div>
+                    {loading === tier.id ? (
+                      <Loader2 size={16} className="animate-spin ml-auto mt-1" />
+                    ) : (
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">One-time</div>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="p-8 bg-white/5 border-t border-white/10 text-center">
+              <p className="text-xs text-white/20 font-medium">
+                Secure payment powered by <span className="text-white/40">Stripe</span>
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const SuccessPage = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0A0A]">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-md w-full text-center space-y-8"
+      >
+        <div className="w-24 h-24 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 mx-auto">
+          <CheckCircle2 size={48} />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">Payment Successful!</h1>
+          <p className="text-white/40 text-lg">Thank you for supporting Ayush Paul 🚀</p>
+        </div>
+        <div className="p-6 rounded-[32px] bg-white/5 border border-white/10 text-sm text-white/60 leading-relaxed">
+          Your contribution helps me keep building open-source projects and creating content for the community. You're awesome!
+        </div>
+        <button 
+          onClick={() => navigate("/")}
+          className="w-full py-4 rounded-2xl bg-brand-primary text-black font-bold hover:scale-105 active:scale-95 transition-all"
+        >
+          Back to Portfolio
+        </button>
+      </motion.div>
+    </div>
+  );
+};
+
+const CancelPage = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0A0A]">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-md w-full text-center space-y-8"
+      >
+        <div className="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mx-auto">
+          <X size={48} />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">Payment Cancelled</h1>
+          <p className="text-white/40 text-lg">No worries! You can always support later.</p>
+        </div>
+        <button 
+          onClick={() => navigate("/")}
+          className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all"
+        >
+          Back to Portfolio
+        </button>
+      </motion.div>
+    </div>
+  );
+};
+
+const SupportButton = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  return (
+    <>
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-brand-primary/30 transition-all group"
+      >
+        <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-transform">
+          <Heart size={16} fill="currentColor" />
+        </div>
+        <span className="text-sm font-bold">Support My Work</span>
+      </button>
+      <SupportModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+};
+
+const AIChatbot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string }[]>([
+    { role: 'ai', text: "Hi! I'm Ayush's AI assistant. Ask me anything about his projects, skills, or how to collaborate!" }
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+    const userMsg = input.trim();
+    setInput("");
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setIsTyping(true);
+
+    try {
+      // Level 3: Firebase Dynamic Brain (RAG)
+      const projectsSnap = await getDocs(collection(db, "projects"));
+      const blogsSnap = await getDocs(collection(db, "blogPosts"));
+      
+      const projects = projectsSnap.docs.map(doc => ({ 
+        title: doc.data().title, 
+        description: doc.data().description,
+        tags: doc.data().tags 
+      })).slice(0, 5);
+      
+      const blogs = blogsSnap.docs.map(doc => ({ 
+        title: doc.data().title, 
+        description: doc.data().description 
+      })).slice(0, 5);
+
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const model = "gemini-3-flash-preview";
+      
+      const systemPrompt = `You are Ayush Paul AI Assistant.
+Represent Ayush Paul — AI Developer, Robotics Builder, Startup Creator and Student Innovator from India.
+
+Your purpose:
+- Answer questions about Ayush Paul's skills, projects, blogs and services
+- Help visitors hire or collaborate
+- Explain projects simply
+- Encourage exploration of the portfolio
+
+Knowledge Base (Dynamic):
+Skills: Python, AI, Robotics, Arduino, Web Development, Firebase
+Projects: ${JSON.stringify(projects)}
+Blogs: ${JSON.stringify(blogs)}
+Services: AI Solutions, Website Development, Digital Branding
+
+Tone:
+Professional, confident, intelligent, helpful, short responses.
+
+If user asks unknown info:
+politely guide them to contact section.
+
+Role Awareness:
+If user says "Hire you", "Work together", or "Collaborate", suggest visiting the contact section or emailing ap8779370@gmail.com.
+
+Smart Suggestions:
+At the end of your response, if relevant, suggest one of these:
+- "You may also want to see: Robotics Projects"
+- "You may also want to see: AI Blog"
+- "You may also want to see: Hire Ayush"
+
+User Question: ${userMsg}`;
+
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
+      });
+
+      setMessages(prev => [...prev, { role: 'ai', text: response.text || "I'm sorry, I couldn't process that. Could you try again?" }]);
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      setMessages(prev => [...prev, { role: 'ai', text: "I'm having a bit of trouble connecting right now. Please try again later!" }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  return (
+    <>
+      <button 
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-24 right-6 md:bottom-10 md:right-28 z-[100] w-14 h-14 rounded-full bg-brand-primary text-black shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
+      >
+        <MessageSquare size={24} className="group-hover:rotate-12 transition-transform" />
+        <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand-secondary rounded-full border-2 border-[#0A0A0A] animate-pulse" />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+            className="fixed bottom-24 right-6 md:bottom-28 md:right-10 z-[1000] w-[calc(100vw-48px)] sm:w-[400px] h-[500px] glass-card rounded-[32px] border border-white/10 flex flex-col overflow-hidden shadow-2xl"
+          >
+            <div className="p-6 bg-brand-primary/10 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-brand-primary/20 flex items-center justify-center text-brand-primary">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">Ayush AI</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Online</span>
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
+              {messages.map((msg, i) => (
+                <div key={i} className={cn("flex", msg.role === 'user' ? "justify-end" : "justify-start")}>
+                  <div className={cn(
+                    "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
+                    msg.role === 'user' ? "bg-brand-primary text-black font-medium" : "bg-white/5 border border-white/10 text-white/80"
+                  )}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white/5 border border-white/10 p-4 rounded-2xl flex gap-1">
+                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" />
+                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce delay-100" />
+                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce delay-200" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 bg-white/5 border-t border-white/10">
+              <div className="relative">
+                <input 
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ask me anything..."
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 pr-14 text-sm outline-none focus:border-brand-primary transition-colors"
+                />
+                <button 
+                  onClick={handleSend}
+                  disabled={!input.trim() || isTyping}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-primary text-black rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -4020,8 +4485,11 @@ export default function App() {
             </>
           } />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/cancel" element={<CancelPage />} />
         </Routes>
         <ScrollToTopButton />
+        <AIChatbot />
       </div>
     </Router>
     </ErrorBoundary>
