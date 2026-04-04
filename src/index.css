@@ -87,3 +87,42 @@
   border-radius: inherit;
 }
 
+/* Quill Editor Dark Theme Overrides */
+.quill-editor-dark .ql-toolbar {
+  @apply bg-white/5 border-white/10 rounded-t-2xl;
+}
+
+.quill-editor-dark .ql-container {
+  @apply bg-transparent border-white/10 rounded-b-2xl text-lg leading-relaxed text-white/80;
+  min-height: 100px;
+}
+
+.quill-editor-dark .ql-stroke {
+  stroke: rgba(255, 255, 255, 0.4) !important;
+}
+
+.quill-editor-dark .ql-fill {
+  fill: rgba(255, 255, 255, 0.4) !important;
+}
+
+.quill-editor-dark .ql-picker {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.quill-editor-dark .ql-editor.ql-blank::before {
+  color: rgba(255, 255, 255, 0.2) !important;
+  font-style: normal;
+}
+
+.quill-editor-dark .ql-editor {
+  @apply min-h-[100px];
+}
+
+.quill-editor-dark .ql-active .ql-stroke {
+  stroke: var(--color-brand-primary) !important;
+}
+
+.quill-editor-dark .ql-active .ql-fill {
+  fill: var(--color-brand-primary) !important;
+}
+
