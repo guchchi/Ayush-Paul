@@ -48,6 +48,9 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
   html {
     scroll-behavior: smooth;
   }
