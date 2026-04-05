@@ -16,7 +16,6 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { cn } from "@/src/lib/utils";
 import { auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, ref, uploadBytes, getDownloadURL, getDocFromServer } from "./firebase";
-import { GoogleGenAI } from "@google/genai";
 import {
   DndContext,
   closestCenter,
