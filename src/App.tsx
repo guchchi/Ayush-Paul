@@ -36,6 +36,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { ParallaxContainer, ParallaxLayer } from "./components/Parallax";
 import { PremiumSkills } from "./components/PremiumSkills";
+import { ProfessionalAi } from "./components/ProfessionalAi";
 
 // --- Types ---
 
@@ -4241,177 +4242,6 @@ const SupportButton = () => {
   );
 };
 
-const AIChatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string }[]>([
-    { role: 'ai', text: "Hi! I'm Ayush's AI assistant. Ask me anything about his projects, skills, or how to collaborate!" }
-  ]);
-  const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, isTyping]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input.trim();
-    setInput("");
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsTyping(true);
-
-    try {
-      // Level 3: Firebase Dynamic Brain (RAG)
-      const projectsSnap = await getDocs(collection(db, "projects"));
-      const blogsSnap = await getDocs(collection(db, "blogPosts"));
-      
-      const projects = projectsSnap.docs.map(doc => ({ 
-        title: doc.data().title, 
-        description: doc.data().description,
-        tags: doc.data().tags 
-      })).slice(0, 5);
-      
-      const blogs = blogsSnap.docs.map(doc => ({ 
-        title: doc.data().title, 
-        description: doc.data().description 
-      })).slice(0, 5);
-
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = "gemini-3-flash-preview";
-      
-      const systemPrompt = `You are Ayush Paul AI Assistant.
-Represent Ayush Paul — AI Developer, Robotics Builder, Startup Creator and Student Innovator from India.
-
-Your purpose:
-- Answer questions about Ayush Paul's skills, projects, blogs and services
-- Help visitors hire or collaborate
-- Explain projects simply
-- Encourage exploration of the portfolio
-
-Knowledge Base (Dynamic):
-Skills: Python, AI, Robotics, Arduino, Web Development, Firebase
-Projects: ${JSON.stringify(projects)}
-Blogs: ${JSON.stringify(blogs)}
-Services: AI Solutions, Website Development, Digital Branding
-
-Tone:
-Professional, confident, intelligent, helpful, short responses.
-
-If user asks unknown info:
-politely guide them to contact section.
-
-Role Awareness:
-If user says "Hire you", "Work together", or "Collaborate", suggest visiting the contact section or emailing ap8779370@gmail.com.
-
-Smart Suggestions:
-At the end of your response, if relevant, suggest one of these:
-- "You may also want to see: Robotics Projects"
-- "You may also want to see: AI Blog"
-- "You may also want to see: Hire Ayush"
-
-User Question: ${userMsg}`;
-
-      const response = await ai.models.generateContent({
-        model,
-        contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
-      });
-
-      setMessages(prev => [...prev, { role: 'ai', text: response.text || "I'm sorry, I couldn't process that. Could you try again?" }]);
-    } catch (error) {
-      console.error("Chatbot error:", error);
-      setMessages(prev => [...prev, { role: 'ai', text: "I'm having a bit of trouble connecting right now. Please try again later!" }]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  return (
-    <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 md:bottom-10 md:right-28 z-[100] w-14 h-14 rounded-full bg-brand-primary text-black shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
-      >
-        <MessageSquare size={24} className="group-hover:rotate-12 transition-transform" />
-        <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand-secondary rounded-full border-2 border-[#0A0A0A] animate-pulse" />
-      </button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
-            className="fixed bottom-24 right-6 md:bottom-28 md:right-10 z-[1000] w-[calc(100vw-48px)] sm:w-[400px] h-[500px] glass-card rounded-[32px] border border-white/10 flex flex-col overflow-hidden shadow-2xl"
-          >
-            <div className="p-6 bg-brand-primary/10 border-b border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                  <Sparkles size={20} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm">Ayush AI</h3>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Online</span>
-                  </div>
-                </div>
-              </div>
-              <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
-              {messages.map((msg, i) => (
-                <div key={i} className={cn("flex", msg.role === 'user' ? "justify-end" : "justify-start")}>
-                  <div className={cn(
-                    "max-w-[80%] p-4 rounded-2xl text-sm leading-relaxed",
-                    msg.role === 'user' ? "bg-brand-primary text-black font-medium" : "bg-white/5 border border-white/10 text-white/80"
-                  )}>
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-white/5 border border-white/10 p-4 rounded-2xl flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" />
-                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce delay-100" />
-                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce delay-200" />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="p-4 bg-white/5 border-t border-white/10">
-              <div className="relative">
-                <input 
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask me anything..."
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 pr-14 text-sm outline-none focus:border-brand-primary transition-colors"
-                />
-                <button 
-                  onClick={handleSend}
-                  disabled={!input.trim() || isTyping}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-brand-primary text-black rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
-                >
-                  <ArrowRight size={20} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-};
-
 export default function App() {
   const [view, setView] = useState<"landing" | "profiles">("landing");
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -4509,7 +4339,7 @@ export default function App() {
           <Route path="/cancel" element={<CancelPage />} />
         </Routes>
         <ScrollToTopButton />
-        <AIChatbot />
+        <ProfessionalAi />
       </div>
     </Router>
     </ErrorBoundary>
