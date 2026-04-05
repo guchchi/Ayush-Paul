@@ -55,9 +55,9 @@ export const ProfessionalAi = () => {
               featured: d.featured || false,
               category: d.category || '',
             };
-          }).slice(0, 6); // Pruned from 15
+          }).slice(0, 12); // Restored from 6 to 12
 
-          // Pull minimal blog details
+          // Pull refined blog details
           const blogs = blogsSnap.docs
             .map(doc => {
               const d = doc.data();
@@ -65,14 +65,14 @@ export const ProfessionalAi = () => {
                 title: d.title || '',
                 description: d.description || '',
                 contentExcerpt: typeof d.content === 'string'
-                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 250)
+                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 350)
                   : '',
                 date: d.createdAt?.toDate?.()?.toISOString?.() || d.date || '',
                 published: d.published ?? true,
               };
             })
             .filter(b => b.published)
-            .slice(0, 3); // Pruned from 10
+            .slice(0, 8); // Restored from 3 to 8
 
           setAppContext({ projects, blogs });
         } catch (e) {
@@ -170,10 +170,15 @@ Your purpose: Represent Ayush Paul with absolute precision, warmth, and professi
 
 ---
 
-## INNOVATION & MINDSET
-- Builds solutions instead of only studying theory. Startup co-founder mindset.
-- Created ideas like: Smartphone cooling device, Creator–Executor platform, and this AI site.
-- Student PCM student, focused on excellence.
+## INNOVATION & MINDSET (Ayush Paul)
+- Highly curious self-learner; explores technology beyond school (PCM student).
+- Founder mindset: builds instead of consuming. Thinks like an entrepreneur.
+- Notable Ideas: Universal Smartphone Cooler, Creator–Executor Collab Platform, Coaching Management SaaS.
+
+## TECHNICAL STACK
+- **Languages**: Python (AI/ML), TypeScript, JavaScript, C++ (Robotics), HTML/CSS.
+- **Tools**: React, Next.js, Framer Motion, Tailwind, Firebase, Stripe, Arduino, ESP32, Raspberry Pi.
+- **Creative**: 8+ years experience in Professional Video/Photo Editing, UI/UX Design, and Branding.
 
 ---
 

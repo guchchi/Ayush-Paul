@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -19,23 +19,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    // Format conversation history for Gemini 2.0 Flash
-    const conversationHistory = (messages || []).map((m: any) => ({
-      role: m.role === 'ai' ? 'model' : 'user',
-      parts: [{ text: m.text }]
-    }));
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: [
-        ...conversationHistory,
-        { role: 'user', parts: [{ text: systemPrompt }] }
-      ],
+    // Format conversation history for Gemini 1.5 Flash
+    // We send history as contents[] and the latest message as a separate part or combined
+    const chat = model.startChat({
+      history: (messages || []).slice(0, -1).map((m: any) => ({
+        role: m.role === 'ai' ? 'model' : 'user',
+        parts: [{ text: m.text }]
+      })),
+      generationConfig: {
+        maxOutputTokens: 1000,
+      },
     });
 
-    const text = response.text || "I'm having trouble processing that right now.";
+    // We send the system prompt + user message as the final message to force adherence
+    const result = await chat.sendMessage(systemPrompt);
+    const response = await result.response;
+    const text = response.text() || "I'm having trouble processing that right now.";
+    
     return res.status(200).json({ text });
     
   } catch (error: any) {
