@@ -819,14 +819,14 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
 
       {/* Foreground Layer: UI and Glassmorphism context */}
       <ParallaxLayer offset={0} zIndex={10}>
-        <div className="container mx-auto px-6 relative h-full flex flex-col justify-center">
+        <div className="container mx-auto px-6 relative h-full flex flex-col justify-center pt-24 md:pt-32">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 mt-24 md:mt-0 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest uppercase text-white/50 mb-8 backdrop-blur-sm shadow-xl shadow-black/20">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest uppercase text-white/50 mb-8 backdrop-blur-sm shadow-xl shadow-black/20">
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
                 Available for Startup Collaborations
               </div>
