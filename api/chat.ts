@@ -21,24 +21,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Fallback list of models to try in sequence
-    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
+    // Fallback list: Start with the most lightweight/high-quota models
+    const modelsToTry = ["gemini-1.5-flash-8b", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
     let lastError = null;
 
     for (const modelId of modelsToTry) {
       try {
         console.log(`Attempting AI connection with model: ${modelId}`);
-        const model = genAI.getGenerativeModel({ model: modelId });
+        
+        const model = genAI.getGenerativeModel({ 
+          model: modelId,
+          // Move the massive context into systemInstruction for efficiency & better adherence
+          systemInstruction: systemPrompt 
+        });
         
         const chat = model.startChat({
           history: (messages || []).slice(0, -1).map((m: any) => ({
             role: m.role === 'ai' ? 'model' : 'user',
             parts: [{ text: m.text }]
           })),
-          generationConfig: { maxOutputTokens: 1000 },
+          generationConfig: { 
+            maxOutputTokens: 800,
+            temperature: 0.7,
+          },
         });
 
-        const result = await chat.sendMessage(systemPrompt);
+        // The userMsg is handled as the final message (the last one in the history array if we sent it, 
+        // but here we just send the latest one from the client)
+        const lastUserMessage = messages[messages.length - 1]?.text || "Hello";
+        const result = await chat.sendMessage(lastUserMessage);
         const response = await result.response;
         const text = response.text();
         
@@ -48,15 +59,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       } catch (err: any) {
         console.error(`AI model ${modelId} failed:`, err.message);
         lastError = err;
-        continue; // Try the next model
+        // Continue to the next model in the list
       }
     }
 
-    // If we reach here, all models failed
-    throw lastError || new Error("All AI models failed to respond.");
+    throw lastError || new Error("All AI models are currently saturated. Please try again in 1 minute.");
     
   } catch (error: any) {
     console.error("Vercel AI Final failure:", error.message);
-    return res.status(500).json({ error: error.message || "Internal AI failure after all fallback attempts." });
+    return res.status(500).json({ error: error.message || "The brain is currently recharging. Try back in a few seconds." });
   }
 }

@@ -80,27 +80,32 @@ async function startServer() {
       const { GoogleGenerativeAI } = await import("@google/generative-ai");
       const genAI = new GoogleGenerativeAI(apiKey);
       
-      const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
+      const modelsToTry = ["gemini-1.5-flash-8b", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
       let lastError = null;
 
       for (const modelId of modelsToTry) {
         try {
-          const model = genAI.getGenerativeModel({ model: modelId });
+          const model = genAI.getGenerativeModel({ 
+            model: modelId,
+            systemInstruction: systemPrompt
+          });
+          
           const chat = model.startChat({
             history: (messages || []).slice(0, -1).map((m: any) => ({
               role: m.role === 'ai' ? 'model' : 'user',
               parts: [{ text: m.text }]
             })),
-            generationConfig: { maxOutputTokens: 1000 },
+            generationConfig: { maxOutputTokens: 800 },
           });
 
-          const result = await chat.sendMessage(systemPrompt);
+          const lastUserMessage = messages[messages.length - 1]?.text || "Hello";
+          const result = await chat.sendMessage(lastUserMessage);
           const response = await result.response;
           return res.json({ text: response.text() });
         } catch (err: any) {
           console.error(`Local AI model ${modelId} failed:`, err.message);
           lastError = err;
-          continue;
+          // Continue to the next model
         }
       }
 

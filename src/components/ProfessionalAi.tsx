@@ -55,24 +55,21 @@ export const ProfessionalAi = () => {
               featured: d.featured || false,
               category: d.category || '',
             };
-          }).slice(0, 12); // Restored from 6 to 12
+          }).slice(0, 5); // DEEP PRUNE: 5 projects
 
-          // Pull refined blog details
+          // Pull minimal blog details
           const blogs = blogsSnap.docs
             .map(doc => {
               const d = doc.data();
               return {
                 title: d.title || '',
-                description: d.description || '',
                 contentExcerpt: typeof d.content === 'string'
-                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 350)
+                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 200)
                   : '',
-                date: d.createdAt?.toDate?.()?.toISOString?.() || d.date || '',
-                published: d.published ?? true,
+                date: d.date || '',
               };
             })
-            .filter(b => b.published)
-            .slice(0, 8); // Restored from 3 to 8
+            .slice(0, 2); // DEEP PRUNE: 2 blogs
 
           setAppContext({ projects, blogs });
         } catch (e) {
