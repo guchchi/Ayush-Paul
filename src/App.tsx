@@ -826,7 +826,7 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest uppercase text-white/50 mb-8 backdrop-blur-sm shadow-xl shadow-black/20">
+              <div className="inline-flex items-center gap-2 px-4 py-2 mt-24 md:mt-0 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold tracking-widest uppercase text-white/50 mb-8 backdrop-blur-sm shadow-xl shadow-black/20">
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
                 Available for Startup Collaborations
               </div>
@@ -4050,7 +4050,7 @@ const ScrollToTopButton = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={scrollToTop}
-          className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-[100] w-14 h-14 rounded-full glass-card flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
+          className="fixed bottom-[160px] right-6 md:bottom-28 md:right-8 z-[100] w-14 h-14 rounded-full glass-card flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
         >
           <ChevronUp size={24} className="group-hover:-translate-y-1 transition-transform" />
         </motion.button>

@@ -78,6 +78,7 @@ export const ProfessionalAi = () => {
       
       const ai = new GoogleGenAI({ 
         apiKey,
+        // @ts-ignore - Required for client-side API key usage in some envs
         dangerouslyAllowBrowser: true 
       });
       const model = "gemini-3-flash-preview";
@@ -120,7 +121,7 @@ User says: ${userMsg}`;
       <button 
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed bottom-8 right-8 z-[100] w-14 h-14 rounded-full border border-white/10 shadow-[0_0_40px_rgba(0,194,255,0.15)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 group overflow-hidden",
+          "fixed bottom-[90px] right-6 md:bottom-8 md:right-8 z-[100] w-14 h-14 rounded-full border border-white/10 shadow-[0_0_40px_rgba(0,194,255,0.15)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 group overflow-hidden",
           isOpen ? "opacity-0 pointer-events-none scale-75" : "opacity-100"
         )}
       >
