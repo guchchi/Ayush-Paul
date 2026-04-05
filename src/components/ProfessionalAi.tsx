@@ -69,7 +69,17 @@ export const ProfessionalAi = () => {
     setIsTyping(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'undefined') {
+        setMessages(prev => [...prev, { role: 'ai', text: "**Configuration Error:** No Gemini API Key was found in the environment (`GEMINI_API_KEY`). Please add it to your `.env` or Vercel configuration." }]);
+        setIsTyping(false);
+        return;
+      }
+      
+      const ai = new GoogleGenAI({ 
+        apiKey,
+        dangerouslyAllowBrowser: true 
+      });
       const model = "gemini-3-flash-preview";
       
       const systemPrompt = `You are the Ayush Paul Professional AI Assistant.
