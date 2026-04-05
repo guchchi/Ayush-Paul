@@ -33,8 +33,6 @@ async function startServer() {
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
       const { amount, tierName } = req.body;
-
-      // Validate amount server-side
       const validTiers = [99, 299, 999];
       if (!validTiers.includes(amount)) {
         return res.status(400).json({ error: "Invalid support tier" });
@@ -50,9 +48,9 @@ async function startServer() {
               product_data: {
                 name: `Support Ayush Paul - ${tierName}`,
                 description: "Thank you for supporting my work and projects!",
-                images: ["https://ayushpaul.in/og-image.png"], // Fallback to a real image if possible
+                images: ["https://ayushpaul.in/og-image.png"],
               },
-              unit_amount: amount * 100, // Amount in paise
+              unit_amount: amount * 100,
             },
             quantity: 1,
           },
@@ -65,6 +63,50 @@ async function startServer() {
       res.json({ url: session.url });
     } catch (error: any) {
       console.error("Stripe Session Error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // API Route: Chat (AI Assistant)
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { messages, systemPrompt } = req.body;
+      const apiKey = process.env.GEMINI_API_KEY;
+      
+      if (!apiKey) {
+        return res.status(500).json({ error: "GEMINI_API_KEY is not set in local .env" });
+      }
+
+      const { GoogleGenerativeAI } = await import("@google/generative-ai");
+      const genAI = new GoogleGenerativeAI(apiKey);
+      
+      const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
+      let lastError = null;
+
+      for (const modelId of modelsToTry) {
+        try {
+          const model = genAI.getGenerativeModel({ model: modelId });
+          const chat = model.startChat({
+            history: (messages || []).slice(0, -1).map((m: any) => ({
+              role: m.role === 'ai' ? 'model' : 'user',
+              parts: [{ text: m.text }]
+            })),
+            generationConfig: { maxOutputTokens: 1000 },
+          });
+
+          const result = await chat.sendMessage(systemPrompt);
+          const response = await result.response;
+          return res.json({ text: response.text() });
+        } catch (err: any) {
+          console.error(`Local AI model ${modelId} failed:`, err.message);
+          lastError = err;
+          continue;
+        }
+      }
+
+      throw lastError || new Error("All local AI models failed.");
+    } catch (error: any) {
+      console.error("Local AI Error:", error.message);
       res.status(500).json({ error: error.message });
     }
   });

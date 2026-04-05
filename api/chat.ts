@@ -20,29 +20,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    // Format conversation history for Gemini 1.5 Flash
-    // We send history as contents[] and the latest message as a separate part or combined
-    const chat = model.startChat({
-      history: (messages || []).slice(0, -1).map((m: any) => ({
-        role: m.role === 'ai' ? 'model' : 'user',
-        parts: [{ text: m.text }]
-      })),
-      generationConfig: {
-        maxOutputTokens: 1000,
-      },
-    });
+    // Fallback list of models to try in sequence
+    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash"];
+    let lastError = null;
 
-    // We send the system prompt + user message as the final message to force adherence
-    const result = await chat.sendMessage(systemPrompt);
-    const response = await result.response;
-    const text = response.text() || "I'm having trouble processing that right now.";
-    
-    return res.status(200).json({ text });
+    for (const modelId of modelsToTry) {
+      try {
+        console.log(`Attempting AI connection with model: ${modelId}`);
+        const model = genAI.getGenerativeModel({ model: modelId });
+        
+        const chat = model.startChat({
+          history: (messages || []).slice(0, -1).map((m: any) => ({
+            role: m.role === 'ai' ? 'model' : 'user',
+            parts: [{ text: m.text }]
+          })),
+          generationConfig: { maxOutputTokens: 1000 },
+        });
+
+        const result = await chat.sendMessage(systemPrompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        if (text) {
+          return res.status(200).json({ text });
+        }
+      } catch (err: any) {
+        console.error(`AI model ${modelId} failed:`, err.message);
+        lastError = err;
+        continue; // Try the next model
+      }
+    }
+
+    // If we reach here, all models failed
+    throw lastError || new Error("All AI models failed to respond.");
     
   } catch (error: any) {
-    console.error("Vercel AI Error:", error.message);
-    return res.status(500).json({ error: error.message || "Internal AI failure" });
+    console.error("Vercel AI Final failure:", error.message);
+    return res.status(500).json({ error: error.message || "Internal AI failure after all fallback attempts." });
   }
 }
