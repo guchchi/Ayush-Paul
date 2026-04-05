@@ -55,27 +55,24 @@ export const ProfessionalAi = () => {
               featured: d.featured || false,
               category: d.category || '',
             };
-          }).slice(0, 15); // more projects for richer knowledge
+          }).slice(0, 6); // Pruned from 15
 
-          // Pull full blog details including content excerpt for recent activity
+          // Pull minimal blog details
           const blogs = blogsSnap.docs
             .map(doc => {
               const d = doc.data();
               return {
                 title: d.title || '',
                 description: d.description || '',
-                // First 400 chars of content body so AI knows what the post covers
                 contentExcerpt: typeof d.content === 'string'
-                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 400)
+                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 250)
                   : '',
-                tags: d.tags || [],
-                category: d.category || '',
                 date: d.createdAt?.toDate?.()?.toISOString?.() || d.date || '',
                 published: d.published ?? true,
               };
             })
-            .filter(b => b.published)   // only show published posts
-            .slice(0, 10);              // last 10 blogs
+            .filter(b => b.published)
+            .slice(0, 3); // Pruned from 10
 
           setAppContext({ projects, blogs });
         } catch (e) {
@@ -173,39 +170,10 @@ Your purpose: Represent Ayush Paul with absolute precision, warmth, and professi
 
 ---
 
-## CREATIVE & DIGITAL SKILLS (8+ Years Experience)
-
-- **Video editing** — professional level
-- **Photo editing** — advanced retouching and color grading
-- **Poster & branding design**
-- **Logo design**
-- **Thumbnail creation** (YouTube/social media)
-- Strong **UI/UX sense** — can design premium-looking digital products
-- **Content creation & visual storytelling**
-- **Personal brand building**
-
----
-
-## SERVICES AYUSH OFFERS
-
-1. **AI Solutions Development** — Custom chatbots, RAG systems, automation pipelines, Gemini-powered apps
-2. **Full-Stack Web Development** — React/Next.js apps, dashboards, SaaS tools, portfolio sites
-3. **Robotics Engineering** — Custom robot builds, autonomous systems, IoT devices
-4. **Startup Technical Co-founding** — Technical partner for early-stage ideas and MVPs
-5. **Consulting** — AI strategy, tech stack decisions, product architecture
-6. **Creative Services** — Logo, branding, video editing, UI design
-
----
-
-## INNOVATION & PROJECT IDEAS
-
-Ayush has built and ideated real solutions including:
-- **Personal AI-powered portfolio website** (this very site!)
-- **Coaching management app** — for education institutes
-- **Universal smartphone cooling device** — hardware innovation
-- **Creator–Executor collaboration platform** — connecting idea people with builders
-- Builds solutions instead of only studying theory
-- Interested in solving education, productivity, and automation problems
+## INNOVATION & MINDSET
+- Builds solutions instead of only studying theory. Startup co-founder mindset.
+- Created ideas like: Smartphone cooling device, Creator–Executor platform, and this AI site.
+- Student PCM student, focused on excellence.
 
 ---
 
