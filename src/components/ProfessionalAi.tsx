@@ -209,11 +209,11 @@ Ayush has built and ideated real solutions including:
 
 ---
 
-## PROJECTS (Live from database)
-${JSON.stringify(appContext?.projects || [], null, 2)}
+## PROJECTS
+${JSON.stringify(appContext?.projects?.map(p => ({ t: p.title, d: p.description, s: p.status, ts: p.techStack })) || [])}
 
-## BLOG POSTS (Live from database)
-${JSON.stringify(appContext?.blogs || [], null, 2)}
+## LATEST BLOGS
+${JSON.stringify(appContext?.blogs?.map(b => ({ t: b.title, e: b.contentExcerpt, d: b.date })) || [])}
 
 ---
 
