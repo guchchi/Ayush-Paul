@@ -325,13 +325,14 @@ const CursorFollower = () => {
   return (
     <motion.div
       className="fixed top-0 left-0 w-8 h-8 rounded-full border border-brand-primary/50 pointer-events-none z-[9999] hidden lg:block"
+      style={{ willChange: "transform" }}
       animate={{
         x: mousePos.x - 16,
         y: mousePos.y - 16,
         scale: isHovering ? 2 : 1,
         backgroundColor: isHovering ? "rgba(0, 194, 255, 0.1)" : "rgba(0, 194, 255, 0)",
       }}
-      transition={{ type: "spring", damping: 20, stiffness: 250, mass: 0.5 }}
+      transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.2 }}
     />
   );
 };
@@ -706,10 +707,11 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
 const SectionReveal = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 50, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      style={{ willChange: "transform, opacity" }}
     >
       {children}
     </motion.div>
@@ -725,7 +727,7 @@ const MagneticButton = ({ children, className, onClick }: { children: React.Reac
     const { left, top, width, height } = ref.current?.getBoundingClientRect() || { left: 0, top: 0, width: 0, height: 0 };
     const x = clientX - (left + width / 2);
     const y = clientY - (top + height / 2);
-    setPosition({ x: x * 0.3, y: y * 0.3 });
+    setPosition({ x: x * 0.4, y: y * 0.4 });
   };
 
   const handleMouseLeave = () => {
@@ -738,8 +740,9 @@ const MagneticButton = ({ children, className, onClick }: { children: React.Reac
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", damping: 15, stiffness: 150, mass: 0.1 }}
+      transition={{ type: "spring", damping: 12, stiffness: 200, mass: 0.1 }}
       className={className}
+      style={{ willChange: "transform" }}
     >
       <button onClick={onClick} className="w-full h-full">
         {children}
