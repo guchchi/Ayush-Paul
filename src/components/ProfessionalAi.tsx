@@ -23,7 +23,7 @@ export const ProfessionalAi = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  
+
   // Track if we have already fetched context to avoid repetitive DB reads
   const [appContext, setAppContext] = useState<{ projects: any[], blogs: any[] } | null>(null);
 
@@ -38,20 +38,46 @@ export const ProfessionalAi = () => {
     if (isOpen && !appContext) {
       const fetchContext = async () => {
         try {
-          const projectsSnap = await getDocs(collection(db, "projects"));
-          const blogsSnap = await getDocs(collection(db, "blogPosts"));
-          
-          const projects = projectsSnap.docs.map(doc => ({ 
-            title: doc.data().title, 
-            description: doc.data().description,
-            tags: doc.data().tags 
-          })).slice(0, 8);
-          
-          const blogs = blogsSnap.docs.map(doc => ({ 
-            title: doc.data().title, 
-            description: doc.data().description 
-          })).slice(0, 5);
-          
+          const [projectsSnap, blogsSnap] = await Promise.all([
+            getDocs(collection(db, "projects")),
+            getDocs(collection(db, "blogPosts")),
+          ]);
+
+          // Pull full project details so the AI knows exactly what was built
+          const projects = projectsSnap.docs.map(doc => {
+            const d = doc.data();
+            return {
+              title: d.title || '',
+              description: d.description || '',
+              tags: d.tags || [],
+              techStack: d.techStack || d.tech || [],
+              link: d.link || d.url || d.github || '',
+              status: d.status || '',      // e.g. "completed", "in-progress"
+              featured: d.featured || false,
+              category: d.category || '',
+            };
+          }).slice(0, 15); // more projects for richer knowledge
+
+          // Pull full blog details including content excerpt for recent activity
+          const blogs = blogsSnap.docs
+            .map(doc => {
+              const d = doc.data();
+              return {
+                title: d.title || '',
+                description: d.description || '',
+                // First 400 chars of content body so AI knows what the post covers
+                contentExcerpt: typeof d.content === 'string'
+                  ? d.content.replace(/<[^>]+>/g, '').slice(0, 400)
+                  : '',
+                tags: d.tags || [],
+                category: d.category || '',
+                date: d.createdAt?.toDate?.()?.toISOString?.() || d.date || '',
+                published: d.published ?? true,
+              };
+            })
+            .filter(b => b.published)   // only show published posts
+            .slice(0, 10);              // last 10 blogs
+
           setAppContext({ projects, blogs });
         } catch (e) {
           console.error("Failed to load context for AI", e);
@@ -64,7 +90,7 @@ export const ProfessionalAi = () => {
   const handleSend = async (forcedMsg?: string) => {
     const userMsg = forcedMsg || input.trim();
     if (!userMsg) return;
-    
+
     setInput("");
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsTyping(true);
@@ -77,11 +103,11 @@ export const ProfessionalAi = () => {
         setIsTyping(false);
         return;
       }
-      
-      const ai = new GoogleGenAI({ 
+
+      const ai = new GoogleGenAI({
         apiKey,
         // @ts-ignore - Required for client-side browser usage
-        dangerouslyAllowBrowser: true 
+        dangerouslyAllowBrowser: true
       });
 
       // Use chat history for multi-turn conversation
@@ -89,7 +115,7 @@ export const ProfessionalAi = () => {
         role: m.role === 'ai' ? 'model' : 'user',
         parts: [{ text: m.text }]
       }));
-      
+
       const systemPrompt = `You are the **Intelligence Agent** — a premium AI assistant embedded inside Ayush Paul's portfolio website (ayushpaul.in). You are his digital spokesperson and personal AI representative.
 
 Your purpose: Represent Ayush Paul with absolute precision, warmth, and professionalism. You know everything about him.
@@ -262,6 +288,8 @@ Ayush is:
 5. **Hiring/collaboration** — Always direct to ap8779370@gmail.com with enthusiasm
 6. **Never fabricate** specific project names, dates, or numbers not listed above
 7. **Maintain conversation memory** — reference earlier parts of the chat naturally
+8. **Current Focus** — If asked "what are you doing these days" or about latest activity, prioritize info from the **BLOG POSTS** section.
+9. **Project Depth** — Provide detailed tech stack and status info when users inquire about specific projects.
 
 Current user message: ${userMsg}`;
 
@@ -276,7 +304,7 @@ Current user message: ${userMsg}`;
       setMessages(prev => [...prev, { role: 'ai', text: response.text || "Connection to neural net lost. Please try again." }]);
     } catch (error: any) {
       console.error("Agent error:", error);
-      const errMsg = error?.message?.includes('API_KEY') 
+      const errMsg = error?.message?.includes('API_KEY')
         ? "**API Key Error:** The Gemini key is invalid or not set. Please check Vercel Environment Variables."
         : "**System Error:** Could not reach the AI. Please try again in a moment.";
       setMessages(prev => [...prev, { role: 'ai', text: errMsg }]);
@@ -287,7 +315,7 @@ Current user message: ${userMsg}`;
 
   return (
     <>
-      <button 
+      <button
         onClick={() => setIsOpen(true)}
         className={cn(
           "fixed bottom-[90px] right-6 md:bottom-8 md:right-8 z-[100] w-14 h-14 rounded-full border border-white/10 shadow-[0_0_40px_rgba(0,194,255,0.15)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 group overflow-hidden",
@@ -327,8 +355,8 @@ Current user message: ${userMsg}`;
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsOpen(false)} 
+              <button
+                onClick={() => setIsOpen(false)}
                 className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 text-white/50 hover:text-white transition-all"
               >
                 <X size={20} />
@@ -351,11 +379,11 @@ Current user message: ${userMsg}`;
                       <span className="text-[10px] font-bold uppercase tracking-wider">You</span>
                     </div>
                   )}
-                  
+
                   <div className={cn(
                     "max-w-[85%] p-4 text-sm leading-relaxed",
-                    msg.role === 'user' 
-                      ? "bg-white text-black font-medium rounded-2xl rounded-tr-sm" 
+                    msg.role === 'user'
+                      ? "bg-white text-black font-medium rounded-2xl rounded-tr-sm"
                       : "bg-white/5 border border-white/10 text-white/90 rounded-2xl rounded-tl-sm prose prose-invert prose-p:leading-relaxed prose-pre:bg-[#050505] prose-pre:border prose-pre:border-white/10 prose-a:text-brand-primary"
                   )}>
                     {msg.role === 'ai' ? (
@@ -366,7 +394,7 @@ Current user message: ${userMsg}`;
                   </div>
                 </div>
               ))}
-              
+
               {isTyping && (
                 <div className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-2 ml-1 text-white/40">
@@ -398,9 +426,9 @@ Current user message: ${userMsg}`;
                   ))}
                 </div>
               )}
-              
+
               <div className="relative flex items-center bg-white/5 border border-white/10 focus-within:border-brand-primary/50 focus-within:bg-white/10 rounded-2xl p-2 transition-all">
-                <input 
+                <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -413,7 +441,7 @@ Current user message: ${userMsg}`;
                   placeholder="Query the system..."
                   className="w-full bg-transparent border-none outline-none px-4 py-3 text-sm text-white placeholder:text-white/30"
                 />
-                <button 
+                <button
                   onClick={() => handleSend()}
                   disabled={!input.trim() || isTyping}
                   className="w-12 h-12 bg-white text-black disabled:bg-white/10 disabled:text-white/30 rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0"
