@@ -35,6 +35,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ParallaxContainer, ParallaxLayer } from "./components/Parallax";
+import { PremiumSkills } from "./components/PremiumSkills";
 
 // --- Types ---
 
@@ -1678,7 +1679,7 @@ const LandingPage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
       <SectionReveal><BrandEcosystem /></SectionReveal>
       <SectionReveal><About /></SectionReveal>
       <SectionReveal><AuthoritySignals /></SectionReveal>
-      <SectionReveal><Skills onFilterProjects={handleFilterProjects} /></SectionReveal>
+      <SectionReveal><PremiumSkills /></SectionReveal>
       <SectionReveal><Projects filter={projectFilter} /></SectionReveal>
       <SectionReveal><Services /></SectionReveal>
       <SectionReveal><Courses /></SectionReveal>
