@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, X, MessageSquare, Code, FileText, Briefcase, Send, Bot, User, CornerDownLeft } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { db, collection, getDocs } from '../firebase';
-import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 
 type Message = { role: 'user' | 'ai', text: string };
@@ -96,24 +95,10 @@ export const ProfessionalAi = () => {
     setIsTyping(true);
 
     try {
-      // Works locally (vite define) and on Vercel (GEMINI_API_KEY env var injected at build)
-      const apiKey = (process.env.GEMINI_API_KEY as string) || (import.meta as any).env?.VITE_GEMINI_API_KEY;
-      if (!apiKey || apiKey === 'undefined' || apiKey === '') {
-        setMessages(prev => [...prev, { role: 'ai', text: "**Configuration Error:** The Gemini API Key is not configured. Please add `GEMINI_API_KEY` to your Vercel Environment Variables and redeploy." }]);
-        setIsTyping(false);
-        return;
-      }
-
-      const ai = new GoogleGenAI({
-        apiKey,
-        // @ts-ignore - Required for client-side browser usage
-        dangerouslyAllowBrowser: true
-      });
-
       // Use chat history for multi-turn conversation
       const conversationHistory = messages.map(m => ({
         role: m.role === 'ai' ? 'model' : 'user',
-        parts: [{ text: m.text }]
+        text: m.text
       }));
 
       const systemPrompt = `You are the **Intelligence Agent** — a premium AI assistant embedded inside Ayush Paul's portfolio website (ayushpaul.in). You are his digital spokesperson and personal AI representative.
@@ -210,8 +195,6 @@ Your purpose: Represent Ayush Paul with absolute precision, warmth, and professi
 5. **Consulting** — AI strategy, tech stack decisions, product architecture
 6. **Creative Services** — Logo, branding, video editing, UI design
 
-**Pricing**: Contact via email for custom quotes. Support tiers on this site: ₹99 / ₹299 / ₹999.
-
 ---
 
 ## INNOVATION & PROJECT IDEAS
@@ -293,20 +276,29 @@ Ayush is:
 
 Current user message: ${userMsg}`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: [
-          ...conversationHistory,
-          { role: 'user', parts: [{ text: systemPrompt }] }
-        ],
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: conversationHistory,
+          systemPrompt,
+        }),
       });
 
-      setMessages(prev => [...prev, { role: 'ai', text: response.text || "Connection to neural net lost. Please try again." }]);
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setMessages(prev => [...prev, { role: 'ai', text: data.text || "I'm having trouble processing that right now." }]);
     } catch (error: any) {
-      console.error("Agent error:", error);
+      console.error("AI Assistant error:", error);
       const errMsg = error?.message?.includes('API_KEY')
         ? "**API Key Error:** The Gemini key is invalid or not set. Please check Vercel Environment Variables."
-        : "**System Error:** Could not reach the AI. Please try again in a moment.";
+        : "**System Failure:** " + (error?.message || "Could not reach the Intelligence Node. Please try again in 1 minute.");
       setMessages(prev => [...prev, { role: 'ai', text: errMsg }]);
     } finally {
       setIsTyping(false);
