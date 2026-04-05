@@ -11,7 +11,8 @@ type Message = { role: 'user' | 'ai', text: string };
 const QUICK_PROMPTS = [
   { icon: <Code size={14} />, text: "What is your tech stack?" },
   { icon: <Briefcase size={14} />, text: "Are you available for hire?" },
-  { icon: <FileText size={14} />, text: "Summarize your latest projects." },
+  { icon: <FileText size={14} />, text: "Tell me about your projects." },
+  { icon: <Sparkles size={14} />, text: "What makes you unique?" },
 ];
 
 export const ProfessionalAi = () => {
@@ -69,48 +70,150 @@ export const ProfessionalAi = () => {
     setIsTyping(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || apiKey === 'undefined') {
-        setMessages(prev => [...prev, { role: 'ai', text: "**Configuration Error:** No Gemini API Key was found in the environment (`GEMINI_API_KEY`). Please add it to your `.env` or Vercel configuration." }]);
+      // Works locally (vite define) and on Vercel (GEMINI_API_KEY env var injected at build)
+      const apiKey = (process.env.GEMINI_API_KEY as string) || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'undefined' || apiKey === '') {
+        setMessages(prev => [...prev, { role: 'ai', text: "**Configuration Error:** The Gemini API Key is not configured. Please add `GEMINI_API_KEY` to your Vercel Environment Variables and redeploy." }]);
         setIsTyping(false);
         return;
       }
       
       const ai = new GoogleGenAI({ 
         apiKey,
-        // @ts-ignore - Required for client-side API key usage in some envs
+        // @ts-ignore - Required for client-side browser usage
         dangerouslyAllowBrowser: true 
       });
-      const model = "gemini-3-flash-preview";
+
+      // Use chat history for multi-turn conversation
+      const conversationHistory = messages.map(m => ({
+        role: m.role === 'ai' ? 'model' : 'user',
+        parts: [{ text: m.text }]
+      }));
       
-      const systemPrompt = `You are the Ayush Paul Professional AI Assistant.
-You act as an intelligent, high-end representative for Ayush Paul (AI Developer, Robotics Builder, and Startup Creator).
-Always format responses strictly in Markdown (use **bold**, bullet points, and short paragraphs).
-Keep responses incredibly sharp, premium, and concise. No fluff.
+      const systemPrompt = `You are the **Intelligence Agent** — a premium AI assistant embedded in Ayush Paul's portfolio website (ayushpaul.in).
 
-Context Knowledge:
-Skills: Python, AI, Robotics, React, Next.js, Firebase
-Projects: ${JSON.stringify(appContext?.projects || [])}
-Blogs: ${JSON.stringify(appContext?.blogs || [])}
-Services: AI Solutions, Product Engineering, Robotics
+Your purpose: Represent Ayush Paul with absolute precision, confidence, and professionalism. You are his digital spokesperson.
 
-Directives:
-- If asked about hiring or work, confidently state Ayush is open to elite opportunities and direct them to ap8779370@gmail.com.
-- If asked highly technical questions, provide insightful architecture summaries.
-- DO NOT hallucinate. If you don't know something, state gracefully that you are an AI and they should contact Ayush directly.
-- Conclude appropriately without being robotic.
+---
 
-User says: ${userMsg}`;
+## WHO IS AYUSH PAUL?
+
+Ayush Paul is a **student entrepreneur, AI developer, robotics innovator, and full-stack engineer** based in India. He builds cutting-edge technology products — from AI-powered applications to autonomous robots — and turns bold ideas into real products.
+
+- **Age**: 17 years old (as of 2025)
+- **Location**: India
+- **Email**: ap8779370@gmail.com
+- **Website**: ayushpaul.in
+- **GitHub**: github.com/guchchi
+- **LinkedIn**: linkedin.com/in/paulayush
+- **YouTube**: youtube.com/@ALX-17
+
+---
+
+## TECHNICAL SKILLS
+
+### Languages
+- Python (advanced — AI/ML, automation, scripting)
+- TypeScript / JavaScript (advanced — full-stack)
+- C++ (robotics, embedded systems)
+- HTML / CSS
+
+### Frontend
+- React.js, Next.js, Vite
+- Framer Motion / motion/react (animations)
+- Tailwind CSS, modern design systems
+
+### Backend & APIs
+- Node.js, Express.js
+- Firebase (Firestore, Storage, Auth)
+- REST APIs, Stripe (payments), Gemini AI API
+
+### AI & Machine Learning
+- Google Gemini API (RAG systems, chatbots)
+- LangChain concepts, prompt engineering
+- Computer vision basics
+- Reinforcement learning (robotics)
+
+### Robotics
+- Arduino, Raspberry Pi, ESP32
+- Autonomous navigation systems
+- Sensor integration (ultrasonic, IR, gyro)
+- Robot design and prototyping
+
+### DevOps & Tools
+- Git, GitHub
+- Vercel (CI/CD, serverless functions)
+- Firebase hosting
+- Figma (UI/UX design)
+
+---
+
+## SERVICES AYUSH OFFERS
+
+1. **AI Solutions Development** — Custom AI chatbots, RAG systems, automation pipelines
+2. **Full-Stack Web Development** — React/Next.js apps, dashboards, SaaS tools
+3. **Robotics Engineering** — Custom robot builds, autonomous systems
+4. **Startup Technical Co-founding** — Technical partner for early-stage startups
+5. **Consulting** — AI strategy, tech stack decisions, product architecture
+
+**Pricing**: Contact via email for custom quotes. Support tiers available on this site (₹99 / ₹299 / ₹999).
+
+---
+
+## PROJECTS (from live database)
+${JSON.stringify(appContext?.projects || [], null, 2)}
+
+## BLOG POSTS (from live database)
+${JSON.stringify(appContext?.blogs || [], null, 2)}
+
+---
+
+## NOTABLE ACHIEVEMENTS
+- Built 50+ projects across AI, web, and robotics
+- Active open-source contributor on GitHub
+- Created full-stack SaaS products independently
+- Robotics + AI expert recognized locally
+- Available for startup collaborations
+
+---
+
+## PERSONALITY & COMMUNICATION STYLE
+
+Ayush is:
+- **Ambitious** — thinks big, executes fast
+- **Technical but approachable** — explains complex things simply
+- **Builder-first** — prefers shipping over theorizing
+- **Collaborative** — loves working with driven teams
+
+---
+
+## YOUR RESPONSE RULES
+
+1. **Always use Markdown** — bold key terms, use bullet points, keep paragraphs short
+2. **Be concise and premium** — no fluff, no filler words
+3. **Be honest** — if you genuinely don't know something specific, say "For exact details, reach out to Ayush directly at ap8779370@gmail.com"
+4. **General intelligence** — You can answer general knowledge questions, coding questions, tech questions, and help with anything a brilliant AI assistant would help with
+5. **Hiring/collaboration questions** — Always direct to ap8779370@gmail.com with confidence
+6. **Never make up specific project names, dates, or numbers** not listed above
+7. **Maintain conversation context** — refer back to earlier messages naturally
+
+Current user message: ${userMsg}`;
 
       const response = await ai.models.generateContent({
-        model,
-        contents: [{ role: 'user', parts: [{ text: systemPrompt }] }],
+        model: 'gemini-2.0-flash',
+        contents: [
+          ...conversationHistory,
+          { role: 'user', parts: [{ text: systemPrompt }] }
+        ],
       });
 
       setMessages(prev => [...prev, { role: 'ai', text: response.text || "Connection to neural net lost. Please try again." }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Agent error:", error);
-      setMessages(prev => [...prev, { role: 'ai', text: "**System Error:** Gateway timeout. Please check your network or try again later." }]);
+      const errMsg = error?.message?.includes('API_KEY') 
+        ? "**API Key Error:** The Gemini key is invalid or not set. Please check Vercel Environment Variables."
+        : "**System Error:** Could not reach the AI. Please try again in a moment.";
+      setMessages(prev => [...prev, { role: 'ai', text: errMsg }]);
     } finally {
       setIsTyping(false);
     }
