@@ -37,6 +37,7 @@ import { ParallaxContainer, ParallaxLayer } from "./components/Parallax";
 import { PremiumSkills } from "./components/PremiumSkills";
 import { ProfessionalAi } from "./components/ProfessionalAi";
 import { useSEO } from "./hooks/useSEO";
+import { BackButton } from "./components/ui/back-button";
 
 // --- Types ---
 
@@ -1954,10 +1955,8 @@ const BlogPage = () => {
     <div className="pt-32 pb-24 min-h-screen bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
         {/* Back to Home */}
-        <div className="mb-12">
-          <Link to="/" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest">
-            <ArrowLeft size={18} /> Back to Home
-          </Link>
+        <div className="mb-10">
+          <BackButton to="/" label="Back to Home" />
         </div>
 
         <div className="max-w-4xl mx-auto mb-16 text-center">
@@ -2055,9 +2054,9 @@ const BlogPostPage = () => {
     <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen">
       <div className="container mx-auto px-6">
         <article className="max-w-4xl mx-auto">
-          <Link to="/blog" className="inline-flex items-center gap-2 text-white/40 hover:text-white mb-12 transition-colors">
-            <ArrowRight size={20} className="rotate-180" /> Back to Blog
-          </Link>
+          <div className="mb-10">
+            <BackButton to="/blog" label="Back to Blog" />
+          </div>
 
           <div className="mb-12">
             <div className="flex flex-wrap items-center gap-6 mb-8">
