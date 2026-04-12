@@ -55,6 +55,22 @@
 @layer base {
   :root {
     color-scheme: dark;
+    /* Global Navbar Height Tokens — single source of truth */
+    --navbar-height: 72px;
+    --navbar-height-scrolled: 60px;
+    --section-top-pad: 5rem;   /* 80px below navbar */
+  }
+  @media (min-width: 768px) {
+    :root {
+      --navbar-height: 80px;
+      --navbar-height-scrolled: 68px;
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --navbar-height: 88px;
+      --navbar-height-scrolled: 72px;
+    }
   }
   html {
     scroll-behavior: smooth;
@@ -68,6 +84,21 @@
     @apply font-display tracking-tight;
   }
 }
+
+/* Utility: page hero that accounts for navbar height */
+@utility page-hero {
+  min-height: calc(100svh - var(--navbar-height));
+  padding-top: var(--section-top-pad);
+  padding-bottom: 4rem;
+}
+
+/* Utility: standard padded page (non-hero pages like /blog, /now) */
+@utility page-content {
+  padding-top: calc(var(--navbar-height) + var(--section-top-pad));
+  padding-bottom: 6rem;
+  min-height: 100svh;
+}
+
 
 @utility glass {
   background: rgba(255, 255, 255, 0.05);

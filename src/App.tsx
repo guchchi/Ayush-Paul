@@ -503,7 +503,7 @@ const NowPage = () => {
     description: "Ayush Paul's focus, current projects, and learning journey in AI and robotics.",
   });
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-[#0A0A0A]">
+    <div className="page-content bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto">
           <div className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-8">
@@ -671,8 +671,8 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 w-full z-50 transition-all duration-300",
-      isScrolled ? "bg-[#0A0A0A]/50 backdrop-blur-md py-4 border-b border-white/10" : "bg-transparent py-6"
+      "fixed top-0 left-0 w-full z-[200] transition-all duration-300",
+      isScrolled ? "bg-[#0A0A0A]/80 backdrop-blur-md py-4 border-b border-white/10" : "bg-transparent py-5"
     )}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="text-2xl font-display font-bold tracking-tighter">
@@ -727,7 +727,7 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden cursor-pointer"
+              className="fixed inset-0 z-[300] bg-black/60 backdrop-blur-sm lg:hidden cursor-pointer"
             />
             
             {/* Sliding Drawer */}
@@ -737,7 +737,7 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 z-[110] w-[85%] max-w-sm bg-[#0A0A0A] border-l border-white/10 lg:hidden flex flex-col shadow-2xl"
+              className="fixed top-0 right-0 bottom-0 z-[310] w-[85%] max-w-sm bg-[#0A0A0A] border-l border-white/10 lg:hidden flex flex-col shadow-2xl"
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/5">
@@ -885,7 +885,10 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
   }, []);
 
   return (
-    <ParallaxContainer id="home" className="min-h-[100svh] flex items-center justify-center bg-[#0A0A0A]">
+    <ParallaxContainer
+      id="home"
+      className="min-h-[100svh] bg-[#0A0A0A]"
+    >
       {/* Background Layer: Deepest, slow moving */}
       <ParallaxLayer offset={150} zIndex={0}>
         <div className="absolute inset-0 grid-pattern opacity-20" />
@@ -900,9 +903,16 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
 
       {/* Parallax Mid-Layer removed for minimalism */}
 
-      {/* Foreground Layer: UI and Glassmorphism context */}
+      {/* Foreground Layer: UI content — padded to clear navbar via CSS variable */}
       <ParallaxLayer offset={0} zIndex={10}>
-        <div className="container mx-auto px-6 relative h-full flex flex-col justify-center pt-28 md:pt-32 pb-24">
+        <div
+          className="relative h-full w-full flex flex-col justify-center"
+          style={{
+            paddingTop: 'calc(var(--navbar-height) + var(--section-top-pad))',
+            paddingBottom: '5rem'
+          }}
+        >
+          <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -989,9 +999,11 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
             </motion.div>
           </div>
         </div>
+      </ParallaxLayer>
 
-        {/* Decorative Side Elements */}
-        <div className="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 space-y-8 z-50">
+      {/* Decorative Side Elements */}
+      <ParallaxLayer offset={0} zIndex={50}>
+        <div className="hidden lg:block absolute left-12 top-1/2 -translate-y-1/2 space-y-8">
           {[
             { icon: <Github />, href: "https://github.com/guchchi", hoverColor: "hover:text-green-500" },
             { icon: <Linkedin />, href: "https://www.linkedin.com/in/paulayush/", hoverColor: "hover:text-blue-700" },
@@ -1952,7 +1964,7 @@ const BlogPage = () => {
   const allTags = Array.from(new Set(posts.flatMap(p => p.tags || [])));
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-[#0A0A0A]">
+    <div className="page-content bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
         {/* Back to Home */}
         <div className="mb-10">
@@ -2051,7 +2063,7 @@ const BlogPostPage = () => {
   if (!post) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] text-white">Post not found</div>;
 
   return (
-    <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen">
+    <div className="page-content bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
         <article className="max-w-4xl mx-auto">
           <div className="mb-10">
