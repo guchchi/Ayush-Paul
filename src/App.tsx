@@ -603,6 +603,28 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setIsMobileMenuOpen(false);
+      };
+      window.addEventListener("keydown", handleEsc);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleEsc);
+      };
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isMobileMenuOpen]);
+
+  // Close menu on route change
+  const location = useLocation();
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const navLinks = [
     { name: "About", href: "/#about" },
     { name: "Projects", href: "/#projects" },
@@ -653,56 +675,105 @@ const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
               {link.name}
             </button>
           ))}
-          <a
-            href="#hire"
-            className="px-5 py-2 bg-white text-black rounded-full text-sm font-bold hover:bg-white/90 transition-all"
+          <button
+            onClick={() => {
+              if (window.location.pathname !== '/') {
+                navigate('/');
+                setTimeout(() => {
+                  document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              } else {
+                document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="px-5 py-2 bg-white text-black rounded-full text-sm font-bold hover:bg-white/90 transition-all cursor-pointer"
           >
             Hire Me
-          </a>
+          </button>
         </div>
 
         {/* Mobile Menu Toggle */}
         <button
           className="lg:hidden text-white"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => setIsMobileMenuOpen(true)}
         >
-          {isMobileMenuOpen ? <X /> : <Menu />}
+          <Menu />
         </button>
       </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#0A0A0A] lg:hidden flex flex-col items-center justify-center"
-          >
-            <div className="flex flex-col items-center space-y-8">
-              {navLinks.map((link, i) => (
-                <motion.button
-                  key={link.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={() => handleNavClick(link)}
-                  className="text-4xl font-display font-bold text-white/70 hover:text-brand-primary transition-colors"
+          <motion.div key="mobile-menu-root" className="contents">
+            {/* Backdrop Overlay */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm lg:hidden cursor-pointer"
+            />
+            
+            {/* Sliding Drawer */}
+            <motion.div
+              key="drawer"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 z-[110] w-[85%] max-w-sm bg-[#0A0A0A] border-l border-white/10 lg:hidden flex flex-col shadow-2xl"
+            >
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between p-6 border-b border-white/5">
+                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-display font-bold tracking-tighter">
+                  ayushpaul<span className="text-brand-primary">.in</span>
+                </Link>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
                 >
-                  {link.name}
-                </motion.button>
-              ))}
-              <motion.a
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navLinks.length * 0.1 }}
-                href="#hire"
-                className="px-12 py-4 bg-white text-black rounded-2xl text-xl font-bold"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Hire Me
-              </motion.a>
-            </div>
+                  <X size={24} />
+                </button>
+              </div>
+
+              {/* Drawer Links */}
+              <div className="flex flex-col p-6 space-y-2 overflow-y-auto flex-1">
+                {navLinks.map((link, i) => (
+                  <motion.button
+                    key={link.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05 }}
+                    onClick={() => handleNavClick(link)}
+                    className="text-xl font-display font-bold text-left text-white/60 hover:text-white transition-colors group flex items-center justify-between w-full py-4 px-4 rounded-2xl hover:bg-white/5"
+                  >
+                    {link.name}
+                    <ChevronRight size={18} className="opacity-0 group-hover:opacity-60 transition-opacity text-brand-primary" />
+                  </motion.button>
+                ))}
+              </div>
+
+              {/* Drawer Footer / CTA */}
+              <div className="p-6 border-t border-white/5 space-y-3">
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (window.location.pathname !== '/') {
+                      navigate('/');
+                      setTimeout(() => {
+                        document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 150);
+                    } else {
+                      document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="flex items-center justify-center w-full py-4 bg-white text-black rounded-xl text-base font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-white/10"
+                >
+                  Hire Me
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1868,6 +1939,13 @@ const BlogPage = () => {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
+        {/* Back to Home */}
+        <div className="mb-12">
+          <Link to="/" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest">
+            <ArrowLeft size={18} /> Back to Home
+          </Link>
+        </div>
+
         <div className="max-w-4xl mx-auto mb-16 text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">The <span className="text-brand-primary">Blog</span></h1>
           <p className="text-white/60 text-xl">Exploring the intersection of AI, Robotics, and Entrepreneurship.</p>

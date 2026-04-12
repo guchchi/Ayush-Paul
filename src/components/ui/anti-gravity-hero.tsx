@@ -296,13 +296,15 @@ const HeroContent: React.FC = () => {
       onMouseMove={handleMouseMove}
     >
       <motion.div 
-        className="max-w-5xl w-full text-center space-y-6 md:space-y-8 pointer-events-auto"
+        className="max-w-5xl w-full text-center space-y-6 md:space-y-8 pointer-events-auto px-4 sm:px-0"
         style={{
           rotateY: mousePos.x * 5,
           rotateX: -mousePos.y * 5,
           transformStyle: 'preserve-3d',
         }}
       >
+        {/* Soft dark underlay behind text for reliable contrast */}
+        <div className="absolute inset-[-10%] bg-black/30 blur-[80px] rounded-[50%] pointer-events-none -z-10" />
         {/* Status badge */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -321,7 +323,7 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-display font-bold tracking-tighter leading-[0.9]"
+          className="text-[clamp(3.2rem,8vw,8rem)] font-display font-bold tracking-tighter leading-[1.05] sm:leading-[1] lg:leading-[0.9]"
           style={{ transformStyle: 'preserve-3d' }}
         >
           <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/30">
@@ -337,7 +339,7 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl text-white/60 font-medium tracking-tight leading-relaxed"
+          className="max-w-2xl mx-auto text-[clamp(1.1rem,2.5vw,1.5rem)] text-white/60 font-medium tracking-tight leading-relaxed"
         >
           AI & Product Engineer
         </motion.p>
@@ -347,12 +349,12 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-8"
+          className="flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-5 pt-8 w-full max-w-sm lg:max-w-none mx-auto"
         >
           {/* Primary CTA */}
           <a 
             href="#hire"
-            className="group relative inline-flex items-center gap-3 px-10 py-4 bg-white text-black rounded-full font-bold tracking-wide overflow-hidden transition-all hover:scale-[1.03] active:scale-95 shadow-2xl shadow-white/10"
+            className="group relative inline-flex items-center justify-center gap-3 w-full lg:w-auto px-10 py-4 bg-white text-black rounded-full font-bold tracking-wide overflow-hidden transition-all hover:scale-[1.03] active:scale-95 shadow-2xl shadow-white/10"
           >
             <span className="relative z-10 glass-text">Hire Me</span>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-100%] group-hover:animate-shimmer transition-opacity" />
@@ -361,7 +363,7 @@ const HeroContent: React.FC = () => {
           {/* Secondary CTA */}
           <a 
             href="#projects"
-            className="group inline-flex items-center gap-3 px-10 py-4 bg-white/[0.03] border border-white/10 text-white rounded-full font-bold tracking-wide hover:bg-white/[0.08] hover:border-white/20 transition-all backdrop-blur-md"
+            className="group inline-flex items-center justify-center gap-3 w-full lg:w-auto px-10 py-4 bg-white/[0.03] border border-white/10 text-white rounded-full font-bold tracking-wide hover:bg-white/[0.08] hover:border-white/20 transition-all backdrop-blur-md"
           >
             Explore Projects
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -373,7 +375,7 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-wrap items-center justify-center gap-4 pt-12 max-w-3xl mx-auto"
+          className="flex flex-wrap items-center justify-center gap-3 lg:gap-4 pt-10 lg:pt-12 max-w-3xl mx-auto w-full"
         >
           {[
             { label: "4+ Years Building Ideas", icon: <Code size={14} /> },
@@ -410,7 +412,7 @@ export default function AntiGravityHero() {
   const fadeOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-screen overflow-hidden flex items-center justify-center pt-32">
+    <section ref={containerRef} className="relative w-full min-h-[100svh] overflow-hidden flex items-center justify-center pt-24 pb-16 lg:pt-32">
       
       {/* 1. LAYER: Monochromic Sharp Grid Background */}
       <motion.div 
@@ -420,17 +422,17 @@ export default function AntiGravityHero() {
 
       {/* 1.5 LAYER: Ambient Backlight Orb */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-primary/5 rounded-full blur-[120px] animate-pulse-slow z-0 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(400px,60vw)] h-[max(400px,60vw)] bg-brand-primary/5 rounded-full blur-[120px] animate-pulse-slow z-0 pointer-events-none"
       />
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-secondary/5 rounded-full blur-[100px] animate-pulse-slow delay-1000 z-0 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(300px,40vw)] h-[max(300px,40vw)] bg-brand-secondary/5 rounded-full blur-[100px] animate-pulse-slow delay-1000 z-0 pointer-events-none"
       />
 
       {/* 2. LAYER: Ultra-minimalist Monochrome Particles */}
       <AntiGravityCanvas />
 
-      {/* 3. LAYER: Interactive Hero Content encased in Glass */}
-      <div className="z-10 bg-background/80 glass-card p-12 rounded-[3rem] max-w-6xl w-[90%] flex flex-col items-center pointer-events-auto">
+      {/* 3. LAYER: Interactive Hero Content */}
+      <div className="relative z-10 w-full max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center pointer-events-auto">
         <HeroContent />
       </div>
       
