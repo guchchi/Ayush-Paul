@@ -556,27 +556,32 @@ const NowPage = () => {
 };
 
 const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToSection = (id: string) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const navItems = [
-    { name: "About", icon: <User size={18} />, href: "/#about" },
+    { name: "About", icon: <User size={18} />, onClick: () => scrollToSection('about') },
     { name: "Blog", icon: <BookOpen size={18} />, href: "/blog" },
     { name: "Portfolio", icon: <Layers size={18} />, onClick: onPortfolioClick },
-    { name: "Contact", icon: <Mail size={18} />, href: "/#contact" },
+    { name: "Contact", icon: <Mail size={18} />, onClick: () => scrollToSection('contact') },
   ];
 
   return (
     <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
       <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 flex items-center justify-between px-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
         {navItems.map((item) => (
-          item.onClick ? (
-            <button
-              key={item.name}
-              onClick={item.onClick}
-              className="flex flex-col items-center gap-1 p-3 text-white/40 hover:text-brand-primary transition-all active:scale-90"
-            >
-              {item.icon}
-              <span className="text-[9px] font-bold uppercase tracking-tighter">{item.name}</span>
-            </button>
-          ) : (
+          item.href ? (
             <Link
               key={item.name}
               to={item.href}
@@ -585,6 +590,15 @@ const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => void })
               {item.icon}
               <span className="text-[9px] font-bold uppercase tracking-tighter">{item.name}</span>
             </Link>
+          ) : (
+            <button
+              key={item.name}
+              onClick={item.onClick}
+              className="flex flex-col items-center gap-1 p-3 text-white/40 hover:text-brand-primary transition-all active:scale-90"
+            >
+              {item.icon}
+              <span className="text-[9px] font-bold uppercase tracking-tighter">{item.name}</span>
+            </button>
           )
         ))}
       </div>
@@ -870,7 +884,7 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
   }, []);
 
   return (
-    <ParallaxContainer id="home" className="min-h-screen flex items-center justify-center pt-32 bg-[#0A0A0A]">
+    <ParallaxContainer id="home" className="min-h-[100svh] flex items-center justify-center bg-[#0A0A0A]">
       {/* Background Layer: Deepest, slow moving */}
       <ParallaxLayer offset={150} zIndex={0}>
         <div className="absolute inset-0 grid-pattern opacity-20" />
@@ -887,7 +901,7 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
 
       {/* Foreground Layer: UI and Glassmorphism context */}
       <ParallaxLayer offset={0} zIndex={10}>
-        <div className="container mx-auto px-6 relative h-full flex flex-col justify-center pt-24 md:pt-32">
+        <div className="container mx-auto px-6 relative h-full flex flex-col justify-center pt-28 md:pt-32 pb-24">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -903,10 +917,10 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
                 initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-5xl md:text-7xl lg:text-7xl font-display font-extrabold tracking-tight mb-8 leading-tight text-white"
+                className="text-[clamp(2.4rem,7vw,4.5rem)] font-display font-extrabold tracking-tight mb-6 leading-[1.1] text-white"
               >
-                Building Ideas Into <br className="hidden md:block" />
-                <span className="text-brand-primary italic neon-glow-blue relative text-6xl md:text-8xl lg:text-9xl mt-2 block">
+                Building Ideas Into{" "}
+                <span className="text-brand-primary italic neon-glow-blue relative block mt-1 text-[clamp(3rem,10vw,6rem)]">
                   Reality
                   {/* Soft background highlight plate */}
                   <div className="absolute inset-0 bg-brand-primary/10 blur-xl -z-10 rounded-full" />
