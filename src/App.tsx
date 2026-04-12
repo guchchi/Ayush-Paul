@@ -802,19 +802,11 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
           className="absolute inset-0 spotlight pointer-events-none transition-opacity duration-500"
           style={{ "--x": `${mousePos.x}px`, "--y": `${mousePos.y}px` } as any}
         />
-        {/* Animated Glows */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-primary/5 rounded-full blur-[120px] animate-pulse-slow" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-secondary/5 rounded-full blur-[100px] animate-pulse-slow delay-1000" />
+        {/* Ambient Light */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-[800px] h-[800px] bg-[#00C2FF]/10 rounded-full blur-[150px] pointer-events-none" />
       </ParallaxLayer>
 
-      {/* Mid Layer: Parallax Elements */}
-      <ParallaxLayer offset={80} zIndex={5}>
-        <FloatingIcon icon={Terminal} delay={0} x="15%" y="20%" />
-        <FloatingIcon icon={Cpu} delay={1} x="80%" y="25%" />
-        <FloatingIcon icon={Sparkles} delay={2} x="10%" y="70%" />
-        <FloatingIcon icon={Code} delay={1.5} x="85%" y="65%" />
-        <FloatingIcon icon={Globe} delay={0.5} x="50%" y="15%" />
-      </ParallaxLayer>
+      {/* Parallax Mid-Layer removed for minimalism */}
 
       {/* Foreground Layer: UI and Glassmorphism context */}
       <ParallaxLayer offset={0} zIndex={10}>
@@ -830,60 +822,78 @@ const Hero = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
                 Available for Startup Collaborations
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold tracking-tight mb-8 leading-tight text-white shadow-black drop-shadow-2xl">
-                Building Ideas Into <span className="text-brand-primary italic neon-glow-blue relative">Reality</span>
-              </h1>
+              <motion.h1 
+                initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl md:text-7xl lg:text-7xl font-display font-extrabold tracking-tight mb-8 leading-tight text-white"
+              >
+                Building Ideas Into <br className="hidden md:block" />
+                <span className="text-brand-primary italic neon-glow-blue relative text-6xl md:text-8xl lg:text-9xl mt-2 block">
+                  Reality
+                  {/* Soft background highlight plate */}
+                  <div className="absolute inset-0 bg-brand-primary/10 blur-xl -z-10 rounded-full" />
+                </span>
+              </motion.h1>
 
-              <div className="text-lg md:text-2xl text-white/60 max-w-2xl mx-auto mb-12 font-medium leading-relaxed h-[1.5em] flex items-center justify-center">
-                <Typewriter
-                  options={{
-                    strings: ['AI Developer', 'Robotics Builder', 'Startup Creator', 'Problem Solver'],
-                    autoStart: true,
-                    loop: true,
-                    wrapperClassName: "text-white/80 drop-shadow-lg",
-                    cursorClassName: "text-brand-primary neon-glow-blue"
-                  }}
-                />
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col gap-3 mb-16"
+              >
+                <div className="text-lg md:text-xl text-white/50 font-semibold tracking-tight">
+                  AI & Product Engineer
+                </div>
+                <div className="text-sm md:text-base text-white/40 max-w-xl mx-auto leading-relaxed">
+                  I design, build, and launch intelligent products powered by AI, engineering, and creativity.
+                </div>
+              </motion.div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16"
+              >
                 <MagneticButton 
-                  onClick={onViewPortfolio}
-                  className="group relative w-full sm:w-auto px-10 py-5 bg-white text-black rounded-2xl font-bold text-lg overflow-hidden shadow-2xl shadow-brand-primary/20"
+                  className="group relative w-full sm:w-auto px-10 py-5 bg-white text-black rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-[1.03] active:scale-95 shadow-2xl shadow-white/10"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/30 to-brand-secondary/30 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative z-10 glass-text">View Portfolio</span>
+                  <a href="#hire" className="relative z-10 w-full h-full flex items-center justify-center">Hire Me</a>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-100%] group-hover:animate-shimmer transition-opacity" />
                 </MagneticButton>
                 
                 <MagneticButton
-                  className="w-full sm:w-auto px-10 py-5 bg-white/5 border border-white/10 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-md shadow-xl"
+                  onClick={onViewPortfolio}
+                  className="w-full sm:w-auto px-10 py-5 bg-white/[0.03] border border-white/10 rounded-full font-bold text-lg hover:bg-white/[0.08] hover:border-white/20 transition-all backdrop-blur-md text-white"
                 >
-                  <a href="#hire" className="w-full h-full flex items-center justify-center">Start a Project</a>
+                  <span className="flex items-center justify-center gap-2">Explore Projects <ArrowRight className="w-4 h-4 opacity-50" /></span>
                 </MagneticButton>
 
                 <SupportButton />
-              </div>
+              </motion.div>
 
               {/* Social Proof Strip */}
-              <div className="flex flex-wrap items-center justify-center gap-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-wrap items-center justify-center gap-4 max-w-3xl mx-auto"
+              >
                 {[
-                  { label: "50+ Projects Built", icon: <CheckCircle2 size={14} /> },
-                  { label: "Robotics + AI Expert", icon: <Cpu size={14} /> },
-                  { label: "Startup Builder", icon: <Rocket size={14} /> },
-                  { label: "Open for Collaboration", icon: <Sparkles size={14} /> },
+                  { label: "4+ Years Building", icon: <span className="text-yellow-400">⚡</span> },
+                  { label: "Startup Collaborations", icon: <span>🚀</span> },
+                  { label: "AI • Robotics • Development", icon: <span className="text-[#00C2FF]">🌐</span> }
                 ].map((item, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:border-brand-primary/50 hover:text-brand-primary hover:bg-brand-primary/5 transition-all cursor-default group backdrop-blur-md"
+                    className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/[0.02] border border-white/5 text-xs font-semibold tracking-wide text-white/50 hover:bg-white/[0.05] hover:text-white/80 transition-all cursor-default group backdrop-blur-md shadow-lg"
                   >
-                    <span className="text-brand-primary group-hover:scale-110 transition-transform">{item.icon}</span>
-                    {item.label}
-                  </motion.div>
+                    <span className="text-white/70 group-hover:text-white transition-colors">{item.icon}</span>
+                    <span className="group-hover:text-white transition-colors">{item.label}</span>
+                  </div>
                 ))}
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
