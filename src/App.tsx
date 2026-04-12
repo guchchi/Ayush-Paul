@@ -36,6 +36,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { ParallaxContainer, ParallaxLayer } from "./components/Parallax";
 import { PremiumSkills } from "./components/PremiumSkills";
 import { ProfessionalAi } from "./components/ProfessionalAi";
+import { useSEO } from "./hooks/useSEO";
 
 // --- Types ---
 
@@ -236,6 +237,7 @@ const Particles = () => {
 };
 
 const ProfileSelection = ({ onSelect }: { onSelect: (profile: string) => void }) => {
+  useSEO({ title: "Choose Profile | Ayush Paul", noindex: true });
   const profiles = [
     { name: "Recruiter", color: "bg-cyan-500", image: "https://picsum.photos/seed/recruiter/200/200" },
     { name: "Developer", color: "bg-gray-500", image: "https://picsum.photos/seed/developer/200/200" },
@@ -495,6 +497,10 @@ const BrandEcosystem = () => {
 };
 
 const NowPage = () => {
+  useSEO({
+    title: "What Ayush Paul Is Building Now",
+    description: "Ayush Paul's focus, current projects, and learning journey in AI and robotics.",
+  });
   return (
     <div className="pt-32 pb-24 min-h-screen bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
@@ -1671,6 +1677,10 @@ const Hiring = () => {
 };
 
 const LandingPage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
+  useSEO({
+    title: "Ayush Paul | AI Developer & Digital Builder",
+    keywords: "Ayush Paul, AI Developer India, Robotics Developer, Hire Ayush Paul"
+  });
   const [projectFilter, setProjectFilter] = useState<string | null>(null);
 
   const handleFilterProjects = (category: string | null) => {
@@ -1828,6 +1838,10 @@ const BlogSection = () => {
 };
 
 const BlogPage = () => {
+  useSEO({
+    title: "Ayush Paul Blog | Ideas, AI & Engineering",
+    description: "Ayush Paul's Blog discussing AI, Development, learning journey and featured projects."
+  });
   const [posts, setPosts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -1921,13 +1935,19 @@ const BlogPostPage = () => {
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  useSEO({
+    title: post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog",
+    description: post?.description || post?.excerpt,
+    image: post?.coverImage,
+    url: `/blog/${slug}`
+  });
+
   useEffect(() => {
     const q = query(collection(db, "blogPosts"), where("slug", "==", slug), where("published", "==", true));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (!snapshot.empty) {
         const data: any = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
         setPost(data);
-        document.title = `${data.title} | Ayush Paul Blog`;
       }
       setLoading(false);
     }, (error) => {
@@ -2042,6 +2062,7 @@ const BlogPostPage = () => {
 };
 
 const AdminPage = () => {
+  useSEO({ title: "Admin Dashboard | Ayush Paul", noindex: true });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
