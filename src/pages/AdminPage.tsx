@@ -1,0 +1,1563 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
+import { 
+  Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
+  Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
+  MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag
+} from "lucide-react";
+import { 
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
+} from '@dnd-kit/core';
+import { 
+  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable 
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { 
+  auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, 
+  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
+  serverTimestamp, ref, uploadBytes, getDownloadURL 
+} from "../firebase";
+import { cn } from "../lib/utils";
+import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
+import { Block, BlockType, SEOData, OperationType } from "../types";
+import { useSEO } from "../hooks/useSEO";
+
+// --- CMS Components ---
+
+const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: { 
+  block: Block, 
+  onUpdate: (id: string, updates: Partial<Block>) => void,
+  onDelete: (id: string) => void,
+  onAIAction: (id: string, action: string) => void
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: block.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : 'auto',
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const renderEditor = () => {
+    const modules = {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        ['link', 'code'],
+        ['clean']
+      ],
+    };
+
+    switch (block.type) {
+      case 'text':
+        return (
+          <ReactQuill
+            theme="snow"
+            value={block.content}
+            onChange={(content) => onUpdate(block.id, { content })}
+            placeholder="Start writing..."
+            modules={modules}
+            className="quill-editor-dark"
+          />
+        );
+      case 'heading':
+        const Level = `h${block.metadata?.level || 2}` as any;
+        return (
+          <div className="flex items-center gap-4">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary shrink-0">H{block.metadata?.level || 2}</div>
+            <input
+              type="text"
+              value={block.content}
+              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
+              placeholder={`Heading ${block.metadata?.level || 2}...`}
+              className={cn(
+                "w-full bg-transparent border-none outline-none font-bold text-white/90",
+                block.metadata?.level === 1 ? "text-4xl" : 
+                block.metadata?.level === 2 ? "text-3xl" : 
+                block.metadata?.level === 3 ? "text-2xl" : "text-xl"
+              )}
+            />
+          </div>
+        );
+      case 'list':
+        return (
+          <ReactQuill
+            theme="snow"
+            value={block.content}
+            onChange={(content) => onUpdate(block.id, { content })}
+            placeholder={block.metadata?.listType === 'ordered' ? "Ordered list..." : "Unordered list..."}
+            modules={{
+              toolbar: [
+                [block.metadata?.listType === 'ordered' ? 'ordered' : 'bullet'],
+                ['bold', 'italic', 'link'],
+                ['clean']
+              ]
+            }}
+            className="quill-editor-dark"
+          />
+        );
+      case 'image':
+        return (
+          <div className="space-y-4">
+            {block.content ? (
+              <div className={cn(
+                "relative group rounded-2xl overflow-hidden border border-white/10",
+                block.metadata?.alignment === 'center' ? "max-w-2xl mx-auto" : 
+                block.metadata?.alignment === 'full' ? "w-full" : "max-w-xl"
+              )}>
+                <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto" />
+                <button 
+                  onClick={() => onUpdate(block.id, { content: '' })}
+                  className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-white/20 hover:border-brand-primary/50 hover:text-brand-primary/50 transition-all cursor-pointer relative">
+                <ImageIcon size={48} className="mb-4" />
+                <p className="font-bold">Click or drag to upload image</p>
+                <input 
+                  type="file" 
+                  className="absolute inset-0 opacity-0 cursor-pointer" 
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const storageRef = ref(storage, `blog/${Date.now()}_${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    const url = await getDownloadURL(storageRef);
+                    onUpdate(block.id, { content: url });
+                  }}
+                />
+              </div>
+            )}
+            <div className="flex gap-4">
+              <input 
+                type="text"
+                placeholder="Alt text (SEO)"
+                value={block.metadata?.alt || ''}
+                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, alt: e.target.value } })}
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-brand-primary"
+              />
+              <select 
+                value={block.metadata?.alignment || 'left'}
+                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, alignment: e.target.value as any } })}
+                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none"
+              >
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="full">Full Width</option>
+              </select>
+            </div>
+          </div>
+        );
+      case 'code':
+        return (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center px-4 py-2 bg-white/5 border border-white/10 rounded-t-xl">
+              <select 
+                value={block.metadata?.language || 'javascript'}
+                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, language: e.target.value } })}
+                className="bg-transparent text-xs font-bold uppercase tracking-widest text-white/40 outline-none"
+              >
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="bash">Bash</option>
+              </select>
+            </div>
+            <textarea
+              value={block.content}
+              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
+              placeholder="Paste your code here..."
+              className="w-full bg-black/40 border border-white/10 rounded-b-xl p-6 font-mono text-sm text-brand-primary outline-none resize-none min-h-[150px]"
+            />
+          </div>
+        );
+      case 'quote':
+        return (
+          <div className="flex gap-6 p-8 bg-brand-primary/5 border-l-4 border-brand-primary rounded-r-2xl">
+            <Quote className="text-brand-primary shrink-0" size={32} />
+            <textarea
+              value={block.content}
+              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
+              placeholder="Enter quote..."
+              className="w-full bg-transparent border-none outline-none text-2xl font-display italic text-white/90 resize-none min-h-[60px]"
+            />
+          </div>
+        );
+      case 'callout':
+        const variants = {
+          info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
+          warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
+          success: 'bg-green-500/10 border-green-500/20 text-green-400',
+          danger: 'bg-red-500/10 border-red-500/20 text-red-400',
+        };
+        const variant = block.metadata?.variant || 'info';
+        return (
+          <div className={cn("p-6 rounded-2xl border flex gap-4", variants[variant])}>
+            <Info size={24} className="shrink-0" />
+            <div className="flex-1 space-y-2">
+              <select 
+                value={variant}
+                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, variant: e.target.value as any } })}
+                className="bg-transparent text-[10px] font-bold uppercase tracking-widest outline-none"
+              >
+                <option value="info">Info</option>
+                <option value="warning">Warning</option>
+                <option value="success">Success</option>
+                <option value="danger">Danger</option>
+              </select>
+              <textarea
+                value={block.content}
+                onChange={(e) => onUpdate(block.id, { content: e.target.value })}
+                placeholder="Callout message..."
+                className="w-full bg-transparent border-none outline-none text-sm font-medium resize-none min-h-[40px]"
+              />
+            </div>
+          </div>
+        );
+      case 'divider':
+        return <div className="h-px w-full bg-white/10 my-8" />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style} 
+      className="group relative mb-4"
+    >
+      <div className="absolute -left-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
+        <div {...attributes} {...listeners} className="p-2 cursor-grab active:cursor-grabbing text-white/20 hover:text-white transition-colors">
+          <GripVertical size={20} />
+        </div>
+        <button 
+          onClick={() => onDelete(block.id)}
+          className="p-2 text-white/20 hover:text-red-500 transition-colors"
+        >
+          <Trash2 size={20} />
+        </button>
+      </div>
+
+      <div className="absolute -right-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {block.type === 'text' && (
+          <button 
+            onClick={() => onAIAction(block.id, 'improve')}
+            className="p-2 text-white/20 hover:text-brand-primary transition-colors"
+            title="AI Improve"
+          >
+            <Wand2 size={20} />
+          </button>
+        )}
+      </div>
+
+      <div className="p-4 rounded-2xl hover:bg-white/[0.02] transition-colors">
+        {renderEditor()}
+      </div>
+    </div>
+  );
+};
+
+const BlogEditor = ({ blocks, setBlocks, onAIAction }: { 
+  blocks: Block[], 
+  setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
+  onAIAction: (id: string, action: string) => void
+}) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setBlocks((items) => {
+        const oldIndex = items.findIndex((i) => i.id === active.id);
+        const newIndex = items.findIndex((i) => i.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const addBlock = (type: BlockType, metadata: any = {}) => {
+    const newBlock: Block = {
+      id: Math.random().toString(36).substr(2, 9),
+      type,
+      content: '',
+      metadata: {
+        ...metadata,
+        ...(type === 'image' ? { alignment: 'center' } : 
+           type === 'code' ? { language: 'javascript' } : 
+           type === 'callout' ? { variant: 'info' } : {})
+      }
+    };
+    setBlocks([...blocks, newBlock]);
+  };
+
+  const updateBlock = (id: string, updates: Partial<Block>) => {
+    setBlocks(blocks.map(b => b.id === id ? { ...b, ...updates } : b));
+  };
+
+  const deleteBlock = (id: string) => {
+    setBlocks(blocks.filter(b => b.id !== id));
+  };
+
+  return (
+    <div className="space-y-8">
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={blocks.map(b => b.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="min-h-[400px] space-y-4">
+            {blocks.map((block) => (
+              <SortableBlock 
+                key={block.id} 
+                block={block} 
+                onUpdate={updateBlock}
+                onDelete={deleteBlock}
+                onAIAction={onAIAction}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      <div className="flex flex-wrap items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-3xl">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-white/20 mr-2">Add Block</span>
+        <div className="flex bg-white/5 rounded-xl p-1">
+          <button onClick={() => addBlock('heading', { level: 2 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 2">
+            <span className="text-xs font-bold">H2</span>
+          </button>
+          <button onClick={() => addBlock('heading', { level: 3 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 3">
+            <span className="text-xs font-bold">H3</span>
+          </button>
+        </div>
+        <button onClick={() => addBlock('text')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <Type size={18} /> <span className="text-xs font-bold">Text</span>
+        </button>
+        <div className="flex bg-white/5 rounded-xl p-1">
+          <button onClick={() => addBlock('list', { listType: 'unordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Bullet List">
+            <List size={18} />
+          </button>
+          <button onClick={() => addBlock('list', { listType: 'ordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Numbered List">
+            <ListOrdered size={18} />
+          </button>
+        </div>
+        <button onClick={() => addBlock('image')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <ImageIcon size={18} /> <span className="text-xs font-bold">Image</span>
+        </button>
+        <button onClick={() => addBlock('code')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <Code size={18} /> <span className="text-xs font-bold">Code</span>
+        </button>
+        <button onClick={() => addBlock('quote')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <Quote size={18} /> <span className="text-xs font-bold">Quote</span>
+        </button>
+        <button onClick={() => addBlock('callout')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <Info size={18} /> <span className="text-xs font-bold">Callout</span>
+        </button>
+        <button onClick={() => addBlock('divider')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+          <Minus size={18} /> <span className="text-xs font-bold">Divider</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SEOPanel = ({ data, setData, blocks, onAIAction }: { 
+  data: SEOData, 
+  setData: React.Dispatch<React.SetStateAction<SEOData>>,
+  blocks: Block[],
+  onAIAction: (id: string, action: string) => void
+}) => {
+  const [score, setScore] = useState(0);
+  const [issues, setIssues] = useState<string[]>([]);
+
+  useEffect(() => {
+    let s = 0;
+    let i = [];
+
+    if (data.title.length >= 50 && data.title.length <= 60) s += 20;
+    else i.push("SEO Title should be between 50-60 characters");
+
+    if (data.description.length >= 120 && data.description.length <= 160) s += 20;
+    else i.push("Meta description should be between 120-160 characters");
+
+    if (data.keywords) s += 20;
+    else i.push("Focus keyword is missing");
+
+    const hasImagesWithAlt = blocks.filter(b => b.type === 'image').every(b => b.metadata?.alt);
+    if (hasImagesWithAlt && blocks.some(b => b.type === 'image')) s += 20;
+    else if (blocks.some(b => b.type === 'image')) i.push("Some images are missing alt text");
+
+    const textContent = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ');
+    if (textContent.length > 300) s += 20;
+    else i.push("Content is too short (minimum 300 words recommended)");
+
+    setScore(s);
+    setIssues(i);
+  }, [data, blocks]);
+
+  return (
+    <div className="space-y-12">
+      <div className="grid lg:grid-cols-2 gap-12">
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">SEO Title</label>
+              <button 
+                onClick={() => onAIAction('', 'title')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
+            <input 
+              type="text"
+              value={data.title}
+              onChange={(e) => setData({ ...data, title: e.target.value })}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+              placeholder="Enter SEO title..."
+            />
+            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-white/20">
+              <span>Characters: {data.title.length}</span>
+              <span>Recommended: 50-60</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Meta Description</label>
+              <button 
+                onClick={() => onAIAction('', 'summary')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
+            <textarea 
+              value={data.description}
+              onChange={(e) => setData({ ...data, description: e.target.value })}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-32 resize-none"
+              placeholder="Enter meta description..."
+            />
+            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-white/20">
+              <span>Characters: {data.description.length}</span>
+              <span>Recommended: 120-160</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Focus Keyword</label>
+              <button 
+                onClick={() => onAIAction('', 'keywords')}
+                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+              >
+                <Sparkles size={10} /> AI Generate
+              </button>
+            </div>
+            <input 
+              type="text"
+              value={data.keywords}
+              onChange={(e) => setData({ ...data, keywords: e.target.value })}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+              placeholder="Enter focus keyword..."
+            />
+          </div>
+        </div>
+
+        <div className="space-y-8">
+          <div className="p-8 rounded-[40px] glass-card border border-white/10">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-bold">SEO Score</h3>
+              <div className={cn(
+                "w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold border-4",
+                score >= 80 ? "border-green-500 text-green-500" : 
+                score >= 50 ? "border-yellow-500 text-yellow-500" : "border-red-500 text-red-500"
+              )}>
+                {score}
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {issues.length > 0 ? (
+                issues.map((issue, idx) => (
+                  <div key={idx} className="flex items-start gap-3 text-sm text-white/40">
+                    <AlertCircle size={16} className="text-yellow-500 shrink-0 mt-0.5" />
+                    {issue}
+                  </div>
+                ))
+              ) : (
+                <div className="flex items-center gap-3 text-sm text-green-500 font-bold">
+                  <CheckCircle2 size={16} />
+                  Your SEO is perfectly optimized!
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="p-8 rounded-[40px] bg-white/5 border border-white/10">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">Social Preview</h3>
+            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+              <div className="aspect-video bg-white/5 flex items-center justify-center">
+                {data.ogImage ? <img src={data.ogImage} className="w-full h-full object-cover" /> : <ImageIcon size={48} className="text-white/10" />}
+              </div>
+              <div className="p-6 space-y-2">
+                <div className="text-xs font-bold text-brand-primary uppercase tracking-widest">ayushpaul.in</div>
+                <div className="text-lg font-bold text-white line-clamp-1">{data.ogTitle || data.title || "Post Title"}</div>
+                <div className="text-sm text-white/40 line-clamp-2">{data.ogDescription || data.description || "Post description will appear here..."}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: string) => void, isProcessing: boolean }) => {
+  const actions = [
+    { id: 'improve', label: 'Improve Writing', icon: <Sparkles size={16} />, desc: 'Enhance clarity and tone' },
+    { id: 'grammar', label: 'Fix Grammar', icon: <CheckCircle2 size={16} />, desc: 'Correct errors instantly' },
+    { id: 'expand', label: 'Expand Paragraph', icon: <Plus size={16} />, desc: 'Add more detail and depth' },
+    { id: 'simplify', label: 'Simplify Text', icon: <Minus size={16} />, desc: 'Make it easier to read' },
+    { id: 'summary', label: 'Generate Summary', icon: <FileText size={16} />, desc: 'Create meta description' },
+    { id: 'keywords', label: 'SEO Keywords', icon: <Tag size={16} />, desc: 'Suggest target keywords' },
+    { id: 'headings', label: 'Suggest Headings', icon: <Layout size={16} />, desc: 'Optimize structure' },
+  ];
+
+  return (
+    <div className="p-8 rounded-[40px] glass-card border border-white/10 space-y-8">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold flex items-center gap-2">
+          <Sparkles size={18} className="text-brand-primary" /> AI Writing Assistant
+        </h3>
+        {isProcessing && (
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
+            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Processing...
+          </div>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-1 gap-3">
+        {actions.map((action) => (
+          <button
+            key={action.id}
+            onClick={() => onAction(action.id)}
+            disabled={isProcessing}
+            className="group p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-brand-primary hover:border-brand-primary transition-all text-left disabled:opacity-50"
+          >
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-black group-hover:bg-white/20 transition-all">
+                {action.icon}
+              </div>
+              <span className="text-sm font-bold group-hover:text-black transition-colors">{action.label}</span>
+            </div>
+            <p className="text-[10px] text-white/40 group-hover:text-black/60 ml-11 transition-colors">{action.desc}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AdminDashboard = ({ user }: { user: any }) => {
+  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "messages" | "dashboard">("dashboard");
+  const [posts, setPosts] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentPost, setCurrentPost] = useState<any>(null);
+  const [currentProject, setCurrentProject] = useState<any>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDistractionFree, setIsDistractionFree] = useState(false);
+  const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  const [blogFormData, setBlogFormData] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    coverImage: "",
+    tags: "",
+    published: false,
+    featured: false,
+    category: "Technology",
+    scheduledAt: "",
+  });
+
+  const [blocks, setBlocks] = useState<Block[]>([]);
+  const [seoData, setSeoData] = useState<SEOData>({
+    title: "",
+    description: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+  });
+
+  const [projectFormData, setProjectFormData] = useState({
+    title: "",
+    category: "",
+    description: "",
+    image: "",
+    video: "",
+    tech: "",
+    caseStudy: "",
+    link: ""
+  });
+
+  const [blogFilter, setBlogFilter] = useState<"all" | "published" | "draft" | "scheduled" | "featured">("all");
+
+  useEffect(() => {
+    const qBlogs = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
+    const unsubscribeBlogs = onSnapshot(qBlogs, (snapshot) => {
+      setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "blogPosts");
+    });
+
+    const qProjects = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
+      setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "projects");
+    });
+
+    const qMessages = query(collection(db, "contacts"), orderBy("timestamp", "desc"));
+    const unsubscribeMessages = onSnapshot(qMessages, (snapshot) => {
+      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "contacts");
+    });
+
+    return () => {
+      unsubscribeBlogs();
+      unsubscribeProjects();
+      unsubscribeMessages();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isEditing || !currentPost) return;
+    const timer = setInterval(() => {
+      handleSaveBlog(true);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [isEditing, currentPost, blogFormData, blocks, seoData]);
+
+  const handleAIAction = async (action: string, blockId?: string) => {
+    setIsAIProcessing(true);
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // Updated to Vite env
+      if (!apiKey) throw new Error("GEMINI_API_KEY is not defined");
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Use stable model
+      
+      let prompt = "";
+      let targetContent = "";
+
+      if (blockId) {
+        const block = blocks.find(b => b.id === blockId);
+        if (!block) return;
+        targetContent = block.content;
+      } else {
+        targetContent = blocks.filter(b => b.type === 'text').map(b => b.content).join('\n');
+      }
+
+      switch (action) {
+        case 'improve': prompt = `Improve the following text for a professional tech blog. Make it more engaging and clear:\n\n${targetContent}`; break;
+        case 'grammar': prompt = `Fix any grammar or spelling mistakes in the following text:\n\n${targetContent}`; break;
+        case 'expand': prompt = `Expand on the following paragraph, adding more technical detail and depth:\n\n${targetContent}`; break;
+        case 'simplify': prompt = `Simplify the following text to make it easier to read for beginners:\n\n${targetContent}`; break;
+        case 'summary': prompt = `Generate a concise summary (max 160 characters) for the following blog content. This will be used as a meta description:\n\n${targetContent}`; break;
+        case 'keywords': prompt = `Suggest 5-10 SEO keywords for the following content. Return them as a comma-separated list:\n\n${targetContent}`; break;
+        case 'headings': prompt = `Suggest a better heading hierarchy for the following content:\n\n${targetContent}`; break;
+        case 'title': prompt = `Suggest a catchy, SEO-friendly title for a blog post with the following content:\n\n${targetContent}`; break;
+      }
+
+      const response = await model.generateContent(prompt);
+      const result = response.response.text();
+
+      if (blockId) {
+        setBlocks(blocks.map(b => b.id === blockId ? { ...b, content: result } : b));
+      } else if (action === 'summary') {
+        setSeoData({ ...seoData, description: result });
+        setBlogFormData({ ...blogFormData, description: result });
+      } else if (action === 'keywords') {
+        setSeoData({ ...seoData, keywords: result });
+        setBlogFormData({ ...blogFormData, tags: result });
+      } else if (action === 'title') {
+        setSeoData({ ...seoData, title: result });
+        setBlogFormData({ ...blogFormData, title: result, slug: generateSlug(result) });
+      }
+    } catch (error) {
+      console.error("AI Action failed:", error);
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
+  const generateSlug = (title: string) => {
+    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "blog" | "project") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const storageRef = ref(storage, `${type}/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      if (type === "blog") {
+        setBlogFormData(prev => ({ ...prev, coverImage: url }));
+      } else {
+        setProjectFormData(prev => ({ ...prev, image: url }));
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload image. Make sure Firebase Storage is set up.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const resetBlogForm = () => {
+    setBlogFormData({
+      title: "",
+      slug: "",
+      description: "",
+      coverImage: "",
+      tags: "",
+      published: false,
+      featured: false,
+      category: "Technology",
+      scheduledAt: "",
+    });
+    setBlocks([{ id: '1', type: 'text', content: '' }]);
+    setSeoData({
+      title: "",
+      description: "",
+      keywords: "",
+      canonicalUrl: "",
+      ogTitle: "",
+      ogDescription: "",
+      ogImage: "",
+    });
+  };
+
+  const handleSaveBlog = async (eOrAutosave: React.FormEvent | boolean) => {
+    if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
+    const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
+
+    const postData = {
+      ...blogFormData,
+      blocks,
+      seo: seoData,
+      tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
+      updatedAt: serverTimestamp(),
+      author: user.email,
+      readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
+    };
+
+    try {
+      if (currentPost) {
+        await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
+      } else if (!isAutosave) {
+        await addDoc(collection(db, "blogPosts"), {
+          ...postData,
+          createdAt: serverTimestamp(),
+          views: 0
+        });
+      }
+      
+      setLastSaved(new Date());
+      if (!isAutosave) {
+        setIsEditing(false);
+        setCurrentPost(null);
+        resetBlogForm();
+      }
+    } catch (error) {
+      if (!isAutosave) {
+        handleFirestoreError(error, currentPost ? OperationType.UPDATE : OperationType.CREATE, "blogPosts");
+      }
+    }
+  };
+
+  const handleEditBlog = (post: any) => {
+    setCurrentPost(post);
+    setBlogFormData({
+      title: post.title || "",
+      slug: post.slug || "",
+      description: post.description || "",
+      coverImage: post.coverImage || "",
+      tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
+      published: post.published ?? false,
+      featured: post.featured ?? false,
+      category: post.category || "Technology",
+      scheduledAt: post.scheduledAt || "",
+    });
+    setBlocks(post.blocks || [{ id: '1', type: 'text', content: post.content || '' }]);
+    setSeoData(post.seo || {
+      title: post.title || "",
+      description: post.description || "",
+      keywords: "",
+      canonicalUrl: "",
+      ogTitle: post.title || "",
+      ogDescription: post.description || "",
+      ogImage: post.coverImage || "",
+    });
+    setIsEditing(true);
+  };
+
+  const handleSaveProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const projectData = {
+      ...projectFormData,
+      tech: projectFormData.tech.split(",").map(t => t.trim()).filter(t => t),
+      updatedAt: serverTimestamp()
+    };
+
+    try {
+      if (currentProject) {
+        await updateDoc(doc(db, "projects", currentProject.id), projectData);
+      } else {
+        await setDoc(doc(collection(db, "projects")), {
+          ...projectData,
+          createdAt: serverTimestamp()
+        });
+      }
+      setIsEditing(false);
+      setCurrentProject(null);
+      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+    } catch (error) {
+      handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
+    }
+  };
+
+  const handleDelete = async (id: string, collectionName: string) => {
+    const itemType = collectionName === "blogPosts" ? "post" : collectionName === "projects" ? "project" : "message";
+    if (window.confirm(`Are you sure you want to delete this ${itemType}?`)) {
+      try {
+        await deleteDoc(doc(db, collectionName, id));
+      } catch (error) {
+        handleFirestoreError(error, OperationType.DELETE, collectionName);
+      }
+    }
+  };
+
+  const AdminStatCard = ({ label, value, icon, trend }: { label: string, value: string | number, icon: React.ReactNode, trend?: string }) => (
+    <div className="p-8 rounded-[40px] glass-card border border-white/5 group hover:border-brand-primary/30 transition-all">
+      <div className="flex justify-between items-start mb-6">
+        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-all">
+          {icon}
+        </div>
+        {trend && (
+          <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+            <TrendingUp size={10} /> {trend}
+          </div>
+        )}
+      </div>
+      <div className="text-3xl font-bold mb-2 tracking-tighter">{value}</div>
+      <div className="text-xs font-bold uppercase tracking-widest text-white/20">{label}</div>
+    </div>
+  );
+
+  if (isDistractionFree && isEditing) {
+    return (
+      <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] overflow-y-auto p-8 md:p-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-24">
+            <div className="flex items-center gap-4 text-white/20">
+              <Shield size={20} />
+              <span className="text-xs font-bold uppercase tracking-widest">Distraction-Free Mode</span>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-2">
+                <Clock size={12} /> {lastSaved ? `Saved at ${lastSaved.toLocaleTimeString()}` : 'Not saved yet'}
+              </div>
+              <button 
+                onClick={() => setIsDistractionFree(false)}
+                className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+          
+          <input 
+            type="text" 
+            value={blogFormData.title}
+            onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
+            className="w-full bg-transparent border-none outline-none text-5xl md:text-7xl font-bold mb-12 tracking-tighter text-white placeholder:text-white/10"
+            placeholder="Post Title"
+          />
+          
+          <BlogEditor 
+            blocks={blocks} 
+            setBlocks={setBlocks} 
+            onAIAction={(id, action) => handleAIAction(action, id)} 
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+          <div>
+            <h1 className="text-4xl font-bold">Creator <span className="text-brand-primary">Studio</span></h1>
+            <p className="text-white/40">Manage your content and authority signals</p>
+          </div>
+          <div className="flex gap-4">
+            {activeTab !== "messages" && activeTab !== "dashboard" && !isEditing && (
+              <button 
+                onClick={() => {
+                  setIsEditing(true);
+                  setCurrentPost(null);
+                  setCurrentProject(null);
+                  if (activeTab === "blogs") {
+                    resetBlogForm();
+                  } else {
+                    setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+                  }
+                }}
+                className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
+              >
+                <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : "Project"}
+              </button>
+            )}
+            <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
+              <LogOut size={20} /> Logout
+            </button>
+          </div>
+        </div>
+
+        {!isEditing && (
+          <div className="flex flex-wrap gap-4 mb-12">
+            {[
+              { id: 'dashboard', label: 'Dashboard', icon: <Layout size={18} /> },
+              { id: 'blogs', label: 'Blog Posts', icon: <FileText size={18} /> },
+              { id: 'projects', label: 'Projects', icon: <Layers size={18} /> },
+              { id: 'messages', label: 'Messages', icon: <MessageSquare size={18} /> },
+            ].map((tab) => (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={cn(
+                  "px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-2", 
+                  activeTab === tab.id ? "bg-white text-black" : "bg-white/5 text-white/40 hover:bg-white/10"
+                )}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {isEditing ? (
+          <div className="space-y-12">
+            {activeTab === "blogs" ? (
+              <div className="space-y-12">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-6">
+                    <button 
+                      onClick={() => { setIsEditing(false); setCurrentPost(null); }}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                    >
+                      <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                      <h2 className="text-2xl font-bold">{currentPost ? "Edit Post" : "New Post"}</h2>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-2">
+                        <Clock size={12} /> {lastSaved ? `Autosaved at ${lastSaved.toLocaleTimeString()}` : 'Draft'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <button 
+                      onClick={() => setIsDistractionFree(true)}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                      title="Distraction-Free Mode"
+                    >
+                      <Monitor size={20} />
+                    </button>
+                    <button 
+                      onClick={() => handleSaveBlog(false)}
+                      className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
+                    >
+                      <Save size={20} /> {currentPost ? "Update" : "Publish"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid lg:grid-cols-[1fr_350px] gap-12">
+                  <div className="space-y-12">
+                    <div className="glass-card p-12 rounded-[40px] border border-white/10 space-y-12">
+                      <div className="space-y-8">
+                        <input 
+                          type="text" 
+                          value={blogFormData.title}
+                          onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
+                          className="w-full bg-transparent border-none outline-none text-5xl font-bold tracking-tighter text-white placeholder:text-white/10"
+                          placeholder="Post Title"
+                        />
+                        <div className="flex flex-wrap gap-4">
+                          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                            <LinkIcon size={14} className="text-white/20" />
+                            <span className="text-xs text-white/40">ayushpaul.in/blog/</span>
+                            <input 
+                              type="text" 
+                              value={blogFormData.slug}
+                              onChange={(e) => setBlogFormData({ ...blogFormData, slug: e.target.value })}
+                              className="bg-transparent border-none outline-none text-xs font-bold text-brand-primary w-32"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                            <Tag size={14} className="text-white/20" />
+                            <input 
+                              type="text" 
+                              value={blogFormData.tags}
+                              onChange={(e) => setBlogFormData({ ...blogFormData, tags: e.target.value })}
+                              placeholder="Tags (comma separated)"
+                              className="bg-transparent border-none outline-none text-xs font-bold text-white/60 w-40"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Cover Image</label>
+                        <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5">
+                          {blogFormData.coverImage ? (
+                            <>
+                              <img src={blogFormData.coverImage} className="w-full h-full object-cover" />
+                              <button 
+                                onClick={() => setBlogFormData({ ...blogFormData, coverImage: '' })}
+                                className="absolute top-4 right-4 p-3 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X size={20} />
+                              </button>
+                            </>
+                          ) : (
+                            <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
+                              <ImageIcon size={48} className="text-white/10 mb-4" />
+                              <span className="text-sm font-bold text-white/20">Upload Cover Image</span>
+                              <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "blog")} accept="image/*" />
+                            </label>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="pt-12 border-t border-white/10">
+                        <BlogEditor 
+                          blocks={blocks} 
+                          setBlocks={setBlocks} 
+                          onAIAction={(id, action) => handleAIAction(action, id)} 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="glass-card p-12 rounded-[40px] border border-white/10">
+                      <div className="flex items-center gap-3 mb-12">
+                        <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+                          <Globe size={20} />
+                        </div>
+                        <h3 className="text-2xl font-bold">SEO Optimization</h3>
+                      </div>
+                      <SEOPanel data={seoData} setData={setSeoData} blocks={blocks} onAIAction={(id, action) => handleAIAction(action, id)} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-8">
+                    <AIWritingAssistant onAction={(action) => handleAIAction(action)} isProcessing={isAIProcessing} />
+                    
+                    <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 space-y-8">
+                      <h3 className="font-bold flex items-center gap-2">
+                        <Settings size={18} className="text-white/20" /> Publishing
+                      </h3>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle2 size={18} className={blogFormData.published ? "text-green-500" : "text-white/20"} />
+                            <span className="text-sm font-medium">Published</span>
+                          </div>
+                          <button 
+                            onClick={() => setBlogFormData({ ...blogFormData, published: !blogFormData.published })}
+                            className={cn(
+                              "w-12 h-6 rounded-full relative transition-all",
+                              blogFormData.published ? "bg-green-500" : "bg-white/10"
+                            )}
+                          >
+                            <div className={cn(
+                              "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                              blogFormData.published ? "right-1" : "left-1"
+                            )} />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
+                          <div className="flex items-center gap-3">
+                            <Star size={18} className={blogFormData.featured ? "text-yellow-500" : "text-white/20"} />
+                            <span className="text-sm font-medium">Featured Post</span>
+                          </div>
+                          <button 
+                            onClick={() => setBlogFormData({ ...blogFormData, featured: !blogFormData.featured })}
+                            className={cn(
+                              "w-12 h-6 rounded-full relative transition-all",
+                              blogFormData.featured ? "bg-yellow-500" : "bg-white/10"
+                            )}
+                          >
+                            <div className={cn(
+                              "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                              blogFormData.featured ? "right-1" : "left-1"
+                            )} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Category</label>
+                        <select 
+                          value={blogFormData.category}
+                          onChange={(e) => setBlogFormData({ ...blogFormData, category: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none"
+                        >
+                          <option value="Technology">Technology</option>
+                          <option value="Robotics">Robotics</option>
+                          <option value="AI">Artificial Intelligence</option>
+                          <option value="Startup">Startup</option>
+                          <option value="Development">Development</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Schedule Publish</label>
+                        <input 
+                          type="datetime-local" 
+                          value={blogFormData.scheduledAt}
+                          onChange={(e) => setBlogFormData({ ...blogFormData, scheduledAt: e.target.value })}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSaveProject} className="glass-card p-12 rounded-[40px] border border-white/10 space-y-8">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-bold">{currentProject ? "Edit Project" : "New Project"}</h2>
+                  <button 
+                    type="button"
+                    onClick={() => { setIsEditing(false); setCurrentProject(null); }}
+                    className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Title</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.title}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, title: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Category</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.category}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, category: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-white/40 ml-1">Description</label>
+                  <textarea 
+                    value={projectFormData.description}
+                    onChange={(e) => setProjectFormData({ ...projectFormData, description: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none"
+                    required
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Image URL</label>
+                    <div className="flex gap-4">
+                      <input 
+                        type="text" 
+                        value={projectFormData.image}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, image: e.target.value })}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                        required
+                      />
+                      <label className="cursor-pointer px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold flex items-center gap-2 hover:bg-white/10 transition-all">
+                        <Plus size={20} /> {isUploading ? "..." : "Upload"}
+                        <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "project")} accept="image/*" disabled={isUploading} />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Video URL (Optional)</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.video}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, video: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Technologies (comma separated)</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.tech}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, tech: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Project Link</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.link}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, link: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-white/40 ml-1">Case Study Content (Markdown)</label>
+                  <textarea 
+                    value={projectFormData.caseStudy}
+                    onChange={(e) => setProjectFormData({ ...projectFormData, caseStudy: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-64 resize-none font-mono"
+                  />
+                </div>
+                <div className="flex justify-end gap-4">
+                  <button 
+                    type="button"
+                    onClick={() => { setIsEditing(false); setCurrentProject(null); }}
+                    className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold hover:text-white transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all"
+                  >
+                    {currentProject ? "Update Project" : "Create Project"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {activeTab === "dashboard" && (
+              <div className="space-y-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                  <AdminStatCard label="Total Posts" value={posts.length} icon={<FileText size={24} />} trend="+12%" />
+                  <AdminStatCard label="Total Views" value={posts.reduce((acc, p) => acc + (p.views || 0), 0)} icon={<Eye size={24} />} trend="+24%" />
+                  <AdminStatCard label="Messages" value={messages.length} icon={<MessageSquare size={24} />} trend="+5%" />
+                  <AdminStatCard label="Projects" value={projects.length} icon={<Layers size={24} />} />
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-12">
+                  <div className="glass-card p-10 rounded-[40px] border border-white/10">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-bold">Popular Posts</h3>
+                      <BarChart3 size={20} className="text-white/20" />
+                    </div>
+                    <div className="space-y-6">
+                      {posts.sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5).map((post, i) => (
+                        <div key={i} className="flex items-center justify-between group cursor-pointer" onClick={() => handleEditBlog(post)}>
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20 font-bold">
+                              {i + 1}
+                            </div>
+                            <div>
+                              <div className="font-bold text-white/80 group-hover:text-brand-primary transition-colors line-clamp-1">{post.title}</div>
+                              <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">{post.category}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-white/40 font-bold text-sm">
+                            <Eye size={14} /> {post.views || 0}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="glass-card p-10 rounded-[40px] border border-white/10">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-bold">Recent Activity</h3>
+                      <History size={20} className="text-white/20" />
+                    </div>
+                    <div className="space-y-8">
+                      {messages.slice(0, 5).map((msg, i) => (
+                        <div key={i} className="flex gap-4">
+                          <div className="w-2 h-2 rounded-full bg-brand-primary mt-2 shrink-0" />
+                          <div>
+                            <div className="text-sm text-white/80"><span className="font-bold text-white">{msg.name}</span> sent a message about <span className="font-bold text-white">{msg.subject}</span></div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">{formatDate(msg.timestamp)}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "blogs" && (
+              <div className="space-y-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-3xl">
+                  <div className="flex flex-wrap gap-2">
+                    {(['all', 'published', 'draft', 'scheduled', 'featured'] as const).map((f) => (
+                      <button 
+                        key={f}
+                        onClick={() => setBlogFilter(f)}
+                        className={cn(
+                          "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
+                          blogFilter === f ? "bg-brand-primary text-white" : "text-white/40 hover:text-white hover:bg-white/5"
+                        )}
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="relative w-full md:w-64">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+                    <input 
+                      type="text" 
+                      placeholder="Search posts..."
+                      className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {posts
+                    .filter(p => {
+                      if (blogFilter === 'published') return p.published;
+                      if (blogFilter === 'draft') return !p.published;
+                      if (blogFilter === 'featured') return p.featured;
+                      if (blogFilter === 'scheduled') return p.scheduledAt && new Date(p.scheduledAt) > new Date();
+                      return true;
+                    })
+                    .map((post) => (
+                    <div key={post.id} className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all flex flex-col">
+                      <div className="aspect-video relative overflow-hidden">
+                        <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          {post.published ? (
+                            <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Published</span>
+                          ) : (
+                            <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Draft</span>
+                          )}
+                          {post.featured && (
+                            <span className="px-3 py-1 rounded-full bg-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Featured</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="p-8 flex-1 flex flex-col">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">{post.category || "Technology"}</div>
+                        <h3 className="text-xl font-bold mb-4 line-clamp-2">{post.title}</h3>
+                        <div className="flex items-center gap-4 text-white/40 text-xs mb-8">
+                          <span className="flex items-center gap-1"><Calendar size={12} /> {formatDate(post.createdAt)}</span>
+                          <span className="flex items-center gap-1"><Eye size={12} /> {post.views || 0}</span>
+                        </div>
+                        <div className="mt-auto flex gap-3 pt-6 border-t border-white/5">
+                          <button 
+                            onClick={() => handleEditBlog(post)}
+                            className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                          >
+                            <Edit size={14} /> Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(post.id, "blogPosts")}
+                            className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "projects" && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {projects.map((project) => (
+                  <div key={project.id} className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all">
+                    <div className="aspect-video relative overflow-hidden">
+                      <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="p-8">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">{project.category}</div>
+                      <h3 className="text-xl font-bold mb-6">{project.title}</h3>
+                      <div className="flex gap-3 pt-6 border-t border-white/5">
+                        <button 
+                          onClick={() => {
+                            setCurrentProject(project);
+                            setProjectFormData({
+                              title: project.title,
+                              category: project.category,
+                              description: project.description,
+                              image: project.image,
+                              video: project.video || "",
+                              tech: project.tech.join(", "),
+                              caseStudy: project.caseStudy || "",
+                              link: project.link || ""
+                            });
+                            setIsEditing(true);
+                          }}
+                          className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                        >
+                          <Edit size={14} /> Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(project.id, "projects")}
+                          className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "messages" && (
+              <div className="space-y-6">
+                {messages.map((msg) => (
+                  <div key={msg.id} className="glass-card p-8 rounded-[40px] border border-white/10 group hover:border-brand-primary/30 transition-all">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary font-bold text-xl">
+                          {msg.name[0]}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg">{msg.name}</h3>
+                          <p className="text-white/40 text-sm">{msg.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-6">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">{formatDate(msg.timestamp)}</div>
+                        <button 
+                          onClick={() => handleDelete(msg.id, "contacts")}
+                          className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{msg.subject}</div>
+                      <p className="text-white/60 leading-relaxed">{msg.message}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {((activeTab === "blogs" && posts.length === 0) || (activeTab === "projects" && projects.length === 0) || (activeTab === "messages" && messages.length === 0)) && (
+              <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
+                <p className="text-white/40">No {activeTab === "messages" ? "messages" : "items"} yet. {activeTab !== "messages" && `Start by creating your first ${activeTab === "blogs" ? "article" : "project"}!`}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const AdminPage = () => {
+  useSEO({ title: "Admin Dashboard | Ayush Paul", noindex: true });
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    return onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setLoading(false);
+    });
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]"><div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
+        <div className="glass-card p-12 rounded-[40px] border border-white/10 text-center max-w-md w-full">
+          <div className="w-20 h-20 bg-brand-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <Rocket size={40} className="text-brand-primary" />
+          </div>
+          <h1 className="text-3xl font-bold mb-4">Admin Access</h1>
+          <p className="text-white/40 mb-12">Please sign in with your authorized account to manage the startup portal.</p>
+          <button 
+            onClick={handleLogin}
+            className="w-full py-5 bg-white text-black rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform"
+          >
+            <LogIn size={24} /> Sign in with Google
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <AdminDashboard user={user} />;
+};
+
+

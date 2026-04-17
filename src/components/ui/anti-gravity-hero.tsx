@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, useTransform } from 'motion/react';
+import { useSafeScroll } from '../../hooks/useSafeScroll';
 import { ArrowRight, Play, Code, Cpu, Sparkles, Globe, Zap } from 'lucide-react';
 
 // Removed video import
@@ -261,8 +262,7 @@ const HeroContent: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { scrollYProgress } = useSafeScroll(containerRef, {
     offset: ["start start", "end start"]
   });
   
@@ -404,8 +404,7 @@ const HeroContent: React.FC = () => {
 
 export default function AntiGravityHero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { scrollYProgress } = useSafeScroll(containerRef, {
     offset: ["start start", "end start"],
   });
 

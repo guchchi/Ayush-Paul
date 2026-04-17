@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'motion/react';
+import { motion, useTransform, MotionValue } from 'motion/react';
+import { useSafeScroll } from '../hooks/useSafeScroll';
 import { cn } from '../lib/utils';
 
 interface ParallaxContainerProps {
@@ -20,8 +21,7 @@ export const ParallaxContainer: React.FC<ParallaxContainerProps> = ({ children, 
   // Track the scroll progress within this specific container
   // "start end" = top of target hits bottom of viewport
   // "end start" = bottom of target hits top of viewport
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { scrollYProgress } = useSafeScroll(containerRef, {
     offset: ["start end", "end start"]
   });
 
@@ -30,7 +30,7 @@ export const ParallaxContainer: React.FC<ParallaxContainerProps> = ({ children, 
       <section 
         id={id}
         ref={containerRef} 
-        className={cn("relative overflow-hidden w-full", className)}
+        className={cn("relative w-full", className)}
       >
         {children}
       </section>
@@ -69,10 +69,10 @@ export const ParallaxLayer: React.FC<ParallaxLayerProps> = ({
 
   return (
     <motion.div 
-      className={cn("absolute inset-0 pointer-events-none flex items-center justify-center", className)}
+      className={cn("absolute inset-0 pointer-events-none", className)}
       style={{ y, zIndex, willChange: "transform" }}
     >
-      <div className="pointer-events-auto h-full w-full relative">
+      <div className="pointer-events-auto min-h-full w-full relative">
         {children}
       </div>
     </motion.div>

@@ -53,35 +53,120 @@
 }
 
 @layer base {
+  html, 
+  body, 
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
   :root {
     color-scheme: dark;
-    /* Global Navbar Height Tokens — single source of truth */
-    --navbar-height: 72px;
-    --navbar-height-scrolled: 60px;
-    --section-top-pad: 5rem;   /* 80px below navbar */
+    /* Global Layout Tokens — Multi-Phase Senior Engineering Standard */
+    --layout-max-width: 1280px; /* 7xl equivalent */
+    
+    /* Strict Responsive Spacing */
+    --layout-section-py: 4rem;
+    --layout-container-px: 1rem; /* 16px */
+    
+    /* Navbar Tokens */
+    --navbar-height: 4.5rem;
+    --navbar-height-scrolled: 3.75rem;
+    --section-top-pad: 2rem;
+
+    /* Phase 5: Motion Tokens */
+    --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-interactive: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-standard: 0.5s;
+    --duration-premium: 0.8s;
+
+    /* Global Z-Index System */
+    --z-deco: 0;
+    --z-content: 10;
+    --z-ui: 20;
+    --z-nav: 30;
+
+    /* Global Neon Design Tokens */
+    --neon-primary: 0, 194, 255;    /* cyan */
+    --neon-secondary: 168, 85, 247; /* purple */
+    --neon-accent: 16, 185, 129;    /* emerald */
   }
-  @media (min-width: 768px) {
+
+  .glow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(140px);
+    opacity: 0.25;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 0;
+  }
+
+  .glow-cyan {
+    background: radial-gradient(circle, rgba(var(--neon-primary), 0.5), transparent 70%);
+  }
+
+  .glow-purple {
+    background: radial-gradient(circle, rgba(var(--neon-secondary), 0.4), transparent 70%);
+  }
+
+  .glow-emerald {
+    background: radial-gradient(circle, rgba(var(--neon-accent), 0.4), transparent 70%);
+  }
+  
+  @media (min-width: 640px) {
     :root {
-      --navbar-height: 80px;
-      --navbar-height-scrolled: 68px;
+      --layout-container-px: 1.5rem; /* 24px */
     }
   }
+  
   @media (min-width: 1024px) {
     :root {
-      --navbar-height: 88px;
-      --navbar-height-scrolled: 72px;
+      --layout-section-py: 6rem;
+      --layout-container-px: 2rem; /* 32px */
+      --navbar-height: 5rem;
     }
   }
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-[#0A0A0A] text-white antialiased selection:bg-brand-primary/30;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+    @apply font-display tracking-tight text-white max-w-full break-words leading-tight;
+  }
+
+  h1 {
+    @apply text-[clamp(2.5rem,8vw,5rem)] font-extrabold;
+  }
+
+  h2 {
+    @apply text-[clamp(2rem,6vw,3.5rem)] font-bold;
+  }
+
+  h3 {
+    @apply text-[clamp(1.5rem,4vw,2.25rem)] font-bold;
+  }
+
+  p {
+    @apply leading-relaxed max-w-full break-words;
+  }
+
+  .text-prose {
+    @apply max-w-prose text-white/60;
   }
 }
 
@@ -100,6 +185,55 @@
 }
 
 
+/* --- Layout Architecture Systems --- */
+
+.layout-section {
+  position: relative;
+  width: 100%;
+}
+
+.layout-container {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--layout-container-px);
+  padding-right: var(--layout-container-px);
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* 12-8-4 Responsive Grid Standard */
+.layout-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .layout-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Visibility Persistence & Interaction Hygiene */
+.stack-on-mobile {
+  @apply flex flex-col sm:flex-row;
+}
+
+.wrap-safe {
+  @apply flex flex-wrap;
+}
+
+
+/* --- UI Components & Utilities --- */
+
 @utility glass {
   background: rgba(255, 255, 255, 0.05);
   @apply backdrop-blur-xl border border-white/10;
@@ -112,7 +246,6 @@
 @utility gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent;
 }
-
 
 .gradient-border {
   position: relative;
