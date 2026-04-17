@@ -18,7 +18,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
   auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, 
-  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, setDoc, 
+  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
   serverTimestamp, ref, uploadBytes, getDownloadURL 
 } from "../firebase";
 import { cn } from "../lib/utils";

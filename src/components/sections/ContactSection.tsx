@@ -7,7 +7,6 @@ import { OperationType } from '../../types';
 import { handleFirestoreError } from '../../lib/firebase-utils';
 import { Section } from '../ui/Section';
 import { MagneticButton } from '../ui/MagneticButton';
-import { SlideButton } from '../ui/slide-button';
 import { VARIANTS, EASING, DURATION } from '../../lib/motion-presets';
 
 const Contact = () => {
@@ -174,13 +173,15 @@ const Contact = () => {
               />
             </div>
 
-            <SlideButton 
-              status={isSubmitting ? 'loading' : (status as any)}
-              onSlideComplete={() => {
-                const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-                handleSubmit(fakeEvent);
-              }}
-            />
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full py-6 bg-white text-black rounded-[24px] font-bold text-xl hover:bg-brand-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl flex items-center justify-center gap-3 relative group"
+            >
+              <span className="relative z-10">{isSubmitting ? 'Transmitting...' : 'Initiate Contact'}</span>
+              <ArrowRight size={24} className="relative z-10 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 bg-brand-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
             
             <AnimatePresence>
               {status === 'success' && (
