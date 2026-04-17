@@ -62,7 +62,7 @@ export default function App() {
     <ErrorBoundary>
       <Router>
         <ScrollToTop />
-        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen text-white overflow-x-hidden">
+        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen w-full text-white">
           <CursorFollower />
           <ScrollProgressBar />
           

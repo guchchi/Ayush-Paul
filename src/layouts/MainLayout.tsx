@@ -17,7 +17,7 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
       <CommandPalette />
       <Navbar onPortfolioClick={onPortfolioClick} />
       
-      <main className="max-w-[100vw] overflow-x-hidden">
+      <main className="w-full">
         {children}
       </main>
       

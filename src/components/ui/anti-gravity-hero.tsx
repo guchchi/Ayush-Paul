@@ -411,7 +411,7 @@ export default function AntiGravityHero() {
   const fadeOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-[100svh] overflow-hidden flex items-center justify-center pt-24 pb-16 lg:pt-32">
+    <section ref={containerRef} className="relative w-full py-20 flex items-center justify-center">
       
       {/* 1. LAYER: Monochromic Sharp Grid Background */}
       <motion.div 

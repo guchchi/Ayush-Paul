@@ -24,29 +24,15 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Handle body scroll lock with safe-area support
+  // Handle body scroll lock
   useEffect(() => {
     if (isMobileMenuOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflowY = 'hidden';
+      document.body.style.overflow = 'hidden';
     } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
+      document.body.style.overflow = '';
     };
   }, [isMobileMenuOpen]);
 

@@ -4,7 +4,7 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut
 } from "lucide-react";
 import { 
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
@@ -18,7 +18,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
   auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, 
-  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
+  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, setDoc, 
   serverTimestamp, ref, uploadBytes, getDownloadURL 
 } from "../firebase";
 import { cn } from "../lib/utils";

@@ -13,6 +13,10 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-shimmer: shimmer 2.5s ease-in-out infinite;
+
+  --shadow-button-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-button-inset-dark: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  --shadow-button: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 @layer utilities {
@@ -53,15 +57,19 @@
 }
 
 @layer base {
-  html, 
-  body, 
-  #root {
-    width: 100%;
-    max-width: 100%;
+  html {
+    height: auto;
+  }
+
+  body {
+    min-height: 100%;
     overflow-x: hidden;
-    position: relative;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
+    @apply bg-[#0A0A0A] text-white antialiased selection:bg-brand-primary/30;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  #root {
+    min-height: 100%;
   }
 
   * {
@@ -137,13 +145,10 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 
-  body {
-    @apply bg-[#0A0A0A] text-white antialiased selection:bg-brand-primary/30;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  }
+
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight text-white max-w-full break-words leading-tight;

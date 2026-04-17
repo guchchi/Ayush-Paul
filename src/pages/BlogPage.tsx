@@ -88,7 +88,7 @@ export const BlogPage = () => {
                 </div>
                 <div className="p-8 flex-1 flex flex-col">
                   <div className="flex items-center gap-4 mb-4">
-                    <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">{post.tags?.(0)}</span>
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">{post.tags?.[0]}</span>
                     <span className="text-xs text-white/40 uppercase tracking-widest">{formatDate(post.createdAt)}</span>
                   </div>
                   <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors">{post.title}</h3>
