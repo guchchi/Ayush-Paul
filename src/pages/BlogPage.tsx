@@ -23,7 +23,10 @@ export const BlogPage = () => {
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClick = () => setActiveDropdown(null);
+    const handleClick = () => {
+      setActiveDropdown(null);
+      setIsFocused(false);
+    };
     window.addEventListener('click', handleClick);
     return () => window.removeEventListener('click', handleClick);
   }, []);
