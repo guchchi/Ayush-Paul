@@ -17,14 +17,59 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
-  auth, db, storage, googleProvider, signInWithPopup, signOut, onAuthStateChanged, 
-  collection, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
-  serverTimestamp, ref, uploadBytes, getDownloadURL 
+  auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, 
+  signOut, onAuthStateChanged, 
+  collection, doc, setDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
+  serverTimestamp 
 } from "../firebase";
 import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, BlockType, SEOData, OperationType } from "../types";
 import { useSEO } from "../hooks/useSEO";
+
+// --- CMS Utilities ---
+
+/**
+ * Validates an image URL by protocol (HTTPS), file type (blocks SVG), and an async pre-load test.
+ */
+const validateImageUrl = async (url: string): Promise<{ isValid: boolean, error?: string }> => {
+  if (!url) return { isValid: false };
+  
+  // 1. Protocol Validation
+  if (!url.startsWith('https://')) {
+    return { isValid: false, error: "Security Error: Only HTTPS URLs are allowed." };
+  }
+  
+  // 2. SVG Block (XSS Mitigation)
+  const isSvg = url.toLowerCase().endsWith('.svg') || url.split('?')[0].toLowerCase().endsWith('.svg');
+  if (isSvg) {
+    return { isValid: false, error: "Security Error: SVG images are blocked for your safety." };
+  }
+
+  // 3. Async Image Load Test (supports CDN URLs without extensions like Unsplash)
+  return new Promise((resolve) => {
+    const img = new Image();
+    
+    // Set a 5-second industry-standard timeout
+    const timer = setTimeout(() => {
+      img.onload = null;
+      img.onerror = null;
+      resolve({ isValid: false, error: "Validation Error: Image load timed out (5s)." });
+    }, 5000);
+
+    img.onload = () => {
+      clearTimeout(timer);
+      resolve({ isValid: true });
+    };
+
+    img.onerror = () => {
+      clearTimeout(timer);
+      resolve({ isValid: false, error: "Validation Error: The URL is not a valid or accessible image." });
+    };
+
+    img.src = url;
+  });
+};
 
 // --- CMS Components ---
 
@@ -53,6 +98,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
   const renderEditor = () => {
     const modules = {
       toolbar: [
+        [{ 'size': ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
         [{ 'color': [] }, { 'background': [] }],
         ['link', 'code'],
@@ -109,15 +155,66 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
           />
         );
       case 'image':
+        const [validationError, setValidationError] = useState<string | null>(null);
+        const [isValidating, setIsValidating] = useState(false);
+
+        const handleUrlChange = async (url: string) => {
+          onUpdate(block.id, { content: url });
+          if (!url) {
+            setValidationError(null);
+            return;
+          }
+
+          setIsValidating(true);
+          const result = await validateImageUrl(url);
+          setIsValidating(false);
+
+          if (!result.isValid) {
+            setValidationError(result.error || "Invalid Image");
+          } else {
+            setValidationError(null);
+          }
+        };
+
         return (
           <div className="space-y-4">
-            {block.content ? (
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Image URL</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={block.content}
+                  onChange={(e) => handleUrlChange(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className={cn(
+                    "w-full bg-white/5 border rounded-2xl px-6 py-4 outline-none transition-all",
+                    validationError ? "border-red-500/50 text-red-500" : "border-white/10 focus:border-brand-primary text-white"
+                  )}
+                />
+                {isValidating && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Verifying...
+                  </div>
+                )}
+              </div>
+              {validationError && (
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 ml-1">
+                  <AlertCircle size={12} /> {validationError}
+                </div>
+              )}
+            </div>
+
+            {block.content && !validationError && !isValidating && (
               <div className={cn(
                 "relative group rounded-2xl overflow-hidden border border-white/10",
                 block.metadata?.alignment === 'center' ? "max-w-2xl mx-auto" : 
                 block.metadata?.alignment === 'full' ? "w-full" : "max-w-xl"
               )}>
-                <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto" />
+                <img 
+                  src={block.content} 
+                  alt={block.metadata?.alt} 
+                  className="w-full h-auto"
+                />
                 <button 
                   onClick={() => onUpdate(block.id, { content: '' })}
                   className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
@@ -125,35 +222,13 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
                   <X size={16} />
                 </button>
               </div>
-            ) : (
-              <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-white/20 hover:border-brand-primary/50 hover:text-brand-primary/50 transition-all cursor-pointer relative">
-                <ImageIcon size={48} className="mb-4" />
-                <p className="font-bold">Click or drag to upload image</p>
-                <input 
-                  type="file" 
-                  className="absolute inset-0 opacity-0 cursor-pointer" 
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    console.log("📸 Phase 6: Uploading file [BLOCK]:", file.name);
-                    setUploadState("uploading");
-                    console.log("UPLOAD START [BLOCK]");
-                    try {
-                      const storageRef = ref(storage, `blog/${Date.now()}_${file.name}`);
-                      await uploadBytes(storageRef, file);
-                      const url = await getDownloadURL(storageRef);
-                      console.log("🔗 Phase 6: Download URL generated:", url);
-                      onUpdate(block.id, { content: url });
-                      setUploadState("completed");
-                    } catch (err: any) {
-                      console.error("❌ Storage Error:", err);
-                      if (err.code === 'storage/unauthorized') {
-                        alert("Storage Error: Permission Denied. Check your Storage Rules (Phase 5).");
-                      }
-                      setUploadState("error");
-                    }
-                  }}
-                />
+            )}
+            
+            {!block.content && !isValidating && (
+              <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-white/20 pb-8">
+                <ImageIcon size={48} className="mb-4 text-white/5" />
+                <p className="font-bold">Paste an HTTPS image URL above to preview</p>
+                <p className="text-[10px] uppercase tracking-widest mt-2">Supports Unsplash, Cloudinary, etc.</p>
               </div>
             )}
             <div className="flex gap-4">
@@ -400,11 +475,12 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   );
 };
 
-const SEOPanel = ({ data, setData, blocks, onAIAction }: { 
+const SEOPanel = ({ data, setData, blocks, onAIAction, isProcessing }: { 
   data: SEOData, 
   setData: React.Dispatch<React.SetStateAction<SEOData>>,
   blocks: Block[],
-  onAIAction: (id: string, action: string) => void
+  onAIAction: (id: string, action: string) => void,
+  isProcessing: boolean
 }) => {
   const [score, setScore] = useState(0);
   const [issues, setIssues] = useState<string[]>([]);
@@ -413,24 +489,49 @@ const SEOPanel = ({ data, setData, blocks, onAIAction }: {
     let s = 0;
     let i = [];
 
-    if (data.title.length >= 50 && data.title.length <= 60) s += 20;
-    else i.push("SEO Title should be between 50-60 characters");
+    // Title Length Check
+    if (data.title.length >= 50 && data.title.length <= 60) s += 15;
+    else if (data.title.length > 0) i.push("SEO Title should be between 50-60 characters");
+    else i.push("SEO Title is missing");
 
-    if (data.description.length >= 120 && data.description.length <= 160) s += 20;
-    else i.push("Meta description should be between 120-160 characters");
+    // Description Length Check
+    if (data.description.length >= 120 && data.description.length <= 160) s += 15;
+    else if (data.description.length > 0) i.push("Meta description should be between 120-160 characters");
+    else i.push("Meta description is missing");
 
-    if (data.keywords) s += 20;
-    else i.push("Focus keyword is missing");
+    // Focus Keyword Presence
+    if (data.keywords) {
+      s += 10;
+      const kw = data.keywords.toLowerCase();
+      
+      // Keyword in Title
+      if (data.title.toLowerCase().includes(kw)) s += 20;
+      else i.push(`Focus keyword "${data.keywords}" missing from SEO Title`);
 
-    const hasImagesWithAlt = blocks.filter(b => b.type === 'image').every(b => b.metadata?.alt);
-    if (hasImagesWithAlt && blocks.some(b => b.type === 'image')) s += 20;
-    else if (blocks.some(b => b.type === 'image')) i.push("Some images are missing alt text");
+      // Keyword in Content (First 500 chars)
+      const textContent = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').toLowerCase();
+      if (textContent.includes(kw)) s += 20;
+      else i.push(`Focus keyword "${data.keywords}" not found in early content`);
+    } else {
+      i.push("Focus keyword is missing");
+    }
 
-    const textContent = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ');
-    if (textContent.length > 300) s += 20;
+    // Image Alt Text Check
+    const hasImages = blocks.some(b => b.type === 'image');
+    if (hasImages) {
+      const hasImagesWithAlt = blocks.filter(b => b.type === 'image').every(b => b.metadata?.alt);
+      if (hasImagesWithAlt) s += 10;
+      else i.push("Some images are missing descriptive alt text");
+    } else {
+      s += 10; // No images is fine for simple posts
+    }
+
+    // Content Length Check
+    const wordCount = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(/\s+/).length;
+    if (wordCount > 300) s += 10;
     else i.push("Content is too short (minimum 300 words recommended)");
 
-    setScore(s);
+    setScore(Math.min(100, s));
     setIssues(i);
   }, [data, blocks]);
 
@@ -443,9 +544,13 @@ const SEOPanel = ({ data, setData, blocks, onAIAction }: {
               <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">SEO Title</label>
               <button 
                 onClick={() => onAIAction('', 'title')}
-                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+                disabled={isProcessing}
+                className={cn(
+                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
+                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
+                )}
               >
-                <Sparkles size={10} /> AI Generate
+                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
               </button>
             </div>
             <input 
@@ -466,9 +571,13 @@ const SEOPanel = ({ data, setData, blocks, onAIAction }: {
               <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Meta Description</label>
               <button 
                 onClick={() => onAIAction('', 'summary')}
-                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+                disabled={isProcessing}
+                className={cn(
+                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
+                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
+                )}
               >
-                <Sparkles size={10} /> AI Generate
+                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
               </button>
             </div>
             <textarea 
@@ -488,9 +597,13 @@ const SEOPanel = ({ data, setData, blocks, onAIAction }: {
               <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Focus Keyword</label>
               <button 
                 onClick={() => onAIAction('', 'keywords')}
-                className="text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:underline flex items-center gap-1"
+                disabled={isProcessing}
+                className={cn(
+                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
+                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
+                )}
               >
-                <Sparkles size={10} /> AI Generate
+                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
               </button>
             </div>
             <input 
@@ -606,7 +719,6 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
-  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "completed" | "error">("idle");
   const [isDistractionFree, setIsDistractionFree] = useState(false);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -743,19 +855,32 @@ const AdminDashboard = ({ user }: { user: any }) => {
       }
 
       const response = await model.generateContent(prompt);
-      const result = response.response.text();
+      let result = response.response.text();
+
+      // Clean AI artifacts (bullets, dashes, numbering) for meta fields
+      const cleanResult = result.replace(/^[-*•\d. ]+/gm, '').trim();
 
       if (blockId) {
         setBlocks(blocks.map(b => b.id === blockId ? { ...b, content: result } : b));
       } else if (action === 'summary') {
-        setSeoData({ ...seoData, description: result });
-        setBlogFormData({ ...blogFormData, description: result });
+        setSeoData({ ...seoData, description: cleanResult });
+        setBlogFormData({ ...blogFormData, description: cleanResult });
       } else if (action === 'keywords') {
-        setSeoData({ ...seoData, keywords: result });
-        setBlogFormData({ ...blogFormData, tags: result });
+        const keywords = cleanResult.split('\n').join(', ');
+        setSeoData({ ...seoData, keywords: keywords });
+        setBlogFormData({ ...blogFormData, tags: keywords });
       } else if (action === 'title') {
-        setSeoData({ ...seoData, title: result });
-        setBlogFormData({ ...blogFormData, title: result, slug: generateSlug(result) });
+        setSeoData({ ...seoData, title: cleanResult });
+        setBlogFormData({ ...blogFormData, title: cleanResult, slug: generateSlug(cleanResult) });
+      } else if (['improve', 'grammar', 'expand', 'simplify', 'headings'].includes(action)) {
+        // Global actions without blockId: Append a new suggestion block
+        const newBlock: Block = {
+          id: Date.now().toString(),
+          type: 'callout',
+          content: result,
+          metadata: { title: `AI ${action.charAt(0).toUpperCase() + action.slice(1)} Suggestion` }
+        };
+        setBlocks([...blocks, newBlock]);
       }
     } catch (error) {
       console.error("AI Action failed:", error);
@@ -768,34 +893,30 @@ const AdminDashboard = ({ user }: { user: any }) => {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "blog" | "project") => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    console.log("📸 Phase 6: Uploading file:", file.name);
-
-    setUploadState("uploading");
-    console.log("UPLOAD START");
-    try {
-      const storageRef = ref(storage, `${type}/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      console.log("🔗 Phase 6: Download URL generated:", url);
-      
-      if (type === "blog") {
-        setBlogFormData(prev => ({ ...prev, coverImage: url }));
-      } else {
-        setProjectFormData(prev => ({ ...prev, image: url }));
-      }
-      setUploadState("completed");
-    } catch (error: any) {
-      console.error("❌ Storage Error:", error);
-      if (error.code === 'storage/unauthorized') {
-        alert("Storage Error: Permission Denied. Check your Storage Rules (Phase 5).");
-      } else {
-        alert(`Upload error [${error.code}]: ${error.message}`);
-      }
-      setUploadState("error");
-    }
+  const handleEditBlog = (post: any) => {
+    setCurrentPost(post);
+    setBlogFormData({
+      title: post.title,
+      slug: post.slug,
+      description: post.description || "",
+      coverImage: post.coverImage || "",
+      tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
+      published: post.published || false,
+      featured: post.featured || false,
+      category: post.category || "Technology",
+      scheduledAt: post.scheduledAt || "",
+    });
+    setBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]);
+    setSeoData(post.seo || {
+      title: post.title,
+      description: post.description || "",
+      keywords: "",
+      canonicalUrl: "",
+      ogTitle: "",
+      ogDescription: "",
+      ogImage: post.coverImage || "",
+    });
+    setIsEditing(true);
   };
 
   const resetBlogForm = () => {
@@ -826,9 +947,24 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
 
-    if (!isAutosave && uploadState === "uploading") {
-      alert("Wait for image upload to complete before saving.");
-      return;
+    // 1. Validate Cover Image
+    if (blogFormData.coverImage) {
+      const coverCheck = await validateImageUrl(blogFormData.coverImage);
+      if (!coverCheck.isValid) {
+        alert(`Cover Image Error: ${coverCheck.error}`);
+        return;
+      }
+    }
+
+    // 2. Validate all block-level images
+    for (const block of blocks) {
+      if (block.type === 'image' && block.content) {
+        const check = await validateImageUrl(block.content);
+        if (!check.isValid) {
+          alert(`Blog Content Image Error (Block ID ${block.id}): ${check.error}`);
+          return;
+        }
+      }
     }
 
     const postData = {
@@ -840,29 +976,40 @@ const AdminDashboard = ({ user }: { user: any }) => {
       author: user.email,
       readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
     };
+
     try {
-      console.log("💾 Phase 6: Saving blog document:", postData);
+      console.log("💾 [DB] Phase 6: Syncing blog to Firestore...", postData.title);
+      
       if (currentPost) {
         await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
+        console.log("✅ [DB] Update Successful");
       } else if (!isAutosave) {
-        await addDoc(collection(db, "blogPosts"), {
+        // Prevent duplicate creation during rapid saves
+        const newDoc = await addDoc(collection(db, "blogPosts"), {
           ...postData,
           createdAt: serverTimestamp(),
           views: 0
         });
+        console.log("✅ [DB] Creation Successful. ID:", newDoc.id);
       }
       
-      console.log("✅ DOCUMENT SAVED [BLOG]");
       setLastSaved(new Date());
       if (!isAutosave) {
         setIsEditing(false);
         setCurrentPost(null);
         resetBlogForm();
-        setUploadState("idle");
+        alert("Success! Blog post published.");
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("❌ [DB] Connectivity/Permission Error:", error.code, error.message);
       if (!isAutosave) {
-        handleFirestoreError(error, currentPost ? OperationType.UPDATE : OperationType.CREATE, "blogPosts");
+        if (error.code === 'permission-denied') {
+          alert("Security Error: You don't have permission to write to this database. Verify you're logged in with an authorized account.");
+        } else if (error.code === 'unavailable') {
+          alert("Connectivity Error: Firestone is temporarily unavailable. Check your internet connection.");
+        } else {
+          handleFirestoreError(error, currentPost ? OperationType.UPDATE : OperationType.CREATE, "blogPosts");
+        }
       }
     }
   };
@@ -870,9 +1017,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (uploadState === "uploading") {
-      alert("Wait for image upload to complete before saving.");
-      return;
+    // Validate Project Image
+    if (projectFormData.image) {
+      const check = await validateImageUrl(projectFormData.image);
+      if (!check.isValid) {
+        alert(`Project Image Error: ${check.error}`);
+        return;
+      }
     }
 
     const projectData = {
@@ -895,7 +1046,6 @@ const AdminDashboard = ({ user }: { user: any }) => {
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
-      setUploadState("idle");
     } catch (error) {
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
     }
@@ -1052,16 +1202,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </button>
                     <button 
                       onClick={() => handleSaveBlog(false)}
-                      disabled={uploadState === "uploading"}
-                      className={cn(
-                        "px-8 py-4 text-white rounded-2xl font-bold flex items-center gap-2 transition-all",
-                        uploadState === "uploading" ? "bg-white/10 cursor-not-allowed" : "bg-brand-primary"
-                      )}
+                      className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
                     >
                       <Save size={20} /> 
-                      {uploadState === "uploading" ? "Uploading..." : (currentPost ? "Update" : "Publish")}
+                      {currentPost ? "Update" : "Publish"}
                     </button>
-                    {uploadState === "completed" && <div className="text-[10px] font-bold text-green-500 uppercase tracking-widest mt-1">Image ready ✓</div>}
                   </div>
                 </div>
 
@@ -1101,10 +1246,21 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       </div>
 
                       <div className="space-y-4">
-                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Cover Image</label>
-                        <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5">
-                          {blogFormData.coverImage ? (
-                            <>
+                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Cover Image URL</label>
+                        <div className="space-y-4">
+                          <input 
+                            type="text" 
+                            value={blogFormData.coverImage}
+                            onChange={async (e) => {
+                              const url = e.target.value;
+                              setBlogFormData({ ...blogFormData, coverImage: url });
+                            }}
+                            placeholder="https://images.unsplash.com/..."
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                          />
+                          
+                          {blogFormData.coverImage && (
+                            <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5">
                               <img src={blogFormData.coverImage} className="w-full h-full object-cover" />
                               <button 
                                 onClick={() => setBlogFormData({ ...blogFormData, coverImage: '' })}
@@ -1112,15 +1268,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
                               >
                                 <X size={20} />
                               </button>
-                            </>
-                          ) : (
-                            <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-                              <ImageIcon size={48} className={cn("mb-4", uploadState === "uploading" ? "text-brand-primary animate-pulse" : "text-white/10")} />
-                              <span className="text-sm font-bold text-white/20">
-                                {uploadState === "uploading" ? "Uploading Image..." : "Upload Cover Image"}
-                              </span>
-                              <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "blog")} accept="image/*" disabled={uploadState === "uploading"} />
-                            </label>
+                            </div>
+                          )}
+                          {!blogFormData.coverImage && (
+                            <div className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10">
+                              <ImageIcon size={48} className="mb-4" />
+                              <span className="text-sm font-bold">Preview will appear here</span>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -1141,7 +1295,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
                         </div>
                         <h3 className="text-2xl font-bold">SEO Optimization</h3>
                       </div>
-                      <SEOPanel data={seoData} setData={setSeoData} blocks={blocks} onAIAction={(id, action) => handleAIAction(action, id)} />
+                      <SEOPanel 
+                        data={seoData} 
+                        setData={setSeoData} 
+                        blocks={blocks} 
+                        onAIAction={(id, action) => handleAIAction(action, id)} 
+                        isProcessing={isAIProcessing}
+                      />
                     </div>
                   </div>
 
@@ -1267,23 +1427,19 @@ const AdminDashboard = ({ user }: { user: any }) => {
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Image URL</label>
-                    <div className="flex gap-4">
-                      <input 
-                        type="text" 
-                        value={projectFormData.image}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, image: e.target.value })}
-                        className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
-                        required
-                      />
-                      <label className={cn(
-                        "cursor-pointer px-8 py-4 border rounded-2xl font-bold flex items-center gap-2 transition-all",
-                        uploadState === "uploading" ? "bg-white/5 border-white/20 text-white/20" : "bg-white/5 border-white/10 hover:bg-white/10 text-white"
-                      )}>
-                        <Plus size={20} /> {uploadState === "uploading" ? "..." : "Upload"}
-                        <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "project")} accept="image/*" disabled={uploadState === "uploading"} />
-                      </label>
-                      {uploadState === "completed" && <div className="flex items-center text-green-500 font-bold text-xs">✓</div>}
-                    </div>
+                    <input 
+                      type="text" 
+                      value={projectFormData.image}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, image: e.target.value })}
+                      placeholder="https://..."
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      required
+                    />
+                    {projectFormData.image && (
+                      <div className="mt-4 aspect-video rounded-2xl overflow-hidden border border-white/10">
+                        <img src={projectFormData.image} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Video URL (Optional)</label>
@@ -1333,13 +1489,9 @@ const AdminDashboard = ({ user }: { user: any }) => {
                   </button>
                   <button 
                     type="submit"
-                    disabled={uploadState === "uploading"}
-                    className={cn(
-                      "px-10 py-4 text-white rounded-2xl font-bold transition-all",
-                      uploadState === "uploading" ? "bg-white/10 cursor-not-allowed" : "bg-brand-primary hover:bg-brand-primary/90"
-                    )}
+                    className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all"
                   >
-                    {uploadState === "uploading" ? "Uploading Image..." : (currentProject ? "Update Project" : "Create Project")}
+                    {currentProject ? "Update Project" : "Create Project"}
                   </button>
                 </div>
               </form>
@@ -1584,11 +1736,25 @@ export const AdminPage = () => {
   useSEO({ title: "Admin Dashboard | Ayush Paul", noindex: true });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    console.log("🕵️ Step 4: Starting Auth Listener...");
+    console.log("🕵️ [AUTH] Starting Auth Listener & Redirect Check...");
+    
+    // Check for redirect results (if user was sent back from Google)
+    getRedirectResult(auth).then((result) => {
+      if (result?.user) {
+        console.log("✅ [AUTH] Redirect Login Success:", result.user.email);
+        setUser(result.user);
+      }
+    }).catch((error) => {
+      console.error("❌ [AUTH] Redirect Error:", error);
+      setLoginError(`Redirect Login Failed: ${error.message}`);
+    });
+
     const unsub = onAuthStateChanged(auth, (u) => {
-      console.log("👤 Step 4: Auth User state changed:", u);
+      console.log("👤 [AUTH] User state changed:", u?.email || "Signed Out");
       setUser(u);
       setLoading(false);
     });
@@ -1596,10 +1762,41 @@ export const AdminPage = () => {
   }, []);
 
   const handleLogin = async () => {
+    setLoginError(null);
+    setIsLoggingIn(true);
+    console.log("🚀 [AUTH] Attempting Popup Login...");
+
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error(error);
+      console.log("✅ [AUTH] Popup Login Success");
+    } catch (error: any) {
+      console.error("❌ [AUTH] Popup Error Code:", error.code);
+      console.error("❌ [AUTH] Popup Error Message:", error.message);
+
+      // Handle specific error cases
+      if (error.code === 'auth/popup-closed-by-user') {
+        setLoginError("Login cancelled. Please try again.");
+      } else if (error.code === 'auth/unauthorized-domain') {
+        setLoginError("This domain is not authorized. Please check Firebase Console.");
+      } else if (error.code === 'auth/popup-blocked') {
+        setLoginError("Popup blocked by browser. Switching to redirect...");
+        // Auto-fallback to redirect if popup is blocked
+        try {
+          await signInWithRedirect(auth, googleProvider);
+        } catch (redirectError: any) {
+          setLoginError(`Redirect Fallback Failed: ${redirectError.message}`);
+        }
+      } else {
+        // General fallback for all other popup issues on localhost
+        console.log("🔄 [AUTH] General Failure - Attempting Redirect Fallback...");
+        try {
+          await signInWithRedirect(auth, googleProvider);
+        } catch (redirectError: any) {
+          setLoginError(`Login Error: ${error.message}`);
+        }
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -1622,12 +1819,35 @@ export const AdminPage = () => {
           </div>
           <h1 className="text-3xl font-bold mb-4">Admin Access</h1>
           <p className="text-white/40 mb-12">Please sign in with your authorized account to manage the startup portal.</p>
+          
+          {loginError && (
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm text-left">
+              <AlertCircle size={18} className="shrink-0" />
+              <p>{loginError}</p>
+            </div>
+          )}
+
           <button 
             onClick={handleLogin}
-            className="w-full py-5 bg-white text-black rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform"
+            disabled={isLoggingIn}
+            className={cn(
+              "w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all",
+              isLoggingIn ? "bg-white/10 text-white/20 cursor-not-allowed" : "bg-white text-black hover:scale-[1.02] active:scale-[0.98]"
+            )}
           >
-            <LogIn size={24} /> Sign in with Google
+            {isLoggingIn ? (
+              <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            ) : (
+              <LogIn size={24} />
+            )}
+            {isLoggingIn ? "Authenticating..." : "Sign in with Google"}
           </button>
+
+          {loginError && loginError.includes("blocked") && (
+            <p className="mt-6 text-[10px] font-bold uppercase tracking-widest text-white/20 animate-pulse">
+              Switching to secure redirect...
+            </p>
+          )}
         </div>
       </div>
     );

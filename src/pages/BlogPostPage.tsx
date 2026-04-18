@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Calendar, Clock, Info } from "lucide-react";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { useParams, Link } from "react-router-dom";
+import { Calendar, Clock, Info, ArrowRight } from "lucide-react";
+import { collection, query, where, onSnapshot, limit, orderBy, updateDoc, doc, increment } from "firebase/firestore";
 import ReactMarkdown from "react-markdown";
 import { db } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
@@ -13,12 +13,14 @@ import { Block, OperationType } from "../types";
 export const BlogPostPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<any>(null);
+  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useSEO({
-    title: post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog",
-    description: post?.description || post?.excerpt,
-    image: post?.coverImage,
+    title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
+    description: post?.seo?.description || post?.description || post?.excerpt,
+    keywords: post?.seo?.keywords,
+    image: post?.seo?.ogImage || post?.coverImage,
     url: `/blog/${slug}`
   });
 
@@ -29,6 +31,42 @@ export const BlogPostPage = () => {
       if (!snapshot.empty) {
         const data: any = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
         setPost(data);
+
+        // Increment views
+        updateDoc(doc(db, "blogPosts", snapshot.docs[0].id), {
+          views: increment(1)
+        });
+        
+        // Fetch candidates for related posts
+        const relatedQ = query(
+          collection(db, "blogPosts"), 
+          where("published", "==", true),
+          limit(10)
+        );
+        
+        onSnapshot(relatedQ, (relSnapshot) => {
+          const others = relSnapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() as any }))
+            .filter(p => p.slug !== slug);
+          
+          // Simple scoring algorithm
+          const currentTags = Array.isArray(data.tags) ? data.tags : [];
+          const scored = others.map(other => {
+            let score = 0;
+            const otherTags = Array.isArray(other.tags) ? other.tags : [];
+            
+            // Match category
+            if (other.category === data.category) score += 5;
+            
+            // Match tags
+            const commonTags = currentTags.filter(t => otherTags.includes(t));
+            score += commonTags.length * 2;
+            
+            return { ...other, score };
+          });
+          
+          setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
+        });
       }
       setLoading(false);
     }, (error) => {
@@ -43,7 +81,7 @@ export const BlogPostPage = () => {
   return (
     <div className="page-content bg-[#0A0A0A]">
       <div className="container mx-auto px-6">
-        <article className="max-w-4xl mx-auto">
+        <article className="max-w-4xl mx-auto border-b border-white/5 pb-20">
           <div className="mb-10">
             <BackButton to="/blog" label="Back to Blog" />
           </div>
@@ -57,27 +95,39 @@ export const BlogPostPage = () => {
               <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
                 <Clock size={16} className="text-brand-primary" />
                 {post.blocks ? 
-                  Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
-                  Math.ceil((post.content || '').split(" ").length / 200)
+                   Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
+                   Math.ceil((post.content || '').split(" ").length / 200)
                 } min read
               </div>
-              <div className="flex gap-2">
-                {post.tags?.map((tag: string) => (
-                  <span key={tag} className="px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-widest">
+              <div className="flex flex-wrap gap-2">
+              {(() => {
+                const rawTags = post.tags || [];
+                const tags = (Array.isArray(rawTags) ? rawTags : [rawTags])
+                  .flatMap(t => typeof t === 'string' ? t.split(',').map(s => s.trim()) : [t])
+                  .filter(t => t);
+                return tags.map((tag: string) => (
+                  <span key={tag} className="px-3 py-2 rounded-full bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
                     {tag}
                   </span>
-                ))}
+                ));
+              })()}
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">{post.title}</h1>
-            <p className="text-xl text-white/60 leading-relaxed italic border-l-4 border-brand-primary pl-6 mb-12">{post.description}</p>
+            {post.description ? (
+              <p className="text-xl text-white/60 leading-relaxed italic border-l-4 border-brand-primary pl-6 mb-12">{post.description}</p>
+            ) : (
+              <p className="text-xl text-white/60 leading-relaxed italic border-l-4 border-brand-primary pl-6 mb-12 line-clamp-2">
+                {post.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, '').substring(0, 200).replace(/\.+$/, '')}...
+              </p>
+            )}
           </div>
 
           <div className="aspect-video rounded-[40px] overflow-hidden mb-16 border border-white/10">
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
 
-          <div className="prose prose-invert prose-lg max-w-none">
+          <div className="prose prose-invert prose-base md:prose-lg max-w-[65ch] mx-auto text-left leading-[1.7] whitespace-normal break-words [word-break:normal] [hyphens:none]">
             {post.blocks ? (
               <div className="space-y-8">
                 {post.blocks.map((block: Block) => {
@@ -140,6 +190,41 @@ export const BlogPostPage = () => {
             )}
           </div>
         </article>
+
+        {/* Related Posts Section */}
+        {relatedPosts.length > 0 && (
+          <div className="mt-20 max-w-6xl mx-auto mb-20">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold">More to <span className="text-brand-primary">Explore</span></h2>
+              <Link to="/blog" className="group flex items-center gap-2 text-sm font-bold text-white/40 hover:text-brand-primary transition-all uppercase tracking-widest">
+                View All Posts <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {relatedPosts.map(relPost => (
+                <Link to={`/blog/${relPost.slug}`} key={relPost.id} className="group h-full">
+                  <div className="glass-card rounded-3xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all flex flex-col h-full">
+                    <div className="aspect-video overflow-hidden">
+                      <img src={relPost.coverImage} alt={relPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
+                    </div>
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className="flex items-center gap-3 mb-3 text-[10px] font-bold uppercase tracking-widest text-brand-primary">
+                        <span>{Array.isArray(relPost.tags) ? relPost.tags[0] : relPost.category}</span>
+                      </div>
+                      <h4 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors line-clamp-2">{relPost.title}</h4>
+                      <p className="text-sm text-white/40 line-clamp-2 mb-4 flex-1">
+                        {relPost.description || relPost.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').substring(0, 100) + '...'}
+                      </p>
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest mt-auto">
+                        Read Story <ArrowRight size={12} />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

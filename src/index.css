@@ -74,7 +74,10 @@
 
   * {
     box-sizing: border-box;
-    word-break: break-word;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    white-space: normal;
+    hyphens: none !important;
   }
 
   :root {
@@ -169,7 +172,7 @@
   }
 
   p {
-    @apply leading-relaxed max-w-full break-words;
+    @apply leading-relaxed max-w-full break-words [hyphens:none] [word-break:normal!important];
   }
 
   .text-prose {
@@ -297,11 +300,49 @@
   @apply min-h-[100px];
 }
 
+.ql-size-small { font-size: 0.75rem; }
+.ql-size-large { font-size: 1.5rem; }
+.ql-size-huge { font-size: 2.5rem; }
+
+.prose .ql-size-small { font-size: 0.875rem; }
+.prose .ql-size-large { font-size: 1.875rem; line-height: 1.2; }
+.prose .ql-size-huge { font-size: 3rem; line-height: 1.1; font-weight: 700; }
+
 .quill-editor-dark .ql-active .ql-stroke {
   stroke: var(--color-brand-primary) !important;
 }
 
 .quill-editor-dark .ql-active .ql-fill {
   fill: var(--color-brand-primary) !important;
+}
+
+/* Quill Picker (Dropdown) Dark Theme Fixes */
+.quill-editor-dark .ql-picker {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.quill-editor-dark .ql-picker-label {
+  @apply hover:text-brand-primary transition-colors;
+}
+
+.quill-editor-dark .ql-picker-options {
+  background-color: #1A1A1A !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+  padding: 8px !important;
+  margin-top: 4px !important;
+}
+
+.quill-editor-dark .ql-picker-item {
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+.quill-editor-dark .ql-picker-item:hover,
+.quill-editor-dark .ql-picker-item.ql-selected {
+  color: var(--color-brand-primary) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 

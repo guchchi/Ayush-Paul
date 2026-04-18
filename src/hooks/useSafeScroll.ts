@@ -1,5 +1,5 @@
 import { useState, useEffect, RefObject } from 'react';
-import { useScroll, ScrollOptions, useMotionValue } from 'motion/react';
+import { useScroll, UseScrollOptions, useMotionValue } from 'motion/react';
 
 /**
  * useSafeScroll - A high-reliability wrapper around Framer Motion's useScroll.
@@ -12,7 +12,7 @@ import { useScroll, ScrollOptions, useMotionValue } from 'motion/react';
  * @param targetRef Optional reference to a DOM element to track
  * @param options Framer Motion ScrollOptions
  */
-export function useSafeScroll(targetRef?: RefObject<HTMLElement | null>, options: ScrollOptions = {}) {
+export function useSafeScroll(targetRef?: RefObject<HTMLElement | null>, options: UseScrollOptions = {}) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [shouldTrackTarget, setShouldTrackTarget] = useState(false);
 

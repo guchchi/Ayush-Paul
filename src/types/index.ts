@@ -12,6 +12,7 @@ export interface Block {
     alt?: string;
     language?: string;
     variant?: 'info' | 'warning' | 'success' | 'danger';
+    title?: string;
   };
 }
 
