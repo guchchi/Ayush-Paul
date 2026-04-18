@@ -135,18 +135,21 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    console.log("FILE [BLOCK]:", file);
+                    console.log("📸 Phase 6: Uploading file [BLOCK]:", file.name);
                     setUploadState("uploading");
                     console.log("UPLOAD START [BLOCK]");
                     try {
                       const storageRef = ref(storage, `blog/${Date.now()}_${file.name}`);
                       await uploadBytes(storageRef, file);
                       const url = await getDownloadURL(storageRef);
-                      console.log("DOWNLOAD URL [BLOCK]:", url);
+                      console.log("🔗 Phase 6: Download URL generated:", url);
                       onUpdate(block.id, { content: url });
                       setUploadState("completed");
-                    } catch (err) {
-                      console.error("Block upload error:", err);
+                    } catch (err: any) {
+                      console.error("❌ Storage Error:", err);
+                      if (err.code === 'storage/unauthorized') {
+                        alert("Storage Error: Permission Denied. Check your Storage Rules (Phase 5).");
+                      }
                       setUploadState("error");
                     }
                   }}
@@ -607,6 +610,33 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isDistractionFree, setIsDistractionFree] = useState(false);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isAuditing, setIsAuditing] = useState(false);
+
+  const testConnection = async () => {
+    setIsAuditing(true);
+    console.log("🚀 Phase 3: Starting Firestore Write Test...");
+    try {
+      const testRef = collection(db, "test_connection");
+      await addDoc(testRef, {
+        status: "firebase-working",
+        time: serverTimestamp(),
+        author: user.email
+      });
+      console.log("✅ Phase 3 SUCCESS: Firestore Write captured.");
+      alert("Firebase Backend: ONLINE ✓");
+    } catch (error: any) {
+      console.error("❌ Phase 3 FAILURE:", error);
+      if (error.code === 'permission-denied') {
+        alert("CRITICAL: Permission Denied. Please ensure Firestore Rules are set to 'Test Mode' (Phase 4).");
+      } else if (error.code === 'unauthorized') {
+        alert("CRITICAL: Unauthorized. Check Auth Domain settings (Phase 7).");
+      } else {
+        alert(`Backend Error [${error.code}]: ${error.message}`);
+      }
+    } finally {
+      setIsAuditing(false);
+    }
+  };
 
   const [blogFormData, setBlogFormData] = useState({
     title: "",
@@ -741,7 +771,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "blog" | "project") => {
     const file = e.target.files?.[0];
     if (!file) return;
-    console.log("FILE:", file);
+    console.log("📸 Phase 6: Uploading file:", file.name);
 
     setUploadState("uploading");
     console.log("UPLOAD START");
@@ -749,7 +779,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       const storageRef = ref(storage, `${type}/${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
-      console.log("DOWNLOAD URL:", url);
+      console.log("🔗 Phase 6: Download URL generated:", url);
       
       if (type === "blog") {
         setBlogFormData(prev => ({ ...prev, coverImage: url }));
@@ -757,10 +787,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
         setProjectFormData(prev => ({ ...prev, image: url }));
       }
       setUploadState("completed");
-    } catch (error) {
-      console.error("Upload error:", error);
+    } catch (error: any) {
+      console.error("❌ Storage Error:", error);
+      if (error.code === 'storage/unauthorized') {
+        alert("Storage Error: Permission Denied. Check your Storage Rules (Phase 5).");
+      } else {
+        alert(`Upload error [${error.code}]: ${error.message}`);
+      }
       setUploadState("error");
-      alert("Failed to upload image. Make sure Firebase Storage is set up.");
     }
   };
 
@@ -807,7 +841,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
     };
 
-    try {
+      console.log("💾 Phase 6: Saving blog document:", postData);
       if (currentPost) {
         await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
       } else if (!isAutosave) {
@@ -818,7 +852,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
         });
       }
       
-      console.log("DOCUMENT SAVED [BLOG]");
+      console.log("✅ DOCUMENT SAVED [BLOG]");
       setLastSaved(new Date());
       if (!isAutosave) {
         setIsEditing(false);
@@ -847,6 +881,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       updatedAt: serverTimestamp()
     };
 
+    console.log("💾 Phase 6: Saving project document:", projectData);
     try {
       if (currentProject) {
         await updateDoc(doc(db, "projects", currentProject.id), projectData);
@@ -856,7 +891,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
           createdAt: serverTimestamp()
         });
       }
-      console.log("DOCUMENT SAVED [PROJECT]");
+      console.log("✅ DOCUMENT SAVED [PROJECT]");
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
@@ -1314,11 +1349,22 @@ const AdminDashboard = ({ user }: { user: any }) => {
           <div className="space-y-12">
             {activeTab === "dashboard" && (
               <div className="space-y-12">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
                   <AdminStatCard label="Total Posts" value={posts.length} icon={<FileText size={24} />} trend="+12%" />
                   <AdminStatCard label="Total Views" value={posts.reduce((acc, p) => acc + (p.views || 0), 0)} icon={<Eye size={24} />} trend="+24%" />
                   <AdminStatCard label="Messages" value={messages.length} icon={<MessageSquare size={24} />} trend="+5%" />
                   <AdminStatCard label="Projects" value={projects.length} icon={<Layers size={24} />} />
+                  
+                  {/* Phase 3 Diagnostic Button */}
+                  <div className="p-8 rounded-[40px] bg-brand-primary/10 border border-brand-primary/20 flex flex-col items-center justify-center text-center gap-4 group hover:bg-brand-primary/20 transition-all cursor-pointer" onClick={testConnection}>
+                    <div className={cn("w-12 h-12 rounded-2xl bg-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-all", isAuditing && "animate-spin")}>
+                      <Shield size={24} />
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold">Audit</div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary/60">Connection</div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-12">
@@ -1540,10 +1586,13 @@ export const AdminPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
+    console.log("🕵️ Step 4: Starting Auth Listener...");
+    const unsub = onAuthStateChanged(auth, (u) => {
+      console.log("👤 Step 4: Auth User state changed:", u);
       setUser(u);
       setLoading(false);
     });
+    return unsub;
   }, []);
 
   const handleLogin = async () => {
@@ -1554,7 +1603,15 @@ export const AdminPage = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]"><div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] gap-6">
+      <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+      <div className="flex flex-col items-center gap-2">
+        <h2 className="text-xl font-bold tracking-tighter">Initializing Studio</h2>
+        <p className="text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">Checking Authority Keys...</p>
+      </div>
+    </div>
+  );
 
   if (!user) {
     return (

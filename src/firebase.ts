@@ -10,7 +10,12 @@ import firebaseConfig from '../firebase-applet-config.json';
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+console.log("🔐 Auth initialized:", auth);
 export const storage = getStorage(app);
+
+// Phase 2: Storage Bucket Validation
+console.log("🔥 Firebase Storage Bucket:", storage.app.options.storageBucket);
+
 export const googleProvider = new GoogleAuthProvider();
 
 export { 
