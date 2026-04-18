@@ -15,19 +15,14 @@ import { CancelPage } from "./pages/CancelPage";
 import { NowPage } from "./pages/NowPage";
 import { ProfileSelectionPage } from "./pages/ProfileSelectionPage";
 
-import { auth, onAuthStateChanged } from "./firebase";
+// --- Components ---
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
+import { CursorFollower, ScrollProgressBar } from "./components/ui/CursorEffects";
 
 export default function App() {
   const [view, setView] = useState<"landing" | "profiles">("landing");
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
-
-  // Phase 7: Global Auth Trace
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      console.log("🔥 ROOT AUTH STATE:", user ? `Logged in as ${user.email}` : "Disconnected / Not logged in");
-    });
-    return unsub;
-  }, []);
 
   // Konami Code Easter Egg
   useEffect(() => {
