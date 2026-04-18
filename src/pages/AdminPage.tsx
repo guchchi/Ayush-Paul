@@ -840,7 +840,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       author: user.email,
       readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
     };
-
+    try {
       console.log("💾 Phase 6: Saving blog document:", postData);
       if (currentPost) {
         await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
