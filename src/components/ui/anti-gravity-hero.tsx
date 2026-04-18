@@ -420,12 +420,14 @@ export default function AntiGravityHero() {
       />
 
       {/* 1.5 LAYER: Ambient Backlight Orb */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(400px,60vw)] h-[max(400px,60vw)] bg-brand-primary/5 rounded-full blur-[120px] animate-pulse-slow z-0 pointer-events-none"
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(300px,40vw)] h-[max(300px,40vw)] bg-brand-secondary/5 rounded-full blur-[100px] animate-pulse-slow delay-1000 z-0 pointer-events-none"
-      />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(400px,60vw)] h-[max(400px,60vw)] max-w-none bg-brand-primary/5 rounded-full blur-[120px] animate-pulse-slow pointer-events-none"
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(300px,40vw)] h-[max(300px,40vw)] max-w-none bg-brand-secondary/5 rounded-full blur-[100px] animate-pulse-slow delay-1000 pointer-events-none"
+        />
+      </div>
 
       {/* 2. LAYER: Ultra-minimalist Monochrome Particles */}
       <AntiGravityCanvas />

@@ -135,10 +135,20 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    const storageRef = ref(storage, `blog/${Date.now()}_${file.name}`);
-                    await uploadBytes(storageRef, file);
-                    const url = await getDownloadURL(storageRef);
-                    onUpdate(block.id, { content: url });
+                    console.log("FILE [BLOCK]:", file);
+                    setUploadState("uploading");
+                    console.log("UPLOAD START [BLOCK]");
+                    try {
+                      const storageRef = ref(storage, `blog/${Date.now()}_${file.name}`);
+                      await uploadBytes(storageRef, file);
+                      const url = await getDownloadURL(storageRef);
+                      console.log("DOWNLOAD URL [BLOCK]:", url);
+                      onUpdate(block.id, { content: url });
+                      setUploadState("completed");
+                    } catch (err) {
+                      console.error("Block upload error:", err);
+                      setUploadState("error");
+                    }
                   }}
                 />
               </div>
@@ -593,7 +603,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "completed" | "error">("idle");
   const [isDistractionFree, setIsDistractionFree] = useState(false);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -731,22 +741,26 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "blog" | "project") => {
     const file = e.target.files?.[0];
     if (!file) return;
+    console.log("FILE:", file);
 
-    setIsUploading(true);
+    setUploadState("uploading");
+    console.log("UPLOAD START");
     try {
       const storageRef = ref(storage, `${type}/${Date.now()}_${file.name}`);
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
+      console.log("DOWNLOAD URL:", url);
+      
       if (type === "blog") {
         setBlogFormData(prev => ({ ...prev, coverImage: url }));
       } else {
         setProjectFormData(prev => ({ ...prev, image: url }));
       }
+      setUploadState("completed");
     } catch (error) {
       console.error("Upload error:", error);
+      setUploadState("error");
       alert("Failed to upload image. Make sure Firebase Storage is set up.");
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -778,6 +792,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
 
+    if (!isAutosave && uploadState === "uploading") {
+      alert("Wait for image upload to complete before saving.");
+      return;
+    }
+
     const postData = {
       ...blogFormData,
       blocks,
@@ -799,11 +818,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
         });
       }
       
+      console.log("DOCUMENT SAVED [BLOG]");
       setLastSaved(new Date());
       if (!isAutosave) {
         setIsEditing(false);
         setCurrentPost(null);
         resetBlogForm();
+        setUploadState("idle");
       }
     } catch (error) {
       if (!isAutosave) {
@@ -812,34 +833,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
     }
   };
 
-  const handleEditBlog = (post: any) => {
-    setCurrentPost(post);
-    setBlogFormData({
-      title: post.title || "",
-      slug: post.slug || "",
-      description: post.description || "",
-      coverImage: post.coverImage || "",
-      tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
-      published: post.published ?? false,
-      featured: post.featured ?? false,
-      category: post.category || "Technology",
-      scheduledAt: post.scheduledAt || "",
-    });
-    setBlocks(post.blocks || [{ id: '1', type: 'text', content: post.content || '' }]);
-    setSeoData(post.seo || {
-      title: post.title || "",
-      description: post.description || "",
-      keywords: "",
-      canonicalUrl: "",
-      ogTitle: post.title || "",
-      ogDescription: post.description || "",
-      ogImage: post.coverImage || "",
-    });
-    setIsEditing(true);
-  };
-
   const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (uploadState === "uploading") {
+      alert("Wait for image upload to complete before saving.");
+      return;
+    }
+
     const projectData = {
       ...projectFormData,
       tech: projectFormData.tech.split(",").map(t => t.trim()).filter(t => t),
@@ -855,9 +856,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
           createdAt: serverTimestamp()
         });
       }
+      console.log("DOCUMENT SAVED [PROJECT]");
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+      setUploadState("idle");
     } catch (error) {
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
     }
@@ -1014,10 +1017,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </button>
                     <button 
                       onClick={() => handleSaveBlog(false)}
-                      className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
+                      disabled={uploadState === "uploading"}
+                      className={cn(
+                        "px-8 py-4 text-white rounded-2xl font-bold flex items-center gap-2 transition-all",
+                        uploadState === "uploading" ? "bg-white/10 cursor-not-allowed" : "bg-brand-primary"
+                      )}
                     >
-                      <Save size={20} /> {currentPost ? "Update" : "Publish"}
+                      <Save size={20} /> 
+                      {uploadState === "uploading" ? "Uploading..." : (currentPost ? "Update" : "Publish")}
                     </button>
+                    {uploadState === "completed" && <div className="text-[10px] font-bold text-green-500 uppercase tracking-widest mt-1">Image ready ✓</div>}
                   </div>
                 </div>
 
@@ -1071,9 +1080,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
                             </>
                           ) : (
                             <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-                              <ImageIcon size={48} className="text-white/10 mb-4" />
-                              <span className="text-sm font-bold text-white/20">Upload Cover Image</span>
-                              <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "blog")} accept="image/*" />
+                              <ImageIcon size={48} className={cn("mb-4", uploadState === "uploading" ? "text-brand-primary animate-pulse" : "text-white/10")} />
+                              <span className="text-sm font-bold text-white/20">
+                                {uploadState === "uploading" ? "Uploading Image..." : "Upload Cover Image"}
+                              </span>
+                              <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "blog")} accept="image/*" disabled={uploadState === "uploading"} />
                             </label>
                           )}
                         </div>
@@ -1229,10 +1240,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
                         className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
                         required
                       />
-                      <label className="cursor-pointer px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold flex items-center gap-2 hover:bg-white/10 transition-all">
-                        <Plus size={20} /> {isUploading ? "..." : "Upload"}
-                        <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "project")} accept="image/*" disabled={isUploading} />
+                      <label className={cn(
+                        "cursor-pointer px-8 py-4 border rounded-2xl font-bold flex items-center gap-2 transition-all",
+                        uploadState === "uploading" ? "bg-white/5 border-white/20 text-white/20" : "bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                      )}>
+                        <Plus size={20} /> {uploadState === "uploading" ? "..." : "Upload"}
+                        <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "project")} accept="image/*" disabled={uploadState === "uploading"} />
                       </label>
+                      {uploadState === "completed" && <div className="flex items-center text-green-500 font-bold text-xs">✓</div>}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -1283,9 +1298,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
                   </button>
                   <button 
                     type="submit"
-                    className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all"
+                    disabled={uploadState === "uploading"}
+                    className={cn(
+                      "px-10 py-4 text-white rounded-2xl font-bold transition-all",
+                      uploadState === "uploading" ? "bg-white/10 cursor-not-allowed" : "bg-brand-primary hover:bg-brand-primary/90"
+                    )}
                   >
-                    {currentProject ? "Update Project" : "Create Project"}
+                    {uploadState === "uploading" ? "Uploading Image..." : (currentProject ? "Update Project" : "Create Project")}
                   </button>
                 </div>
               </form>

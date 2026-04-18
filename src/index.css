@@ -54,10 +54,12 @@
 
 @layer base {
   html {
+    width: 100%;
     height: auto;
   }
 
   body {
+    width: 100%;
     min-height: 100%;
     overflow-x: hidden;
     @apply bg-[#0A0A0A] text-white antialiased selection:bg-brand-primary/30;
@@ -65,11 +67,14 @@
   }
 
   #root {
+    width: 100%;
     min-height: 100%;
+    overflow-x: hidden;
   }
 
   * {
     box-sizing: border-box;
+    word-break: break-word;
   }
 
   :root {
@@ -111,6 +116,7 @@
     opacity: 0.25;
     pointer-events: none;
     will-change: transform;
+    transform: translateZ(0);
     z-index: 0;
   }
 

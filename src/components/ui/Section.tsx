@@ -18,10 +18,14 @@ export const Section = ({
   glowVariant?: 'hero' | 'side' | 'center' | 'orbs' | 'bottom';
   as?: any;
 }) => (
-  <Component id={id} className={cn("relative w-full py-24 lg:py-32 isolate overflow-visible", className)}>
-    {glowVariant && <SectionGlow variant={glowVariant} />}
-    <Container className={cn("relative z-10", containerClassName)}>
+  <Component id={id} className={cn("relative w-full py-24 lg:py-32 isolate", className)}>
+    {glowVariant && (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+        <SectionGlow variant={glowVariant} />
+      </div>
+    )}
+    <div className={cn("relative z-10 mx-auto max-w-7xl px-5", containerClassName)}>
       {children}
-    </Container>
+    </div>
   </Component>
 );
