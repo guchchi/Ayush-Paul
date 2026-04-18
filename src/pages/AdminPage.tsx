@@ -1608,7 +1608,12 @@ export const AdminPage = () => {
       <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
       <div className="flex flex-col items-center gap-2">
         <h2 className="text-xl font-bold tracking-tighter">Initializing Studio</h2>
-        <p className="text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">Checking Authority Keys...</p>
+        <div className="flex items-center gap-2">
+          <div className={cn("w-2 h-2 rounded-full", auth ? "bg-green-500" : "bg-red-500")} />
+          <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">
+            {auth ? "Firebase Handshake Connected" : "Connecting to Backend..."}
+          </p>
+        </div>
       </div>
     </div>
   );
