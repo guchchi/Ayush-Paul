@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, ChevronDown, Check } from "lucide-react";
 import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
@@ -18,6 +18,14 @@ export const BlogPage = () => {
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClick = () => setActiveDropdown(null);
+    window.addEventListener('click', handleClick);
+    return () => window.removeEventListener('click', handleClick);
+  }, []);
 
   useEffect(() => {
     const q = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"), where("published", "==", true));
