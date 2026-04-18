@@ -64,38 +64,38 @@ export const BlogPage = () => {
   const CustomSelect = ({ label, value, options, onChange, id }: any) => {
     const isOpen = activeDropdown === id;
     return (
-      <div className="relative min-w-[200px]" onClick={(e) => e.stopPropagation()}>
+      <div className="relative min-w-[220px]" onClick={(e) => e.stopPropagation()}>
         <button 
           onClick={() => setActiveDropdown(isOpen ? null : id)}
           className={cn(
-            "w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 px-6 flex items-center justify-between transition-all group",
-            isOpen ? "border-brand-primary/50 bg-white/[0.06]" : "hover:border-white/20"
+            "w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-2xl py-5 px-7 flex items-center justify-between transition-all duration-300 group shadow-lg",
+            isOpen ? "border-brand-primary/40 bg-white/[0.05] ring-4 ring-brand-primary/5 scale-[1.02]" : "hover:border-white/20 hover:bg-white/[0.04]"
           )}
         >
-          <div className="flex flex-col items-start">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-1">{label}</span>
-            <span className="text-sm font-bold text-white/80 whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]">
+          <div className="flex flex-col items-start gap-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/20">{label}</span>
+            <span className="text-[13px] font-bold text-white/90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]">
               {value || `All ${label}s`}
             </span>
           </div>
-          <ChevronDown size={18} className={cn("text-white/20 group-hover:text-brand-primary transition-transform duration-300", isOpen && "rotate-180 text-brand-primary")} />
+          <ChevronDown size={16} className={cn("text-white/20 group-hover:text-brand-primary transition-all duration-500", isOpen && "rotate-180 text-brand-primary")} />
         </button>
         
         {isOpen && (
-          <div className="absolute top-[calc(100%+12px)] left-0 w-full bg-[#121212] border border-white/10 rounded-2xl overflow-hidden z-50 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+          <div className="absolute top-[calc(100%+12px)] left-0 w-full min-w-[240px] bg-[#0E0E0E]/95 backdrop-blur-3xl border border-white/[0.08] rounded-3xl overflow-hidden z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="p-2 max-h-[320px] overflow-y-auto custom-scrollbar">
               <button 
                 onClick={() => { onChange(null); setActiveDropdown(null); }}
-                className="w-full px-6 py-4 text-left text-xs font-bold uppercase tracking-widest hover:bg-white/[0.05] transition-colors flex items-center justify-between group"
+                className="w-full px-5 py-4 rounded-xl text-left text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-white/[0.05] transition-all flex items-center justify-between group"
               >
-                <span className={cn(!value ? "text-brand-primary" : "text-white/40")}>All {label}s</span>
+                <span className={cn(!value ? "text-brand-primary" : "text-white/30 group-hover:text-white/50")}>All {label}s</span>
                 {!value && <Check size={14} className="text-brand-primary" />}
               </button>
               {options.map((opt: string) => (
                 <button 
                   key={opt}
                   onClick={() => { onChange(opt); setActiveDropdown(null); }}
-                  className="w-full px-6 py-4 text-left text-xs font-bold uppercase tracking-widest hover:bg-white/[0.05] transition-colors border-t border-white/5 flex items-center justify-between group"
+                  className="w-full px-5 py-4 rounded-xl text-left text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-white/[0.05] transition-all flex items-center justify-between group"
                 >
                   <span className={cn(value === opt ? "text-brand-primary" : "text-white/60 group-hover:text-white")}>{opt}</span>
                   {value === opt && <Check size={14} className="text-brand-primary" />}
@@ -115,54 +115,110 @@ export const BlogPage = () => {
           <BackButton to="/" label="Back to Home" />
         </div>
 
-        <div className="max-w-4xl mx-auto mb-16 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">The <span className="text-brand-primary">Blog</span></h1>
-          <p className="text-white/60 text-xl">Exploring the intersection of AI, Robotics, and Entrepreneurship.</p>
+        <div className="max-w-4xl mx-auto mb-20 text-center">
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 tracking-tight">The <span className="text-brand-primary">Blog</span></h1>
+          <p className="text-white/40 text-xl font-medium max-w-2xl mx-auto leading-relaxed">Thoughts on Artificial Intelligence, Engineering, and the Future of Students.</p>
         </div>
 
-        <div className="glass-card rounded-[40px] p-8 mb-20 border border-white/5 relative z-50">
-          <div className="flex flex-col xl:flex-row gap-8 items-center">
-            {/* Search Bar */}
-            <div className="relative flex-1 w-full group">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-primary transition-colors" size={20} />
+        <div 
+          className={cn(
+            "max-w-4xl mx-auto mb-24 border border-white/[0.08] rounded-[32px] bg-[#0C0C0C] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] overflow-hidden backdrop-blur-3xl transition-all duration-500 ease-in-out",
+            (isFocused || search || selectedTag || selectedCategory) ? "ring-2 ring-brand-primary/20" : ""
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Search Header */}
+          <div className="p-8 flex items-center justify-between group">
+            <div className="flex items-center gap-6 flex-1">
+              <Search className={cn("transition-colors duration-500", isFocused ? "text-brand-primary" : "text-white/20")} size={24} />
               <input 
                 type="text" 
-                placeholder="Search articles, topics or tags..." 
+                placeholder="Search for articles, topics or tags..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/[0.02] border border-white/10 rounded-2xl py-6 pl-14 pr-6 outline-none focus:border-brand-primary/50 transition-all text-xl placeholder:text-white/10"
+                onFocus={() => setIsFocused(true)}
+                className="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/10 text-white"
               />
             </div>
-
-            <div className="flex flex-wrap lg:flex-nowrap items-center gap-6 w-full xl:w-auto">
-              {/* Category Filter */}
-              <CustomSelect 
-                id="category"
-                label="Topic"
-                value={selectedCategory}
-                options={allCategories}
-                onChange={setSelectedCategory}
-              />
-
-              {/* Tag Dropdown Filter */}
-              <CustomSelect 
-                id="tag"
-                label="Tag"
-                value={selectedTag}
-                options={allTags}
-                onChange={setSelectedTag}
-              />
-
-              {(selectedTag || selectedCategory || search) && (
-                <button 
-                  onClick={() => { setSelectedTag(null); setSelectedCategory(null); setSearch(""); }}
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary hover:text-white transition-all bg-brand-primary/10 hover:bg-brand-primary/20 px-8 py-4 rounded-xl"
-                >
-                  Reset Filters
-                </button>
-              )}
+            <div className={cn("hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-all duration-500", isFocused ? "text-brand-primary border-brand-primary/30" : "text-white/30")}>
+              <span className="text-[14px]">/</span> Focus
             </div>
           </div>
+
+          {(isFocused || search || selectedTag || selectedCategory) && (
+            <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="h-px bg-white/[0.05]" />
+
+              <div className="p-8 space-y-12">
+                {/* Quick Actions (Categories) */}
+                <div className="space-y-6">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Topics</div>
+                  <div className="flex flex-wrap gap-3">
+                    <button 
+                      onClick={() => setSelectedCategory(null)}
+                      className={cn(
+                        "px-6 py-3 rounded-2xl text-xs font-bold transition-all border",
+                        !selectedCategory ? "bg-white text-black border-white" : "bg-white/[0.03] text-white/40 border-white/[0.05] hover:border-white/20 hover:bg-white/[0.05]"
+                      )}
+                    >
+                      All Topics
+                    </button>
+                    {allCategories.map(cat => (
+                      <button 
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={cn(
+                          "px-6 py-3 rounded-2xl text-xs font-bold transition-all border",
+                          selectedCategory === cat ? "bg-brand-primary text-white border-brand-primary shadow-[0_0_20px_rgba(0,183,255,0.2)]" : "bg-white/[0.03] text-white/40 border-white/[0.05] hover:border-white/20 hover:bg-white/[0.05]"
+                        )}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Main Actions (Tags) */}
+                <div className="space-y-6">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Popular Tags</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {allTags.slice(0, 10).map(tag => (
+                      <button 
+                        key={tag}
+                        onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                        className={cn(
+                          "w-full px-5 py-4 rounded-xl flex items-center justify-between transition-all group border",
+                          selectedTag === tag ? "bg-white/[0.05] border-brand-primary/30" : "bg-transparent border-transparent hover:bg-white/[0.03]"
+                        )}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={cn("w-2 h-2 rounded-full transition-colors", selectedTag === tag ? "bg-brand-primary shadow-[0_0_8px_var(--color-brand-primary)]" : "bg-white/10 group-hover:bg-white/20")} />
+                          <span className={cn("text-xs font-bold transition-colors uppercase tracking-[0.1em]", selectedTag === tag ? "text-white" : "text-white/40 group-hover:text-white/60")}>#{tag}</span>
+                        </div>
+                        {selectedTag === tag ? (
+                          <Check size={14} className="text-brand-primary" />
+                        ) : (
+                          <div className="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-white/20 tracking-widest uppercase transition-opacity">Select</div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {(selectedTag || selectedCategory || search) && (
+                  <div className="pt-4 flex justify-end">
+                    <button 
+                      onClick={() => { setSelectedTag(null); setSelectedCategory(null); setSearch(""); }}
+                      className="flex items-center gap-3 px-6 py-4 rounded-xl bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 hover:border-red-500/20 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500/60 hover:text-red-400 transition-all"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-current" />
+                      Reset All Filters
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
