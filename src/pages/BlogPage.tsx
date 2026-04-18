@@ -18,6 +18,7 @@ export const BlogPage = () => {
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Close dropdowns when clicking outside
