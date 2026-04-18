@@ -144,8 +144,26 @@ export const BlogPage = () => {
                 className="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/10 text-white"
               />
             </div>
-            <div className={cn("hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-all duration-500", isFocused ? "text-brand-primary border-brand-primary/30" : "text-white/30")}>
-              <span className="text-[14px]">/</span> Focus
+            <div className="flex items-center gap-4">
+              <div className={cn("hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-all duration-500", (isFocused || search || selectedTag || selectedCategory) ? "text-brand-primary border-brand-primary/30" : "text-white/30")}>
+                <span className="text-[14px]">/</span> Focus
+              </div>
+              {(isFocused || search || selectedTag || selectedCategory) && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsFocused(false);
+                    setSearch("");
+                    setSelectedTag(null);
+                    setSelectedCategory(null);
+                  }}
+                  className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-white/40 hover:text-white transition-all group/close"
+                >
+                  <span className="flex items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-widest">
+                    Close <span className="opacity-40 group-hover:opacity-100 transition-opacity">Esc</span>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 
