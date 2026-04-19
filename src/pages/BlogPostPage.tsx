@@ -127,8 +127,8 @@ export const BlogPostPage = () => {
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
 
-          <div className="w-full max-w-2xl mx-auto px-6">
-            <div className="prose prose-invert prose-base md:prose-lg lg:prose-xl max-w-none text-left leading-[1.8] tracking-tight">
+          <div className="w-full max-w-2xl mx-auto px-6 text-left">
+            <div className="prose prose-invert prose-base md:prose-lg lg:prose-xl max-w-none leading-[1.8]">
             {post.blocks ? (
               <div className="space-y-8">
                 {post.blocks.map((block: Block) => {

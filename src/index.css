@@ -85,11 +85,14 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  p, h1, h2, h3, h4, h5, h6, .prose * {
-    word-break: normal;
-    overflow-wrap: break-word;
-    hyphens: none;
-    text-wrap: pretty;
+  p, h1, h2, h3, h4, h5, h6, .prose *, .prose p, .prose {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    hyphens: none !important;
+    text-wrap: pretty !important;
+    white-space: normal !important;
+    text-align: left !important;
   }
 
   :root {
