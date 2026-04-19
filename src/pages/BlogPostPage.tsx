@@ -74,6 +74,7 @@ export const BlogPostPage = () => {
       setLoading(false);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, "blogPosts");
+      setLoading(false);
     });
     return () => unsubscribe();
   }, [slug]);
