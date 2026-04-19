@@ -75,17 +75,18 @@
   * {
     box-sizing: border-box;
     word-break: normal !important;
-    overflow-wrap: break-word !important;
+    overflow-wrap: normal !important;
     white-space: normal;
     hyphens: none !important;
-    text-wrap: pretty; /* Prevents orphans and improves visual rhythm */
+    text-wrap: pretty;
   }
 
-  p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: normal;
-    hyphens: none;
+  p, h1, h2, h3, h4, h5, h6, .prose * {
+    overflow-wrap: normal !important;
+    word-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+    white-space: normal !important;
   }
 
   :root {
