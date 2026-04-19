@@ -1440,6 +1440,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
               </button>
             ))}
           </div>
+        )}
+
         {!isEditing && <HealthDashboard />}
 
         {isEditing ? (
