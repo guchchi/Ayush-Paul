@@ -1092,6 +1092,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAuditing, setIsAuditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
 
   const testConnection = async () => {
@@ -1319,50 +1320,68 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
 
-    // 1. Validate Cover Image
-    if (blogFormData.coverImage) {
-      const coverCheck = await validateImageUrl(blogFormData.coverImage);
-      if (!coverCheck.isValid) {
-        alert(`Cover Image Error: ${coverCheck.error}`);
+    // 1. Structural Guard: Don't allow empty content if manual save
+    if (!isAutosave) {
+      if (!blogFormData.title.trim()) {
+        alert("Validation Error: Please add a title before publishing.");
         return;
       }
     }
 
-    // 2. Validate all block-level images
-    for (const block of blocks) {
-      if (block.type === 'image' && block.content) {
-        const check = await validateImageUrl(block.content);
-        if (!check.isValid) {
-          alert(`Blog Content Image Error (Block ID ${block.id}): ${check.error}`);
-          return;
-        }
-      }
-    }
-
-    const postData = {
-      ...blogFormData,
-      blocks,
-      seo: seoData,
-      tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
-      updatedAt: serverTimestamp(),
-      author: user.email,
-      readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
-    };
+    if (isSaving && !isAutosave) return; // Prevent double submission
+    if (!isAutosave) setIsSaving(true);
 
     try {
-      console.log("💾 [DB] Phase 6: Syncing blog to Firestore...", postData.title);
+      // 2. Optimized Parallel Validation
+      // Use Promise.all to avoid 5s wait per image. Maximum wait is now 5s total.
+      const imageValidationTasks = [];
+      
+      // Cover Image
+      if (blogFormData.coverImage) {
+        imageValidationTasks.push(
+          validateImageUrl(blogFormData.coverImage).then(res => ({ ...res, source: 'Cover Image' }))
+        );
+      }
+      
+      // Block Images
+      blocks.forEach(block => {
+        if (block.type === 'image' && block.content) {
+          imageValidationTasks.push(
+            validateImageUrl(block.content).then(res => ({ ...res, source: `Block Image [${block.id}]` }))
+          );
+        }
+      });
+
+      const validationResults = await Promise.all(imageValidationTasks);
+      const failed = validationResults.find(r => !r.isValid);
+      
+      if (failed && !isAutosave) {
+        alert(`${failed.source} Error: ${failed.error}`);
+        setIsSaving(false);
+        return;
+      }
+
+      const postData = {
+        ...blogFormData,
+        blocks,
+        seo: seoData,
+        tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
+        updatedAt: serverTimestamp(),
+        author: user.email,
+        readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
+      };
+
+      console.log("💾 [DB] Attempting Sync with Blocks:", blocks.length);
       
       if (currentPost) {
         await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
-        console.log("✅ [DB] Update Successful");
       } else if (!isAutosave) {
-        // Prevent duplicate creation during rapid saves
         const newDoc = await addDoc(collection(db, "blogPosts"), {
           ...postData,
           createdAt: serverTimestamp(),
           views: 0
         });
-        console.log("✅ [DB] Creation Successful. ID:", newDoc.id);
+        console.log("✅ [DB] New Post Created:", newDoc.id);
       }
       
       setLastSaved(new Date());
@@ -1370,19 +1389,19 @@ const AdminDashboard = ({ user }: { user: any }) => {
         setIsEditing(false);
         setCurrentPost(null);
         resetBlogForm();
-        alert("Success! Blog post published.");
+        // Use timeout to ensure state transitions finish before alert blocks the thread
+        setTimeout(() => alert("Success! Your post is live."), 100);
       }
     } catch (error: any) {
-      console.error("❌ [DB] Connectivity/Permission Error:", error.code, error.message);
+      console.error("❌ [DB] Save Pipeline Failure:", error);
       if (!isAutosave) {
-        if (error.code === 'permission-denied') {
-          alert("Security Error: You don't have permission to write to this database. Verify you're logged in with an authorized account.");
-        } else if (error.code === 'unavailable') {
-          alert("Connectivity Error: Firestone is temporarily unavailable. Check your internet connection.");
-        } else {
-          handleFirestoreError(error, currentPost ? OperationType.UPDATE : OperationType.CREATE, "blogPosts");
-        }
+        const errorMsg = error.code === 'permission-denied' 
+          ? "Security Error: You don't have permission to write. Verify your admin status."
+          : `System Error: ${error.message}`;
+        alert(errorMsg);
       }
+    } finally {
+      if (!isAutosave) setIsSaving(false);
     }
   };
 
@@ -1576,10 +1595,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </button>
                     <button 
                       onClick={() => handleSaveBlog(false)}
-                      className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
+                      disabled={isSaving}
+                      className={cn(
+                        "px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2 transition-all",
+                        isSaving ? "opacity-70 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
+                      )}
                     >
-                      <Save size={20} /> 
-                      {currentPost ? "Update" : "Publish"}
+                      {isSaving ? (
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Save size={20} />
+                      )}
+                      {isSaving ? (currentPost ? "Updating..." : "Publishing...") : (currentPost ? "Update" : "Publish")}
                     </button>
                   </div>
                 </div>
