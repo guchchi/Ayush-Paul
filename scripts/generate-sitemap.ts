@@ -1,6 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import config from '../firebase-applet-config.json';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+const config = {
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  firestoreDatabaseId: process.env.VITE_FIREBASE_FIRESTORE_DB_ID || '(default)',
+  apiKey: process.env.VITE_FIREBASE_API_KEY
+};
 
 const BASE_URL = 'https://ayushpaul.in';
 
@@ -16,8 +25,11 @@ async function generateSitemap() {
 
   // Fetch dynamic blog posts
   try {
-    const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/blogPosts?key=${config.apiKey}`;
-    console.log(`Fetching blogs from: ${url}`);
+    if (!config.projectId || !config.apiKey) {
+      console.warn('⚠️ Firebase credentials missing in environment. Skipping dynamic blog routes for sitemap.');
+    } else {
+      const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/blogPosts?key=${config.apiKey}`;
+      console.log(`Fetching blogs from: ${url}`);
     
     const response = await fetch(url);
     if (response.ok) {
@@ -32,8 +44,9 @@ async function generateSitemap() {
           }
         });
       }
-    } else {
-      console.warn('Could not fetch blogs for sitemap, skipping dynamic routes.', response.statusText);
+      } else {
+        console.warn('Could not fetch blogs for sitemap, skipping dynamic routes.', response.statusText);
+      }
     }
   } catch (error) {
     console.error('Error fetching blogs for sitemap:', error);
