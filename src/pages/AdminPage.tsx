@@ -384,6 +384,18 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   const [importText, setImportText] = useState("");
   const [showSmartImport, setShowSmartImport] = useState(false);
 
+  // Defensive Normalization Layer: Heals malformed blocks before state updates
+  const normalizeBlocks = (rawBlocks: any[]): Block[] => {
+    return rawBlocks
+      .filter(b => b && typeof b === 'object') // Filter out non-objects
+      .map(b => ({
+        id: b.id || Math.random().toString(36).substr(2, 9),
+        type: (['text', 'heading', 'image', 'list', 'quote', 'code', 'callout'].includes(b.type) ? b.type : 'text') as BlockType,
+        content: typeof b.content === 'string' ? b.content : '',
+        metadata: (b.metadata && typeof b.metadata === 'object') ? b.metadata : {}
+      }));
+  };
+
   const parseContentToBlocks = (text: string) => {
     // Rule 8: Pre-Insert Sanitization (Strip noise but keep semantic markers)
     const sanitized = text
@@ -511,7 +523,7 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
     });
 
     flushAll();
-    return blocks;
+    return normalizeBlocks(blocks);
   };
 
   const handleSmartImport = (append = false) => {
@@ -568,7 +580,8 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
            type === 'callout' ? { variant: 'info' } : {})
       }
     };
-    setBlocks([...blocks, newBlock]);
+    const normalized = normalizeBlocks([...blocks, newBlock]);
+    setBlocks(normalized);
   };
 
   const updateBlock = (id: string, updates: Partial<Block>) => {
@@ -591,15 +604,20 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
           strategy={verticalListSortingStrategy}
         >
           <div className="min-h-[400px] space-y-4">
-            {blocks.map((block) => (
-              <SortableBlock 
-                key={block.id} 
-                block={block} 
-                onUpdate={updateBlock}
-                onDelete={deleteBlock}
-                onAIAction={onAIAction}
-              />
-            ))}
+            {blocks.map((block) => {
+              // Final Render Guard: Skip poisonous items that bypassed state checks
+              if (!block || !block.id || !block.type) return null;
+              
+              return (
+                <SortableBlock 
+                  key={block.id} 
+                  block={block} 
+                  onUpdate={updateBlock}
+                  onDelete={deleteBlock}
+                  onAIAction={onAIAction}
+                />
+              );
+            })}
           </div>
         </SortableContext>
       </DndContext>
@@ -1251,7 +1269,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
           content: result,
           metadata: { title: `AI ${action.charAt(0).toUpperCase() + action.slice(1)} Suggestion` }
         };
-        setBlocks([...blocks, newBlock]);
+        const normalized = normalizeBlocks([...blocks, newBlock]);
+        setBlocks(normalized);
       }
     } catch (error) {
       console.error("AI Action failed:", error);
@@ -1278,7 +1297,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       scheduledAt: post.scheduledAt || "",
     });
     setShowCustomCategoryInput(post.category && !BLOG_CATEGORIES.includes(post.category));
-    setBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]);
+    setBlocks(normalizeBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]));
     setSeoData(post.seo || {
       title: post.title,
       description: post.description || "",
@@ -1304,7 +1323,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
       scheduledAt: "",
     });
     setShowCustomCategoryInput(false);
-    setBlocks([{ id: '1', type: 'text', content: '' }]);
+    setBlocks(normalizeBlocks([{ id: '1', type: 'text', content: '' }]));
     setSeoData({
       title: "",
       description: "",
