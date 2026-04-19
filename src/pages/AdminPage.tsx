@@ -385,13 +385,22 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   const [showSmartImport, setShowSmartImport] = useState(false);
 
   const parseContentToBlocks = (text: string) => {
-    const lines = text.split('\n');
-    const newBlocks: Block[] = [];
-    let currentParagraphs: string[] = [];
+    // Rule 8: Pre-Insert Sanitization (Strip noise but keep semantic markers)
+    const sanitized = text
+      .replace(/<style[^>]*>.*<\/style>/gms, '')
+      .replace(/<script[^>]*>.*<\/script>/gms, '')
+      .replace(/class="[^"]*"/g, '')
+      .replace(/style="[^"]*"/g, '');
 
+    const lines = sanitized.split('\n');
+    const blocks: Block[] = [];
+    let currentParagraphs: string[] = [];
+    let currentListItems: string[] = [];
+    let currentListType: 'ordered' | 'unordered' | null = null;
+    
     const flushParagraphs = () => {
       if (currentParagraphs.length > 0) {
-        newBlocks.push({
+        blocks.push({
           id: Math.random().toString(36).substr(2, 9),
           type: 'text',
           content: `<p>${currentParagraphs.join(' ')}</p>`
@@ -400,50 +409,109 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
       }
     };
 
-    lines.forEach((line) => {
+    const flushList = () => {
+      if (currentListItems.length > 0) {
+        const tag = currentListType === 'ordered' ? 'ol' : 'ul';
+        blocks.push({
+          id: Math.random().toString(36).substr(2, 9),
+          type: 'list',
+          content: `<${tag}>${currentListItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`,
+          metadata: { listType: currentListType }
+        });
+        currentListItems = [];
+        currentListType = null;
+      }
+    };
+
+    const flushAll = () => {
+      flushParagraphs();
+      flushList();
+    };
+
+    lines.forEach((line, index) => {
       const trimmedLine = line.trim();
       if (!trimmedLine) {
-        flushParagraphs();
+        // Rule 5: Spacing Logic - Intentional double spacing flushes everything
+        flushAll();
         return;
       }
 
-      // Check for Headings (Markdown or Title-like)
-      if (trimmedLine.startsWith('# ')) {
+      // Rule 3: List Protection System
+      const unorderedMatch = trimmedLine.match(/^([-*•])\s+(.*)/);
+      const orderedMatch = trimmedLine.match(/^(\d+)[.)]\s+(.*)/);
+
+      if (unorderedMatch) {
         flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(2), metadata: { level: 1 } });
-      } else if (trimmedLine.startsWith('## ')) {
-        flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(3), metadata: { level: 2 } });
-      } else if (trimmedLine.startsWith('### ')) {
-        flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(4), metadata: { level: 3 } });
-      } 
-      // Heuristic: Short line, Title Case, no period at end => Heading 2
-      else if (trimmedLine.length < 80 && /^[A-Z]/.test(trimmedLine) && !trimmedLine.endsWith('.') && trimmedLine.split(' ').length < 10) {
-        flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine, metadata: { level: 2 } });
+        if (currentListType === 'ordered') flushList();
+        currentListType = 'unordered';
+        currentListItems.push(unorderedMatch[2]);
+        return;
       }
-      // Check for Lists
-      else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+
+      if (orderedMatch) {
         flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'list', content: `<ul><li>${trimmedLine.substring(2)}</li></ul>`, metadata: { listType: 'unordered' } });
-      } else if (/^\d+\. /.test(trimmedLine)) {
-        flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'list', content: `<ol><li>${trimmedLine.replace(/^\d+\. /, '')}</li></ol>`, metadata: { listType: 'ordered' } });
+        if (currentListType === 'unordered') flushList();
+        currentListType = 'ordered';
+        currentListItems.push(orderedMatch[2]);
+        return;
       }
-      // Check for Image URL
-      else if (trimmedLine.startsWith('https://') && (trimmedLine.includes('unsplash.com') || trimmedLine.match(/\.(jpeg|jpg|gif|png|webp)$/) )) {
-        flushParagraphs();
-        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'image', content: trimmedLine, metadata: { alignment: 'center', alt: 'Imported Image' } });
+
+      // Rule 2: Heading Detection (CORE RULE)
+      // Check for Markdown first
+      const hMatch = trimmedLine.match(/^(#{1,3})\s+(.*)/);
+      if (hMatch) {
+        flushAll();
+        blocks.push({
+          id: Math.random().toString(36).substr(2, 9),
+          type: 'heading',
+          content: hMatch[2],
+          metadata: { level: hMatch[1].length as any }
+        });
+        return;
       }
-      // Otherwise, collect as paragraph
-      else {
-        currentParagraphs.push(trimmedLine);
+
+      // Heuristic Headings (Rule 2 conditions)
+      // 1. Standalone line (flushAll before and check if next line is empty or this is last)
+      const isShort = trimmedLine.length < 80;
+      const isTitleCase = /^[A-Z]/.test(trimmedLine);
+      const noPunctuation = !/[.!?:]$/.test(trimmedLine);
+      const nextLineEmpty = !lines[index + 1] || lines[index + 1].trim() === "";
+
+      if (isShort && isTitleCase && noPunctuation && nextLineEmpty && currentListItems.length === 0) {
+        flushAll();
+        blocks.push({
+          id: Math.random().toString(36).substr(2, 9),
+          type: 'heading',
+          content: trimmedLine,
+          metadata: { level: 2 } // Default heuristic to H2
+        });
+        return;
       }
+
+      // Quote Detection
+      const quoteMatch = trimmedLine.match(/^>\s+(.*)/);
+      if (quoteMatch) {
+        flushAll();
+        blocks.push({
+          id: Math.random().toString(36).substr(2, 9),
+          type: 'quote',
+          content: quoteMatch[1]
+        });
+        return;
+      }
+
+      // Rule 4: Paragraph Intelligence
+      if (currentListItems.length > 0) {
+        // If we were in a list and this is just more text without list marker, 
+        // it might be a nested paragraph OR we should flush the list.
+        // For elite logic, we assume a new line without marker ends the list.
+        flushList();
+      }
+      currentParagraphs.push(trimmedLine);
     });
 
-    flushParagraphs();
-    return newBlocks;
+    flushAll();
+    return blocks;
   };
 
   const handleSmartImport = (append = false) => {
@@ -618,10 +686,44 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
               placeholder="Paste your unformatted content here... Headings, lists, and paragraphs will be detected automatically."
             />
 
+            {importText.trim() && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+              >
+                {[
+                  { label: 'Headings', value: parseContentToBlocks(importText).filter(b => b.type === 'heading').length, icon: <Type size={14} /> },
+                  { label: 'Lists', value: parseContentToBlocks(importText).filter(b => b.type === 'list').length, icon: <List size={14} /> },
+                  { label: 'Quotes', value: parseContentToBlocks(importText).filter(b => b.type === 'quote').length, icon: <Quote size={14} /> },
+                  { label: 'Paragraphs', value: parseContentToBlocks(importText).filter(b => b.type === 'text').length, icon: <FileText size={14} /> },
+                ].map(stat => (
+                  <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20">
+                      {stat.icon} {stat.label}
+                    </div>
+                    <div className="text-xl font-bold">{stat.value}</div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
             <div className="flex justify-between items-center gap-6">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">
-                Tip: Uses Markdown detection (#) and intelligent heuristics for structure recognition.
-              </p>
+              <div className="flex items-center gap-4">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                  Detection: Elite Smart Parser v2
+                </p>
+                {importText.includes('---') && (
+                  <div className="px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-[8px] font-bold uppercase tracking-widest text-brand-primary">
+                    Markdown Detected
+                  </div>
+                )}
+                {importText.includes('\t') && (
+                  <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[8px] font-bold uppercase tracking-widest text-blue-400">
+                    Doc Formatting Detected
+                  </div>
+                )}
+              </div>
               <div className="flex gap-4">
                 <button 
                   onClick={() => handleSmartImport(true)}
