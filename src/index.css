@@ -78,6 +78,14 @@
     overflow-wrap: break-word !important;
     white-space: normal;
     hyphens: none !important;
+    text-wrap: pretty; /* Prevents orphans and improves visual rhythm */
+  }
+
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
   }
 
   :root {

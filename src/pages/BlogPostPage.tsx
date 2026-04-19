@@ -127,7 +127,7 @@ export const BlogPostPage = () => {
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
 
-          <div className="prose prose-invert prose-base md:prose-lg max-w-[65ch] mx-auto text-left leading-[1.7] whitespace-normal break-words [word-break:normal] [hyphens:none]">
+          <div className="prose prose-invert prose-base md:prose-lg max-w-[65ch] mx-auto text-left leading-[1.7] whitespace-normal [word-break:normal] [overflow-wrap:break-word] [word-wrap:break-word] [hyphens:none] [text-wrap:pretty]">
             {post.blocks ? (
               <div className="space-y-8">
                 {post.blocks.map((block: Block) => {
