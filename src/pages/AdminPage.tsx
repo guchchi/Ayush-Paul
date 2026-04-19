@@ -380,6 +380,95 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
   onAIAction: (id: string, action: string) => void
 }) => {
+  const [importText, setImportText] = useState("");
+  const [showSmartImport, setShowSmartImport] = useState(false);
+
+  const parseContentToBlocks = (text: string) => {
+    const lines = text.split('\n');
+    const newBlocks: Block[] = [];
+    let currentParagraphs: string[] = [];
+
+    const flushParagraphs = () => {
+      if (currentParagraphs.length > 0) {
+        newBlocks.push({
+          id: Math.random().toString(36).substr(2, 9),
+          type: 'text',
+          content: `<p>${currentParagraphs.join(' ')}</p>`
+        });
+        currentParagraphs = [];
+      }
+    };
+
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) {
+        flushParagraphs();
+        return;
+      }
+
+      // Check for Headings (Markdown or Title-like)
+      if (trimmedLine.startsWith('# ')) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(2), metadata: { level: 1 } });
+      } else if (trimmedLine.startsWith('## ')) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(3), metadata: { level: 2 } });
+      } else if (trimmedLine.startsWith('### ')) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine.substring(4), metadata: { level: 3 } });
+      } 
+      // Heuristic: Short line, Title Case, no period at end => Heading 2
+      else if (trimmedLine.length < 80 && /^[A-Z]/.test(trimmedLine) && !trimmedLine.endsWith('.') && trimmedLine.split(' ').length < 10) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'heading', content: trimmedLine, metadata: { level: 2 } });
+      }
+      // Check for Lists
+      else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'list', content: `<ul><li>${trimmedLine.substring(2)}</li></ul>`, metadata: { listType: 'unordered' } });
+      } else if (/^\d+\. /.test(trimmedLine)) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'list', content: `<ol><li>${trimmedLine.replace(/^\d+\. /, '')}</li></ol>`, metadata: { listType: 'ordered' } });
+      }
+      // Check for Image URL
+      else if (trimmedLine.startsWith('https://') && (trimmedLine.includes('unsplash.com') || trimmedLine.match(/\.(jpeg|jpg|gif|png|webp)$/) )) {
+        flushParagraphs();
+        newBlocks.push({ id: Math.random().toString(36).substr(2, 9), type: 'image', content: trimmedLine, metadata: { alignment: 'center', alt: 'Imported Image' } });
+      }
+      // Otherwise, collect as paragraph
+      else {
+        currentParagraphs.push(trimmedLine);
+      }
+    });
+
+    flushParagraphs();
+    return newBlocks;
+  };
+
+  const handleSmartImport = (append = false) => {
+    if (!importText.trim()) return;
+    const parsedBlocks = parseContentToBlocks(importText);
+    if (append) {
+      setBlocks([...blocks, ...parsedBlocks]);
+    } else {
+      setBlocks(parsedBlocks);
+    }
+    setImportText("");
+    setShowSmartImport(false);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setImportText(content);
+      setShowSmartImport(true);
+    };
+    reader.readAsText(file);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -446,43 +535,111 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
         </SortableContext>
       </DndContext>
 
-      <div className="flex flex-wrap items-center gap-4 p-6 bg-white/5 border border-white/10 rounded-3xl">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-white/20 mr-2">Add Block</span>
-        <div className="flex bg-white/5 rounded-xl p-1">
-          <button onClick={() => addBlock('heading', { level: 2 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 2">
-            <span className="text-xs font-bold">H2</span>
+      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-white/5 border border-white/10 rounded-[32px]">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white/20 mr-2">Add Block</span>
+          <div className="flex bg-white/5 rounded-xl p-1">
+            <button onClick={() => addBlock('heading', { level: 2 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 2">
+              <span className="text-xs font-bold">H2</span>
+            </button>
+            <button onClick={() => addBlock('heading', { level: 3 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 3">
+              <span className="text-xs font-bold">H3</span>
+            </button>
+          </div>
+          <button onClick={() => addBlock('text')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <Type size={18} /> <span className="text-xs font-bold">Text</span>
           </button>
-          <button onClick={() => addBlock('heading', { level: 3 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 3">
-            <span className="text-xs font-bold">H3</span>
+          <div className="flex bg-white/5 rounded-xl p-1">
+            <button onClick={() => addBlock('list', { listType: 'unordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Bullet List">
+              <List size={18} />
+            </button>
+            <button onClick={() => addBlock('list', { listType: 'ordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Numbered List">
+              <ListOrdered size={18} />
+            </button>
+          </div>
+          <button onClick={() => addBlock('image')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <ImageIcon size={18} /> <span className="text-xs font-bold">Image</span>
+          </button>
+          <button onClick={() => addBlock('code')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <Code size={18} /> <span className="text-xs font-bold">Code</span>
+          </button>
+          <button onClick={() => addBlock('quote')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <Quote size={18} /> <span className="text-xs font-bold">Quote</span>
+          </button>
+          <button onClick={() => addBlock('callout')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <Info size={18} /> <span className="text-xs font-bold">Callout</span>
+          </button>
+          <button onClick={() => addBlock('divider')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
+            <Minus size={18} /> <span className="text-xs font-bold">Divider</span>
           </button>
         </div>
-        <button onClick={() => addBlock('text')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <Type size={18} /> <span className="text-xs font-bold">Text</span>
-        </button>
-        <div className="flex bg-white/5 rounded-xl p-1">
-          <button onClick={() => addBlock('list', { listType: 'unordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Bullet List">
-            <List size={18} />
-          </button>
-          <button onClick={() => addBlock('list', { listType: 'ordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Numbered List">
-            <ListOrdered size={18} />
+
+        <div className="flex items-center gap-4">
+          <label className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 cursor-pointer font-bold text-xs">
+            <FileText size={18} /> Import .txt
+            <input type="file" accept=".txt" onChange={handleFileUpload} className="hidden" />
+          </label>
+          <button 
+            onClick={() => setShowSmartImport(true)}
+            className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2 font-bold text-xs"
+          >
+            <Sparkles size={18} className="text-brand-primary" /> Smart Paste
           </button>
         </div>
-        <button onClick={() => addBlock('image')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <ImageIcon size={18} /> <span className="text-xs font-bold">Image</span>
-        </button>
-        <button onClick={() => addBlock('code')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <Code size={18} /> <span className="text-xs font-bold">Code</span>
-        </button>
-        <button onClick={() => addBlock('quote')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <Quote size={18} /> <span className="text-xs font-bold">Quote</span>
-        </button>
-        <button onClick={() => addBlock('callout')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <Info size={18} /> <span className="text-xs font-bold">Callout</span>
-        </button>
-        <button onClick={() => addBlock('divider')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-          <Minus size={18} /> <span className="text-xs font-bold">Divider</span>
-        </button>
       </div>
+
+      {showSmartImport && (
+        <div className="fixed inset-0 z-[11000] bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-[#111111] border border-white/10 rounded-[40px] p-12 max-w-4xl w-full space-y-8"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4 text-brand-primary">
+                <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center">
+                  <Sparkles size={24} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Smart Auto-Formatter</h3>
+                  <p className="text-white/40 text-sm">Paste raw text to analyze and format into blocks instantly</p>
+                </div>
+              </div>
+              <button onClick={() => setShowSmartImport(false)} className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-white transition-all">
+                <X size={20} />
+              </button>
+            </div>
+
+            <textarea 
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              className="w-full h-80 bg-black/40 border border-white/10 rounded-3xl p-8 outline-none focus:border-brand-primary text-white/80 font-mono text-sm resize-none"
+              placeholder="Paste your unformatted content here... Headings, lists, and paragraphs will be detected automatically."
+            />
+
+            <div className="flex justify-between items-center gap-6">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                Tip: Uses Markdown detection (#) and intelligent heuristics for structure recognition.
+              </p>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => handleSmartImport(true)}
+                  className="px-8 py-4 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-2xl font-bold transition-all text-sm"
+                >
+                  Append to Editor
+                </button>
+                <button 
+                  onClick={() => handleSmartImport(false)}
+                  className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-sm shadow-lg shadow-brand-primary/20"
+                >
+                  Format & Start Fresh
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
     </div>
   );
 };
