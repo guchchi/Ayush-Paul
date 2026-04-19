@@ -134,13 +134,13 @@ export const BlogPostPage = () => {
   return (
     <div className="page-content bg-[#0A0A0A] relative">
       <div className="fixed top-0 left-0 h-1 bg-brand-primary z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
-      <div className="container mx-auto">
-        <div className="mb-10 px-6">
+      <div className="container mx-auto px-6">
+        <div className="mb-10">
 
             <BackButton to="/blog" label="Back to Blog" />
           </div>
 
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto">
           <article className="w-full min-w-0">
             <div className="w-full lg:max-w-2xl lg:mx-auto mb-12">
               <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-8">
@@ -301,9 +301,8 @@ export const BlogPostPage = () => {
           </aside>
         </div>
 
-        {/* Related Posts Section */}
         {relatedPosts.length > 0 && (
-          <div className="mt-20 max-w-6xl mx-auto mb-20">
+          <div className="mt-32 max-w-7xl mx-auto mb-20 border-t border-white/5 pt-20">
             <div className="flex items-center justify-between mb-12">
               <h2 className="text-3xl md:text-4xl font-bold">More to <span className="text-brand-primary">Explore</span></h2>
               <Link to="/blog" className="group flex items-center gap-2 text-sm font-bold text-white/40 hover:text-brand-primary transition-all uppercase tracking-widest">
