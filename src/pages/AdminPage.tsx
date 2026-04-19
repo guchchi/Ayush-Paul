@@ -1381,12 +1381,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
                               setBlogFormData({ ...blogFormData, category: e.target.value });
                             }
                           }}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none"
+                          className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none cursor-pointer hover:border-brand-primary/50 transition-colors"
                         >
                           {BLOG_CATEGORIES.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
+                            <option key={cat} value={cat} className="bg-[#1A1A1A] text-white">
+                              {cat}
+                            </option>
                           ))}
-                          <option value="Other">Other / Custom...</option>
+                          <option value="Other" className="bg-[#1A1A1A] text-brand-primary font-bold">
+                            + Other / Custom...
+                          </option>
                         </select>
                         
                         {showCustomCategoryInput && (
