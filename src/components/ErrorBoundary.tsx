@@ -1,6 +1,8 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Container } from './ui/Container';
+import { FirebaseConfigWarning } from './FirebaseConfigWarning';
+import { getFirebaseStatus } from '../firebase';
 
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
   constructor(props: { children: React.ReactNode }) {
@@ -18,6 +20,16 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
 
   render() {
     if (this.state.hasError) {
+      const errorStr = this.state.error?.toString() || "";
+      const isConfigError = errorStr.includes("invalid-api-key") || 
+                           errorStr.includes("Firebase: Error") ||
+                           errorStr.includes("network-request-failed") ||
+                           !getFirebaseStatus().isConfigured;
+
+      if (isConfigError) {
+        return <FirebaseConfigWarning variant="fullscreen" />;
+      }
+
       return (
         <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-6">
           <Container>

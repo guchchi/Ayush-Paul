@@ -26,6 +26,7 @@ import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, BlockType, SEOData, OperationType } from "../types";
 import { useSEO } from "../hooks/useSEO";
+import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -2033,12 +2034,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
 export const AdminPage = () => {
   useSEO({ title: "Admin Dashboard | Ayush Paul", noindex: true });
+  const { isConfigured } = getFirebaseStatus();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
+    if (!isConfigured) return;
     console.log("🕵️ [AUTH] Starting Auth Listener & Redirect Check...");
     
     // Check for redirect results (if user was sent back from Google)
@@ -2098,6 +2101,10 @@ export const AdminPage = () => {
       setIsLoggingIn(false);
     }
   };
+
+  if (!isConfigured) {
+    return <FirebaseConfigWarning variant="fullscreen" />;
+  }
 
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] gap-6">

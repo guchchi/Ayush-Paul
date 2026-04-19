@@ -5,8 +5,8 @@ import {
 } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
 
-// Construct Firebase configuration from environment variables
-const firebaseConfig = {
+// Health Check Layer: Detect environment readiness before bootstrapping
+const getRawConfig = () => ({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -14,21 +14,28 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   firestoreDatabaseId: import.meta.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(default)"
-};
+});
 
-// --- Production Diagnostic Engine ---
-const isProduction = import.meta.env.PROD;
-const missingVars = Object.entries(firebaseConfig)
+const rawConfig = getRawConfig();
+const missingVars = Object.entries(rawConfig)
   .filter(([key, value]) => !value && key !== 'firestoreDatabaseId')
   .map(([key]) => key);
 
-if (missingVars.length > 0) {
-  console.error("❌ Firebase Configuration Mismatch: Missing environment variables:", missingVars);
-} else {
-  console.log(`✅ Production Sync: Connected to [${firebaseConfig.projectId}] (${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'})`);
+const isConfigured = missingVars.length === 0;
+
+// FAIL-SAFE: If config is missing, initialize with dummy values to prevent early vendor crashes, 
+// but flag clearly so the UI can intercept.
+const firebaseConfig = isConfigured ? rawConfig : {
+  ...rawConfig,
+  apiKey: rawConfig.apiKey || "MISSING_KEY",
+  projectId: rawConfig.projectId || "MISSING_PROJECT"
+};
+
+if (!isConfigured) {
+  console.warn("⚠️ [SYSTEM HEALTH] Firebase is NOT configured. Missing:", missingVars);
 }
 
-// Initialize Firebase SDK
+// Initialize Firebase SDK Fail-Safe
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
@@ -37,9 +44,10 @@ export const auth = getAuth(app);
 export const getFirebaseStatus = () => ({
   projectId: firebaseConfig.projectId,
   databaseId: firebaseConfig.firestoreDatabaseId,
-  isConfigured: missingVars.length === 0,
+  isConfigured,
   missingVars,
-  mode: import.meta.env.MODE
+  mode: import.meta.env.MODE,
+  isProduction: import.meta.env.PROD
 });
 
 export const googleProvider = new GoogleAuthProvider();

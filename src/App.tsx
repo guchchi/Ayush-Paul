@@ -19,10 +19,14 @@ import { ProfileSelectionPage } from "./pages/ProfileSelectionPage";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
 import { CursorFollower, ScrollProgressBar } from "./components/ui/CursorEffects";
+import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
+import { getFirebaseStatus } from "./firebase";
 
 export default function App() {
   const [view, setView] = useState<"landing" | "profiles">("landing");
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
+  const [showConfigWarning, setShowConfigWarning] = useState(true);
+  const { isConfigured } = getFirebaseStatus();
 
   // Konami Code Easter Egg
   useEffect(() => {
@@ -65,6 +69,13 @@ export default function App() {
         <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen w-full text-white">
           <CursorFollower />
           <ScrollProgressBar />
+          
+          {!isConfigured && showConfigWarning && (
+            <FirebaseConfigWarning 
+              variant="banner" 
+              onDismiss={() => setShowConfigWarning(false)} 
+            />
+          )}
           
           <Routes>
             <Route path="/" element={
