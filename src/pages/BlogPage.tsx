@@ -172,6 +172,42 @@ export const BlogPage = () => {
               <div className="h-px bg-white/[0.05]" />
 
               <div className="p-8 space-y-12">
+                {/* Search Results (Live Matches) */}
+                {search && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                      <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">Top Results</div>
+                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary">{filteredPosts.length} matches</div>
+                    </div>
+                    <div className="space-y-2">
+                      {filteredPosts.length > 0 ? (
+                        filteredPosts.slice(0, 4).map(post => (
+                          <Link 
+                            to={`/blog/${post.slug}`} 
+                            key={post.id}
+                            className="w-full px-5 py-4 rounded-xl flex items-center justify-between transition-all group bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-brand-primary/30"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 shrink-0">
+                                <img src={post.coverImage} className="w-full h-full object-cover" alt="" referrerPolicy="no-referrer" />
+                              </div>
+                              <div className="flex flex-col gap-0.5">
+                                <span className="text-sm font-bold text-white group-hover:text-brand-primary transition-colors">{post.title}</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">{post.category}</span>
+                              </div>
+                            </div>
+                            <ArrowRight size={14} className="text-white/10 group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
+                          </Link>
+                        ))
+                      ) : (
+                        <div className="p-12 text-center rounded-2xl bg-white/[0.02] border border-dashed border-white/10">
+                          <p className="text-white/20 font-bold uppercase tracking-[0.2em] text-[10px]">No articles match your search</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Quick Actions (Categories) */}
                 <div className="space-y-6">
                   <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Topics</div>
