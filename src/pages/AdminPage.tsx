@@ -1078,6 +1078,11 @@ const HealthDashboard = () => {
                       <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Action Required: Missing Env Vars</div>
                       <p className="text-[11px] text-white/40 leading-relaxed">The following keys are missing in Vercel settings: <span className="text-red-400 font-mono">{status.missingVars.join(', ')}</span></p>
                     </div>
+                  ) : status.databaseId === "MISSING_DB" ? (
+                    <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/10 space-y-2">
+                      <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest">CRITICAL: Database Not Found</div>
+                      <p className="text-[11px] text-white/40 leading-relaxed">The specified Firestore ID <code className="text-red-400 font-mono">({status.databaseId})</code> does not exist in project <code className="text-white/60">{status.projectId}</code>. Verify your Vercel env variable <code className="text-white/60">VITE_FIREBASE_FIRESTORE_DB_ID</code>.</p>
+                    </div>
                   ) : (
                     <div className="p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/10 space-y-2">
                       <div className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">Verify Data Container</div>
@@ -1414,9 +1419,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
     } catch (error: any) {
       console.error("❌ [DB] Save Pipeline Failure:", error);
       if (!isAutosave) {
-        const errorMsg = error.code === 'permission-denied' 
-          ? "Security Error: You don't have permission to write. Verify your admin status."
-          : `System Error: ${error.message}`;
+        let errorMsg = `System Error: ${error.message}`;
+        
+        if (error.code === 'permission-denied') {
+          errorMsg = "Security Error: You don't have permission to write. Verify your admin status.";
+        } else if (error.message.includes('Database') && error.message.includes('not found')) {
+          errorMsg = `Database Error: The Firestore instance '${status.databaseId}' was not found. Please check your VITE_FIREBASE_FIRESTORE_DB_ID on Vercel.`;
+        }
+        
         alert(errorMsg);
       }
     } finally {
