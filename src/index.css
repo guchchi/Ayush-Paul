@@ -74,19 +74,22 @@
 
   * {
     box-sizing: border-box;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-    white-space: normal;
-    hyphens: none !important;
-    text-wrap: pretty;
+  }
+
+  /* Universal Reading Standard */
+  body {
+    overflow-x: hidden;
+    word-break: normal;
+    overflow-wrap: break-word;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   p, h1, h2, h3, h4, h5, h6, .prose * {
-    overflow-wrap: normal !important;
-    word-wrap: normal !important;
-    word-break: normal !important;
-    hyphens: none !important;
-    white-space: normal !important;
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: none;
+    text-wrap: pretty;
   }
 
   :root {
