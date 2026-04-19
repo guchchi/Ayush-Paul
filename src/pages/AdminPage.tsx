@@ -27,7 +27,19 @@ import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, BlockType, SEOData, OperationType } from "../types";
 import { useSEO } from "../hooks/useSEO";
 
-// --- CMS Utilities ---
+const BLOG_CATEGORIES = [
+  "Artificial Intelligence",
+  "Robotics",
+  "Crypto & Web3",
+  "Startups & Venture",
+  "Entrepreneurship",
+  "Software Engineering",
+  "Productivity & Workflow",
+  "Future Tech",
+  "Cybersecurity",
+  "Data Science"
+];
+
 
 /**
  * Validates an image URL by protocol (HTTPS), file type (blocks SVG), and an async pre-load test.
@@ -723,6 +735,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAuditing, setIsAuditing] = useState(false);
+  const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
 
   const testConnection = async () => {
     setIsAuditing(true);
@@ -903,9 +916,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
       tags: Array.isArray(post.tags) ? post.tags.join(", ") : post.tags || "",
       published: post.published || false,
       featured: post.featured || false,
-      category: post.category || "Technology",
+      category: post.category || "Artificial Intelligence",
       scheduledAt: post.scheduledAt || "",
     });
+    setShowCustomCategoryInput(post.category && !BLOG_CATEGORIES.includes(post.category));
     setBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]);
     setSeoData(post.seo || {
       title: post.title,
@@ -928,9 +942,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
       tags: "",
       published: false,
       featured: false,
-      category: "Technology",
+      category: "Artificial Intelligence",
       scheduledAt: "",
     });
+    setShowCustomCategoryInput(false);
     setBlocks([{ id: '1', type: 'text', content: '' }]);
     setSeoData({
       title: "",
@@ -1356,16 +1371,40 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Category</label>
                         <select 
-                          value={blogFormData.category}
-                          onChange={(e) => setBlogFormData({ ...blogFormData, category: e.target.value })}
+                          value={showCustomCategoryInput ? "Other" : blogFormData.category}
+                          onChange={(e) => {
+                            if (e.target.value === "Other") {
+                              setShowCustomCategoryInput(true);
+                              setBlogFormData({ ...blogFormData, category: "" });
+                            } else {
+                              setShowCustomCategoryInput(false);
+                              setBlogFormData({ ...blogFormData, category: e.target.value });
+                            }
+                          }}
                           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none"
                         >
-                          <option value="Technology">Technology</option>
-                          <option value="Robotics">Robotics</option>
-                          <option value="AI">Artificial Intelligence</option>
-                          <option value="Startup">Startup</option>
-                          <option value="Development">Development</option>
+                          {BLOG_CATEGORIES.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                          <option value="Other">Other / Custom...</option>
                         </select>
+                        
+                        {showCustomCategoryInput && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-2"
+                          >
+                            <input 
+                              type="text"
+                              placeholder="Enter custom category..."
+                              value={blogFormData.category}
+                              onChange={(e) => setBlogFormData({ ...blogFormData, category: e.target.value })}
+                              className="w-full bg-brand-primary/5 border border-brand-primary/20 rounded-xl px-4 py-3 text-sm outline-none text-brand-primary placeholder:text-brand-primary/30"
+                              autoFocus
+                            />
+                          </motion.div>
+                        )}
                       </div>
 
                       <div className="space-y-2">
