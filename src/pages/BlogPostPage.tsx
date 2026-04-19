@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Calendar, Clock, Info, ArrowRight } from "lucide-react";
+import { Calendar, Clock, Info, ArrowRight, Twitter, Linkedin, MessageCircle, Link2, Check } from "lucide-react";
 import { collection, query, where, onSnapshot, limit, orderBy, updateDoc, doc, increment } from "firebase/firestore";
 import ReactMarkdown from "react-markdown";
 import { db } from "../firebase";
@@ -15,6 +15,9 @@ export const BlogPostPage = () => {
   const [post, setPost] = useState<any>(null);
   const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeHeading, setActiveHeading] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useSEO({
     title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
@@ -75,20 +78,73 @@ export const BlogPostPage = () => {
     return () => unsubscribe();
   }, [slug]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${(totalScroll / windowHeight) * 100}`;
+      setScrollProgress(Number(scroll));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!post?.blocks) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHeading(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-100px 0px -60% 0px" }
+    );
+
+    setTimeout(() => {
+      document.querySelectorAll("h2, h3, h4").forEach((element) => {
+        observer.observe(element);
+      });
+    }, 1000);
+
+    return () => observer.disconnect();
+  }, [post]);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const getTOC = () => {
+    if (!post?.blocks) return [];
+    return post.blocks.filter((b: any) => b.type === 'heading').map((b: any) => ({
+      id: `heading-${b.id}`,
+      text: b.content,
+      level: b.metadata?.level || 2
+    }));
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]"><div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" /></div>;
   if (!post) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] text-white">Post not found</div>;
 
   return (
-    <div className="page-content bg-[#0A0A0A]">
+    <div className="page-content bg-[#0A0A0A] relative">
+      <div className="fixed top-0 left-0 h-1 bg-brand-primary z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
       <div className="container mx-auto px-6">
-        <article className="max-w-4xl mx-auto border-b border-white/5 pb-20">
-          <div className="mb-10">
+        <div className="mb-10 lg:pl-[max(0px,calc(50%-448px))]">
+
             <BackButton to="/blog" label="Back to Blog" />
           </div>
 
-          <div className="mb-12">
-            <div className="flex flex-wrap items-center gap-6 mb-8">
-              <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto">
+          <article className="w-full">
+            <div className="w-full max-w-2xl mx-auto text-left mb-12">
+              <div className="flex flex-wrap items-center gap-6 mb-8">
+                <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
                 <Calendar size={16} className="text-brand-primary" />
                 {formatDate(post.createdAt)}
               </div>
@@ -127,7 +183,7 @@ export const BlogPostPage = () => {
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
 
-          <div className="w-full max-w-2xl mx-auto px-6 text-left">
+          <div className="w-full max-w-2xl mx-auto text-left">
             <div className="prose prose-invert prose-base md:prose-lg lg:prose-xl max-w-none leading-[1.8] break-words">
             {post.blocks ? (
               <div className="space-y-8">
@@ -137,7 +193,8 @@ export const BlogPostPage = () => {
                       return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />;
                     case 'heading':
                       const HeadingTag = `h${block.metadata?.level || 2}` as any;
-                      return <HeadingTag key={block.id} className="font-bold text-white/90 mt-12 mb-6">{block.content}</HeadingTag>;
+                      return <HeadingTag id={`heading-${block.id}`} key={block.id} className="font-bold text-white/90 mt-12 mb-6 scroll-m-32">{block.content}</HeadingTag>;
+
                     case 'list':
                       return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="list-container" />;
                     case 'image':
@@ -190,8 +247,59 @@ export const BlogPostPage = () => {
               <ReactMarkdown>{post.content}</ReactMarkdown>
             )}
             </div>
-          </div>
-        </article>
+            </div>
+          </article>
+
+          <aside className="hidden lg:block relative py-12">
+            <div className="sticky top-32 space-y-16">
+              {getTOC().length > 0 && (
+                <div className="space-y-6">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 flex items-center gap-2">
+                    <Info size={12} /> Table of Contents
+                  </h3>
+                  <div className="space-y-3 border-l border-white/10 pl-4">
+                    {getTOC().map((item: any) => (
+                      <a 
+                        key={item.id} 
+                        href={`#${item.id}`}
+                        className={cn(
+                          "block text-sm transition-all duration-300 hover:text-white line-clamp-2",
+                          activeHeading === item.id 
+                            ? "text-brand-primary font-bold -ml-[17px] border-l-2 border-brand-primary pl-4" 
+                            : "text-white/40"
+                        )}
+                        style={{ marginLeft: item.level > 2 ? `${(item.level - 2) * 12}px` : undefined }}
+                      >
+                        {item.text}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-6">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 flex items-center gap-2">
+                  <ArrowRight size={12} /> Share Article
+                </h3>
+                <div className="flex flex-wrap items-center gap-3">
+                  <a href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 transition-all">
+                    <Twitter size={16} />
+                  </a>
+                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 transition-all">
+                    <Linkedin size={16} />
+                  </a>
+                  <a href={`https://api.whatsapp.com/send?text=${post.title} ${window.location.href}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#25D366] hover:bg-[#25D366]/10 hover:border-[#25D366]/30 transition-all">
+                    <MessageCircle size={16} />
+                  </a>
+                  <button onClick={handleCopyLink} className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-brand-primary hover:bg-brand-primary/10 hover:border-brand-primary/30 transition-all relative group">
+                    {copied ? <Check size={16} className="text-brand-primary" /> : <Link2 size={16} />}
+                    {copied && <span className="absolute -top-10 bg-brand-primary text-black text-[10px] font-bold px-3 py-1 rounded-full animate-in fade-in zoom-in w-max">Link Copied!</span>}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
 
         {/* Related Posts Section */}
         {relatedPosts.length > 0 && (
