@@ -1,27 +1,31 @@
 import { auth } from "../firebase";
 import { OperationType, FirestoreErrorInfo } from "../types";
 
-export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
-  const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
-      isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData.map(provider => ({
-        providerId: provider.providerId,
-        displayName: provider.displayName,
-        email: provider.email,
-        photoUrl: provider.photoURL
-      })) || []
-    },
+export function handleFirestoreError(error: any, operationType: OperationType, path: string | null) {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const isQuotaExceeded = errorMessage.toLowerCase().includes("quota exceeded") || 
+                          errorMessage.toLowerCase().includes("resource exhausted");
+
+  const errInfo = {
+    error: errorMessage,
+    isQuotaExceeded,
+    timestamp: new Date().toISOString(),
     operationType,
-    path
+    path,
+    auth: {
+      uid: auth.currentUser?.uid,
+      loggedIn: !!auth.currentUser
+    }
+  };
+
+  if (isQuotaExceeded) {
+    console.warn("⚠️ FIRESTORE QUOTA EXCEEDED: The free tier limit has been reached for today. Data might not appear until the daily reset.");
   }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+
+  console.error('🔥 Firestore Diagnostic:', errInfo);
+  
+  // Return the error info so the component can use it if needed
+  return errInfo;
 }
 
 export function formatDate(date: any) {

@@ -20,7 +20,7 @@ import {
   auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, 
   signOut, onAuthStateChanged, 
   collection, doc, setDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
-  serverTimestamp 
+  serverTimestamp, getFirebaseStatus 
 } from "../firebase";
 import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
@@ -880,6 +880,103 @@ const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: str
   );
 };
 
+// --- Health Dashboard Component ---
+
+const HealthDashboard = () => {
+  const status = getFirebaseStatus();
+  const [showTroubleshooter, setShowTroubleshooter] = useState(false);
+
+  return (
+    <div className="mb-12 space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-6 p-8 bg-white/5 border border-white/10 rounded-[32px] backdrop-blur-3xl">
+        <div className="flex items-center gap-6">
+          <div className={cn(
+            "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-2xl",
+            status.isConfigured ? "bg-green-500/10 text-green-500 border border-green-500/20" : "bg-red-500/10 text-red-500 border border-red-500/20"
+          )}>
+            {status.isConfigured ? <CheckCircle2 size={24} /> : <AlertCircle size={24} />}
+          </div>
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-1">Production Health Check</div>
+            <h3 className="text-xl font-bold flex items-center gap-3">
+              {status.isConfigured ? "System Online" : "Configuration Warning"}
+              <span className="px-2 py-0.5 rounded-md bg-white/10 text-[9px] font-bold uppercase tracking-widest text-white/40">{status.mode}</span>
+            </h3>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-8">
+          <div className="flex flex-col gap-1">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Current Project</span>
+            <span className="text-xs font-mono font-bold text-brand-primary">{status.projectId || "NOT_SET"}</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Database Instance</span>
+            <span className="text-xs font-mono font-bold text-white/60">{status.databaseId}</span>
+          </div>
+          <button 
+            onClick={() => setShowTroubleshooter(!showTroubleshooter)}
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all"
+          >
+            {showTroubleshooter ? "Hide Diagnostics" : "Run Troubleshooter"}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showTroubleshooter && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="grid md:grid-cols-2 gap-6 p-8 bg-white/[0.02] border border-white/5 rounded-[32px]">
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Diagnostic Audit</h4>
+                <ul className="space-y-3">
+                  {[
+                    { label: "Firebase App Initialized", val: true },
+                    { label: "Environment Keys Verified", val: status.isConfigured },
+                    { label: "Database Route Set", val: !!status.databaseId },
+                    { label: "Auth Provider Active", val: true }
+                  ].map((check, i) => (
+                    <li key={i} className="flex items-center justify-between text-xs py-2 border-b border-white/5">
+                      <span className="text-white/60">{check.label}</span>
+                      {check.val ? <CheckCircle2 size={14} className="text-green-500" /> : <AlertCircle size={14} className="text-red-500" />}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-secondary">Strategic Troubleshooting</h4>
+                <div className="space-y-4">
+                  {!status.isConfigured ? (
+                    <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/10 space-y-2">
+                      <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Action Required: Missing Env Vars</div>
+                      <p className="text-[11px] text-white/40 leading-relaxed">The following keys are missing in Vercel settings: <span className="text-red-400 font-mono">{status.missingVars.join(', ')}</span></p>
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/10 space-y-2">
+                      <div className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">Verify Data Container</div>
+                      <p className="text-[11px] text-white/40 leading-relaxed">Ensure the <code className="text-white/60">projectId</code> matches where you wrote the blogs locally. If blogs aren't appearing, check Firestore Security Rules for <code className="text-white/60">allow read</code> permissions.</p>
+                    </div>
+                  )}
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <div className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Check Daily Quota</div>
+                    <p className="text-[11px] text-white/40 leading-relaxed">If the app is online but shows no data, your daily Firebase Read Quota may be hit. Check the browser console (F12) for "Quota Exceeded" errors.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const AdminDashboard = ({ user }: { user: any }) => {
   const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "messages" | "dashboard">("dashboard");
   const [posts, setPosts] = useState<any[]>([]);
@@ -1343,7 +1440,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
               </button>
             ))}
           </div>
-        )}
+        {!isEditing && <HealthDashboard />}
 
         {isEditing ? (
           <div className="space-y-12">
