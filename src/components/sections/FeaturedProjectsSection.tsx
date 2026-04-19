@@ -17,15 +17,19 @@ import { VARIANTS, EASING } from '../../lib/motion-presets';
 
 const Projects = ({ filter }: { filter: string | null }) => {
   const [projects, setProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<any>(null);
 
   useEffect(() => {
+    setLoading(true);
     const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setProjects(data);
+      setLoading(false);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, "projects");
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -115,7 +119,18 @@ const Projects = ({ filter }: { filter: string | null }) => {
         )}
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
-          {filteredProjects.filter(p => !p.featured || filter).map((project, i) => (
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-video rounded-[32px] bg-white/5 mb-8" />
+                <div className="space-y-4 px-2">
+                  <div className="h-4 w-1/4 bg-white/5 rounded-full" />
+                  <div className="h-8 w-3/4 bg-white/5 rounded-full" />
+                  <div className="h-4 w-full bg-white/5 rounded-full" />
+                </div>
+              </div>
+            ))
+          ) : filteredProjects.filter(p => !p.featured || filter).map((project, i) => (
             <motion.div
               key={project.id}
               variants={VARIANTS.fadeUp}

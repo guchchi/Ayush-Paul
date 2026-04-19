@@ -15,6 +15,7 @@ export const BlogPage = () => {
     description: "Ayush Paul's Blog discussing AI, Development, learning journey and featured projects."
   });
   const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -32,12 +33,15 @@ export const BlogPage = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const q = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"), where("published", "==", true));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPosts(data);
+      setLoading(false);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, "blogPosts");
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -280,7 +284,19 @@ export const BlogPage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map(post => (
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="glass-card rounded-3xl overflow-hidden border border-white/5 h-[400px] animate-pulse">
+                <div className="aspect-video bg-white/5" />
+                <div className="p-8 space-y-4">
+                  <div className="h-4 w-1/3 bg-white/5 rounded-full" />
+                  <div className="h-8 w-full bg-white/5 rounded-full" />
+                  <div className="h-4 w-full bg-white/5 rounded-full" />
+                </div>
+              </div>
+            ))
+          ) : filteredPosts.map(post => (
+
             <Link to={`/blog/${post.slug}`} key={post.id} className="group">
               <div className="glass-card rounded-3xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all h-full flex flex-col">
                 <div className="aspect-video overflow-hidden relative">
