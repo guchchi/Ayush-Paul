@@ -134,16 +134,16 @@ export const BlogPostPage = () => {
   return (
     <div className="page-content bg-[#0A0A0A] relative">
       <div className="fixed top-0 left-0 h-1 bg-brand-primary z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
-      <div className="container mx-auto px-6">
-        <div className="mb-10 lg:pl-[max(0px,calc(50%-448px))]">
+      <div className="container mx-auto">
+        <div className="mb-10 px-6">
 
             <BackButton to="/blog" label="Back to Blog" />
           </div>
 
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto">
-          <article className="w-full">
-            <div className="w-full max-w-2xl mx-auto text-left mb-12">
-              <div className="flex flex-wrap items-center gap-6 mb-8">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto px-6">
+          <article className="w-full min-w-0">
+            <div className="w-full lg:max-w-2xl lg:mx-auto mb-12">
+              <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-8">
                 <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
                 <Calendar size={16} className="text-brand-primary" />
                 {formatDate(post.createdAt)}
@@ -183,7 +183,7 @@ export const BlogPostPage = () => {
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
 
-          <div className="w-full max-w-2xl mx-auto text-left">
+          <div className="w-full lg:max-w-2xl lg:mx-auto">
             <div className="prose prose-invert prose-base md:prose-lg lg:prose-xl max-w-none leading-[1.8] break-words">
             {post.blocks ? (
               <div className="space-y-8">
