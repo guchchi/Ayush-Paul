@@ -87,8 +87,8 @@
 
   p, h1, h2, h3, h4, h5, h6, .prose *, .prose p, .prose {
     word-break: normal !important;
-    overflow-wrap: normal !important;
-    word-wrap: normal !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
     hyphens: none !important;
     text-wrap: wrap !important;
     white-space: normal !important;
