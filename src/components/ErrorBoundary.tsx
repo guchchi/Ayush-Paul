@@ -47,11 +47,9 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
               >
                 Reload Page
               </button>
-              {process.env.NODE_ENV === 'development' && (
-                <pre className="mt-8 p-6 bg-black/50 rounded-2xl text-left text-xs text-red-400 overflow-auto max-h-[200px]">
-                  {this.state.error?.toString()}
-                </pre>
-              )}
+              <pre className="mt-8 p-6 bg-black/50 rounded-2xl text-left text-xs text-red-400 overflow-auto max-h-[200px]">
+                {this.state.error?.toString()}
+              </pre>
             </div>
           </Container>
         </div>

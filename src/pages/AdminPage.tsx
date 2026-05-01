@@ -4,7 +4,7 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail
 } from "lucide-react";
 import { 
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
