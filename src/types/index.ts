@@ -13,7 +13,10 @@ export interface Block {
     language?: string;
     variant?: 'info' | 'warning' | 'success' | 'danger';
     title?: string;
+    fullPath?: string; // Stored path for cleanup
   };
+  localFile?: File; // For UI state
+  localPreview?: string; // For UI state
 }
 
 export interface SEOData {

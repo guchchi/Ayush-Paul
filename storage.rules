@@ -1,8 +1,38 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid in ["80OJfcmVXCRNmSZuthVU68K6vJq2"];
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function under5MB() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    match /blog_images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && under5MB();
+    }
+
+    match /blog_covers/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && under5MB();
+    }
+
+    match /project_images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && under5MB();
+    }
+
+    // Deny everything else by default
     match /{allPaths=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

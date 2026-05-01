@@ -4,7 +4,7 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload
 } from "lucide-react";
 import { 
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
@@ -27,6 +27,7 @@ import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, BlockType, SEOData, OperationType } from "../types";
 import { useSEO } from "../hooks/useSEO";
 import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
+import { uploadImage, deleteImageByPath } from "../lib/storage-utils";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -82,6 +83,110 @@ const validateImageUrl = async (url: string): Promise<{ isValid: boolean, error?
 
     img.src = url;
   });
+};
+
+const ImageUploadField = ({ 
+  value, 
+  onChange, 
+  path = "blog_images", 
+  label = "Image URL or Upload" 
+}: { 
+  value: string, 
+  onChange: (url: string) => void, 
+  path?: string,
+  label?: string
+}) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError("Please upload an image file.");
+      return;
+    }
+
+    // Validate size (e.g., 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size should be less than 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    setError(null);
+    setUploadProgress(0);
+
+    try {
+      const url = await uploadImage(file, path, (progress) => {
+        setUploadProgress(progress);
+      });
+      onChange(url);
+    } catch (err: any) {
+      setError(`Upload failed: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">{label}</label>
+        {isUploading && (
+          <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Uploading {Math.round(uploadProgress)}%
+          </div>
+        )}
+      </div>
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <input 
+            type="text" 
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder="https://..."
+            className={cn(
+              "w-full bg-white/5 border rounded-2xl px-6 py-4 outline-none transition-all pr-12",
+              error ? "border-red-500/50 text-red-500" : "border-white/10 focus:border-brand-primary text-white"
+            )}
+          />
+          {value && (
+            <button 
+              onClick={() => onChange('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+        <label className={cn(
+          "shrink-0 w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center cursor-pointer transition-all hover:bg-white/5 hover:border-brand-primary group",
+          isUploading && "pointer-events-none opacity-50"
+        )}>
+          <Upload size={20} className="text-white/20 group-hover:text-brand-primary transition-colors" />
+          <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+        </label>
+      </div>
+      {error && (
+        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 ml-1">
+          <AlertCircle size={12} /> {error}
+        </div>
+      )}
+      {isUploading && (
+        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+          <motion.div 
+            className="h-full bg-brand-primary"
+            initial={{ width: 0 }}
+            animate={{ width: `${uploadProgress}%` }}
+          />
+        </div>
+      )}
+    </div>
+  );
 };
 
 // --- CMS Components ---
@@ -191,25 +296,54 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
 
         return (
           <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Image URL</label>
-              <div className="relative">
-                <input 
-                  type="text" 
-                  value={block.content}
-                  onChange={(e) => handleUrlChange(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className={cn(
-                    "w-full bg-white/5 border rounded-2xl px-6 py-4 outline-none transition-all",
-                    validationError ? "border-red-500/50 text-red-500" : "border-white/10 focus:border-brand-primary text-white"
-                  )}
-                />
-                {isValidating && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Verifying...
-                  </div>
-                )}
-              </div>
+          <div className="space-y-4">
+            <div className="space-y-4">
+              <label className="text-sm font-bold text-white/40 ml-1">Image URL (optional if uploading a file)</label>
+              <input
+                type="text"
+                value={block.content}
+                onChange={async (e) => {
+                  const url = e.target.value;
+                  onUpdate(block.id, { content: url });
+                  if (!url) return;
+                  setIsValidating(true);
+                  const result = await validateImageUrl(url);
+                  setIsValidating(false);
+                  if (!result.isValid) setValidationError(result.error || "Invalid Image");
+                  else setValidationError(null);
+                }}
+                placeholder="https://..."
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
+              />
+
+              <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  
+                  if (block.localPreview) URL.revokeObjectURL(block.localPreview);
+
+                  if (!file) {
+                    onUpdate(block.id, { localFile: undefined, localPreview: undefined });
+                    return;
+                  }
+
+                  onUpdate(block.id, { 
+                    localFile: file, 
+                    localPreview: URL.createObjectURL(file),
+                    content: '' // Clear URL when file is selected
+                  });
+                }}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
+              />
+              
+              {isValidating && (
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse ml-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Verifying...
+                </div>
+              )}
               {validationError && (
                 <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 ml-1">
                   <AlertCircle size={12} /> {validationError}
@@ -217,14 +351,14 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
               )}
             </div>
 
-            {block.content && !validationError && !isValidating && (
+            {(block.localPreview || block.content) && !validationError && !isValidating && (
               <div className={cn(
                 "relative group rounded-2xl overflow-hidden border border-white/10",
                 block.metadata?.alignment === 'center' ? "max-w-2xl mx-auto" : 
                 block.metadata?.alignment === 'full' ? "w-full" : "max-w-xl"
               )}>
                 <img 
-                  src={block.content} 
+                  src={block.localPreview || block.content} 
                   alt={block.metadata?.alt} 
                   className="w-full h-auto"
                 />
@@ -237,7 +371,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
               </div>
             )}
             
-            {!block.content && !isValidating && (
+            {!(block.localPreview || block.content) && !isValidating && (
               <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-white/20 pb-8">
                 <ImageIcon size={48} className="mb-4 text-white/5" />
                 <p className="font-bold">Paste an HTTPS image URL above to preview</p>
@@ -589,7 +723,13 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   };
 
   const deleteBlock = (id: string) => {
-    setBlocks(blocks.filter(b => b.id !== id));
+    setBlocks(blocks.filter(b => {
+      if (b.id === id) {
+        if (b.localPreview) URL.revokeObjectURL(b.localPreview);
+        return false;
+      }
+      return true;
+    }));
   };
 
   return (
@@ -1108,6 +1248,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
+  const [subscribers, setSubscribers] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
@@ -1156,6 +1297,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
     scheduledAt: "",
   });
 
+  const [blogCoverFile, setBlogCoverFile] = useState<File | null>(null);
+  const [blogCoverPreview, setBlogCoverPreview] = useState<string>("");
+  const [blogCoverPath, setBlogCoverPath] = useState<string>("");
+
+  useEffect(() => {
+    return () => { if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview); };
+  }, [blogCoverPreview]);
+
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [seoData, setSeoData] = useState<SEOData>({
     title: "",
@@ -1178,7 +1327,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
     link: ""
   });
 
+  const [projectImageFile, setProjectImageFile] = useState<File | null>(null);
+  const [projectImagePreview, setProjectImagePreview] = useState<string>("");
+  const [projectImagePath, setProjectImagePath] = useState<string>("");
+
+  useEffect(() => {
+    return () => {
+      if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
+    };
+  }, [projectImagePreview]);
+
   const [blogFilter, setBlogFilter] = useState<"all" | "published" | "draft" | "scheduled" | "featured">("all");
+  const [blogSearchQuery, setBlogSearchQuery] = useState("");
 
   useEffect(() => {
     const qBlogs = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
@@ -1202,10 +1362,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
       handleFirestoreError(error, OperationType.GET, "contacts");
     });
 
+    const qSubs = query(collection(db, "newsletter"), orderBy("subscribedAt", "desc"));
+    const unsubscribeSubs = onSnapshot(qSubs, (snapshot) => {
+      setSubscribers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "newsletter");
+    });
+
     return () => {
       unsubscribeBlogs();
       unsubscribeProjects();
       unsubscribeMessages();
+      unsubscribeSubs();
     };
   }, []);
 
@@ -1301,6 +1469,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
       category: post.category || "Artificial Intelligence",
       scheduledAt: post.scheduledAt || "",
     });
+    setBlogCoverPath(post.coverImagePath || "");
+    setBlogCoverFile(null);
+    if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
+    setBlogCoverPreview("");
     setShowCustomCategoryInput(post.category && !BLOG_CATEGORIES.includes(post.category));
     setBlocks(normalizeBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]));
     setSeoData(post.seo || {
@@ -1327,6 +1499,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
       category: "Artificial Intelligence",
       scheduledAt: "",
     });
+    setBlogCoverPath("");
+    setBlogCoverFile(null);
+    if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
+    setBlogCoverPreview("");
     setShowCustomCategoryInput(false);
     setBlocks(normalizeBlocks([{ id: '1', type: 'text', content: '' }]));
     setSeoData({
@@ -1344,7 +1520,6 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
 
-    // 1. Structural Guard: Don't allow empty content if manual save
     if (!isAutosave) {
       if (!blogFormData.title.trim()) {
         alert("Validation Error: Please add a title before publishing.");
@@ -1352,60 +1527,80 @@ const AdminDashboard = ({ user }: { user: any }) => {
       }
     }
 
-    if (isSaving && !isAutosave) return; // Prevent double submission
+    if (isSaving && !isAutosave) return;
     if (!isAutosave) setIsSaving(true);
 
+    const newlyUploadedPaths: string[] = [];
+    const oldCoverPath = currentPost?.coverImagePath ?? blogCoverPath ?? "";
+    const oldBlockPaths = (currentPost?.blocks || []).filter((b: any) => b.type === 'image').map((b: any) => b.metadata?.fullPath).filter(Boolean);
+
     try {
-      // 2. Optimized Parallel Validation
-      // Use Promise.all to avoid 5s wait per image. Maximum wait is now 5s total.
-      const imageValidationTasks = [];
-      
-      // Cover Image
-      if (blogFormData.coverImage) {
-        imageValidationTasks.push(
-          validateImageUrl(blogFormData.coverImage).then(res => ({ ...res, source: 'Cover Image' }))
-        );
+      let finalCoverUrl = blogFormData.coverImage;
+      let finalCoverPath = blogCoverPath;
+
+      if (blogCoverFile) {
+        const up = await uploadImage(blogCoverFile, "blog_covers");
+        newlyUploadedPaths.push(up.fullPath);
+        finalCoverUrl = up.url;
+        finalCoverPath = up.fullPath;
       }
-      
-      // Block Images
-      blocks.forEach(block => {
-        if (block.type === 'image' && block.content) {
-          imageValidationTasks.push(
-            validateImageUrl(block.content).then(res => ({ ...res, source: `Block Image [${block.id}]` }))
-          );
-        }
+
+      const imageBlocksNeedingUpload = blocks.filter(b => b.type === "image" && !!b.localFile);
+
+      const uploaded = await Promise.all(
+        imageBlocksNeedingUpload.map(b => uploadImage(b.localFile as File, "blog_images"))
+      );
+
+      uploaded.forEach(u => newlyUploadedPaths.push(u.fullPath));
+
+      let uploadIndex = 0;
+      const finalBlocks = blocks.map(b => {
+        if (b.type !== "image" || !b.localFile) return b;
+
+        const u = uploaded[uploadIndex++];
+        const { localFile, localPreview, metadata, ...rest } = b;
+        return { 
+          ...rest, 
+          content: u.url, 
+          metadata: { ...metadata, fullPath: u.fullPath } 
+        };
       });
 
-      const validationResults = await Promise.all(imageValidationTasks);
-      const failed = validationResults.find(r => !r.isValid);
-      
-      if (failed && !isAutosave) {
-        alert(`${failed.source} Error: ${failed.error}`);
-        setIsSaving(false);
-        return;
-      }
+      const sanitizedBlocks = finalBlocks.map(b => {
+        const { localFile, localPreview, ...rest } = b;
+        return rest;
+      });
 
       const postData = {
         ...blogFormData,
-        blocks,
+        coverImage: finalCoverUrl,
+        coverImagePath: finalCoverPath,
+        blocks: sanitizedBlocks,
         seo: seoData,
         tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
         updatedAt: serverTimestamp(),
         author: user.email,
         readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
       };
-
-      console.log("💾 [DB] Attempting Sync with Blocks:", blocks.length);
       
       if (currentPost) {
         await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
+
+        const newBlockPaths = sanitizedBlocks.filter(b => b.type === 'image').map(b => b.metadata?.fullPath).filter(Boolean);
+        const toDelete = new Set<string>();
+
+        if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
+
+        const newSet = new Set(newBlockPaths);
+        for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
+
+        await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
       } else if (!isAutosave) {
         const newDoc = await addDoc(collection(db, "blogPosts"), {
           ...postData,
           createdAt: serverTimestamp(),
           views: 0
         });
-        console.log("✅ [DB] New Post Created:", newDoc.id);
       }
       
       setLastSaved(new Date());
@@ -1413,20 +1608,20 @@ const AdminDashboard = ({ user }: { user: any }) => {
         setIsEditing(false);
         setCurrentPost(null);
         resetBlogForm();
-        // Use timeout to ensure state transitions finish before alert blocks the thread
         setTimeout(() => alert("Success! Your post is live."), 100);
+      } else {
+        setBlocks(sanitizedBlocks.map(b => ({ ...b, localFile: undefined, localPreview: undefined })));
       }
     } catch (error: any) {
       console.error("❌ [DB] Save Pipeline Failure:", error);
+      
+      await Promise.all(newlyUploadedPaths.map(p => deleteImageByPath(p)));
+
       if (!isAutosave) {
         let errorMsg = `System Error: ${error.message}`;
-        
         if (error.code === 'permission-denied') {
           errorMsg = "Security Error: You don't have permission to write. Verify your admin status.";
-        } else if (error.message.includes('Database') && error.message.includes('not found')) {
-          errorMsg = `Database Error: The Firestore instance '${status.databaseId}' was not found. Please check your VITE_FIREBASE_FIRESTORE_DB_ID on Vercel.`;
         }
-        
         alert(errorMsg);
       }
     } finally {
@@ -1436,38 +1631,75 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
   const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate Project Image
-    if (projectFormData.image) {
-      const check = await validateImageUrl(projectFormData.image);
-      if (!check.isValid) {
-        alert(`Project Image Error: ${check.error}`);
-        return;
-      }
-    }
+    setIsSaving(true);
 
-    const projectData = {
-      ...projectFormData,
-      tech: projectFormData.tech.split(",").map(t => t.trim()).filter(t => t),
-      updatedAt: serverTimestamp()
-    };
+    let uploaded: { url: string; fullPath: string } | null = null;
+    const oldImagePath = projectImagePath;
 
-    console.log("💾 Phase 6: Saving project document:", projectData);
     try {
+      if (projectImageFile) {
+        uploaded = await uploadImage(projectImageFile, "project_images");
+      }
+
+      const finalImageUrl = uploaded?.url ?? projectFormData.image;
+
+      if (!projectImageFile && finalImageUrl) {
+        const check = await validateImageUrl(finalImageUrl);
+        if (!check.isValid) {
+          alert(`Project Image Error: ${check.error}`);
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      const projectData = {
+        ...projectFormData,
+        image: finalImageUrl || "",
+        imagePath: uploaded?.fullPath ?? projectImagePath ?? "",
+        tech: projectFormData.tech.split(",").map(t => t.trim()).filter(Boolean),
+        updatedAt: serverTimestamp()
+      };
+
       if (currentProject) {
         await updateDoc(doc(db, "projects", currentProject.id), projectData);
+
+        if (uploaded?.fullPath && oldImagePath && oldImagePath !== uploaded.fullPath) {
+          await deleteImageByPath(oldImagePath);
+        }
       } else {
-        await setDoc(doc(collection(db, "projects")), {
-          ...projectData,
-          createdAt: serverTimestamp()
-        });
+        const newRef = doc(collection(db, "projects"));
+        await setDoc(newRef, { ...projectData, createdAt: serverTimestamp() });
       }
-      console.log("✅ DOCUMENT SAVED [PROJECT]");
+
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+      
+      setProjectImagePath("");
+      setProjectImageFile(null);
+      if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
+      setProjectImagePreview("");
+
     } catch (error) {
+      console.error("Project save pipeline failed:", error);
+
+      if (uploaded?.fullPath) {
+        await deleteImageByPath(uploaded.fullPath);
+      }
+
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleToggleMessageStatus = async (id: string, currentStatus: string) => {
+    try {
+      await updateDoc(doc(db, "contacts", id), {
+        status: currentStatus === 'read' ? 'unread' : 'read'
+      });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, "contacts");
     }
   };
 
@@ -1578,6 +1810,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
               { id: 'blogs', label: 'Blog Posts', icon: <FileText size={18} /> },
               { id: 'projects', label: 'Projects', icon: <Layers size={18} /> },
               { id: 'messages', label: 'Messages', icon: <MessageSquare size={18} /> },
+              { id: 'subscribers', label: 'Newsletter', icon: <Mail size={18} /> },
             ].map((tab) => (
               <button 
                 key={tab.id}
@@ -1676,37 +1909,57 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       </div>
 
                       <div className="space-y-4">
-                        <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Cover Image URL</label>
-                        <div className="space-y-4">
-                          <input 
-                            type="text" 
-                            value={blogFormData.coverImage}
-                            onChange={async (e) => {
-                              const url = e.target.value;
-                              setBlogFormData({ ...blogFormData, coverImage: url });
-                            }}
-                            placeholder="https://images.unsplash.com/..."
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
-                          />
-                          
-                          {blogFormData.coverImage && (
-                            <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5">
-                              <img src={blogFormData.coverImage} className="w-full h-full object-cover" />
-                              <button 
-                                onClick={() => setBlogFormData({ ...blogFormData, coverImage: '' })}
-                                className="absolute top-4 right-4 p-3 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
-                                <X size={20} />
-                              </button>
-                            </div>
-                          )}
-                          {!blogFormData.coverImage && (
-                            <div className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10">
-                              <ImageIcon size={48} className="mb-4" />
-                              <span className="text-sm font-bold">Preview will appear here</span>
-                            </div>
-                          )}
-                        </div>
+                        <label className="text-sm font-bold text-white/40 ml-1">Cover Image URL (optional if uploading a file)</label>
+                        <input
+                          type="text"
+                          value={blogFormData.coverImage}
+                          onChange={(e) => setBlogFormData({ ...blogFormData, coverImage: e.target.value })}
+                          placeholder="https://..."
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
+                        />
+
+                        <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] ?? null;
+
+                            if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
+
+                            if (!file) {
+                              setBlogCoverFile(null);
+                              setBlogCoverPreview("");
+                              return;
+                            }
+
+                            setBlogCoverFile(file);
+                            setBlogCoverPreview(URL.createObjectURL(file));
+                          }}
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
+                        />
+                        
+                        {(blogCoverPreview || blogFormData.coverImage) && (
+                          <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5 mt-4">
+                            <img src={blogCoverPreview || blogFormData.coverImage} className="w-full h-full object-cover" />
+                            <button 
+                              onClick={() => {
+                                setBlogCoverFile(null);
+                                setBlogCoverPreview("");
+                                setBlogFormData({ ...blogFormData, coverImage: '' });
+                              }}
+                              className="absolute top-4 right-4 p-3 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X size={20} />
+                            </button>
+                          </div>
+                        )}
+                        {!(blogCoverPreview || blogFormData.coverImage) && (
+                          <div className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10 mt-4">
+                            <ImageIcon size={48} className="mb-4" />
+                            <span className="text-sm font-bold">Preview will appear here</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="pt-12 border-t border-white/10">
@@ -1884,18 +2137,43 @@ const AdminDashboard = ({ user }: { user: any }) => {
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-white/40 ml-1">Image URL</label>
-                    <input 
-                      type="text" 
+                    <label className="text-sm font-bold text-white/40 ml-1">Image URL (optional if uploading a file)</label>
+                    <input
+                      type="text"
                       value={projectFormData.image}
                       onChange={(e) => setProjectFormData({ ...projectFormData, image: e.target.value })}
                       placeholder="https://..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
-                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
                     />
-                    {projectFormData.image && (
+
+                    <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] ?? null;
+
+                        if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
+
+                        if (!file) {
+                          setProjectImageFile(null);
+                          setProjectImagePreview("");
+                          return;
+                        }
+
+                        setProjectImageFile(file);
+                        setProjectImagePreview(URL.createObjectURL(file));
+                      }}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
+                    />
+
+                    {(projectImagePreview || projectFormData.image) && (
                       <div className="mt-4 aspect-video rounded-2xl overflow-hidden border border-white/10">
-                        <img src={projectFormData.image} className="w-full h-full object-cover" />
+                        <img
+                          src={projectImagePreview || projectFormData.image}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     )}
                   </div>
@@ -1947,9 +2225,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
                   </button>
                   <button 
                     type="submit"
-                    className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all"
+                    disabled={isSaving}
+                    className={cn(
+                      "px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold transition-all flex items-center gap-2",
+                      isSaving ? "opacity-70 cursor-not-allowed" : "hover:bg-brand-primary/90"
+                    )}
                   >
-                    {currentProject ? "Update Project" : "Create Project"}
+                    {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : null}
+                    {isSaving ? (currentProject ? "Updating..." : "Creating...") : (currentProject ? "Update Project" : "Create Project")}
                   </button>
                 </div>
               </form>
@@ -1960,9 +2243,40 @@ const AdminDashboard = ({ user }: { user: any }) => {
             {activeTab === "dashboard" && (
               <div className="space-y-12">
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
-                  <AdminStatCard label="Total Posts" value={posts.length} icon={<FileText size={24} />} trend="+12%" />
-                  <AdminStatCard label="Total Views" value={posts.reduce((acc, p) => acc + (p.views || 0), 0)} icon={<Eye size={24} />} trend="+24%" />
-                  <AdminStatCard label="Messages" value={messages.length} icon={<MessageSquare size={24} />} trend="+5%" />
+                  <AdminStatCard 
+                    label="Total Posts" 
+                    value={posts.length} 
+                    icon={<FileText size={24} />} 
+                    trend={posts.filter(p => {
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                      const createdAt = p.createdAt?.seconds ? new Date(p.createdAt.seconds * 1000) : new Date(p.createdAt);
+                      return createdAt > sevenDaysAgo;
+                    }).length > 0 ? `+${posts.filter(p => {
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                      const createdAt = p.createdAt?.seconds ? new Date(p.createdAt.seconds * 1000) : new Date(p.createdAt);
+                      return createdAt > sevenDaysAgo;
+                    }).length} new` : undefined} 
+                  />
+                  <AdminStatCard label="Total Views" value={posts.reduce((acc, p) => acc + (p.views || 0), 0)} icon={<Eye size={24} />} trend={posts.some(p => p.views > 0) ? "Growth" : undefined} />
+                  <AdminStatCard label="Messages" value={messages.length} icon={<MessageSquare size={24} />} trend={messages.filter(m => m.status !== 'read').length > 0 ? `${messages.filter(m => m.status !== 'read').length} New` : undefined} />
+                  <AdminStatCard 
+                    label="Subscribers" 
+                    value={subscribers.length} 
+                    icon={<Mail size={24} />} 
+                    trend={subscribers.filter(s => {
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                      const subscribedAt = s.subscribedAt?.seconds ? new Date(s.subscribedAt.seconds * 1000) : new Date(s.subscribedAt);
+                      return subscribedAt > sevenDaysAgo;
+                    }).length > 0 ? `+${subscribers.filter(s => {
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                      const subscribedAt = s.subscribedAt?.seconds ? new Date(s.subscribedAt.seconds * 1000) : new Date(s.subscribedAt);
+                      return subscribedAt > sevenDaysAgo;
+                    }).length} weekly` : undefined}
+                  />
                   <AdminStatCard label="Projects" value={projects.length} icon={<Layers size={24} />} />
                   
                   {/* Phase 3 Diagnostic Button */}
@@ -2046,6 +2360,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     <input 
                       type="text" 
                       placeholder="Search posts..."
+                      value={blogSearchQuery}
+                      onChange={(e) => setBlogSearchQuery(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm outline-none focus:border-brand-primary"
                     />
                   </div>
@@ -2054,11 +2370,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {posts
                     .filter(p => {
-                      if (blogFilter === 'published') return p.published;
-                      if (blogFilter === 'draft') return !p.published;
-                      if (blogFilter === 'featured') return p.featured;
-                      if (blogFilter === 'scheduled') return p.scheduledAt && new Date(p.scheduledAt) > new Date();
-                      return true;
+                      const matchesFilter = (() => {
+                        if (blogFilter === 'published') return p.published;
+                        if (blogFilter === 'draft') return !p.published;
+                        if (blogFilter === 'featured') return p.featured;
+                        if (blogFilter === 'scheduled') return p.scheduledAt && new Date(p.scheduledAt) > new Date();
+                        return true;
+                      })();
+
+                      const matchesSearch = p.title.toLowerCase().includes(blogSearchQuery.toLowerCase()) || 
+                                           (p.category || "").toLowerCase().includes(blogSearchQuery.toLowerCase());
+
+                      return matchesFilter && matchesSearch;
                     })
                     .map((post) => (
                     <div key={post.id} className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all flex flex-col">
@@ -2127,6 +2450,12 @@ const AdminDashboard = ({ user }: { user: any }) => {
                               caseStudy: project.caseStudy || "",
                               link: project.link || ""
                             });
+                            
+                            setProjectImagePath(project.imagePath ?? "");
+                            setProjectImageFile(null);
+                            if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
+                            setProjectImagePreview("");
+                            
                             setIsEditing(true);
                           }}
                           className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
@@ -2163,6 +2492,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <div className="flex items-center gap-6">
                         <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">{formatDate(msg.timestamp)}</div>
                         <button 
+                          onClick={() => handleToggleMessageStatus(msg.id, msg.status)}
+                          className={cn(
+                            "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                            msg.status === 'read' ? "bg-white/5 text-white/20 hover:text-white" : "bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20"
+                          )}
+                        >
+                          {msg.status === 'read' ? 'Mark Unread' : 'Mark Read'}
+                        </button>
+                        <button 
                           onClick={() => handleDelete(msg.id, "contacts")}
                           className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
                         >
@@ -2171,14 +2509,46 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{msg.subject}</div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{msg.subject}</div>
+                        {msg.status !== 'read' && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
+                        )}
+                      </div>
                       <p className="text-white/60 leading-relaxed">{msg.message}</p>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            {((activeTab === "blogs" && posts.length === 0) || (activeTab === "projects" && projects.length === 0) || (activeTab === "messages" && messages.length === 0)) && (
+            {activeTab === "subscribers" && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {subscribers.map((sub) => (
+                  <div key={sub.id} className="glass-card p-8 rounded-[40px] border border-white/10 flex items-center justify-between group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20">
+                        <Mail size={18} />
+                      </div>
+                      <div>
+                        <div className="font-bold text-white/80 group-hover:text-white transition-colors">{sub.email}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">Joined {formatDate(sub.subscribedAt)}</div>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => handleDelete(sub.id, "newsletter")}
+                      className="p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity text-white/20 hover:text-red-500"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {((activeTab === "blogs" && posts.length === 0) || 
+              (activeTab === "projects" && projects.length === 0) || 
+              (activeTab === "messages" && messages.length === 0) ||
+              (activeTab === "subscribers" && subscribers.length === 0)
+            ) && (
               <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
                 <p className="text-white/40">No {activeTab === "messages" ? "messages" : "items"} yet. {activeTab !== "messages" && `Start by creating your first ${activeTab === "blogs" ? "article" : "project"}!`}</p>
               </div>

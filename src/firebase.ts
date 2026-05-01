@@ -4,6 +4,7 @@ import {
   getRedirectResult, signOut, onAuthStateChanged 
 } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 // Health Check Layer: Detect environment readiness before bootstrapping
 const getRawConfig = () => ({
@@ -39,6 +40,7 @@ if (!isConfigured) {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+export const storage = getStorage(app);
 
 // Export environment info helper for UI diagnostics
 export const getFirebaseStatus = () => ({
@@ -72,6 +74,9 @@ export {
   onSnapshot,
   addDoc,
   serverTimestamp,
-  getDocFromServer
+  getDocFromServer,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL
 };
 
