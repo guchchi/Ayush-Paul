@@ -205,6 +205,8 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
     transition,
     isDragging
   } = useSortable({ id: block.id });
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -272,10 +274,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
             className="quill-editor-dark"
           />
         );
-      case 'image':
-        const [validationError, setValidationError] = useState<string | null>(null);
-        const [isValidating, setIsValidating] = useState(false);
-
+      case 'image': {
         const handleUrlChange = async (url: string) => {
           onUpdate(block.id, { content: url });
           if (!url) {
@@ -295,7 +294,6 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
         };
 
         return (
-          <div className="space-y-4">
           <div className="space-y-4">
             <div className="space-y-4">
               <label className="text-sm font-bold text-white/40 ml-1">Image URL (optional if uploading a file)</label>
@@ -398,6 +396,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
             </div>
           </div>
         );
+      }
       case 'code':
         return (
           <div className="space-y-2">
@@ -435,7 +434,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
             />
           </div>
         );
-      case 'callout':
+      case 'callout': {
         const variants = {
           info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
           warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
@@ -466,6 +465,7 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
             </div>
           </div>
         );
+      }
       case 'divider':
         return <div className="h-px w-full bg-white/10 my-8" />;
       default:
