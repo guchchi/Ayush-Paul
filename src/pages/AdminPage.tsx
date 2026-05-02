@@ -510,6 +510,18 @@ const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: {
   );
 };
 
+// Defensive Normalization Layer: Heals malformed blocks before state updates
+const normalizeBlocks = (rawBlocks: any[]): Block[] => {
+  return rawBlocks
+    .filter(b => b && typeof b === 'object') // Filter out non-objects
+    .map(b => ({
+      id: b.id || Math.random().toString(36).substr(2, 9),
+      type: (['text', 'heading', 'image', 'list', 'quote', 'code', 'callout'].includes(b.type) ? b.type : 'text') as BlockType,
+      content: typeof b.content === 'string' ? b.content : '',
+      metadata: (b.metadata && typeof b.metadata === 'object') ? b.metadata : {}
+    }));
+};
+
 const BlogEditor = ({ blocks, setBlocks, onAIAction }: { 
   blocks: Block[], 
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
@@ -517,18 +529,6 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
 }) => {
   const [importText, setImportText] = useState("");
   const [showSmartImport, setShowSmartImport] = useState(false);
-
-  // Defensive Normalization Layer: Heals malformed blocks before state updates
-  const normalizeBlocks = (rawBlocks: any[]): Block[] => {
-    return rawBlocks
-      .filter(b => b && typeof b === 'object') // Filter out non-objects
-      .map(b => ({
-        id: b.id || Math.random().toString(36).substr(2, 9),
-        type: (['text', 'heading', 'image', 'list', 'quote', 'code', 'callout'].includes(b.type) ? b.type : 'text') as BlockType,
-        content: typeof b.content === 'string' ? b.content : '',
-        metadata: (b.metadata && typeof b.metadata === 'object') ? b.metadata : {}
-      }));
-  };
 
   const parseContentToBlocks = (text: string) => {
     // Rule 8: Pre-Insert Sanitization (Strip noise but keep semantic markers)
