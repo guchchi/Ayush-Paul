@@ -1257,6 +1257,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAuditing, setIsAuditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const saveInProgressRef = React.useRef(false);
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
 
   const testConnection = async () => {
@@ -1520,102 +1521,146 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
 
-    if (!isAutosave) {
-      if (!blogFormData.title.trim()) {
-        alert("Validation Error: Please add a title before publishing.");
-        return;
-      }
+    // 1. STRICT CONCURRENCY GUARD: Prevent multiple saves from running simultaneously
+    if (saveInProgressRef.current) {
+      console.log("⏳ [SAVE] Pipeline busy. Skipping concurrent request.");
+      return;
     }
 
-    if (isSaving && !isAutosave) return;
-    if (!isAutosave) setIsSaving(true);
+    // 2. PRE-FLIGHT VALIDATION
+    if (!isAutosave && !blogFormData.title.trim()) {
+      alert("Validation Error: Please add a title before publishing.");
+      return;
+    }
 
     const newlyUploadedPaths: string[] = [];
     const oldCoverPath = currentPost?.coverImagePath ?? blogCoverPath ?? "";
-    const oldBlockPaths = (currentPost?.blocks || []).filter((b: any) => b.type === 'image').map((b: any) => b.metadata?.fullPath).filter(Boolean);
+    const oldBlockPaths = (currentPost?.blocks || [])
+      .filter((b: any) => b.type === 'image')
+      .map((b: any) => b.metadata?.fullPath)
+      .filter(Boolean);
 
     try {
-      let finalCoverUrl = blogFormData.coverImage;
-      let finalCoverPath = blogCoverPath;
+      saveInProgressRef.current = true;
+      if (!isAutosave) setIsSaving(true);
+      
+      console.log(`🚀 [SAVE] Starting ${isAutosave ? 'Autosave' : 'Manual Save'} pipeline...`);
 
-      if (blogCoverFile) {
-        const up = await uploadImage(blogCoverFile, "blog_covers");
-        newlyUploadedPaths.push(up.fullPath);
-        finalCoverUrl = up.url;
-        finalCoverPath = up.fullPath;
-      }
+      // 3. INTERNAL PIPELINE WITH SAFETY TIMEOUT
+      const pipelinePromise = (async () => {
+        let finalCoverUrl = blogFormData.coverImage;
+        let finalCoverPath = blogCoverPath;
 
-      const imageBlocksNeedingUpload = blocks.filter(b => b.type === "image" && !!b.localFile);
+        // Cover Image Upload
+        if (blogCoverFile) {
+          console.log("📸 [SAVE] Uploading cover image...");
+          const up = await uploadImage(blogCoverFile, "blog_covers");
+          newlyUploadedPaths.push(up.fullPath);
+          finalCoverUrl = up.url;
+          finalCoverPath = up.fullPath;
+        }
 
-      const uploaded = await Promise.all(
-        imageBlocksNeedingUpload.map(b => uploadImage(b.localFile as File, "blog_images"))
+        // Sequential Block Image Uploads (Prevents network saturation/freezing)
+        const finalBlocks = [...blocks];
+        for (let i = 0; i < finalBlocks.length; i++) {
+          const b = finalBlocks[i];
+          if (b.type === "image" && b.localFile) {
+            console.log(`🖼️ [SAVE] Uploading block image ${i + 1}...`);
+            const u = await uploadImage(b.localFile, "blog_images");
+            newlyUploadedPaths.push(u.fullPath);
+            
+            // Update block with permanent storage info
+            const { localFile, localPreview, metadata, ...rest } = b;
+            finalBlocks[i] = { 
+              ...rest, 
+              content: u.url, 
+              metadata: { ...metadata, fullPath: u.fullPath } 
+            };
+          }
+        }
+
+        // Strip local preview artifacts before DB write
+        const sanitizedBlocks = finalBlocks.map(b => {
+          const { localFile, localPreview, ...rest } = b;
+          return rest;
+        });
+
+        // Optimized Reading Time (More robust than split)
+        const textContent = finalBlocks
+          .filter(b => b.type === 'text' || b.type === 'heading')
+          .map(b => typeof b.content === 'string' ? b.content.replace(/<[^>]*>/g, '') : '')
+          .join(' ');
+        const wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
+        const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+        const postData = {
+          ...blogFormData,
+          coverImage: finalCoverUrl,
+          coverImagePath: finalCoverPath,
+          blocks: sanitizedBlocks,
+          seo: seoData,
+          tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
+          updatedAt: serverTimestamp(),
+          author: user.email,
+          readingTime
+        };
+        
+        if (currentPost) {
+          console.log("💾 [SAVE] Updating existing post...");
+          await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
+
+          // Storage Cleanup (Delete old images that were replaced)
+          const newBlockPaths = sanitizedBlocks.filter(b => b.type === 'image').map(b => b.metadata?.fullPath).filter(Boolean);
+          const toDelete = new Set<string>();
+
+          if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
+
+          const newSet = new Set(newBlockPaths);
+          for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
+
+          if (toDelete.size > 0) {
+            console.log(`♻️ [SAVE] Cleaning up ${toDelete.size} orphaned images...`);
+            await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
+          }
+        } else if (!isAutosave) {
+          console.log("🆕 [SAVE] Creating new post...");
+          await addDoc(collection(db, "blogPosts"), {
+            ...postData,
+            createdAt: serverTimestamp(),
+            views: 0
+          });
+        }
+        
+        return sanitizedBlocks;
+      })();
+
+      // Apply 45-second safety timeout to the whole operation
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Operation timed out (45s). Network might be slow.")), 45000)
       );
 
-      uploaded.forEach(u => newlyUploadedPaths.push(u.fullPath));
-
-      let uploadIndex = 0;
-      const finalBlocks = blocks.map(b => {
-        if (b.type !== "image" || !b.localFile) return b;
-
-        const u = uploaded[uploadIndex++];
-        const { localFile, localPreview, metadata, ...rest } = b;
-        return { 
-          ...rest, 
-          content: u.url, 
-          metadata: { ...metadata, fullPath: u.fullPath } 
-        };
-      });
-
-      const sanitizedBlocks = finalBlocks.map(b => {
-        const { localFile, localPreview, ...rest } = b;
-        return rest;
-      });
-
-      const postData = {
-        ...blogFormData,
-        coverImage: finalCoverUrl,
-        coverImagePath: finalCoverPath,
-        blocks: sanitizedBlocks,
-        seo: seoData,
-        tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
-        updatedAt: serverTimestamp(),
-        author: user.email,
-        readingTime: Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)
-      };
-      
-      if (currentPost) {
-        await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
-
-        const newBlockPaths = sanitizedBlocks.filter(b => b.type === 'image').map(b => b.metadata?.fullPath).filter(Boolean);
-        const toDelete = new Set<string>();
-
-        if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
-
-        const newSet = new Set(newBlockPaths);
-        for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
-
-        await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
-      } else if (!isAutosave) {
-        const newDoc = await addDoc(collection(db, "blogPosts"), {
-          ...postData,
-          createdAt: serverTimestamp(),
-          views: 0
-        });
-      }
+      const processedBlocks = await Promise.race([pipelinePromise, timeoutPromise]) as Block[];
       
       setLastSaved(new Date());
+      console.log("✅ [SAVE] Pipeline completed successfully.");
+
       if (!isAutosave) {
         setIsEditing(false);
         setCurrentPost(null);
         resetBlogForm();
         setTimeout(() => alert("Success! Your post is live."), 100);
       } else {
-        setBlocks(sanitizedBlocks.map(b => ({ ...b, localFile: undefined, localPreview: undefined })));
+        // Clear local file handles after successful autosave to prevent re-uploading
+        setBlocks(processedBlocks.map(b => ({ ...b, localFile: undefined, localPreview: undefined })));
       }
     } catch (error: any) {
-      console.error("❌ [DB] Save Pipeline Failure:", error);
+      console.error("❌ [SAVE] Pipeline Failure:", error);
       
-      await Promise.all(newlyUploadedPaths.map(p => deleteImageByPath(p)));
+      // Cleanup newly uploaded files on failure to prevent storage bloat
+      if (newlyUploadedPaths.length > 0) {
+        console.log("🧹 [SAVE] Cleaning up partial uploads...");
+        await Promise.all(newlyUploadedPaths.map(p => deleteImageByPath(p)));
+      }
 
       if (!isAutosave) {
         let errorMsg = `System Error: ${error.message}`;
@@ -1625,71 +1670,80 @@ const AdminDashboard = ({ user }: { user: any }) => {
         alert(errorMsg);
       }
     } finally {
-      if (!isAutosave) setIsSaving(false);
+      setIsSaving(false);
+      saveInProgressRef.current = false;
     }
   };
 
   const handleSaveProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSaving(true);
-
-    let uploaded: { url: string; fullPath: string } | null = null;
-    const oldImagePath = projectImagePath;
+    if (saveInProgressRef.current) return;
 
     try {
-      if (projectImageFile) {
-        uploaded = await uploadImage(projectImageFile, "project_images");
-      }
+      saveInProgressRef.current = true;
+      setIsSaving(true);
+      console.log("🚀 [PROJECT] Starting save pipeline...");
 
-      const finalImageUrl = uploaded?.url ?? projectFormData.image;
+      const pipelinePromise = (async () => {
+        let uploaded: { url: string; fullPath: string } | null = null;
+        const oldImagePath = projectImagePath;
 
-      if (!projectImageFile && finalImageUrl) {
-        const check = await validateImageUrl(finalImageUrl);
-        if (!check.isValid) {
-          alert(`Project Image Error: ${check.error}`);
-          setIsSaving(false);
-          return;
+        if (projectImageFile) {
+          uploaded = await uploadImage(projectImageFile, "project_images");
         }
-      }
 
-      const projectData = {
-        ...projectFormData,
-        image: finalImageUrl || "",
-        imagePath: uploaded?.fullPath ?? projectImagePath ?? "",
-        tech: projectFormData.tech.split(",").map(t => t.trim()).filter(Boolean),
-        updatedAt: serverTimestamp()
-      };
+        const finalImageUrl = uploaded?.url ?? projectFormData.image;
 
-      if (currentProject) {
-        await updateDoc(doc(db, "projects", currentProject.id), projectData);
-
-        if (uploaded?.fullPath && oldImagePath && oldImagePath !== uploaded.fullPath) {
-          await deleteImageByPath(oldImagePath);
+        if (!projectImageFile && finalImageUrl) {
+          const check = await validateImageUrl(finalImageUrl);
+          if (!check.isValid) {
+            throw new Error(`Project Image Error: ${check.error}`);
+          }
         }
-      } else {
-        const newRef = doc(collection(db, "projects"));
-        await setDoc(newRef, { ...projectData, createdAt: serverTimestamp() });
-      }
+
+        const projectData = {
+          ...projectFormData,
+          image: finalImageUrl || "",
+          imagePath: uploaded?.fullPath ?? projectImagePath ?? "",
+          tech: projectFormData.tech.split(",").map(t => t.trim()).filter(Boolean),
+          updatedAt: serverTimestamp()
+        };
+
+        if (currentProject) {
+          await updateDoc(doc(db, "projects", currentProject.id), projectData);
+          if (uploaded?.fullPath && oldImagePath && oldImagePath !== uploaded.fullPath) {
+            await deleteImageByPath(oldImagePath);
+          }
+        } else {
+          const newRef = doc(collection(db, "projects"));
+          await setDoc(newRef, { ...projectData, createdAt: serverTimestamp() });
+        }
+        
+        return uploaded;
+      })();
+
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Project save timed out (30s)")), 30000)
+      );
+
+      const uploadedResult = await Promise.race([pipelinePromise, timeoutPromise]) as any;
 
       setIsEditing(false);
       setCurrentProject(null);
       setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
-      
       setProjectImagePath("");
       setProjectImageFile(null);
       if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
       setProjectImagePreview("");
+      console.log("✅ [PROJECT] Save successful.");
 
-    } catch (error) {
-      console.error("Project save pipeline failed:", error);
-
-      if (uploaded?.fullPath) {
-        await deleteImageByPath(uploaded.fullPath);
-      }
-
+    } catch (error: any) {
+      console.error("❌ [PROJECT] Save pipeline failed:", error);
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
+      alert(`Project Error: ${error.message}`);
     } finally {
       setIsSaving(false);
+      saveInProgressRef.current = false;
     }
   };
 

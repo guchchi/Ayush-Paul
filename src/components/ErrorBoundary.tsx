@@ -21,10 +21,10 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   render() {
     if (this.state.hasError) {
       const errorStr = this.state.error?.toString() || "";
-      const isConfigError = errorStr.includes("invalid-api-key") || 
-                           errorStr.includes("Firebase: Error") ||
-                           errorStr.includes("network-request-failed") ||
-                           !getFirebaseStatus().isConfigured;
+      const isConfigError = errorStr.includes("invalid-api-key") ||
+        errorStr.includes("Firebase: Error") ||
+        errorStr.includes("network-request-failed") ||
+        !getFirebaseStatus().isConfigured;
 
       if (isConfigError) {
         return <FirebaseConfigWarning variant="fullscreen" />;
