@@ -48,6 +48,15 @@ export const WhatWeBuildSection = () => {
         >
           What We <span className="text-brand-primary">Build</span>
         </motion.h2>
+        <motion.p
+          variants={VARIANTS.fadeUp}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          className="text-center max-w-2xl"
+        >
+          Engineering solutions that empower creators and scale modern businesses.
+        </motion.p>
       </div>
 
       <motion.div 
@@ -62,7 +71,7 @@ export const WhatWeBuildSection = () => {
             key={i}
             variants={VARIANTS.fadeUp}
             whileHover={VARIANTS.lift.whileHover}
-            className="glass-card p-10 lg:p-12 rounded-[40px] border border-white/5 flex flex-col md:flex-row items-start gap-8 group"
+            className="glass-card p-10 lg:p-12 border border-white/5 flex flex-col md:flex-row items-start gap-8 group"
           >
             <div className="w-16 h-16 shrink-0 rounded-2xl bg-white/5 flex items-center justify-center text-white group-hover:bg-brand-primary group-hover:text-black transition-all duration-300">
               {item.icon}

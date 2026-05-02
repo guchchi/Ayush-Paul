@@ -103,7 +103,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileHover={VARIANTS.lift.whileHover}
             whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedProject(featuredProject)}
-            className="mb-24 group relative rounded-3xl lg:rounded-[60px] glass-card border-white/5 cursor-pointer shadow-2xl overflow-hidden glass-card-hover"
+            className="mb-24 group relative glass-card border-white/5 cursor-pointer shadow-2xl overflow-hidden glass-card-hover"
           >
             <div className="grid lg:grid-cols-2">
               <div className="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
@@ -157,7 +157,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
               onClick={() => setSelectedProject(project)}
               className="group cursor-pointer"
             >
-              <div className="aspect-video rounded-[32px] lg:rounded-[48px] overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
+              <div className="aspect-video overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
                 <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
                 <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
@@ -265,7 +265,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
                   </div>
                   
                   <div className="space-y-8">
-                    <div className="glass-card p-10 rounded-[32px] border border-white/10">
+                    <div className="glass-card p-10 border border-white/10">
                       <h3 className="text-xl font-bold mb-8">Engineering Metrics</h3>
                       <div className="space-y-8">
                         {[

@@ -149,7 +149,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
       </div>
 
       {/* Hero Content — isolated at z-10 */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Container className="relative z-10">
         <div className="flex w-full items-center justify-center lg:justify-between">
           
           {/* Left Social Rail (lg only) */}
@@ -194,13 +194,16 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 <span className="tracking-[0.25em]">Founder • Engineer • Technologist</span>
               </motion.div>
 
-                <h1 className="leading-[1.05]">
-                  Building technology & <br />
+              {/* Power Headline & Authority Statement */}
+              <motion.div variants={VARIANTS.fadeUp} className="space-y-4 sm:space-y-6 mb-10 sm:mb-16 w-full max-w-5xl mx-auto px-4">
+                <h1 className="leading-[1.1] text-[clamp(2.5rem,6vw,5.5rem)] tracking-tighter font-extrabold text-balance mx-auto">
+                  Building technology &amp; <br className="hidden lg:block" />
                   <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">knowledge systems</span>
                 </h1>
-                <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
+                <h1 className="text-brand-primary italic leading-[1.1] text-[clamp(2.5rem,6vw,5.5rem)] tracking-tighter font-extrabold text-balance mx-auto">
                   that help creators earn smarter.
                 </h1>
+              </motion.div>
 
               <motion.div 
                  variants={VARIANTS.fadeUp}
@@ -253,7 +256,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
           {/* Right Breathing Space (lg only) */}
           <div className="hidden lg:block w-64" />
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

@@ -43,7 +43,7 @@ export const ContentEngineSection = () => {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="glass-card p-6 md:p-10 rounded-[40px] border border-white/5 group relative overflow-hidden"
+          className="glass-card p-6 md:p-10 border border-white/5 group relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           
@@ -89,7 +89,7 @@ export const ContentEngineSection = () => {
               key={i}
               href="/blog"
               variants={VARIANTS.fadeUp}
-              className="block glass-card p-8 rounded-3xl border border-white/5 hover:border-brand-primary/30 transition-all group"
+              className="block glass-card p-8 border border-white/5 hover:border-brand-primary/30 transition-all group"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>

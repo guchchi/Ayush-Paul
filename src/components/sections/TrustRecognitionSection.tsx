@@ -29,8 +29,18 @@ export const TrustRecognitionSection = () => {
           whileInView="animate"
           viewport={{ once: true }}
         >
-          Institutional <span className="text-brand-primary">Credibility</span>
+          Recognized Across <br />
+          <span className="text-brand-primary">Innovation Platforms</span>
         </motion.h2>
+        <motion.p
+          variants={VARIANTS.fadeUp}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          className="text-center"
+        >
+          Awards, competitions, and media features validating our engineering work.
+        </motion.p>
       </div>
 
       <motion.div 
