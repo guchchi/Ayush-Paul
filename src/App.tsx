@@ -21,7 +21,7 @@ import { ProfileSelectionPage } from "./pages/ProfileSelectionPage";
 // --- Components ---
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
-import { CursorFollower, ScrollProgressBar } from "./components/ui/CursorEffects";
+import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
 import { getFirebaseStatus } from "./firebase";
 

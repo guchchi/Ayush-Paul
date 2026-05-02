@@ -121,10 +121,10 @@ const ImageUploadField = ({
     setUploadProgress(0);
 
     try {
-      const url = await uploadImage(file, path, (progress) => {
+      const result = await uploadImage(file, path, (progress) => {
         setUploadProgress(progress);
       });
-      onChange(url);
+      onChange(result.url);
     } catch (err: any) {
       setError(`Upload failed: ${err.message}`);
     } finally {
@@ -1244,7 +1244,7 @@ const HealthDashboard = () => {
 };
 
 const AdminDashboard = ({ user }: { user: any }) => {
-  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "messages" | "dashboard">("dashboard");
+  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "updates" | "messages" | "dashboard" | "subscribers">("dashboard");
   const [posts, setPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);

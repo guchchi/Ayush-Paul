@@ -6,13 +6,13 @@
 
 export const EASING = {
   // Ultra smooth, slightly weighted for premium feel
-  PREMIUM: [0.22, 1, 0.36, 1], 
+  PREMIUM: [0.22, 1, 0.36, 1] as any, 
   // Fast and sharp for quick interactions
-  INTERACTIVE: [0.4, 0, 0.2, 1],
+  INTERACTIVE: [0.4, 0, 0.2, 1] as any,
   // Smoothly accelerates and decelerates
-  CHOREOGRAPHY: [0.65, 0, 0.35, 1],
+  CHOREOGRAPHY: [0.65, 0, 0.35, 1] as any,
   // Standard spring for magnetic/bounce effects
-  SPRING: { type: "spring", stiffness: 100, damping: 20, mass: 1 }
+  SPRING: { type: "spring", stiffness: 100, damping: 20, mass: 1 } as any
 };
 
 export const DURATION = {

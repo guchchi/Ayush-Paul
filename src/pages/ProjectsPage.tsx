@@ -115,7 +115,7 @@ const FlagshipSection = () => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, x: 20 }}
           animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: 1, ease: EASING.PREMIUM }}
+          transition={{ duration: 1, ease: EASING.PREMIUM as any }}
           className="relative aspect-square glass-card rounded-[64px] border-white/5 overflow-hidden shadow-2xl"
         >
           <img 
@@ -132,7 +132,7 @@ const FlagshipSection = () => {
 
 import { Link } from 'react-router-dom';
 
-const ProductCard = ({ product }: { product: typeof PRODUCTS[0] | any }) => {
+const ProductCard = ({ product }: { product: any }) => {
   return (
     <motion.div
       variants={VARIANTS.fadeUp}
