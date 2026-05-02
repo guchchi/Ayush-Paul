@@ -194,51 +194,57 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 <span className="tracking-[0.25em]">Founder • Engineer • Technologist</span>
               </motion.div>
 
-              {/* Power Headline & Authority Statement */}
-              <motion.div variants={VARIANTS.fadeUp} className="space-y-6 sm:space-y-8 mb-10 sm:mb-16">
                 <h1 className="leading-[1.05]">
-                  Building Autonomous Systems <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">& High-Signal Software</span>
+                  Building technology & <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">knowledge systems</span>
                 </h1>
                 <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
-                  Ecosystems.
+                  that help creators earn smarter.
                 </h1>
-              </motion.div>
 
               <motion.div 
                  variants={VARIANTS.fadeUp}
                  className="space-y-8 mb-12 sm:mb-20"
               >
                 <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
-                  Architecting scalable platforms at the intersection of AI, hardware, and premium digital infrastructure.
+                  Architecting scalable platforms at the intersection of AI, education, and premium digital infrastructure.
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
-                  Active Development: Next-Gen Robotics • Enterprise AI Platforms
+                  Active Development: Creator Tools • AI Platforms
                 </div>
               </motion.div>
 
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
+                className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 w-full max-w-2xl mx-auto"
               >
                 <MagneticButton className="w-full sm:w-auto">
                   <a 
-                    href="#contact" 
-                    className="flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl hover:scale-[1.02] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
+                    href="#projects" 
+                    className="flex items-center justify-center px-8 py-4 bg-brand-primary text-black rounded-3xl font-bold text-lg hover:scale-[1.02] transition-all shadow-[0_10px_30px_rgba(0,194,255,0.2)] active:scale-95"
                   >
-                    Partner With Us
+                    Explore Projects
                   </a>
                 </MagneticButton>
                 
-                <MagneticButton
-                  onClick={onViewPortfolio}
-                  className="w-full sm:w-auto"
-                >
-                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group">
-                    Explore Platform <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                  </div>
+                <MagneticButton className="w-full sm:w-auto">
+                  <a 
+                    href="#content"
+                    className="flex items-center justify-center px-8 py-4 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-2 group"
+                  >
+                    Watch Content <Youtube size={20} className="group-hover:text-red-500 transition-colors" />
+                  </a>
+                </MagneticButton>
+
+                <MagneticButton className="w-full sm:w-auto">
+                  <a 
+                    href="#contact"
+                    className="flex items-center justify-center px-8 py-4 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-2 group"
+                  >
+                    Work Together
+                  </a>
                 </MagneticButton>
               </motion.div>
             </motion.div>

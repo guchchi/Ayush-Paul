@@ -37,22 +37,27 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Platform", href: "/#projects" },
-    { name: "Capabilities", href: "/#expertise" },
-    { name: "Infrastructure", href: "/#authority" },
-    { name: "Insights", href: "/blog" },
-    { name: "Partner", href: "/#contact" },
+    { name: "Home", href: "/" },
+    { name: "Portfolio", href: "/portfolio" },
+    { name: "Projects", href: "/#projects" },
+    { name: "Content", href: "/#content" },
+    { name: "About", href: "/#about" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   const { scrollToSection } = useScrollToSection();
 
   const handleNavClick = (link: any) => {
-    if (link.name === "Portfolio") {
-      onPortfolioClick();
-      setIsMobileMenuOpen(false);
-    } else if (link.href.startsWith("/#")) {
+    if (link.href.startsWith("/#")) {
       const id = link.href.split("#")[1];
-      scrollToSection(id, () => setIsMobileMenuOpen(false));
+      if (window.location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => {
+          scrollToSection(id, () => setIsMobileMenuOpen(false));
+        }, 500);
+      } else {
+        scrollToSection(id, () => setIsMobileMenuOpen(false));
+      }
     } else {
       navigate(link.href);
       setIsMobileMenuOpen(false);
@@ -83,19 +88,10 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
             </button>
           ))}
           <button
-            onClick={() => {
-              if (window.location.pathname !== '/') {
-                navigate('/');
-                setTimeout(() => {
-                  document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              } else {
-                document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
+            onClick={() => handleNavClick({ href: "/#contact" })}
             className="px-8 py-3 bg-white text-black rounded-full text-sm font-bold hover:scale-[1.05] transition-all cursor-pointer shadow-2xl shadow-white/10"
           >
-            Hire Me
+            Let's Build
           </button>
         </div>
 
@@ -183,22 +179,12 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                     </div>
 
                     <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        if (window.location.pathname !== '/') {
-                          navigate('/');
-                          setTimeout(() => {
-                            document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
-                          }, 100);
-                        } else {
-                          document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
+                      onClick={() => handleNavClick({ href: "/#contact" })}
                       className="w-full py-5 bg-white text-black rounded-3xl font-bold text-lg hover:bg-white/90 active:scale-[0.98] transition-all shadow-xl shadow-white/5"
                     >
-                      Hire Me
+                      Let's Build
                     </button>
-                    <p className="text-center mt-6 text-[10px] font-bold uppercase tracking-widest text-white/20">Available for 2024–25 Projects</p>
+                    <p className="text-center mt-6 text-[10px] font-bold uppercase tracking-widest text-white/20">Startup Partnerships</p>
                   </div>
                 </div>
               </motion.div>

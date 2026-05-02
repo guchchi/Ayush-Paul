@@ -7,6 +7,7 @@ import { MainLayout } from "./layouts/MainLayout";
 
 // --- Pages ---
 import { HomePage } from "./pages/Home";
+import { PortfolioPage } from "./pages/PortfolioPage";
 import { BlogPage } from "./pages/BlogPage";
 import { BlogPostPage } from "./pages/BlogPostPage";
 import { AdminPage } from "./pages/AdminPage";
@@ -85,6 +86,7 @@ export default function App() {
                 <ProfileSelectionPage onSelect={handleProfileSelect} />
               )
             } />
+            <Route path="/portfolio" element={wrapInLayout(<PortfolioPage />)} />
             <Route path="/now" element={wrapInLayout(<NowPage />)} />
             <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
             <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
