@@ -49,10 +49,5 @@ export const VARIANTS = {
   lift: {
     whileHover: { y: -8, scale: 1.01 },
     transition: { duration: DURATION.FAST, ease: EASING.PREMIUM }
-  },
-  fadeRight: {
-    initial: { opacity: 0, x: -30, filter: "blur(10px)" },
-    animate: { opacity: 1, x: 0, filter: "blur(0px)" },
-    transition: { duration: DURATION.PREMIUM, ease: EASING.PREMIUM }
   }
 };
