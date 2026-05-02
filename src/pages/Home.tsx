@@ -9,6 +9,9 @@ import { ExperienceSection } from '../components/sections/ExperienceSection';
 import { VisionSection } from '../components/sections/VisionSection';
 import { UpdatesSection } from '../components/sections/UpdatesSection';
 import { LatestBlogsSection } from '../components/sections/LatestBlogsSection';
+import { DynamicMetricsSection } from '../components/sections/DynamicMetricsSection';
+import { NowBuildingSection } from '../components/sections/NowBuildingSection';
+import { ActivityTimelineSection } from '../components/sections/ActivityTimelineSection';
 import { CTASection } from '../components/sections/CTASection';
 import { ContactSection } from '../components/sections/ContactSection';
 import { useSEO } from '../hooks/useSEO';
@@ -56,13 +59,15 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) =
       
       <ClientsSection />
       
-      <AuthoritySection />
+      <DynamicMetricsSection />
       
       <FeaturedProjectsSection filter={projectFilter} />
       
       <ExpertiseSection onFilterProjects={handleFilterProjects} />
       
-      <ExperienceSection />
+      <NowBuildingSection />
+
+      <ActivityTimelineSection />
 
       <UpdatesSection />
 
