@@ -37,12 +37,11 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Projects", href: "/#projects" },
-    { name: "Expertise", href: "/#expertise" },
-    { name: "Experience", href: "/#experience" },
-    { name: "About", href: "/#about" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Platform", href: "/#projects" },
+    { name: "Capabilities", href: "/#expertise" },
+    { name: "Infrastructure", href: "/#authority" },
+    { name: "Insights", href: "/blog" },
+    { name: "Partner", href: "/#contact" },
   ];
 
   const { scrollToSection } = useScrollToSection();

@@ -8,20 +8,20 @@ export const ClientsSection = () => {
   const testimonials = [
     {
       name: "Sarah Johnson",
-      role: "Startup Founder",
-      text: "Ayush is a rare talent. His ability to understand complex requirements and deliver high-quality code is impressive.",
+      role: "CEO, Tech Startup",
+      text: "The engineering velocity and architectural foresight provided transformed our platform capabilities entirely.",
       avatar: "https://i.pravatar.cc/150?u=sarah",
     },
     {
       name: "David Chen",
-      role: "Tech Lead",
-      text: "The AI application Ayush built for us exceeded our expectations. His knowledge of prompt engineering is top-notch.",
+      role: "CTO",
+      text: "Delivered a production-ready AI infrastructure that scaled seamlessly from day one. Pure engineering excellence.",
       avatar: "https://i.pravatar.cc/150?u=david",
     },
     {
       name: "Elena Rodriguez",
-      role: "Creative Director",
-      text: "Working with Ayush on our branding was a breeze. He has a great eye for design and a very professional approach.",
+      role: "VP of Product",
+      text: "Exceptional technical execution combined with an intuitive understanding of high-end digital aesthetics.",
       avatar: "https://i.pravatar.cc/150?u=elena",
     },
   ];
@@ -36,7 +36,7 @@ export const ClientsSection = () => {
           viewport={{ once: true }}
           className="badge"
         >
-          Social Validation
+          Ecosystem Partners
         </motion.div>
         <motion.h2 
           variants={VARIANTS.fadeUp} 
@@ -44,7 +44,7 @@ export const ClientsSection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
         >
-          Client <span className="text-brand-primary italic">Love</span>
+          Strategic <span className="text-brand-primary">Partners</span>
         </motion.h2>
         <motion.p 
           variants={VARIANTS.fadeUp} 
@@ -52,9 +52,9 @@ export const ClientsSection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
           transition={{ delay: 0.1 }} 
-          className="text-center italic"
+          className="text-center"
         >
-          What people say about working with me. I focus on delivering long-term value and engineering excellence.
+          Trusted by industry leaders to deliver long-term value and engineering excellence at scale.
         </motion.p>
       </div>
 

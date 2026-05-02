@@ -191,17 +191,17 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 className="badge mb-8 sm:mb-12 shadow-2xl shadow-brand-primary/10"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                <span className="tracking-[0.25em]">Builder • Developer • Creative Tech</span>
+                <span className="tracking-[0.25em]">Founder • Engineer • Technologist</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
               <motion.div variants={VARIANTS.fadeUp} className="space-y-6 sm:space-y-8 mb-10 sm:mb-16">
                 <h1 className="leading-[1.05]">
-                  I Design & Engineer <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
+                  Building Autonomous Systems <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">& High-Signal Software</span>
                 </h1>
                 <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
-                  That Feel Alive.
+                  Ecosystems.
                 </h1>
               </motion.div>
 
@@ -209,13 +209,13 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  variants={VARIANTS.fadeUp}
                  className="space-y-8 mb-12 sm:mb-20"
               >
-                <p className="text-xl sm:text-3xl text-white/50 max-w-2xl mx-auto font-medium leading-tight">
-                  I build production-ready systems combining engineering, design, and AI automation.
+                <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
+                  Architecting scalable platforms at the intersection of AI, hardware, and premium digital infrastructure.
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
-                  Currently Building: AI Tools • Creative Systems
+                  Active Development: Next-Gen Robotics • Enterprise AI Platforms
                 </div>
               </motion.div>
 
@@ -228,7 +228,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                     href="#contact" 
                     className="flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl hover:scale-[1.02] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
                   >
-                    Work With Me
+                    Partner With Us
                   </a>
                 </MagneticButton>
                 
@@ -237,7 +237,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                   className="w-full sm:w-auto"
                 >
                   <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group">
-                    View Projects <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                    Explore Platform <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </MagneticButton>
               </motion.div>

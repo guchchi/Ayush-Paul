@@ -7,25 +7,25 @@ import { cn } from '../../lib/utils';
 
 const skillCategories = [
   {
-    title: "Development",
+    title: "Platform Engineering",
     icon: <Code className="text-brand-primary" />,
     skills: ["React / Next.js", "Python", "Tailwind CSS", "TypeScript", "Node.js"],
     filter: "Web"
   },
   {
-    title: "Robotics & Electronics",
+    title: "Autonomous Hardware",
     icon: <Cpu className="text-brand-secondary" />,
     skills: ["Arduino", "Raspberry Pi", "Circuit Design", "IoT", "Automation"],
     filter: "Robotics"
   },
   {
-    title: "Design & Editing",
+    title: "Digital Product Design",
     icon: <Palette className="text-brand-accent" />,
     skills: ["Video Editing", "Branding", "UI/UX Design", "Motion Graphics", "Figma"],
     filter: "Design"
   },
   {
-    title: "AI Tools",
+    title: "AI Integrations",
     icon: <Sparkles className="text-brand-primary" />,
     skills: ["Prompt Engineering", "AI App Dev", "LLM Integration", "Automation", "Data Analysis"],
     filter: "AI"
@@ -82,7 +82,7 @@ const TechnicalArsenal = () => {
           viewport={{ once: true }}
           className="inline-block px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest mb-6 backdrop-blur-sm text-brand-primary"
         >
-          Technical Arsenal
+          Core Technologies
         </motion.div>
         
         <motion.h2 
@@ -92,7 +92,7 @@ const TechnicalArsenal = () => {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-extrabold mb-12 tracking-tight"
         >
-          Tech <span className="text-brand-primary italic">Stack</span> Validator
+          Production <span className="text-brand-primary italic">Stack</span>
         </motion.h2>
 
         <div className="flex flex-wrap justify-center gap-2 mb-16 max-w-4xl mx-auto">
@@ -163,7 +163,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           viewport={{ once: true }}
           className="badge"
         >
-          Expertise
+          Capabilities
         </motion.div>
         <motion.h2 
           variants={VARIANTS.fadeUp}
@@ -171,7 +171,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           whileInView="animate"
           viewport={{ once: true }} 
         >
-          Mastered <span className="text-brand-primary italic">Skills</span>
+          Solution <span className="text-brand-primary">Stack</span>
         </motion.h2>
         <motion.p 
           variants={VARIANTS.fadeUp}
@@ -180,7 +180,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           viewport={{ once: true }}
           className="text-center"
         >
-          A diverse toolkit for the modern digital era. Focused on high-level architecture and hardware integration.
+          Comprehensive technical capabilities designed for high-performance deployments and rapid scaling.
         </motion.p>
       </div>
 

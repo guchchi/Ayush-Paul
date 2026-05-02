@@ -5,10 +5,10 @@ import { Section } from '../ui/Section';
 import { VARIANTS } from '../../lib/motion-presets';
 
 const highlights = [
-  { title: "Student Innovator", icon: <Rocket className="text-brand-primary" />, desc: "Bridging academia and real-world tech." },
-  { title: "Robotics Developer", icon: <Cpu className="text-brand-secondary" />, desc: "Building hardware that thinks." },
-  { title: "AI Builder", icon: <Sparkles className="text-brand-primary" />, desc: "Crafting intelligent software solutions." },
-  { title: "Future Engineer", icon: <Globe className="text-brand-secondary" />, desc: "Solving global problems with code." },
+  { title: "Product Architect", icon: <Rocket className="text-brand-primary" />, desc: "Bridging complex systems with high-end digital design." },
+  { title: "Autonomous Systems", icon: <Cpu className="text-brand-secondary" />, desc: "Building hardware-software bridges for the real world." },
+  { title: "AI Infrastructure", icon: <Sparkles className="text-brand-primary" />, desc: "Crafting intelligent, scalable enterprise solutions." },
+  { title: "Global Scale", icon: <Globe className="text-brand-secondary" />, desc: "Engineering platforms built for the future." },
 ];
 
 export const VisionSection = () => {
@@ -23,35 +23,35 @@ export const VisionSection = () => {
           className="space-y-8"
         >
           <motion.div variants={VARIANTS.fadeUp} className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest">
-            Our Vision
+            The Manifesto
           </motion.div>
           <motion.h2 variants={VARIANTS.fadeUp} className="leading-tight tracking-tighter">
-            Student Entrepreneur <br />
-            with a <span className="text-brand-primary">Visionary Mindset</span>
+            Founder-Led <br />
+            <span className="text-brand-primary">Engineering Paradigm</span>
           </motion.h2>
           <motion.div variants={VARIANTS.fadeUp} className="space-y-6 text-xl text-white/50 leading-relaxed max-w-xl font-medium">
             <p>
-              I'm Ayush Paul, a 12th PCM student who doesn't just study science—I apply it. My journey started with a curiosity for how things work, leading me into the worlds of <span className="text-white">Web Development</span>, <span className="text-white">AI</span>, and <span className="text-white">Robotics</span>.
+              We are moving into an era where hardware, software, and AI are converging. The systems of tomorrow require a new breed of engineering—one that doesn't just write code, but architectures complete <span className="text-white">ecosystems</span>.
             </p>
             <p>
-              As a student entrepreneur, I bridge the gap between academic learning and real-world application. Whether it's coding a complex AI application or building an Arduino-powered robot, my goal is always to innovate and solve problems.
+              By bridging the gap between deep technical implementation and high-level product strategy, we build autonomous systems and digital infrastructure designed to scale from inception to enterprise execution.
             </p>
           </motion.div>
           
           <motion.div variants={VARIANTS.fadeUp} className="flex items-center gap-12 pt-4">
             <div>
               <div className="text-4xl font-bold text-white tracking-tighter">50+</div>
-              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Projects</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Deployed Systems</div>
             </div>
             <div className="w-px h-12 bg-white/10" />
             <div>
               <div className="text-4xl font-bold text-white tracking-tighter">4+</div>
-              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Years Exp</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Years R&D</div>
             </div>
             <div className="w-px h-12 bg-white/10" />
             <div>
               <div className="text-4xl font-bold text-white tracking-tighter">20+</div>
-              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Clients</div>
+              <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Enterprise Partners</div>
             </div>
           </motion.div>
         </motion.div>

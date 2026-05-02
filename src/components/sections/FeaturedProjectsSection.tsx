@@ -52,7 +52,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             viewport={{ once: true }}
             className="badge"
           >
-            Portfolio
+            Ecosystem
           </motion.div>
           <motion.h2 
             variants={VARIANTS.fadeUp}
@@ -60,7 +60,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            Featured <span className="text-brand-primary">Products</span>
+            Core <span className="text-brand-primary">Platforms</span>
           </motion.h2>
           <motion.p 
             variants={VARIANTS.fadeUp}
@@ -68,7 +68,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            Turning complex problems into elegant, production-ready solutions. Each project is a deep dive into engineering and design.
+            Mission-critical systems and digital infrastructure powering the next generation of technological advancement.
           </motion.p>
         </div>
         
@@ -89,7 +89,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
               </button>
             )}
             <button className="px-10 py-5 bg-brand-primary text-white rounded-3xl text-sm font-bold hover:scale-[1.02] transition-all flex items-center gap-3 group shadow-2xl shadow-brand-primary/20">
-              Explore All <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              View Full Ecosystem <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
             </button>
           </motion.div>
         </div>
@@ -111,7 +111,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
                 <div className="absolute top-8 left-8">
                   <div className="px-5 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
-                    Featured Case Study
+                    Flagship Implementation
                   </div>
                 </div>
               </div>

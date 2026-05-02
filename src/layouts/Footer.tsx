@@ -16,7 +16,7 @@ export const Footer = () => {
               ayushpaul<span className="text-brand-primary group-hover:neon-glow-blue transition-all">.in</span>
             </Link>
             <p className="text-white/40 text-lg max-w-sm leading-relaxed">
-              Student entrepreneur and innovator crafting the future of AI and Robotics. Building products that solve real-world problems.
+              Architecting the next generation of scalable platforms. Bridging autonomous systems with enterprise-grade digital infrastructure.
             </p>
             <div className="flex items-center gap-6">
               {[
@@ -35,9 +35,9 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Navigation</h4>
             <ul className="space-y-4">
-              {["About", "Projects", "Skills", "Services", "Blog"].map((link) => (
+              {["Manifesto", "Ecosystem", "Capabilities", "Infrastructure", "Insights"].map((link) => (
                 <li key={link}>
-                  {link === "Blog" ? (
+                  {link === "Insights" ? (
                     <Link to="/blog" className="text-white/40 hover:text-brand-primary transition-colors font-medium">
                       {link}
                     </Link>
@@ -67,7 +67,7 @@ export const Footer = () => {
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-white/20 text-sm font-medium">
-            © 2024 Ayush Paul. Crafted with <span className="text-brand-primary">Passion</span> and AI.
+            © 2024 Ayush Paul. Engineered for <span className="text-brand-primary">Scale</span>.
           </p>
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-white/20 text-sm font-medium">
