@@ -53,7 +53,7 @@ export const ClientsSection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
           transition={{ delay: 0.1 }} 
-          className="text-white/40 text-xl italic font-medium max-w-2xl mx-auto"
+          className="text-white/40 text-xl italic font-medium max-w-2xl mx-auto text-center"
         >
           What people say about working with me. I focus on delivering long-term value and engineering excellence.
         </motion.p>

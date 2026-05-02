@@ -179,7 +179,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="text-white/40 max-w-2xl mx-auto text-xl font-medium"
+          className="text-white/40 max-w-2xl mx-auto text-xl font-medium text-center"
         >
           A diverse toolkit for the modern digital era. Focused on high-level architecture and hardware integration.
         </motion.p>

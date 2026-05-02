@@ -140,7 +140,7 @@ export const AuthoritySection = () => {
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }} 
-          className="text-white/40 text-xl font-medium max-w-2xl mx-auto"
+          className="text-white/40 text-xl font-medium max-w-2xl mx-auto text-center"
         >
           A quantified view of my impact across software engineering, AI research, and robotics innovation.
         </motion.p>

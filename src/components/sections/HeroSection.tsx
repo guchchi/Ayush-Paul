@@ -209,7 +209,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  variants={VARIANTS.fadeUp}
                  className="flex flex-col gap-5 w-full mt-6"
               >
-                <p className="text-sm sm:text-2xl text-neutral-400 sm:text-white/50 w-full max-w-[300px] sm:max-w-2xl mx-auto leading-relaxed font-medium break-words">
+                <p className="text-sm sm:text-2xl text-neutral-400 sm:text-white/50 w-full max-w-[300px] sm:max-w-2xl mx-auto leading-relaxed font-medium break-words text-center">
                   I build production-ready systems combining engineering, design, and AI automation.
                 </p>
                 
