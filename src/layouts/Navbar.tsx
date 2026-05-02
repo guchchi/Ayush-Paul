@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
 import { useScrollToSection } from "@/src/hooks/useScrollToSection";
+import { SupportModal } from "../components/ui/SupportButton";
 
 export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,9 +71,9 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     { name: "Home", href: "/#home", id: "home" },
     { name: "About", href: "/about", id: "about" },
     { name: "Projects", href: "/projects", id: "projects" },
-    { name: "Services", href: "/#services", id: "services" },
-    { name: "Achievements", href: "/#achievements", id: "achievements" },
-    { name: "Contact", href: "/#contact", id: "contact" },
+    { name: "Blog", href: "/blog", id: "blog" },
+    { name: "Collaborate", href: "/collaborate", id: "collaborate" },
+    { name: "Contact", href: "/contact", id: "contact" },
   ];
 
   const handleNavClick = (link: any) => {
@@ -150,10 +152,10 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => scrollToSection('contact')}
+            onClick={() => setIsSupportModalOpen(true)}
             className="px-8 py-3 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer shadow-[0_20px_40px_rgba(255,255,255,0.05)] flex items-center gap-2 group"
           >
-            Hire Me <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            Support <Heart size={14} className="group-hover:scale-110 transition-transform" />
           </motion.button>
         </div>
 
@@ -264,11 +266,11 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        scrollToSection('contact');
+                        setIsSupportModalOpen(true);
                       }}
                       className="w-full py-6 bg-white text-black rounded-[24px] font-bold text-lg shadow-xl shadow-white/5 flex items-center justify-center gap-3"
                     >
-                      Hire Me <ArrowRight size={20} />
+                      Support <Heart size={20} />
                     </motion.button>
                     
                     <div className="text-center space-y-2">
@@ -286,6 +288,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
         </AnimatePresence>,
         document.body
       )}
+      <SupportModal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} />
     </nav>
   );
 };

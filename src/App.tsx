@@ -17,6 +17,12 @@ import { AboutPage } from "./pages/AboutPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
 import { ProjectDetailPage } from "./pages/ProjectDetailPage";
 import { ProfileSelectionPage } from "./pages/ProfileSelectionPage";
+import { CollaboratePage } from "./pages/CollaboratePage";
+import { ContactPage } from "./pages/ContactPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { PrivacyPage } from "./pages/PrivacyPage";
+import { TermsPage } from "./pages/TermsPage";
+import { CookiePage } from "./pages/CookiePage";
 
 // --- Components ---
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -93,6 +99,12 @@ export default function App() {
             <Route path="/projects/:slug" element={wrapInLayout(<ProjectDetailPage />)} />
             <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
             <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
+            <Route path="/collaborate" element={wrapInLayout(<CollaboratePage />)} />
+            <Route path="/contact" element={wrapInLayout(<ContactPage />)} />
+            <Route path="/privacy" element={wrapInLayout(<PrivacyPage />)} />
+            <Route path="/terms" element={wrapInLayout(<TermsPage />)} />
+            <Route path="/cookie-policy" element={wrapInLayout(<CookiePage />)} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />

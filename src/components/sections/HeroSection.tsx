@@ -141,7 +141,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full pt-40 pb-20 flex flex-col justify-center items-center"
+      className="relative w-full pt-32 pb-20 flex flex-col justify-center items-center"
     >
       {/* Global Neon Glow Engine — variant: hero */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -188,20 +188,21 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
               {/* High-Authority Identity Badge */}
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="badge mb-8 sm:mb-12 shadow-2xl shadow-brand-primary/10"
+                className="badge mb-6 sm:mb-8 shadow-2xl shadow-brand-primary/10"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
                 <span className="tracking-[0.25em]">Builder • Developer • Creative Tech</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
-              <motion.div variants={VARIANTS.fadeUp} className="space-y-6 sm:space-y-8 mb-10 sm:mb-16">
-                <h1 className="leading-[1.05]">
+              <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
+                <h1 className="leading-[1.1]">
                   I Design & Engineer <br />
                   <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
-                </h1>
-                <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
-                  That Feel Alive.
+                  <br />
+                  <span className="text-brand-primary italic block mt-2 sm:mt-4 text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold">
+                    That Feel Alive.
+                  </span>
                 </h1>
               </motion.div>
 

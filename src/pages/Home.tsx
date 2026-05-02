@@ -6,7 +6,6 @@ import { AuthoritySection } from '../components/sections/AuthoritySection';
 import { FeaturedProjectsSection } from '../components/sections/FeaturedProjectsSection';
 import { ExpertiseSection } from '../components/sections/ExpertiseSection';
 import { ExperienceSection } from '../components/sections/ExperienceSection';
-import { VisionSection } from '../components/sections/VisionSection';
 import { UpdatesSection } from '../components/sections/UpdatesSection';
 import { LatestBlogsSection } from '../components/sections/LatestBlogsSection';
 import { CTASection } from '../components/sections/CTASection';
@@ -54,8 +53,6 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) =
     >
       <HeroSection onViewPortfolio={onViewPortfolio} />
       
-      <ClientsSection />
-      
       <AuthoritySection />
       
       <FeaturedProjectsSection filter={projectFilter} />
@@ -63,13 +60,13 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) =
       <ExpertiseSection onFilterProjects={handleFilterProjects} />
       
       <ExperienceSection />
-
+      
       <UpdatesSection />
+      
+      <ClientsSection />
 
       <LatestBlogsSection />
 
-      <VisionSection />
-      
       <CTASection id="home-cta" />
       
       <ContactSection />

@@ -70,7 +70,7 @@ const Contact = () => {
 
           <div className="space-y-8">
             {[
-              { label: "Email Me", value: "ayushpaul.ap87@gmail.com", icon: <Mail size={24} />, href: "mailto:ayushpaul.ap87@gmail.com" },
+              { label: "Email Me", value: "hello.ayushishere@gmail.com", icon: <Mail size={24} />, href: "mailto:hello.ayushishere@gmail.com" },
               { label: "Response Promise", value: "Guaranteed within 24 hours", icon: <Zap size={24} />, href: "#" },
               { label: "Location & Status", value: "Remote Friendly • IST (UTC+5:30)", icon: <MapPin size={24} />, href: "#" }
             ].map((item, i) => (

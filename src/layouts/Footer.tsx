@@ -23,7 +23,7 @@ export const Footer = () => {
                 { icon: <Linkedin size={24} />, href: "https://www.linkedin.com/in/paulayush/", hoverColor: "hover:text-blue-700 hover:bg-blue-700/10 hover:border-blue-700/20" },
                 { icon: <Github size={24} />, href: "https://github.com/guchchi/", hoverColor: "hover:text-green-500 hover:bg-green-500/10 hover:border-green-500/20" },
                 { icon: <Youtube size={24} />, href: "https://www.youtube.com/@ALX-17", hoverColor: "hover:text-red-600 hover:bg-red-600/10 hover:border-red-600/20" },
-                { icon: <Mail size={24} />, href: "mailto:hello@ayushpaul.in", hoverColor: "hover:text-brand-primary hover:bg-brand-primary/10 hover:border-brand-primary/20" }
+                { icon: <Mail size={24} />, href: "mailto:hello.ayushishere@gmail.com", hoverColor: "hover:text-brand-primary hover:bg-brand-primary/10 hover:border-brand-primary/20" }
               ].map((item, i) => (
                 <a key={i} href={item.href} target="_blank" rel="noopener noreferrer" className={cn("w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white/40 transition-all border border-white/5", item.hoverColor)}>
                   {item.icon}
@@ -38,9 +38,9 @@ export const Footer = () => {
               {[
                 { name: "About", href: "/about" },
                 { name: "Projects", href: "/projects" },
-                { name: "Services", href: "/#services" },
-                { name: "Achievements", href: "/#achievements" },
-                { name: "Contact", href: "/#contact" }
+                { name: "Blog", href: "/blog" },
+                { name: "Collaborate", href: "/collaborate" },
+                { name: "Contact", href: "/contact" }
               ].map((link) => (
                 <li key={link.name}>
                   {link.href.startsWith("/#") ? (
@@ -70,13 +70,21 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Legal</h4>
             <ul className="space-y-4">
-              {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-white/40 hover:text-white transition-colors font-medium">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <Link to="/privacy" className="text-white/40 hover:text-white transition-colors font-medium">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-white/40 hover:text-white transition-colors font-medium">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="/cookie-policy" className="text-white/40 hover:text-white transition-colors font-medium">
+                  Cookie Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
