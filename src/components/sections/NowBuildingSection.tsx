@@ -5,6 +5,8 @@ import { Activity, ArrowRight } from 'lucide-react';
 import { db, collection, query, where, onSnapshot, limit } from "../../firebase";
 import { VARIANTS } from '../../lib/motion-presets';
 
+import { formatDate } from "../../lib/firebase-utils";
+
 export const NowBuildingSection = () => {
   const [activeBuilds, setActiveBuilds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +51,7 @@ export const NowBuildingSection = () => {
             >
               <div className="flex justify-between items-start">
                 <h3 className="text-2xl font-bold tracking-tight group-hover:text-brand-secondary transition-colors">{item.title}</h3>
-                <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{item.date}</span>
+                <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{formatDate(item.date)}</span>
               </div>
               <p className="text-white/40 font-medium leading-relaxed min-h-[80px]">{item.text}</p>
               <div className="flex items-center gap-2 text-[10px] font-bold text-brand-secondary tracking-widest uppercase pt-6 border-t border-white/5">

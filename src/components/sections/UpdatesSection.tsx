@@ -6,6 +6,8 @@ import { db, collection, query, orderBy, onSnapshot, limit } from "../../firebas
 import { VARIANTS } from '../../lib/motion-presets';
 import { cn } from '../../lib/utils';
 
+import { handleFirestoreError, formatDate } from "../../lib/firebase-utils";
+
 export const UpdatesSection = () => {
   const [updates, setUpdates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ export const UpdatesSection = () => {
                 )}>
                   {update.statusTag || 'Update'}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{update.date}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{formatDate(update.date)}</span>
               </div>
               <h4 className="text-xl font-bold mb-4">{update.title}</h4>
               <p className="text-white/50 text-sm leading-relaxed mb-6 flex-1">{update.text}</p>

@@ -7,6 +7,8 @@ import { VARIANTS } from '../../lib/motion-presets';
 import { cn } from '../../lib/utils';
 import { Link } from 'react-router-dom';
 
+import { formatDate } from "../../lib/firebase-utils";
+
 export const ActivityTimelineSection = () => {
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,11 @@ export const ActivityTimelineSection = () => {
       ];
       
       // Sort by timestamp descending
-      combined.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      combined.sort((a, b) => {
+        const timeA = a.timestamp?.seconds ? a.timestamp.seconds * 1000 : new Date(a.timestamp).getTime();
+        const timeB = b.timestamp?.seconds ? b.timestamp.seconds * 1000 : new Date(b.timestamp).getTime();
+        return timeB - timeA;
+      });
       setActivities(combined.slice(0, 10));
       setLoading(false);
     };
@@ -96,7 +102,7 @@ export const ActivityTimelineSection = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">{item.type}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">{item.timestamp}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">{formatDate(item.timestamp)}</span>
                   </div>
                   {item.type !== 'update' && (
                     <Link to={item.type === 'blog' ? `/blog/${item.slug || item.id}` : `/projects/${item.slug || item.id}`}>
