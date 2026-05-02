@@ -141,7 +141,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full py-20 flex flex-col justify-center items-center"
+      className="relative w-full pt-40 pb-20 flex flex-col justify-center items-center"
     >
       {/* Global Neon Glow Engine — variant: hero */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -149,7 +149,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
       </div>
 
       {/* Hero Content — isolated at z-10 */}
-      <Container className="relative z-10">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex w-full items-center justify-center lg:justify-between">
           
           {/* Left Social Rail (lg only) */}
@@ -191,17 +191,17 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 className="badge mb-8 sm:mb-12 shadow-2xl shadow-brand-primary/10"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                <span className="tracking-[0.25em]">Founder • Engineer • Technologist</span>
+                <span className="tracking-[0.25em]">Builder • Developer • Creative Tech</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
-              <motion.div variants={VARIANTS.fadeUp} className="space-y-4 sm:space-y-6 mb-10 sm:mb-16 w-full max-w-5xl mx-auto px-4">
-                <h1 className="leading-[1.1] text-[clamp(2.5rem,6vw,5.5rem)] tracking-tighter font-extrabold text-balance mx-auto">
-                  Building technology &amp; <br className="hidden lg:block" />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">knowledge systems</span>
+              <motion.div variants={VARIANTS.fadeUp} className="space-y-6 sm:space-y-8 mb-10 sm:mb-16">
+                <h1 className="leading-[1.05]">
+                  I Design & Engineer <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
                 </h1>
-                <h1 className="text-brand-primary italic leading-[1.1] text-[clamp(2.5rem,6vw,5.5rem)] tracking-tighter font-extrabold text-balance mx-auto">
-                  that help creators earn smarter.
+                <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
+                  That Feel Alive.
                 </h1>
               </motion.div>
 
@@ -209,45 +209,36 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  variants={VARIANTS.fadeUp}
                  className="space-y-8 mb-12 sm:mb-20"
               >
-                <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
-                  Architecting scalable platforms at the intersection of AI, education, and premium digital infrastructure.
+                <p className="text-xl sm:text-3xl text-white/50 max-w-2xl mx-auto font-medium leading-tight">
+                  I build production-ready systems combining engineering, design, and AI automation.
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
-                  Active Development: Creator Tools • AI Platforms
+                  Currently Building: AI Tools • Creative Systems
                 </div>
               </motion.div>
 
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 w-full max-w-2xl mx-auto"
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
               >
                 <MagneticButton className="w-full sm:w-auto">
                   <a 
-                    href="#projects" 
-                    className="flex items-center justify-center px-8 py-4 bg-brand-primary text-black rounded-3xl font-bold text-lg hover:scale-[1.02] transition-all shadow-[0_10px_30px_rgba(0,194,255,0.2)] active:scale-95"
+                    href="#contact" 
+                    className="flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl hover:scale-[1.02] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
                   >
-                    Explore Projects
+                    Work With Me
                   </a>
                 </MagneticButton>
                 
-                <MagneticButton className="w-full sm:w-auto">
-                  <a 
-                    href="#content"
-                    className="flex items-center justify-center px-8 py-4 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-2 group"
-                  >
-                    Watch Content <Youtube size={20} className="group-hover:text-red-500 transition-colors" />
-                  </a>
-                </MagneticButton>
-
-                <MagneticButton className="w-full sm:w-auto">
-                  <a 
-                    href="#contact"
-                    className="flex items-center justify-center px-8 py-4 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-2 group"
-                  >
-                    Work Together
-                  </a>
+                <MagneticButton
+                  onClick={onViewPortfolio}
+                  className="w-full sm:w-auto"
+                >
+                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group">
+                    View Projects <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </MagneticButton>
               </motion.div>
             </motion.div>
@@ -256,7 +247,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
           {/* Right Breathing Space (lg only) */}
           <div className="hidden lg:block w-64" />
         </div>
-      </Container>
+      </div>
     </section>
   );
 };

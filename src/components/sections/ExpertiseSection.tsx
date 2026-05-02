@@ -7,25 +7,25 @@ import { cn } from '../../lib/utils';
 
 const skillCategories = [
   {
-    title: "Platform Engineering",
+    title: "Development",
     icon: <Code className="text-brand-primary" />,
     skills: ["React / Next.js", "Python", "Tailwind CSS", "TypeScript", "Node.js"],
     filter: "Web"
   },
   {
-    title: "Autonomous Hardware",
+    title: "Robotics & Electronics",
     icon: <Cpu className="text-brand-secondary" />,
     skills: ["Arduino", "Raspberry Pi", "Circuit Design", "IoT", "Automation"],
     filter: "Robotics"
   },
   {
-    title: "Digital Product Design",
+    title: "Design & Editing",
     icon: <Palette className="text-brand-accent" />,
     skills: ["Video Editing", "Branding", "UI/UX Design", "Motion Graphics", "Figma"],
     filter: "Design"
   },
   {
-    title: "AI Integrations",
+    title: "AI Tools",
     icon: <Sparkles className="text-brand-primary" />,
     skills: ["Prompt Engineering", "AI App Dev", "LLM Integration", "Automation", "Data Analysis"],
     filter: "AI"
@@ -73,7 +73,7 @@ const TechnicalArsenal = () => {
   );
 
   return (
-    <div className="mt-40">
+    <div id="tech" className="mt-40">
       <div className="text-center mb-16">
         <motion.div
           variants={VARIANTS.fadeUp}
@@ -82,7 +82,7 @@ const TechnicalArsenal = () => {
           viewport={{ once: true }}
           className="inline-block px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest mb-6 backdrop-blur-sm text-brand-primary"
         >
-          Core Technologies
+          Technical Arsenal
         </motion.div>
         
         <motion.h2 
@@ -92,7 +92,7 @@ const TechnicalArsenal = () => {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-extrabold mb-12 tracking-tight"
         >
-          Production <span className="text-brand-primary italic">Stack</span>
+          Tech <span className="text-brand-primary italic">Stack</span> Validator
         </motion.h2>
 
         <div className="flex flex-wrap justify-center gap-2 mb-16 max-w-4xl mx-auto">
@@ -154,7 +154,7 @@ const TechnicalArsenal = () => {
 
 export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (category: string | null) => void }) => {
   return (
-    <Section id="expertise" glowVariant="orbs">
+    <Section id="services" glowVariant="orbs">
       <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp}
@@ -163,7 +163,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           viewport={{ once: true }}
           className="badge"
         >
-          Capabilities
+          Expertise
         </motion.div>
         <motion.h2 
           variants={VARIANTS.fadeUp}
@@ -171,7 +171,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           whileInView="animate"
           viewport={{ once: true }} 
         >
-          Solution <span className="text-brand-primary">Stack</span>
+          Mastered <span className="text-brand-primary italic">Skills</span>
         </motion.h2>
         <motion.p 
           variants={VARIANTS.fadeUp}
@@ -180,7 +180,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           viewport={{ once: true }}
           className="text-center"
         >
-          Comprehensive technical capabilities designed for high-performance deployments and rapid scaling.
+          A diverse toolkit for the modern digital era. Focused on high-level architecture and hardware integration.
         </motion.p>
       </div>
 

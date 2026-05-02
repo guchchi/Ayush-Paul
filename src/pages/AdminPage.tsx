@@ -4,7 +4,7 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap
 } from "lucide-react";
 import { 
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
@@ -1249,6 +1249,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [projects, setProjects] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [updates, setUpdates] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
@@ -1325,8 +1326,26 @@ const AdminDashboard = ({ user }: { user: any }) => {
     video: "",
     tech: "",
     caseStudy: "",
-    link: ""
+    link: "",
+    vision: "",
+    impact: "",
+    status: "Live / Scale",
+    metrics: JSON.stringify({ growth: "+0%", efficiency: "0%", uptime: "100%" }, null, 2),
+    evolution: JSON.stringify([{ v: "v1.0", date: "Q1 2024", note: "Initial Release" }], null, 2),
+    slug: "",
+    featured: false,
+    projectDate: "",
+    gallery: ""
   });
+
+  const [updateFormData, setUpdateFormData] = useState({
+    title: "",
+    text: "",
+    date: new Date().toISOString().split('T')[0],
+    relatedProject: "",
+    statusTag: "Building"
+  });
+  const [currentUpdate, setCurrentUpdate] = useState<any>(null);
 
   const [projectImageFile, setProjectImageFile] = useState<File | null>(null);
   const [projectImagePreview, setProjectImagePreview] = useState<string>("");
@@ -1370,11 +1389,19 @@ const AdminDashboard = ({ user }: { user: any }) => {
       handleFirestoreError(error, OperationType.GET, "newsletter");
     });
 
+    const qUpdates = query(collection(db, "updates"), orderBy("date", "desc"));
+    const unsubscribeUpdates = onSnapshot(qUpdates, (snapshot) => {
+      setUpdates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, "updates");
+    });
+
     return () => {
       unsubscribeBlogs();
       unsubscribeProjects();
       unsubscribeMessages();
       unsubscribeSubs();
+      unsubscribeUpdates();
     };
   }, []);
 
@@ -1706,6 +1733,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
           image: finalImageUrl || "",
           imagePath: uploaded?.fullPath ?? projectImagePath ?? "",
           tech: projectFormData.tech.split(",").map(t => t.trim()).filter(Boolean),
+          vision: projectFormData.vision,
+          impact: projectFormData.impact,
+          status: projectFormData.status,
+          slug: projectFormData.slug || generateSlug(projectFormData.title),
+          featured: projectFormData.featured,
+          projectDate: projectFormData.projectDate,
+          gallery: projectFormData.gallery.split(",").map(g => g.trim()).filter(Boolean),
+          metrics: (() => { try { return JSON.parse(projectFormData.metrics); } catch { return {}; } })(),
+          evolution: (() => { try { return JSON.parse(projectFormData.evolution); } catch { return []; } })(),
           updatedAt: serverTimestamp()
         };
 
@@ -1730,7 +1766,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
       setIsEditing(false);
       setCurrentProject(null);
-      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
       setProjectImagePath("");
       setProjectImageFile(null);
       if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
@@ -1741,6 +1777,30 @@ const AdminDashboard = ({ user }: { user: any }) => {
       console.error("❌ [PROJECT] Save pipeline failed:", error);
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
       alert(`Project Error: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+      saveInProgressRef.current = false;
+    }
+  };
+
+  const handleSaveUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (saveInProgressRef.current) return;
+    try {
+      saveInProgressRef.current = true;
+      setIsSaving(true);
+      const updateData = { ...updateFormData, updatedAt: serverTimestamp() };
+      if (currentUpdate) {
+        await updateDoc(doc(db, "updates", currentUpdate.id), updateData);
+      } else {
+        await addDoc(collection(db, "updates"), { ...updateData, createdAt: serverTimestamp() });
+      }
+      setIsEditing(false);
+      setCurrentUpdate(null);
+      setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
+    } catch (error: any) {
+      handleFirestoreError(error, currentUpdate ? OperationType.UPDATE : OperationType.CREATE, "updates");
+      alert(`Update Error: ${error.message}`);
     } finally {
       setIsSaving(false);
       saveInProgressRef.current = false;
@@ -1758,7 +1818,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
   };
 
   const handleDelete = async (id: string, collectionName: string) => {
-    const itemType = collectionName === "blogPosts" ? "post" : collectionName === "projects" ? "project" : "message";
+    const itemType = collectionName === "blogPosts" ? "post" : collectionName === "projects" ? "project" : collectionName === "updates" ? "update" : "message";
     if (window.confirm(`Are you sure you want to delete this ${itemType}?`)) {
       try {
         await deleteDoc(doc(db, collectionName, id));
@@ -1840,15 +1900,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
                   setIsEditing(true);
                   setCurrentPost(null);
                   setCurrentProject(null);
+                  setCurrentUpdate(null);
                   if (activeTab === "blogs") {
                     resetBlogForm();
-                  } else {
-                    setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "" });
+                  } else if (activeTab === "projects") {
+                    setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
+                  } else if (activeTab === "updates") {
+                    setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
                   }
                 }}
                 className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
               >
-                <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : "Project"}
+                <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : activeTab === "projects" ? "Project" : "Update"}
               </button>
             )}
             <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
@@ -1863,6 +1926,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
               { id: 'dashboard', label: 'Dashboard', icon: <Layout size={18} /> },
               { id: 'blogs', label: 'Blog Posts', icon: <FileText size={18} /> },
               { id: 'projects', label: 'Projects', icon: <Layers size={18} /> },
+              { id: 'updates', label: 'Updates', icon: <Zap size={18} /> },
               { id: 'messages', label: 'Messages', icon: <MessageSquare size={18} /> },
               { id: 'subscribers', label: 'Newsletter', icon: <Mail size={18} /> },
             ].map((tab) => (
@@ -2243,6 +2307,51 @@ const AdminDashboard = ({ user }: { user: any }) => {
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Project Slug (URL)</label>
+                    <input 
+                      type="text" 
+                      value={projectFormData.slug}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, slug: e.target.value })}
+                      placeholder="e.g. ecosystem-alpha"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Project Date</label>
+                    <input 
+                      type="date" 
+                      value={projectFormData.projectDate}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, projectDate: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                    />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-white/40 ml-1">Gallery Images (Comma separated URLs)</label>
+                    <textarea 
+                      value={projectFormData.gallery}
+                      onChange={(e) => setProjectFormData({ ...projectFormData, gallery: e.target.value })}
+                      placeholder="https://img1.jpg, https://img2.jpg"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none font-mono text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2 flex flex-col justify-center">
+                    <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                      <Star size={20} className={projectFormData.featured ? "text-yellow-500" : "text-white/20"} />
+                      <span className="font-bold">Featured Project</span>
+                      <button 
+                        type="button"
+                        onClick={() => setProjectFormData({ ...projectFormData, featured: !projectFormData.featured })}
+                        className={cn("w-12 h-6 rounded-full relative ml-auto transition-all", projectFormData.featured ? "bg-brand-primary" : "bg-white/10")}
+                      >
+                        <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", projectFormData.featured ? "right-1" : "left-1")} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Technologies (comma separated)</label>
                     <input 
                       type="text" 
@@ -2259,6 +2368,67 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       onChange={(e) => setProjectFormData({ ...projectFormData, link: e.target.value })}
                       className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
                     />
+                  </div>
+                </div>
+
+                {/* Startup Product Fields */}
+                <div className="p-8 rounded-3xl bg-brand-primary/5 border border-brand-primary/10 space-y-8">
+                  <h3 className="text-lg font-bold text-brand-primary">Product Showcase Metadata</h3>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-white/40 ml-1">Product Vision</label>
+                      <input 
+                        type="text" 
+                        value={projectFormData.vision}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, vision: e.target.value })}
+                        placeholder="To become the decentralized nervous system..."
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-white/40 ml-1">Market Impact</label>
+                      <input 
+                        type="text" 
+                        value={projectFormData.impact}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, impact: e.target.value })}
+                        placeholder="Automating cross-platform intelligence..."
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-white/40 ml-1">Development Status</label>
+                      <select 
+                        value={projectFormData.status}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, status: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      >
+                        <option value="Live / Scale">Live / Scale</option>
+                        <option value="Beta Access">Beta Access</option>
+                        <option value="In Development">In Development</option>
+                        <option value="Production">Production</option>
+                        <option value="R&D">R&D</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-white/40 ml-1">Product Metrics (JSON)</label>
+                      <textarea 
+                        value={projectFormData.metrics}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, metrics: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-white/40 ml-1">Evolution Timeline (JSON Array)</label>
+                      <textarea 
+                        value={projectFormData.evolution}
+                        onChange={(e) => setProjectFormData({ ...projectFormData, evolution: e.target.value })}
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -2500,16 +2670,20 @@ const AdminDashboard = ({ user }: { user: any }) => {
                               description: project.description,
                               image: project.image,
                               video: project.video || "",
-                              tech: project.tech.join(", "),
+                              tech: Array.isArray(project.tech) ? project.tech.join(", ") : project.tech,
                               caseStudy: project.caseStudy || "",
-                              link: project.link || ""
+                              link: project.link || "",
+                              vision: project.vision || "",
+                              impact: project.impact || "",
+                              status: project.status || "Live / Scale",
+                              metrics: typeof project.metrics === 'object' ? JSON.stringify(project.metrics, null, 2) : project.metrics || "{}",
+                              evolution: typeof project.evolution === 'object' ? JSON.stringify(project.evolution, null, 2) : project.evolution || "[]",
+                              slug: project.slug || "",
+                              featured: project.featured || false,
+                              projectDate: project.projectDate || "",
+                              gallery: Array.isArray(project.gallery) ? project.gallery.join(", ") : project.gallery || ""
                             });
-                            
-                            setProjectImagePath(project.imagePath ?? "");
-                            setProjectImageFile(null);
-                            if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
-                            setProjectImagePreview("");
-                            
+                            setProjectImagePath(project.imagePath || "");
                             setIsEditing(true);
                           }}
                           className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
@@ -2526,6 +2700,86 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {activeTab === "updates" && (
+              <div className="space-y-8">
+                <form onSubmit={handleSaveUpdate} className="glass-card p-10 rounded-[40px] border border-white/10 space-y-6">
+                  <h3 className="text-xl font-bold">{currentUpdate ? "Edit Update" : "Publish Update"}</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <input 
+                      type="text" 
+                      value={updateFormData.title}
+                      onChange={(e) => setUpdateFormData({ ...updateFormData, title: e.target.value })}
+                      placeholder="Update Title"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      required
+                    />
+                    <input 
+                      type="date" 
+                      value={updateFormData.date}
+                      onChange={(e) => setUpdateFormData({ ...updateFormData, date: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      required
+                    />
+                  </div>
+                  <textarea 
+                    value={updateFormData.text}
+                    onChange={(e) => setUpdateFormData({ ...updateFormData, text: e.target.value })}
+                    placeholder="What's new? (Short update text)"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary h-24 resize-none"
+                    required
+                  />
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <input 
+                      type="text" 
+                      value={updateFormData.relatedProject}
+                      onChange={(e) => setUpdateFormData({ ...updateFormData, relatedProject: e.target.value })}
+                      placeholder="Related Project (Optional)"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                    />
+                    <select 
+                      value={updateFormData.statusTag}
+                      onChange={(e) => setUpdateFormData({ ...updateFormData, statusTag: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                    >
+                      <option value="Building">Building</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Research">Research</option>
+                      <option value="Fix">Fix</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-end gap-4">
+                    {currentUpdate && (
+                      <button type="button" onClick={() => { setCurrentUpdate(null); setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" }); }} className="px-6 py-3 rounded-xl bg-white/5 text-white/40 font-bold hover:text-white">Cancel</button>
+                    )}
+                    <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-xl bg-brand-primary text-white font-bold hover:bg-brand-primary/90 disabled:opacity-50 flex items-center gap-2">
+                      {isSaving && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
+                      {currentUpdate ? "Update" : "Publish"}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="space-y-4">
+                  {updates.map(update => (
+                    <div key={update.id} className="glass-card p-6 rounded-3xl border border-white/10 flex items-start justify-between group">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary px-2 py-1 bg-brand-primary/10 rounded-md">{update.statusTag}</span>
+                          <span className="text-white/40 text-xs">{update.date}</span>
+                        </div>
+                        <h4 className="font-bold text-lg">{update.title}</h4>
+                        <p className="text-white/60 text-sm mt-1">{update.text}</p>
+                        {update.relatedProject && <div className="text-xs text-white/30 mt-2 flex items-center gap-1"><Layers size={12} /> {update.relatedProject}</div>}
+                      </div>
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => { setCurrentUpdate(update); setUpdateFormData({ title: update.title, text: update.text, date: update.date, relatedProject: update.relatedProject || "", statusTag: update.statusTag || "Building" }); }} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white"><Edit size={14} /></button>
+                        <button onClick={() => handleDelete(update.id, "updates")} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-red-500"><Trash2 size={14} /></button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

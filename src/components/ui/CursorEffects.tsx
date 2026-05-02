@@ -30,13 +30,3 @@ export const CursorFollower = () => {
     />
   );
 };
-
-export const ScrollProgressBar = () => {
-  const { scrollYProgress } = useSafeScroll();
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-brand-primary z-[1000] origin-left"
-      style={{ scaleX: scrollYProgress }}
-    />
-  );
-};

@@ -52,7 +52,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             viewport={{ once: true }}
             className="badge"
           >
-            Ecosystem
+            Portfolio
           </motion.div>
           <motion.h2 
             variants={VARIANTS.fadeUp}
@@ -60,7 +60,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            Core <span className="text-brand-primary">Platforms</span>
+            Featured <span className="text-brand-primary">Products</span>
           </motion.h2>
           <motion.p 
             variants={VARIANTS.fadeUp}
@@ -68,7 +68,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileInView="animate"
             viewport={{ once: true }}
           >
-            Mission-critical systems and digital infrastructure powering the next generation of technological advancement.
+            Turning complex problems into elegant, production-ready solutions. Each project is a deep dive into engineering and design.
           </motion.p>
         </div>
         
@@ -89,7 +89,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
               </button>
             )}
             <button className="px-10 py-5 bg-brand-primary text-white rounded-3xl text-sm font-bold hover:scale-[1.02] transition-all flex items-center gap-3 group shadow-2xl shadow-brand-primary/20">
-              View Full Ecosystem <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              Explore All <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
             </button>
           </motion.div>
         </div>
@@ -103,7 +103,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileHover={VARIANTS.lift.whileHover}
             whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedProject(featuredProject)}
-            className="mb-24 group relative glass-card border-white/5 cursor-pointer shadow-2xl overflow-hidden glass-card-hover"
+            className="mb-24 group relative rounded-3xl lg:rounded-[60px] glass-card border-white/5 cursor-pointer shadow-2xl overflow-hidden glass-card-hover"
           >
             <div className="grid lg:grid-cols-2">
               <div className="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
@@ -111,7 +111,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
                 <div className="absolute top-8 left-8">
                   <div className="px-5 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
-                    Flagship Implementation
+                    Featured Case Study
                   </div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
               onClick={() => setSelectedProject(project)}
               className="group cursor-pointer"
             >
-              <div className="aspect-video overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
+              <div className="aspect-video rounded-[32px] lg:rounded-[48px] overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
                 <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
                 <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
@@ -265,7 +265,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
                   </div>
                   
                   <div className="space-y-8">
-                    <div className="glass-card p-10 border border-white/10">
+                    <div className="glass-card p-10 rounded-[32px] border border-white/10">
                       <h3 className="text-xl font-bold mb-8">Engineering Metrics</h3>
                       <div className="space-y-8">
                         {[

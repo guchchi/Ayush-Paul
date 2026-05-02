@@ -7,7 +7,7 @@ import { VARIANTS } from '../../../lib/motion-presets';
 
 export const WhatIDo = () => {
   return (
-    <Section id="experience" glowVariant="side" className="relative">
+    <Section id="journey" glowVariant="side" className="relative">
 
       <div className="max-w-4xl mb-24 text-center mx-auto">
         <motion.div

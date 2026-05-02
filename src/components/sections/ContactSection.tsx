@@ -60,11 +60,11 @@ const Contact = () => {
         >
           <div className="space-y-8">
             <motion.div variants={VARIANTS.fadeUp} className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest">
-              Partnerships
+              Connect
             </motion.div>
-            <motion.h2 variants={VARIANTS.fadeUp} className="leading-[1.1] tracking-tighter">Enterprise <br /><span className="text-brand-primary italic">Integrations</span></motion.h2>
+            <motion.h2 variants={VARIANTS.fadeUp} className="leading-[1.1] tracking-tighter">Ready to <br /><span className="text-brand-primary italic">Collaborate?</span></motion.h2>
             <motion.p variants={VARIANTS.fadeUp} className="text-white/40 text-xl leading-relaxed max-w-md font-medium">
-              Open for strategic partnerships, enterprise consulting, and scalable platform development. Initiate contact to explore synergies.
+              Have an idea or a project in mind? Reach out and let's discuss how we can build a high-signal solution together.
             </motion.p>
           </div>
 
@@ -129,7 +129,7 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Jane Doe, CEO"
+                  placeholder="Ayush Paul"
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium"
                   required
                 />
@@ -141,7 +141,7 @@ const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="jane@enterprise.com"
+                  placeholder="ayush@product.ai"
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium"
                   required
                 />
@@ -155,7 +155,7 @@ const Contact = () => {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
-                placeholder="Enterprise Platform Integration"
+                placeholder="Startup Collaboration"
                 className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium"
                 required
               />
@@ -178,7 +178,7 @@ const Contact = () => {
               disabled={isSubmitting}
               className="w-full py-6 bg-white text-black rounded-[24px] font-bold text-xl hover:bg-brand-primary hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl flex items-center justify-center gap-3 relative group"
             >
-              <span className="relative z-10">{isSubmitting ? 'Transmitting...' : 'Initialize Partnership'}</span>
+              <span className="relative z-10">{isSubmitting ? 'Transmitting...' : 'Initiate Contact'}</span>
               <ArrowRight size={24} className="relative z-10 group-hover:translate-x-1 transition-transform" />
               <div className="absolute inset-0 bg-brand-primary opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>

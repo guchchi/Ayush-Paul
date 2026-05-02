@@ -7,13 +7,15 @@ import { MainLayout } from "./layouts/MainLayout";
 
 // --- Pages ---
 import { HomePage } from "./pages/Home";
-import { PortfolioPage } from "./pages/PortfolioPage";
 import { BlogPage } from "./pages/BlogPage";
 import { BlogPostPage } from "./pages/BlogPostPage";
 import { AdminPage } from "./pages/AdminPage";
 import { SuccessPage } from "./pages/SuccessPage";
 import { CancelPage } from "./pages/CancelPage";
 import { NowPage } from "./pages/NowPage";
+import { AboutPage } from "./pages/AboutPage";
+import { ProjectsPage } from "./pages/ProjectsPage";
+import { ProjectDetailPage } from "./pages/ProjectDetailPage";
 import { ProfileSelectionPage } from "./pages/ProfileSelectionPage";
 
 // --- Components ---
@@ -69,7 +71,6 @@ export default function App() {
         <ScrollToTop />
         <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen w-full text-white">
           <CursorFollower />
-          <ScrollProgressBar />
           
           {!isConfigured && showConfigWarning && (
             <FirebaseConfigWarning 
@@ -86,8 +87,10 @@ export default function App() {
                 <ProfileSelectionPage onSelect={handleProfileSelect} />
               )
             } />
-            <Route path="/portfolio" element={wrapInLayout(<PortfolioPage />)} />
             <Route path="/now" element={wrapInLayout(<NowPage />)} />
+            <Route path="/about" element={wrapInLayout(<AboutPage />)} />
+            <Route path="/projects" element={wrapInLayout(<ProjectsPage />)} />
+            <Route path="/projects/:slug" element={wrapInLayout(<ProjectDetailPage />)} />
             <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
             <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
             <Route path="/admin" element={<AdminPage />} />

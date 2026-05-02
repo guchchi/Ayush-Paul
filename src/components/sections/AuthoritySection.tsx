@@ -10,10 +10,10 @@ import { VARIANTS, EASING } from '../../lib/motion-presets';
 
 const StatsDashboard = () => {
   const stats = [
-    { label: "Deployed Systems", value: "50+", icon: <Rocket size={20} />, color: "text-blue-400" },
-    { label: "Daily Active Requests", value: "100k+", icon: <Zap size={20} />, color: "text-purple-400" },
-    { label: "Hardware Integrations", value: "12", icon: <Cpu size={20} />, color: "text-orange-400" },
-    { label: "Enterprise Partners", value: "25+", icon: <Box size={20} />, color: "text-green-400" },
+    { label: "Projects Completed", value: "50+", icon: <Rocket size={20} />, color: "text-blue-400" },
+    { label: "Lines of Code", value: "100k+", icon: <Code size={20} />, color: "text-purple-400" },
+    { label: "Robots Built", value: "12", icon: <Cpu size={20} />, color: "text-orange-400" },
+    { label: "Happy Clients", value: "25+", icon: <User size={20} />, color: "text-green-400" },
   ];
 
   return (
@@ -45,9 +45,9 @@ const StatsDashboard = () => {
 
 const BrandEcosystem = () => {
   const items = [
-    { title: "Active R&D", content: "A multi-agent AI framework for autonomous robotics.", icon: <Brain size={20} /> },
-    { title: "Open Source", content: "High-performance web infrastructure built in Rust and WebAssembly.", icon: <Github size={20} /> },
-    { title: "Operating Principles", content: "Simplicity is the ultimate sophistication. Build for impact and scalability.", icon: <ShieldCheck size={20} /> },
+    { title: "Currently Building", content: "A multi-agent AI framework for autonomous robotics.", icon: <Zap size={20} /> },
+    { title: "Learning in Public", content: "Deep diving into Rust and WebAssembly for high-performance web apps.", icon: <BookOpen size={20} /> },
+    { title: "Tech Philosophy", content: "Simplicity is the ultimate sophistication. Build for impact, not just for code.", icon: <Lightbulb size={20} /> },
   ];
 
   return (
@@ -89,33 +89,33 @@ export const AuthoritySection = () => {
 
   const pillars = [
     {
-      id: 'systems',
-      title: 'Systems Engineering',
+      id: 'builder',
+      title: 'Builder',
       icon: <Box className="w-8 h-8 text-brand-primary" />,
-      description: 'Production-grade distributed systems.',
-      metrics: ['Microservices Arch', 'Global Scalability', '99.99% Uptime'],
-      details: 'Expertise in building robust infrastructure and platforms that handle real-world enterprise scale.'
+      description: 'Production-grade systems and shipped products.',
+      metrics: ['50+ Shipped Modules', 'Scalable Architecture', 'Production Reliability'],
+      details: 'Expertise in building robust web applications and robotics systems that handle real-world scale.'
     },
     {
-      id: 'product',
-      title: 'Product Design',
-      icon: <Layers className="w-8 h-8 text-brand-secondary" />,
-      description: 'Human-centric interface architecture.',
-      metrics: ['Design Systems', 'High-Signal UX', 'Conversion Focus'],
-      details: 'Bridging the gap between high-end digital aesthetics and performant, scalable frontends.'
+      id: 'creator',
+      title: 'Creator',
+      icon: <Zap className="w-8 h-8 text-brand-secondary" />,
+      description: 'Design-led technical implementation.',
+      metrics: ['4+ Years Design Ops', 'High-Signal UI/UX', 'Video & Motion Mastery'],
+      details: 'Bridging the gap between high-end digital aesthetics and performant engineering.'
     },
     {
-      id: 'ai',
-      title: 'AI Integration',
+      id: 'technologist',
+      title: 'Technologist',
       icon: <Brain className="w-8 h-8 text-brand-accent" />,
-      description: 'Autonomous systems and LLM pipelines.',
-      metrics: ['RAG Architectures', 'Edge AI', 'Workflow Automation'],
-      details: 'Specializing in intelligent automation, connecting large language models with proprietary data.'
+      description: 'AI, Automation, and Hardware crossover.',
+      metrics: ['AI/ML Integration', 'Hardware-Software Sync', 'Workflow Automation'],
+      details: 'Specializing in intelligent automation and robotics, connecting physical hardware with digital brains.'
     }
   ];
 
   return (
-    <Section id="authority" glowVariant="center">
+    <Section id="achievements" glowVariant="center">
       <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp} 
@@ -124,7 +124,7 @@ export const AuthoritySection = () => {
           viewport={{ once: true }}
           className="badge"
         >
-          Institutional Credibility
+          Credibility & Impact
         </motion.div>
         <motion.h2 
           variants={VARIANTS.fadeUp} 
@@ -132,7 +132,7 @@ export const AuthoritySection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
         >
-          Platform <span className="text-brand-primary">Metrics</span>
+          Architecture of <span className="text-brand-primary">Authority</span>
         </motion.h2>
         <motion.p 
           variants={VARIANTS.fadeUp} 
@@ -141,7 +141,7 @@ export const AuthoritySection = () => {
           viewport={{ once: true }} 
           className="text-center"
         >
-          Quantified scale and performance across our active systems and digital infrastructure.
+          A quantified view of my impact across software engineering, AI research, and robotics innovation.
         </motion.p>
       </div>
 
@@ -156,9 +156,9 @@ export const AuthoritySection = () => {
           viewport={{ once: true }}
           className="space-y-8 lg:space-y-12"
         >
-          <motion.h2 variants={VARIANTS.fadeUp} className="text-4xl lg:text-5xl">Core <span className="text-brand-primary">Infrastructure</span></motion.h2>
+          <motion.h2 variants={VARIANTS.fadeUp} className="text-4xl lg:text-5xl">Technical <span className="text-brand-primary">Radar</span></motion.h2>
           <motion.p variants={VARIANTS.fadeUp} className="text-lg lg:text-xl leading-relaxed font-medium">
-            Enterprise-grade technical stack built for high-availability and global scale. Focus on high-level software architecture and low-level hardware integration.
+            Core technical competencies across the full stack. I focus on the intersection of high-level software architecture and low-level hardware integration.
           </motion.p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -6,7 +6,7 @@ import { Container } from "@/src/components/ui/Container";
 
 export const Footer = () => {
   return (
-    <footer className="layout-section border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
+    <footer id="footer" className="layout-section border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
       
       <Container>
@@ -16,7 +16,7 @@ export const Footer = () => {
               ayushpaul<span className="text-brand-primary group-hover:neon-glow-blue transition-all">.in</span>
             </Link>
             <p className="text-white/40 text-lg max-w-sm leading-relaxed">
-              Architecting the next generation of scalable platforms. Bridging autonomous systems with enterprise-grade digital infrastructure.
+              Student entrepreneur and innovator crafting the future of AI and Robotics. Building products that solve real-world problems.
             </p>
             <div className="flex items-center gap-6">
               {[
@@ -35,16 +35,32 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Navigation</h4>
             <ul className="space-y-4">
-              {["Manifesto", "Ecosystem", "Capabilities", "Infrastructure", "Insights"].map((link) => (
-                <li key={link}>
-                  {link === "Insights" ? (
-                    <Link to="/blog" className="text-white/40 hover:text-brand-primary transition-colors font-medium">
-                      {link}
-                    </Link>
+              {[
+                { name: "About", href: "/about" },
+                { name: "Projects", href: "/projects" },
+                { name: "Services", href: "/#services" },
+                { name: "Achievements", href: "/#achievements" },
+                { name: "Contact", href: "/#contact" }
+              ].map((link) => (
+                <li key={link.name}>
+                  {link.href.startsWith("/#") ? (
+                    <button 
+                      onClick={() => {
+                        const id = link.href.split("#")[1];
+                        if (window.location.pathname !== '/') {
+                          window.location.href = link.href;
+                        } else {
+                          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="text-white/40 hover:text-brand-primary transition-colors font-medium text-left"
+                    >
+                      {link.name}
+                    </button>
                   ) : (
-                    <a href={`#${link.toLowerCase()}`} className="text-white/40 hover:text-brand-primary transition-colors font-medium">
-                      {link}
-                    </a>
+                    <Link to={link.href} className="text-white/40 hover:text-brand-primary transition-colors font-medium">
+                      {link.name}
+                    </Link>
                   )}
                 </li>
               ))}
@@ -67,7 +83,7 @@ export const Footer = () => {
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-white/20 text-sm font-medium">
-            © 2024 Ayush Paul. Engineered for <span className="text-brand-primary">Scale</span>.
+            © 2024 Ayush Paul. Crafted with <span className="text-brand-primary">Passion</span> and AI.
           </p>
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-white/20 text-sm font-medium">
