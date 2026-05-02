@@ -178,7 +178,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
           </div>
 
           {/* Center Hero Content */}
-          <div className="flex flex-col justify-center items-center w-full max-w-3xl mx-auto">
+          <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
             <motion.div 
               className="w-full text-center flex flex-col items-center"
               variants={VARIANTS.staggerContainer}
@@ -188,66 +188,59 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
               {/* High-Authority Identity Badge */}
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="inline-flex items-center justify-center gap-2 px-3 py-2 sm:px-6 sm:py-3 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-white/50 opacity-80 backdrop-blur-md shadow-2xl mb-6 max-w-full"
+                className="badge mb-8 sm:mb-12 shadow-2xl shadow-brand-primary/10"
               >
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-brand-primary animate-pulse shrink-0" />
-                <span className="truncate">Builder • Developer • Creative Tech</span>
+                <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                <span className="tracking-[0.25em]">Builder • Developer • Creative Tech</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
-              <motion.div variants={VARIANTS.fadeUp} className="space-y-3 sm:space-y-5 w-full break-words">
-                <h1 className="font-display font-semibold tracking-tight leading-[1.1] text-white text-[2.5rem] sm:text-7xl w-full break-words">
+              <motion.div variants={VARIANTS.fadeUp} className="space-y-6 sm:space-y-8 mb-10 sm:mb-16">
+                <h1 className="leading-[1.05]">
                   I Design & Engineer <br />
-                  Digital Experiences
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
                 </h1>
-                <h1 className="font-display font-semibold tracking-tight leading-tight text-brand-primary italic w-full break-words text-3xl sm:text-6xl">
+                <h1 className="text-brand-primary italic leading-none text-4xl sm:text-7xl">
                   That Feel Alive.
                 </h1>
               </motion.div>
 
               <motion.div 
                  variants={VARIANTS.fadeUp}
-                 className="flex flex-col gap-5 w-full mt-6"
+                 className="space-y-8 mb-12 sm:mb-20"
               >
-                <p className="text-sm sm:text-2xl text-neutral-400 sm:text-white/50 w-full max-w-[300px] sm:max-w-2xl mx-auto leading-relaxed font-medium break-words text-center">
+                <p className="text-xl sm:text-3xl text-white/50 max-w-2xl mx-auto font-medium leading-tight">
                   I build production-ready systems combining engineering, design, and AI automation.
                 </p>
                 
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40 w-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-ping shrink-0" />
+                <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
                   Currently Building: AI Tools • Creative Systems
                 </div>
               </motion.div>
 
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full relative z-20 mt-10"
+                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
               >
-                {/* Primary: Work With Me */}
-                <MagneticButton 
-                   className="w-full sm:w-auto overflow-hidden relative"
-                >
+                <MagneticButton className="w-full sm:w-auto">
                   <a 
                     href="#contact" 
-                    className="inline-flex items-center justify-center w-full max-w-[280px] sm:max-w-none mx-auto min-h-[48px] px-8 sm:px-14 py-4 bg-white text-black rounded-2xl sm:rounded-3xl font-bold text-lg transition-all shadow-2xl hover:scale-[1.02] active:scale-95"
+                    className="flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl hover:scale-[1.02] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
                   >
                     Work With Me
                   </a>
                 </MagneticButton>
                 
-                {/* Secondary: View Projects */}
                 <MagneticButton
                   onClick={onViewPortfolio}
-                  className="w-full sm:w-auto overflow-hidden relative"
+                  className="w-full sm:w-auto"
                 >
-                  <div className="inline-flex items-center justify-center w-full max-w-[280px] sm:max-w-none mx-auto min-h-[48px] px-8 sm:px-14 py-4 bg-white/[0.03] border border-white/10 rounded-2xl sm:rounded-3xl font-bold text-lg hover:bg-white/[0.08] hover:border-white/20 transition-all backdrop-blur-md text-white shadow-xl gap-3 group cursor-pointer">
-                    View Projects <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group">
+                    View Projects <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </MagneticButton>
               </motion.div>
-
-              {/* Bottom Breathing Space */}
-              <div className="mt-8 pb-6 w-full sm:hidden" />
             </motion.div>
           </div>
 

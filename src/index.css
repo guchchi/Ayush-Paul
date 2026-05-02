@@ -23,10 +23,25 @@
     text-shadow: 0 0 10px rgba(255, 0, 60, 0.5), 0 0 20px rgba(255, 0, 60, 0.3);
   }
   .neon-border-blue {
-    box-shadow: 0 0 10px rgba(0, 194, 255, 0.5), inset 0 0 5px rgba(0, 194, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 194, 255, 0.2), inset 0 0 5px rgba(0, 194, 255, 0.1);
   }
   .neon-border-red {
-    box-shadow: 0 0 10px rgba(255, 0, 60, 0.5), inset 0 0 5px rgba(255, 0, 60, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 60, 0.2), inset 0 0 5px rgba(255, 0, 60, 0.1);
+  }
+  
+  /* Modern Tech Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -86,45 +101,66 @@
   }
 
   p, h1, h2, h3, h4, h5, h6, .prose *, .prose p, .prose {
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    word-wrap: break-word !important;
-    hyphens: none !important;
-    text-wrap: wrap !important;
-    white-space: normal !important;
-    text-align: left !important;
+    word-break: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: none;
+    text-wrap: wrap;
+    white-space: normal;
   }
 
   :root {
     color-scheme: dark;
-    /* Global Layout Tokens — Multi-Phase Senior Engineering Standard */
-    --layout-max-width: 1280px; /* 7xl equivalent */
+    /* Global Layout Tokens — Senior Architect Redesign */
+    --layout-max-width: 1440px; /* Increased for ultra-wide premium feel */
     
-    /* Strict Responsive Spacing */
-    --layout-section-py: 4rem;
-    --layout-container-px: 1rem; /* 16px */
+    /* Strict Spacing Scale (8pt Grid System) */
+    --space-1: 0.25rem;  /* 4px */
+    --space-2: 0.5rem;   /* 8px */
+    --space-3: 0.75rem;  /* 12px */
+    --space-4: 1rem;     /* 16px */
+    --space-6: 1.5rem;   /* 24px */
+    --space-8: 2rem;     /* 32px */
+    --space-12: 3rem;    /* 48px */
+    --space-16: 4rem;    /* 64px */
+    --space-24: 6rem;    /* 96px */
+    --space-32: 8rem;    /* 128px */
     
-    /* Navbar Tokens */
-    --navbar-height: 4.5rem;
-    --navbar-height-scrolled: 3.75rem;
-    --section-top-pad: 2rem;
+    /* Section & Container Rules */
+    --layout-section-py: var(--space-24);
+    --layout-container-px: var(--space-6);
+    
+    /* Navbar Elevation */
+    --navbar-height: 5rem;
+    --navbar-height-scrolled: 4rem;
+    --z-nav: 100;
+    --z-modal: 200;
+
+    /* Visual Hierarchy Tokens */
+    --radius-sm: 0.75rem;
+    --radius-md: 1.25rem;
+    --radius-lg: 2rem;
+    --radius-xl: 3.5rem;
+    
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: blur(24px);
 
     /* Phase 5: Motion Tokens */
     --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-interactive: cubic-bezier(0.4, 0, 0.2, 1);
     --duration-standard: 0.5s;
-    --duration-premium: 0.8s;
-
-    /* Global Z-Index System */
-    --z-deco: 0;
-    --z-content: 10;
-    --z-ui: 20;
-    --z-nav: 30;
 
     /* Global Neon Design Tokens */
     --neon-primary: 0, 194, 255;    /* cyan */
-    --neon-secondary: 168, 85, 247; /* purple */
-    --neon-accent: 16, 185, 129;    /* emerald */
+    --neon-secondary: 255, 0, 60;   /* red */
+    --neon-accent: 123, 97, 255;   /* purple */
+  }
+  
+  @media (min-width: 1024px) {
+    :root {
+      --layout-section-py: var(--space-32);
+      --layout-container-px: var(--space-8);
+    }
   }
 
   .glow-orb {
@@ -171,23 +207,27 @@
 
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-white max-w-full break-words leading-tight;
+    @apply font-display tracking-tight text-white max-w-full break-words;
+    line-height: 1.1;
   }
 
   h1 {
-    @apply text-[clamp(2.5rem,8vw,5rem)] font-extrabold;
+    @apply text-[clamp(2.5rem,10vw,6rem)] font-extrabold;
+    letter-spacing: -0.04em;
   }
 
   h2 {
-    @apply text-[clamp(2rem,6vw,3.5rem)] font-bold;
+    @apply text-[clamp(2rem,6vw,4rem)] font-bold;
+    letter-spacing: -0.03em;
   }
 
   h3 {
-    @apply text-[clamp(1.5rem,4vw,2.25rem)] font-bold;
+    @apply text-[clamp(1.5rem,4vw,2.5rem)] font-bold;
   }
 
   p {
-    @apply leading-relaxed max-w-full break-words [hyphens:none] [word-break:normal!important];
+    @apply leading-relaxed max-w-full break-words font-medium;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .text-prose {
@@ -260,16 +300,26 @@
 /* --- UI Components & Utilities --- */
 
 @utility glass {
-  background: rgba(255, 255, 255, 0.05);
-  @apply backdrop-blur-xl border border-white/10;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
 }
 
 @utility glass-card {
-  @apply glass hover:bg-white/10 transition-all duration-300;
+  @apply glass transition-all duration-500;
+  border-radius: var(--radius-lg);
 }
 
-@utility gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent;
+@utility glass-card-hover {
+  @apply hover:bg-white/[0.05] hover:border-white/20 hover:-translate-y-2;
+}
+
+@utility section-header {
+  @apply max-w-4xl mx-auto text-center mb-16 lg:mb-24 flex flex-col items-center justify-center space-y-6;
+}
+
+@utility badge {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest;
 }
 
 .gradient-border {

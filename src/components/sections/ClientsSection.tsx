@@ -27,14 +27,14 @@ export const ClientsSection = () => {
   ];
 
   return (
-    <Section id="clients" glowVariant="side" className="pt-24 overflow-visible">
-      <div className="text-center mb-24">
+    <Section id="clients" glowVariant="side" className="overflow-visible">
+      <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp} 
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }}
-          className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-6"
+          className="badge"
         >
           Social Validation
         </motion.div>
@@ -43,7 +43,6 @@ export const ClientsSection = () => {
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }} 
-          className="mb-6 leading-tight tracking-tighter"
         >
           Client <span className="text-brand-primary italic">Love</span>
         </motion.h2>
@@ -53,7 +52,7 @@ export const ClientsSection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
           transition={{ delay: 0.1 }} 
-          className="text-white/40 text-xl italic font-medium max-w-2xl mx-auto text-center"
+          className="text-center italic"
         >
           What people say about working with me. I focus on delivering long-term value and engineering excellence.
         </motion.p>
@@ -64,7 +63,7 @@ export const ClientsSection = () => {
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 min-w-0"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
       >
         {testimonials.map((t, i) => (
           <motion.div
@@ -72,18 +71,18 @@ export const ClientsSection = () => {
             variants={VARIANTS.fadeUp}
             whileHover={VARIANTS.lift.whileHover}
             transition={{ ...VARIANTS.fadeUp.transition, delay: i * 0.1 }}
-            className="p-8 md:p-12 rounded-[32px] md:rounded-[48px] glass-card border border-white/5 relative shadow-xl min-w-0 break-words overflow-visible"
+            className="p-10 lg:p-12 glass-card border-white/5 relative glass-card-hover overflow-visible"
           >
-            <div className="absolute -top-7 left-8 md:left-12 w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-brand-primary/30 z-20">
+            <div className="absolute -top-7 left-10 lg:left-12 w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-brand-primary/30 z-20">
                <MessageSquare size={24} />
             </div>
-            <p className="text-lg md:text-xl text-white/70 italic mb-8 md:mb-12 leading-relaxed pt-6 font-medium break-words relative z-10">
+            <p className="text-lg lg:text-xl text-white/70 italic mb-10 lg:mb-12 leading-relaxed pt-6 font-medium relative z-10">
               "{t.text}"
             </p>
-            <div className="flex items-center gap-4 md:gap-5 pt-8 md:pt-10 border-t border-white/5 min-w-0 relative z-10">
-              <img src={t.avatar} alt={t.name} className="w-12 h-12 md:w-16 md:h-16 rounded-2xl border border-white/10 shadow-lg shrink-0" referrerPolicy="no-referrer" />
+            <div className="flex items-center gap-4 lg:gap-5 pt-8 lg:pt-10 border-t border-white/5 relative z-10">
+              <img src={t.avatar} alt={t.name} className="w-12 h-12 lg:w-16 lg:h-16 rounded-2xl border border-white/10 shadow-lg shrink-0" referrerPolicy="no-referrer" />
               <div className="min-w-0 overflow-hidden">
-                <h4 className="text-base md:text-lg font-bold text-white tracking-tight truncate">{t.name}</h4>
+                <h4 className="text-lg font-bold text-white tracking-tight truncate">{t.name}</h4>
                 <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] font-bold truncate">{t.role}</p>
               </div>
             </div>

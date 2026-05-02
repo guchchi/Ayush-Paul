@@ -18,9 +18,9 @@ export const Section = ({
   glowVariant?: 'hero' | 'side' | 'center' | 'orbs' | 'bottom';
   as?: any;
 }) => (
-  <Component id={id} className={cn("relative w-full py-24 lg:py-32 isolate", className)}>
+  <Component id={id} className={cn("relative w-full py-[var(--layout-section-py)] isolate", className)}>
     {glowVariant && (
-      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none -z-10">
         <SectionGlow variant={glowVariant} />
       </div>
     )}

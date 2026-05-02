@@ -62,23 +62,23 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 w-full z-50 transition-all duration-500 pt-[env(safe-area-inset-top,0px)]",
+      "fixed top-0 left-0 w-full z-50 transition-all duration-500",
       isScrolled 
-        ? "bg-[#0A0A0A]/90 backdrop-blur-xl py-4 border-b border-white/10" 
-        : "bg-[#0A0A0A]/40 sm:bg-[#0A0A0A]/20 backdrop-blur-md py-5 sm:py-6"
+        ? "bg-black/60 backdrop-blur-xl py-3 border-b border-white/5" 
+        : "bg-transparent py-6 sm:py-8"
     )}>
-      <Container className="flex items-center justify-between gap-4">
-        <Link to="/" className="text-xl md:text-2xl font-display font-bold tracking-tighter shrink-0 flex items-center gap-1">
-          ayushpaul<span className="text-brand-primary">.in</span>
+      <Container className="flex items-center justify-between gap-8">
+        <Link to="/" className="text-2xl font-display font-extrabold tracking-tighter shrink-0 flex items-center gap-1 group">
+          ayushpaul<span className="text-brand-primary group-hover:animate-pulse">.in</span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center space-x-8">
+        <div className="hidden lg:flex items-center space-x-10">
           {navLinks.map((link) => (
             <button
               key={link.name}
               onClick={() => handleNavClick(link)}
-              className="text-sm font-medium text-white/70 hover:text-white transition-colors cursor-pointer"
+              className="text-[13px] font-bold uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all cursor-pointer"
             >
               {link.name}
             </button>
@@ -94,7 +94,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                 document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="px-5 py-2 bg-white text-black rounded-full text-sm font-bold hover:bg-white/90 transition-all cursor-pointer"
+            className="px-8 py-3 bg-white text-black rounded-full text-sm font-bold hover:scale-[1.05] transition-all cursor-pointer shadow-2xl shadow-white/10"
           >
             Hire Me
           </button>

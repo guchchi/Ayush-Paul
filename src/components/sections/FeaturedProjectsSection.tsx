@@ -44,38 +44,52 @@ const Projects = ({ filter }: { filter: string | null }) => {
   return (
     <>
       <Section id="projects" glowVariant="bottom">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+        <div className="section-header">
           <motion.div
             variants={VARIANTS.fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="max-w-2xl"
+            className="badge"
           >
-            <div className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-4">
-              Portfolio
-            </div>
-            <h2 className="mb-6 leading-tight">Featured <span className="text-brand-primary">Products</span></h2>
-            <p className="text-white/40 text-lg md:text-xl">Turning complex problems into elegant, production-ready solutions. Each project is a deep dive into engineering and design.</p>
+            Portfolio
           </motion.div>
-          
+          <motion.h2 
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            Featured <span className="text-brand-primary">Products</span>
+          </motion.h2>
+          <motion.p 
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+          >
+            Turning complex problems into elegant, production-ready solutions. Each project is a deep dive into engineering and design.
+          </motion.p>
+        </div>
+        
+        <div className="flex justify-center mb-16">
           <motion.div 
             variants={VARIANTS.fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="flex items-center gap-4"
+            className="flex flex-wrap items-center justify-center gap-4"
           >
             {filter && (
               <button 
                 onClick={() => window.location.reload()}
-                className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-all"
+                className="px-6 py-4 glass-card border-white/10 text-[11px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all"
               >
                 Clear Filter: {filter}
               </button>
             )}
-            <button className="px-8 py-4 bg-brand-primary text-white rounded-2xl text-sm font-bold hover:bg-brand-primary/90 transition-all flex items-center gap-3 group shadow-xl">
-              Explore All <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+            <button className="px-10 py-5 bg-brand-primary text-white rounded-3xl text-sm font-bold hover:scale-[1.02] transition-all flex items-center gap-3 group shadow-2xl shadow-brand-primary/20">
+              Explore All <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
             </button>
           </motion.div>
         </div>
@@ -89,29 +103,29 @@ const Projects = ({ filter }: { filter: string | null }) => {
             whileHover={VARIANTS.lift.whileHover}
             whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedProject(featuredProject)}
-            className="mb-24 group relative rounded-[40px] glass-card border border-white/10 cursor-pointer shadow-2xl transition-shadow hover:shadow-brand-primary/5"
+            className="mb-24 group relative rounded-3xl lg:rounded-[60px] glass-card border-white/5 cursor-pointer shadow-2xl overflow-hidden glass-card-hover"
           >
             <div className="grid lg:grid-cols-2">
-              <div className="aspect-video lg:aspect-auto overflow-hidden relative">
+              <div className="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
                 <img src={featuredProject.image} alt={featuredProject.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
                 <div className="absolute top-8 left-8">
-                  <div className="px-4 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-widest shadow-xl">
-                    Featured Project
+                  <div className="px-5 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
+                    Featured Case Study
                   </div>
                 </div>
               </div>
-              <div className="p-12 md:p-16 flex flex-col justify-center">
-                <span className="text-brand-primary font-bold uppercase tracking-widest text-sm mb-4 block">{featuredProject.category}</span>
-                <h3 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight tracking-tighter">{featuredProject.title}</h3>
-                <p className="text-white/60 text-xl mb-10 leading-relaxed line-clamp-3">{featuredProject.description}</p>
-                <div className="flex flex-wrap gap-4 mb-12">
+              <div className="p-10 lg:p-20 flex flex-col justify-center">
+                <span className="text-brand-primary font-bold uppercase tracking-[0.3em] text-[11px] mb-6 block">{featuredProject.category}</span>
+                <h3 className="text-4xl lg:text-6xl font-bold text-white mb-8 tracking-tighter leading-tight">{featuredProject.title}</h3>
+                <p className="text-xl mb-12 leading-relaxed line-clamp-3">{featuredProject.description}</p>
+                <div className="flex flex-wrap gap-3 mb-12">
                   {featuredProject.tech?.map((t: string) => (
-                    <span key={t} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold text-white/40 uppercase tracking-widest">{t}</span>
+                    <span key={t} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold text-white/30 uppercase tracking-widest">{t}</span>
                   ))}
                 </div>
-                <div className="flex items-center gap-4 text-brand-primary font-bold group-hover:gap-6 transition-all">
-                  View Case Study <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
+                <div className="flex items-center gap-4 text-brand-primary font-bold text-lg group-hover:gap-6 transition-all uppercase tracking-widest">
+                  View Case Study <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
                 </div>
               </div>
             </div>
@@ -143,29 +157,29 @@ const Projects = ({ filter }: { filter: string | null }) => {
               onClick={() => setSelectedProject(project)}
               className="group cursor-pointer"
             >
-              <div className="aspect-video rounded-[32px] overflow-hidden mb-8 glass-card border border-white/5 relative">
+              <div className="aspect-video rounded-[32px] lg:rounded-[48px] overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
                 <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
-                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                  <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white">
-                    <ArrowRight className="-rotate-45" size={20} />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
+                <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white">
+                    <ArrowRight className="-rotate-45" size={24} />
                   </div>
                 </div>
               </div>
-              <div className="px-2">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary">{project.category}</span>
-                  <div className="w-1 h-1 rounded-full bg-white/20" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">2024</span>
+              <div className="px-4">
+                <div className="flex items-center gap-4 mb-5">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary">{project.category}</span>
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/20">Product Design</span>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition-colors tracking-tight">{project.title}</h3>
-                <p className="text-white/40 line-clamp-2 leading-relaxed mb-6">{project.description}</p>
-                <div className="flex items-center gap-6 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-2 text-white/30 text-[10px] font-bold uppercase tracking-widest leading-none">
-                    <Clock size={14} /> 2024
+                <h3 className="text-3xl font-bold text-white mb-5 group-hover:text-brand-primary transition-colors tracking-tight">{project.title}</h3>
+                <p className="line-clamp-2 leading-relaxed mb-8">{project.description}</p>
+                <div className="flex items-center gap-8 pt-8 border-t border-white/5">
+                  <div className="flex items-center gap-3 text-white/30 text-[10px] font-bold uppercase tracking-[0.25em] leading-none">
+                    <Clock size={16} /> 2024 Release
                   </div>
-                  <div className="flex items-center gap-2 text-white/30 text-[10px] font-bold uppercase tracking-widest leading-none">
-                    <User size={14} /> Solo Project
+                  <div className="flex items-center gap-3 text-white/30 text-[10px] font-bold uppercase tracking-[0.25em] leading-none">
+                    <User size={16} /> Solo Engineer
                   </div>
                 </div>
               </div>

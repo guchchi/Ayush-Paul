@@ -116,13 +116,13 @@ export const AuthoritySection = () => {
 
   return (
     <Section id="authority" glowVariant="center">
-      <div className="text-center mb-24">
+      <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp} 
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }}
-          className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-6"
+          className="badge"
         >
           Credibility & Impact
         </motion.div>
@@ -131,7 +131,6 @@ export const AuthoritySection = () => {
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }} 
-          className="mb-6 tracking-tighter"
         >
           Architecture of <span className="text-brand-primary">Authority</span>
         </motion.h2>
@@ -140,7 +139,7 @@ export const AuthoritySection = () => {
           initial="initial" 
           whileInView="animate" 
           viewport={{ once: true }} 
-          className="text-white/40 text-xl font-medium max-w-2xl mx-auto text-center"
+          className="text-center"
         >
           A quantified view of my impact across software engineering, AI research, and robotics innovation.
         </motion.p>
@@ -149,16 +148,16 @@ export const AuthoritySection = () => {
       <StatsDashboard />
       <BrandEcosystem />
 
-      <div className="grid lg:grid-cols-2 gap-16 md:gap-32 items-center mb-32">
+      <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center mb-32">
         <motion.div
           variants={VARIANTS.staggerContainer}
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="space-y-12"
+          className="space-y-8 lg:space-y-12"
         >
-          <motion.h2 variants={VARIANTS.fadeUp} className="tracking-tighter leading-none text-4xl md:text-5xl">Technical <span className="text-brand-primary">Radar</span></motion.h2>
-          <motion.p variants={VARIANTS.fadeUp} className="text-white/40 text-xl leading-relaxed font-medium">
+          <motion.h2 variants={VARIANTS.fadeUp} className="text-4xl lg:text-5xl">Technical <span className="text-brand-primary">Radar</span></motion.h2>
+          <motion.p variants={VARIANTS.fadeUp} className="text-lg lg:text-xl leading-relaxed font-medium">
             Core technical competencies across the full stack. I focus on the intersection of high-level software architecture and low-level hardware integration.
           </motion.p>
           
@@ -173,7 +172,7 @@ export const AuthoritySection = () => {
                 key={i} 
                 variants={VARIANTS.fadeUp}
                 whileHover={VARIANTS.lift.whileHover}
-                className="p-8 rounded-[32px] bg-white/5 border border-white/10 group hover:border-brand-primary/20 transition-all shadow-lg min-w-0"
+                className="p-8 glass-card border-white/5 glass-card-hover shadow-lg"
               >
                 <div className="text-brand-primary font-bold text-xl mb-1">{item.value}</div>
                 <div className="text-white font-bold text-sm mb-2 uppercase tracking-wide">{item.label}</div>
@@ -188,21 +187,21 @@ export const AuthoritySection = () => {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="h-[400px] md:h-[500px] w-full glass-card rounded-[40px] md:rounded-[60px] p-6 md:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden"
+          className="h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden"
         >
           <div className="absolute inset-0 bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillData}>
-              <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em' }} />
+              <PolarGrid stroke="rgba(255,255,255,0.05)" />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em' }} />
               <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-              <Radar name="Ayush" dataKey="A" stroke="#00C2FF" fill="#00C2FF" fillOpacity={0.2} />
+              <Radar name="Ayush" dataKey="A" stroke="#00C2FF" fill="#00C2FF" fillOpacity={0.15} />
             </RadarChart>
           </ResponsiveContainer>
         </motion.div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8 md:gap-12">
+      <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
         {pillars.map((pillar, i) => (
           <motion.div
             key={pillar.id}
@@ -211,11 +210,11 @@ export const AuthoritySection = () => {
             whileInView="animate"
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="glass-card p-10 rounded-[40px] border border-white/5 relative group hover:border-brand-primary/20 transition-all duration-500 overflow-hidden"
+            className="p-10 glass-card border-white/5 relative group glass-card-hover overflow-hidden"
           >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 blur-[80px] -z-10 group-hover:opacity-100 transition-opacity opacity-50`} />
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 blur-[80px] -z-10 group-hover:opacity-100 transition-opacity opacity-30`} />
             <div className="flex flex-col h-full space-y-8 relative z-10">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
                 {pillar.icon}
               </div>
               <div>
@@ -224,13 +223,13 @@ export const AuthoritySection = () => {
               </div>
               <div className="space-y-4 pt-8 border-t border-white/5 flex-grow">
                 {pillar.metrics.map((metric, idx) => (
-                  <div key={idx} className="flex items-center gap-3 text-sm font-bold text-white/60 tracking-tight">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-primary/50" />
+                  <div key={idx} className="flex items-center gap-3 text-sm font-bold text-white/50 tracking-tight group-hover:text-white/80 transition-colors">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-primary/40" />
                     {metric}
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-white/20 leading-relaxed font-medium pt-4 group-hover:text-white/40 transition-colors">
+              <p className="text-[11px] text-white/20 leading-relaxed font-bold uppercase tracking-wider pt-4 group-hover:text-white/40 transition-colors">
                 {pillar.details}
               </p>
             </div>

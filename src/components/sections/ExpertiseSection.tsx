@@ -155,13 +155,13 @@ const TechnicalArsenal = () => {
 export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (category: string | null) => void }) => {
   return (
     <Section id="expertise" glowVariant="orbs">
-      <div className="text-center mb-24">
+      <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp}
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-6"
+          className="badge"
         >
           Expertise
         </motion.div>
@@ -170,7 +170,6 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }} 
-          className="mb-8 tracking-tighter"
         >
           Mastered <span className="text-brand-primary italic">Skills</span>
         </motion.h2>
@@ -179,7 +178,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="text-white/40 max-w-2xl mx-auto text-xl font-medium text-center"
+          className="text-center"
         >
           A diverse toolkit for the modern digital era. Focused on high-level architecture and hardware integration.
         </motion.p>
@@ -190,7 +189,7 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
         initial="initial"
         whileInView="animate"
         viewport={{ once: true }}
-        className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+        className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10"
       >
         {skillCategories.map((category, i) => (
           <motion.div
@@ -199,19 +198,19 @@ export const ExpertiseSection = ({ onFilterProjects }: { onFilterProjects: (cate
             whileHover={VARIANTS.lift.whileHover}
             whileTap={{ scale: 0.98 }}
             onClick={() => onFilterProjects(category.filter)}
-            className="glass-card p-12 rounded-[48px] border border-white/5 hover:border-brand-primary/30 transition-all cursor-pointer group relative overflow-hidden"
+            className="p-10 lg:p-12 glass-card border-white/5 glass-card-hover cursor-pointer group relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
               <ArrowRight className="text-brand-primary" size={24} />
             </div>
             
-            <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-brand-primary/10 transition-all duration-500">
+            <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center mb-8 lg:mb-10 group-hover:scale-110 group-hover:bg-brand-primary/10 transition-all duration-500">
               {category.icon}
             </div>
             <h3 className="mb-6 group-hover:text-brand-primary transition-colors text-2xl font-bold tracking-tight">{category.title}</h3>
             <ul className="space-y-4">
               {category.skills.map((skill, j) => (
-                <li key={j} className="flex items-center text-white/40 text-sm font-bold group-hover:text-white/80 transition-colors uppercase tracking-widest">
+                <li key={j} className="flex items-center text-white/40 text-[11px] font-bold group-hover:text-white/80 transition-colors uppercase tracking-[0.15em]">
                   <div className="w-1.5 h-1.5 rounded-full bg-brand-primary/40 mr-4 group-hover:scale-150 group-hover:bg-brand-primary transition-all duration-300" />
                   {skill}
                 </li>
