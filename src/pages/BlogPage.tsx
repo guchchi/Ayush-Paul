@@ -212,61 +212,6 @@ export const BlogPage = () => {
                   </div>
                 )}
 
-                {/* Quick Actions (Categories) */}
-                <div className="space-y-6">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Topics</div>
-                  <div className="flex flex-wrap gap-3">
-                    <button 
-                      onClick={() => setSelectedCategory(null)}
-                      className={cn(
-                        "px-6 py-3 rounded-2xl text-xs font-bold transition-all border",
-                        !selectedCategory ? "bg-white text-black border-white" : "bg-white/[0.03] text-white/40 border-white/[0.05] hover:border-white/20 hover:bg-white/[0.05]"
-                      )}
-                    >
-                      All Topics
-                    </button>
-                    {allCategories.map(cat => (
-                      <button 
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={cn(
-                          "px-6 py-3 rounded-2xl text-xs font-bold transition-all border",
-                          selectedCategory === cat ? "bg-brand-primary text-white border-brand-primary shadow-[0_0_20px_rgba(0,183,255,0.2)]" : "bg-white/[0.03] text-white/40 border-white/[0.05] hover:border-white/20 hover:bg-white/[0.05]"
-                        )}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Main Actions (Tags) */}
-                <div className="space-y-6">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Popular Tags</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {allTags.slice(0, 10).map(tag => (
-                      <button 
-                        key={tag}
-                        onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                        className={cn(
-                          "w-full px-5 py-4 rounded-xl flex items-center justify-between transition-all group border",
-                          selectedTag === tag ? "bg-white/[0.05] border-brand-primary/30" : "bg-transparent border-transparent hover:bg-white/[0.03]"
-                        )}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={cn("w-2 h-2 rounded-full transition-colors", selectedTag === tag ? "bg-brand-primary shadow-[0_0_8px_var(--color-brand-primary)]" : "bg-white/10 group-hover:bg-white/20")} />
-                          <span className={cn("text-xs font-bold transition-colors uppercase tracking-[0.1em]", selectedTag === tag ? "text-white" : "text-white/40 group-hover:text-white/60")}>#{tag}</span>
-                        </div>
-                        {selectedTag === tag ? (
-                          <Check size={14} className="text-brand-primary" />
-                        ) : (
-                          <div className="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-white/20 tracking-widest uppercase transition-opacity">Select</div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {(selectedTag || selectedCategory || search) && (
                   <div className="pt-4 flex justify-end">
                     <button 
@@ -274,7 +219,7 @@ export const BlogPage = () => {
                       className="flex items-center gap-3 px-6 py-4 rounded-xl bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 hover:border-red-500/20 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500/60 hover:text-red-400 transition-all"
                     >
                       <span className="w-1 h-1 rounded-full bg-current" />
-                      Reset All Filters
+                      Reset Search
                     </button>
                   </div>
                 )}
