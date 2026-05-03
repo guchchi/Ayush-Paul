@@ -165,15 +165,45 @@ const MilestonesCarousel = () => {
   ]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const CACHE_KEY = 'cache_milestones';
+  const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 Hours
+
   useEffect(() => {
+    // 1. Instant Load from Cache
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        const { data, timestamp } = JSON.parse(cached);
+        const isFresh = Date.now() - timestamp < CACHE_TTL;
+        
+        // Load cached data immediately
+        setMilestones(data);
+        
+        // If fresh, we can skip the initial loading state
+        if (isFresh) setIsLoading(false);
+      } catch (err) {
+        localStorage.removeItem(CACHE_KEY);
+      }
+    }
+
+    // 2. Silent Background Refresh
     const fetchMilestones = async () => {
       try {
         const docSnap = await getDoc(doc(db, "content", "milestones"));
         if (docSnap.exists() && docSnap.data().items && docSnap.data().items.length > 0) {
-          setMilestones(docSnap.data().items);
+          const newData = docSnap.data().items;
+          
+          // Update State
+          setMilestones(newData);
+          
+          // Update Cache
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: newData,
+            timestamp: Date.now()
+          }));
         }
       } catch (error) {
-        // Silently fail and keep using hardcoded data as fallback
+        // Silently fail and keep using cached/hardcoded data
       } finally {
         setIsLoading(false);
       }
