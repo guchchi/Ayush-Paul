@@ -1,3 +1,5 @@
+import { getCanonicalUrl } from '../lib/domain';
+
 export const defaultSEO = {
   siteName: "Ayush Paul",
   title: "Ayush Paul | AI Developer & Builder",
@@ -6,5 +8,5 @@ export const defaultSEO = {
   keywords:
     "Ayush Paul, AI Developer India, Robotics Developer, Full Stack Developer India, Hire Ayush Paul, AI Engineer Portfolio",
   image: "/og-image.png",
-  url: "https://ayushpaul.in"
+  url: getCanonicalUrl()
 };

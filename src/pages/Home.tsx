@@ -11,6 +11,7 @@ import { LatestBlogsSection } from '../components/sections/LatestBlogsSection';
 import { CTASection } from '../components/sections/CTASection';
 import { ContactSection } from '../components/sections/ContactSection';
 import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 
 export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
   useSEO({
@@ -20,10 +21,10 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) =
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Ayush Paul",
-      "url": "https://ayushpaul.in",
+      "url": getCanonicalUrl(),
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://ayushpaul.in/blog?q={search_term_string}",
+        "target": getCanonicalUrl("/blog?q={search_term_string}"),
         "query-input": "required name=search_term_string"
       }
     }

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { defaultSEO } from '../config/seo';
+import { getCanonicalUrl } from '../lib/domain';
 
 interface SEOProps {
   title?: string;
@@ -42,8 +43,8 @@ export const useSEO = ({
     // 3. Open Graph Tags
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
-    setMetaTag('property', 'og:image', image.startsWith('http') ? image : `https://ayushpaul.in${image.startsWith('/') ? image : `/${image}`}`);
-    setMetaTag('property', 'og:url', url.startsWith('http') ? url : `https://ayushpaul.in${url.startsWith('/') ? url : `/${url}`}`);
+    setMetaTag('property', 'og:image', image.startsWith('http') ? image : getCanonicalUrl(image));
+    setMetaTag('property', 'og:url', url.startsWith('http') ? url : getCanonicalUrl(url));
     setMetaTag('property', 'og:type', 'website');
     setMetaTag('property', 'og:site_name', defaultSEO.siteName);
 
@@ -51,7 +52,7 @@ export const useSEO = ({
     setMetaTag('name', 'twitter:card', 'summary_large_image');
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
-    setMetaTag('name', 'twitter:image', image.startsWith('http') ? image : `https://ayushpaul.in${image.startsWith('/') ? image : `/${image}`}`);
+    setMetaTag('name', 'twitter:image', image.startsWith('http') ? image : getCanonicalUrl(image));
 
     // 5. Canonical URL
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -60,7 +61,7 @@ export const useSEO = ({
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', url.startsWith('http') ? url : `https://ayushpaul.in${url.startsWith('/') ? url : `/${url}`}`);
+    canonical.setAttribute('href', url.startsWith('http') ? url : getCanonicalUrl(url));
 
     // 6. Robots / Indexing
     if (noindex) {
@@ -83,7 +84,7 @@ export const useSEO = ({
       "@type": "Person",
       "name": "Ayush Paul",
       "jobTitle": "AI Developer & Builder",
-      "url": "https://ayushpaul.in",
+      "url": getCanonicalUrl(),
       "sameAs": [
         "https://github.com/guchchi",
         "https://www.linkedin.com/in/paulayush/",
@@ -96,5 +97,5 @@ export const useSEO = ({
 
     // Cleanup: In an SPA, we usually leave the tags as is until overridden by the next page.
     // So there is no explicit cleanup of the meta tags because the next call of useSEO automatically replaces them.
-  }, [title, description, keywords, image, url, noindex]);
+  }, [title, description, keywords, image, url, noindex, schema]);
 };

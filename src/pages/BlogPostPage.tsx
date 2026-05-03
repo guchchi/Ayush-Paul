@@ -9,6 +9,7 @@ import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, OperationType } from "../types";
+import { getCanonicalUrl } from "../lib/domain";
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
@@ -35,19 +36,19 @@ export const BlogPostPage = () => {
       "author": {
         "@type": "Person",
         "name": "Ayush Paul",
-        "url": "https://ayushpaul.in"
+        "url": getCanonicalUrl()
       },
       "publisher": {
         "@type": "Organization",
         "name": "Ayush Paul",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://ayushpaul.in/assets/founder.png"
+          "url": getCanonicalUrl("/assets/founder.png")
         }
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://ayushpaul.in/blog/${slug}`
+        "@id": getCanonicalUrl(`/blog/${slug}`)
       }
     } : null
   });

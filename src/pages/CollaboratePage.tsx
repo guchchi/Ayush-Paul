@@ -87,7 +87,7 @@ const Hero = () => (
         </MagneticButton>
         
         <button 
-          onClick={() => window.location.href = "mailto:hello@ayushpaul.in?subject=Discovery%20Call%20Request"}
+          onClick={() => window.location.href = "mailto:hello.ayushpaul.in?subject=Discovery%20Call%20Request"}
           className="px-12 py-6 glass-card border-white/10 text-white rounded-[24px] font-bold text-xl hover:bg-white/5 transition-all flex items-center gap-2 group"
         >
           Book Discovery Call <Zap size={20} className="text-brand-primary group-hover:animate-pulse" />
