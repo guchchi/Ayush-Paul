@@ -77,16 +77,20 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+import { uploadImage } from '../lib/storage-utils';
+
 interface Milestone {
   id: string;
   year: string;
   title: string;
   desc: string;
+  image?: string;
+  imagePath?: string;
 }
 
 const SortableMilestone = ({ milestone, onUpdate, onDelete }: { 
   milestone: Milestone, 
-  onUpdate: (id: string, field: string, value: string) => void,
+  onUpdate: (id: string, field: string, value: any) => void,
   onDelete: (id: string) => void
 }) => {
   const {
@@ -98,10 +102,31 @@ const SortableMilestone = ({ milestone, onUpdate, onDelete }: {
     isDragging
   } = useSortable({ id: milestone.id });
 
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     zIndex: isDragging ? 50 : 'auto',
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const { url, fullPath } = await uploadImage(file, 'milestones', (p) => setUploadProgress(p));
+      onUpdate(milestone.id, 'image', url);
+      onUpdate(milestone.id, 'imagePath', fullPath);
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -116,21 +141,60 @@ const SortableMilestone = ({ milestone, onUpdate, onDelete }: {
       <button 
         {...attributes} 
         {...listeners}
-        className="p-3 mt-1 rounded-xl bg-white/5 text-white/20 hover:text-white cursor-grab active:cursor-grabbing transition-colors"
+        className="p-3 mt-1 rounded-xl bg-white/5 text-white/20 hover:text-white cursor-grab active:cursor-grabbing transition-colors shrink-0"
       >
         <GripVertical size={18} />
       </button>
 
-      <div className="flex-1 grid md:grid-cols-[120px_1fr] gap-6">
-        <div className="space-y-2">
-          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Year</label>
-          <input 
-            type="text" 
-            value={milestone.year}
-            onChange={(e) => onUpdate(milestone.id, 'year', e.target.value)}
-            className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-sm font-bold"
-            placeholder="2024"
-          />
+      <div className="flex-1 grid md:grid-cols-[160px_1fr] gap-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Artifact Image</label>
+            <div className="relative aspect-[4/3] rounded-2xl bg-white/5 border border-white/10 overflow-hidden group/image flex flex-col items-center justify-center">
+              {milestone.image ? (
+                <>
+                  <img src={milestone.image} alt="Milestone" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <label className="p-2 rounded-lg bg-white text-black cursor-pointer hover:scale-110 transition-transform">
+                      <Upload size={14} />
+                      <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                    </label>
+                    <button 
+                      onClick={() => onUpdate(milestone.id, 'image', '')}
+                      className="p-2 rounded-lg bg-red-500 text-white hover:scale-110 transition-transform"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <label className="flex flex-col items-center gap-2 cursor-pointer text-white/20 hover:text-white transition-colors">
+                  {isUploading ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                      <span className="text-[8px] font-bold">{Math.round(uploadProgress)}%</span>
+                    </div>
+                  ) : (
+                    <>
+                      <ImageIcon size={24} />
+                      <span className="text-[8px] font-bold uppercase tracking-widest">Upload Image</span>
+                    </>
+                  )}
+                  <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} disabled={isUploading} />
+                </label>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Year</label>
+            <input 
+              type="text" 
+              value={milestone.year}
+              onChange={(e) => onUpdate(milestone.id, 'year', e.target.value)}
+              className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-sm font-bold"
+              placeholder="2024"
+            />
+          </div>
         </div>
         <div className="space-y-4">
           <div className="space-y-2">
@@ -148,7 +212,7 @@ const SortableMilestone = ({ milestone, onUpdate, onDelete }: {
             <textarea 
               value={milestone.desc}
               onChange={(e) => onUpdate(milestone.id, 'desc', e.target.value)}
-              className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-sm h-24 resize-none leading-relaxed"
+              className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-sm h-32 resize-none leading-relaxed"
               placeholder="Describe the achievement..."
             />
           </div>
@@ -157,7 +221,7 @@ const SortableMilestone = ({ milestone, onUpdate, onDelete }: {
 
       <button 
         onClick={() => onDelete(milestone.id)}
-        className="p-3 mt-1 rounded-xl bg-red-500/5 border border-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
+        className="p-3 mt-1 rounded-xl bg-red-500/5 border border-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/10 transition-all shrink-0"
       >
         <Trash2 size={18} />
       </button>
