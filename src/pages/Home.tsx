@@ -15,7 +15,18 @@ import { useSEO } from '../hooks/useSEO';
 export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
   useSEO({
     title: "Ayush Paul | AI Developer & Digital Builder",
-    keywords: "Ayush Paul, AI Developer India, Robotics Developer, Hire Ayush Paul"
+    keywords: "Ayush Paul, AI Developer India, Robotics Developer, Hire Ayush Paul",
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Ayush Paul",
+      "url": "https://ayushpaul.in",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ayushpaul.in/blog?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
   });
 
   // Autonomous Hash Navigation on mount

@@ -46,9 +46,9 @@ export const MagneticButton = ({ children, className, onClick, strength = 0.4 }:
       className={className}
       style={{ willChange: "transform" }}
     >
-      <button onClick={onClick} className="w-full h-full cursor-pointer focus:outline-none">
+      <div onClick={onClick} className="w-full h-full cursor-pointer focus:outline-none">
         {children}
-      </button>
+      </div>
     </motion.div>
   );
 };

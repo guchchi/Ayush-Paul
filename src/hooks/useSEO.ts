@@ -8,6 +8,7 @@ interface SEOProps {
   image?: string;
   url?: string;
   noindex?: boolean;
+  schema?: Record<string, any>;
 }
 
 export const useSEO = ({
@@ -17,6 +18,7 @@ export const useSEO = ({
   image = defaultSEO.image,
   url = defaultSEO.url,
   noindex = false,
+  schema = null,
 }: SEOProps = {}) => {
   useEffect(() => {
     // 1. Title
@@ -67,29 +69,30 @@ export const useSEO = ({
       setMetaTag('name', 'robots', 'index, follow');
     }
 
-    // 7. Structured Data (JSON-LD) - global person schema injected once unless changed
+    // 7. Structured Data (JSON-LD)
     let scriptEntry = document.getElementById('seo-json-ld');
     if (!scriptEntry) {
       scriptEntry = document.createElement('script');
       scriptEntry.id = 'seo-json-ld';
       scriptEntry.setAttribute('type', 'application/ld+json');
       document.head.appendChild(scriptEntry);
-      
-      const personSchema = {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Ayush Paul",
-        "jobTitle": "AI Developer & Builder",
-        "url": "https://ayushpaul.in",
-        "sameAs": [
-          "https://github.com/guchchi",
-          "https://www.linkedin.com/in/paulayush/",
-          "https://www.youtube.com/@ALX-17",
-          "https://www.fiverr.com/ayushpaulx"
-        ]
-      };
-      scriptEntry.textContent = JSON.stringify(personSchema);
     }
+
+    const defaultSchema = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ayush Paul",
+      "jobTitle": "AI Developer & Builder",
+      "url": "https://ayushpaul.in",
+      "sameAs": [
+        "https://github.com/guchchi",
+        "https://www.linkedin.com/in/paulayush/",
+        "https://www.youtube.com/@ALX-17",
+        "https://www.fiverr.com/ayushpaulx"
+      ]
+    };
+
+    scriptEntry.textContent = JSON.stringify(schema || defaultSchema);
 
     // Cleanup: In an SPA, we usually leave the tags as is until overridden by the next page.
     // So there is no explicit cleanup of the meta tags because the next call of useSEO automatically replaces them.

@@ -80,11 +80,24 @@ const FounderSection = () => {
           viewport={{ once: true, margin: "-100px" }}
           className="glass-card p-12 md:p-20 rounded-[40px] md:rounded-[64px] border-white/5 flex flex-col md:flex-row gap-16 items-center"
         >
-          <div className="w-40 h-40 md:w-56 md:h-56 shrink-0 rounded-[32px] md:rounded-[48px] overflow-hidden bg-white/5 border border-white/10 relative">
-            {/* Minimal Portrait Area Placeholder */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 to-transparent opacity-50 mix-blend-overlay" />
-            <div className="w-full h-full flex items-center justify-center text-white/10">
-              <Zap size={64} />
+          <div 
+            className="w-40 h-40 md:w-56 md:h-56 shrink-0 rounded-[32px] md:rounded-[48px] overflow-hidden bg-white/5 border border-white/10 relative"
+            style={{ willChange: 'transform' }}
+          >
+            {/* Founder Portrait for Identity Trust */}
+            <div className="w-full h-full relative">
+              <img 
+                src="/assets/founder.png" 
+                alt="Ayush Paul - Founder" 
+                decoding="async"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback if image is missing
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-white/10 bg-white/5"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><path d="M4 14.71 12 2l1 10h7l-8 12.71-1-10H4z"/></svg></div>';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/40 to-transparent" />
             </div>
           </div>
           

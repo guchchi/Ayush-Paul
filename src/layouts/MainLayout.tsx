@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CommandPalette } from './CommandPalette';
-import { MobileBottomNav } from './MobileBottomNav';
 import { SmoothScrollProvider } from '../components/ui/motion/SmoothScroll';
 
 interface MainLayoutProps {
@@ -38,7 +37,6 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
       </main>
       
       <Footer />
-      <MobileBottomNav onPortfolioClick={onPortfolioClick} />
     </SmoothScrollProvider>
   );
 };

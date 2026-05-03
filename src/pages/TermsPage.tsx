@@ -85,6 +85,13 @@ export const TermsPage = () => {
               </p>
             </div>
 
+            <div className="space-y-6 p-8 glass-card border-white/5 bg-white/[0.01] rounded-3xl">
+              <h2 className="text-2xl font-bold tracking-tight text-white">Governing Law</h2>
+              <p className="text-white/50 leading-relaxed">
+                These Terms shall be governed and interpreted in accordance with the laws of India. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in India.
+              </p>
+            </div>
+
             <div className="pt-12 border-t border-white/5">
               <div className="p-10 glass-card border-brand-primary/20 bg-brand-primary/[0.02] rounded-[40px] flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="space-y-2">

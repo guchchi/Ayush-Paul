@@ -69,10 +69,10 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
   const navLinks = [
     { name: "Home", href: "/#home", id: "home" },
-    { name: "About", href: "/about", id: "about" },
     { name: "Projects", href: "/projects", id: "projects" },
     { name: "Blog", href: "/blog", id: "blog" },
-    { name: "Collaborate", href: "/collaborate", id: "collaborate" },
+    { name: "Achievements", href: "/#achievements", id: "achievements" },
+    { name: "About", href: "/about", id: "about" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
@@ -213,31 +213,28 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   </div>
 
                   {/* High-Signal Nav Links */}
-                  <div className="flex-1 overflow-y-auto py-10 px-8 space-y-2">
+                  <div className="flex-1 overflow-y-auto py-6 px-6 space-y-1 custom-scrollbar">
                     {navLinks.map((link, i) => (
-                      <motion.button
+                      <button
                         key={link.name}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + i * 0.05 }}
                         onClick={() => handleNavClick(link)}
                         className={cn(
-                          "group flex items-center justify-between w-full p-6 rounded-[24px] transition-all duration-300",
+                          "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300",
                           (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
                             ? "bg-brand-primary/10 text-brand-primary border border-brand-primary/20" 
                             : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
                         )}
                       >
-                        <span className="text-2xl font-display font-bold tracking-tight">{link.name}</span>
+                        <span className="text-xl font-display font-bold tracking-tight">{link.name}</span>
                         <div className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                          "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                           (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
                             ? "bg-brand-primary text-black scale-100" 
-                            : "bg-white/5 text-white/20 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+                            : "bg-white/5 text-white/20 opacity-0 group-hover:opacity-100"
                         )}>
-                          <ChevronRight size={18} />
+                          <ChevronRight size={16} />
                         </div>
-                      </motion.button>
+                      </button>
                     ))}
                   </div>
 
@@ -268,9 +265,9 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                         setIsMobileMenuOpen(false);
                         setIsSupportModalOpen(true);
                       }}
-                      className="w-full py-6 bg-white text-black rounded-[24px] font-bold text-lg shadow-xl shadow-white/5 flex items-center justify-center gap-3"
+                      className="w-full py-4 bg-white text-black rounded-[20px] font-bold text-base shadow-xl shadow-white/5 flex items-center justify-center gap-3"
                     >
-                      Support <Heart size={20} />
+                      Support <Heart size={18} />
                     </motion.button>
                     
                     <div className="text-center space-y-2">

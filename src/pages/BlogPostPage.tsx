@@ -24,7 +24,32 @@ export const BlogPostPage = () => {
     description: post?.seo?.description || post?.description || post?.excerpt,
     keywords: post?.seo?.keywords,
     image: post?.seo?.ogImage || post?.coverImage,
-    url: `/blog/${slug}`
+    url: `/blog/${slug}`,
+    schema: post ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.description || post.excerpt,
+      "image": post.coverImage,
+      "datePublished": post.createdAt?.toDate ? post.createdAt.toDate().toISOString() : post.createdAt,
+      "author": {
+        "@type": "Person",
+        "name": "Ayush Paul",
+        "url": "https://ayushpaul.in"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Ayush Paul",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ayushpaul.in/assets/founder.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://ayushpaul.in/blog/${slug}`
+      }
+    } : null
   });
 
   useEffect(() => {

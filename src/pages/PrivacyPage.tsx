@@ -96,6 +96,24 @@ export const PrivacyPage = () => {
               </div>
             </div>
 
+            <div className="space-y-6 p-8 glass-card border-white/5 bg-white/[0.01] rounded-3xl">
+              <h2 className="text-2xl font-bold tracking-tight text-white">Your Data Rights</h2>
+              <p className="text-white/50 leading-relaxed font-medium">
+                Depending on your location, you may have the right to:
+              </p>
+              <ul className="grid md:grid-cols-2 gap-4 text-sm text-white/60 font-medium">
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Access the personal data we hold about you</li>
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Request correction of inaccurate information</li>
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Request deletion of your data</li>
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Restrict or object to data processing</li>
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Request data portability</li>
+                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Withdraw consent at any time</li>
+              </ul>
+              <p className="text-xs text-white/30 pt-4">
+                To exercise these rights, please contact us at: <span className="text-brand-primary font-bold">contact@ayushpaul.in</span>
+              </p>
+            </div>
+
             <div className="pt-12 border-t border-white/5 space-y-6">
               <div className="flex flex-wrap gap-12">
                 <div className="space-y-2">
