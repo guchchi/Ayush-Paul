@@ -295,7 +295,7 @@ const MilestonesEditor = ({ items, onChange }: { items: Milestone[], onChange: (
         onClick={handleAdd}
         className="w-full py-6 rounded-[32px] border-2 border-dashed border-white/5 bg-white/5 text-white/20 hover:text-white hover:border-brand-primary/30 hover:bg-brand-primary/5 transition-all flex flex-col items-center justify-center gap-2 group"
       >
-        <Plus className="group-hover:scale-110 transition-transform" size={32} />
+        <PlusIcon className="group-hover:scale-110 transition-transform" size={32} />
         <span className="font-bold text-sm uppercase tracking-widest">Append New Milestone Artifact</span>
       </button>
     </div>
