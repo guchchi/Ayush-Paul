@@ -201,9 +201,12 @@ const MilestonesCarousel = () => {
             data: newData,
             timestamp: Date.now()
           }));
+        } else {
+          console.warn("CMS Sync: Milestones document empty or missing. Using fallbacks.");
         }
       } catch (error) {
-        // Silently fail and keep using cached/hardcoded data
+        console.error("CMS Sync Error [Milestones]:", error);
+        // We do nothing else, preserving the existing state (cached or hardcoded)
       } finally {
         setIsLoading(false);
       }
