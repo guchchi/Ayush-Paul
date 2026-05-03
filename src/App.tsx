@@ -23,6 +23,7 @@ const DashboardPage = lazy(() => import("./pages/DashboardPage").then(m => ({ de
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then(m => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("./pages/TermsPage").then(m => ({ default: m.TermsPage })));
 const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default: m.CookiePage })));
+const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
 
 // --- Loading Fallback ---
 const PageLoading = () => (
@@ -118,6 +119,7 @@ export default function App() {
               <Route path="/cookie-policy" element={wrapInLayout(<CookiePage />)} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/admin/content" element={<ContentAdminPage />} />
               <Route path="/success" element={<SuccessPage />} />
               <Route path="/cancel" element={<CancelPage />} />
             </Routes>

@@ -584,3 +584,5 @@ export const ContentAdminPage = () => {
     </div>
   );
 };
+
+export default ContentAdminPage;
