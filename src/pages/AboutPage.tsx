@@ -163,6 +163,7 @@ const MilestonesCarousel = () => {
     { year: "2024", title: "Innovation Builds", desc: "Launched scalable web applications and platforms." },
     { year: "2025", title: "Digital Product Development", desc: "Leading the next wave of full-stack ecosystems." }
   ]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMilestones = async () => {
@@ -173,6 +174,8 @@ const MilestonesCarousel = () => {
         }
       } catch (error) {
         // Silently fail and keep using hardcoded data as fallback
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchMilestones();
@@ -207,29 +210,48 @@ const MilestonesCarousel = () => {
         ref={scrollRef}
         className="flex gap-8 overflow-x-auto snap-x snap-mandatory px-6 md:px-12 pb-12 custom-scrollbar"
       >
-        {milestones.map((m, i) => (
-          <motion.div
-            key={i}
-            variants={VARIANTS.fadeUp}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="snap-center shrink-0 w-[85vw] md:w-[600px] glass-card rounded-[40px] p-8 border-white/5 group hover:border-white/20 transition-all duration-500"
-          >
-            <div className="w-full aspect-[16/9] bg-white/5 rounded-[24px] mb-8 overflow-hidden relative border border-white/5">
-              <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {isLoading ? (
+          [...Array(3)].map((_, i) => (
+            <div 
+              key={i} 
+              className="snap-center shrink-0 w-[85vw] md:w-[600px] glass-card rounded-[40px] p-8 border-white/5"
+            >
+              <div className="w-full aspect-[16/9] bg-white/5 rounded-[24px] mb-8 animate-pulse" />
+              <div className="flex justify-between items-start mb-6">
+                <div className="h-8 w-2/3 bg-white/5 rounded-lg animate-pulse" />
+                <div className="h-6 w-12 bg-white/5 rounded-lg animate-pulse" />
+              </div>
+              <div className="h-4 w-full bg-white/5 rounded-lg animate-pulse mb-2" />
+              <div className="h-4 w-1/2 bg-white/5 rounded-lg animate-pulse" />
             </div>
-            <div className="flex justify-between items-start mb-6">
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tight pr-8">{m.title}</h3>
-              <span className="text-sm font-bold text-brand-primary tracking-widest">{m.year}</span>
-            </div>
-            <p className="text-white/50 text-lg font-medium">{m.desc}</p>
-          </motion.div>
-        ))}
-        <div className="snap-center shrink-0 w-[85vw] md:w-[600px] flex items-center justify-center p-8">
-          <h3 className="text-4xl font-bold text-white/30 italic tracking-tighter">"This is just the beginning."</h3>
-        </div>
+          ))
+        ) : (
+          milestones.map((m, i) => (
+            <motion.div
+              key={i}
+              variants={VARIANTS.fadeUp}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="snap-center shrink-0 w-[85vw] md:w-[600px] glass-card rounded-[40px] p-8 border-white/5 group hover:border-white/20 transition-all duration-500"
+            >
+              <div className="w-full aspect-[16/9] bg-white/5 rounded-[24px] mb-8 overflow-hidden relative border border-white/5">
+                <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+              <div className="flex justify-between items-start mb-6">
+                <h3 className="text-2xl md:text-3xl font-bold tracking-tight pr-8">{m.title}</h3>
+                <span className="text-sm font-bold text-brand-primary tracking-widest">{m.year}</span>
+              </div>
+              <p className="text-white/50 text-lg font-medium">{m.desc}</p>
+            </motion.div>
+          ))
+        )}
+        {!isLoading && (
+          <div className="snap-center shrink-0 w-[85vw] md:w-[600px] flex items-center justify-center p-8">
+            <h3 className="text-4xl font-bold text-white/30 italic tracking-tighter">"This is just the beginning."</h3>
+          </div>
+        )}
       </div>
     </Section>
   );
