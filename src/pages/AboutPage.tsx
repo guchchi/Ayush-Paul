@@ -223,6 +223,7 @@ const MilestonesCarousel = () => {
   };
 
   return (
+    <Section id="milestones" className="py-32 bg-[#0A0A0A]/50 border-y border-white/5 overflow-hidden">
       {/* Structured Data for SEO */}
       <script type="application/ld+json">
         {JSON.stringify({

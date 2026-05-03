@@ -1243,157 +1243,14 @@ const HealthDashboard = () => {
   );
 };
 
-const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (id: string, data: any) => void }) => {
-  const [selectedDoc, setSelectedDoc] = useState<string>("homepage");
-  const [localData, setLocalData] = useState<any>(null);
-
-  useEffect(() => {
-    if (docs[selectedDoc]) {
-      setLocalData(JSON.parse(JSON.stringify(docs[selectedDoc])));
-    } else {
-      // Default templates for bootstrapping
-      const templates: Record<string, any> = {
-        homepage: { hero: { headline: "I Design & Engineer Digital Experiences That Feel Alive.", subheadline: "I build production-ready systems combining engineering, design, and AI automation." }, stats: [] },
-        about: { headline: "", bio: "", skills: [] },
-        milestones: { items: [] },
-        experience: { phases: [] }
-      };
-      setLocalData(templates[selectedDoc] || {});
-    }
-  }, [selectedDoc, docs]);
-
-  if (!localData) return <div className="text-white/20">Loading content...</div>;
-
-  return (
-    <div className="grid lg:grid-cols-[250px_1fr] gap-12">
-      <div className="space-y-4">
-        {["homepage", "about", "milestones", "experience"].map(id => (
-          <button
-            key={id}
-            onClick={() => setSelectedDoc(id)}
-            className={cn(
-              "w-full px-6 py-4 rounded-2xl font-bold text-left transition-all",
-              selectedDoc === id ? "bg-brand-primary text-white" : "bg-white/5 text-white/40 hover:bg-white/10"
-            )}
-          >
-            {id.charAt(0).toUpperCase() + id.slice(1)}
-          </button>
-        ))}
-      </div>
-      <div className="glass-card p-10 rounded-[40px] border border-white/10 space-y-8">
-        <div className="flex justify-between items-center">
-          <h3 className="text-2xl font-bold capitalize">{selectedDoc} Configuration</h3>
-          <div className="flex gap-4">
-            {Object.keys(docs).length === 0 && (
-              <button
-                onClick={async () => {
-                  const schema = {
-                    milestones: { items: [] },
-                    about: { headline: "", bio: "", skills: [] },
-                    experience: { phases: [] }
-                  };
-                  for (const [id, data] of Object.entries(schema)) {
-                    await onSave(id, data);
-                  }
-                }}
-                className="px-6 py-3 bg-white/5 border border-white/10 text-white/40 rounded-xl font-bold hover:text-white transition-all text-xs"
-              >
-                Bootstrap Schema
-              </button>
-            )}
-            <button
-              onClick={() => onSave(selectedDoc, localData)}
-              className="px-8 py-3 bg-brand-primary text-white rounded-xl font-bold flex items-center gap-2 hover:bg-brand-primary/90 transition-all"
-            >
-              <Save size={18} /> Save Changes
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          {selectedDoc === "homepage" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Headline</label>
-                <input
-                  type="text"
-                  value={localData.hero?.headline || ""}
-                  onChange={e => setLocalData({ ...localData, hero: { ...localData.hero, headline: e.target.value } })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Sub-headline</label>
-                <textarea
-                  value={localData.hero?.subheadline || ""}
-                  onChange={e => setLocalData({ ...localData, hero: { ...localData.hero, subheadline: e.target.value } })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-24"
-                />
-              </div>
-            </>
-          )}
-
-          {selectedDoc === "about" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Headline</label>
-                <input
-                  type="text"
-                  value={localData.headline || ""}
-                  onChange={e => setLocalData({ ...localData, headline: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Bio</label>
-                <textarea
-                  value={localData.bio || ""}
-                  onChange={e => setLocalData({ ...localData, bio: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-32"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Skills (Comma separated)</label>
-                <input
-                  type="text"
-                  value={Array.isArray(localData.skills) ? localData.skills.join(", ") : ""}
-                  onChange={e => setLocalData({ ...localData, skills: e.target.value.split(",").map(s => s.trim()) })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary"
-                />
-              </div>
-            </>
-          )}
-
-          {(selectedDoc === "milestones" || selectedDoc === "experience") && (
-            <div className="space-y-4">
-              <label className="text-xs font-bold uppercase tracking-widest text-white/20">Items (JSON Array)</label>
-              <textarea
-                value={JSON.stringify(localData.items || localData.phases || [], null, 2)}
-                onChange={e => {
-                  try {
-                    const parsed = JSON.parse(e.target.value);
-                    setLocalData(selectedDoc === "milestones" ? { ...localData, items: parsed } : { ...localData, phases: parsed });
-                  } catch (err) {}
-                }}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-96 font-mono text-sm"
-              />
-              <p className="text-[10px] text-white/20 uppercase tracking-widest">Edit the JSON structure above to update the {selectedDoc} list.</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const AdminDashboard = ({ user }: { user: any }) => {
-  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "updates" | "messages" | "dashboard" | "subscribers" | "content">("dashboard");
+  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "updates" | "messages" | "dashboard" | "subscribers">("dashboard");
   const [posts, setPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [updates, setUpdates] = useState<any[]>([]);
-  const [contentDocs, setContentDocs] = useState<Record<string, any>>({});
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
@@ -1540,24 +1397,12 @@ const AdminDashboard = ({ user }: { user: any }) => {
       handleFirestoreError(error, OperationType.GET, "updates");
     });
 
-    const qContent = query(collection(db, "content"));
-    const unsubscribeContent = onSnapshot(qContent, (snapshot) => {
-      const data: Record<string, any> = {};
-      snapshot.docs.forEach(doc => {
-        data[doc.id] = doc.data();
-      });
-      setContentDocs(data);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "content");
-    });
-
     return () => {
       unsubscribeBlogs();
       unsubscribeProjects();
       unsubscribeMessages();
       unsubscribeSubs();
       unsubscribeUpdates();
-      unsubscribeContent();
     };
   }, []);
 
@@ -2085,7 +1930,6 @@ const AdminDashboard = ({ user }: { user: any }) => {
               { id: 'updates', label: 'Updates', icon: <Zap size={18} /> },
               { id: 'messages', label: 'Messages', icon: <MessageSquare size={18} /> },
               { id: 'subscribers', label: 'Newsletter', icon: <Mail size={18} /> },
-              { id: 'content', label: 'Content', icon: <Settings size={18} /> },
             ].map((tab) => (
               <button 
                 key={tab.id}
@@ -3009,21 +2853,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
                 ))}
               </div>
             )}
-            {activeTab === "content" && (
-              <ContentManager docs={contentDocs} onSave={async (id, data) => {
-                try {
-                  await setDoc(doc(db, "content", id), { ...data, updatedAt: serverTimestamp() });
-                  alert(`✅ ${id} updated successfully!`);
-                } catch (err: any) {
-                  alert(`❌ Error updating ${id}: ${err.message}`);
-                }
-              }} />
-            )}
             {((activeTab === "blogs" && posts.length === 0) || 
               (activeTab === "projects" && projects.length === 0) || 
               (activeTab === "messages" && messages.length === 0) ||
-              (activeTab === "subscribers" && subscribers.length === 0) ||
-              (activeTab === "content" && Object.keys(contentDocs).length === 0)
+              (activeTab === "subscribers" && subscribers.length === 0)
             ) && (
               <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
                 <p className="text-white/40">No {activeTab === "messages" ? "messages" : "items"} yet. {activeTab !== "messages" && `Start by creating your first ${activeTab === "blogs" ? "article" : "project"}!`}</p>
