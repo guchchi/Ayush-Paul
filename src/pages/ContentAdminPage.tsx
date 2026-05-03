@@ -29,6 +29,9 @@ import {
   Quote,
   Sparkles,
   Monitor,
+  GripVertical,
+  Upload,
+  ImageIcon,
   Save as SaveIcon,
   Plus as PlusIcon
 } from 'lucide-react';
