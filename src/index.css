@@ -142,6 +142,7 @@
     /* Navbar Elevation */
     --navbar-height: 5rem;
     --navbar-height-scrolled: 4rem;
+    --section-top-pad: 4rem;
     --z-nav: 100;
     --z-modal: 200;
 
