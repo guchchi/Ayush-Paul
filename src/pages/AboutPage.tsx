@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { 
   ArrowRight, 
@@ -21,6 +21,7 @@ import { MagneticButton } from '../components/ui/MagneticButton';
 import { VARIANTS, EASING } from '../lib/motion-presets';
 import { cn } from '../lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { db, doc, getDoc } from '../firebase';
 
 const HeroSection = () => {
   return (
@@ -155,6 +156,27 @@ const VisionMissionSection = () => {
 
 const MilestonesCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [milestones, setMilestones] = useState([
+    { year: "2021", title: "National Level Science Exhibition", desc: "Recognized for foundational hardware engineering." },
+    { year: "2022", title: "Technology Projects Initiation", desc: "Started developing comprehensive software solutions." },
+    { year: "2023", title: "Automation Systems", desc: "Architected intelligent workflows and AI integrations." },
+    { year: "2024", title: "Innovation Builds", desc: "Launched scalable web applications and platforms." },
+    { year: "2025", title: "Digital Product Development", desc: "Leading the next wave of full-stack ecosystems." }
+  ]);
+
+  useEffect(() => {
+    const fetchMilestones = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, "content", "milestones"));
+        if (docSnap.exists() && docSnap.data().items && docSnap.data().items.length > 0) {
+          setMilestones(docSnap.data().items);
+        }
+      } catch (error) {
+        // Silently fail and keep using hardcoded data as fallback
+      }
+    };
+    fetchMilestones();
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -163,14 +185,6 @@ const MilestonesCarousel = () => {
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
-
-  const milestones = [
-    { year: "2021", title: "National Level Science Exhibition", desc: "Recognized for foundational hardware engineering." },
-    { year: "2022", title: "Technology Projects Initiation", desc: "Started developing comprehensive software solutions." },
-    { year: "2023", title: "Automation Systems", desc: "Architected intelligent workflows and AI integrations." },
-    { year: "2024", title: "Innovation Builds", desc: "Launched scalable web applications and platforms." },
-    { year: "2025", title: "Digital Product Development", desc: "Leading the next wave of full-stack ecosystems." }
-  ];
 
   return (
     <Section id="milestones" className="py-32 bg-[#0A0A0A]/50 border-y border-white/5 overflow-hidden">
