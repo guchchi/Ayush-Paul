@@ -2,7 +2,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import dotenv from 'dotenv';
-import path from 'path';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -21,56 +20,36 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app, process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(default)");
 
 async function init() {
-  console.log("🚀 Starting Firestore initialization...");
+  console.log("🚀 Starting Firestore Schema initialization...");
 
-  const content = {
-    about: {
-      vision: "Building Digital Systems For The Future.",
-      mission: "To architect and engineer high-performance platforms that scale.",
-      founderPhilosophy: "I collaborate with ambitious builders, founders, and teams solving meaningful problems.",
+  const schema = {
+    milestones: {
+      items: [],
       updatedAt: serverTimestamp()
     },
-    milestones: {
-      data: [
-        { year: "2021", title: "National Level Science Exhibition", desc: "Recognized for foundational hardware engineering." },
-        { year: "2022", title: "Technology Projects Initiation", desc: "Started developing comprehensive software solutions." },
-        { year: "2023", title: "Automation Systems", desc: "Architected intelligent workflows and AI integrations." },
-        { year: "2024", title: "Innovation Builds", desc: "Launched scalable web applications and platforms." },
-        { year: "2025", title: "Digital Product Development", desc: "Leading the next wave of full-stack ecosystems." }
-      ],
+    about: {
+      headline: "",
+      bio: "",
+      skills: [],
       updatedAt: serverTimestamp()
     },
     experience: {
-      phases: [
-        { title: "Technology Foundations", sub: "Started building deep technical expertise." },
-        { title: "Freelance Innovation", sub: "Executed complex client projects." },
-        { title: "System Architecture", sub: "Focus shifted to scalable product development." },
-        { title: "Startup Ecosystem", sub: "Launching high-impact digital platforms." }
-      ],
-      updatedAt: serverTimestamp()
-    },
-    homepage: {
-      hero: {
-        headline: "I Design & Engineer Digital Experiences That Feel Alive.",
-        subheadline: "I build production-ready systems combining engineering, design, and AI automation."
-      },
-      stats: [
-        { label: "Products Built", value: "15+" },
-        { label: "Engineering Hours", value: "8k+" },
-        { label: "Global Users", value: "10k+" }
-      ],
+      phases: [],
       updatedAt: serverTimestamp()
     }
   };
 
   try {
-    for (const [id, data] of Object.entries(content)) {
+    for (const [id, data] of Object.entries(schema)) {
       await setDoc(doc(db, "content", id), data);
-      console.log(`✅ Document '${id}' initialized.`);
+      console.log(`✅ Document '${id}' schema created.`);
     }
-    console.log("✨ All documents created successfully.");
-  } catch (error) {
-    console.error("❌ Error initializing Firestore:", error);
+    console.log("✨ Initial schema established successfully.");
+  } catch (error: any) {
+    console.error("❌ Error initializing schema:", error.message);
+    if (error.code === 'permission-denied') {
+      console.warn("⚠️ PERMISSION DENIED: Please ensure you are authorized or that Firestore rules allow this write.");
+    }
   }
 }
 

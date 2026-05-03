@@ -1254,8 +1254,8 @@ const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (
       // Default templates for bootstrapping
       const templates: Record<string, any> = {
         homepage: { hero: { headline: "I Design & Engineer Digital Experiences That Feel Alive.", subheadline: "I build production-ready systems combining engineering, design, and AI automation." }, stats: [] },
-        about: { vision: "", mission: "", founderPhilosophy: "" },
-        milestones: { data: [] },
+        about: { headline: "", bio: "", skills: [] },
+        milestones: { items: [] },
         experience: { phases: [] }
       };
       setLocalData(templates[selectedDoc] || {});
@@ -1283,12 +1283,31 @@ const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (
       <div className="glass-card p-10 rounded-[40px] border border-white/10 space-y-8">
         <div className="flex justify-between items-center">
           <h3 className="text-2xl font-bold capitalize">{selectedDoc} Configuration</h3>
-          <button
-            onClick={() => onSave(selectedDoc, localData)}
-            className="px-8 py-3 bg-brand-primary text-white rounded-xl font-bold flex items-center gap-2 hover:bg-brand-primary/90 transition-all"
-          >
-            <Save size={18} /> Save Changes
-          </button>
+          <div className="flex gap-4">
+            {Object.keys(docs).length === 0 && (
+              <button
+                onClick={async () => {
+                  const schema = {
+                    milestones: { items: [] },
+                    about: { headline: "", bio: "", skills: [] },
+                    experience: { phases: [] }
+                  };
+                  for (const [id, data] of Object.entries(schema)) {
+                    await onSave(id, data);
+                  }
+                }}
+                className="px-6 py-3 bg-white/5 border border-white/10 text-white/40 rounded-xl font-bold hover:text-white transition-all text-xs"
+              >
+                Bootstrap Schema
+              </button>
+            )}
+            <button
+              onClick={() => onSave(selectedDoc, localData)}
+              className="px-8 py-3 bg-brand-primary text-white rounded-xl font-bold flex items-center gap-2 hover:bg-brand-primary/90 transition-all"
+            >
+              <Save size={18} /> Save Changes
+            </button>
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -1316,16 +1335,32 @@ const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (
 
           {selectedDoc === "about" && (
             <>
-              {["vision", "mission", "founderPhilosophy"].map(field => (
-                <div key={field} className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-white/20 capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
-                  <textarea
-                    value={localData[field] || ""}
-                    onChange={e => setLocalData({ ...localData, [field]: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-24"
-                  />
-                </div>
-              ))}
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Headline</label>
+                <input
+                  type="text"
+                  value={localData.headline || ""}
+                  onChange={e => setLocalData({ ...localData, headline: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Bio</label>
+                <textarea
+                  value={localData.bio || ""}
+                  onChange={e => setLocalData({ ...localData, bio: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-32"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/20">Skills (Comma separated)</label>
+                <input
+                  type="text"
+                  value={Array.isArray(localData.skills) ? localData.skills.join(", ") : ""}
+                  onChange={e => setLocalData({ ...localData, skills: e.target.value.split(",").map(s => s.trim()) })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary"
+                />
+              </div>
             </>
           )}
 
@@ -1333,11 +1368,11 @@ const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (
             <div className="space-y-4">
               <label className="text-xs font-bold uppercase tracking-widest text-white/20">Items (JSON Array)</label>
               <textarea
-                value={JSON.stringify(localData.data || localData.phases || [], null, 2)}
+                value={JSON.stringify(localData.items || localData.phases || [], null, 2)}
                 onChange={e => {
                   try {
                     const parsed = JSON.parse(e.target.value);
-                    setLocalData(selectedDoc === "milestones" ? { ...localData, data: parsed } : { ...localData, phases: parsed });
+                    setLocalData(selectedDoc === "milestones" ? { ...localData, items: parsed } : { ...localData, phases: parsed });
                   } catch (err) {}
                 }}
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-brand-primary h-96 font-mono text-sm"
