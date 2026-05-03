@@ -75,7 +75,7 @@ const Hero = () => (
         </MagneticButton>
         
         <button 
-          onClick={() => window.location.href = "mailto:contact@ayushpaul.in?subject=Discovery%20Call%20Request"}
+          onClick={() => window.location.href = "mailto:hello.ayushishere@gmail.com?subject=Discovery%20Call%20Request"}
           className="px-10 py-5 glass-card border-white/10 text-white rounded-[20px] font-bold text-lg hover:bg-white/5 transition-all flex items-center gap-2 group"
         >
           Book Discovery Call <Zap size={20} className="text-brand-primary group-hover:animate-pulse" />
@@ -152,7 +152,7 @@ const SmartContactForm = () => {
                 type="email" 
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="ayush@ayushpaul.in"
+                placeholder="ayush@gmail.com"
                 className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium"
                 required
               />
@@ -242,7 +242,7 @@ const SmartContactForm = () => {
 
 const DirectConnect = () => {
   const links = [
-    { label: "Email", icon: <Mail />, value: "contact@ayushpaul.in", href: "mailto:contact@ayushpaul.in" },
+    { label: "Email", icon: <Mail />, value: "hello.ayushishere@gmail.com", href: "mailto:hello.ayushishere@gmail.com" },
     { label: "LinkedIn", icon: <Linkedin />, value: "paulayush", href: "https://www.linkedin.com/in/paulayush/" },
     { label: "GitHub", icon: <Github />, value: "guchchi", href: "https://github.com/guchchi" },
     { label: "YouTube", icon: <Youtube />, value: "ALX-17", href: "https://www.youtube.com/@ALX-17" },

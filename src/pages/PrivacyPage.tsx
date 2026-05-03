@@ -110,7 +110,7 @@ export const PrivacyPage = () => {
                 <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Withdraw consent at any time</li>
               </ul>
               <p className="text-xs text-white/30 pt-4">
-                To exercise these rights, please contact us at: <span className="text-brand-primary font-bold">contact@ayushpaul.in</span>
+                To exercise these rights, please contact us at: <span className="text-brand-primary font-bold">hello.ayushishere@gmail.com</span>
               </p>
             </div>
 
