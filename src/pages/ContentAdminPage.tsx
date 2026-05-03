@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Settings, 
-  Save, 
   ArrowLeft, 
   Rocket, 
   LogIn, 
@@ -11,7 +10,6 @@ import {
   CheckCircle2,
   Shield,
   Search,
-  Plus,
   Trash2,
   Mail,
   MessageSquare,
@@ -466,8 +464,7 @@ const ContentManager = ({ docs, onSave }: { docs: Record<string, any>, onSave: (
                 onChange={e => {
                   try {
                     const parsed = JSON.parse(e.target.value);
-                    if (selectedDoc === "milestones") setLocalData({ ...localData, items: parsed });
-                    else setLocalData({ ...localData, phases: parsed });
+                    setLocalData({ ...localData, phases: parsed });
                   } catch (err) {
                     // Invalid JSON - user is typing
                   }
