@@ -19,8 +19,15 @@ async function generateSitemap() {
   // Base URLs
   const urls = [
     '/',
-    '/now',
+    '/about',
+    '/projects',
     '/blog',
+    '/now',
+    '/collaborate',
+    '/contact',
+    '/privacy',
+    '/terms',
+    '/cookie-policy'
   ];
 
   // Fetch dynamic blog posts
@@ -46,6 +53,22 @@ async function generateSitemap() {
       }
       } else {
         console.warn('Could not fetch blogs for sitemap, skipping dynamic routes.', response.statusText);
+      }
+
+      // Fetch dynamic projects
+      const projectUrl = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/projects?key=${config.apiKey}`;
+      console.log(`Fetching projects from: ${projectUrl}`);
+      const pResponse = await fetch(projectUrl);
+      if (pResponse.ok) {
+        const pData = await pResponse.json();
+        if (pData.documents) {
+          pData.documents.forEach((doc: any) => {
+            const slug = doc.fields?.slug?.stringValue;
+            if (slug) {
+              urls.push(`/projects/${slug}`);
+            }
+          });
+        }
       }
     }
   } catch (error) {

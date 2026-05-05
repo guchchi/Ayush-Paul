@@ -83,13 +83,16 @@ export const useSEO = ({
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Ayush Paul",
-      "jobTitle": "AI Developer & Builder",
+      "jobTitle": "AI Developer & Full Stack Engineer",
       "url": getCanonicalUrl(),
+      "image": getCanonicalUrl("/profile-photo.jpg"), // Link to a profile photo if available
       "sameAs": [
         "https://github.com/guchchi",
         "https://www.linkedin.com/in/paulayush/",
         "https://www.youtube.com/@ALX-17",
-        "https://www.fiverr.com/ayushpaulx"
+        "https://www.fiverr.com/ayushpaulx",
+        "https://www.instagram.com/ayushpaul_/", // Added Instagram
+        "https://twitter.com/ayushpaul_" // Placeholder for Twitter/X
       ]
     };
 

@@ -197,6 +197,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
               {/* Power Headline & Authority Statement */}
               <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
                 <h1 className="leading-[1.1]">
+                  <span className="block text-[0.35em] uppercase tracking-[0.4em] text-brand-primary mb-4 font-bold">Ayush Paul</span>
                   I Design & Engineer <br />
                   <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
                   <br />

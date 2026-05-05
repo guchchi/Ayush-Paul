@@ -62,7 +62,7 @@ export const LatestBlogsSection = () => {
               <Link to={`/blog/${post.slug || post.id}`} className="flex flex-col h-full">
                 <div className="aspect-[16/9] relative overflow-hidden">
                   {post.coverImage ? (
-                    <img src={post.coverImage} alt={post.title} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" />
+                    <img src={post.coverImage} alt={`${post.title} | Blog by Ayush Paul`} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" />
                   ) : (
                     <div className="w-full h-full bg-brand-primary/10 flex items-center justify-center">
                       <span className="text-brand-primary font-bold opacity-50">No Cover Image</span>

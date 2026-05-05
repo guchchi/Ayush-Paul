@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { 
   ArrowRight, 
@@ -42,6 +43,7 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.h1 variants={VARIANTS.fadeUp} className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tighter leading-[1.05] mb-8 max-w-4xl">
+            <span className="block text-[0.3em] uppercase tracking-[0.3em] text-brand-primary mb-4">Ayush Paul</span>
             Building Digital Systems <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/30">
               For The Future.
@@ -783,6 +785,12 @@ const JourneyTimeline = () => {
 import { FeaturedProjectsSection } from '../components/sections/FeaturedProjectsSection';
 
 export const AboutPage = () => {
+  useSEO({
+    title: "About Ayush Paul | Senior AI Developer & Full Stack Engineer",
+    description: "Discover the journey, skills, and vision of Ayush Paul, a specialist in AI automation and high-performance digital engineering.",
+    keywords: "Ayush Paul, Ayush Paul Bio, Ayush Paul Experience, AI Developer India"
+  });
+
   return (
     <div className="w-full bg-[#0A0A0A] overflow-x-hidden pt-[env(safe-area-inset-top,0px)]">
       <HeroSection />

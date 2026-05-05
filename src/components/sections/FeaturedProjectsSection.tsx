@@ -108,7 +108,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
           >
             <div className="grid lg:grid-cols-2">
               <div className="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
-                <img src={featuredProject.image} alt={featuredProject.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <img src={featuredProject.image} alt={`${featuredProject.title} | Case Study by Ayush Paul`} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
                 <div className="absolute top-8 left-8">
                   <div className="px-5 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
@@ -160,7 +160,7 @@ const Projects = ({ filter }: { filter: string | null }) => {
               style={{ willChange: 'transform' }}
             >
               <div className="aspect-video rounded-[32px] lg:rounded-[48px] overflow-hidden mb-10 glass-card border-white/5 relative glass-card-hover shadow-xl">
-                <img src={project.image} alt={project.title} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                <img src={project.image} alt={`${project.title} - Digital Project by Ayush Paul`} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
                 <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white">

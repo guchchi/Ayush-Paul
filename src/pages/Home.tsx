@@ -15,8 +15,8 @@ import { getCanonicalUrl } from '../lib/domain';
 
 export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
   useSEO({
-    title: "Ayush Paul | AI Developer & Digital Builder",
-    keywords: "Ayush Paul, AI Developer India, Robotics Developer, Hire Ayush Paul",
+    title: "Ayush Paul | AI Developer, Full Stack Developer & Digital Creator",
+    keywords: "Ayush Paul, AI Developer Ayush Paul, Ayush Paul Developer, Ayush Paul Portfolio, Full Stack Developer India",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebSite",
