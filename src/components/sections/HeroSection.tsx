@@ -192,18 +192,18 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 className="badge mb-6 sm:mb-8 shadow-2xl shadow-brand-primary/10"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                <span className="tracking-[0.25em]">Builder • Developer • Creative Tech</span>
+                <span className="tracking-[0.25em]">Founder • Lead Developer • AI Architect</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
               <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
                 <h1 className="leading-[1.1]">
                   <span className="block text-[0.35em] uppercase tracking-[0.4em] text-brand-primary mb-4 font-bold">Ayush Paul</span>
-                  I Design & Engineer <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Digital Experiences</span>
+                  Engineering the <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Next Era of Intelligence</span>
                   <br />
                   <span className="text-brand-primary italic block mt-2 sm:mt-4 text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold">
-                    That Feel Alive.
+                    Through Code & Silicon.
                   </span>
                 </h1>
               </motion.div>
@@ -212,8 +212,8 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  variants={VARIANTS.fadeUp}
                  className="space-y-8 mb-12 sm:mb-20"
               >
-                <p className="text-xl sm:text-3xl text-white/50 max-w-2xl mx-auto font-medium leading-tight">
-                  I build production-ready systems combining engineering, design, and AI automation.
+                <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
+                  I architect production-ready systems that bridge the gap between high-level software and intelligent hardware innovation.
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
