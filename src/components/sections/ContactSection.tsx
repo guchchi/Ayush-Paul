@@ -14,7 +14,8 @@ const Contact = () => {
     name: "",
     email: "",
     subject: "",
-    message: ""
+    message: "",
+    website: "" // Honeypot field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -27,6 +28,14 @@ const Contact = () => {
     try {
       if (!db) throw new Error("Firestore is not initialized");
       
+      // If honeypot field is filled, it's likely a bot
+      if (formData.website) {
+        console.log("🚀 [SECURITY] Bot detected via honeypot. Ignoring submission.");
+        setStatus("success"); // Silently ignore to fool the bot
+        setFormData({ name: "", email: "", subject: "", message: "", website: "" });
+        return;
+      }
+      
       await addDoc(collection(db, "contacts"), {
         name: formData.name.trim(),
         email: formData.email.trim(),
@@ -35,7 +44,7 @@ const Contact = () => {
         timestamp: serverTimestamp()
       });
       setStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", subject: "", message: "", website: "" });
     } catch (error: any) {
       handleFirestoreError(error, OperationType.CREATE, "contacts");
       setStatus("error");
@@ -146,6 +155,18 @@ const Contact = () => {
                   required
                 />
               </div>
+            </div>
+
+            {/* Honeypot Field for Spam Protection */}
+            <div className="hidden" aria-hidden="true">
+              <input 
+                type="text" 
+                name="website" 
+                value={formData.website} 
+                onChange={handleChange} 
+                tabIndex={-1} 
+                autoComplete="off" 
+              />
             </div>
             
             <div className="space-y-4">

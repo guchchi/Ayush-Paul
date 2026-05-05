@@ -2996,7 +2996,28 @@ export const AdminPage = () => {
     );
   }
 
+  const ADMIN_UIDS = ["80OJfcmVXCRNmSZuthVU68K6vJq2"];
+  const isAuthorized = user && ADMIN_UIDS.includes(user.uid);
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] p-6">
+        <div className="glass-card p-12 rounded-[40px] border border-white/10 text-center max-w-md w-full">
+          <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+            <Shield size={40} className="text-red-500" />
+          </div>
+          <h1 className="text-3xl font-bold mb-4">Unauthorized</h1>
+          <p className="text-white/40 mb-12">This account does not have administrative privileges. Please switch to the authorized identity.</p>
+          <button 
+            onClick={() => signOut(auth)}
+            className="w-full py-5 rounded-2xl font-bold text-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return <AdminDashboard user={user} />;
 };
-
-
