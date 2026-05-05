@@ -22,6 +22,7 @@ import {
   Calendar,
   Edit,
   X,
+  Link as LinkIcon,
   Type,
   List,
   Quote,
@@ -155,34 +156,58 @@ const SortableMilestone = ({ milestone, onUpdate, onDelete }: {
               {milestone.image ? (
                 <>
                   <img src={milestone.image} alt="Milestone" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <label className="p-2 rounded-lg bg-white text-black cursor-pointer hover:scale-110 transition-transform">
-                      <Upload size={14} />
-                      <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                    </label>
-                    <button 
-                      onClick={() => onUpdate(milestone.id, 'image', '')}
-                      className="p-2 rounded-lg bg-red-500 text-white hover:scale-110 transition-transform"
-                    >
-                      <X size={14} />
-                    </button>
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/image:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
+                    <div className="flex gap-2">
+                      <label className="p-2.5 rounded-lg bg-white text-black cursor-pointer hover:scale-110 transition-transform shadow-lg">
+                        <Upload size={16} />
+                        <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                      </label>
+                      <button 
+                        onClick={() => onUpdate(milestone.id, 'image', '')}
+                        className="p-2.5 rounded-lg bg-red-500 text-white hover:scale-110 transition-transform shadow-lg"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">Artifact Visible</span>
                   </div>
                 </>
               ) : (
-                <label className="flex flex-col items-center gap-2 cursor-pointer text-white/20 hover:text-white transition-colors">
-                  {isUploading ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-                      <span className="text-[8px] font-bold">{Math.round(uploadProgress)}%</span>
+                <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                  <label className="flex flex-col items-center gap-2 cursor-pointer text-white/20 hover:text-white transition-colors mb-4">
+                    {isUploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                        <span className="text-[8px] font-bold">{Math.round(uploadProgress)}%</span>
+                      </div>
+                    ) : (
+                      <>
+                        <ImageIcon size={24} />
+                        <span className="text-[8px] font-bold uppercase tracking-widest">Upload Local Artifact</span>
+                      </>
+                    )}
+                    <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} disabled={isUploading} />
+                  </label>
+                  
+                  <div className="w-full space-y-2">
+                    <div className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-xl">
+                       <LinkIcon size={12} className="text-white/20" />
+                       <input 
+                         type="text" 
+                         placeholder="Paste Image URL..." 
+                         className="bg-transparent border-none outline-none text-[10px] text-white/60 w-full"
+                         onBlur={(e) => {
+                           if (e.target.value) onUpdate(milestone.id, 'image', e.target.value);
+                         }}
+                         onKeyDown={(e) => {
+                           if (e.key === 'Enter') {
+                             onUpdate(milestone.id, 'image', (e.target as HTMLInputElement).value);
+                           }
+                         }}
+                       />
                     </div>
-                  ) : (
-                    <>
-                      <ImageIcon size={24} />
-                      <span className="text-[8px] font-bold uppercase tracking-widest">Upload Image</span>
-                    </>
-                  )}
-                  <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} disabled={isUploading} />
-                </label>
+                  </div>
+                </div>
               )}
             </div>
           </div>

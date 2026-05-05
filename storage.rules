@@ -29,6 +29,11 @@ service firebase.storage {
       allow read: if true;
       allow write: if isAdmin() && isImage() && under5MB();
     }
+    
+    match /milestones/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && under5MB();
+    }
 
     // Deny everything else by default
     match /{allPaths=**} {
