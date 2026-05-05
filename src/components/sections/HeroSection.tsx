@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useTransform, useSpring } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { useSafeScroll } from '../../hooks/useSafeScroll';
 import { ArrowRight, Github, Linkedin, Youtube } from 'lucide-react';
 import { Container } from '../ui/Container';
@@ -226,20 +227,26 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
               >
                 <MagneticButton className="w-full sm:w-auto">
-                  <a 
-                    href="#contact" 
-                    className="flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl hover:scale-[1.02] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
+                  <Link 
+                    to="/contact" 
+                    className="group relative flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95 overflow-hidden"
                   >
-                    Work With Me
-                  </a>
+                    {/* Premium Shimmer Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
+                    <span className="relative z-10">Work With Me</span>
+                  </Link>
                 </MagneticButton>
                 
                 <MagneticButton
                   onClick={onViewPortfolio}
                   className="w-full sm:w-auto"
                 >
-                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group">
-                    View Projects <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group relative overflow-hidden">
+                    {/* Animated Liquid Glow */}
+                    <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl" />
+                    
+                    <span className="relative z-10">View Projects</span>
+                    <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-2 group-hover:text-brand-primary transition-all duration-300" />
                   </div>
                 </MagneticButton>
               </motion.div>
