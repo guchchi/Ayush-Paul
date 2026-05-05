@@ -45,6 +45,7 @@ export const storage = getStorage(app);
 // Export environment info helper for UI diagnostics
 export const getFirebaseStatus = () => ({
   projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
   databaseId: firebaseConfig.firestoreDatabaseId,
   isConfigured,
   missingVars,

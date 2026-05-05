@@ -518,12 +518,80 @@ export const ContentAdminPage = () => {
     };
   }, [isConfigured]);
 
+  const [auditLogs, setAuditLogs] = useState<Array<{ msg: string; type: 'info' | 'error' | 'success' }>>([]);
+  const [isAuditing, setIsAuditing] = useState(false);
+
+  const runSystemAudit = async () => {
+    setIsAuditing(true);
+    setAuditLogs([]);
+    const log = (msg: string, type: 'info' | 'error' | 'success' = 'info') => {
+      setAuditLogs(prev => [...prev, { msg, type }]);
+      console.log(`[DIAGNOSTIC] ${msg}`);
+    };
+
+    log("Starting Deep System Audit...", "info");
+    
+    // 1. Configuration Audit
+    const status = getFirebaseStatus();
+    log(`Environment: ${status.mode} (Prod: ${status.isProduction})`, "info");
+    if (!status.isConfigured) {
+      log(`CRITICAL: Configuration Missing! Vars: ${status.missingVars.join(', ')}`, "error");
+    } else {
+      log(`Firebase Core Initialized (${status.projectId})`, "success");
+    }
+
+    // 2. Domain Audit
+    log(`Current Origin: ${window.location.origin}`, "info");
+    log(`Hostname: ${window.location.hostname}`, "info");
+    log(`Authorized Auth Domain: ${status.authDomain || 'Not Set'}`, "info");
+    if (status.authDomain && !window.location.origin.includes(status.authDomain) && !status.authDomain.includes('vercel.app')) {
+      log("Warning: Multi-domain mismatch detected. Ensure current domain is added in Firebase Console.", "info");
+    }
+
+    // 3. Authentication Audit
+    if (!user) {
+      log("Auth State: NOT AUTHENTICATED", "error");
+    } else {
+      log(`Auth State: AUTHENTICATED (UID: ${user.uid})`, "success");
+      try {
+        const token = await user.getIdToken();
+        log("Auth Token: VALID", "success");
+      } catch (e: any) {
+        log(`Auth Token: FAILED (${e.message})`, "error");
+      }
+    }
+
+    // 4. Persistence / Write Audit
+    try {
+      log("Testing Firestore Write Connectivity...", "info");
+      const testRef = doc(db, "test_connection", user?.uid || "anonymous");
+      await setDoc(testRef, { 
+        lastChecked: serverTimestamp(),
+        origin: window.location.origin,
+        ua: navigator.userAgent
+      });
+      log("Firestore Write: SUCCESS", "success");
+    } catch (e: any) {
+      log(`Firestore Write: FAILED (${e.code}: ${e.message})`, "error");
+    }
+
+    setIsAuditing(false);
+  };
+
   const handleSave = async (id: string, data: any) => {
     try {
-      await setDoc(doc(db, "content", id), { ...data, updatedAt: serverTimestamp() });
+      console.log(`[ACTION] Attempting save for: ${id}`, data);
+      const docRef = doc(db, "content", id);
+      await setDoc(docRef, { 
+        ...data, 
+        updatedAt: serverTimestamp(),
+        lastUpdatedBy: user?.uid,
+        origin: window.location.origin
+      });
       alert(`✅ ${id.charAt(0).toUpperCase() + id.slice(1)} updated in real-time.`);
     } catch (err: any) {
-      alert(`❌ Sync Error: ${err.message}`);
+      console.error(`[CRITICAL] Sync Failure:`, err);
+      alert(`❌ Sync Error: ${err.message}\nCode: ${err.code}`);
     }
   };
 
@@ -573,11 +641,41 @@ export const ContentAdminPage = () => {
             <p className="text-white/40 mt-2 text-lg">Modify your platform's identity, milestones, and professional history.</p>
           </div>
           <div className="flex gap-4">
+             <button 
+               onClick={runSystemAudit} 
+               disabled={isAuditing}
+               className="px-6 py-4 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-2xl font-bold flex items-center gap-2 hover:bg-brand-primary/20 transition-all disabled:opacity-50"
+             >
+               <Zap size={16} className={isAuditing ? "animate-pulse" : ""} />
+               {isAuditing ? "Auditing..." : "System Audit"}
+             </button>
              <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
               Logout
             </button>
           </div>
         </div>
+
+        {auditLogs.length > 0 && (
+          <div className="mb-12 p-8 glass-card border-brand-primary/30 rounded-[32px] bg-brand-primary/[0.02]">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-brand-primary flex items-center gap-2">
+                <Shield size={14} /> Diagnostic Artifacts Generated
+              </h3>
+              <button onClick={() => setAuditLogs([])} className="text-white/20 hover:text-white transition-colors text-[10px] font-bold uppercase tracking-widest">Clear Logs</button>
+            </div>
+            <div className="space-y-3 font-mono text-[11px]">
+              {auditLogs.map((log, i) => (
+                <div key={i} className={cn(
+                  "flex items-start gap-3",
+                  log.type === 'error' ? "text-red-400" : log.type === 'success' ? "text-green-400" : "text-white/40"
+                )}>
+                  <span className="shrink-0 opacity-20">[{new Date().toLocaleTimeString()}]</span>
+                  <span>{log.msg}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <ContentManager docs={contentDocs} onSave={handleSave} />
       </div>
