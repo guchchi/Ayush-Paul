@@ -24,6 +24,7 @@ const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then(m => ({ defaul
 const TermsPage = lazy(() => import("./pages/TermsPage").then(m => ({ default: m.TermsPage })));
 const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default: m.CookiePage })));
 const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 
 // --- Loading Fallback ---
 const PageLoading = () => (
@@ -122,6 +123,7 @@ export default function App() {
               <Route path="/admin/content" element={<ContentAdminPage />} />
               <Route path="/success" element={<SuccessPage />} />
               <Route path="/cancel" element={<CancelPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
 

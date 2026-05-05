@@ -30,7 +30,23 @@ export const LatestBlogsSection = () => {
     return () => unsubscribe();
   }, []);
 
-  if (loading || posts.length === 0) return null;
+  if (loading) return null;
+
+  if (posts.length === 0) {
+    return (
+      <Section id="latest-blogs" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center py-20">
+          <div className="inline-block px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest mb-8">
+            Content Pipeline
+          </div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-6">Signals <span className="text-brand-primary italic">Incoming</span></h2>
+          <p className="text-white/40 text-lg md:text-xl font-medium max-w-xl mx-auto">
+            Deep technical insights and project logs are currently being processed. Stay in the loop via the newsletter below.
+          </p>
+        </div>
+      </Section>
+    );
+  }
 
   return (
     <Section id="latest-blogs" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
