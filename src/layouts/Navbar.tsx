@@ -30,7 +30,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
       setIsScrolled(window.scrollY > 20);
       
       // Active section detection with improved threshold logic
-      const sections = ['home', 'about', 'services', 'achievements', 'journey', 'tech', 'projects', 'contact'];
+      const sections = ['home', 'achievements', 'projects', 'latest-blogs', 'contact'];
       let current = 'home';
       
       for (const section of sections) {
@@ -69,9 +69,9 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
   const navLinks = [
     { name: "Home", href: "/#home", id: "home" },
-    { name: "Projects", href: "/projects", id: "projects" },
-    { name: "Blog", href: "/blog", id: "blog" },
     { name: "Achievements", href: "/#achievements", id: "achievements" },
+    { name: "Projects", href: "/projects", id: "projects" },
+    { name: "Blog", href: "/blog", id: "latest-blogs" },
     { name: "About", href: "/about", id: "about" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
