@@ -92,7 +92,7 @@ export const Footer = () => {
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-white/20 text-sm font-medium">
-            © 2026 Ayush Paul. Built independently in India.
+            © 2026 <span className="sr-only">Ayush Paul</span>. Built independently in India.
           </p>
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-white/20 text-sm font-medium">

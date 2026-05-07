@@ -43,7 +43,7 @@ const HeroSection = () => {
           </motion.div>
 
           <motion.h1 variants={VARIANTS.fadeUp} className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tighter leading-[1.05] mb-8 max-w-4xl">
-            <span className="block text-[0.3em] uppercase tracking-[0.3em] text-brand-primary mb-4">Ayush Paul</span>
+            <span className="sr-only">Ayush Paul</span>
             Building Digital Systems <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/30">
               For The Future.

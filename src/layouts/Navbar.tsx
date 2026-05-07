@@ -270,7 +270,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                     </motion.button>
                     
                     <div className="text-center space-y-2">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/10">Engineered by Ayush Paul</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/10">Engineered by <span className="sr-only">Ayush Paul</span></p>
                       <div className="flex items-center justify-center gap-2 text-[8px] font-bold uppercase tracking-widest text-brand-primary/40">
                         <span className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
                         Status: Active

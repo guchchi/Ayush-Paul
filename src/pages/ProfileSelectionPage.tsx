@@ -23,7 +23,7 @@ export const ProfileSelectionPage = ({ onSelect }: { onSelect: (profile: string)
         animate={{ opacity: 1, y: 0 }}
         className="mb-8 text-center"
       >
-        <span className="text-brand-primary font-display font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-2 block">Ayush Paul</span>
+        <span className="sr-only">Ayush Paul</span>
         <div className="h-px w-12 bg-brand-primary/30 mx-auto" />
       </motion.div>
 
