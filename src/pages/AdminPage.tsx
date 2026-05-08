@@ -538,34 +538,67 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   const handleSmartImport = (append = false) => {
     if (!importText.trim()) return;
     
-    const result = parseSmartContent(importText);
+    let result: any;
+    try {
+      // Try parsing as JSON first
+      const json = JSON.parse(importText);
+      // Support both { data: { ... } } (from API/File) and direct payload
+      const payload = json.data || json;
+      
+      result = {
+        title: payload.title || payload.name || '',
+        category: payload.category || 'Artificial Intelligence',
+        slug: payload.slug || '',
+        blocks: payload.blocks || [],
+        seo: payload.seo || {},
+        description: payload.description || payload.seo?.description || ''
+      };
+    } catch (e) {
+      // Fallback to text parser
+      const parsed = parseSmartContent(importText);
+      result = {
+        title: parsed.title,
+        category: parsed.category,
+        slug: parsed.slug,
+        blocks: parsed.blocks,
+        seo: {
+          title: parsed.title,
+          description: parsed.metadata.excerpt,
+          keywords: ""
+        },
+        description: parsed.metadata.excerpt
+      };
+    }
 
     if (activeTab === "projects") {
       setProjectFormData(prev => ({
         ...prev,
         title: result.title !== 'Untitled Narrative' ? result.title : prev.title,
-        category: result.category !== 'Artificial Intelligence' ? result.category : prev.category,
+        category: result.category,
         slug: result.slug || prev.slug,
-        description: result.metadata.excerpt,
+        description: result.description,
       }));
     } else {
       setBlogFormData(prev => ({ 
         ...prev, 
         title: result.title !== 'Untitled Narrative' ? result.title : prev.title, 
         slug: result.slug || prev.slug,
-        category: result.category !== 'Artificial Intelligence' ? result.category : prev.category,
-        description: result.metadata.excerpt
+        category: result.category,
+        description: result.description,
+        coverImage: result.coverImage || prev.coverImage,
+        tags: result.tags || prev.tags || []
       }));
       
       setSeoData(prev => ({
         ...prev,
-        title: result.title !== 'Untitled Narrative' ? result.title : prev.title,
-        description: result.metadata.excerpt
+        title: result.seo?.title || result.title || prev.title,
+        description: result.seo?.description || result.description || prev.description,
+        keywords: result.seo?.keywords || prev.keywords || ""
       }));
     }
 
     if (append) {
-      setBlocks([...blocks, ...result.blocks]);
+      setBlocks(prev => [...prev, ...result.blocks]);
     } else {
       setBlocks(result.blocks);
     }
@@ -2455,7 +2488,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                         return true;
                       })();
 
-                      const matchesSearch = p.title.toLowerCase().includes(blogSearchQuery.toLowerCase()) || 
+                      const matchesSearch = (p.title || "").toLowerCase().includes(blogSearchQuery.toLowerCase()) || 
                                            (p.category || "").toLowerCase().includes(blogSearchQuery.toLowerCase());
 
                       return matchesFilter && matchesSearch;
