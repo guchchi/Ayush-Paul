@@ -481,6 +481,30 @@
   font-size: 0.875rem;
 }
 
+/* Premium Block Interactions */
+.ProseMirror > * {
+  @apply relative transition-all duration-300;
+}
+
+.ProseMirror > *:hover::before {
+  content: '::';
+  @apply absolute -left-8 top-0 text-white/10 font-mono text-xl pointer-events-none opacity-0 group-hover/editor:opacity-100 transition-opacity;
+}
+
+.ProseMirror .selectedNode {
+  @apply ring-2 ring-brand-primary/30 rounded-xl bg-brand-primary/5 transition-all;
+}
+
+/* Slash Menu Animations */
+@keyframes slideUpAndFade {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.slash-menu-animate {
+  animation: slideUpAndFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Callout Styling in Editor */
 .editor-surface .callout {
   @apply p-8 rounded-[2rem] border my-10 flex gap-6 items-start;

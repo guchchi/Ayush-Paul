@@ -20,6 +20,8 @@ import { useSEO } from "../hooks/useSEO";
 import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
 import { uploadImage, deleteImageByPath } from "../lib/storage-utils";
 import { TipTapEditor } from "../components/editor/TipTapEditor";
+import { parseSmartContent } from "../lib/content-parser";
+import { AIAssistant } from "../components/editor/AIAssistant";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -536,73 +538,36 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   const handleSmartImport = (append = false) => {
     if (!importText.trim()) return;
     
-    let text = importText;
-    const metadata: any = {};
-
-    // Pattern Detection for Title
-    const titleMatch = text.match(/Title:\s*(.*)/i);
-    if (titleMatch) {
-      metadata.title = titleMatch[1].trim();
-      text = text.replace(titleMatch[0], "");
-    }
-
-    // Pattern Detection for Category
-    const categoryMatch = text.match(/Category:\s*(.*)/i);
-    if (categoryMatch) {
-      metadata.category = categoryMatch[1].trim();
-      text = text.replace(categoryMatch[0], "");
-    }
-
-    // Pattern Detection for Slug
-    const slugMatch = text.match(/Slug:\s*(.*)/i);
-    if (slugMatch) {
-      metadata.slug = slugMatch[1].trim();
-      text = text.replace(slugMatch[0], "");
-    }
+    const result = parseSmartContent(importText);
 
     if (activeTab === "projects") {
-      // Extended detection for Projects
-      const visionMatch = text.match(/Vision:\s*(.*)/i);
-      const impactMatch = text.match(/Impact:\s*(.*)/i);
-      const techMatch = text.match(/Focus Keywords:\s*(.*)/i) || text.match(/Secondary Keywords:\s*(.*)/i);
-      const metricsMatch = text.match(/Metrics:\s*(.*)/i);
-      const statusMatch = text.match(/Status:\s*(.*)/i);
-
       setProjectFormData(prev => ({
         ...prev,
-        title: metadata.title || prev.title,
-        category: metadata.category || prev.category,
-        slug: metadata.slug || (metadata.title ? generateSlug(metadata.title) : prev.slug),
-        description: text.substring(0, 500).trim() + "...",
-        vision: visionMatch ? visionMatch[1].trim() : prev.vision,
-        impact: impactMatch ? impactMatch[1].trim() : prev.impact,
-        tech: techMatch ? techMatch[1].trim() : prev.tech,
-        metrics: metricsMatch ? metricsMatch[1].trim() : prev.metrics,
-        status: statusMatch ? statusMatch[1].trim() : prev.status,
+        title: result.title !== 'Untitled Narrative' ? result.title : prev.title,
+        category: result.category !== 'Artificial Intelligence' ? result.category : prev.category,
+        slug: result.slug || prev.slug,
+        description: result.metadata.excerpt,
       }));
     } else {
-      // Update Form Data if metadata found
-      if (metadata.title) {
-        setBlogFormData(prev => ({ 
-          ...prev, 
-          title: metadata.title, 
-          slug: metadata.slug || generateSlug(metadata.title),
-          category: metadata.category || prev.category
-        }));
-      }
+      setBlogFormData(prev => ({ 
+        ...prev, 
+        title: result.title !== 'Untitled Narrative' ? result.title : prev.title, 
+        slug: result.slug || prev.slug,
+        category: result.category !== 'Artificial Intelligence' ? result.category : prev.category,
+        description: result.metadata.excerpt
+      }));
+      
+      setSeoData(prev => ({
+        ...prev,
+        title: result.title !== 'Untitled Narrative' ? result.title : prev.title,
+        description: result.metadata.excerpt
+      }));
     }
 
-    // Clean up separators like ---
-    text = text.replace(/^---+\s*$/m, "");
-
-    // TipTap handles the body much better if we paste into it directly, 
-    // but for this modal, we'll parse it into blocks.
-    const parsedBlocks = parseContentToBlocks(text.trim());
-    
     if (append) {
-      setBlocks([...blocks, ...parsedBlocks]);
+      setBlocks([...blocks, ...result.blocks]);
     } else {
-      setBlocks(parsedBlocks);
+      setBlocks(result.blocks);
     }
     
     setImportText("");
@@ -665,13 +630,16 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
                 animate={{ opacity: 1, y: 0 }}
                 className="grid grid-cols-2 lg:grid-cols-5 gap-4"
               >
-                {[
-                  { label: 'Title', value: importText.match(/Title:/i) ? 'Detected' : 'Missing', icon: <Type size={14} />, color: importText.match(/Title:/i) ? 'text-green-400' : 'text-white/20' },
-                  { label: 'Category', value: importText.match(/Category:/i) ? 'Detected' : 'Missing', icon: <Tag size={14} />, color: importText.match(/Category:/i) ? 'text-green-400' : 'text-white/20' },
-                  { label: 'Headings', value: parseContentToBlocks(importText).filter(b => b.type === 'heading').length, icon: <Type size={14} />, color: 'text-white' },
-                  { label: 'Quotes', value: parseContentToBlocks(importText).filter(b => b.type === 'quote').length, icon: <Quote size={14} />, color: 'text-white' },
-                  { label: 'Paragraphs', value: parseContentToBlocks(importText).filter(b => b.type === 'text').length, icon: <FileText size={14} />, color: 'text-white' },
-                ].map(stat => (
+                {(() => {
+                  const result = parseSmartContent(importText);
+                  return [
+                    { label: 'Title', value: result.title !== 'Untitled Narrative' ? 'Detected' : 'Missing', icon: <Type size={14} />, color: result.title !== 'Untitled Narrative' ? 'text-green-400' : 'text-white/20' },
+                    { label: 'Reading Time', value: `${result.metadata.readingTime} min`, icon: <Clock size={14} />, color: 'text-brand-primary' },
+                    { label: 'Headings', value: result.blocks.filter(b => b.type === 'heading').length, icon: <Type size={14} />, color: 'text-white' },
+                    { label: 'Lists', value: result.blocks.filter(b => b.type === 'list').length, icon: <List size={14} />, color: 'text-white' },
+                    { label: 'Paragraphs', value: result.blocks.filter(b => b.type === 'text').length, icon: <FileText size={14} />, color: 'text-white' },
+                  ];
+                })().map(stat => (
                   <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20">
                       {stat.icon} {stat.label}
@@ -1089,6 +1057,145 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isSaving, setIsSaving] = useState(false);
   const saveInProgressRef = React.useRef(false);
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
+
+  const handleOneClickPublish = async () => {
+    setIsAIProcessing(true);
+    try {
+      const content = blocks.filter(b => b.type === 'text' || b.type === 'heading').map(b => b.content).join(' ');
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) throw new Error("GEMINI_API_KEY is not defined");
+      
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      const prompt = `Act as an expert SEO Specialist. Based on the following content, generate:
+      1. A catchy, SEO-friendly title (max 60 chars)
+      2. A compelling meta description (max 160 chars)
+      3. A list of 5 relevant tags (comma separated)
+      4. A clean URL slug
+      
+      Return JSON only in this format: {"title": "...", "description": "...", "tags": "...", "slug": "..."}
+      
+      Content: ${content.substring(0, 5000)}`;
+
+      const result = await model.generateContent(prompt);
+      const data = JSON.parse(result.response.text().replace(/```json|```/g, '').trim());
+
+      setSeoData({
+        ...seoData,
+        title: data.title,
+        description: data.description,
+        keywords: data.tags
+      });
+
+      setBlogFormData(prev => ({
+        ...prev,
+        title: data.title,
+        slug: data.slug,
+        description: data.description,
+        tags: data.tags,
+        published: true
+      }));
+
+      await handleSaveBlog(false);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("One-Click Publish failed:", error);
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
+  const LiveBlogPreview = ({ postData, blocks }: { postData: any, blocks: Block[] }) => (
+    <div className="bg-[#080808] rounded-[40px] border border-white/10 overflow-hidden shadow-2xl h-full overflow-y-auto custom-scrollbar p-12">
+      <div className="max-w-3xl mx-auto space-y-12">
+        <header className="text-center space-y-8">
+          <div className="flex items-center justify-center gap-4">
+            <div className="px-4 py-1.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em]">
+              {postData.category}
+            </div>
+            <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2">
+              <Clock size={12} /> {Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)} min read
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tighter">
+            {postData.title || "Untitled Masterpiece"}
+          </h1>
+          {postData.description && (
+            <p className="text-xl text-white/40 font-medium leading-relaxed">
+              {postData.description}
+            </p>
+          )}
+        </header>
+
+        {postData.coverImage && (
+          <div className="aspect-[21/9] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+            <img src={postData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+          </div>
+        )}
+
+        <article className="blog-prose prose prose-invert max-w-none">
+          {blocks.map((block) => {
+            switch (block.type) {
+              case 'text': return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-8" />;
+              case 'heading': 
+                const Tag = `h${block.metadata?.level || 2}` as any;
+                return <Tag key={block.id}>{block.content}</Tag>;
+              case 'list': return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-8" />;
+              case 'image': return (
+                <figure key={block.id} className="my-12">
+                  <img src={block.content} alt={block.metadata?.alt} className="rounded-2xl border border-white/5" />
+                </figure>
+              );
+              case 'quote': return <blockquote key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />;
+              case 'callout': return (
+                <div key={block.id} className="p-8 rounded-3xl border bg-brand-primary/5 border-brand-primary/10 text-brand-primary flex gap-4">
+                  <Info size={24} className="shrink-0" />
+                  <div dangerouslySetInnerHTML={{ __html: block.content }} />
+                </div>
+              );
+              case 'divider': return <div key={block.id} className="my-16 h-px w-full bg-white/5" />;
+              default: return null;
+            }
+          })}
+        </article>
+      </div>
+    </div>
+  );
+
+  const calculateContentScore = () => {
+    let score = 0;
+    if (blogFormData.title && blogFormData.title.length > 10) score += 20;
+    if (blogFormData.description && blogFormData.description.length > 50) score += 20;
+    if (blogFormData.coverImage) score += 10;
+    if (blogFormData.tags && blogFormData.tags.split(',').length >= 3) score += 10;
+    
+    const wordCount = blocks.filter(b => b.type === 'text').reduce((acc, b) => acc + b.content.split(' ').length, 0);
+    if (wordCount > 300) score += 20;
+    if (wordCount > 1000) score += 10;
+    
+    const hasHeadings = blocks.some(b => b.type === 'heading');
+    if (hasHeadings) score += 10;
+    
+    return Math.min(score, 100);
+  };
+
+  const getContentIssues = () => {
+    const issues = [];
+    if (!blogFormData.title || blogFormData.title.length < 10) issues.push("Title is too short or missing for optimal SEO.");
+    if (!blogFormData.description || blogFormData.description.length < 50) issues.push("Meta description is missing or lacks depth.");
+    if (!blogFormData.coverImage) issues.push("No hero image detected. Visuals increase engagement by 80%.");
+    
+    const wordCount = blocks.filter(b => b.type === 'text').reduce((acc, b) => acc + b.content.split(' ').length, 0);
+    if (wordCount < 300) issues.push("Content is thin. Aim for at least 500 words for authority.");
+    
+    const hasHeadings = blocks.some(b => b.type === 'heading');
+    if (!hasHeadings) issues.push("No headings found. Use H2/H3 for readability and structure.");
+    
+    return issues;
+  };
 
   const testConnection = async () => {
     setIsAuditing(true);
@@ -1778,167 +1885,178 @@ const AdminDashboard = ({ user }: { user: any }) => {
         {!isEditing && <HealthDashboard />}
 
         {isEditing ? (
-          <div className="space-y-12">
+          <div className="space-y-8 h-[calc(100vh-160px)] flex flex-col">
             {activeTab === "blogs" ? (
-              <div className="space-y-12">
-                <div className="flex items-center justify-between">
+              <>
+                {/* Editor Header & Controls */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
                   <div className="flex items-center gap-6">
                     <button 
-                      onClick={() => { setIsEditing(false); setCurrentPost(null); }}
-                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                      onClick={() => { setIsEditing(false); setCurrentPost(null); setIsPreviewMode(false); }}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all group"
                     >
-                      <ArrowLeft size={20} />
+                      <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                      <h2 className="text-2xl font-bold">{currentPost ? "Edit Post" : "New Post"}</h2>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-2">
-                        <Clock size={12} /> {lastSaved ? `Autosaved at ${lastSaved.toLocaleTimeString()}` : 'Draft'}
+                      <h2 className="text-2xl font-bold tracking-tight">{blogFormData.title || "New Narrative"}</h2>
+                      <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">
+                        <span className="flex items-center gap-1.5"><Clock size={12} className="text-brand-primary" /> {lastSaved ? `Autosaved ${lastSaved.toLocaleTimeString()}` : 'Draft'}</span>
+                        <div className="w-1 h-1 rounded-full bg-white/10" />
+                        <span className="text-brand-primary/60">Elite AI Pipeline v3</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+
+                  <div className="flex items-center gap-3">
                     <button 
-                      onClick={() => setIsDistractionFree(true)}
-                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
-                      title="Distraction-Free Mode"
+                      onClick={() => setIsPreviewMode(!isPreviewMode)}
+                      className={cn(
+                        "px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 transition-all border",
+                        isPreviewMode 
+                          ? "bg-brand-primary text-black border-brand-primary" 
+                          : "bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10"
+                      )}
                     >
-                      <Monitor size={20} />
+                      {isPreviewMode ? <Edit size={18} /> : <Eye size={18} />}
+                      {isPreviewMode ? "Edit Mode" : "Live Preview"}
                     </button>
+
+                    <button 
+                      onClick={handleOneClickPublish}
+                      disabled={isAIProcessing}
+                      className="px-8 py-3.5 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-sm shadow-lg shadow-brand-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait group"
+                    >
+                      {isAIProcessing ? <Sparkles size={18} className="animate-spin text-black" /> : <Zap size={18} className="group-hover:animate-pulse" />}
+                      One-Click Publish
+                    </button>
+                    
+                    <div className="w-px h-8 bg-white/10 mx-2 hidden md:block" />
+                    
                     <button 
                       onClick={() => handleSaveBlog(false)}
                       disabled={isSaving}
-                      className={cn(
-                        "px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2 transition-all",
-                        isSaving ? "opacity-70 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
-                      )}
+                      className="px-8 py-3.5 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all text-sm flex items-center gap-2 disabled:opacity-50"
                     >
-                      {isSaving ? (
-                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <Save size={20} />
-                      )}
-                      {isSaving ? (currentPost ? "Updating..." : "Publishing...") : (currentPost ? "Update" : "Publish")}
+                      {isSaving ? <Clock size={18} className="animate-spin" /> : <Save size={18} />}
+                      {currentPost ? "Update" : "Save Draft"}
                     </button>
                   </div>
                 </div>
 
-                <div className="grid lg:grid-cols-[1fr_350px] gap-12">
-                  <div className="space-y-12">
-                    <div className="glass-card p-12 rounded-[40px] border border-white/10 space-y-12">
+                {/* Main Workspace: Editor | Preview */}
+                <div className={cn(
+                  "grid gap-8 flex-1 overflow-hidden transition-all duration-700",
+                  isPreviewMode ? "lg:grid-cols-2" : "grid-cols-1"
+                )}>
+                  {/* Left Column: The Editor */}
+                  <div className={cn(
+                    "h-full overflow-y-auto custom-scrollbar pr-4 space-y-8 py-8",
+                    isPreviewMode && "hidden lg:block"
+                  )}>
+                    <div className="max-w-4xl mx-auto space-y-12">
                       <div className="space-y-8">
                         <input 
                           type="text" 
                           value={blogFormData.title}
                           onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
-                          className="w-full bg-transparent border-none outline-none text-5xl font-bold tracking-tighter text-white placeholder:text-white/10"
-                          placeholder="Post Title"
+                          className="w-full bg-transparent border-none outline-none text-6xl font-bold tracking-tighter text-white placeholder:text-white/10"
+                          placeholder="Narrative Title"
                         />
                         <div className="flex flex-wrap gap-4">
                           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
                             <LinkIcon size={14} className="text-white/20" />
-                            <span className="text-xs text-white/40">ayushpaul.in/blog/</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Slug:</span>
                             <input 
                               type="text" 
                               value={blogFormData.slug}
                               onChange={(e) => setBlogFormData({ ...blogFormData, slug: e.target.value })}
-                              className="bg-transparent border-none outline-none text-xs font-bold text-brand-primary w-32"
+                              className="bg-transparent border-none outline-none text-xs font-bold text-brand-primary w-48"
                             />
                           </div>
                           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
                             <Tag size={14} className="text-white/20" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Tags:</span>
                             <input 
                               type="text" 
                               value={blogFormData.tags}
                               onChange={(e) => setBlogFormData({ ...blogFormData, tags: e.target.value })}
-                              placeholder="Tags (comma separated)"
-                              className="bg-transparent border-none outline-none text-xs font-bold text-white/60 w-40"
+                              placeholder="Comma separated"
+                              className="bg-transparent border-none outline-none text-xs font-bold text-white/60 w-48"
                             />
                           </div>
                         </div>
                       </div>
 
-                      <div className="space-y-4">
-                        <label className="text-sm font-bold text-white/40 ml-1">Cover Image URL (optional if uploading a file)</label>
-                        <input
-                          type="text"
-                          value={blogFormData.coverImage}
-                          onChange={(e) => setBlogFormData({ ...blogFormData, coverImage: e.target.value })}
-                          placeholder="https://..."
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
-                        />
-
-                        <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] ?? null;
-
-                            if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
-
-                            if (!file) {
-                              setBlogCoverFile(null);
-                              setBlogCoverPreview("");
-                              return;
-                            }
-
-                            setBlogCoverFile(file);
-                            setBlogCoverPreview(URL.createObjectURL(file));
-                          }}
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
-                        />
-                        
-                        {(blogCoverPreview || blogFormData.coverImage) && (
-                          <div className="relative group aspect-video rounded-3xl overflow-hidden border border-white/10 bg-white/5 mt-4">
-                            <img src={blogCoverPreview || blogFormData.coverImage} className="w-full h-full object-cover" />
-                            <button 
-                              onClick={() => {
-                                setBlogCoverFile(null);
-                                setBlogCoverPreview("");
-                                setBlogFormData({ ...blogFormData, coverImage: '' });
-                              }}
-                              className="absolute top-4 right-4 p-3 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X size={20} />
-                            </button>
-                          </div>
-                        )}
-                        {!(blogCoverPreview || blogFormData.coverImage) && (
-                          <div className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-white/10 mt-4">
-                            <ImageIcon size={48} className="mb-4" />
-                            <span className="text-sm font-bold">Preview will appear here</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="pt-12 border-t border-white/10">
-                        <BlogEditor 
-                          blocks={blocks} 
-                          setBlocks={setBlocks} 
-                          onAIAction={(id, action) => handleAIAction(action, id)} 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="glass-card p-12 rounded-[40px] border border-white/10">
-                      <div className="flex items-center gap-3 mb-12">
-                        <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-                          <Globe size={20} />
-                        </div>
-                        <h3 className="text-2xl font-bold">SEO Optimization</h3>
-                      </div>
-                      <SEOPanel 
-                        data={seoData} 
-                        setData={setSeoData} 
+                      <BlogEditor 
                         blocks={blocks} 
+                        setBlocks={setBlocks} 
                         onAIAction={(id, action) => handleAIAction(action, id)} 
-                        isProcessing={isAIProcessing}
                       />
+
+                      {/* Settings Panel at Bottom of Editor for better flow */}
+                      <div className="grid md:grid-cols-2 gap-8 border-t border-white/5 pt-12">
+                        <div className="space-y-4">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Featured Visualization</label>
+                          <ImageUploadField 
+                            value={blogFormData.coverImage} 
+                            onChange={(url) => setBlogFormData({ ...blogFormData, coverImage: url })}
+                          />
+                        </div>
+                        <div className="space-y-4">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Pillar (Category)</label>
+                          <div className="grid grid-cols-2 gap-2">
+                            {BLOG_CATEGORIES.slice(0, 4).map(cat => (
+                              <button
+                                key={cat}
+                                onClick={() => setBlogFormData({ ...blogFormData, category: cat })}
+                                className={cn(
+                                  "px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-widest transition-all",
+                                  blogFormData.category === cat 
+                                    ? "bg-brand-primary/10 border-brand-primary/40 text-brand-primary" 
+                                    : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
+                                )}
+                              >
+                                {cat}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-8 sticky top-32 h-fit">
-                    <AIWritingAssistant onAction={(action) => handleAIAction(action)} isProcessing={isAIProcessing} />
+                  {/* Right Column: Live Preview & AI Assistant */}
+                  <div className="h-full overflow-y-auto custom-scrollbar space-y-8 py-8">
+                    {isPreviewMode ? (
+                      <LiveBlogPreview postData={blogFormData} blocks={blocks} />
+                    ) : (
+                      <div className="max-w-md mx-auto space-y-8">
+                        <AIAssistant 
+                          onAction={handleAIAction} 
+                          isProcessing={isAIProcessing} 
+                          score={calculateContentScore()}
+                          issues={getContentIssues()}
+                        />
+                        <div className="p-10 bg-white/[0.02] border border-white/10 rounded-[40px] space-y-10">
+                          <h3 className="text-xl font-bold flex items-center gap-3">
+                            <Globe size={20} className="text-brand-primary" /> SEO Engine
+                          </h3>
+                          <SEOPanel 
+                            data={seoData} 
+                            setData={setSeoData} 
+                            blocks={blocks} 
+                            onAIAction={(id, action) => handleAIAction(action, id)} 
+                            isProcessing={isAIProcessing}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Projects / Updates Editor Rendering (Keep mostly same but cleaner) */
+              <div className="space-y-12">
                     
                     <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 space-y-8">
                       <h3 className="font-bold flex items-center gap-2">

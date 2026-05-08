@@ -12,7 +12,8 @@ import Blockquote from '@tiptap/extension-blockquote';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import { 
   Plus, Type, List, ListOrdered, ImageIcon, Code, Quote, Info, Minus, 
-  Bold, Italic, Link as LinkIcon, Trash2, GripVertical, ChevronDown, Sparkles
+  Bold, Italic, Link as LinkIcon, Trash2, GripVertical, ChevronDown, Sparkles,
+  Heading1, Heading2, Heading3, Text, Image as ImageLucide
 } from 'lucide-react';
 import { Block, BlockType } from '../../types';
 import { cn } from '../../lib/utils';
@@ -173,10 +174,28 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-invert max-w-none focus:outline-none min-h-[500px] py-10 editor-surface',
+        class: 'prose prose-invert max-w-none focus:outline-none min-h-[600px] py-10 editor-surface prose-headings:font-display prose-p:text-white/70 prose-p:leading-relaxed prose-headings:text-white',
       },
+      handleKeyDown: (view, event) => {
+        if (event.key === '/') {
+          // Trigger slash menu (handled via state in component)
+          setSlashMenuPos(view.coordsAtPos(view.state.selection.from));
+          setShowSlashMenu(true);
+        }
+        return false;
+      }
     },
   });
+
+  const [showSlashMenu, setShowSlashMenu] = useState(false);
+  const [slashMenuPos, setSlashMenuPos] = useState({ top: 0, left: 0 });
+
+  const executeCommand = (command: () => void) => {
+    command();
+    setShowSlashMenu(false);
+    // Delete the slash
+    editor?.chain().focus().deleteRange({ from: editor.state.selection.from - 1, to: editor.state.selection.from }).run();
+  };
 
   // Handle external content updates (like AI actions or Smart Import)
   useEffect(() => {
@@ -281,15 +300,61 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
         </div>
       </BubbleMenu>
 
-      <div className="min-h-[500px] bg-white/[0.02] border border-white/10 rounded-[32px] p-10 relative">
+      <div className="min-h-[600px] bg-white/[0.02] border border-white/10 rounded-[40px] p-12 relative transition-all hover:bg-white/[0.03] shadow-2xl">
         <EditorContent editor={editor} />
         
+        {showSlashMenu && (
+          <div 
+            className="fixed z-[10000] w-64 bg-[#111111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in duration-200"
+            style={{ top: slashMenuPos.top + 24, left: slashMenuPos.left }}
+          >
+            <div className="p-2 border-b border-white/5 bg-white/[0.02]">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 px-3 py-1">Commands</p>
+            </div>
+            <div className="p-1 max-h-80 overflow-y-auto">
+              {[
+                { label: 'Heading 2', icon: <Heading2 size={16} />, cmd: () => editor.chain().focus().toggleHeading({ level: 2 }).run() },
+                { label: 'Heading 3', icon: <Heading3 size={16} />, cmd: () => editor.chain().focus().toggleHeading({ level: 3 }).run() },
+                { label: 'Bullet List', icon: <List size={16} />, cmd: () => editor.chain().focus().toggleBulletList().run() },
+                { label: 'Numbered List', icon: <ListOrdered size={16} />, cmd: () => editor.chain().focus().toggleOrderedList().run() },
+                { label: 'Image', icon: <ImageLucide size={16} />, cmd: () => {
+                  const url = window.prompt('Image URL');
+                  if (url) editor.chain().focus().setImage({ src: url }).run();
+                }},
+                { label: 'Quote', icon: <Quote size={16} />, cmd: () => editor.chain().focus().toggleBlockquote().run() },
+                { label: 'Code Block', icon: <Code size={16} />, cmd: () => editor.chain().focus().toggleCodeBlock().run() },
+                { label: 'Divider', icon: <Minus size={16} />, cmd: () => editor.chain().focus().setHorizontalRule().run() },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  onClick={() => executeCommand(item.cmd)}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-brand-primary/10 hover:text-brand-primary text-white/60 transition-all text-left group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-brand-primary/20 transition-colors">
+                    {item.icon}
+                  </div>
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {!editor.getText() && (
-          <div className="absolute top-10 left-10 pointer-events-none text-white/10 font-bold uppercase tracking-widest text-sm">
-            Start your innovation narrative...
+          <div className="absolute top-12 left-12 pointer-events-none text-white/10 font-bold uppercase tracking-widest text-sm flex items-center gap-3">
+            <Sparkles size={16} className="animate-pulse" />
+            Paste your narrative or type '/' for magic...
           </div>
         )}
       </div>
+
+      {/* Global Slash Menu Backdrop for closing */}
+      {showSlashMenu && (
+        <div 
+          className="fixed inset-0 z-[9999]" 
+          onClick={() => setShowSlashMenu(false)}
+        />
+      )}
     </div>
   );
 };
