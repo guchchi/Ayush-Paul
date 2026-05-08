@@ -111,37 +111,16 @@ const FounderSection = () => {
                 <div className="flex items-center gap-3">
                   <p className="text-brand-primary text-xs font-bold uppercase tracking-[0.3em]">Founder & Builder</p>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.4em] bg-brand-secondary/10 px-3 py-1 rounded-full border border-brand-secondary/20 shadow-[0_0_15px_rgba(255,0,60,0.1)]">
-                    National Winner
+                  <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.4em] bg-brand-secondary/10 px-3 py-1 rounded-full border border-brand-secondary/20 shadow-[0_0_15px_rgba(255,0,60,0.15)]">
+                    National Level Winner
                   </span>
                 </div>
               </div>
             </div>
             
-            <p className="text-xl text-white/60 leading-relaxed font-medium max-w-2xl">
-              Specialized in translating complex requirements into robust, scalable digital infrastructure. Focusing on the intersection of systems engineering, artificial intelligence, and high-end creative technology.
+            <p className="text-xl text-white/70 leading-relaxed font-medium max-w-2xl">
+              National-level innovator and researcher. I specialize in translating complex challenges into robust digital infrastructure and environmental solutions. Recognised at Rashtriya Bal Vaigyanik Pradarshani 2025.
             </p>
-
-            {/* Achievement Highlight */}
-            <div className="pt-8">
-              <div className="glass-card p-6 rounded-[32px] border-white/5 bg-gradient-to-br from-brand-primary/5 to-transparent flex items-center gap-6 group hover:border-brand-primary/20 transition-all max-w-md">
-                <div className="w-20 h-24 shrink-0 rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-                  <img 
-                    src="/assets/ayush-award.png" 
-                    alt="National Level Achievement" 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center text-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>';
-                    }}
-                  />
-                </div>
-                <div>
-                  <h4 className="text-base font-bold text-white mb-1.5 tracking-tight">National Recognition</h4>
-                  <p className="text-xs text-white/40 font-medium leading-relaxed">Selected for Rashtriya Bal Vaigyanik Pradarshani 2025</p>
-                </div>
-              </div>
-            </div>
           </div>
         </motion.div>
       </div>
