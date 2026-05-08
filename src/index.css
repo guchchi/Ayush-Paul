@@ -430,6 +430,69 @@
   min-height: 100px;
 }
 
+/* TipTap Editor Styles */
+.editor-surface {
+  @apply text-white/90;
+}
+
+.editor-surface p {
+  @apply mb-6 last:mb-0;
+}
+
+.editor-surface h2, .editor-surface h3 {
+  @apply font-bold tracking-tight mb-8 mt-12 text-white;
+}
+
+.editor-surface h2 { @apply text-4xl; }
+.editor-surface h3 { @apply text-3xl; }
+
+.editor-surface ul, .editor-surface ol {
+  @apply mb-8 ml-6;
+}
+
+.editor-surface ul { @apply list-disc; }
+.editor-surface ol { @apply list-decimal; }
+
+.editor-surface li {
+  @apply mb-2;
+}
+
+.editor-surface blockquote {
+  @apply border-l-4 border-brand-primary pl-6 my-10 italic text-2xl text-white/60 bg-brand-primary/5 py-4 pr-4 rounded-r-2xl;
+}
+
+.editor-surface pre {
+  @apply bg-black/40 border border-white/10 rounded-2xl p-6 my-10 font-mono text-sm text-brand-primary overflow-x-auto;
+}
+
+.editor-surface img {
+  @apply rounded-3xl border border-white/5 my-10 shadow-2xl;
+}
+
+.editor-surface .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  height: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.875rem;
+}
+
+/* Callout Styling in Editor */
+.editor-surface .callout {
+  @apply p-8 rounded-[2rem] border my-10 flex gap-6 items-start;
+}
+
+.editor-surface .callout-info { @apply bg-brand-primary/5 border-brand-primary/10 text-brand-primary; }
+.editor-surface .callout-warning { @apply bg-yellow-500/5 border-yellow-500/10 text-yellow-400; }
+
+.ProseMirror {
+  outline: none !important;
+}
+
 .quill-editor-dark .ql-stroke {
   stroke: rgba(255, 255, 255, 0.4) !important;
 }

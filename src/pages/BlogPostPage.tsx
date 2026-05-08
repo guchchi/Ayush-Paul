@@ -306,9 +306,7 @@ export const BlogPostPage = () => {
                           );
                         case 'quote':
                           return (
-                            <blockquote key={block.id}>
-                              {block.content}
-                            </blockquote>
+                            <blockquote key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />
                           );
                         case 'callout':
                           const variants = {
@@ -321,7 +319,7 @@ export const BlogPostPage = () => {
                             <div key={block.id} className={cn("my-16 p-10 rounded-[2.5rem] border flex gap-8 items-start relative overflow-hidden group", variants[block.metadata?.variant || 'info'])}>
                               <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20" />
                               <Info size={28} className="shrink-0 mt-1 opacity-40 group-hover:opacity-100 transition-opacity" />
-                              <div className="text-xl font-medium leading-[1.6]">{block.content}</div>
+                              <div className="text-xl font-medium leading-[1.6]" dangerouslySetInnerHTML={{ __html: block.content }} />
                             </div>
                           );
                         case 'divider':

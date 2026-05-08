@@ -6,15 +6,6 @@ import {
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
   CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap
 } from "lucide-react";
-import { 
-  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent 
-} from '@dnd-kit/core';
-import { 
-  arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable 
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
   auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, 
@@ -28,6 +19,7 @@ import { Block, BlockType, SEOData, OperationType } from "../types";
 import { useSEO } from "../hooks/useSEO";
 import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
 import { uploadImage, deleteImageByPath } from "../lib/storage-utils";
+import { TipTapEditor } from "../components/editor/TipTapEditor";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -531,137 +523,20 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
   const [showSmartImport, setShowSmartImport] = useState(false);
 
   const parseContentToBlocks = (text: string) => {
-    // Rule 8: Pre-Insert Sanitization (Strip noise but keep semantic markers)
-    const sanitized = text
-      .replace(/<style[^>]*>.*<\/style>/gms, '')
-      .replace(/<script[^>]*>.*<\/script>/gms, '')
-      .replace(/class="[^"]*"/g, '')
-      .replace(/style="[^"]*"/g, '');
-
-    const lines = sanitized.split('\n');
-    const blocks: Block[] = [];
-    let currentParagraphs: string[] = [];
-    let currentListItems: string[] = [];
-    let currentListType: 'ordered' | 'unordered' | null = null;
-    
-    const flushParagraphs = () => {
-      if (currentParagraphs.length > 0) {
-        blocks.push({
-          id: Math.random().toString(36).substr(2, 9),
-          type: 'text',
-          content: `<p>${currentParagraphs.join(' ')}</p>`
-        });
-        currentParagraphs = [];
-      }
-    };
-
-    const flushList = () => {
-      if (currentListItems.length > 0) {
-        const tag = currentListType === 'ordered' ? 'ol' : 'ul';
-        blocks.push({
-          id: Math.random().toString(36).substr(2, 9),
-          type: 'list',
-          content: `<${tag}>${currentListItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`,
-          metadata: { listType: currentListType }
-        });
-        currentListItems = [];
-        currentListType = null;
-      }
-    };
-
-    const flushAll = () => {
-      flushParagraphs();
-      flushList();
-    };
-
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      if (!trimmedLine) {
-        // Rule 5: Spacing Logic - Intentional double spacing flushes everything
-        flushAll();
-        return;
-      }
-
-      // Rule 3: List Protection System
-      const unorderedMatch = trimmedLine.match(/^([-*•])\s+(.*)/);
-      const orderedMatch = trimmedLine.match(/^(\d+)[.)]\s+(.*)/);
-
-      if (unorderedMatch) {
-        flushParagraphs();
-        if (currentListType === 'ordered') flushList();
-        currentListType = 'unordered';
-        currentListItems.push(unorderedMatch[2]);
-        return;
-      }
-
-      if (orderedMatch) {
-        flushParagraphs();
-        if (currentListType === 'unordered') flushList();
-        currentListType = 'ordered';
-        currentListItems.push(orderedMatch[2]);
-        return;
-      }
-
-      // Rule 2: Heading Detection (CORE RULE)
-      // Check for Markdown first
-      const hMatch = trimmedLine.match(/^(#{1,3})\s+(.*)/);
-      if (hMatch) {
-        flushAll();
-        blocks.push({
-          id: Math.random().toString(36).substr(2, 9),
-          type: 'heading',
-          content: hMatch[2],
-          metadata: { level: hMatch[1].length as any }
-        });
-        return;
-      }
-
-      // Heuristic Headings (Rule 2 conditions)
-      // 1. Standalone line (flushAll before and check if next line is empty or this is last)
-      const isShort = trimmedLine.length < 80;
-      const isTitleCase = /^[A-Z]/.test(trimmedLine);
-      const noPunctuation = !/[.!?:]$/.test(trimmedLine);
-      const nextLineEmpty = !lines[index + 1] || lines[index + 1].trim() === "";
-
-      if (isShort && isTitleCase && noPunctuation && nextLineEmpty && currentListItems.length === 0) {
-        flushAll();
-        blocks.push({
-          id: Math.random().toString(36).substr(2, 9),
-          type: 'heading',
-          content: trimmedLine,
-          metadata: { level: 2 } // Default heuristic to H2
-        });
-        return;
-      }
-
-      // Quote Detection
-      const quoteMatch = trimmedLine.match(/^>\s+(.*)/);
-      if (quoteMatch) {
-        flushAll();
-        blocks.push({
-          id: Math.random().toString(36).substr(2, 9),
-          type: 'quote',
-          content: quoteMatch[1]
-        });
-        return;
-      }
-
-      // Rule 4: Paragraph Intelligence
-      if (currentListItems.length > 0) {
-        // If we were in a list and this is just more text without list marker, 
-        // it might be a nested paragraph OR we should flush the list.
-        // For elite logic, we assume a new line without marker ends the list.
-        flushList();
-      }
-      currentParagraphs.push(trimmedLine);
-    });
-
-    flushAll();
-    return normalizeBlocks(blocks);
+    // Simple heuristic for stats in the modal
+    const lines = text.split('\n').filter(l => l.trim());
+    const blocks: Block[] = lines.map(line => ({
+      id: Math.random().toString(36).substr(2, 9),
+      type: line.startsWith('#') ? 'heading' : (line.match(/^[-*•\d]/) ? 'list' : 'text'),
+      content: line
+    }));
+    return blocks;
   };
 
   const handleSmartImport = (append = false) => {
     if (!importText.trim()) return;
+    // We can't easily 'append' to TipTap from here without a ref, 
+    // but we can replace the blocks state which TipTap will pick up.
     const parsedBlocks = parseContentToBlocks(importText);
     if (append) {
       setBlocks([...blocks, ...parsedBlocks]);
@@ -672,148 +547,26 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
     setShowSmartImport(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      setImportText(content);
-      setShowSmartImport(true);
-    };
-    reader.readAsText(file);
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-      setBlocks((items) => {
-        const oldIndex = items.findIndex((i) => i.id === active.id);
-        const newIndex = items.findIndex((i) => i.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  };
-
-  const addBlock = (type: BlockType, metadata: any = {}) => {
-    const newBlock: Block = {
-      id: Math.random().toString(36).substr(2, 9),
-      type,
-      content: '',
-      metadata: {
-        ...metadata,
-        ...(type === 'image' ? { alignment: 'center' } : 
-           type === 'code' ? { language: 'javascript' } : 
-           type === 'callout' ? { variant: 'info' } : {})
-      }
-    };
-    const normalized = normalizeBlocks([...blocks, newBlock]);
-    setBlocks(normalized);
-  };
-
-  const updateBlock = (id: string, updates: Partial<Block>) => {
-    setBlocks(blocks.map(b => b.id === id ? { ...b, ...updates } : b));
-  };
-
-  const deleteBlock = (id: string) => {
-    setBlocks(blocks.filter(b => {
-      if (b.id === id) {
-        if (b.localPreview) URL.revokeObjectURL(b.localPreview);
-        return false;
-      }
-      return true;
-    }));
-  };
-
   return (
     <div className="space-y-8">
-      <DndContext 
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext 
-          items={blocks.map(b => b.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <div className="min-h-[400px] space-y-4">
-            {blocks.map((block) => {
-              // Final Render Guard: Skip poisonous items that bypassed state checks
-              if (!block || !block.id || !block.type) return null;
-              
-              return (
-                <SortableBlock 
-                  key={block.id} 
-                  block={block} 
-                  onUpdate={updateBlock}
-                  onDelete={deleteBlock}
-                  onAIAction={onAIAction}
-                />
-              );
-            })}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+            <Edit size={20} />
           </div>
-        </SortableContext>
-      </DndContext>
-
-      <div className="flex flex-wrap items-center justify-between gap-4 p-6 bg-white/5 border border-white/10 rounded-[32px]">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-white/20 mr-2">Add Block</span>
-          <div className="flex bg-white/5 rounded-xl p-1">
-            <button onClick={() => addBlock('heading', { level: 2 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 2">
-              <span className="text-xs font-bold">H2</span>
-            </button>
-            <button onClick={() => addBlock('heading', { level: 3 })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Heading 3">
-              <span className="text-xs font-bold">H3</span>
-            </button>
-          </div>
-          <button onClick={() => addBlock('text')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <Type size={18} /> <span className="text-xs font-bold">Text</span>
-          </button>
-          <div className="flex bg-white/5 rounded-xl p-1">
-            <button onClick={() => addBlock('list', { listType: 'unordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Bullet List">
-              <List size={18} />
-            </button>
-            <button onClick={() => addBlock('list', { listType: 'ordered' })} className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all" title="Numbered List">
-              <ListOrdered size={18} />
-            </button>
-          </div>
-          <button onClick={() => addBlock('image')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <ImageIcon size={18} /> <span className="text-xs font-bold">Image</span>
-          </button>
-          <button onClick={() => addBlock('code')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <Code size={18} /> <span className="text-xs font-bold">Code</span>
-          </button>
-          <button onClick={() => addBlock('quote')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <Quote size={18} /> <span className="text-xs font-bold">Quote</span>
-          </button>
-          <button onClick={() => addBlock('callout')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <Info size={18} /> <span className="text-xs font-bold">Callout</span>
-          </button>
-          <button onClick={() => addBlock('divider')} className="p-3 rounded-xl hover:bg-white/10 text-white/60 hover:text-white transition-all flex items-center gap-2">
-            <Minus size={18} /> <span className="text-xs font-bold">Divider</span>
-          </button>
+          <h3 className="text-xl font-bold">Innovation Narrative</h3>
         </div>
-
-        <div className="flex items-center gap-4">
-          <label className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 cursor-pointer font-bold text-xs">
-            <FileText size={18} /> Import .txt
-            <input type="file" accept=".txt" onChange={handleFileUpload} className="hidden" />
-          </label>
+        <div className="flex items-center gap-3">
           <button 
             onClick={() => setShowSmartImport(true)}
-            className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all flex items-center gap-2 font-bold text-xs"
+            className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-brand-primary hover:bg-brand-primary/5 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
           >
-            <Sparkles size={18} className="text-brand-primary" /> Smart Paste
+            <Sparkles size={14} /> Smart Paste
           </button>
         </div>
       </div>
+
+      <TipTapEditor blocks={blocks} onChange={setBlocks} />
 
       {showSmartImport && (
         <div className="fixed inset-0 z-[11000] bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
