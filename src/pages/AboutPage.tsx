@@ -104,14 +104,40 @@ const FounderSection = () => {
             </div>
           </div>
           
-          <div className="flex-1 space-y-6">
-            <div>
-              <h3 className="text-3xl font-bold mb-2 tracking-tight">Ayush Paul</h3>
-              <p className="text-brand-primary text-sm font-bold uppercase tracking-[0.3em]">Founder & Builder</p>
+          <div className="flex-1 space-y-8">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h3 className="text-4xl font-extrabold mb-2 tracking-tight">Ayush Paul</h3>
+                <div className="flex items-center gap-3">
+                  <p className="text-brand-primary text-xs font-bold uppercase tracking-[0.3em]">Founder & Builder</p>
+                  <span className="w-1 h-1 rounded-full bg-white/20" />
+                  <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest bg-brand-secondary/10 px-2 py-0.5 rounded-full border border-brand-secondary/20">
+                    National Winner
+                  </span>
+                </div>
+              </div>
             </div>
-            <p className="text-xl text-white/60 leading-relaxed font-medium">
+            
+            <p className="text-xl text-white/70 leading-relaxed font-medium">
               Specialized in translating complex requirements into robust, scalable digital infrastructure. Focusing on the intersection of systems engineering, artificial intelligence, and high-end creative technology.
             </p>
+
+            {/* Achievement Highlight */}
+            <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="glass-card p-6 rounded-3xl border-white/5 bg-gradient-to-br from-brand-primary/5 to-transparent flex items-center gap-5 group hover:border-brand-primary/20 transition-all">
+                <div className="w-16 h-20 shrink-0 rounded-2xl overflow-hidden border border-white/10">
+                  <img 
+                    src="/assets/ayush-award.png" 
+                    alt="National Level Achievement" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-1">National Recognition</h4>
+                  <p className="text-[11px] text-white/40 font-medium">Rashtriya Bal Vaigyanik Pradarshani 2025</p>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
