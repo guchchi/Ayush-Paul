@@ -1931,7 +1931,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                      <h2 className="text-2xl font-bold tracking-tight">{blogFormData.title || "New Narrative"}</h2>
+                      <div className="flex items-center gap-4">
+                        <h2 className="text-2xl font-bold tracking-tight">{blogFormData.title || "New Narrative"}</h2>
+                        <button 
+                          type="button"
+                          onClick={() => setShowSmartImport(true)}
+                          className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[9px] uppercase tracking-widest"
+                        >
+                          <Sparkles size={12} /> Smart Import
+                        </button>
+                      </div>
                       <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">
                         <span className="flex items-center gap-1.5"><Clock size={12} className="text-brand-primary" /> {lastSaved ? `Autosaved ${lastSaved.toLocaleTimeString()}` : 'Draft'}</span>
                         <div className="w-1 h-1 rounded-full bg-white/10" />
