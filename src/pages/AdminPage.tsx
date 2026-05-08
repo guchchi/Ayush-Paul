@@ -535,14 +535,54 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
 
   const handleSmartImport = (append = false) => {
     if (!importText.trim()) return;
-    // We can't easily 'append' to TipTap from here without a ref, 
-    // but we can replace the blocks state which TipTap will pick up.
-    const parsedBlocks = parseContentToBlocks(importText);
+    
+    let text = importText;
+    const metadata: any = {};
+
+    // Pattern Detection for Title
+    const titleMatch = text.match(/Title:\s*(.*)/i);
+    if (titleMatch) {
+      metadata.title = titleMatch[1].trim();
+      text = text.replace(titleMatch[0], "");
+    }
+
+    // Pattern Detection for Category
+    const categoryMatch = text.match(/Category:\s*(.*)/i);
+    if (categoryMatch) {
+      metadata.category = categoryMatch[1].trim();
+      text = text.replace(categoryMatch[0], "");
+    }
+
+    // Pattern Detection for Slug
+    const slugMatch = text.match(/Slug:\s*(.*)/i);
+    if (slugMatch) {
+      metadata.slug = slugMatch[1].trim();
+      text = text.replace(slugMatch[0], "");
+    }
+
+    // Update Form Data if metadata found
+    if (metadata.title) {
+      setBlogFormData(prev => ({ 
+        ...prev, 
+        title: metadata.title, 
+        slug: metadata.slug || generateSlug(metadata.title),
+        category: metadata.category || prev.category
+      }));
+    }
+
+    // Clean up separators like ---
+    text = text.replace(/^---+\s*$/m, "");
+
+    // TipTap handles the body much better if we paste into it directly, 
+    // but for this modal, we'll parse it into blocks.
+    const parsedBlocks = parseContentToBlocks(text.trim());
+    
     if (append) {
       setBlocks([...blocks, ...parsedBlocks]);
     } else {
       setBlocks(parsedBlocks);
     }
+    
     setImportText("");
     setShowSmartImport(false);
   };
@@ -594,26 +634,27 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
               className="w-full h-80 bg-black/40 border border-white/10 rounded-3xl p-8 outline-none focus:border-brand-primary text-white/80 font-mono text-sm resize-none"
-              placeholder="Paste your unformatted content here... Headings, lists, and paragraphs will be detected automatically."
+              placeholder="Paste everything here (Title: ..., Category: ..., then your content). We'll handle the rest."
             />
 
             {importText.trim() && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                className="grid grid-cols-2 lg:grid-cols-5 gap-4"
               >
                 {[
-                  { label: 'Headings', value: parseContentToBlocks(importText).filter(b => b.type === 'heading').length, icon: <Type size={14} /> },
-                  { label: 'Lists', value: parseContentToBlocks(importText).filter(b => b.type === 'list').length, icon: <List size={14} /> },
-                  { label: 'Quotes', value: parseContentToBlocks(importText).filter(b => b.type === 'quote').length, icon: <Quote size={14} /> },
-                  { label: 'Paragraphs', value: parseContentToBlocks(importText).filter(b => b.type === 'text').length, icon: <FileText size={14} /> },
+                  { label: 'Title', value: importText.match(/Title:/i) ? 'Detected' : 'Missing', icon: <Type size={14} />, color: importText.match(/Title:/i) ? 'text-green-400' : 'text-white/20' },
+                  { label: 'Category', value: importText.match(/Category:/i) ? 'Detected' : 'Missing', icon: <Tag size={14} />, color: importText.match(/Category:/i) ? 'text-green-400' : 'text-white/20' },
+                  { label: 'Headings', value: parseContentToBlocks(importText).filter(b => b.type === 'heading').length, icon: <Type size={14} />, color: 'text-white' },
+                  { label: 'Quotes', value: parseContentToBlocks(importText).filter(b => b.type === 'quote').length, icon: <Quote size={14} />, color: 'text-white' },
+                  { label: 'Paragraphs', value: parseContentToBlocks(importText).filter(b => b.type === 'text').length, icon: <FileText size={14} />, color: 'text-white' },
                 ].map(stat => (
                   <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20">
                       {stat.icon} {stat.label}
                     </div>
-                    <div className="text-xl font-bold">{stat.value}</div>
+                    <div className={cn("text-lg font-bold", stat.color)}>{stat.value}</div>
                   </div>
                 ))}
               </motion.div>
