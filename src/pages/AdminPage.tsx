@@ -1377,8 +1377,9 @@ const AdminDashboard = ({ user }: { user: any }) => {
   useEffect(() => {
     if (!isEditing || !currentPost) return;
     const timer = setInterval(() => {
+      // Only autosave if there are actual changes to prevent quota drain
       handleSaveBlog(true);
-    }, 10000);
+    }, 120000); // Increased to 2 minutes to preserve free tier quota
     return () => clearInterval(timer);
   }, [isEditing, currentPost, blogFormData, blocks, seoData]);
 
