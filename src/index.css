@@ -243,6 +243,82 @@
   .text-prose {
     @apply max-w-prose text-white/50 text-xl;
   }
+
+  /* Premium Blog Typography Overrides */
+  .blog-prose {
+    --tw-prose-invert-body: rgba(255, 255, 255, 0.85);
+    --tw-prose-invert-headings: rgba(255, 255, 255, 0.95);
+    --tw-prose-invert-links: var(--color-brand-primary);
+    --tw-prose-invert-bold: #fff;
+    --tw-prose-invert-counters: rgba(255, 255, 255, 0.4);
+    --tw-prose-invert-bullets: rgba(255, 255, 255, 0.2);
+    --tw-prose-invert-hr: rgba(255, 255, 255, 0.05);
+    --tw-prose-invert-quotes: rgba(255, 255, 255, 0.9);
+    --tw-prose-invert-quote-borders: var(--color-brand-primary);
+    --tw-prose-invert-captions: rgba(255, 255, 255, 0.4);
+    --tw-prose-invert-code: #fff;
+    --tw-prose-invert-pre-code: #fff;
+    --tw-prose-invert-pre-bg: rgba(255, 255, 255, 0.03);
+    --tw-prose-invert-th-borders: rgba(255, 255, 255, 0.1);
+    --tw-prose-invert-td-borders: rgba(255, 255, 255, 0.05);
+    
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  @media (min-width: 1024px) {
+    .blog-prose {
+      font-size: 1.25rem;
+    }
+  }
+
+  .blog-prose h2, .blog-prose h3, .blog-prose h4 {
+    @apply font-display tracking-tight mt-20 mb-8 text-white/90;
+    letter-spacing: -0.03em;
+  }
+
+  .blog-prose h2 { @apply text-4xl md:text-5xl; }
+  .blog-prose h3 { @apply text-3xl md:text-4xl; }
+
+  .blog-prose p {
+    @apply mb-10 text-white/70 font-normal;
+    line-height: 1.85;
+  }
+
+  .blog-prose a {
+    @apply text-brand-primary border-b border-brand-primary/20 hover:border-brand-primary transition-all no-underline font-medium;
+  }
+
+  .blog-prose blockquote {
+    @apply border-l-4 border-brand-primary pl-10 my-20 italic text-2xl md:text-4xl font-display text-white/90;
+    background: linear-gradient(to right, rgba(0, 194, 255, 0.05), transparent);
+    padding: 3rem 2rem 3rem 4rem;
+    border-radius: 0 2rem 2rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .blog-prose strong {
+    @apply text-white font-bold;
+  }
+
+  .blog-prose mark {
+    @apply bg-brand-primary/10 text-brand-primary px-1 rounded-sm;
+  }
+
+  .blog-prose img {
+    @apply rounded-[2.5rem] border border-white/5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)];
+  }
+
+  .blog-content-container {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Editorial Accent */
+  .editorial-dropcap::first-letter {
+    @apply float-left text-7xl font-bold font-display text-brand-primary mr-3 mt-1 leading-none;
+  }
 }
 
 /* Utility: page hero that accounts for navbar height */

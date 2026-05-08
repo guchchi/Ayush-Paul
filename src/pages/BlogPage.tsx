@@ -124,8 +124,8 @@ export const BlogPage = () => {
         </div>
 
         <div className="max-w-4xl mx-auto mb-20 text-center">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 tracking-tight">The <span className="text-brand-primary">Blog</span></h1>
-          <p className="text-white/40 text-xl font-medium max-w-2xl mx-auto leading-relaxed">Thoughts on Artificial Intelligence, Engineering, and the Future of Students.</p>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight text-white/95 leading-tight">The <span className="text-brand-primary">Blog</span></h1>
+          <p className="text-white/50 text-xl font-medium max-w-2xl mx-auto leading-relaxed">Thoughts on Artificial Intelligence, Engineering, and the Future of Students.</p>
         </div>
 
         <div 
@@ -136,9 +136,9 @@ export const BlogPage = () => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Header */}
-          <div className="p-8 flex items-center justify-between group">
+          <div className="p-6 md:p-8 flex items-center justify-between group">
             <div className="flex items-center gap-6 flex-1">
-              <Search className={cn("transition-colors duration-500", isFocused ? "text-brand-primary" : "text-white/20")} size={24} />
+              <Search className={cn("transition-colors duration-500", isFocused ? "text-brand-primary" : "text-white/10")} size={20} />
               <input 
                 type="text" 
                 placeholder="Search for articles, topics or tags..." 
@@ -243,28 +243,29 @@ export const BlogPage = () => {
           ) : filteredPosts.map(post => (
 
             <Link to={`/blog/${post.slug}`} key={post.id} className="group">
-              <div className="glass-card rounded-3xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all h-full flex flex-col">
-                <div className="aspect-video overflow-hidden relative">
-                  <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/80">
+              <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-500 h-full flex flex-col shadow-2xl hover:shadow-brand-primary/5">
+                <div className="aspect-[16/10] overflow-hidden relative">
+                  <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
+                  <div className="absolute top-6 left-6">
+                    <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/90">
                       {post.category}
                     </span>
                   </div>
                 </div>
-                <div className="p-8 flex-1 flex flex-col">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-xs font-bold uppercase tracking-widest text-brand-primary">
+                <div className="p-8 md:p-10 flex-1 flex flex-col">
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
                       {Array.isArray(post.tags) ? post.tags[0] : post.tags}
                     </span>
-                    <span className="text-xs text-white/40 uppercase tracking-widest">{formatDate(post.createdAt)}</span>
+                    <div className="w-1 h-1 rounded-full bg-white/10" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">{formatDate(post.createdAt)}</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors">{post.title}</h3>
-                  <p className="text-white/60 mb-6 line-clamp-3">
+                  <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors leading-tight text-white/90">{post.title}</h3>
+                  <p className="text-white/40 mb-8 line-clamp-3 text-sm leading-relaxed font-medium">
                     {post.description || (post.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, '').substring(0, 160).replace(/\.+$/, '') + '...') || "Read the full article to explore this topic further."}
                   </p>
-                  <div className="mt-auto flex items-center gap-2 text-sm font-bold text-brand-primary">
-                    Read More <ArrowRight size={16} />
+                  <div className="mt-auto flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] group-hover:gap-3 transition-all">
+                    Explore Story <ArrowRight size={14} />
                   </div>
                 </div>
               </div>

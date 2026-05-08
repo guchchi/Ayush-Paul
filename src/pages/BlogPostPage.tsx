@@ -10,6 +10,8 @@ import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, OperationType } from "../types";
 import { getCanonicalUrl } from "../lib/domain";
+import { motion, AnimatePresence } from "motion/react";
+import { VARIANTS } from "../lib/motion-presets";
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
@@ -159,200 +161,309 @@ export const BlogPostPage = () => {
   if (!post) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] text-white">Post not found</div>;
 
   return (
-    <div className="page-content bg-[#0A0A0A] relative">
-      <div className="fixed top-0 left-0 h-1 bg-brand-primary z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+    <div className="page-content bg-[#080808] relative">
+      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
       <div className="container mx-auto px-6">
-        <div className="mb-10">
+        <div className="mb-20">
+          <BackButton to="/blog" label="Back to Blog" />
+        </div>
 
-            <BackButton to="/blog" label="Back to Blog" />
-          </div>
-
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-16 border-b border-white/5 pb-20 max-w-7xl mx-auto">
-          <article className="w-full min-w-0">
-            <div className="w-full lg:max-w-2xl lg:mx-auto mb-12">
-              <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-8">
-                <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
-                <Calendar size={16} className="text-brand-primary" />
+        <div className="max-w-7xl mx-auto">
+          {/* Editorial Header Section */}
+          <header className="max-w-5xl mx-auto text-center mb-24 lg:mb-32">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-wrap items-center justify-center gap-6 mb-12"
+            >
+              <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                <Calendar size={14} className="text-brand-primary" />
                 {formatDate(post.createdAt)}
               </div>
-              <div className="flex items-center gap-2 text-white/40 text-sm font-bold uppercase tracking-widest">
-                <Clock size={16} className="text-brand-primary" />
+              <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+              <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                <Clock size={14} className="text-brand-primary" />
                 {post.blocks ? 
                    Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
                    Math.ceil((post.content || '').split(" ").length / 200)
                 } min read
               </div>
-              <div className="flex flex-wrap gap-2">
-              {(() => {
-                const rawTags = post.tags || [];
-                const tags = (Array.isArray(rawTags) ? rawTags : [rawTags])
-                  .flatMap(t => typeof t === 'string' ? t.split(',').map(s => s.trim()) : [t])
-                  .filter(t => t);
-                return tags.map((tag: string) => (
-                  <span key={tag} className="px-3 py-2 rounded-full bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
-                    {tag}
-                  </span>
-                ));
-              })()}
-              </div>
-            </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">{post.title}</h1>
-            {post.description ? (
-              <p className="text-xl text-white/60 leading-relaxed italic border-l-4 border-brand-primary pl-6 mb-12">{post.description}</p>
-            ) : (
-              <p className="text-xl text-white/60 leading-relaxed italic border-l-4 border-brand-primary pl-6 mb-12 line-clamp-2">
-                {post.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, '').substring(0, 200).replace(/\.+$/, '')}...
-              </p>
+              {post.category && (
+                <>
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                  <div className="px-4 py-1.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em]">
+                    {post.category}
+                  </div>
+                </>
+              )}
+            </motion.div>
+
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-12 leading-[1.05] tracking-tighter text-white/95"
+            >
+              {post.title}
+            </motion.h1>
+
+            {post.description && (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-2xl md:text-3xl text-white/40 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight"
+              >
+                {post.description}
+              </motion.p>
             )}
-          </div>
 
-          <div className="aspect-video rounded-[40px] overflow-hidden mb-16 border border-white/10">
-            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-          </div>
-
-          <div className="w-full lg:max-w-2xl lg:mx-auto">
-            <div className="prose prose-invert prose-base md:prose-lg lg:prose-xl max-w-none leading-[1.8] break-words">
-            {post.blocks ? (
-              <div className="space-y-8">
-                {post.blocks.map((block: Block) => {
-                  switch (block.type) {
-                    case 'text':
-                      return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />;
-                    case 'heading':
-                      const HeadingTag = `h${block.metadata?.level || 2}` as any;
-                      return <HeadingTag id={`heading-${block.id}`} key={block.id} className="font-bold text-white/90 mt-12 mb-6 scroll-m-32">{block.content}</HeadingTag>;
-
-                    case 'list':
-                      return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="list-container" />;
-                    case 'image':
-                      return (
-                        <figure key={block.id} className={cn(
-                          "my-12 rounded-3xl overflow-hidden border border-white/10",
-                          block.metadata?.alignment === 'center' ? "max-w-2xl mx-auto" : 
-                          block.metadata?.alignment === 'full' ? "w-full" : ""
-                        )}>
-                          <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto" referrerPolicy="no-referrer" />
-                          {block.metadata?.caption && <figcaption className="p-4 text-center text-sm text-white/40 italic">{block.metadata.caption}</figcaption>}
-                        </figure>
-                      );
-                    case 'code':
-                      return (
-                        <div key={block.id} className="my-8 rounded-2xl overflow-hidden border border-white/10 bg-black/40">
-                          <div className="px-6 py-3 bg-white/5 border-b border-white/10 flex justify-between items-center">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">{block.metadata?.language || 'code'}</span>
-                          </div>
-                          <pre className="p-6 overflow-x-auto font-mono text-sm text-brand-primary"><code>{block.content}</code></pre>
-                        </div>
-                      );
-                    case 'quote':
-                      return (
-                        <blockquote key={block.id} className="my-12 p-8 bg-brand-primary/5 border-l-4 border-brand-primary rounded-r-3xl italic text-2xl text-white/90 font-display">
-                          "{block.content}"
-                        </blockquote>
-                      );
-                    case 'callout':
-                      const variants = {
-                        info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-                        warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
-                        success: 'bg-green-500/10 border-green-500/20 text-green-400',
-                        danger: 'bg-red-500/10 border-red-500/20 text-red-400',
-                      };
-                      return (
-                        <div key={block.id} className={cn("my-8 p-6 rounded-2xl border flex gap-4", variants[block.metadata?.variant || 'info'])}>
-                          <Info size={24} className="shrink-0" />
-                          <div className="text-sm font-medium">{block.content}</div>
-                        </div>
-                      );
-                    case 'divider':
-                      return <hr key={block.id} className="my-16 border-white/10" />;
-                    default:
-                      return null;
-                  }
-                })}
-              </div>
-            ) : (
-              <ReactMarkdown>{post.content}</ReactMarkdown>
+            {post.updatedAt && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                transition={{ delay: 0.4 }}
+                className="mt-12 text-[10px] font-bold uppercase tracking-[0.3em]"
+              >
+                Last Updated: {formatDate(post.updatedAt)}
+              </motion.div>
             )}
-            </div>
-            </div>
-          </article>
+          </header>
 
-          <aside className="hidden lg:block relative py-12">
-            <div className="sticky top-32 space-y-16">
-              {getTOC().length > 0 && (
-                <div className="space-y-6">
-                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 flex items-center gap-2">
-                    <Info size={12} /> Table of Contents
-                  </h3>
-                  <div className="space-y-3 border-l border-white/10 pl-4">
-                    {getTOC().map((item: any) => (
-                      <a 
-                        key={item.id} 
-                        href={`#${item.id}`}
-                        className={cn(
-                          "block text-sm transition-all duration-300 hover:text-white line-clamp-2",
-                          activeHeading === item.id 
-                            ? "text-brand-primary font-bold -ml-[17px] border-l-2 border-brand-primary pl-4" 
-                            : "text-white/40"
-                        )}
-                        style={{ marginLeft: item.level > 2 ? `${(item.level - 2) * 12}px` : undefined }}
-                      >
-                        {item.text}
-                      </a>
-                    ))}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="aspect-[21/9] rounded-[3rem] overflow-hidden mb-32 border border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] relative group"
+          >
+            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-1000" referrerPolicy="no-referrer" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+          </motion.div>
+
+          <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative mb-32">
+            {/* Left Rail: Reading Stats & Share */}
+            <aside className="hidden lg:flex flex-col items-end py-4 h-full">
+              <div className="sticky top-40 space-y-16 flex flex-col items-center">
+                <div className="flex flex-col items-center gap-4 text-center">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-2">Read Progress</div>
+                  <div className="text-2xl font-display font-bold text-brand-primary">
+                    {Math.round(scrollProgress)}%
+                  </div>
+                  <div className="w-12 h-[2px] bg-white/5 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-brand-primary" style={{ width: `${scrollProgress}%` }} />
                   </div>
                 </div>
-              )}
 
-              <div className="space-y-6">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 flex items-center gap-2">
-                  <ArrowRight size={12} /> Share Article
-                </h3>
-                <div className="flex flex-wrap items-center gap-3">
-                  <a href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 transition-all">
-                    <Twitter size={16} />
+                <div className="flex flex-col gap-6">
+                  <a href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all group">
+                    <Twitter size={20} className="group-hover:scale-110 transition-transform" />
                   </a>
-                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/30 transition-all">
-                    <Linkedin size={16} />
+                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all group">
+                    <Linkedin size={20} className="group-hover:scale-110 transition-transform" />
                   </a>
-                  <a href={`https://api.whatsapp.com/send?text=${post.title} ${window.location.href}`} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-[#25D366] hover:bg-[#25D366]/10 hover:border-[#25D366]/30 transition-all">
-                    <MessageCircle size={16} />
-                  </a>
-                  <button onClick={handleCopyLink} className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-brand-primary hover:bg-brand-primary/10 hover:border-brand-primary/30 transition-all relative group">
-                    {copied ? <Check size={16} className="text-brand-primary" /> : <Link2 size={16} />}
-                    {copied && <span className="absolute -top-10 bg-brand-primary text-black text-[10px] font-bold px-3 py-1 rounded-full animate-in fade-in zoom-in w-max">Link Copied!</span>}
+                  <button onClick={handleCopyLink} className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all relative group">
+                    {copied ? <Check size={20} className="text-brand-primary" /> : <Link2 size={20} className="group-hover:scale-110 transition-transform" />}
                   </button>
                 </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+
+            {/* Middle: Article Content */}
+            <article className="w-full min-w-0">
+              <div className="blog-prose prose prose-invert max-w-none editorial-dropcap">
+                {post.blocks ? (
+                  <div className="space-y-4">
+                    {post.blocks.map((block: Block) => {
+                      switch (block.type) {
+                        case 'text':
+                          return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-10" />;
+                        case 'heading':
+                          const HeadingTag = `h${block.metadata?.level || 2}` as any;
+                          return <HeadingTag id={`heading-${block.id}`} key={block.id} className="scroll-m-32">{block.content}</HeadingTag>;
+                        case 'list':
+                          return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="list-container mb-10" />;
+                        case 'image':
+                          return (
+                            <figure key={block.id} className={cn(
+                              "my-20 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl",
+                              block.metadata?.alignment === 'full' ? "-mx-4 md:-mx-12 lg:-mx-32 w-[calc(100%+2rem)] md:w-[calc(100%+6rem)] lg:w-[calc(100%+16rem)]" : "w-full"
+                            )}>
+                              <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto" referrerPolicy="no-referrer" />
+                              {block.metadata?.caption && <figcaption className="p-8 text-center text-sm text-white/40 font-medium tracking-wide leading-relaxed">{block.metadata.caption}</figcaption>}
+                            </figure>
+                          );
+                        case 'code':
+                          return (
+                            <div key={block.id} className="my-16 rounded-[2rem] overflow-hidden border border-white/5 bg-[#0D0D0D] shadow-inner group relative">
+                              <div className="px-8 py-4 bg-white/[0.02] border-b border-white/5 flex justify-between items-center">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">{block.metadata?.language || 'code'}</span>
+                                <button onClick={() => {
+                                  navigator.clipboard.writeText(block.content);
+                                }} className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold uppercase text-brand-primary hover:text-white">Copy Module</button>
+                              </div>
+                              <pre className="p-10 overflow-x-auto font-mono text-sm leading-[1.7] text-brand-primary/80"><code>{block.content}</code></pre>
+                            </div>
+                          );
+                        case 'quote':
+                          return (
+                            <blockquote key={block.id}>
+                              {block.content}
+                            </blockquote>
+                          );
+                        case 'callout':
+                          const variants = {
+                            info: 'bg-brand-primary/5 border-brand-primary/10 text-brand-primary/90',
+                            warning: 'bg-yellow-500/5 border-yellow-500/10 text-yellow-400/90',
+                            success: 'bg-green-500/5 border-green-500/10 text-green-400/90',
+                            danger: 'bg-red-500/5 border-red-500/10 text-red-400/90',
+                          };
+                          return (
+                            <div key={block.id} className={cn("my-16 p-10 rounded-[2.5rem] border flex gap-8 items-start relative overflow-hidden group", variants[block.metadata?.variant || 'info'])}>
+                              <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20" />
+                              <Info size={28} className="shrink-0 mt-1 opacity-40 group-hover:opacity-100 transition-opacity" />
+                              <div className="text-xl font-medium leading-[1.6]">{block.content}</div>
+                            </div>
+                          );
+                        case 'divider':
+                          return (
+                            <div key={block.id} className="my-24 flex items-center justify-center gap-4">
+                              <div className="w-12 h-px bg-white/5" />
+                              <div className="w-2 h-2 rounded-full bg-brand-primary/20" />
+                              <div className="w-12 h-px bg-white/5" />
+                            </div>
+                          );
+                        default:
+                          return null;
+                      }
+                    })}
+                  </div>
+                ) : (
+                  <ReactMarkdown>{post.content}</ReactMarkdown>
+                )}
+              </div>
+
+              {/* Authority Signal: Author Box */}
+              <div className="mt-32 p-12 rounded-[3rem] glass border border-white/5 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                  <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-brand-primary/20 shrink-0 shadow-2xl">
+                    <img src="/assets/founder.png" alt="Ayush Paul" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-2">Written By</div>
+                    <h4 className="text-2xl font-bold text-white mb-2">Ayush Paul</h4>
+                    <p className="text-white/40 text-sm font-medium leading-relaxed mb-4">
+                      Founder, Lead Developer, and AI Architect. Passionate about bridging the gap between high-level software and intelligent hardware innovation.
+                    </p>
+                    <div className="flex items-center justify-center md:justify-start gap-4">
+                      <a href="https://twitter.com/paulayush" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-white/20 hover:text-brand-primary transition-colors">Twitter</a>
+                      <a href="https://linkedin.com/in/paulayush" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-white/20 hover:text-brand-primary transition-colors">LinkedIn</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Engagement: Subscribe Section */}
+              <div className="mt-16 p-12 rounded-[3rem] bg-brand-primary/5 border border-brand-primary/10 text-center relative overflow-hidden">
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-bold mb-4">Stay at the <span className="text-brand-primary">Edge of Innovation</span></h3>
+                  <p className="text-white/40 text-sm mb-8 max-w-md mx-auto">Join 2,000+ developers and engineers receiving weekly insights on AI, hardware, and engineering.</p>
+                  <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+                    <input type="email" placeholder="you@example.com" className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary/40 transition-all text-sm" />
+                    <button className="px-8 py-4 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white transition-all text-sm shadow-lg shadow-brand-primary/10">Subscribe</button>
+                  </form>
+                </div>
+              </div>
+            </article>
+
+            {/* Right Rail: TOC & Stats */}
+            <aside className="hidden lg:block py-4">
+              <div className="sticky top-40 space-y-16">
+                {getTOC().length > 0 && (
+                  <div className="space-y-10">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
+                      On This Page
+                    </h3>
+                    <div className="space-y-6 relative">
+                      <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-white/5" />
+                      {getTOC().map((item: any) => (
+                        <a 
+                          key={item.id} 
+                          href={`#${item.id}`}
+                          className={cn(
+                            "block text-[11px] font-bold uppercase tracking-widest transition-all duration-500 hover:text-white line-clamp-2 pl-8 relative group",
+                            activeHeading === item.id 
+                              ? "text-brand-primary" 
+                              : "text-white/20"
+                          )}
+                          style={{ paddingLeft: item.level > 2 ? `${(item.level - 2) * 16 + 32}px` : undefined }}
+                        >
+                          {activeHeading === item.id && (
+                            <motion.div 
+                              layoutId="toc-indicator"
+                              className="absolute left-[-1px] top-0 bottom-0 w-[3px] bg-brand-primary shadow-[0_0_15px_rgba(0,194,255,0.6)]" 
+                            />
+                          )}
+                          <span className="group-hover:translate-x-1 transition-transform block">{item.text}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="pt-8 border-t border-white/5">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-4">Reading Stats</div>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-white/40 uppercase tracking-widest">Words</span>
+                      <span className="text-white/60 font-bold">{post.blocks?.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-white/40 uppercase tracking-widest">Views</span>
+                      <span className="text-white/60 font-bold">{post.views || 1}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
 
         {relatedPosts.length > 0 && (
-          <div className="mt-32 max-w-7xl mx-auto mb-20 border-t border-white/5 pt-20">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold">More to <span className="text-brand-primary">Explore</span></h2>
-              <Link to="/blog" className="group flex items-center gap-2 text-sm font-bold text-white/40 hover:text-brand-primary transition-all uppercase tracking-widest">
-                View All Posts <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          <div className="mt-48 max-w-7xl mx-auto mb-32 border-t border-white/5 pt-32">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
+              <div>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4">Keep <span className="text-brand-primary">Exploring</span></h2>
+                <p className="text-white/40 text-lg font-medium">Selected articles from the Ayush Paul Intelligence Archives.</p>
+              </div>
+              <Link to="/blog" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
+                View Full Archive <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
               </Link>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-10">
               {relatedPosts.map(relPost => (
                 <Link to={`/blog/${relPost.slug}`} key={relPost.id} className="group h-full">
-                  <div className="glass-card rounded-3xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all flex flex-col h-full">
-                    <div className="aspect-video overflow-hidden">
-                      <img src={relPost.coverImage} alt={relPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
-                    </div>
-                    <div className="p-6 flex flex-col flex-1">
-                      <div className="flex items-center gap-3 mb-3 text-[10px] font-bold uppercase tracking-widest text-brand-primary">
-                        <span>{Array.isArray(relPost.tags) ? relPost.tags[0] : relPost.category}</span>
+                  <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-700 flex flex-col h-full shadow-2xl">
+                    <div className="aspect-[16/10] overflow-hidden relative">
+                      <img src={relPost.coverImage} alt={relPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
+                      <div className="absolute top-6 left-6">
+                        <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/80">
+                          {relPost.category}
+                        </span>
                       </div>
-                      <h4 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors line-clamp-2">{relPost.title}</h4>
-                      <p className="text-sm text-white/40 line-clamp-2 mb-4 flex-1">
+                    </div>
+                    <div className="p-10 flex flex-col flex-1">
+                      <div className="flex items-center gap-4 mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
+                        <span>{Array.isArray(relPost.tags) ? relPost.tags[0] : relPost.category}</span>
+                        <div className="w-1 h-1 rounded-full bg-white/10" />
+                        <span className="text-white/20">{formatDate(relPost.createdAt)}</span>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-6 group-hover:text-brand-primary transition-colors line-clamp-2 leading-tight text-white/90">{relPost.title}</h4>
+                      <p className="text-sm text-white/40 line-clamp-2 mb-8 flex-1 leading-relaxed font-medium">
                         {relPost.description || relPost.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').substring(0, 100) + '...'}
                       </p>
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest mt-auto">
-                        Read Story <ArrowRight size={12} />
+                      <div className="flex items-center gap-3 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mt-auto group-hover:gap-4 transition-all">
+                        Read Analysis <ArrowRight size={14} />
                       </div>
                     </div>
                   </div>
