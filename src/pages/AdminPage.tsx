@@ -560,14 +560,36 @@ const BlogEditor = ({ blocks, setBlocks, onAIAction }: {
       text = text.replace(slugMatch[0], "");
     }
 
-    // Update Form Data if metadata found
-    if (metadata.title) {
-      setBlogFormData(prev => ({ 
-        ...prev, 
-        title: metadata.title, 
-        slug: metadata.slug || generateSlug(metadata.title),
-        category: metadata.category || prev.category
+    if (activeTab === "projects") {
+      // Extended detection for Projects
+      const visionMatch = text.match(/Vision:\s*(.*)/i);
+      const impactMatch = text.match(/Impact:\s*(.*)/i);
+      const techMatch = text.match(/Focus Keywords:\s*(.*)/i) || text.match(/Secondary Keywords:\s*(.*)/i);
+      const metricsMatch = text.match(/Metrics:\s*(.*)/i);
+      const statusMatch = text.match(/Status:\s*(.*)/i);
+
+      setProjectFormData(prev => ({
+        ...prev,
+        title: metadata.title || prev.title,
+        category: metadata.category || prev.category,
+        slug: metadata.slug || (metadata.title ? generateSlug(metadata.title) : prev.slug),
+        description: text.substring(0, 500).trim() + "...",
+        vision: visionMatch ? visionMatch[1].trim() : prev.vision,
+        impact: impactMatch ? impactMatch[1].trim() : prev.impact,
+        tech: techMatch ? techMatch[1].trim() : prev.tech,
+        metrics: metricsMatch ? metricsMatch[1].trim() : prev.metrics,
+        status: statusMatch ? statusMatch[1].trim() : prev.status,
       }));
+    } else {
+      // Update Form Data if metadata found
+      if (metadata.title) {
+        setBlogFormData(prev => ({ 
+          ...prev, 
+          title: metadata.title, 
+          slug: metadata.slug || generateSlug(metadata.title),
+          category: metadata.category || prev.category
+        }));
+      }
     }
 
     // Clean up separators like ---
@@ -2022,7 +2044,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
             ) : (
               <form onSubmit={handleSaveProject} className="glass-card p-12 rounded-[40px] border border-white/10 space-y-8">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold">{currentProject ? "Edit Project" : "New Project"}</h2>
+                  <div className="flex items-center gap-6">
+                    <h2 className="text-2xl font-bold">{currentProject ? "Edit Project" : "New Project"}</h2>
+                    <button 
+                      type="button"
+                      onClick={() => setShowSmartImport(true)}
+                      className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
+                    >
+                      <Sparkles size={14} /> Smart Import
+                    </button>
+                  </div>
                   <button 
                     type="button"
                     onClick={() => { setIsEditing(false); setCurrentProject(null); }}
