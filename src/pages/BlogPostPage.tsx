@@ -410,20 +410,6 @@ export const BlogPostPage = () => {
                     </div>
                   </div>
                 )}
-                
-                <div className="pt-8 border-t border-white/5">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-4">Reading Stats</div>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-white/40 uppercase tracking-widest">Words</span>
-                      <span className="text-white/60 font-bold">{post.blocks?.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-[11px]">
-                      <span className="text-white/40 uppercase tracking-widest">Views</span>
-                      <span className="text-white/60 font-bold">{post.views || 1}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </aside>
           </div>
