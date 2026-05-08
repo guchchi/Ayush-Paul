@@ -849,6 +849,7 @@ const SEOPanel = ({ data, setData, blocks, onAIAction, isProcessing }: {
 };
 
 const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: string) => void, isProcessing: boolean }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const actions = [
     { id: 'improve', label: 'Improve Writing', icon: <Sparkles size={16} />, desc: 'Enhance clarity and tone' },
     { id: 'grammar', label: 'Fix Grammar', icon: <CheckCircle2 size={16} />, desc: 'Correct errors instantly' },
@@ -860,36 +861,47 @@ const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: str
   ];
 
   return (
-    <div className="p-8 rounded-[40px] glass-card border border-white/10 space-y-8">
+    <div className="p-6 rounded-[32px] glass-card border border-white/10 space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold flex items-center gap-2">
-          <Sparkles size={18} className="text-brand-primary" /> AI Writing Assistant
-        </h3>
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+        >
+          <Sparkles size={18} className="text-brand-primary" />
+          <h3 className="font-bold text-sm">AI Writing Assistant</h3>
+          <div className={cn("transition-transform duration-300", isCollapsed ? "rotate-180" : "")}>
+            <Minus size={12} className="text-white/20" />
+          </div>
+        </button>
         {isProcessing && (
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
-            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Processing...
+          <div className="flex items-center gap-2 text-[8px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
+            <div className="w-1 h-1 rounded-full bg-brand-primary" /> Processing...
           </div>
         )}
       </div>
       
-      <div className="grid grid-cols-1 gap-3">
-        {actions.map((action) => (
-          <button
-            key={action.id}
-            onClick={() => onAction(action.id)}
-            disabled={isProcessing}
-            className="group p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-brand-primary hover:border-brand-primary transition-all text-left disabled:opacity-50"
-          >
-            <div className="flex items-center gap-3 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-black group-hover:bg-white/20 transition-all">
-                {action.icon}
+      {!isCollapsed && (
+        <div className="grid grid-cols-1 gap-2">
+          {actions.map((action) => (
+            <button
+              key={action.id}
+              onClick={() => onAction(action.id)}
+              disabled={isProcessing}
+              className="group p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-brand-primary hover:border-brand-primary transition-all text-left disabled:opacity-50"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-black group-hover:bg-white/20 transition-all">
+                  {action.icon}
+                </div>
+                <div>
+                  <span className="text-xs font-bold group-hover:text-black transition-colors block leading-tight">{action.label}</span>
+                  <p className="text-[9px] text-white/40 group-hover:text-black/60 transition-colors leading-tight">{action.desc}</p>
+                </div>
               </div>
-              <span className="text-sm font-bold group-hover:text-black transition-colors">{action.label}</span>
-            </div>
-            <p className="text-[10px] text-white/40 group-hover:text-black/60 ml-11 transition-colors">{action.desc}</p>
-          </button>
-        ))}
-      </div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -1642,37 +1654,39 @@ const AdminDashboard = ({ user }: { user: any }) => {
   return (
     <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
-          <div>
-            <h1 className="text-4xl font-bold">Creator <span className="text-brand-primary">Studio</span></h1>
-            <p className="text-white/40">Manage your content and authority signals</p>
-          </div>
-          <div className="flex gap-4">
-            {activeTab !== "messages" && activeTab !== "dashboard" && !isEditing && (
-              <button 
-                onClick={() => {
-                  setIsEditing(true);
-                  setCurrentPost(null);
-                  setCurrentProject(null);
-                  setCurrentUpdate(null);
-                  if (activeTab === "blogs") {
-                    resetBlogForm();
-                  } else if (activeTab === "projects") {
-                    setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
-                  } else if (activeTab === "updates") {
-                    setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
-                  }
-                }}
-                className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
-              >
-                <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : activeTab === "projects" ? "Project" : "Update"}
+        {!isEditing && (
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div>
+              <h1 className="text-4xl font-bold">Creator <span className="text-brand-primary">Studio</span></h1>
+              <p className="text-white/40">Manage your content and authority signals</p>
+            </div>
+            <div className="flex gap-4">
+              {activeTab !== "messages" && activeTab !== "dashboard" && !isEditing && (
+                <button 
+                  onClick={() => {
+                    setIsEditing(true);
+                    setCurrentPost(null);
+                    setCurrentProject(null);
+                    setCurrentUpdate(null);
+                    if (activeTab === "blogs") {
+                      resetBlogForm();
+                    } else if (activeTab === "projects") {
+                      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
+                    } else if (activeTab === "updates") {
+                      setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
+                    }
+                  }}
+                  className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
+                >
+                  <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : activeTab === "projects" ? "Project" : "Update"}
+                </button>
+              )}
+              <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
+                <LogOut size={20} /> Logout
               </button>
-            )}
-            <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
-              <LogOut size={20} /> Logout
-            </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {!isEditing && (
           <div className="flex flex-wrap gap-4 mb-12">
@@ -1860,7 +1874,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </div>
                   </div>
 
-                  <div className="space-y-8">
+                  <div className="space-y-8 sticky top-32 h-fit">
                     <AIWritingAssistant onAction={(action) => handleAIAction(action)} isProcessing={isAIProcessing} />
                     
                     <div className="p-8 rounded-[40px] bg-white/5 border border-white/10 space-y-8">
