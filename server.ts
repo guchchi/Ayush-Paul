@@ -1,11 +1,15 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import Stripe from "stripe";
 import dotenv from "dotenv";
+import admin from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
 
 dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +17,23 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const PORT = 3000;
+
+  // Initialize Firebase Admin
+  if (admin.apps.length === 0) {
+    const serviceAccountPath = path.resolve(process.cwd(), "service-account.json");
+    if (fs.existsSync(serviceAccountPath)) {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountPath)
+      });
+    } else {
+      admin.initializeApp({
+        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+      });
+    }
+  }
+  const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID);
+  
+  const getDb = () => db;
 
   // Initialize Stripe lazily
   let stripe: Stripe | null = null;
@@ -112,6 +133,46 @@ async function startServer() {
       throw lastError || new Error("All local AI models failed.");
     } catch (error: any) {
       console.error("Local AI Error:", error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // API Route: Secure Content Publishing (AI Hub)
+  app.post("/api/publish-content", async (req, res) => {
+    try {
+      const apiKey = req.headers["x-api-key"];
+      const secretKey = process.env.PUBLISH_API_KEY;
+
+      if (!secretKey || apiKey !== secretKey) {
+        return res.status(401).json({ error: "Unauthorized: Invalid API Key" });
+      }
+
+      const { type, data } = req.body;
+      const collectionName = type === "project" ? "projects" : type === "update" ? "updates" : "blogPosts";
+
+      // Auto-generate slug if missing
+      if (data.title && !data.slug) {
+        data.slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+
+      // Add timestamps
+      data.createdAt = admin.firestore.FieldValue.serverTimestamp();
+      data.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+
+      console.log(`📡 Attempting to write to collection: ${collectionName} in database: ${process.env.VITE_FIREBASE_FIRESTORE_DB_ID || '(default)'}`);
+      
+      const docId = data.slug || `post-${Date.now()}`;
+      await db.collection(collectionName).doc(docId).set(data);
+      
+      console.log(`✅ SUCCESSFULLY PUBLISHED: ${docId}`);
+      
+      res.json({ 
+        success: true, 
+        id: docId, 
+        url: `/${type === 'blog' ? 'blog' : 'projects'}/${data.slug}` 
+      });
+    } catch (error: any) {
+      console.error("Publishing Error:", error);
       res.status(500).json({ error: error.message });
     }
   });
