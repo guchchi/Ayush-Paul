@@ -896,14 +896,26 @@ const SEOPanel = ({ data, setData, blocks, onAIAction, isProcessing }: {
 
           <div className="p-8 rounded-[40px] bg-white/5 border border-white/10">
             <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">Social Preview</h3>
-            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-              <div className="aspect-video bg-white/5 flex items-center justify-center">
-                {data.ogImage ? <img src={data.ogImage} className="w-full h-full object-cover" /> : <ImageIcon size={48} className="text-white/10" />}
+            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md">
+              <div className="aspect-video bg-white/5 flex items-center justify-center relative overflow-hidden">
+                {data.ogImage ? (
+                  <img src={data.ogImage} className="w-full h-full object-cover" alt="Preview" />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 opacity-20">
+                    <ImageIcon size={32} />
+                    <span className="text-[8px] font-bold uppercase tracking-widest">No Image</span>
+                  </div>
+                )}
               </div>
               <div className="p-6 space-y-2">
-                <div className="text-xs font-bold text-brand-primary uppercase tracking-widest">ayushpaul.in</div>
-                <div className="text-lg font-bold text-white line-clamp-1">{data.ogTitle || data.title || "Post Title"}</div>
-                <div className="text-sm text-white/40 line-clamp-2">{data.ogDescription || data.description || "Post description will appear here..."}</div>
+                <div className="text-[9px] font-bold text-brand-primary uppercase tracking-[0.2em]">ayushpaul.in</div>
+                <div className="text-base font-bold text-white/90 line-clamp-1">
+                  {data.ogTitle || data.title || "Innovation Narrative Title"}
+                </div>
+                <div className="text-xs text-white/40 line-clamp-2 leading-relaxed">
+                  {(data.ogDescription || data.description || "Narrative description will appear here...").substring(0, 160)}
+                  {(data.ogDescription || data.description || "").length > 160 ? "..." : ""}
+                </div>
               </div>
             </div>
           </div>
@@ -2023,8 +2035,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
                 {/* Main Workspace: Editor | Preview */}
                 <div className={cn(
-                  "grid gap-8 flex-1 overflow-hidden transition-all duration-700",
-                  isPreviewMode ? "lg:grid-cols-2" : "grid-cols-1"
+                  "grid gap-12 flex-1 overflow-hidden transition-all duration-700",
+                  isPreviewMode ? "lg:grid-cols-[1fr_1fr]" : "lg:grid-cols-[1fr_380px] grid-cols-1"
                 )}>
                   {/* Left Column: The Editor */}
                   <div className={cn(
