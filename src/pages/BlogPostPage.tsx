@@ -172,19 +172,28 @@ export const BlogPostPage = () => {
       
       {/* Cinematic Hero Container */}
       <section className="relative h-[130vh] w-full">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
-          {/* Background Layer */}
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#050505]">
+          {/* Background Layer with Ambient Lighting */}
           <motion.div 
             style={{ opacity: heroOpacity, scale: 1.1 }}
             className="absolute inset-0 z-0"
           >
-            <img 
-              src={post.coverImage} 
-              alt="" 
-              className="w-full h-full object-cover grayscale-[20%]" 
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#080808]" />
+            {post.coverImage ? (
+              <img 
+                src={post.coverImage} 
+                alt="" 
+                className="w-full h-full object-cover grayscale-[20%] brightness-[0.7]" 
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-brand-primary/10 via-black to-brand-accent/5" />
+            )}
+            
+            {/* Dynamic Ambient Glows */}
+            <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] bg-brand-primary/10 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] bg-brand-accent/5 rounded-full blur-[100px] animate-pulse-slow" />
+            
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
           </motion.div>
 
           {/* Foreground Content */}
@@ -197,52 +206,53 @@ export const BlogPostPage = () => {
               <BackButton to="/blog" label="All Stories" />
             </div>
 
-            <div className="max-w-4xl mx-auto space-y-12">
+            <div className="max-w-4xl mx-auto space-y-16">
               <div className="lg:hidden mb-8">
                 <BackButton to="/blog" label="All Stories" />
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-6">
-                <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                   <Calendar size={14} className="text-brand-primary" />
-                  {formatDate(post.createdAt)}
+                  <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">{formatDate(post.createdAt)}</span>
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                   <Clock size={14} className="text-brand-primary" />
-                  {post.blocks ? 
-                     Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
-                     Math.ceil((post.content || '').split(" ").length / 200)
-                  } min read
+                  <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                    {post.blocks ? 
+                       Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
+                       Math.ceil((post.content || '').split(" ").length / 200)
+                    } min read
+                  </span>
                 </div>
                 {post.category && (
-                  <>
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                    <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md">
-                      {post.category}
-                    </div>
-                  </>
+                  <div className="px-6 py-2.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md shadow-[0_0_30px_rgba(0,194,255,0.1)]">
+                    {post.category}
+                  </div>
                 )}
               </div>
 
-              <h1 className={cn(
-                "font-extrabold leading-[1.1] tracking-tighter text-white/95",
-                post.title.length > 50 
-                  ? "text-4xl md:text-6xl lg:text-7xl" 
-                  : "text-5xl md:text-8xl lg:text-9xl"
-              )}>
-                {post.title}
-              </h1>
+              <div className="space-y-8">
+                <h1 className={cn(
+                  "font-extrabold leading-[1.05] tracking-tighter text-white/95",
+                  post.title.length > 50 
+                    ? "text-5xl md:text-7xl lg:text-8xl" 
+                    : "text-6xl md:text-9xl lg:text-[10rem]"
+                )}>
+                  {post.title}
+                </h1>
 
-              {post.description && (
-                <p className="text-xl md:text-2xl text-white/40 leading-relaxed max-w-2xl mx-auto font-medium tracking-tight">
-                  {post.description}
-                </p>
-              )}
+                {post.description && (
+                  <p className="text-xl md:text-2xl text-white/50 leading-relaxed max-w-2xl mx-auto font-medium tracking-tight">
+                    {post.description}
+                  </p>
+                )}
+              </div>
 
               {post.updatedAt && (
-                <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
-                  Refined: {formatDate(post.updatedAt)}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/5 bg-white/[0.02] text-[9px] font-bold uppercase tracking-[0.3em] text-white/20">
+                  <span className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
+                  Narrative Refined: {formatDate(post.updatedAt)}
                 </div>
               )}
             </div>
