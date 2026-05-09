@@ -1539,9 +1539,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
     });
   };
 
-  const handleSaveBlog = async (eOrAutosave: React.FormEvent | boolean) => {
-    if (typeof eOrAutosave !== 'boolean') eOrAutosave.preventDefault();
+  const handleSaveBlog = async (eOrAutosave: React.FormEvent | boolean | "toggle") => {
+    if (typeof eOrAutosave !== 'boolean' && eOrAutosave !== "toggle") eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
+    const isToggle = eOrAutosave === "toggle";
+
+    // Toggle logic for the Go Live button
+    if (isToggle) {
+      setBlogFormData(prev => ({ ...prev, published: !prev.published }));
+    }
 
     // 1. STRICT CONCURRENCY GUARD: Prevent multiple saves from running simultaneously
     if (saveInProgressRef.current) {
@@ -2027,9 +2033,24 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       disabled={isSaving}
                       className="px-4 md:px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all text-xs md:text-sm flex items-center gap-2 disabled:opacity-50 shrink-0"
                     >
-                      {isSaving ? <Clock size={16} className="animate-spin" /> : <Save size={16} />}
-                      {currentPost ? "Update" : "Draft"}
-                    </button>
+                       {isSaving ? <Clock size={16} className="animate-spin" /> : <Save size={16} />}
+                       {currentPost ? (blogFormData.published ? "Update Live" : "Update Draft") : "Save Draft"}
+                     </button>
+ 
+                     <div className="w-px h-6 bg-white/10 mx-1 hidden lg:block" />
+ 
+                     <button 
+                       onClick={() => handleSaveBlog("toggle")}
+                       disabled={isSaving}
+                       className={cn(
+                         "px-4 md:px-8 py-3 rounded-2xl font-bold transition-all text-xs md:text-sm flex items-center gap-2",
+                         blogFormData.published 
+                           ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20" 
+                           : "bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20"
+                       )}
+                     >
+                       {blogFormData.published ? "Unpublish" : "Go Live"}
+                     </button>
                   </div>
                 </div>
 
@@ -2048,7 +2069,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
                         <input 
                           type="text" 
                           value={blogFormData.title}
-                          onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
+                          onChange={(e) => {
+                            const newTitle = e.target.value;
+                            setBlogFormData(prev => ({ 
+                              ...prev, 
+                              title: newTitle, 
+                              slug: currentPost ? prev.slug : generateSlug(newTitle) 
+                            }));
+                          }}
                           className="w-full bg-transparent border-none outline-none text-6xl font-bold tracking-tighter text-white placeholder:text-white/10"
                           placeholder="Narrative Title"
                         />
@@ -2091,6 +2119,23 @@ const AdminDashboard = ({ user }: { user: any }) => {
                             value={blogFormData.coverImage} 
                             onChange={(url) => setBlogFormData({ ...blogFormData, coverImage: url })}
                           />
+                        </div>
+                        <div className="space-y-4">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Narrative Status</label>
+                          <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <Globe size={20} className={blogFormData.published ? "text-green-500" : "text-white/20"} />
+                            <div className="flex-1">
+                              <div className="font-bold text-sm">{blogFormData.published ? "Visible to World" : "Internal Draft"}</div>
+                              <div className="text-[10px] text-white/20 uppercase tracking-widest">Visibility Control</div>
+                            </div>
+                            <button 
+                              type="button"
+                              onClick={() => setBlogFormData(prev => ({ ...prev, published: !prev.published }))}
+                              className={cn("w-12 h-6 rounded-full relative transition-all", blogFormData.published ? "bg-green-500" : "bg-white/10")}
+                            >
+                              <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", blogFormData.published ? "right-1" : "left-1")} />
+                            </button>
+                          </div>
                         </div>
                         <div className="space-y-4">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Pillar (Category)</label>
