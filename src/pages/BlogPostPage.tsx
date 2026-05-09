@@ -192,7 +192,16 @@ export const BlogPostPage = () => {
             style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
             className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-12 md:px-24"
           >
-            <div className="max-w-4xl mx-auto space-y-12 mt-20 md:mt-0">
+            {/* Navigation Context */}
+            <div className="absolute top-12 left-12 md:left-20 hidden lg:block">
+              <BackButton to="/blog" label="All Stories" />
+            </div>
+
+            <div className="max-w-4xl mx-auto space-y-12">
+              <div className="lg:hidden mb-8">
+                <BackButton to="/blog" label="All Stories" />
+              </div>
+
               <div className="flex flex-wrap items-center justify-center gap-6">
                 <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
                   <Calendar size={14} className="text-brand-primary" />
@@ -238,11 +247,6 @@ export const BlogPostPage = () => {
               )}
             </div>
           </motion.div>
-
-          {/* Floating Back Button */}
-          <div className="absolute top-32 left-8 md:left-12 z-20">
-            <BackButton to="/blog" label="All Stories" />
-          </div>
 
           {/* Scroll Indicator */}
           <motion.div 
