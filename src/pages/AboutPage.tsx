@@ -90,7 +90,7 @@ const FounderSection = () => {
             {/* Founder Portrait for Identity Trust */}
             <div className="w-full h-full relative">
               <img 
-                src="/founder.png" 
+                src="/founder.png?v=2" 
                 alt="Ayush Paul - Founder" 
                 decoding="async"
                 className="w-full h-full object-cover"

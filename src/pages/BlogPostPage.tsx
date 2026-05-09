@@ -45,7 +45,7 @@ export const BlogPostPage = () => {
         "name": "Ayush Paul",
         "logo": {
           "@type": "ImageObject",
-          "url": getCanonicalUrl("/assets/founder.png")
+          "url": getCanonicalUrl("/founder.png?v=2")
         }
       },
       "mainEntityOfPage": {
@@ -345,7 +345,7 @@ export const BlogPostPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                   <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-brand-primary/20 shrink-0 shadow-2xl">
-                    <img src="/assets/founder.png" alt="Ayush Paul" className="w-full h-full object-cover" />
+                    <img src="/founder.png?v=2" alt="Ayush Paul" className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1 text-center md:text-left">
                     <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-2">Written By</div>
