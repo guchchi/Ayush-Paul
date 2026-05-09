@@ -22,6 +22,7 @@ import { uploadImage, deleteImageByPath } from "../lib/storage-utils";
 import { TipTapEditor } from "../components/editor/TipTapEditor";
 import { parseSmartContent } from "../lib/content-parser";
 import { AIAssistant } from "../components/editor/AIAssistant";
+import { Toaster, Toast } from "../components/ui/Toaster";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -977,38 +978,41 @@ const HealthDashboard = () => {
   const [showTroubleshooter, setShowTroubleshooter] = useState(false);
 
   return (
-    <div className="mb-12 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-6 p-8 bg-white/5 border border-white/10 rounded-[32px] backdrop-blur-3xl">
-        <div className="flex items-center gap-6">
+    <div className="mb-12">
+      <div className="flex flex-wrap items-center justify-between gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-[24px] backdrop-blur-xl">
+        <div className="flex items-center gap-5">
           <div className={cn(
-            "w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-2xl",
+            "w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-inner",
             status.isConfigured ? "bg-green-500/10 text-green-500 border border-green-500/20" : "bg-red-500/10 text-red-500 border border-red-500/20"
           )}>
-            {status.isConfigured ? <CheckCircle2 size={24} /> : <AlertCircle size={24} />}
+            {status.isConfigured ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-1">Production Health Check</div>
-            <h3 className="text-xl font-bold flex items-center gap-3">
-              {status.isConfigured ? "System Online" : "Configuration Warning"}
-              <span className="px-2 py-0.5 rounded-md bg-white/10 text-[9px] font-bold uppercase tracking-widest text-white/40">{status.mode}</span>
+            <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/20 mb-0.5">System Status</div>
+            <h3 className="text-base font-bold flex items-center gap-2">
+              {status.isConfigured ? "Engine Active" : "Action Required"}
+              <span className="px-2 py-0.5 rounded-md bg-white/5 text-[8px] font-bold uppercase tracking-widest text-white/20">{status.mode}</span>
             </h3>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-8">
-          <div className="flex flex-col gap-1">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Current Project</span>
-            <span className="text-xs font-mono font-bold text-brand-primary">{status.projectId || "NOT_SET"}</span>
+        <div className="flex flex-wrap items-center gap-10">
+          <div className="hidden lg:flex flex-col gap-0.5">
+            <span className="text-[8px] font-bold uppercase tracking-widest text-white/10">Auth Region</span>
+            <span className="text-[10px] font-mono font-bold text-white/40">US-Central-1</span>
           </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-white/20">Database Instance</span>
-            <span className="text-xs font-mono font-bold text-white/60">{status.databaseId}</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[8px] font-bold uppercase tracking-widest text-white/10">Database Route</span>
+            <span className="text-[10px] font-mono font-bold text-brand-primary/60">{status.databaseId}</span>
           </div>
           <button 
             onClick={() => setShowTroubleshooter(!showTroubleshooter)}
-            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest hover:bg-white/10 transition-all"
+            className={cn(
+              "px-5 py-2.5 rounded-xl border text-[9px] font-bold uppercase tracking-widest transition-all",
+              showTroubleshooter ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
+            )}
           >
-            {showTroubleshooter ? "Hide Diagnostics" : "Run Troubleshooter"}
+            {showTroubleshooter ? "Close Diagnostics" : "Run Audit"}
           </button>
         </div>
       </div>
@@ -1092,6 +1096,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = (message: string, type: Toast['type'] = 'info', duration = 5000) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    setToasts(prev => [...prev, { id, message, type, duration }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  };
 
   const handleOneClickPublish = async () => {
     setIsAIProcessing(true);
@@ -1232,7 +1246,6 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
   const testConnection = async () => {
     setIsAuditing(true);
-    console.log("🚀 Phase 3: Starting Firestore Write Test...");
     try {
       const testRef = collection(db, "test_connection");
       await addDoc(testRef, {
@@ -1241,15 +1254,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
         author: user.email
       });
       console.log("✅ Phase 3 SUCCESS: Firestore Write captured.");
-      alert("Firebase Backend: ONLINE ✓");
+      addToast("Firebase Backend: ONLINE", "success");
     } catch (error: any) {
       console.error("❌ Phase 3 FAILURE:", error);
       if (error.code === 'permission-denied') {
-        alert("CRITICAL: Permission Denied. Please ensure Firestore Rules are set to 'Test Mode' (Phase 4).");
+        addToast("CRITICAL: Permission Denied. Check Firestore Rules.", "error");
       } else if (error.code === 'unauthorized') {
-        alert("CRITICAL: Unauthorized. Check Auth Domain settings (Phase 7).");
+        addToast("CRITICAL: Unauthorized. Check Auth settings.", "error");
       } else {
-        alert(`Backend Error [${error.code}]: ${error.message}`);
+        addToast(`Backend Error: ${error.message}`, "error");
       }
     } finally {
       setIsAuditing(false);
@@ -1526,7 +1539,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
     // 2. PRE-FLIGHT VALIDATION
     if (!isAutosave && !blogFormData.title.trim()) {
-      alert("Validation Error: Please add a title before publishing.");
+      addToast("Validation Error: Please add a title.", "warning");
       return;
     }
 
@@ -1642,10 +1655,17 @@ const AdminDashboard = ({ user }: { user: any }) => {
       console.log("✅ [SAVE] Pipeline completed successfully.");
 
       if (!isAutosave) {
-        setIsEditing(false);
-        setCurrentPost(null);
-        resetBlogForm();
-        setTimeout(() => alert("Success! Your post is live."), 100);
+        addToast(currentPost ? "Post Updated" : "Draft Saved", "success");
+        // We stay in the editor now for better flow, unless it was a fresh creation
+        if (!currentPost) {
+           // Find the newly created post to set it as current, preventing double creation on next save
+           // In a real app, you'd get the ID back from addDoc
+           // For now, we'll just exit the editor on new creations to keep it simple, 
+           // but stay in for updates.
+           setIsEditing(false);
+           setCurrentPost(null);
+           resetBlogForm();
+        }
       } else {
         // Clear local file handles after successful autosave to prevent re-uploading
         setBlocks(processedBlocks.map(b => ({ ...b, localFile: undefined, localPreview: undefined })));
@@ -1662,9 +1682,9 @@ const AdminDashboard = ({ user }: { user: any }) => {
       if (!isAutosave) {
         let errorMsg = `System Error: ${error.message}`;
         if (error.code === 'permission-denied') {
-          errorMsg = "Security Error: You don't have permission to write. Verify your admin status.";
+          errorMsg = "Security Error: You don't have permission.";
         }
-        alert(errorMsg);
+        addToast(errorMsg, "error");
       }
     } finally {
       setIsSaving(false);
@@ -1694,6 +1714,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
         if (!projectImageFile && finalImageUrl) {
           const check = await validateImageUrl(finalImageUrl);
           if (!check.isValid) {
+            addToast(`Project Image Error: ${check.error}`, "error");
             throw new Error(`Project Image Error: ${check.error}`);
           }
         }
@@ -1741,12 +1762,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
       setProjectImageFile(null);
       if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
       setProjectImagePreview("");
+      addToast(currentProject ? "Project Updated" : "Project Created", "success");
       console.log("✅ [PROJECT] Save successful.");
 
     } catch (error: any) {
       console.error("❌ [PROJECT] Save pipeline failed:", error);
       handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
-      alert(`Project Error: ${error.message}`);
+      addToast(`Project Error: ${error.message}`, "error");
     } finally {
       setIsSaving(false);
       saveInProgressRef.current = false;
@@ -1768,9 +1790,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
       setIsEditing(false);
       setCurrentUpdate(null);
       setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
+      addToast(currentUpdate ? "Update Modified" : "Update Published", "success");
     } catch (error: any) {
       handleFirestoreError(error, currentUpdate ? OperationType.UPDATE : OperationType.CREATE, "updates");
-      alert(`Update Error: ${error.message}`);
+      addToast(`Update Error: ${error.message}`, "error");
     } finally {
       setIsSaving(false);
       saveInProgressRef.current = false;
@@ -1799,40 +1822,41 @@ const AdminDashboard = ({ user }: { user: any }) => {
   };
 
   const AdminStatCard = ({ label, value, icon, trend }: { label: string, value: string | number, icon: React.ReactNode, trend?: string }) => (
-    <div className="p-8 rounded-[40px] glass-card border border-white/5 group hover:border-brand-primary/30 transition-all">
+    <div className="p-8 rounded-[40px] glass-card border border-white/5 group hover:border-brand-primary/30 transition-all hover:translate-y-[-4px] duration-500">
       <div className="flex justify-between items-start mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-all">
+        <div className="w-14 h-14 rounded-[20px] bg-white/5 flex items-center justify-center text-white/20 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-all duration-500 ring-1 ring-white/10 group-hover:ring-brand-primary/20">
           {icon}
         </div>
         {trend && (
-          <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+          <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-[9px] font-bold uppercase tracking-widest flex items-center gap-1.5 backdrop-blur-md border border-brand-primary/20">
             <TrendingUp size={10} /> {trend}
           </div>
         )}
       </div>
-      <div className="text-3xl font-bold mb-2 tracking-tighter">{value}</div>
-      <div className="text-xs font-bold uppercase tracking-widest text-white/20">{label}</div>
+      <div className="text-4xl font-bold mb-2 tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">{value}</div>
+      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 group-hover:text-white/40 transition-colors">{label}</div>
     </div>
   );
 
   if (isDistractionFree && isEditing) {
     return (
-      <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] overflow-y-auto p-4 md:p-12 lg:p-24">
+      <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] overflow-y-auto p-4 md:p-12 lg:p-24 selection:bg-brand-primary selection:text-black">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-24">
-            <div className="flex items-center gap-4 text-white/20">
+          <div className="flex items-center justify-between mb-32">
+            <div className="flex items-center gap-4 text-white/10">
               <Shield size={20} />
-              <span className="text-xs font-bold uppercase tracking-widest">Distraction-Free Mode</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Immersive Focus Mode</span>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-2">
-                <Clock size={12} /> {lastSaved ? `Saved at ${lastSaved.toLocaleTimeString()}` : 'Not saved yet'}
+            <div className="flex items-center gap-8">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-3">
+                <div className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
+                {lastSaved ? `Synced ${lastSaved.toLocaleTimeString()}` : 'Buffer Active'}
               </div>
               <button 
                 onClick={() => setIsDistractionFree(false)}
-                className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all"
               >
-                <X size={20} />
+                <Minimize2 size={24} />
               </button>
             </div>
           </div>
@@ -1841,8 +1865,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
             type="text" 
             value={blogFormData.title}
             onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
-            className="w-full bg-transparent border-none outline-none text-5xl md:text-7xl font-bold mb-12 tracking-tighter text-white placeholder:text-white/10"
-            placeholder="Post Title"
+            className="w-full bg-transparent border-none outline-none text-6xl md:text-8xl font-bold mb-16 tracking-tighter text-white placeholder:text-white/5"
+            placeholder="Narrative Title"
           />
           
           <BlogEditor 
@@ -1851,6 +1875,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
             onAIAction={(id, action) => handleAIAction(action, id)} 
           />
         </div>
+        <Toaster toasts={toasts} removeToast={removeToast} />
       </div>
     );
   }
@@ -2769,6 +2794,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
             )}
           </div>
         )}
+        <Toaster toasts={toasts} removeToast={removeToast} />
       </div>
     </div>
   );
