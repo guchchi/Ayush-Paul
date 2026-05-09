@@ -25,6 +25,7 @@ const TermsPage = lazy(() => import("./pages/TermsPage").then(m => ({ default: m
 const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default: m.CookiePage })));
 const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
+const DomainWorldPage = lazy(() => import("./pages/DomainWorldPage").then(m => ({ default: m.DomainWorldPage })));
 
 // --- Loading Fallback ---
 const PageLoading = () => (
@@ -39,7 +40,7 @@ const PageLoading = () => (
 // --- Components ---
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
-import { CursorFollower } from "./components/ui/CursorEffects";
+import { KingdomCursor } from "./components/ui/KingdomCursor";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
 import { CookieConsent } from "./components/ui/CookieConsent";
 import { getFirebaseStatus } from "./firebase";
@@ -89,7 +90,7 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen w-full text-white">
-          <CursorFollower />
+          <KingdomCursor />
           
           {!isConfigured && showConfigWarning && (
             <FirebaseConfigWarning 
@@ -108,6 +109,7 @@ export default function App() {
                 )
               } />
               <Route path="/now" element={wrapInLayout(<NowPage />)} />
+              <Route path="/domain/:id" element={<DomainWorldPage />} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
               <Route path="/projects" element={wrapInLayout(<ProjectsPage />)} />
               <Route path="/projects/:slug" element={wrapInLayout(<ProjectDetailPage />)} />

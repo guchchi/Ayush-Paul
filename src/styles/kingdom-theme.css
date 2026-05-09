@@ -1,0 +1,77 @@
+/* Digital Kingdom Cinematic Theme */
+
+@layer utilities {
+  .kingdom-bg {
+    @apply bg-[#050505];
+    background-image: 
+      radial-gradient(ellipse at 50% -20%, rgba(0, 194, 255, 0.15), transparent 60%),
+      radial-gradient(ellipse at 100% 50%, rgba(123, 97, 255, 0.05), transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgba(255, 0, 60, 0.05), transparent 50%);
+  }
+
+  .kingdom-card {
+    @apply relative overflow-hidden rounded-[2rem] border border-white/5 bg-black/40 backdrop-blur-3xl transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)];
+  }
+
+  .kingdom-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 transition-opacity duration-700 pointer-events-none;
+  }
+
+  .kingdom-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .kingdom-card:hover {
+    @apply border-white/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] z-10;
+  }
+
+  .kingdom-text-glow {
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+  }
+
+  .text-reveal-mask {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #fff, rgba(255,255,255,0.2));
+  }
+
+  /* Hide scrollbar for the Netflix carousel but keep functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom Cursor Variables */
+:root {
+  --cursor-x: 50vw;
+  --cursor-y: 50vh;
+}
+
+.kingdom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  transform: translate(calc(var(--cursor-x) - 50%), calc(var(--cursor-y) - 50%));
+  transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+.kingdom-cursor.active {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  backdrop-filter: blur(4px);
+}

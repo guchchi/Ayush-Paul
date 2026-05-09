@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Navbar } from './Navbar';
+import { KingdomNavbar } from '../components/layout/KingdomNavbar';
 import { Footer } from './Footer';
 import { CommandPalette } from './CommandPalette';
 import { SmoothScrollProvider } from '../components/ui/motion/SmoothScroll';
@@ -17,7 +17,7 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
   return (
     <SmoothScrollProvider>
       <CommandPalette />
-      <Navbar onPortfolioClick={onPortfolioClick} />
+      <KingdomNavbar />
       
       <main className="w-full">
         <AnimatePresence mode="wait">
