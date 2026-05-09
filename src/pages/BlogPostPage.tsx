@@ -10,7 +10,7 @@ import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, OperationType } from "../types";
 import { getCanonicalUrl } from "../lib/domain";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { VARIANTS } from "../lib/motion-presets";
 
 export const BlogPostPage = () => {
@@ -21,6 +21,12 @@ export const BlogPostPage = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeHeading, setActiveHeading] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 500], [1, 0.9]);
+  const heroY = useTransform(scrollY, [0, 500], [0, -100]);
+  const heroBlur = useTransform(scrollY, [0, 500], [0, 10]);
 
   useSEO({
     title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
@@ -161,86 +167,93 @@ export const BlogPostPage = () => {
   if (!post) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] text-white">Post not found</div>;
 
   return (
-    <div className="page-content bg-[#080808] relative">
-      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-50 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
-      <div className="container mx-auto px-6">
-        <div className="mb-20">
-          <BackButton to="/blog" label="Back to Blog" />
-        </div>
-
-        <div className="max-w-7xl mx-auto">
-          {/* Editorial Header Section */}
-          <header className="max-w-5xl mx-auto text-center mb-24 lg:mb-32">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-wrap items-center justify-center gap-6 mb-12"
-            >
-              <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
-                <Calendar size={14} className="text-brand-primary" />
-                {formatDate(post.createdAt)}
-              </div>
-              <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-              <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
-                <Clock size={14} className="text-brand-primary" />
-                {post.blocks ? 
-                   Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
-                   Math.ceil((post.content || '').split(" ").length / 200)
-                } min read
-              </div>
-              {post.category && (
-                <>
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                  <div className="px-4 py-1.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em]">
-                    {post.category}
-                  </div>
-                </>
-              )}
-            </motion.div>
-
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-12 leading-[1.05] tracking-tighter text-white/95"
-            >
-              {post.title}
-            </motion.h1>
-
-            {post.description && (
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl md:text-3xl text-white/40 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight"
-              >
-                {post.description}
-              </motion.p>
-            )}
-
-            {post.updatedAt && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                transition={{ delay: 0.4 }}
-                className="mt-12 text-[10px] font-bold uppercase tracking-[0.3em]"
-              >
-                Last Updated: {formatDate(post.updatedAt)}
-              </motion.div>
-            )}
-          </header>
-
+    <div className="page-content bg-[#080808] relative selection:bg-brand-primary selection:text-black">
+      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-[100] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+      
+      {/* Cinematic Hero Container */}
+      <section className="relative h-[130vh] w-full -mt-32">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
+          {/* Background Layer */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="aspect-[21/9] rounded-[3rem] overflow-hidden mb-32 border border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] relative group"
+            style={{ opacity: heroOpacity, scale: 1.1 }}
+            className="absolute inset-0 z-0"
           >
-            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-1000" referrerPolicy="no-referrer" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+            <img 
+              src={post.coverImage} 
+              alt="" 
+              className="w-full h-full object-cover grayscale-[20%]" 
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#080808]" />
           </motion.div>
 
-          <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative mb-32">
+          {/* Foreground Content */}
+          <motion.div 
+            style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
+            className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6"
+          >
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="flex flex-wrap items-center justify-center gap-6">
+                <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                  <Calendar size={14} className="text-brand-primary" />
+                  {formatDate(post.createdAt)}
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                  <Clock size={14} className="text-brand-primary" />
+                  {post.blocks ? 
+                     Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
+                     Math.ceil((post.content || '').split(" ").length / 200)
+                  } min read
+                </div>
+                {post.category && (
+                  <>
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                    <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md">
+                      {post.category}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <h1 className="text-5xl md:text-8xl lg:text-9xl font-extrabold leading-[0.95] tracking-tighter text-white/95">
+                {post.title}
+              </h1>
+
+              {post.description && (
+                <p className="text-xl md:text-2xl text-white/40 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
+                  {post.description}
+                </p>
+              )}
+
+              {post.updatedAt && (
+                <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
+                  Refined: {formatDate(post.updatedAt)}
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Floating Back Button */}
+          <div className="absolute top-40 left-8 md:left-12 z-20">
+            <BackButton to="/blog" label="All Stories" />
+          </div>
+
+          {/* Scroll Indicator */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-white/20"
+          >
+            <div className="text-[9px] font-bold uppercase tracking-[0.3em]">Scroll to Enter</div>
+            <div className="w-px h-12 bg-gradient-to-b from-brand-primary to-transparent" />
+          </motion.div>
+        </div>
+      </section>
+
+      <div className="relative z-20 container mx-auto px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative mb-32 pt-24">
             {/* Left Rail: Reading Stats & Share */}
             <aside className="hidden lg:flex flex-col items-end py-4 h-full">
               <div className="sticky top-40 space-y-16 flex flex-col items-center">
