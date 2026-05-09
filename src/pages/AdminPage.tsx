@@ -1956,11 +1956,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
         {!isEditing && <HealthDashboard />}
 
         {isEditing ? (
-          <div className="space-y-8 h-[calc(100vh-160px)] flex flex-col">
+          <div className="space-y-12 flex flex-col">
             {activeTab === "blogs" ? (
               <>
-                {/* Editor Header & Controls */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+                {/* Editor Header & Controls - Sticky for high-efficiency workflow */}
+                <div className="sticky top-[80px] z-[80] flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl">
                   <div className="flex items-center gap-6">
                     <button 
                       onClick={() => { setIsEditing(false); setCurrentPost(null); setIsPreviewMode(false); }}
@@ -2038,12 +2038,12 @@ const AdminDashboard = ({ user }: { user: any }) => {
                   "grid gap-12 flex-1 overflow-hidden transition-all duration-700",
                   isPreviewMode ? "lg:grid-cols-[1fr_1fr]" : "lg:grid-cols-[1fr_380px] grid-cols-1"
                 )}>
-                  {/* Left Column: The Editor */}
+                  {/* Left Column: The Editor - Fluid Height */}
                   <div className={cn(
-                    "h-full overflow-y-auto custom-scrollbar pr-4 space-y-8 py-8",
+                    "min-h-screen pr-4 space-y-12 py-12",
                     isPreviewMode && "hidden lg:block"
                   )}>
-                    <div className="max-w-6xl mx-auto space-y-12">
+                  <div className="max-w-5xl mx-auto space-y-20">
                       <div className="space-y-8">
                         <input 
                           type="text" 
@@ -2115,8 +2115,9 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </div>
                   </div>
 
-                  {/* Right Column: Live Preview & AI Assistant */}
-                  <div className="h-full overflow-y-auto custom-scrollbar space-y-8 py-8">
+                  {/* Right Column: Live Preview & AI Assistant - Sticky Behavior */}
+                  <div className="relative py-12">
+                    <div className="sticky top-40 space-y-8">
                     {isPreviewMode ? (
                       <LiveBlogPreview postData={blogFormData} blocks={blocks} />
                     ) : (
@@ -2143,6 +2144,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     )}
                   </div>
                 </div>
+              </div>
               </>
             ) : (
               <form onSubmit={handleSaveProject} className="glass-card p-12 rounded-[40px] border border-white/10 space-y-8">
