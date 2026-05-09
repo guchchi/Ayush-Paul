@@ -341,9 +341,9 @@ export const BlogPostPage = () => {
               </div>
 
               {/* Authority Signal: Author Box */}
-              <div className="mt-32 p-12 rounded-[3rem] glass border border-white/5 relative overflow-hidden group">
+              <div className="mt-32 p-8 md:p-12 rounded-[3rem] glass border border-white/5 relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-10">
                   <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-brand-primary/20 shrink-0 shadow-2xl">
                     <img src="/founder.png?v=2" alt="Ayush Paul" className="w-full h-full object-cover" />
                   </div>

@@ -81,7 +81,7 @@ const FounderSection = () => {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true, margin: "-100px" }}
-          className="glass-card p-12 md:p-20 rounded-[40px] md:rounded-[64px] border-white/5 flex flex-col md:flex-row gap-16 items-center"
+          className="glass-card p-8 md:p-20 rounded-[40px] md:rounded-[64px] border-white/5 flex flex-col md:flex-row gap-10 md:gap-16 items-center"
         >
           <div 
             className="w-40 h-40 md:w-56 md:h-56 shrink-0 rounded-[32px] md:rounded-[48px] overflow-hidden bg-white/5 border border-white/10 relative"
@@ -106,11 +106,11 @@ const FounderSection = () => {
           
           <div className="flex-1 space-y-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
+              <div className="text-center md:text-left">
                 <h3 className="text-4xl md:text-5xl font-extrabold mb-3 tracking-tighter">Ayush Paul</h3>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                   <p className="text-brand-primary text-xs font-bold uppercase tracking-[0.3em]">Founder & Builder</p>
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/10" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/10 hidden sm:block" />
                   <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.4em] bg-brand-secondary/10 px-3 py-1 rounded-full border border-brand-secondary/20 shadow-[0_0_15px_rgba(255,0,60,0.15)]">
                     National Level Winner
                   </span>
@@ -118,7 +118,7 @@ const FounderSection = () => {
               </div>
             </div>
             
-            <p className="text-xl text-white/70 leading-relaxed font-medium max-w-2xl">
+            <p className="text-xl text-white/70 leading-relaxed font-medium max-w-2xl text-center md:text-left">
               National-level innovator and researcher. I specialize in translating complex challenges into robust digital infrastructure and environmental solutions. Recognised at Rashtriya Bal Vaigyanik Pradarshani 2025.
             </p>
           </div>

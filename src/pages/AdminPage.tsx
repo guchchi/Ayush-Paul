@@ -1932,12 +1932,12 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     </button>
                     <div>
-                      <div className="flex items-center gap-4">
-                        <h2 className="text-2xl font-bold tracking-tight">{blogFormData.title || "New Narrative"}</h2>
+                      <div className="flex items-center gap-4 max-w-xl">
+                        <h2 className="text-2xl font-bold tracking-tight truncate">{blogFormData.title || "New Narrative"}</h2>
                         <button 
                           type="button"
                           onClick={() => setShowSmartImport(true)}
-                          className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[9px] uppercase tracking-widest"
+                          className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[9px] uppercase tracking-widest shrink-0"
                         >
                           <Sparkles size={12} /> Smart Import
                         </button>
@@ -1950,38 +1950,40 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3 shrink-0">
                     <button 
                       onClick={() => setIsPreviewMode(!isPreviewMode)}
                       className={cn(
-                        "px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 transition-all border",
+                        "px-4 md:px-6 py-3 rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all border",
                         isPreviewMode 
                           ? "bg-brand-primary text-black border-brand-primary" 
                           : "bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10"
                       )}
                     >
-                      {isPreviewMode ? <Edit size={18} /> : <Eye size={18} />}
-                      {isPreviewMode ? "Edit Mode" : "Live Preview"}
+                      {isPreviewMode ? <Edit size={16} /> : <Eye size={16} />}
+                      <span className="hidden sm:inline">{isPreviewMode ? "Edit Mode" : "Live Preview"}</span>
+                      {!isPreviewMode && <span className="sm:hidden">Preview</span>}
                     </button>
 
                     <button 
                       onClick={handleOneClickPublish}
                       disabled={isAIProcessing}
-                      className="px-8 py-3.5 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-sm shadow-lg shadow-brand-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait group"
+                      className="px-4 md:px-8 py-3 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-xs md:text-sm shadow-lg shadow-brand-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait group shrink-0"
                     >
-                      {isAIProcessing ? <Sparkles size={18} className="animate-spin text-black" /> : <Zap size={18} className="group-hover:animate-pulse" />}
-                      One-Click Publish
+                      {isAIProcessing ? <Sparkles size={16} className="animate-spin text-black" /> : <Zap size={16} className="group-hover:animate-pulse" />}
+                      <span className="hidden md:inline">One-Click Publish</span>
+                      <span className="md:hidden">Publish</span>
                     </button>
                     
-                    <div className="w-px h-8 bg-white/10 mx-2 hidden md:block" />
+                    <div className="w-px h-6 bg-white/10 mx-1 hidden lg:block" />
                     
                     <button 
                       onClick={() => handleSaveBlog(false)}
                       disabled={isSaving}
-                      className="px-8 py-3.5 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all text-sm flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 md:px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all text-xs md:text-sm flex items-center gap-2 disabled:opacity-50 shrink-0"
                     >
-                      {isSaving ? <Clock size={18} className="animate-spin" /> : <Save size={18} />}
-                      {currentPost ? "Update" : "Save Draft"}
+                      {isSaving ? <Clock size={16} className="animate-spin" /> : <Save size={16} />}
+                      {currentPost ? "Update" : "Draft"}
                     </button>
                   </div>
                 </div>
