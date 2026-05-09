@@ -190,9 +190,9 @@ export const BlogPostPage = () => {
           {/* Foreground Content */}
           <motion.div 
             style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
-            className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6"
+            className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-12 md:px-24"
           >
-            <div className="max-w-5xl mx-auto space-y-12 mt-16 md:mt-0">
+            <div className="max-w-4xl mx-auto space-y-12 mt-20 md:mt-0">
               <div className="flex flex-wrap items-center justify-center gap-6">
                 <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
                   <Calendar size={14} className="text-brand-primary" />
@@ -226,7 +226,7 @@ export const BlogPostPage = () => {
               </h1>
 
               {post.description && (
-                <p className="text-xl md:text-2xl text-white/40 leading-relaxed max-w-3xl mx-auto font-medium tracking-tight">
+                <p className="text-xl md:text-2xl text-white/40 leading-relaxed max-w-2xl mx-auto font-medium tracking-tight">
                   {post.description}
                 </p>
               )}
@@ -240,7 +240,7 @@ export const BlogPostPage = () => {
           </motion.div>
 
           {/* Floating Back Button */}
-          <div className="absolute top-40 left-8 md:left-12 z-20">
+          <div className="absolute top-32 left-8 md:left-12 z-20">
             <BackButton to="/blog" label="All Stories" />
           </div>
 
