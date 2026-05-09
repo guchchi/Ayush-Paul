@@ -4,7 +4,7 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap, Maximize2, Minimize2
 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
@@ -1817,8 +1817,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
   if (isDistractionFree && isEditing) {
     return (
-      <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] overflow-y-auto p-8 md:p-24">
-        <div className="max-w-4xl mx-auto">
+      <div className="fixed inset-0 z-[10000] bg-[#0A0A0A] overflow-y-auto p-4 md:p-12 lg:p-24">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-24">
             <div className="flex items-center gap-4 text-white/20">
               <Shield size={20} />
@@ -1966,6 +1966,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     </button>
 
                     <button 
+                      onClick={() => setIsDistractionFree(true)}
+                      className="p-3 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all group shrink-0"
+                      title="Full Screen Writing"
+                    >
+                      <Maximize2 size={18} className="group-hover:scale-110 transition-transform" />
+                    </button>
+
+                    <button 
                       onClick={handleOneClickPublish}
                       disabled={isAIProcessing}
                       className="px-4 md:px-8 py-3 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-xs md:text-sm shadow-lg shadow-brand-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait group shrink-0"
@@ -1998,7 +2006,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
                     "h-full overflow-y-auto custom-scrollbar pr-4 space-y-8 py-8",
                     isPreviewMode && "hidden lg:block"
                   )}>
-                    <div className="max-w-4xl mx-auto space-y-12">
+                    <div className="max-w-6xl mx-auto space-y-12">
                       <div className="space-y-8">
                         <input 
                           type="text" 
