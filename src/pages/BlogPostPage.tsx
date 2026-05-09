@@ -171,7 +171,7 @@ export const BlogPostPage = () => {
       <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-[100] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
       
       {/* Cinematic Hero Container */}
-      <section className="relative h-[130vh] w-full -mt-32">
+      <section className="relative h-[130vh] w-full">
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
           {/* Background Layer */}
           <motion.div 
@@ -184,7 +184,7 @@ export const BlogPostPage = () => {
               className="w-full h-full object-cover grayscale-[20%]" 
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#080808]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#080808]" />
           </motion.div>
 
           {/* Foreground Content */}
@@ -192,7 +192,7 @@ export const BlogPostPage = () => {
             style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
             className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6"
           >
-            <div className="max-w-5xl mx-auto space-y-12">
+            <div className="max-w-5xl mx-auto space-y-12 mt-16 md:mt-0">
               <div className="flex flex-wrap items-center justify-center gap-6">
                 <div className="flex items-center gap-2 text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
                   <Calendar size={14} className="text-brand-primary" />
@@ -216,7 +216,12 @@ export const BlogPostPage = () => {
                 )}
               </div>
 
-              <h1 className="text-5xl md:text-8xl lg:text-9xl font-extrabold leading-[0.95] tracking-tighter text-white/95">
+              <h1 className={cn(
+                "font-extrabold leading-[1.1] tracking-tighter text-white/95",
+                post.title.length > 50 
+                  ? "text-4xl md:text-6xl lg:text-7xl" 
+                  : "text-5xl md:text-8xl lg:text-9xl"
+              )}>
                 {post.title}
               </h1>
 
