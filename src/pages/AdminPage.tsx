@@ -83,11 +83,13 @@ const validateImageUrl = async (url: string): Promise<{ isValid: boolean, error?
 const ImageUploadField = ({ 
   value, 
   onChange, 
+  onPathChange,
   path = "blog_images", 
   label = "Image URL or Upload" 
 }: { 
   value: string, 
   onChange: (url: string) => void, 
+  onPathChange?: (path: string) => void,
   path?: string,
   label?: string
 }) => {
@@ -120,6 +122,7 @@ const ImageUploadField = ({
         setUploadProgress(progress);
       });
       onChange(result.url);
+      if (onPathChange) onPathChange(result.fullPath);
     } catch (err: any) {
       setError(`Upload failed: ${err.message}`);
     } finally {
@@ -142,7 +145,10 @@ const ImageUploadField = ({
           <input 
             type="text" 
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              setError(null);
+              onChange(e.target.value);
+            }}
             placeholder="https://..."
             className={cn(
               "w-full bg-white/5 border rounded-2xl px-6 py-4 outline-none transition-all pr-12",
@@ -517,10 +523,22 @@ const normalizeBlocks = (rawBlocks: any[]): Block[] => {
     }));
 };
 
-const BlogEditor = ({ blocks, setBlocks, onAIAction }: { 
+const BlogEditor = ({ 
+  blocks, 
+  setBlocks, 
+  onAIAction,
+  activeTab,
+  setBlogFormData,
+  setProjectFormData,
+  setSeoData
+}: { 
   blocks: Block[], 
   setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
-  onAIAction: (id: string, action: string) => void
+  onAIAction: (id: string, action: string) => void,
+  activeTab: string,
+  setBlogFormData: React.Dispatch<React.SetStateAction<any>>,
+  setProjectFormData: React.Dispatch<React.SetStateAction<any>>,
+  setSeoData: React.Dispatch<React.SetStateAction<SEOData>>
 }) => {
   const [importText, setImportText] = useState("");
   const [showSmartImport, setShowSmartImport] = useState(false);
@@ -861,6 +879,17 @@ const SEOPanel = ({ data, setData, blocks, onAIAction, isProcessing }: {
               className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
               placeholder="Enter focus keyword..."
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Social Sharing Image (OG Image)</label>
+            <ImageUploadField 
+              value={data.ogImage || ""} 
+              onChange={(url) => setData({ ...data, ogImage: url })}
+              path="seo_images"
+              label="OG Image URL or Upload"
+            />
+            <p className="text-[10px] text-white/20 ml-1 italic">If left empty, the blog cover image will be used.</p>
           </div>
         </div>
 
@@ -1409,13 +1438,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
   }, [isEditing, currentPost, blogFormData, blocks, seoData]);
 
   const handleAIAction = async (action: string, blockId?: string) => {
+    if (isAIProcessing) return;
     setIsAIProcessing(true);
+
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY; // Updated to Vite env
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       if (!apiKey) throw new Error("GEMINI_API_KEY is not defined");
       
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Use stable model
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       let prompt = "";
       let targetContent = "";
@@ -1441,35 +1472,41 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
       const response = await model.generateContent(prompt);
       let result = response.response.text();
-
-      // Clean AI artifacts (bullets, dashes, numbering) for meta fields
       const cleanResult = result.replace(/^[-*•\d. ]+/gm, '').trim();
 
       if (blockId) {
-        setBlocks(blocks.map(b => b.id === blockId ? { ...b, content: result } : b));
-      } else if (action === 'summary') {
-        setSeoData({ ...seoData, description: cleanResult });
-        setBlogFormData({ ...blogFormData, description: cleanResult });
-      } else if (action === 'keywords') {
-        const keywords = cleanResult.split('\n').join(', ');
-        setSeoData({ ...seoData, keywords: keywords });
-        setBlogFormData({ ...blogFormData, tags: keywords });
-      } else if (action === 'title') {
-        setSeoData({ ...seoData, title: cleanResult });
-        setBlogFormData({ ...blogFormData, title: cleanResult, slug: generateSlug(cleanResult) });
-      } else if (['improve', 'grammar', 'expand', 'simplify', 'headings'].includes(action)) {
-        // Global actions without blockId: Append a new suggestion block
-        const newBlock: Block = {
-          id: Date.now().toString(),
-          type: 'callout',
-          content: result,
-          metadata: { title: `AI ${action.charAt(0).toUpperCase() + action.slice(1)} Suggestion` }
-        };
-        const normalized = normalizeBlocks([...blocks, newBlock]);
-        setBlocks(normalized);
+        setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, content: result } : b));
+        addToast("AI modification applied.", "success");
+      } else {
+        switch (action) {
+          case 'summary':
+            setSeoData(prev => ({ ...prev, description: cleanResult }));
+            setBlogFormData(prev => ({ ...prev, description: cleanResult }));
+            break;
+          case 'keywords':
+            const keywords = cleanResult.split('\n').join(', ');
+            setSeoData(prev => ({ ...prev, keywords: keywords }));
+            setBlogFormData(prev => ({ ...prev, tags: keywords }));
+            break;
+          case 'title':
+            setSeoData(prev => ({ ...prev, title: cleanResult }));
+            setBlogFormData(prev => ({ ...prev, title: cleanResult, slug: generateSlug(cleanResult) }));
+            break;
+          default:
+            // Append as callout
+            const newBlock: Block = {
+              id: Date.now().toString(),
+              type: 'callout',
+              content: result,
+              metadata: { title: `AI ${action.charAt(0).toUpperCase() + action.slice(1)} Suggestion` }
+            };
+            setBlocks(prev => normalizeBlocks([...prev, newBlock]));
+        }
+        addToast(`AI ${action} completed.`, "success");
       }
     } catch (error) {
       console.error("AI Action failed:", error);
+      addToast("AI assistance failed.", "error");
     } finally {
       setIsAIProcessing(false);
     }
@@ -1543,10 +1580,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (typeof eOrAutosave !== 'boolean' && eOrAutosave !== "toggle") eOrAutosave.preventDefault();
     const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
     const isToggle = eOrAutosave === "toggle";
+    let nextPublished = blogFormData.published;
 
-    // Toggle logic for the Go Live button
     if (isToggle) {
-      setBlogFormData(prev => ({ ...prev, published: !prev.published }));
+      nextPublished = !blogFormData.published;
+      setBlogFormData(prev => ({ ...prev, published: nextPublished }));
     }
 
     // 1. STRICT CONCURRENCY GUARD: Prevent multiple saves from running simultaneously
@@ -1623,10 +1661,14 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
         const postData = {
           ...blogFormData,
+          published: nextPublished,
           coverImage: finalCoverUrl,
           coverImagePath: finalCoverPath,
           blocks: sanitizedBlocks,
-          seo: seoData,
+          seo: {
+            ...seoData,
+            ogImage: seoData.ogImage || finalCoverUrl
+          },
           tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
           updatedAt: serverTimestamp(),
           author: user.email,
@@ -2108,7 +2150,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
                       <BlogEditor 
                         blocks={blocks} 
                         setBlocks={setBlocks} 
-                        onAIAction={(id, action) => handleAIAction(action, id)} 
+                        onAIAction={(id, action) => handleAIAction(action, id)}
+                        activeTab={activeTab}
+                        setBlogFormData={setBlogFormData}
+                        setProjectFormData={setProjectFormData}
+                        setSeoData={setSeoData}
                       />
 
                       {/* Settings Panel at Bottom of Editor for better flow */}
@@ -2117,7 +2163,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
                           <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Featured Visualization</label>
                           <ImageUploadField 
                             value={blogFormData.coverImage} 
-                            onChange={(url) => setBlogFormData({ ...blogFormData, coverImage: url })}
+                            onChange={(url) => setBlogFormData(prev => ({ ...prev, coverImage: url }))}
+                            onPathChange={(path) => setBlogCoverPath(path)}
                           />
                         </div>
                         <div className="space-y-4">

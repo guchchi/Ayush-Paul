@@ -281,6 +281,20 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
           >
             <Italic size={18} />
           </button>
+          
+          {editor.isActive('image') && (
+            <button
+              onClick={() => {
+                const url = window.prompt('Update Image URL', editor.getAttributes('image').src);
+                if (url) editor.chain().focus().setImage({ src: url }).run();
+              }}
+              className="p-2 rounded-xl text-white/40 hover:bg-white/5 transition-all"
+              title="Edit Image"
+            >
+              <ImageLucide size={18} />
+            </button>
+          )}
+
           <button
             onClick={() => {
               const url = window.prompt('URL');
