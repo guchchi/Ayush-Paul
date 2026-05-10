@@ -4,13 +4,13 @@ import {
   Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
   Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
   MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap, Maximize2, Minimize2
+  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap, Maximize2, Minimize2, ShieldAlert
 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
   auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, 
   signOut, onAuthStateChanged, 
-  collection, doc, setDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, 
+  collection, doc, setDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, getDocs, 
   serverTimestamp, getFirebaseStatus 
 } from "../firebase";
 import { cn } from "../lib/utils";
@@ -1138,6 +1138,15 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [systemStatus, setSystemStatus] = useState<{
+    isQuotaExceeded: boolean;
+    lastError: string | null;
+    lastSync: Date | null;
+  }>({
+    isQuotaExceeded: false,
+    lastError: null,
+    lastSync: null
+  });
 
   const addToast = (message: string, type: Toast['type'] = 'info', duration = 5000) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -1298,10 +1307,13 @@ const AdminDashboard = ({ user }: { user: any }) => {
       addToast("Firebase Backend: ONLINE", "success");
     } catch (error: any) {
       console.error("❌ Phase 3 FAILURE:", error);
-      if (error.code === 'permission-denied') {
+      const errInfo = handleFirestoreError(error, OperationType.CREATE, "test_connection");
+      
+      if (errInfo.isQuotaExceeded) {
+        addToast("CRITICAL: Daily Limit Reached (Quota Exceeded). Wait for reset.", "error");
+        setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Quota Exceeded" }));
+      } else if (error.code === 'permission-denied') {
         addToast("CRITICAL: Permission Denied. Check Firestore Rules.", "error");
-      } else if (error.code === 'unauthorized') {
-        addToast("CRITICAL: Unauthorized. Check Auth settings.", "error");
       } else {
         addToast(`Backend Error: ${error.message}`, "error");
       }
@@ -1384,11 +1396,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [blogSearchQuery, setBlogSearchQuery] = useState("");
 
   useEffect(() => {
+    console.log("🔄 [SYNC] Initializing Dashboard Synchronization Pipeline...");
+    
+    // 1. Critical Real-time Listeners (Blogs & Projects)
     const qBlogs = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
     const unsubscribeBlogs = onSnapshot(qBlogs, (snapshot) => {
       setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setSystemStatus(prev => ({ ...prev, lastSync: new Date(), isQuotaExceeded: false, lastError: null }));
     }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "blogPosts");
+      const errInfo = handleFirestoreError(error, OperationType.GET, "blogPosts");
+      if (errInfo.isQuotaExceeded) {
+        setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Daily usage limit reached (Quota Exceeded)" }));
+      }
     });
 
     const qProjects = query(collection(db, "projects"), orderBy("createdAt", "desc"));
@@ -1398,33 +1417,35 @@ const AdminDashboard = ({ user }: { user: any }) => {
       handleFirestoreError(error, OperationType.GET, "projects");
     });
 
-    const qMessages = query(collection(db, "contacts"), orderBy("timestamp", "desc"));
-    const unsubscribeMessages = onSnapshot(qMessages, (snapshot) => {
-      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "contacts");
-    });
+    // 2. Optimized One-Time Fetches (Messages, Subscribers, Updates)
+    // These are fetched once on mount to save daily read quota.
+    const fetchSecondaryData = async () => {
+      try {
+        console.log("📊 [SYNC] Fetching secondary metrics...");
+        const [msgSnap, subSnap, updSnap] = await Promise.all([
+          getDocs(query(collection(db, "contacts"), orderBy("timestamp", "desc"))),
+          getDocs(query(collection(db, "newsletter"), orderBy("subscribedAt", "desc"))),
+          getDocs(query(collection(db, "updates"), orderBy("date", "desc")))
+        ]);
+        
+        setMessages(msgSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setSubscribers(subSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setUpdates(updSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        console.log("✅ [SYNC] Metrics updated successfully");
+      } catch (error: any) {
+        const errInfo = handleFirestoreError(error, OperationType.GET, "secondary_data");
+        if (errInfo.isQuotaExceeded) {
+          setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Usage limit reached" }));
+        }
+      }
+    };
 
-    const qSubs = query(collection(db, "newsletter"), orderBy("subscribedAt", "desc"));
-    const unsubscribeSubs = onSnapshot(qSubs, (snapshot) => {
-      setSubscribers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "newsletter");
-    });
-
-    const qUpdates = query(collection(db, "updates"), orderBy("date", "desc"));
-    const unsubscribeUpdates = onSnapshot(qUpdates, (snapshot) => {
-      setUpdates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "updates");
-    });
+    fetchSecondaryData();
 
     return () => {
+      console.log("🛑 [SYNC] Terminating Dashboard Listeners...");
       unsubscribeBlogs();
       unsubscribeProjects();
-      unsubscribeMessages();
-      unsubscribeSubs();
-      unsubscribeUpdates();
     };
   }, []);
 
@@ -2503,6 +2524,61 @@ const AdminDashboard = ({ user }: { user: any }) => {
           <div className="space-y-12">
             {activeTab === "dashboard" && (
               <div className="space-y-12">
+                {/* System Health Monitor */}
+                <div className="p-8 rounded-[40px] glass-card border border-white/10 overflow-hidden relative group">
+                  <div className="absolute inset-0 bg-brand-primary/[0.01] pointer-events-none" />
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                    <div className="flex items-center gap-6 text-left">
+                      <div className={cn(
+                        "w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-500",
+                        systemStatus.isQuotaExceeded ? "bg-red-500/20 text-red-500 animate-pulse" : "bg-brand-primary/10 text-brand-primary"
+                      )}>
+                        {systemStatus.isQuotaExceeded ? <ShieldAlert size={32} /> : <Zap size={32} />}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-xl font-bold">System Integrity</h3>
+                          <span className={cn(
+                            "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
+                            systemStatus.isQuotaExceeded ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"
+                          )}>
+                            {systemStatus.isQuotaExceeded ? "Degraded" : "Optimal"}
+                          </span>
+                        </div>
+                        <p className="text-white/40 text-sm">
+                          {systemStatus.isQuotaExceeded 
+                            ? "Data visibility restricted due to Firestore daily quota limits." 
+                            : `Backend connected. Last heartbeat: ${systemStatus.lastSync ? systemStatus.lastSync.toLocaleTimeString() : 'Initializing...'}`}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={() => window.location.reload()}
+                      className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold hover:bg-white/10 transition-all flex items-center gap-3"
+                    >
+                      <History size={18} />
+                      Refresh Sync
+                    </button>
+                  </div>
+                  
+                  {systemStatus.isQuotaExceeded && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-8 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex gap-4 items-start text-left"
+                    >
+                      <AlertCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
+                      <div className="space-y-2">
+                        <p className="text-sm font-bold text-red-400">Action Required: Read Limit Reached</p>
+                        <p className="text-xs text-white/40 leading-relaxed">
+                          Your Firebase free tier (Spark plan) has reached its daily limit of 50,000 reads. 
+                          New content will not load until the quota resets at midnight or you upgrade to the Blaze plan.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
                   <AdminStatCard 
                     label="Total Posts" 

@@ -234,10 +234,12 @@ export const BlogPostPage = () => {
 
               <div className="space-y-8">
                 <h1 className={cn(
-                  "font-extrabold leading-[1.05] tracking-tighter text-white/95",
-                  post.title.length > 50 
-                    ? "text-5xl md:text-7xl lg:text-8xl" 
-                    : "text-6xl md:text-9xl lg:text-[10rem]"
+                  "font-extrabold tracking-tighter text-white/95 transition-all duration-700",
+                  post.title.length > 80
+                    ? "text-4xl md:text-6xl lg:text-7xl leading-[1.1]"
+                    : post.title.length > 50 
+                    ? "text-5xl md:text-7xl lg:text-8xl leading-[1.1]" 
+                    : "text-6xl md:text-9xl lg:text-[10rem] leading-[1.05]"
                 )}>
                   {post.title}
                 </h1>

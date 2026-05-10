@@ -24,7 +24,6 @@ export function handleFirestoreError(error: any, operationType: OperationType, p
 
   console.error('🔥 Firestore Diagnostic:', errInfo);
   
-  // Return the error info so the component can use it if needed
   return errInfo;
 }
 
