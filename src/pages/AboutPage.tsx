@@ -295,7 +295,7 @@ const MilestonesCarousel = () => {
             {isLoading && <div className="absolute inset-0 bg-white/[0.02] animate-pulse pointer-events-none" />}
             <div className="w-full aspect-[16/9] bg-white/5 rounded-[24px] mb-8 overflow-hidden relative border border-white/5">
               {m.image ? (
-                <img src={m.image} alt={m.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={m.image} alt={m.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 bg-black/20" />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               )}
