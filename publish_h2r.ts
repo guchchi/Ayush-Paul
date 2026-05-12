@@ -40,6 +40,58 @@ async function publishContent() {
     description: "H2R was not designed as just another competition robot. The goal was to build a system capable of solving real-world problems where human response time matters the most — hospitals, homes, and hazardous environments.",
     strategy: "Instead of building separate machines, I focused on creating one multifunctional robotic platform capable of adapting to different environments (Home, Hospital, Rescue).",
     process: "The robot operates using microcontroller-based processing to interpret sensor data and execute decision logic. Gas sensors provide environmental monitoring, while wireless communication modules allow real-time interaction.",
+    caseStudy: `## Introduction
+My journey into robotics truly began with a project called H2R — Home Automation & Rescue Robot.
+
+Unlike typical competition robots built only for demonstrations, H2R was designed with a deeper purpose — solving real-world problems where human response time directly impacts safety and life. The vision was clear from the beginning: build a robotic system capable of assisting homes, supporting hospitals, and operating in hazardous environments.
+
+This project became my first national-level robotics innovation, shaping my engineering mindset and defining my belief that technology should not merely exist — it should actively protect, assist, and empower human life.
+
+## The Idea Behind H2R
+Modern environments face two critical challenges:
+- Emergencies often remain unnoticed until damage occurs.
+- Healthcare systems struggle with repetitive operational workload.
+
+Issues such as gas leakage detection, delayed medical assistance, and inefficient monitoring systems highlight the need for intelligent automation.
+
+Instead of building multiple specialized machines, I envisioned a single multifunctional robotic platform capable of adapting to different environments.
+
+## Home Automation System
+The home automation module demonstrates how intelligent environments can respond instantly through robotics and IoT integration.
+
+H2R controls electrical appliances wirelessly using both Wi-Fi communication and Bluetooth connectivity. This dual-mode system ensures uninterrupted functionality even without internet availability.
+
+Through mobile control interfaces, users can remotely manage devices, improving safety, accessibility, and convenience. Automation logic allows the system to react immediately during emergencies without requiring manual intervention.
+
+## Hospital Assistance System
+One of the strongest motivations behind H2R was improving operational efficiency inside hospitals.
+
+Medical professionals often spend valuable time performing repetitive yet essential tasks such as medicine delivery and patient coordination. H2R was designed to assist rather than replace healthcare workers.
+
+Key hospital assistance features include:
+- Automated medicine dispensing mechanism
+- Alert system ensuring timely medication delivery
+- Support for monitoring hospital bed availability
+- Workflow assistance during urgent patient transfers
+
+## Rescue and Safety System
+Safety engineering became the most technically demanding component of the H2R project.
+
+The robot integrates multiple environmental sensors capable of detecting harmful gases and unsafe atmospheric conditions. Continuous monitoring enables early threat detection. When dangerous gases are identified, the system immediately generates alerts, allowing faster emergency response.
+
+This transforms H2R into an early-warning robotic safety system suitable for industrial environments, disaster response zones, and confined or hazardous locations.
+
+## Competition Experience and Achievement
+H2R was presented at the World Robot Olympiad (WRO) — one of the world’s most prestigious robotics innovation competitions. Representing Team PERFECTTO, we competed in the Future Innovators Category, focused on solving real-world challenges through robotics.
+
+🏆 **Achievement: Silver Medal — National Level**
+
+This recognition marked a defining milestone in my journey as a robotics innovator and validated the impact-driven vision behind H2R.
+
+## Conclusion
+Building H2R fundamentally changed how I see technology. Robotics is not only about machines or programming — it is about responsibility.
+
+When engineered thoughtfully, intelligent systems can protect lives, assist communities, and enhance human capability. This project strengthened my commitment to continue developing robotics innovations that solve real-world problems and serve society.`,
     link: "/blog/h2r-home-automation-rescue-robot"
   };
 
