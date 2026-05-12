@@ -170,6 +170,7 @@ const MilestonesCarousel = () => {
   const [milestones, setMilestones] = useState<Array<{ year: string; title: string; desc: string; image?: string }>>([
     { year: "2021", title: "National Level Science Exhibition", desc: "Recognized for foundational hardware engineering." },
     { year: "2022", title: "Technology Projects Initiation", desc: "Started developing comprehensive software solutions." },
+    { year: "2023", title: "INSPIRE Awards – MANAK", desc: "Awarded ₹10,000 innovation grant by Govt of India to develop 'Iron Code', applying scientific problem solving." },
     { year: "2023", title: "Automation Systems", desc: "Architected intelligent workflows and AI integrations." },
     { year: "2024", title: "Innovation Builds", desc: "Launched scalable web applications and platforms." },
     { year: "2025", title: "Digital Product Development", desc: "Leading the next wave of full-stack ecosystems." }
