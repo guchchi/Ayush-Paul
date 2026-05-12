@@ -190,14 +190,16 @@ export const AuthoritySection = () => {
           className="h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden"
         >
           <div className="absolute inset-0 bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillData}>
-              <PolarGrid stroke="rgba(255,255,255,0.05)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em' }} />
-              <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
-              <Radar name="Ayush" dataKey="A" stroke="#00C2FF" fill="#00C2FF" fillOpacity={0.15} />
-            </RadarChart>
-          </ResponsiveContainer>
+          <div className="relative w-full h-full min-h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillData}>
+                <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 'bold', letterSpacing: '0.1em' }} />
+                <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
+                <Radar name="Ayush" dataKey="A" stroke="#00C2FF" fill="#00C2FF" fillOpacity={0.15} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
         </motion.div>
       </div>
 

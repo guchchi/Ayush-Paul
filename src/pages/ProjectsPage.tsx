@@ -119,8 +119,8 @@ const FlagshipSection = () => {
           className="relative aspect-square glass-card rounded-[64px] border-white/5 overflow-hidden shadow-2xl"
         >
           <img 
-            src="/flagship_product_mockup_1777719889407.png" 
-            alt="Flagship Mockup" 
+            src="/vision_technical_schematic.png" 
+            alt="Ecosystem Intelligence Schematic" 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 via-transparent to-transparent pointer-events-none" />
