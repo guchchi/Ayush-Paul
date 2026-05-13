@@ -168,7 +168,7 @@ export const BlogPostPage = () => {
 
   return (
     <div className="page-content bg-[#080808] relative selection:bg-brand-primary selection:text-black">
-      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-[100] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-[90] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
       
       {/* Cinematic Hero Container */}
       <section className="relative h-[130vh] w-full">

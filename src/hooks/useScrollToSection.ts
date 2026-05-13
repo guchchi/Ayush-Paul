@@ -21,7 +21,7 @@ export const useScrollToSection = () => {
     // 2. Handle cross-page navigation
     if (location.pathname !== '/') {
       navigate(`/#${targetId}`);
-      // The auto-scroll logic in Home.tsx will pick this up on mount
+      window.scrollTo({ top: 0 }); // Ensure layout reset for mount-based scrolling
       return;
     }
 
