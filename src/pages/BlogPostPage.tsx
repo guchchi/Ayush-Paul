@@ -182,7 +182,7 @@ export const BlogPostPage = () => {
               <img 
                 src={post.coverImage} 
                 alt="" 
-                className="w-full h-full object-cover grayscale-[20%] brightness-[0.7]" 
+                className="absolute inset-0 w-full h-full object-cover grayscale-[20%] brightness-[0.7]" 
                 referrerPolicy="no-referrer"
               />
             ) : (
@@ -462,8 +462,8 @@ export const BlogPostPage = () => {
               {relatedPosts.map(relPost => (
                 <Link to={`/blog/${relPost.slug}`} key={relPost.id} className="group h-full">
                   <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-700 flex flex-col h-full shadow-2xl">
-                    <div className="aspect-[16/10] overflow-hidden relative">
-                      <img src={relPost.coverImage} alt={relPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
+                    <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
+                      <img src={relPost.coverImage} alt={relPost.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
                       <div className="absolute top-6 left-6">
                         <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/80">
                           {relPost.category}

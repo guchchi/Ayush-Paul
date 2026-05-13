@@ -76,11 +76,11 @@ export const LatestBlogsSection = () => {
               style={{ willChange: 'transform' }}
             >
               <Link to={`/blog/${post.slug || post.id}`} className="flex flex-col h-full">
-                <div className="aspect-[16/9] relative overflow-hidden">
+                <div className="aspect-video relative overflow-hidden bg-white/[0.02]">
                   {post.coverImage ? (
-                    <img src={post.coverImage} alt={`${post.title} | Blog by Ayush Paul`} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" />
+                    <img src={post.coverImage} alt={`${post.title} | Blog by Ayush Paul`} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700" />
                   ) : (
-                    <div className="w-full h-full bg-brand-primary/10 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-brand-primary font-bold opacity-50">No Cover Image</span>
                     </div>
                   )}

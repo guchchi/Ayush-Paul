@@ -121,7 +121,7 @@ const FlagshipSection = () => {
           <img 
             src="/vision_technical_schematic.png" 
             alt="Ecosystem Intelligence Schematic" 
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/20 via-transparent to-transparent pointer-events-none" />
         </motion.div>
@@ -142,8 +142,8 @@ const ProductCard = ({ product }: { product: any }) => {
       className="group relative bg-[#0A0A0A] border border-white/5 rounded-[48px] overflow-hidden hover:border-white/20 transition-all duration-700 shadow-2xl block"
     >
       <Link to={`/projects/${product.slug || product.id}`} className="block h-full">
-        <div className="aspect-[16/9] overflow-hidden relative">
-          <img src={product.image} alt={product.title} className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000" />
+        <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
+          <img src={product.image} alt={product.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000" />
           <div className="absolute top-8 left-8 flex items-center gap-2">
             <span className={cn("px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-current opacity-80", product.statusColor)}>
               {product.status}

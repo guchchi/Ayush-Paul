@@ -192,8 +192,8 @@ export const BlogPage = () => {
                             className="w-full px-5 py-4 rounded-xl flex items-center justify-between transition-all group bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-brand-primary/30"
                           >
                             <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 shrink-0">
-                                <img src={post.coverImage} className="w-full h-full object-cover" alt="" referrerPolicy="no-referrer" />
+                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 shrink-0 relative">
+                                <img src={post.coverImage} className="absolute inset-0 w-full h-full object-cover" alt="" referrerPolicy="no-referrer" />
                               </div>
                               <div className="flex flex-col gap-0.5">
                                 <span className="text-sm font-bold text-white group-hover:text-brand-primary transition-colors">{post.title}</span>
@@ -244,8 +244,8 @@ export const BlogPage = () => {
 
             <Link to={`/blog/${post.slug}`} key={post.id} className="group">
               <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-500 h-full flex flex-col shadow-2xl hover:shadow-brand-primary/5">
-                <div className="aspect-[16/10] overflow-hidden relative">
-                  <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
+                <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
+                  <img src={post.coverImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
                   <div className="absolute top-6 left-6">
                     <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/90">
                       {post.category}
