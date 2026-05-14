@@ -56,3 +56,65 @@ export interface FirestoreErrorInfo {
     }[];
   }
 }
+
+// --- Digital Ecosystem Types ---
+
+export type ProductType = 'free' | 'paid' | 'donation';
+
+export interface ProductFeature {
+  name: string;
+  isPremiumOnly: boolean;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  thumbnail: string;
+  category: string;
+  type: ProductType;
+  basePrice: number;
+  salePrice: number;
+  discountPercentage: number;
+  inventoryCount: number | null; // null means unlimited
+  downloadFileURL: string | null; // For free products (direct access)
+  previewImages: string[];
+  features: ProductFeature[];
+  comparisonFree: string[];
+  comparisonPremium: string[];
+  tags: string[];
+  createdAt: any;
+  updatedAt: any;
+  isFeatured: boolean;
+  isPublished: boolean;
+  purchaseCount: number;
+  downloadCount: number;
+  viewCount: number;
+  rating: number;
+  stripePriceId?: string; // For Phase 3
+  author: {
+    name: string;
+    role: string;
+    avatar: string;
+  };
+}
+
+export interface DownloadAnalytics {
+  id: string;
+  productId: string;
+  productSlug: string;
+  timestamp: any;
+  isAnonymous: boolean;
+  userId?: string;
+}
+
+export interface DonationRecord {
+  id: string;
+  donorName: string;
+  amount: number;
+  productSupported: string | null;
+  message: string;
+  timestamp: any;
+}
+
