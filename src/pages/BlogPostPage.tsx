@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Calendar, Clock, Info, ArrowRight, Twitter, Linkedin, MessageCircle, Link2, Check } from "lucide-react";
-import { collection, query, where, onSnapshot, limit, orderBy, updateDoc, doc, increment } from "firebase/firestore";
+import { collection, query, where, onSnapshot, limit, orderBy, updateDoc, doc, increment, getDocs } from "firebase/firestore";
 import ReactMarkdown from "react-markdown";
 import { db } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
@@ -69,41 +69,36 @@ export const BlogPostPage = () => {
         const data: any = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
         setPost(data);
 
-        // Increment views
-        updateDoc(doc(db, "blogPosts", snapshot.docs[0].id), {
-          views: increment(1)
-        });
-        
-        // Fetch candidates for related posts
-        const relatedQ = query(
-          collection(db, "blogPosts"), 
-          where("published", "==", true),
-          limit(10)
-        );
-        
-        onSnapshot(relatedQ, (relSnapshot) => {
-          const others = relSnapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() as any }))
-            .filter(p => p.slug !== slug);
-          
-          // Simple scoring algorithm
-          const currentTags = Array.isArray(data.tags) ? data.tags : [];
-          const scored = others.map(other => {
-            let score = 0;
-            const otherTags = Array.isArray(other.tags) ? other.tags : [];
+        // Fetch related posts using getDocs (once) to save quota
+        const fetchRelated = async () => {
+          try {
+            const relatedQ = query(
+              collection(db, "blogPosts"), 
+              where("published", "==", true),
+              limit(10)
+            );
+            const relSnapshot = await getDocs(relatedQ);
+            const others = relSnapshot.docs
+              .map(doc => ({ id: doc.id, ...doc.data() as any }))
+              .filter(p => p.slug !== slug);
             
-            // Match category
-            if (other.category === data.category) score += 5;
+            const currentTags = Array.isArray(data.tags) ? data.tags : [];
+            const scored = others.map(other => {
+              let score = 0;
+              const otherTags = Array.isArray(other.tags) ? other.tags : [];
+              if (other.category === data.category) score += 5;
+              const commonTags = currentTags.filter(t => otherTags.includes(t));
+              score += commonTags.length * 2;
+              return { ...other, score };
+            });
             
-            // Match tags
-            const commonTags = currentTags.filter(t => otherTags.includes(t));
-            score += commonTags.length * 2;
-            
-            return { ...other, score };
-          });
-          
-          setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
-        });
+            setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
+          } catch (err) {
+            console.error("Error fetching related posts:", err);
+          }
+        };
+
+        fetchRelated();
       }
       setLoading(false);
     }, (error) => {
@@ -112,6 +107,27 @@ export const BlogPostPage = () => {
     });
     return () => unsubscribe();
   }, [slug]);
+
+  // Separate Effect for View Increment to prevent infinite loops
+  useEffect(() => {
+    if (!post?.id) return;
+    
+    const incrementViews = async () => {
+      const storageKey = `viewed_${post.id}`;
+      if (sessionStorage.getItem(storageKey)) return;
+
+      try {
+        await updateDoc(doc(db, "blogPosts", post.id), {
+          views: increment(1)
+        });
+        sessionStorage.setItem(storageKey, "true");
+      } catch (err) {
+        console.error("Error incrementing views:", err);
+      }
+    };
+
+    incrementViews();
+  }, [post?.id]);
 
   useEffect(() => {
     const handleScroll = () => {
