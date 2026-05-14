@@ -287,6 +287,7 @@
 
   .blog-prose a {
     @apply text-brand-primary border-b border-brand-primary/20 hover:border-brand-primary transition-all no-underline font-medium;
+    pointer-events: auto !important;
   }
 
   .blog-prose blockquote {
