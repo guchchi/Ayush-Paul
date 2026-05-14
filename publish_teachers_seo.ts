@@ -54,7 +54,7 @@ async function publishContent() {
 <p>Many teachers believe their monthly salary is their only income source.</p>
 <p><strong>Reality?</strong> Your teaching skill itself is an online asset.</p>
 <p>Today’s internet economy has changed education forever. Teachers are no longer limited to classrooms — they can teach globally, earn digitally, and build income systems that work even while sleeping.</p>
-<p>As a student innovator and digital creator, I, Ayush Paul, explore how professionals can use technology to unlock new income opportunities. This guide expands on my viral video explaining 3 real ways teachers are earning online — ethically, legally, and sustainably. At <a href="https://ayushpaul.in">ayushpaul.in</a>, we focus on problem-solving and building digital authority.</p>`
+<p>As a student innovator and digital creator, I, Ayush Paul, explore how professionals can use technology to unlock new income opportunities. This guide expands on my viral video explaining 3 real ways teachers are earning online — ethically, legally, and sustainably. At <a href="https://ayushpaul.in">ayushpaul.in</a>, we focus on <a href="/projects">problem-solving through innovation</a> and building digital authority.</p>`
       },
       {
         id: "problem",
@@ -76,7 +76,7 @@ async function publishContent() {
         content: `<h2>Inspiration Behind This Guide</h2>
 <p>Across platforms like YouTube, online marketplaces, and learning websites, educators have quietly built independent income streams.</p>
 <p>The idea behind this article is simple: <strong>Teachers don’t need new skills — they need new distribution.</strong></p>
-<p>You already teach every day. Now you learn how to teach once and earn multiple times. Being a research-driven builder, I’ve analyzed how the creator economy empowers educators.</p>`
+<p>You already teach every day. Now you learn how to teach once and earn multiple times. Being a research-driven builder (see my <a href="/projects/h2r-home-automation-rescue-robot">National-Level robotics project</a> for reference), I’ve analyzed how the creator economy empowers educators.</p>`
       },
       {
         id: "img1",
@@ -108,7 +108,7 @@ async function publishContent() {
       {
         id: "method1-end",
         type: "text",
-        content: `<p><strong>Step 3 — Upload on Marketplaces:</strong> Recommended platforms include Teachers Pay Teachers, Gumroad, and Etsy (Printables category). These platforms handle payments, delivery, and customers.</p>
+        content: `<p><strong>Step 3 — Upload on Marketplaces:</strong> Recommended platforms include <a href="https://www.teacherspayteachers.com/" target="_blank" rel="noopener noreferrer">Teachers Pay Teachers</a>, <a href="https://gumroad.com/" target="_blank" rel="noopener noreferrer">Gumroad</a>, and <a href="https://www.etsy.com/" target="_blank" rel="noopener noreferrer">Etsy</a> (Printables category). These platforms handle payments, delivery, and customers.</p>
 <p><strong>Step 4 — Pricing Strategy:</strong> Begin with ₹99 – ₹399 products. Bundle multiple resources. Low price leads to high volume sales.</p>
 <p><strong>Step 5 — Passive Income Cycle:</strong> You create once, and students worldwide buy repeatedly. This becomes teacher passive income.</p>
 <p><strong>Real Advantage:</strong> No camera. No marketing expertise needed. Just upload teaching material you already use.</p>`
@@ -119,7 +119,7 @@ async function publishContent() {
         content: `<h2>Method 2 — Online Tutoring (Fastest Cash Method)</h2>
 <p>Global demand for tutors is exploding. Students from the USA, UK, Middle East, and India are paying teachers online hourly. Your experience becomes instantly monetizable.</p>
 <h3>Step-by-Step Implementation</h3>
-<p><strong>Step 1 — Choose Platform:</strong> Popular tutoring platforms include Preply, Chegg, Wyzant, and Tutor.com.</p>
+<p><strong>Step 1 — Choose Platform:</strong> Popular tutoring platforms include <a href="https://preply.com/" target="_blank" rel="noopener noreferrer">Preply</a>, <a href="https://www.italki.com/" target="_blank" rel="noopener noreferrer">iTalki</a>, <a href="https://www.wyzant.com/" target="_blank" rel="noopener noreferrer">Wyzant</a>, and <a href="https://www.tutor.com/" target="_blank" rel="noopener noreferrer">Tutor.com</a>.</p>
 <p><strong>Step 2 — Create Professional Profile:</strong> Include subjects taught, experience, teaching style, and student success results. Tip: Upload a friendly professional photo.</p>
 <p><strong>Step 3 — Set Your Rate:</strong> Start at $8–$15/hour for beginners. Increase after reviews. Consistency matters more than pricing initially.</p>
 <p><strong>Step 4 — Equipment Needed:</strong> You only need a laptop, internet, webcam, and an optional digital whiteboard.</p>`
@@ -154,7 +154,7 @@ async function publishContent() {
         content: `<h2>Method 3 — The Goldmine: Package Your Knowledge</h2>
 <p>This is where teachers move from hourly income to scalable income. Instead of teaching one student at a time, you teach thousands simultaneously.</p>
 <h3>Step-by-Step Implementation (Option A — Create an Online Course)</h3>
-<p>Platforms: Udemy, Teachable, Thinkific, Skillshare.</p>
+<p>Platforms: <a href="https://www.udemy.com/" target="_blank" rel="noopener noreferrer">Udemy</a>, <a href="https://teachable.com/" target="_blank" rel="noopener noreferrer">Teachable</a>, <a href="https://thinkific.com/" target="_blank" rel="noopener noreferrer">Thinkific</a>, <a href="https://www.skillshare.com/" target="_blank" rel="noopener noreferrer">Skillshare</a>.</p>
 <p><strong>Step 1: Choose One Topic:</strong> Example: Class 10 Maths Revision, Spoken English Basics.</p>
 <p><strong>Step 2: Break Into Lessons:</strong> 10–20 short videos.</p>
 <p><strong>Step 3: Record Simply:</strong> Phone camera + quiet room is enough.</p>`
@@ -174,7 +174,7 @@ async function publishContent() {
         content: `<p><strong>Step 4: Upload Course:</strong> Platform manages hosting and payments.</p>
 <p><strong>Step 5: Promote Once:</strong> Students continue enrolling automatically.</p>
 <h3>Step-by-Step Implementation (Option B — Publish an Ebook)</h3>
-<p>Platforms: Amazon Kindle KDP, Google Play Books.</p>
+<p>Platforms: <a href="https://kdp.amazon.com/" target="_blank" rel="noopener noreferrer">Amazon Kindle KDP</a>, <a href="https://play.google.com/books/publish/" target="_blank" rel="noopener noreferrer">Google Play Books</a>.</p>
 <p>Ideas: Exam strategies, subject shortcuts, teaching guides, student success methods.</p>`
       },
       {
@@ -250,7 +250,7 @@ async function publishContent() {
       {
         id: "reflection-end",
         type: "text",
-        content: `<p><em>Written by Ayush Paul — Student Innovator &amp; Digital Creator at ayushpaul.in.</em></p>`
+        content: `<p><em>Written by Ayush Paul — Student Innovator &amp; Digital Creator at ayushpaul.in. For collaborations, visit the <a href="/contact">Partnership Page</a>.</em></p>`
       },
       {
         id: "faq",
