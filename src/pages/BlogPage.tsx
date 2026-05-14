@@ -34,9 +34,16 @@ export const BlogPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "blogPosts"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((post: any) => post.published === true);
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((post: any) => post.published !== false) // Permissive filter
+        .sort((a: any, b: any) => {
+          const dateA = a.createdAt?.seconds || a.createdAt?._seconds || new Date(a.createdAt).getTime() || 0;
+          const dateB = b.createdAt?.seconds || b.createdAt?._seconds || new Date(b.createdAt).getTime() || 0;
+          return dateB - dateA; // Descending
+        });
       setPosts(data);
       setLoading(false);
     }, (error) => {

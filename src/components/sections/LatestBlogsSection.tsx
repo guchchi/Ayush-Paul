@@ -13,13 +13,17 @@ export const LatestBlogsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "blogPosts"),
-      orderBy("createdAt", "desc"),
-      limit(10)
-    );
+    const q = query(collection(db, "blogPosts"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((post: any) => post.published === true).slice(0, 3);
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((post: any) => post.published !== false)
+        .sort((a: any, b: any) => {
+          const dateA = a.createdAt?.seconds || a.createdAt?._seconds || new Date(a.createdAt).getTime() || 0;
+          const dateB = b.createdAt?.seconds || b.createdAt?._seconds || new Date(b.createdAt).getTime() || 0;
+          return dateB - dateA;
+        })
+        .slice(0, 3);
       setPosts(data);
       setLoading(false);
     }, (error) => {
