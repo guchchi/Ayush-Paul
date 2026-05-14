@@ -14,12 +14,35 @@ interface MainLayoutProps {
 export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
   const location = useLocation();
 
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      
+      if (!anchor || !anchor.href || e.defaultPrevented) return;
+
+      // Handle External Links
+      if (anchor.origin !== window.location.origin || anchor.target === '_blank') {
+        return; // Let browser handle it
+      }
+
+      // Handle Internal Links (SPA Navigation)
+      e.preventDefault();
+      const path = anchor.pathname + anchor.search + anchor.hash;
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    };
+
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, []);
+
   return (
     <SmoothScrollProvider>
       <CommandPalette />
       <Navbar onPortfolioClick={onPortfolioClick} />
       
-      <main className="w-full">
+      <main className="w-full relative z-[10]">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

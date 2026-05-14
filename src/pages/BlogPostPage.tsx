@@ -271,7 +271,7 @@ export const BlogPostPage = () => {
         </div>
       </section>
 
-      <div className="relative z-[50] container mx-auto px-6 pointer-events-auto">
+      <div className="relative z-[100] container mx-auto px-6 pointer-events-auto">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative mb-32 pt-24">
             {/* Left Rail: Reading Stats & Share */}

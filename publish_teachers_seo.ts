@@ -40,8 +40,8 @@ async function publishContent() {
     coverImage: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600",
     published: true,
     featured: true,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     seoTitle: "How Teachers Can Make Money Online in 2026: 3 Proven Ways to Earn Beyond Your School Salary | Ayush Paul",
     blocks: [
       {
