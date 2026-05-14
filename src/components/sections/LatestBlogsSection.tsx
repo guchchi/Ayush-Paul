@@ -15,12 +15,11 @@ export const LatestBlogsSection = () => {
   useEffect(() => {
     const q = query(
       collection(db, "blogPosts"),
-      where("published", "==", true),
       orderBy("createdAt", "desc"),
-      limit(3)
+      limit(10)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((post: any) => post.published === true).slice(0, 3);
       setPosts(data);
       setLoading(false);
     }, (error) => {

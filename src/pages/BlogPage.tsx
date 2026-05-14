@@ -34,9 +34,9 @@ export const BlogPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"), where("published", "==", true));
+    const q = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter((post: any) => post.published === true);
       setPosts(data);
       setLoading(false);
     }, (error) => {
