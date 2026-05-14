@@ -38,12 +38,21 @@ export const BlogPage = () => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter((post: any) => post.published !== false) // Permissive filter
+        .filter((post: any) => post.published !== false)
         .sort((a: any, b: any) => {
-          const dateA = a.createdAt?.seconds || a.createdAt?._seconds || new Date(a.createdAt).getTime() || 0;
-          const dateB = b.createdAt?.seconds || b.createdAt?._seconds || new Date(b.createdAt).getTime() || 0;
-          return dateB - dateA; // Descending
+          const getMillis = (date: any) => {
+            if (!date) return 0;
+            if (typeof date.toMillis === 'function') return date.toMillis();
+            if (typeof date.toDate === 'function') return date.toDate().getTime();
+            if (date.seconds) return date.seconds * 1000;
+            if (date._seconds) return date._seconds * 1000;
+            const parsed = new Date(date).getTime();
+            return isNaN(parsed) ? 0 : parsed;
+          };
+          return getMillis(b.createdAt) - getMillis(a.createdAt);
         });
+      
+      console.log(`[BLOG DIAGNOSTIC] Fetched ${snapshot.docs.length} raw, ${data.length} filtered.`);
       setPosts(data);
       setLoading(false);
     }, (error) => {

@@ -48,7 +48,16 @@ export default function App() {
   const [view, setView] = useState<"landing" | "profiles">("landing");
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
   const [showConfigWarning, setShowConfigWarning] = useState(true);
-  const { isConfigured } = getFirebaseStatus();
+  const { isConfigured, projectId, databaseId } = getFirebaseStatus();
+
+  // System Health Monitoring
+  useEffect(() => {
+    console.group("🚀 SYSTEM DIAGNOSTICS");
+    console.log("Firebase Status:", isConfigured ? "✅ Configured" : "❌ Missing Config");
+    console.log("Project ID:", projectId);
+    console.log("Database ID:", databaseId);
+    console.groupEnd();
+  }, [isConfigured, projectId, databaseId]);
 
   // Konami Code Easter Egg
   useEffect(() => {
