@@ -1399,9 +1399,23 @@ const AdminDashboard = ({ user }: { user: any }) => {
     console.log("🔄 [SYNC] Initializing Dashboard Synchronization Pipeline...");
     
     // 1. Critical Real-time Listeners (Blogs & Projects)
-    const qBlogs = query(collection(db, "blogPosts"), orderBy("createdAt", "desc"));
+    const qBlogs = query(collection(db, "blogPosts"));
     const unsubscribeBlogs = onSnapshot(qBlogs, (snapshot) => {
-      setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a: any, b: any) => {
+          const getMillis = (date: any) => {
+            if (!date) return 0;
+            if (typeof date.toMillis === 'function') return date.toMillis();
+            if (typeof date.toDate === 'function') return date.toDate().getTime();
+            if (date.seconds) return date.seconds * 1000;
+            if (date._seconds) return date._seconds * 1000;
+            const parsed = new Date(date).getTime();
+            return isNaN(parsed) ? 0 : parsed;
+          };
+          return getMillis(b.createdAt) - getMillis(a.createdAt);
+        });
+      setPosts(data);
       setSystemStatus(prev => ({ ...prev, lastSync: new Date(), isQuotaExceeded: false, lastError: null }));
     }, (error) => {
       const errInfo = handleFirestoreError(error, OperationType.GET, "blogPosts");
