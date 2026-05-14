@@ -23,6 +23,7 @@ import { VARIANTS, EASING } from '../lib/motion-presets';
 import { cn } from '../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { db, doc, getDoc } from '../firebase';
+import { AuthoritySection } from '../components/sections/AuthoritySection';
 
 const HeroSection = () => {
   return (
@@ -809,7 +810,7 @@ export const AboutPage = () => {
       <MilestonesCarousel />
       <CoreCapabilities />
       <JourneyTimeline />
-      <ImpactNumbers />
+      <AuthoritySection />
       <ProblemSection />
       <SolutionSection />
       <FounderPhilosophySection />
