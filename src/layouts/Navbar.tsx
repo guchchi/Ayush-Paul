@@ -76,12 +76,10 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
   ];
 
   const handleNavClick = (link: any) => {
+    setIsMobileMenuOpen(false);
     if (link.href.startsWith("/#")) {
       const id = link.href.split("#")[1];
-      scrollToSection(id, () => setIsMobileMenuOpen(false));
-    } else {
-      navigate(link.href);
-      setIsMobileMenuOpen(false);
+      scrollToSection(id);
     }
   };
 
@@ -122,11 +120,12 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
         {/* Desktop Menu - Centered Architecture */}
         <div className="hidden lg:flex items-center bg-white/[0.02] border border-white/[0.05] rounded-full px-1.5 py-1 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           {navLinks.map((link) => (
-            <button
+            <Link
               key={link.name}
+              to={link.href}
               onClick={() => handleNavClick(link)}
               className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden",
+                "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden block",
                 (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
                   ? "text-white" 
                   : "text-white/30 hover:text-white/60"
@@ -140,9 +139,8 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                 />
               )}
-              {/* Subtle hover glow */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            </button>
+            </Link>
           ))}
         </div>
 
@@ -214,8 +212,9 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   {/* High-Signal Nav Links */}
                   <div className="flex-1 overflow-y-auto py-6 px-6 space-y-1 custom-scrollbar">
                     {navLinks.map((link, i) => (
-                      <button
+                      <Link
                         key={link.name}
+                        to={link.href}
                         onClick={() => handleNavClick(link)}
                         className={cn(
                           "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300",
@@ -233,7 +232,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                         )}>
                           <ChevronRight size={16} />
                         </div>
-                      </button>
+                      </Link>
                     ))}
                   </div>
 

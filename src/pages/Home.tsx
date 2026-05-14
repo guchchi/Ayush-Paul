@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { HeroSection } from '../components/sections/HeroSection';
 import { ClientsSection } from '../components/sections/ClientsSection';
-
+import { AuthoritySection } from '../components/sections/AuthoritySection';
 import { FeaturedProjectsSection } from '../components/sections/FeaturedProjectsSection';
 import { ExpertiseSection } from '../components/sections/ExpertiseSection';
 import { ExperienceSection } from '../components/sections/ExperienceSection';
@@ -64,6 +64,8 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio: () => void }) =
       className="relative w-full"
     >
       <HeroSection onViewPortfolio={onViewPortfolio} />
+      
+      <AuthoritySection />
       
       <FeaturedProjectsSection filter={projectFilter} />
       
