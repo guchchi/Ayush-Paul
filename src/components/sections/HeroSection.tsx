@@ -142,7 +142,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full pt-32 pb-20 flex flex-col justify-center items-center"
+      className="relative w-full pt-44 pb-20 flex flex-col justify-center items-center"
     >
       {/* Global Neon Glow Engine — variant: hero */}
       <div className="absolute inset-0 -z-10 pointer-events-none">

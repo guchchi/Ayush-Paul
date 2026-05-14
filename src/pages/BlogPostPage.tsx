@@ -25,7 +25,7 @@ export const BlogPostPage = () => {
   const { scrollY } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
   const heroScale = useTransform(scrollY, [0, 500], [1, 0.9]);
-  const heroY = useTransform(scrollY, [0, 500], [0, -100]);
+  const heroY = useTransform(scrollY, [0, 500], [0, -50]);
   const heroBlur = useTransform(scrollY, [0, 500], [0, 10]);
 
   useSEO({
@@ -196,18 +196,17 @@ export const BlogPostPage = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
           </motion.div>
 
-          {/* Foreground Content */}
           <motion.div 
             style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
-            className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-12 md:px-24"
+            className="relative z-10 h-full w-full flex flex-col items-center justify-start sm:justify-center text-center px-6 sm:px-12 md:px-24 pt-64 sm:pt-48 pb-20"
           >
             {/* Navigation Context */}
-            <div className="absolute top-12 left-12 md:left-20 hidden lg:block">
+            <div className="absolute top-44 left-12 md:left-20 hidden lg:block">
               <BackButton to="/blog" label="All Stories" />
             </div>
 
-            <div className="max-w-4xl mx-auto space-y-16">
-              <div className="lg:hidden mb-8">
+            <div className="max-w-5xl mx-auto space-y-16">
+              <div className="lg:hidden mb-16">
                 <BackButton to="/blog" label="All Stories" />
               </div>
 

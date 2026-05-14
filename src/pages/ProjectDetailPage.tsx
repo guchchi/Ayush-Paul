@@ -50,7 +50,7 @@ export const ProjectDetailPage = () => {
   }
 
   return (
-    <div className="w-full bg-[#0A0A0A] min-h-screen pt-32 pb-24">
+    <div className="w-full bg-[#0A0A0A] min-h-screen pt-44 pb-24">
       <div className="max-w-4xl mx-auto px-6 lg:px-8">
         <Link to="/projects" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-12 text-sm font-bold uppercase tracking-widest">
           <ArrowLeft size={16} /> Back to Showcase

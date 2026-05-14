@@ -26,7 +26,7 @@ import { db, doc, getDoc } from '../firebase';
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden pt-32 pb-24 isolate">
+    <section className="relative w-full min-h-[90vh] flex flex-col justify-center items-center overflow-hidden pt-44 pb-24 isolate">
       {/* Subtle Background Gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(0,194,255,0.05),transparent_70%)] -z-10" />
       
