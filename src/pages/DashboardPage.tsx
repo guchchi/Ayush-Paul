@@ -25,7 +25,7 @@ import {
 import { 
   auth, db, signOut, onAuthStateChanged, 
   collection, query, orderBy, onSnapshot, limit, 
-  updateDoc, doc, getDocs, where
+  updateDoc, doc, getDocs, where, getDoc
 } from '../firebase';
 import { cn } from '../lib/utils';
 import { Section } from '../components/ui/Section';
@@ -59,6 +59,7 @@ const Sidebar = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab:
     { id: 'projects', name: 'Projects', icon: <Layers size={20} /> },
     { id: 'content', name: 'Content', icon: <PenTool size={20} /> },
     { id: 'metrics', name: 'Metrics', icon: <BarChart3 size={20} /> },
+    { id: 'growth', name: 'Growth', icon: <TrendingUp size={20} /> },
   ];
 
   return (
@@ -499,6 +500,116 @@ const MetricsGrid = () => {
   );
 };
 
+const GrowthMetrics = () => {
+  const [purchases, setPurchases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGrowthData = async () => {
+      try {
+        const q = query(collection(db, "purchases"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setPurchases(data);
+      } catch (err) {
+        console.error("Error fetching growth data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGrowthData();
+  }, []);
+
+  const totalRevenue = purchases.reduce((acc, curr) => acc + (curr.amountTotal || 0), 0) / 100;
+  
+  return (
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center border border-brand-primary/20">
+          <TrendingUp size={24} className="text-brand-primary" />
+        </div>
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Growth & Automation</h2>
+          <p className="text-white/40">Track your monetization funnel and automated workflows.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-8 glass-card border border-white/5 space-y-4">
+          <div className="flex items-center gap-3 text-white/40 mb-2">
+            <Target size={20} />
+            <h4 className="text-xs font-bold uppercase tracking-widest">Total Revenue</h4>
+          </div>
+          <p className="text-4xl font-bold text-white tracking-tighter">
+            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(totalRevenue)}
+          </p>
+          <div className="text-xs text-green-500 font-bold tracking-widest uppercase flex items-center gap-1 mt-2">
+            <ArrowRight size={12} className="-rotate-45" /> Live Data
+          </div>
+        </div>
+
+        <div className="p-8 glass-card border border-white/5 space-y-4">
+          <div className="flex items-center gap-3 text-white/40 mb-2">
+            <Layers size={20} />
+            <h4 className="text-xs font-bold uppercase tracking-widest">Total Sales</h4>
+          </div>
+          <p className="text-4xl font-bold text-white tracking-tighter">
+            {purchases.length}
+          </p>
+          <div className="text-xs text-brand-primary font-bold tracking-widest uppercase flex items-center gap-1 mt-2">
+            <CheckCircle2 size={12} /> Fulfilled via Webhooks
+          </div>
+        </div>
+
+        <div className="p-8 glass-card border border-white/5 space-y-4 opacity-50 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
+          <div className="flex items-center justify-between text-white/40 mb-2 relative z-10">
+            <div className="flex items-center gap-3">
+              <BarChart3 size={20} />
+              <h4 className="text-xs font-bold uppercase tracking-widest">Conversion Rate</h4>
+            </div>
+            <span className="px-2 py-1 bg-white/5 rounded text-[8px] tracking-[0.2em]">PostHog Data</span>
+          </div>
+          <p className="text-4xl font-bold text-white tracking-tighter relative z-10 blur-sm group-hover:blur-0 transition-all">
+            4.2%
+          </p>
+          <div className="text-xs text-white/40 font-bold tracking-widest uppercase mt-2 relative z-10">
+            Checkout Funnel
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-bold mb-6 flex items-center gap-2"><CheckCircle2 size={18} className="text-brand-primary"/> Recent Transactions</h3>
+        {loading ? (
+           <div className="p-12 text-center text-white/20 font-bold uppercase tracking-widest animate-pulse">Loading Webhook Data...</div>
+        ) : (
+          <div className="space-y-4">
+            {purchases.length === 0 ? (
+              <div className="p-8 glass-card border border-white/5 text-center text-white/40">
+                No purchases recorded yet. Your Stripe webhooks will populate this automatically.
+              </div>
+            ) : (
+              purchases.map(p => (
+                <div key={p.id} className="p-6 glass-card border border-white/5 flex items-center justify-between">
+                  <div>
+                    <p className="font-bold">{p.productId}</p>
+                    <p className="text-xs text-white/40">{new Date(p.createdAt?.toDate?.() || Date.now()).toLocaleDateString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-green-500">+{new Intl.NumberFormat('en-IN', { style: 'currency', currency: p.currency?.toUpperCase() || 'INR' }).format(p.amountTotal / 100)}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-white/30">{p.status}</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // --- Main Page ---
 
 export const DashboardPage = () => {
@@ -508,9 +619,16 @@ export const DashboardPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       if (u) {
-        setUser(u);
+        // Role check
+        const userDoc = await getDoc(doc(db, 'users', u.uid));
+        if (userDoc.exists() && userDoc.data().role === 'founder') {
+          setUser(u);
+        } else {
+          // If logged in but not founder, redirect to customer lab or home
+          navigate('/lab/dashboard');
+        }
       } else {
         navigate('/admin'); // Redirect to login if not authenticated
       }
@@ -598,11 +716,13 @@ export const DashboardPage = () => {
            </div>
         )}
 
-        {activeTab === 'metrics' && (
+        { activeTab === 'metrics' && (
            <div className="h-96 flex items-center justify-center text-white/20 font-bold uppercase tracking-widest">
-              Advanced Growth Metrics Coming Soon
+              Advanced Metrics Coming Soon
            </div>
         )}
+
+        { activeTab === 'growth' && <GrowthMetrics /> }
       </main>
 
       {/* Mobile Nav Overlay */}

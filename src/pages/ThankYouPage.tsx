@@ -107,10 +107,12 @@ export const ThankYouPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button 
             onClick={() => navigate('/products')}
-            className="p-6 rounded-[2rem] border border-white/5 bg-white/5 hover:bg-white/10 transition-colors flex flex-col items-start group"
+            className="p-6 rounded-[2rem] border border-white/5 bg-white/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-start group"
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">Next Step</span>
-            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">Explore More Blueprints</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2 flex items-center gap-2">
+              <Zap size={12} /> Explore Lab
+            </span>
+            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">Explore More Innovations</span>
           </button>
           
           <a 

@@ -7,11 +7,15 @@ import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
 import { useScrollToSection } from "@/src/hooks/useScrollToSection";
 import { SupportModal } from "../components/ui/SupportButton";
+import { AuthModal } from "../components/ui/AuthModal";
+import { auth, onAuthStateChanged, signOut } from "../firebase";
 
 export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('home');
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,6 +52,14 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Auth State Listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
   }, []);
 
   // Close menu on route change
@@ -147,11 +159,36 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
         {/* Right Action CTA */}
         <div className="hidden lg:flex items-center gap-4">
+          {user ? (
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/lab/dashboard"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              >
+                <img 
+                  src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=0D8ABC&color=fff`} 
+                  alt="Avatar" 
+                  className="w-6 h-6 rounded-full"
+                />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white">Lab</span>
+              </Link>
+            </div>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setIsAuthModalOpen(true)}
+              className="px-6 py-2.5 bg-white text-black rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
+            >
+              Sign In
+            </motion.button>
+          )}
+          
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setIsSupportModalOpen(true)}
-            className="px-8 py-3 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer shadow-[0_20px_40px_rgba(255,255,255,0.05)] flex items-center gap-2 group"
+            className="px-6 py-2.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer flex items-center gap-2 group"
           >
             Support <Heart size={14} className="group-hover:scale-110 transition-transform" />
           </motion.button>
@@ -285,6 +322,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
         document.body
       )}
       <SupportModal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </nav>
   );
 };

@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, 
-  getRedirectResult, signOut, onAuthStateChanged 
+  getRedirectResult, signOut, onAuthStateChanged,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer, limit } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -62,7 +63,9 @@ export {
   getRedirectResult,
   signOut, 
   onAuthStateChanged,
-  collection, 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  collection,  
   doc, 
   getDoc, 
   getDocs, 

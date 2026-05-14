@@ -1,33 +1,48 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
-import { X } from "lucide-react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { XCircle, ArrowLeft } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 export const CancelPage = () => {
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Payment Cancelled | Ayush Paul Lab",
+    description: "Your checkout session was cancelled.",
+    noindex: true
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0A0A]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="w-full min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center"
+    >
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-md w-full text-center space-y-8"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+        className="w-24 h-24 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(239,68,68,0.2)]"
       >
-        <div className="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mx-auto">
-          <X size={48} />
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">Payment Cancelled</h1>
-          <p className="text-white/40 text-lg">No worries! You can always support later.</p>
-        </div>
-        <button 
-          onClick={() => navigate("/")}
-          className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all"
-        >
-          Back to Portfolio
-        </button>
+        <XCircle size={48} className="text-red-500" />
       </motion.div>
-    </div>
+
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+        Checkout Cancelled
+      </h1>
+      
+      <p className="text-lg text-white/60 mb-12 max-w-md">
+        Your payment was not processed. If you had an issue during checkout, please try again or contact support.
+      </p>
+
+      <button 
+        onClick={() => navigate('/products')}
+        className="px-8 py-4 rounded-full bg-white/10 text-white font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition-colors border border-white/20"
+      >
+        <ArrowLeft size={18} /> Return to Lab
+      </button>
+    </motion.div>
   );
 };
-
-

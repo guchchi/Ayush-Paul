@@ -78,3 +78,17 @@ export const trackFreeDownload = async (product: Product, userId?: string) => {
     return false;
   }
 };
+
+// Track Premium Intent (Upgrade Clicks)
+export const trackPremiumIntent = async (productId: string, userId?: string) => {
+  try {
+    const intentRef = collection(db, "premium_intents");
+    await addDoc(intentRef, {
+      productId,
+      timestamp: new Date().toISOString(),
+      userId: userId || "anonymous"
+    });
+  } catch (error) {
+    console.error("Failed to track premium intent:", error);
+  }
+};

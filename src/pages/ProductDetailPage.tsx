@@ -3,8 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
-import { getProductBySlug, trackProductView, trackFreeDownload } from '../lib/product-utils';
+import { getProductBySlug, trackProductView, trackFreeDownload, trackPremiumIntent } from '../lib/product-utils';
+import { auth, onAuthStateChanged } from '../firebase';
+import { AuthModal } from '../components/ui/AuthModal';
 import { Product } from '../types';
 
 export const ProductDetailPage = () => {
@@ -13,6 +16,17 @@ export const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { trackEvent } = useAnalytics();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,6 +48,24 @@ export const ProductDetailPage = () => {
     canonicalUrl: getCanonicalUrl(`/products/${slug}`),
     ogImage: product?.thumbnail
   });
+
+  // Track time on page and view event
+  useEffect(() => {
+    if (!product) return;
+    
+    // Track product view on load
+    trackEvent('product_view', {
+      product_id: product.id,
+      product_name: product.title,
+      product_type: product.type
+    });
+
+    const timer = setTimeout(() => {
+      // Time on page
+      console.log(`[Analytics] User spent > 10s on ${product.title}`);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, [product]);
 
   const handleFreeDownload = async () => {
     if (!product || !product.downloadFileURL) return;
@@ -57,9 +89,44 @@ export const ProductDetailPage = () => {
     }, 1000);
   };
 
-  const handlePremiumUpgrade = () => {
-    // Phase 3: Stripe Checkout integration
-    alert("Premium checkout flow will be integrated in Phase 3.");
+  const handlePremiumUpgrade = async () => {
+    if (!product) return;
+    await trackPremiumIntent(product.id, user?.uid);
+    
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
+    setIsCheckingOut(true);
+    trackEvent('checkout_start', {
+      product_id: product.id,
+      product_name: product.title
+    });
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: product.id, 
+          userId: user.uid,
+          email: user.email
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "Failed to initialize checkout.");
+      }
+    } catch (error: any) {
+      console.error("Checkout Error:", error);
+      alert(error.message);
+      setIsCheckingOut(false);
+    }
   };
 
   if (loading) {
@@ -145,21 +212,35 @@ export const ProductDetailPage = () => {
               </div>
             </div>
 
-            {/* Creator Credibility */}
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit">
-              <img src={product.author.avatar} alt={product.author.name} className="w-10 h-10 rounded-full border border-white/10" />
-              <div className="flex flex-col">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary">Built By</span>
-                <span className="text-sm font-bold">{product.author.name}</span>
+            {/* Creator Credibility - Founder Profile Block */}
+            <div className="mt-4 p-6 rounded-[2rem] bg-white/5 border border-brand-primary/20 backdrop-blur-md flex flex-col sm:flex-row gap-6 items-center sm:items-start group hover:bg-brand-primary/5 transition-all">
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 bg-brand-primary rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                <img 
+                  src={product.author.avatar} 
+                  alt={product.author.name} 
+                  className="w-16 h-16 rounded-full border-2 border-brand-primary/30 relative z-10" 
+                />
+              </div>
+              <div className="flex flex-col text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary">Built By</span>
+                  <ShieldCheck size={14} className="text-brand-primary" />
+                </div>
+                <span className="text-xl font-bold mb-2">{product.author.name}</span>
+                <p className="text-sm text-white/60 leading-relaxed">
+                  Creator of the {product.title}. My mission is to open-source cutting edge robotics and software engineering systems to empower the next generation of innovators.
+                </p>
               </div>
             </div>
           </div>
 
           {/* Right: Visual Preview */}
-          <div className="relative aspect-square md:aspect-[4/3] rounded-[3rem] overflow-hidden glass border border-white/10 shadow-2xl shadow-brand-primary/5 group">
+          <div className="relative aspect-square md:aspect-[4/3] rounded-[3rem] overflow-hidden glass border border-white/10 shadow-2xl shadow-brand-primary/5 group h-full">
             <img 
               src={product.thumbnail} 
               alt={product.title} 
+              loading="lazy"
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
             />
             {/* Overlay Gradient */}
@@ -245,9 +326,14 @@ export const ProductDetailPage = () => {
 
               <button 
                 onClick={handlePremiumUpgrade}
+                disabled={isCheckingOut}
                 className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
               >
-                Upgrade to Premium <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                {isCheckingOut ? (
+                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                ) : (
+                  <>Upgrade to Premium <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
+                )}
               </button>
               <p className="text-center text-[10px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1">
                 <ShieldCheck size={12} /> Secure Stripe Checkout
@@ -256,6 +342,7 @@ export const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} defaultMode="signup" />
     </motion.div>
   );
 };

@@ -1,36 +1,59 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
-import { CheckCircle2 } from "lucide-react";
+import React, { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { CheckCircle, ArrowRight } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 export const SuccessPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session_id');
+
+  useSEO({
+    title: "Payment Successful | Ayush Paul Lab",
+    description: "Thank you for your purchase.",
+    noindex: true
+  });
+
+  const { trackEvent } = useAnalytics();
+
+  useEffect(() => {
+    if (sessionId) {
+      trackEvent('purchase_success', { session_id: sessionId });
+    }
+  }, [sessionId, trackEvent]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0A0A]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="w-full min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center"
+    >
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-md w-full text-center space-y-8"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+        className="w-24 h-24 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(34,197,94,0.2)]"
       >
-        <div className="w-24 h-24 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 mx-auto">
-          <CheckCircle2 size={48} />
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">Payment Successful!</h1>
-          <p className="text-white/40 text-lg">Thank you for supporting Ayush Paul 🚀</p>
-        </div>
-        <div className="p-6 rounded-[32px] bg-white/5 border border-white/10 text-sm text-white/60 leading-relaxed">
-          Your contribution helps me keep building open-source projects and creating content for the community. You're awesome!
-        </div>
-        <button 
-          onClick={() => navigate("/")}
-          className="w-full py-4 rounded-2xl bg-brand-primary text-black font-bold hover:scale-105 active:scale-95 transition-all"
-        >
-          Back to Portfolio
-        </button>
+        <CheckCircle size={48} className="text-green-500" />
       </motion.div>
-    </div>
+
+      <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+        Payment Successful!
+      </h1>
+      
+      <p className="text-lg text-white/60 mb-12 max-w-md">
+        Thank you for supporting the Innovation Lab. Your premium blueprint has been unlocked and is waiting for you in your digital vault.
+      </p>
+
+      <button 
+        onClick={() => navigate('/lab/dashboard')}
+        className="px-8 py-4 rounded-full bg-brand-primary text-black font-bold flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-xl shadow-brand-primary/20"
+      >
+        Go to My Lab <ArrowRight size={18} />
+      </button>
+    </motion.div>
   );
 };
-
-

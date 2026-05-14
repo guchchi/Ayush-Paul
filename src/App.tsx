@@ -28,6 +28,7 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ defa
 const ProductsPage = lazy(() => import("./pages/ProductsPage").then(m => ({ default: m.ProductsPage })));
 const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage").then(m => ({ default: m.ProductDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
+const LabDashboardPage = lazy(() => import("./pages/LabDashboardPage").then(m => ({ default: m.LabDashboardPage })));
 
 // --- Loading Fallback ---
 const PageLoading = () => (
@@ -138,6 +139,7 @@ export default function App() {
               <Route path="/products" element={wrapInLayout(<ProductsPage />)} />
               <Route path="/products/:slug" element={wrapInLayout(<ProductDetailPage />)} />
               <Route path="/thank-you" element={wrapInLayout(<ThankYouPage />)} />
+              <Route path="/lab/dashboard" element={wrapInLayout(<LabDashboardPage />)} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
