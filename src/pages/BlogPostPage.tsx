@@ -318,8 +318,8 @@ export const BlogPostPage = () => {
             </aside>
 
             {/* Middle: Article Content */}
-            <article className="w-full min-w-0">
-              <div className="blog-prose prose prose-invert max-w-none editorial-dropcap">
+            <article className="w-full min-w-0 relative z-[20] pointer-events-auto">
+              <div className="blog-prose prose prose-invert max-w-none editorial-dropcap pointer-events-auto">
                 {post.blocks ? (
                   <div className="space-y-4">
                     {post.blocks.map((block: Block) => {
