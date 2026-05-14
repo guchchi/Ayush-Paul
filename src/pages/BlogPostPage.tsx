@@ -206,16 +206,16 @@ export const BlogPostPage = () => {
             </div>
 
             <div className="max-w-5xl mx-auto space-y-16">
-              <div className="lg:hidden mb-16">
-                <BackButton to="/blog" label="All Stories" />
+              <div className="lg:hidden mb-12">
+                <BackButton to="/blog" label="" />
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-6">
-                <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
+                <div className="hidden sm:flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                   <Calendar size={14} className="text-brand-primary" />
                   <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">{formatDate(post.createdAt)}</span>
                 </div>
-                <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                <div className="hidden sm:flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                   <Clock size={14} className="text-brand-primary" />
                   <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
                     {post.blocks ? 
@@ -225,7 +225,7 @@ export const BlogPostPage = () => {
                   </span>
                 </div>
                 {post.category && (
-                  <div className="px-6 py-2.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md shadow-[0_0_30px_rgba(0,194,255,0.1)]">
+                  <div className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md shadow-[0_0_30px_rgba(0,194,255,0.1)]">
                     {post.category}
                   </div>
                 )}
