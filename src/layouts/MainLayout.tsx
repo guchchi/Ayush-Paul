@@ -22,30 +22,42 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
       
       if (!anchor || !anchor.href || e.defaultPrevented || anchor.hasAttribute('download')) return;
 
-      const url = new URL(anchor.href);
-      const isInternal = url.origin === window.location.origin;
-      const isExternal = !isInternal || anchor.target === '_blank';
+      try {
+        const url = new URL(anchor.href);
+        const isInternal = url.origin === window.location.origin;
+        const isExternal = !isInternal || anchor.target === '_blank';
 
-      if (isExternal) return;
-
-      // Handle Internal SPA Navigation
-      e.preventDefault();
-      const path = anchor.pathname + anchor.search + anchor.hash;
-      
-      if (anchor.hash && anchor.pathname === location.pathname) {
-        const id = anchor.hash.substring(1);
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-          window.history.pushState(null, '', path);
+        if (isExternal) {
+          // Force external links to open if they have target="_blank"
+          // This ensures they work even if some other logic tries to block them
+          if (anchor.target === '_blank') {
+            e.preventDefault();
+            window.open(anchor.href, '_blank', 'noopener,noreferrer');
+          }
+          return;
         }
-      } else {
-        navigate(path);
+
+        // Handle Internal SPA Navigation
+        e.preventDefault();
+        const path = anchor.pathname + anchor.search + anchor.hash;
+        
+        if (anchor.hash && anchor.pathname === location.pathname) {
+          const id = anchor.hash.substring(1);
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            window.history.pushState(null, '', path);
+          }
+        } else {
+          navigate(path);
+        }
+      } catch (err) {
+        console.warn("Global click interceptor error:", err);
       }
     };
 
-    document.addEventListener('click', handleGlobalClick);
-    return () => document.removeEventListener('click', handleGlobalClick);
+    document.addEventListener('click', handleGlobalClick, true); // Use capture phase
+    return () => document.removeEventListener('click', handleGlobalClick, true);
   }, [navigate, location.pathname]);
 
   return (
