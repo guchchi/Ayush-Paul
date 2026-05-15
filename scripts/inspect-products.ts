@@ -51,6 +51,7 @@ async function inspectProducts() {
       console.log(`Price: ${data.basePrice} / ${data.salePrice}`);
       console.log(`Currency: ${data.currency}`);
       console.log(`StripePriceId: ${data.stripePriceId || "MISSING"}`);
+      console.log(`DownloadURL: ${data.downloadFileURL || "MISSING"}`);
       console.log(`--------------------------`);
     });
   } catch (err: any) {

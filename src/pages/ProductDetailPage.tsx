@@ -117,41 +117,55 @@ export const ProductDetailPage = () => {
   }, [product]);
 
   const handleFreeDownload = async () => {
-    if (!product || !product.downloadFileURL) return;
+    console.log("[Lab] Free Download Triggered for:", product?.title);
+    if (!product) return;
+
+    if (!product.downloadFileURL) {
+      console.error("[Lab] Missing downloadFileURL for product:", product.id);
+      alert("🔧 This free version is not yet configured for download. Please contact the engineering team.");
+      return;
+    }
+
     setIsDownloading(true);
     
-    // 1. Track the download analytics via PostHog (Batched)
-    trackEvent('free_download', {
-      product_id: product.id,
-      product_name: product.title
-    });
-    
-    // 2. Unlock in Firestore (Digital Vault logic)
-    if (user) {
-      try {
+    try {
+      // 1. Track the download analytics via PostHog (Batched)
+      trackEvent('free_download', {
+        product_id: product.id,
+        product_name: product.title
+      });
+      
+      // 2. Unlock in Firestore (Digital Vault logic)
+      if (user) {
+        console.log("[Lab] Unlocking product for user:", user.uid);
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
           purchasedProducts: arrayUnion(product.id)
         });
-        console.log(`[Lab] Product ${product.id} unlocked for ${user.uid}`);
-      } catch (err) {
-        console.error("Failed to unlock free product in Firestore:", err);
+        console.log(`[Lab] Product ${product.id} unlocked successfully.`);
       }
+
+      // 3. Trigger the actual file download
+      console.log("[Lab] Triggering file download...");
+      const link = document.createElement('a');
+      link.href = product.downloadFileURL;
+      link.target = '_blank';
+      link.download = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // 4. Redirect to Lab Dashboard with success state
+      console.log("[Lab] Redirecting to dashboard...");
+      setTimeout(() => {
+        navigate('/lab/dashboard?unlocked=success');
+      }, 1000);
+    } catch (error: any) {
+      console.error("[Lab] Free Download Error:", error);
+      alert("Failed to process free download. Please check your connection.");
+    } finally {
+      setIsDownloading(false);
     }
-
-    // 3. Trigger the actual file download
-    const link = document.createElement('a');
-    link.href = product.downloadFileURL;
-    link.target = '_blank';
-    link.download = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // 4. Redirect to Lab Dashboard with success state
-    setTimeout(() => {
-      navigate('/lab/dashboard?unlocked=success');
-    }, 1000);
   };
 
   const handlePremiumUpgrade = async () => {

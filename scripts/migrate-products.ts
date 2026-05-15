@@ -38,6 +38,7 @@ async function migrateProducts() {
     salePrice: 29, // Added a sale price for conversion
     currency: "inr",
     stripePriceId: "price_1TIilMCrlf5LZT5FZxK6H6Z8", // PLACEHOLDER: User should update this
+    downloadFileURL: "https://ayushpaul.in/downloads/ayu-boat-free.zip", // Added for free download
     category: "Robotics",
     description: "Full engineering blueprints for the Ayu-Boat autonomous water drone. Includes CAD, source code, and assembly guide.",
     thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200",
