@@ -1,5 +1,5 @@
 import matter from 'gray-matter';
-import { db, collection, getDocs, query, where, orderBy, doc, getDoc } from './firebase';
+import { db, collection, getDocs, query, where, orderBy, doc, getDoc } from '../firebase';
 
 export interface BlogPost {
   id: string;
