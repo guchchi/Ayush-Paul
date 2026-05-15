@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+import { db, collection, getDocs, query, where, orderBy, doc, getDoc } from './firebase';
 
 export interface BlogPost {
   id: string;
@@ -12,6 +13,10 @@ export interface BlogPost {
   author: string;
   published: boolean;
   content: string;
+  blocks?: any[];
+  createdAt?: any;
+  updatedAt?: any;
+  seo?: any;
 }
 
 // Vite's import.meta.glob allows importing multiple modules.
@@ -20,22 +25,17 @@ export interface BlogPost {
 // Using '?raw' query is the standard Vite way to get raw strings.
 const rawFiles = import.meta.glob('../content/blog/*.md', { query: '?raw', import: 'default', eager: true });
 
+// Hybrid Fetching: Merge Static + Dynamic
 export const getAllBlogs = (): BlogPost[] => {
   const posts: BlogPost[] = [];
 
   for (const path in rawFiles) {
     const rawContent = rawFiles[path] as string;
     
-    // Fallback if rawContent isn't a string (e.g., if Vite configuration differs)
-    if (typeof rawContent !== 'string') {
-      console.warn(`[Blog Loader] File ${path} is not a string. Did you configure Vite for raw imports correctly?`);
-      continue;
-    }
+    if (typeof rawContent !== 'string') continue;
 
     try {
       const { data, content } = matter(rawContent);
-      
-      // Only include published posts
       if (data.published === false) continue;
 
       posts.push({
@@ -48,16 +48,45 @@ export const getAllBlogs = (): BlogPost[] => {
         category: data.category || 'Uncategorized',
         coverImage: data.coverImage || '',
         author: data.author || 'Ayush Paul',
-        published: data.published !== false,
+        published: true,
         content: content,
       });
     } catch (e) {
-      console.error(`[Blog Loader] Error parsing frontmatter for ${path}:`, e);
+      console.error(`[Blog Loader] Static error for ${path}:`, e);
     }
   }
+  return posts;
+};
 
-  // Sort by date descending
-  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+export const getDynamicBlogs = async (): Promise<BlogPost[]> => {
+  try {
+    const q = query(
+      collection(db, "blogPosts"), 
+      where("published", "==", true),
+      orderBy("createdAt", "desc")
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => {
+      const d = doc.data();
+      return {
+        id: doc.id,
+        slug: d.slug,
+        title: d.title,
+        description: d.description || "",
+        date: d.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+        tags: Array.isArray(d.tags) ? d.tags : (d.tags || "").split(",").map((t: string) => t.trim()),
+        category: d.category || "General",
+        coverImage: d.coverImage || "",
+        author: d.author || "Ayush Paul",
+        published: true,
+        content: d.content || "",
+        blocks: d.blocks || []
+      } as BlogPost;
+    });
+  } catch (e) {
+    console.error("[Blog Loader] Dynamic error:", e);
+    return [];
+  }
 };
 
 export const getBlogBySlug = (slug: string): BlogPost | undefined => {

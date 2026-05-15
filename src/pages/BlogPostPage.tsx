@@ -65,30 +65,53 @@ export const BlogPostPage = () => {
   useEffect(() => {
     if (!slug) return;
     
-    // Load statically parsed blog (zero Firestore reads)
-    const data = getBlogBySlug(slug);
-    
-    if (data) {
-      setPost(data);
+    const loadPost = async () => {
+      setLoading(true);
+      try {
+        const { getBlogBySlug, getDynamicBlogs, getAllBlogs } = await import('../lib/blog-utils');
+        
+        // 1. Try static
+        let data = getBlogBySlug(slug);
+        
+        // 2. Try dynamic if static not found
+        if (!data) {
+          const dynamics = await getDynamicBlogs();
+          data = dynamics.find(p => p.slug === slug);
+        }
 
-      // Compute related posts locally
-      const allBlogs = getAllBlogs();
-      const others = allBlogs.filter(p => p.slug !== slug);
-      
-      const currentTags = Array.isArray(data.tags) ? data.tags : [];
-      const scored = others.map(other => {
-        let score = 0;
-        const otherTags = Array.isArray(other.tags) ? other.tags : [];
-        if (other.category === data.category) score += 5;
-        const commonTags = currentTags.filter(t => otherTags.includes(t));
-        score += commonTags.length * 2;
-        return { ...other, score };
-      });
-      
-      setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
-    }
-    
-    setLoading(false);
+        if (data) {
+          setPost(data);
+
+          // Compute related posts
+          const allStatic = getAllBlogs();
+          const allDynamic = await getDynamicBlogs();
+          const combined = [...allStatic];
+          allDynamic.forEach(d => {
+            if (!combined.find(s => s.slug === d.slug)) combined.push(d);
+          });
+
+          const others = combined.filter(p => p.slug !== slug);
+          const currentTags = Array.isArray(data.tags) ? data.tags : [];
+          
+          const scored = others.map(other => {
+            let score = 0;
+            const otherTags = Array.isArray(other.tags) ? other.tags : [];
+            if (other.category === data.category) score += 5;
+            const commonTags = currentTags.filter(t => otherTags.includes(t));
+            score += commonTags.length * 2;
+            return { ...other, score };
+          });
+          
+          setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
+        }
+      } catch (err) {
+        console.error("[Blog] Post load error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPost();
   }, [slug]);
 
   useEffect(() => {

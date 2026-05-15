@@ -31,10 +31,37 @@ export const BlogPage = () => {
   }, []);
 
   useEffect(() => {
-    // Load statically parsed blogs (zero Firestore reads)
-    const allBlogs = getAllBlogs();
-    setPosts(allBlogs);
-    setLoading(false);
+    const loadAllPosts = async () => {
+      setLoading(true);
+      try {
+        const { getAllBlogs, getDynamicBlogs } = await import('../lib/blog-utils');
+        
+        // 1. Load static
+        const staticPosts = getAllBlogs();
+        
+        // 2. Load dynamic
+        const dynamicPosts = await getDynamicBlogs();
+
+        // 3. Merge
+        const combined = [...staticPosts];
+        dynamicPosts.forEach(d => {
+          if (!combined.find(s => s.slug === d.slug)) {
+            combined.push(d);
+          }
+        });
+
+        // 4. Sort
+        combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        setPosts(combined);
+      } catch (err) {
+        console.error("[Blog] Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAllPosts();
   }, []);
 
   const filteredPosts = posts.filter(post => {
