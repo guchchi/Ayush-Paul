@@ -155,10 +155,10 @@ export const ProductDetailPage = () => {
       link.click();
       document.body.removeChild(link);
 
-      // 4. Redirect to Lab Dashboard with success state
-      console.log("[Lab] Redirecting to dashboard...");
+      // 4. Redirect to Thank You page for emotional conversion
+      console.log("[Lab] Redirecting to Thank You page...");
       setTimeout(() => {
-        navigate('/lab/dashboard?unlocked=success');
+        navigate('/thank-you');
       }, 1000);
     } catch (error: any) {
       console.error("[Lab] Free Download Error:", error);
