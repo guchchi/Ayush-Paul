@@ -53,6 +53,15 @@ export const LabDashboardPage = () => {
     return () => unsubscribe();
   }, [navigate]);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
   const handleDownload = async (product: Product) => {
     if (!product.downloadFileURL) return;
     
