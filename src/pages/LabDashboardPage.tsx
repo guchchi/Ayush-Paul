@@ -53,16 +53,24 @@ export const LabDashboardPage = () => {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/');
+  const handleDownload = async (product: Product) => {
+    if (!product.downloadFileURL) return;
+    
+    trackEvent('file_download', {
+      product_id: product.id,
+      product_name: product.title
+    });
+
+    window.open(product.downloadFileURL, '_blank');
   };
+
+  const isNewPurchase = new URLSearchParams(window.location.search).get('product_id');
 
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center">
         <div className="w-12 h-12 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20">Loading Workspace</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20">Verifying Identity</span>
       </div>
     );
   }
@@ -76,6 +84,28 @@ export const LabDashboardPage = () => {
     >
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
+        {/* Success / Onboarding Alert */}
+        <AnimatePresence>
+          {isNewPurchase && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="mb-8 p-6 rounded-3xl bg-green-500/10 border border-green-500/20 overflow-hidden"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center">
+                  <Zap size={24} className="text-green-500" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-white tracking-tight">System Unlocked Successfully</h4>
+                  <p className="text-sm text-green-500/80 font-medium">Your new innovation asset has been added to your Digital Vault.</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Dashboard Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
           <div className="flex items-center gap-6">
@@ -112,7 +142,7 @@ export const LabDashboardPage = () => {
           <div className="flex items-center gap-3">
             <Bell size={18} className="text-brand-primary shrink-0" />
             <p className="text-sm text-white/80">
-              <strong className="text-white">System Update:</strong> Phase 2 of the Innovation Lab is now live. Premium blueprints are coming soon.
+              <strong className="text-white">Secure Workspace:</strong> All files are served via protected URLs. Sharing access is strictly monitored.
             </p>
           </div>
           <button className="text-[10px] font-bold uppercase tracking-widest text-brand-primary hover:text-white transition-colors shrink-0">
@@ -146,7 +176,10 @@ export const LabDashboardPage = () => {
                   <h3 className="text-lg font-bold mb-2 line-clamp-1">{product.title}</h3>
                   <p className="text-sm text-white/40 mb-6 line-clamp-2 flex-1">{product.description}</p>
                   
-                  <button className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition-colors font-bold text-sm flex items-center justify-center gap-2">
+                  <button 
+                    onClick={() => handleDownload(product)}
+                    className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition-colors font-bold text-sm flex items-center justify-center gap-2"
+                  >
                     <Download size={16} /> Access Files
                   </button>
                 </div>

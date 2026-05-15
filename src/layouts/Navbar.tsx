@@ -83,6 +83,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     { name: "Home", href: "/#home", id: "home" },
     { name: "Projects", href: "/projects", id: "projects" },
     { name: "Lab", href: "/products", id: "products" },
+    { name: "Momentum", href: "/momentum", id: "momentum" },
     { name: "Blog", href: "/blog", id: "latest-blogs" },
     { name: "About", href: "/about", id: "about" },
     { name: "Contact", href: "/contact", id: "contact" },

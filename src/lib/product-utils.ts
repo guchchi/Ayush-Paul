@@ -4,8 +4,45 @@ import { Product, DownloadAnalytics } from "../types";
 import { handleFirestoreError } from "./firebase-utils";
 import { OperationType } from "../types";
 
-// Fetch all published products
+const CACHE_KEY = "products_cache";
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+interface CacheData {
+  timestamp: number;
+  products: Product[];
+}
+
+let memoryCache: Product[] | null = null;
+let memoryCacheTimestamp: number = 0;
+
+// Fetch all published products with Multi-Tier Cache (Memory -> LocalStorage -> Firestore)
 export const getPublishedProducts = async (): Promise<Product[]> => {
+  const now = Date.now();
+
+  // 1. Check Memory Cache
+  if (memoryCache && (now - memoryCacheTimestamp < CACHE_TTL_MS)) {
+    console.log("[Cache] Product List: Memory Hit");
+    return memoryCache;
+  }
+
+  // 2. Check LocalStorage Cache
+  try {
+    const localCacheStr = localStorage.getItem(CACHE_KEY);
+    if (localCacheStr) {
+      const localCache: CacheData = JSON.parse(localCacheStr);
+      if (now - localCache.timestamp < CACHE_TTL_MS) {
+        console.log("[Cache] Product List: LocalStorage Hit");
+        memoryCache = localCache.products;
+        memoryCacheTimestamp = localCache.timestamp;
+        return localCache.products;
+      }
+    }
+  } catch (e) {
+    console.warn("Failed to read from localStorage cache:", e);
+  }
+
+  // 3. Fallback to Firestore (Network)
+  console.log("[Cache] Product List: Network Fetch (Firestore)");
   try {
     const q = query(
       collection(db, "products"),
@@ -13,15 +50,36 @@ export const getPublishedProducts = async (): Promise<Product[]> => {
       orderBy("createdAt", "desc")
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+
+    // Update caches
+    memoryCache = products;
+    memoryCacheTimestamp = now;
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: now, products }));
+    } catch (e) {
+      console.warn("Failed to write to localStorage cache:", e);
+    }
+
+    return products;
   } catch (error) {
     handleFirestoreError(error, OperationType.GET, "products");
-    return [];
+    return memoryCache || []; // Return stale memory cache if network fails
   }
 };
 
-// Fetch a single product by slug
+// Fetch a single product by slug (leverages the same cache)
 export const getProductBySlug = async (slug: string): Promise<Product | null> => {
+  // Try to find it in the cached list first to save a document read
+  const allProducts = await getPublishedProducts();
+  const cachedProduct = allProducts.find(p => p.slug === slug);
+  if (cachedProduct) {
+    console.log(`[Cache] Product '${slug}': Hit`);
+    return cachedProduct;
+  }
+
+  // If not found in cache (e.g. unpublished but directly linked, or cache stale), fetch directly
+  console.log(`[Cache] Product '${slug}': Network Fetch (Firestore)`);
   try {
     const q = query(
       collection(db, "products"),
@@ -38,57 +96,3 @@ export const getProductBySlug = async (slug: string): Promise<Product | null> =>
   }
 };
 
-// Increment view count safely
-export const trackProductView = async (productId: string) => {
-  const storageKey = `viewed_product_${productId}`;
-  if (sessionStorage.getItem(storageKey)) return;
-
-  try {
-    await updateDoc(doc(db, "products", productId), {
-      viewCount: increment(1)
-    });
-    sessionStorage.setItem(storageKey, "true");
-  } catch (error) {
-    console.error("Failed to track view:", error);
-  }
-};
-
-// Track a free download
-export const trackFreeDownload = async (product: Product, userId?: string) => {
-  try {
-    // 1. Increment the product's download count
-    await updateDoc(doc(db, "products", product.id), {
-      downloadCount: increment(1)
-    });
-
-    // 2. Add an analytics record
-    const analyticsRef = collection(db, "downloads");
-    const analyticsRecord: Partial<DownloadAnalytics> = {
-      productId: product.id,
-      productSlug: product.slug,
-      timestamp: new Date().toISOString(),
-      isAnonymous: !userId,
-      ...(userId && { userId })
-    };
-    await addDoc(analyticsRef, analyticsRecord);
-
-    return true;
-  } catch (error) {
-    console.error("Failed to track download:", error);
-    return false;
-  }
-};
-
-// Track Premium Intent (Upgrade Clicks)
-export const trackPremiumIntent = async (productId: string, userId?: string) => {
-  try {
-    const intentRef = collection(db, "premium_intents");
-    await addDoc(intentRef, {
-      productId,
-      timestamp: new Date().toISOString(),
-      userId: userId || "anonymous"
-    });
-  } catch (error) {
-    console.error("Failed to track premium intent:", error);
-  }
-};

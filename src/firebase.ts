@@ -57,6 +57,38 @@ export const getFirebaseStatus = () => ({
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
+// --- Solo Founder Architecture Guardrails ---
+
+const isPublicRoute = () => {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname;
+  return !path.startsWith('/dashboard') && !path.startsWith('/admin') && !path.startsWith('/lab/dashboard');
+};
+
+const monitoredGetDoc = async (...args: Parameters<typeof getDoc>) => {
+  if (import.meta.env.DEV) {
+    console.log("%c📊 [QUOTA] Firestore Read: getDoc", "color: #00C2FF; font-weight: bold;");
+  }
+  return getDoc(...args);
+};
+
+const monitoredGetDocs = async (...args: Parameters<typeof getDocs>) => {
+  if (import.meta.env.DEV) {
+    console.log("%c📊 [QUOTA] Firestore Read: getDocs", "color: #00C2FF; font-weight: bold;");
+  }
+  return getDocs(...args);
+};
+
+const monitoredOnSnapshot = (...args: Parameters<typeof onSnapshot>) => {
+  if (isPublicRoute()) {
+    console.warn("%c🚨 [GUARD] Accidental onSnapshot detected on public route! Use getDocs + Cache instead to save quota.", "color: #FF0055; font-weight: bold;");
+  }
+  if (import.meta.env.DEV) {
+    console.log("%c📡 [LISTENER] Firestore onSnapshot active", "color: #FFCC00; font-weight: bold;");
+  }
+  return onSnapshot(...args);
+};
+
 export { 
   signInWithPopup, 
   signInWithRedirect,
@@ -67,15 +99,15 @@ export {
   signInWithEmailAndPassword,
   collection,  
   doc, 
-  getDoc, 
-  getDocs, 
+  monitoredGetDoc as getDoc, 
+  monitoredGetDocs as getDocs, 
   setDoc, 
   updateDoc, 
   deleteDoc, 
   query, 
   orderBy, 
   where, 
-  onSnapshot,
+  monitoredOnSnapshot as onSnapshot,
   addDoc,
   serverTimestamp,
   getDocFromServer,

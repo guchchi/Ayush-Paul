@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Linkedin, Github, Youtube, Mail } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
+import { WaitlistForm } from '../components/ui/WaitlistForm';
 
 export const Footer = () => {
   return (
@@ -38,62 +39,39 @@ export const Footer = () => {
               {[
                 { name: "Home", href: "/#home" },
                 { name: "Projects", href: "/projects" },
+                { name: "Lab", href: "/products" },
+                { name: "Momentum", href: "/momentum" },
                 { name: "Blog", href: "/blog" },
-                { name: "Achievements", href: "/#achievements" },
                 { name: "About", href: "/about" },
-                { name: "Contact", href: "/contact" }
               ].map((link) => (
                 <li key={link.name}>
-                  {link.href.startsWith("/#") ? (
-                    <button 
-                      onClick={() => {
-                        const id = link.href.split("#")[1];
-                        if (window.location.pathname !== '/') {
-                          window.location.href = link.href;
-                        } else {
-                          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
-                      className="text-white/40 hover:text-brand-primary transition-colors font-medium text-left"
-                    >
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link to={link.href} className="text-white/40 hover:text-brand-primary transition-colors font-medium">
-                      {link.name}
-                    </Link>
-                  )}
+                  <Link to={link.href} className="text-white/40 hover:text-brand-primary transition-colors font-medium">
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Legal</h4>
-            <ul className="space-y-4">
-              <li>
-                <Link to="/privacy" className="text-white/40 hover:text-white transition-colors font-medium">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-white/40 hover:text-white transition-colors font-medium">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/cookie-policy" className="text-white/40 hover:text-white transition-colors font-medium">
-                  Cookie Policy
-                </Link>
-              </li>
-            </ul>
+            <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Join the Lab</h4>
+            <p className="text-white/30 text-xs mb-6 leading-relaxed">
+              Get notified whenever I drop a new engineering blueprint or system update.
+            </p>
+            <WaitlistForm context="footer" />
           </div>
         </div>
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-white/20 text-sm font-medium">
-            © 2026 <span className="sr-only">Ayush Paul</span>. Built independently in India.
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-8">
+             <p className="text-white/20 text-sm font-medium">
+                © 2026 <span className="sr-only">Ayush Paul</span>. Built independently in India.
+             </p>
+             <div className="flex items-center gap-4">
+                <Link to="/privacy" className="text-[10px] uppercase font-bold tracking-widest text-white/20 hover:text-white transition-colors">Privacy</Link>
+                <Link to="/terms" className="text-[10px] uppercase font-bold tracking-widest text-white/20 hover:text-white transition-colors">Terms</Link>
+             </div>
+          </div>
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-white/20 text-sm font-medium">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />

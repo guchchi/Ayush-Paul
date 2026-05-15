@@ -22,42 +22,53 @@ async function generateSitemap() {
     '/about',
     '/projects',
     '/blog',
+    '/products',
+    '/momentum',
     '/now',
     '/collaborate',
-    '/contact',
-    '/privacy',
-    '/terms',
-    '/cookie-policy'
+    '/contact'
   ];
 
-  // Fetch dynamic blog posts
+  // 1. Scan Local Markdown Blogs (New Architecture)
+  try {
+    const blogDir = path.resolve(process.cwd(), 'src/content/blog');
+    if (fs.existsSync(blogDir)) {
+      const files = fs.readdirSync(blogDir);
+      files.forEach(file => {
+        if (file.endsWith('.md')) {
+          const slug = file.replace('.md', '');
+          urls.push(`/blog/${slug}`);
+        }
+      });
+      console.log(`✅ Added ${files.length} local blog routes to sitemap.`);
+    }
+  } catch (err) {
+    console.error('Error scanning local blogs:', err);
+  }
+
+  // 2. Fetch Dynamic Products & Projects from Firestore
   try {
     if (!config.projectId || !config.apiKey) {
-      console.warn('⚠️ Firebase credentials missing in environment. Skipping dynamic blog routes for sitemap.');
+      console.warn('⚠️ Firebase credentials missing. Skipping dynamic product/project routes.');
     } else {
-      const url = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/blogPosts?key=${config.apiKey}`;
-      console.log(`Fetching blogs from: ${url}`);
-    
-    const response = await fetch(url);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.documents) {
-        data.documents.forEach((doc: any) => {
-          // Check if it's published
-          const published = doc.fields?.published?.booleanValue;
-          const slug = doc.fields?.slug?.stringValue;
-          if (published && slug) {
-            urls.push(`/blog/${slug}`);
-          }
-        });
-      }
-      } else {
-        console.warn('Could not fetch blogs for sitemap, skipping dynamic routes.', response.statusText);
+      // Products
+      const productUrl = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/products?key=${config.apiKey}`;
+      const prodRes = await fetch(productUrl);
+      if (prodRes.ok) {
+        const prodData = await prodRes.json();
+        if (prodData.documents) {
+          prodData.documents.forEach((doc: any) => {
+            const slug = doc.fields?.slug?.stringValue;
+            const published = doc.fields?.published?.booleanValue;
+            if (slug && published !== false) {
+              urls.push(`/products/${slug}`);
+            }
+          });
+        }
       }
 
-      // Fetch dynamic projects
+      // Projects
       const projectUrl = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/projects?key=${config.apiKey}`;
-      console.log(`Fetching projects from: ${projectUrl}`);
       const pResponse = await fetch(projectUrl);
       if (pResponse.ok) {
         const pData = await pResponse.json();
@@ -72,7 +83,7 @@ async function generateSitemap() {
       }
     }
   } catch (error) {
-    console.error('Error fetching blogs for sitemap:', error);
+    console.error('Error fetching dynamic routes for sitemap:', error);
   }
 
   const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>

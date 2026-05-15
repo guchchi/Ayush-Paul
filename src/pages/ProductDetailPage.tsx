@@ -5,10 +5,10 @@ import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft } fr
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
-import { getProductBySlug, trackProductView, trackFreeDownload, trackPremiumIntent } from '../lib/product-utils';
+import { getProductBySlug } from '../lib/product-utils';
 import { auth, onAuthStateChanged } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
-import { Product } from '../types';
+import { ProductBadge } from '../components/ui/ProductBadge';
 
 export const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -34,7 +34,6 @@ export const ProductDetailPage = () => {
       const data = await getProductBySlug(slug);
       if (data) {
         setProduct(data);
-        trackProductView(data.id);
       }
       setLoading(false);
     };
@@ -48,6 +47,44 @@ export const ProductDetailPage = () => {
     canonicalUrl: getCanonicalUrl(`/products/${slug}`),
     ogImage: product?.thumbnail
   });
+
+  // SEO: Inject JSON-LD Product Schema
+  useEffect(() => {
+    if (!product) return;
+
+    const schema = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": product.title,
+      "image": [product.thumbnail],
+      "description": product.description,
+      "sku": product.id,
+      "brand": {
+        "@type": "Brand",
+        "name": "Ayush Paul Lab"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": window.location.href,
+        "priceCurrency": product.currency || "INR",
+        "price": product.salePrice || product.basePrice,
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Person",
+          "name": "Ayush Paul"
+        }
+      }
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [product]);
 
   // Track time on page and view event
   useEffect(() => {
@@ -71,8 +108,11 @@ export const ProductDetailPage = () => {
     if (!product || !product.downloadFileURL) return;
     setIsDownloading(true);
     
-    // 1. Track the download analytics
-    await trackFreeDownload(product);
+    // 1. Track the download analytics via PostHog (Batched)
+    trackEvent('free_download', {
+      product_id: product.id,
+      product_name: product.title
+    });
     
     // 2. Trigger the actual file download in a hidden iframe or blank target
     const link = document.createElement('a');
@@ -91,7 +131,11 @@ export const ProductDetailPage = () => {
 
   const handlePremiumUpgrade = async () => {
     if (!product) return;
-    await trackPremiumIntent(product.id, user?.uid);
+    
+    trackEvent('premium_intent', {
+      product_id: product.id,
+      product_name: product.title
+    });
     
     if (!user) {
       setIsAuthModalOpen(true);
@@ -194,12 +238,24 @@ export const ProductDetailPage = () => {
 
             {/* Psychological Triggers */}
             <div className="flex flex-col gap-4 mb-10">
-              {product.inventoryCount !== null && product.inventoryCount < 10 && (
-                <div className="flex items-center gap-3 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-sm font-bold">
+              {(product.inventoryCount ?? 0) < 10 && product.type !== 'free' && (
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex items-center gap-3 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-sm font-bold shadow-[0_0_20px_rgba(234,179,8,0.1)]"
+                >
                   <Clock size={18} className="animate-pulse" /> 
-                  Warning: Only {product.inventoryCount} copies left at current tier.
+                  High Demand: Only {product.inventoryCount} copies left at current tier.
+                </motion.div>
+              )}
+              
+              {isFree && (
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-bold">
+                  <Zap size={18} /> 
+                  Starter Blueprint: Upgrade anytime to unlock full CAD + Source.
                 </div>
               )}
+
               <div className="flex flex-wrap items-center gap-6 text-sm">
                 <div className="flex items-center gap-2 text-white/60 font-medium">
                   <Zap size={16} className="text-brand-primary" />
@@ -237,6 +293,8 @@ export const ProductDetailPage = () => {
 
           {/* Right: Visual Preview */}
           <div className="relative aspect-square md:aspect-[4/3] rounded-[3rem] overflow-hidden glass border border-white/10 shadow-2xl shadow-brand-primary/5 group h-full">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <ProductBadge className="absolute bottom-8 left-8 z-20 shadow-2xl" />
             <img 
               src={product.thumbnail} 
               alt={product.title} 

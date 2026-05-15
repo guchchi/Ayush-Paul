@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ArrowRight, ChevronDown, Check } from "lucide-react";
-import { collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
-import { db } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
-import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
-import { OperationType } from "../types";
+import { formatDate } from "../lib/firebase-utils";
+import { getAllBlogs, BlogPost } from "../lib/blog-utils";
 
 export const BlogPage = () => {
   useSEO({
     title: "Ayush Paul Blog | Ideas, AI & Engineering",
     description: "Ayush Paul's Blog discussing AI, Development, learning journey and featured projects."
   });
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -33,33 +31,10 @@ export const BlogPage = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    const q = query(collection(db, "blogPosts"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter((post: any) => post.published !== false)
-        .sort((a: any, b: any) => {
-          const getMillis = (date: any) => {
-            if (!date) return 0;
-            if (typeof date.toMillis === 'function') return date.toMillis();
-            if (typeof date.toDate === 'function') return date.toDate().getTime();
-            if (date.seconds) return date.seconds * 1000;
-            if (date._seconds) return date._seconds * 1000;
-            const parsed = new Date(date).getTime();
-            return isNaN(parsed) ? 0 : parsed;
-          };
-          return getMillis(b.createdAt) - getMillis(a.createdAt);
-        });
-      
-      console.log(`[BLOG DIAGNOSTIC] Fetched ${snapshot.docs.length} raw, ${data.length} filtered.`);
-      setPosts(data);
-      setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "blogPosts");
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    // Load statically parsed blogs (zero Firestore reads)
+    const allBlogs = getAllBlogs();
+    setPosts(allBlogs);
+    setLoading(false);
   }, []);
 
   const filteredPosts = posts.filter(post => {

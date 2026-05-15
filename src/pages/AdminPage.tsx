@@ -1710,30 +1710,70 @@ const AdminDashboard = ({ user }: { user: any }) => {
           readingTime
         };
         
-        if (currentPost) {
-          console.log("💾 [SAVE] Updating existing post...");
-          await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
+        if (collectionName === "blogPosts" && !isAutosave) {
+          console.log("📝 [SAVE] Compiling Markdown for Static Blog...");
+          
+          let mdContent = `---
+title: "${postData.title}"
+slug: "${postData.slug || currentPost?.id || new Date().getTime().toString()}"
+description: "${postData.description || postData.excerpt || ''}"
+date: "${new Date().toISOString()}"
+tags: ${JSON.stringify(postData.tags)}
+category: "${postData.category}"
+coverImage: "${postData.coverImage}"
+author: "${postData.author}"
+published: true
+---
 
-          // Storage Cleanup (Delete old images that were replaced)
-          const newBlockPaths = sanitizedBlocks.filter(b => b.type === 'image').map(b => b.metadata?.fullPath).filter(Boolean);
-          const toDelete = new Set<string>();
-
-          if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
-
-          const newSet = new Set(newBlockPaths);
-          for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
-
-          if (toDelete.size > 0) {
-            console.log(`♻️ [SAVE] Cleaning up ${toDelete.size} orphaned images...`);
-            await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
-          }
-        } else if (!isAutosave) {
-          console.log("🆕 [SAVE] Creating new post...");
-          await addDoc(collection(db, "blogPosts"), {
-            ...postData,
-            createdAt: serverTimestamp(),
-            views: 0
+`;
+          
+          // Convert Blocks to Markdown
+          sanitizedBlocks.forEach((block: any) => {
+            if (block.type === 'text') mdContent += `${block.content}\n\n`;
+            if (block.type === 'heading') mdContent += `${'#'.repeat(block.metadata?.level || 2)} ${block.content}\n\n`;
+            if (block.type === 'image') mdContent += `![${block.metadata?.alt || ''}](${block.content})\n\n`;
+            if (block.type === 'code') mdContent += `\`\`\`${block.metadata?.language || ''}\n${block.content}\n\`\`\`\n\n`;
+            if (block.type === 'quote') mdContent += `> ${block.content}\n\n`;
+            if (block.type === 'list') mdContent += `- ${block.content}\n\n`;
           });
+
+          // Trigger Download
+          const blob = new Blob([mdContent], { type: "text/markdown" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${postData.slug || 'new-blog'}.md`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+        } else if (collectionName !== "blogPosts") {
+          if (currentPost) {
+            console.log("💾 [SAVE] Updating existing post...");
+            await updateDoc(doc(db, collectionName, currentPost.id), postData);
+
+            // Storage Cleanup (Delete old images that were replaced)
+            const newBlockPaths = sanitizedBlocks.filter((b: any) => b.type === 'image').map((b: any) => b.metadata?.fullPath).filter(Boolean);
+            const toDelete = new Set<string>();
+
+            if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
+
+            const newSet = new Set(newBlockPaths);
+            for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
+
+            if (toDelete.size > 0) {
+              console.log(`♻️ [SAVE] Cleaning up ${toDelete.size} orphaned images...`);
+              await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
+            }
+          } else if (!isAutosave) {
+            console.log("🆕 [SAVE] Creating new post...");
+            await addDoc(collection(db, collectionName), {
+              ...postData,
+              createdAt: serverTimestamp(),
+              views: 0
+            });
+          }
         }
         
         return sanitizedBlocks;

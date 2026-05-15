@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { CheckCircle, Heart, ArrowRight, Twitter, Linkedin, Coffee } from 'lucide-react';
+import { CheckCircle, Heart, ArrowRight, Twitter, Linkedin, Coffee, Zap, Rocket } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 
@@ -10,9 +10,6 @@ const DONATION_TIERS = [
   { amount: 5, label: "Support the research", icon: Zap },
   { amount: 10, label: "Fuel the next robot", icon: Heart },
 ];
-
-// Need to import Zap for the array above
-import { Zap } from 'lucide-react';
 
 export const ThankYouPage = () => {
   const navigate = useNavigate();
@@ -24,10 +21,28 @@ export const ThankYouPage = () => {
     canonicalUrl: getCanonicalUrl("/thank-you")
   });
 
-  const handleDonation = () => {
+  const handleDonation = async () => {
     if (!selectedTier) return;
-    // Phase 3: Stripe Payment Link for donation
-    alert(`Donation of $${selectedTier} will be processed via Stripe in Phase 3.`);
+    
+    // Create a dynamic donation product logic or use a generic "Donation" product
+    // For now, we'll use a special "Donation" identifier that the backend handles
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: `donation_${selectedTier}`, // Backend will detect this prefix
+          userId: 'anonymous', // Donations can be anonymous
+          amount: selectedTier,
+          isDonation: true
+        }),
+      });
+
+      const data = await response.json();
+      if (data.url) window.location.href = data.url;
+    } catch (e) {
+      console.error("Donation redirect failed:", e);
+    }
   };
 
   return (
@@ -103,29 +118,52 @@ export const ThankYouPage = () => {
           )}
         </div>
 
+        {/* Viral Distribution Hook */}
+        <div className="mb-16">
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-6">Amplification Protocol</div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just unlocked a new engineering blueprint from @paulayush's Lab. Time to build. 🚀\n\nCheck it out here: https://ayushpaul.in/products")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 transition-all flex items-center justify-center gap-3 group"
+            >
+              <Twitter size={18} className="text-[#1DA1F2]" />
+              <span className="text-sm font-bold">Share on X</span>
+            </a>
+            <a 
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://ayushpaul.in/products")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-[#0077B5]/10 hover:border-[#0077B5]/30 transition-all flex items-center justify-center gap-3 group"
+            >
+              <Linkedin size={18} className="text-[#0077B5]" />
+              <span className="text-sm font-bold">Share on LinkedIn</span>
+            </a>
+          </div>
+        </div>
+
         {/* Next Steps / Community */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button 
             onClick={() => navigate('/products')}
-            className="p-6 rounded-[2rem] border border-white/5 bg-white/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-start group"
+            className="p-8 rounded-[2.5rem] border border-white/5 bg-white/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-center text-center group"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2 flex items-center gap-2">
               <Zap size={12} /> Explore Lab
             </span>
-            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">Explore More Innovations</span>
+            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">Return to Workspace</span>
           </button>
           
-          <a 
-            href="https://twitter.com/paulayush" 
-            target="_blank" 
-            rel="noreferrer"
-            className="p-6 rounded-[2rem] border border-[#1DA1F2]/20 bg-[#1DA1F2]/5 hover:bg-[#1DA1F2]/10 transition-colors flex flex-col items-start group"
+          <Link 
+            to="/momentum"
+            className="p-8 rounded-[2.5rem] border border-brand-primary/20 bg-brand-primary/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-center text-center group"
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#1DA1F2] mb-2 flex items-center gap-2">
-              <Twitter size={12} /> Community
+            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2 flex items-center gap-2">
+              <Rocket size={12} /> Momentum
             </span>
-            <span className="text-lg font-bold group-hover:text-[#1DA1F2] transition-colors">Share what you build!</span>
-          </a>
+            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">See what's being built</span>
+          </Link>
         </div>
 
       </div>

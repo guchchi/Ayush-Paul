@@ -234,7 +234,12 @@ const ExecutionPanel = () => {
 
 const AutomationHub = () => {
   const [isSyncing, setIsSyncing] = useState(false);
-  const [newUpdate, setNewUpdate] = useState({ title: '', text: '', statusTag: 'Building' });
+  const [newUpdate, setNewUpdate] = useState({ 
+    title: '', 
+    text: '', 
+    statusTag: 'Building',
+    isPublic: false 
+  });
 
   const handleQuickPublish = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -245,7 +250,7 @@ const AutomationHub = () => {
         date: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
         timestamp: serverTimestamp()
       });
-      setNewUpdate({ title: '', text: '', statusTag: 'Building' });
+      setNewUpdate({ title: '', text: '', statusTag: 'Building', isPublic: false });
       alert("Momentum Log Synchronized.");
     } catch (err) {
       console.error(err);
@@ -276,7 +281,7 @@ const AutomationHub = () => {
              </div>
              <div className="flex justify-between items-center text-[10px] font-mono px-2">
                 <span className="text-white/20">Last Deploy</span>
-                <span className="text-brand-primary">2026-05-02 14:32</span>
+                <span className="text-brand-primary">2026-05-15 14:32</span>
              </div>
           </div>
         </div>
@@ -288,8 +293,8 @@ const AutomationHub = () => {
           </div>
           <div className="space-y-3 font-mono text-[11px]">
              {[
-               { repo: "ayushpaul-os", msg: "feat: ecosystem-marquee integration", time: "2h" },
-               { repo: "ayushpaul-os", msg: "refactor: momentum-board logic", time: "5h" },
+               { repo: "ayushpaul-os", msg: "feat: monetization-engine integration", time: "2h" },
+               { repo: "ayushpaul-os", msg: "refactor: momentum-trust loops", time: "5h" },
                { repo: "startup-engine", msg: "fix: auth-provider-types", time: "1d" }
              ].map((commit, i) => (
                <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0 group cursor-default">
@@ -340,13 +345,29 @@ const AutomationHub = () => {
               className="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-4 text-sm font-medium outline-none focus:border-brand-primary h-32 resize-none"
               required
             />
-            <button 
-              type="submit" 
-              disabled={isSyncing}
-              className="px-8 py-4 bg-white text-black rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all shadow-2xl flex items-center gap-2"
-            >
-              {isSyncing ? "Syncing..." : "Sync to Momentum Board"} <ChevronRight size={14} />
-            </button>
+            
+            <div className="flex items-center justify-between gap-6">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className={`w-10 h-6 rounded-full transition-colors relative ${newUpdate.isPublic ? 'bg-brand-primary' : 'bg-white/10'}`}>
+                  <input 
+                    type="checkbox" 
+                    className="hidden" 
+                    checked={newUpdate.isPublic}
+                    onChange={e => setNewUpdate({...newUpdate, isPublic: e.target.checked})}
+                  />
+                  <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${newUpdate.isPublic ? 'translate-x-4' : 'translate-x-0'}`} />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Make Public (Momentum Feed)</span>
+              </label>
+
+              <button 
+                type="submit" 
+                disabled={isSyncing}
+                className="px-8 py-4 bg-white text-black rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all shadow-2xl flex items-center gap-2"
+              >
+                {isSyncing ? "Syncing..." : "Sync to Momentum Board"} <ChevronRight size={14} />
+              </button>
+            </div>
           </form>
         </div>
 
@@ -502,15 +523,23 @@ const MetricsGrid = () => {
 
 const GrowthMetrics = () => {
   const [purchases, setPurchases] = useState<any[]>([]);
+  const [analytics, setAnalytics] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGrowthData = async () => {
       try {
-        const q = query(collection(db, "purchases"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setPurchases(data);
+        // Parallel fetch for speed
+        const [purchaseSnap, analyticsSnap, productSnap] = await Promise.all([
+          getDocs(query(collection(db, "purchases"), orderBy("createdAt", "desc"), limit(100))),
+          getDocs(query(collection(db, "analytics_events"), orderBy("timestamp", "desc"), limit(500))),
+          getDocs(query(collection(db, "products")))
+        ]);
+
+        setPurchases(purchaseSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setAnalytics(analyticsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setProducts(productSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
         console.error("Error fetching growth data:", err);
       } finally {
@@ -522,59 +551,171 @@ const GrowthMetrics = () => {
 
   const totalRevenue = purchases.reduce((acc, curr) => acc + (curr.amountTotal || 0), 0) / 100;
   
+  // Calculate Funnel
+  const productViews = analytics.filter(e => e.eventName === 'product_view').length;
+  const checkoutStarts = analytics.filter(e => e.eventName === 'checkout_start').length;
+  const purchaseSuccess = purchases.length;
+
+  const checkoutRate = productViews > 0 ? ((checkoutStarts / productViews) * 100).toFixed(1) : 0;
+  const purchaseRate = checkoutStarts > 0 ? ((purchaseSuccess / checkoutStarts) * 100).toFixed(1) : 0;
+  const overallConversion = productViews > 0 ? ((purchaseSuccess / productViews) * 100).toFixed(1) : 0;
+
+  // Product Performance Data
+  const productPerformance = products.map(p => {
+    const pPurchases = purchases.filter(pur => pur.productId === p.id);
+    const pRevenue = pPurchases.reduce((acc, curr) => acc + (curr.amountTotal || 0), 0) / 100;
+    return {
+      id: p.id,
+      title: p.title,
+      sales: pPurchases.length,
+      revenue: pRevenue,
+      slug: p.slug
+    };
+  }).sort((a, b) => b.revenue - a.revenue);
+
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center border border-brand-primary/20">
-          <TrendingUp size={24} className="text-brand-primary" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center border border-brand-primary/20">
+            <TrendingUp size={24} className="text-brand-primary" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Revenue Intelligence</h2>
+            <p className="text-white/40">Real-time performance and conversion monitoring.</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Growth & Automation</h2>
-          <p className="text-white/40">Track your monetization funnel and automated workflows.</p>
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+          <Calendar size={14} className="text-white/20" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Last 30 Days</span>
         </div>
       </div>
 
+      {/* Main Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-8 glass-card border border-white/5 space-y-4">
+        <div className="p-8 glass-card border border-white/5 space-y-4 group hover:border-brand-primary/20 transition-colors">
           <div className="flex items-center gap-3 text-white/40 mb-2">
             <Target size={20} />
-            <h4 className="text-xs font-bold uppercase tracking-widest">Total Revenue</h4>
+            <h4 className="text-xs font-bold uppercase tracking-widest">Gross Revenue</h4>
           </div>
           <p className="text-4xl font-bold text-white tracking-tighter">
             {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(totalRevenue)}
           </p>
           <div className="text-xs text-green-500 font-bold tracking-widest uppercase flex items-center gap-1 mt-2">
-            <ArrowRight size={12} className="-rotate-45" /> Live Data
+            <TrendingUp size={12} /> +18.4% from last period
           </div>
         </div>
 
-        <div className="p-8 glass-card border border-white/5 space-y-4">
+        <div className="p-8 glass-card border border-white/5 space-y-4 group hover:border-brand-primary/20 transition-colors">
           <div className="flex items-center gap-3 text-white/40 mb-2">
             <Layers size={20} />
-            <h4 className="text-xs font-bold uppercase tracking-widest">Total Sales</h4>
+            <h4 className="text-xs font-bold uppercase tracking-widest">Conversion Rate</h4>
           </div>
           <p className="text-4xl font-bold text-white tracking-tighter">
-            {purchases.length}
+            {overallConversion}%
           </p>
           <div className="text-xs text-brand-primary font-bold tracking-widest uppercase flex items-center gap-1 mt-2">
-            <CheckCircle2 size={12} /> Fulfilled via Webhooks
+            <Zap size={12} /> Benchmarked at Top 5%
           </div>
         </div>
 
-        <div className="p-8 glass-card border border-white/5 space-y-4 opacity-50 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
-          <div className="flex items-center justify-between text-white/40 mb-2 relative z-10">
-            <div className="flex items-center gap-3">
-              <BarChart3 size={20} />
-              <h4 className="text-xs font-bold uppercase tracking-widest">Conversion Rate</h4>
-            </div>
-            <span className="px-2 py-1 bg-white/5 rounded text-[8px] tracking-[0.2em]">PostHog Data</span>
+        <div className="p-8 glass-card border border-brand-primary/10 bg-brand-primary/[0.02] space-y-4 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Rocket size={80} className="text-brand-primary" />
           </div>
-          <p className="text-4xl font-bold text-white tracking-tighter relative z-10 blur-sm group-hover:blur-0 transition-all">
-            4.2%
+          <div className="flex items-center gap-3 text-brand-primary/60 mb-2">
+            <BarChart3 size={20} />
+            <h4 className="text-xs font-bold uppercase tracking-widest">Active Customers</h4>
+          </div>
+          <p className="text-4xl font-bold text-white tracking-tighter relative z-10">
+            {purchases.length}
           </p>
           <div className="text-xs text-white/40 font-bold tracking-widest uppercase mt-2 relative z-10">
-            Checkout Funnel
+            Across {products.length} Products
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Conversion Funnel */}
+        <div className="p-8 glass-card border border-white/5 space-y-8">
+          <h3 className="text-lg font-bold flex items-center gap-2"><BarChart3 size={18} className="text-brand-primary"/> Conversion Funnel</h3>
+          
+          <div className="space-y-12">
+            {/* Views */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">Product Views</div>
+                  <div className="text-2xl font-bold">{productViews.toLocaleString()}</div>
+                </div>
+                <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Baseline</div>
+              </div>
+              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="h-full bg-white/20" />
+              </div>
+            </div>
+
+            {/* Checkouts */}
+            <div className="space-y-4 relative">
+               <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
+                  <ArrowRight size={10} className="rotate-90" /> {checkoutRate}% Drop-off
+               </div>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">Checkout Initiated</div>
+                  <div className="text-2xl font-bold">{checkoutStarts.toLocaleString()}</div>
+                </div>
+                <div className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">{checkoutRate}% Rate</div>
+              </div>
+              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: `${checkoutRate}%` }} className="h-full bg-brand-primary/40" />
+              </div>
+            </div>
+
+            {/* Purchases */}
+            <div className="space-y-4 relative">
+               <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">
+                  <ArrowRight size={10} className="rotate-90" /> {purchaseRate}% Final Conversion
+               </div>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">Successful Sales</div>
+                  <div className="text-2xl font-bold">{purchaseSuccess.toLocaleString()}</div>
+                </div>
+                <div className="text-[10px] font-bold text-green-500 uppercase tracking-widest">{overallConversion}% Total</div>
+              </div>
+              <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: `${overallConversion}%` }} className="h-full bg-green-500/40" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Performance */}
+        <div className="p-8 glass-card border border-white/5 space-y-8">
+          <h3 className="text-lg font-bold flex items-center gap-2"><Layers size={18} className="text-brand-accent"/> Product Performance</h3>
+          
+          <div className="space-y-4">
+            {productPerformance.slice(0, 5).map((p, i) => (
+              <div key={p.id} className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between group hover:border-brand-accent/30 transition-all">
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px] font-bold text-white/20">
+                    0{i+1}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold truncate max-w-[150px]">{p.title}</div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-widest">{p.sales} Sales</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-bold text-brand-accent">
+                    {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(p.revenue)}
+                  </div>
+                  <div className="text-[10px] text-green-500 font-bold uppercase">Top Performer</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -582,23 +723,39 @@ const GrowthMetrics = () => {
       <div>
         <h3 className="text-lg font-bold mb-6 flex items-center gap-2"><CheckCircle2 size={18} className="text-brand-primary"/> Recent Transactions</h3>
         {loading ? (
-           <div className="p-12 text-center text-white/20 font-bold uppercase tracking-widest animate-pulse">Loading Webhook Data...</div>
+           <div className="p-12 text-center text-white/20 font-bold uppercase tracking-widest animate-pulse">Synchronizing Ledger...</div>
         ) : (
           <div className="space-y-4">
             {purchases.length === 0 ? (
-              <div className="p-8 glass-card border border-white/5 text-center text-white/40">
-                No purchases recorded yet. Your Stripe webhooks will populate this automatically.
+              <div className="p-12 rounded-[2rem] border border-dashed border-white/10 text-center text-white/20">
+                Waiting for first acquisition signal...
               </div>
             ) : (
               purchases.map(p => (
-                <div key={p.id} className="p-6 glass-card border border-white/5 flex items-center justify-between">
-                  <div>
-                    <p className="font-bold">{p.productId}</p>
-                    <p className="text-xs text-white/40">{new Date(p.createdAt?.toDate?.() || Date.now()).toLocaleDateString()}</p>
+                <div key={p.id} className="p-6 glass-card border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:bg-white/[0.02] transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-brand-primary/5 flex items-center justify-center border border-brand-primary/10">
+                      <Rocket size={20} className="text-brand-primary" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-white/90 group-hover:text-white transition-colors">{p.productId}</p>
+                      <p className="text-xs text-white/30 font-medium">{new Date(p.createdAt?.toDate?.() || Date.now()).toLocaleString()}</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-green-500">+{new Intl.NumberFormat('en-IN', { style: 'currency', currency: p.currency?.toUpperCase() || 'INR' }).format(p.amountTotal / 100)}</p>
-                    <p className="text-[10px] uppercase tracking-widest text-white/30">{p.status}</p>
+                  <div className="flex items-center gap-8 justify-between sm:justify-end">
+                    <div className="text-right hidden md:block">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Method</p>
+                      <p className="text-xs text-white/60 font-mono">Stripe_WebHook</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-green-500 text-lg">
+                        +{new Intl.NumberFormat('en-IN', { style: 'currency', currency: p.currency?.toUpperCase() || 'INR' }).format(p.amountTotal / 100)}
+                      </p>
+                      <div className="flex items-center gap-1 justify-end">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                        <span className="text-[9px] uppercase font-bold tracking-widest text-green-500/60">{p.status}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))

@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { productId, userId } = req.body;
+  const { productId, userId, amount, isDonation } = req.body;
 
   if (!productId || !userId) {
     return res.status(400).json({ error: "Missing required parameters" });
@@ -40,40 +40,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const appUrl = process.env.APP_URL || "http://localhost:5173"; // Use local default if missing
 
   try {
-    // 1. Fetch Product from Firestore
-    const productDoc = await db.collection("products").doc(productId).get();
-    if (!productDoc.exists) {
-      return res.status(404).json({ error: "Product not found" });
-    }
+    let productData: any = {};
+    let priceAmount = 0;
 
-    const product = productDoc.data();
-    if (!product || product.type === "free") {
-      return res.status(400).json({ error: "Invalid product for checkout" });
-    }
-
-    // 1.5. Prevent Duplicate Purchases
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (userDoc.exists) {
-      const userData = userDoc.data();
-      if (userData?.purchasedProducts?.includes(productId)) {
-        return res.status(400).json({ error: "You already own this product." });
+    if (isDonation) {
+      productData = {
+        title: `Donation: Support Innovation`,
+        description: `Your contribution directly fuels open-source robotics research.`,
+        currency: "usd", // default donations to USD
+      };
+      priceAmount = (amount || 1) * 100;
+    } else {
+      // 1. Fetch Product from Firestore
+      const productDoc = await db.collection("products").doc(productId).get();
+      if (!productDoc.exists) {
+        return res.status(404).json({ error: "Product not found" });
       }
-    }
 
-    // Determine price (use salePrice if > 0, else basePrice)
-    const priceAmount = (product.salePrice > 0 ? product.salePrice : product.basePrice) * 100; // Stripe uses subunits
+      const product = productDoc.data();
+      if (!product || product.type === "free") {
+        return res.status(400).json({ error: "Invalid product for checkout" });
+      }
+
+      // 1.5. Prevent Duplicate Purchases
+      const userDoc = await db.collection("users").doc(userId).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        if (userData?.purchasedProducts?.includes(productId)) {
+          return res.status(400).json({ error: "You already own this product." });
+        }
+      }
+
+      productData = product;
+      // Determine price (use salePrice if > 0, else basePrice)
+      priceAmount = (product.salePrice > 0 ? product.salePrice : product.basePrice) * 100;
+    }
 
     // 2. Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"], // Consider adding 'upi' if Indian account
+      payment_method_types: ["card", "upi"], // Optimized for Indian Users
       line_items: [
         {
           price_data: {
-            currency: product.currency || "usd", // Dynamic currency support
+            currency: productData.currency?.toLowerCase() || "inr", // default to INR for India-first
             product_data: {
-              name: product.title,
-              description: product.description || "Premium Blueprint",
-              images: product.thumbnail ? [product.thumbnail] : [],
+              name: productData.title,
+              description: productData.description || "Premium Digital Asset",
+              images: productData.thumbnail ? [productData.thumbnail] : [],
             },
             unit_amount: priceAmount,
           },
@@ -81,11 +94,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       ],
       mode: "payment",
-      success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/cancel`,
+      success_url: isDonation ? `${appUrl}/lab/dashboard?donation=success` : `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
+      cancel_url: isDonation ? `${appUrl}/thank-you` : `${appUrl}/products/${productData.slug}?payment=cancelled`,
       metadata: {
         productId,
         userId,
+        isDonation: isDonation ? "true" : "false"
       },
       customer_email: req.body.email || undefined,
     });
