@@ -303,7 +303,21 @@ export const BlogPostPage = () => {
             </aside>
 
             {/* Middle: Article Content */}
-            <article className="w-full min-w-0 relative z-[20] pointer-events-auto">
+            <article 
+              className="w-full min-w-0 relative z-[20] pointer-events-auto"
+              ref={(el) => {
+                if (el) {
+                  const links = el.getElementsByTagName('a');
+                  for (let i = 0; i < links.length; i++) {
+                    const link = links[i];
+                    if (!link.target) {
+                      link.target = '_blank';
+                      link.rel = 'noopener noreferrer';
+                    }
+                  }
+                }
+              }}
+            >
               <div className="blog-prose prose prose-invert max-w-none editorial-dropcap pointer-events-auto">
                 {post.blocks ? (
                   <div className="space-y-4">
@@ -370,7 +384,20 @@ export const BlogPostPage = () => {
                     })}
                   </div>
                 ) : (
-                  <ReactMarkdown>{post.content}</ReactMarkdown>
+                  <ReactMarkdown
+                    components={{
+                      a: ({ node, ...props }) => (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-primary hover:underline transition-all"
+                        />
+                      )
+                    }}
+                  >
+                    {post.content}
+                  </ReactMarkdown>
                 )}
               </div>
 
