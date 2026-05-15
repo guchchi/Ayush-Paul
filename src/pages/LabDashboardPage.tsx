@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Package, Download, Bell, Sparkles, ChevronRight, Zap, ShieldCheck, LogOut } from 'lucide-react';
 import { auth, onAuthStateChanged, signOut, db, collection, query, where, getDocs, doc, getDoc } from '../firebase';
 import { useSEO } from '../hooks/useSEO';
