@@ -32,7 +32,7 @@ export async function getRelatedContent(tags: string[], currentId: string, type:
     }
 
     // 2. Fetch Related Blogs from Static Content
-    const allBlogs = await getAllBlogPosts();
+    const allBlogs = await getAllBlogs();
     results.blogs = allBlogs
       .filter(blog => {
         // Simple tag matching

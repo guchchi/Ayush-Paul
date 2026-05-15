@@ -45,7 +45,7 @@ export const ProductDetailPage = () => {
   useEffect(() => {
     const fetchRelated = async () => {
       if (product) {
-        const data = await getRelatedContent(product.tags, product.id, 'product');
+        const data = await getRelatedContent(product.tags || [], product.id, 'product');
         setRelated(data);
       }
     };
@@ -55,7 +55,7 @@ export const ProductDetailPage = () => {
   useSEO({
     title: product ? `${product.title} | Ayush Paul Lab` : "Loading Innovation...",
     description: product?.description || "",
-    keywords: product?.tags.join(", ") || "",
+    keywords: product?.tags?.join(", ") || "",
     canonicalUrl: getCanonicalUrl(`/products/${slug}`),
     ogImage: product?.thumbnail
   });
@@ -172,11 +172,17 @@ export const ProductDetailPage = () => {
       });
 
       const data = await response.json();
-      
+
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error(data.error || "Failed to initialize checkout.");
+        const errorMsg = data.error || "Failed to initialize checkout.";
+        if (errorMsg.includes("not configured")) {
+          alert("🔧 Product Not Configured: This blueprint requires a valid Stripe Price ID. Please check the Admin Dashboard or contact the engineering team.");
+        } else {
+          alert(`Checkout Error: ${errorMsg}`);
+        }
+        throw new Error(errorMsg);
       }
     } catch (error: any) {
       console.error("Checkout Error:", error);

@@ -34,7 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const stripe = new Stripe(secretKey, {
-    apiVersion: "2025-03-31.basil",
+    apiVersion: "2024-06-20",
   });
 
   const appUrl = process.env.APP_URL || "http://localhost:5173"; // Use local default if missing
@@ -58,8 +58,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const product = productDoc.data();
-      if (!product || product.type === "free") {
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      // Guard: Ensure product is configured for premium checkout
+      if (product.type === "free") {
         return res.status(400).json({ error: "Invalid product for checkout" });
+      }
+
+      if (!product.stripePriceId) {
+        return res.status(400).json({ error: "Product not configured for checkout" });
       }
 
       // 1.5. Prevent Duplicate Purchases
@@ -72,27 +81,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       productData = product;
-      // Determine price (use salePrice if > 0, else basePrice)
-      priceAmount = (product.salePrice > 0 ? product.salePrice : product.basePrice) * 100;
     }
 
     // 2. Create Stripe Checkout Session
+    const line_items = isDonation 
+      ? [
+          {
+            price_data: {
+              currency: productData.currency?.toLowerCase() || "usd",
+              product_data: {
+                name: productData.title,
+                description: productData.description || "Premium Digital Asset",
+              },
+              unit_amount: priceAmount,
+            },
+            quantity: 1,
+          },
+        ]
+      : [
+          {
+            price: productData.stripePriceId,
+            quantity: 1,
+          },
+        ];
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "upi"], // Optimized for Indian Users
-      line_items: [
-        {
-          price_data: {
-            currency: productData.currency?.toLowerCase() || "inr", // default to INR for India-first
-            product_data: {
-              name: productData.title,
-              description: productData.description || "Premium Digital Asset",
-              images: productData.thumbnail ? [productData.thumbnail] : [],
-            },
-            unit_amount: priceAmount,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items,
       mode: "payment",
       success_url: isDonation ? `${appUrl}/lab/dashboard?donation=success` : `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: isDonation ? `${appUrl}/thank-you` : `${appUrl}/products/${productData.slug}?payment=cancelled`,
