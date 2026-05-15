@@ -9,11 +9,13 @@ import { getProductBySlug } from '../lib/product-utils';
 import { auth, onAuthStateChanged } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
+import { getRelatedContent } from '../lib/seo-utils';
 
 export const ProductDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<{ products: Product[], blogs: any[] }>({ products: [], blogs: [] });
   const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -39,6 +41,16 @@ export const ProductDetailPage = () => {
     };
     fetchProduct();
   }, [slug]);
+
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (product) {
+        const data = await getRelatedContent(product.tags, product.id, 'product');
+        setRelated(data);
+      }
+    };
+    fetchRelated();
+  }, [product]);
 
   useSEO({
     title: product ? `${product.title} | Ayush Paul Lab` : "Loading Innovation...",
@@ -400,6 +412,74 @@ export const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+      {/* Authority Graph: Related Content Sections */}
+      <div className="max-w-6xl mx-auto px-6 md:px-12 mt-32 border-t border-white/5 pt-32 space-y-32">
+        
+        {/* Related Systems (Products -> Products) */}
+        {related.products.length > 0 && (
+          <section>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-4">Ecosystem Expansion</h3>
+                <h2 className="text-3xl font-bold">⚡ Engineers Also Explore</h2>
+              </div>
+              <Link to="/products" className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors flex items-center gap-2">
+                View Entire Lab <ArrowRight size={14} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {related.products.map(p => (
+                <Link 
+                  key={p.id} 
+                  to={`/products/${p.slug}`}
+                  className="group p-8 rounded-[2.5rem] glass border border-white/5 hover:border-brand-primary/30 transition-all flex flex-col"
+                >
+                  <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 relative">
+                    <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <h4 className="text-lg font-bold mb-2 group-hover:text-brand-primary transition-colors">{p.title}</h4>
+                  <p className="text-sm text-white/40 line-clamp-2">{p.description}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Learn Before Building (Products -> Blogs) */}
+        {related.blogs.length > 0 && (
+          <section>
+             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div>
+                <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-4">Knowledge Base</h3>
+                <h2 className="text-3xl font-bold">📘 Learn Before Building</h2>
+              </div>
+              <Link to="/blog" className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors flex items-center gap-2">
+                All Engineering Logs <ArrowRight size={14} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {related.blogs.map(blog => (
+                <Link 
+                  key={blog.slug} 
+                  to={`/blog/${blog.slug}`}
+                  className="p-10 rounded-[3rem] bg-white/5 border border-white/5 hover:bg-white/[0.08] hover:border-brand-primary/20 transition-all group"
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20 font-bold text-xs">
+                      {new Date(blog.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </div>
+                    <div className="h-px flex-1 bg-white/5" />
+                  </div>
+                  <h4 className="text-xl font-bold mb-4 group-hover:text-brand-primary transition-colors">{blog.title}</h4>
+                  <p className="text-sm text-white/40 line-clamp-2">{blog.description}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} defaultMode="signup" />
     </motion.div>
   );

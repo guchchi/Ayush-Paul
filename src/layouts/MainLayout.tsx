@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { CommandPalette } from './CommandPalette';
+import { SocialProofTicker } from '../components/ui/SocialProofTicker';
 import { SmoothScrollProvider } from '../components/ui/motion/SmoothScroll';
 
 interface MainLayoutProps {
@@ -63,6 +64,7 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
   return (
     <SmoothScrollProvider>
       <CommandPalette />
+      <SocialProofTicker />
       <Navbar onPortfolioClick={onPortfolioClick} />
       
       <main className="w-full relative z-[10]">

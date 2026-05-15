@@ -8,14 +8,16 @@ import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
 import { getCanonicalUrl } from "../lib/domain";
 import { getBlogBySlug, getAllBlogs, BlogPost } from "../lib/blog-utils";
-import { getCanonicalUrl } from "../lib/domain";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { VARIANTS } from "../lib/motion-presets";
+import { getRelatedContent } from "../lib/seo-utils";
+import { Product } from "../types";
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeHeading, setActiveHeading] = useState("");
@@ -422,49 +424,79 @@ export const BlogPostPage = () => {
           </div>
         </div>
 
-        {relatedPosts.length > 0 && (
-          <div className="mt-48 max-w-7xl mx-auto mb-32 border-t border-white/5 pt-32">
-            <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">Keep <span className="text-brand-primary">Exploring</span></h2>
-                <p className="text-white/40 text-lg font-medium">Selected articles from the Ayush Paul Intelligence Archives.</p>
-              </div>
-              <Link to="/blog" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
-                View Full Archive <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-              </Link>
-            </div>
-            <div className="grid md:grid-cols-3 gap-10">
-              {relatedPosts.map(relPost => (
-                <Link to={`/blog/${relPost.slug}`} key={relPost.id} className="group h-full">
-                  <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-700 flex flex-col h-full shadow-2xl">
-                    <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
-                      <img src={relPost.coverImage} alt={relPost.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
-                      <div className="absolute top-6 left-6">
-                        <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/80">
-                          {relPost.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-10 flex flex-col flex-1">
-                      <div className="flex items-center gap-4 mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
-                        <span>{Array.isArray(relPost.tags) ? relPost.tags[0] : relPost.category}</span>
-                        <div className="w-1 h-1 rounded-full bg-white/10" />
-                        <span className="text-white/20">{formatDate(relPost.createdAt)}</span>
-                      </div>
-                      <h4 className="text-2xl font-bold mb-6 group-hover:text-brand-primary transition-colors line-clamp-2 leading-tight text-white/90">{relPost.title}</h4>
-                      <p className="text-sm text-white/40 line-clamp-2 mb-8 flex-1 leading-relaxed font-medium">
-                        {relPost.description || relPost.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').substring(0, 100) + '...'}
-                      </p>
-                      <div className="flex items-center gap-3 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mt-auto group-hover:gap-4 transition-all">
-                        Read Analysis <ArrowRight size={14} />
-                      </div>
-                    </div>
-                  </div>
+        {/* Related Content: Knowledge & Systems */}
+        <div className="mt-48 max-w-7xl mx-auto mb-32 border-t border-white/5 pt-32 space-y-32">
+          
+          {/* Related Systems (Blogs -> Products) */}
+          {relatedProducts.length > 0 && (
+            <section>
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+                <div>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-4">Innovation Lab</h3>
+                  <h2 className="text-4xl font-bold">🔬 Related Systems from Lab</h2>
+                </div>
+                <Link to="/products" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
+                  Explore Lab <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                 </Link>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {relatedProducts.map(p => (
+                  <Link 
+                    key={p.id} 
+                    to={`/products/${p.slug}`}
+                    className="group p-8 rounded-[2.5rem] glass border border-white/5 hover:border-brand-primary/20 transition-all flex flex-col"
+                  >
+                    <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6">
+                      <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    </div>
+                    <h4 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors">{p.title}</h4>
+                    <div className="flex items-center gap-2 mt-auto">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">System Blueprint</span>
+                      <ArrowRight size={14} className="text-brand-primary group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Related Blogs (Blogs -> Blogs) */}
+          {relatedPosts.length > 0 && (
+            <section>
+              <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
+                <div>
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">Keep <span className="text-brand-primary">Exploring</span></h2>
+                  <p className="text-white/40 text-lg font-medium">Selected articles from the Ayush Paul Intelligence Archives.</p>
+                </div>
+                <Link to="/blog" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
+                  View Full Archive <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                </Link>
+              </div>
+              <div className="grid md:grid-cols-3 gap-10">
+                {relatedPosts.map(relPost => (
+                  <Link to={`/blog/${relPost.slug}`} key={relPost.slug} className="group h-full">
+                    <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-700 flex flex-col h-full shadow-2xl">
+                      <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
+                        <img src={relPost.coverImage} alt={relPost.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                      </div>
+                      <div className="p-10 flex flex-col flex-1">
+                        <div className="flex items-center gap-4 mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
+                          <span>{relPost.category}</span>
+                          <div className="w-1 h-1 rounded-full bg-white/10" />
+                          <span className="text-white/20">{formatDate(relPost.date)}</span>
+                        </div>
+                        <h4 className="text-2xl font-bold mb-6 group-hover:text-brand-primary transition-colors line-clamp-2 leading-tight text-white/90">{relPost.title}</h4>
+                        <div className="flex items-center gap-3 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mt-auto group-hover:gap-4 transition-all">
+                          Read Analysis <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       </div>
     </div>
   );
