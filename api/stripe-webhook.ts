@@ -89,10 +89,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).json({ received: true, status: "already_processed" });
       }
 
-      // 1. Grant product access by appending to user's purchasedProducts array
+      // 1. Grant product access by updating ownedProducts map
       const userRef = db.collection("users").doc(userId);
       await userRef.set({
-        purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId)
+        ownedProducts: {
+          [productId]: "premium"
+        },
+        purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId) // Legacy support
       }, { merge: true });
 
       // 2. Record the purchase in a 'purchases' collection for analytics

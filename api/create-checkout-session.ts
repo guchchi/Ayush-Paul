@@ -64,8 +64,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const userDoc = await db.collection("users").doc(userId).get();
     if (userDoc.exists) {
       const userData = userDoc.data();
-      if (userData?.purchasedProducts?.includes(productId)) {
-        return res.status(400).json({ error: "You already own this product." });
+      const ownedProducts = userData?.ownedProducts || {};
+      
+      if (ownedProducts[productId] === "premium") {
+        return res.status(400).json({ error: "You already own the Premium tier for this product." });
       }
     }
 

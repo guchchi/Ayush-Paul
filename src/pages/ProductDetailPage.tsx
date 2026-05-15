@@ -6,7 +6,7 @@ import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 import { getProductBySlug } from '../lib/product-utils';
-import { auth, onAuthStateChanged, db, doc, updateDoc, arrayUnion } from '../firebase';
+import { auth, onAuthStateChanged, db, doc, updateDoc, arrayUnion, getDoc } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
 import { getRelatedContent } from '../lib/seo-utils';
@@ -20,12 +20,19 @@ export const ProductDetailPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { trackEvent } = useAnalytics();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if (snap.exists()) setProfile(snap.data());
+      } else {
+        setProfile(null);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -137,12 +144,12 @@ export const ProductDetailPage = () => {
       
       // 2. Unlock in Firestore (Digital Vault logic)
       if (user) {
-        console.log("[Lab] Unlocking product for user:", user.uid);
+        console.log("[Lab] Unlocking free product for user:", user.uid);
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
-          purchasedProducts: arrayUnion(product.id)
+          [`ownedProducts.${product.id}`]: "free"
         });
-        console.log(`[Lab] Product ${product.id} unlocked successfully.`);
+        console.log(`[Lab] Product ${product.id} (Free Tier) unlocked successfully.`);
       }
 
       // 3. Trigger the actual file download
@@ -381,13 +388,17 @@ export const ProductDetailPage = () => {
 
               <button 
                 onClick={handleFreeDownload}
-                disabled={isDownloading}
+                disabled={isDownloading || profile?.ownedProducts?.[product.id] === 'free' || profile?.ownedProducts?.[product.id] === 'premium'}
                 className="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/10 transition-all font-bold text-sm flex items-center justify-center gap-2"
               >
                 {isDownloading ? (
                   <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <><Download size={16} /> Get Free Version</>
+                  profile?.ownedProducts?.[product.id] ? (
+                    <><ShieldCheck size={16} /> Tier Unlocked</>
+                  ) : (
+                    <><Download size={16} /> Get Free Version</>
+                  )
                 )}
               </button>
             </div>
@@ -429,13 +440,19 @@ export const ProductDetailPage = () => {
 
               <button 
                 onClick={handlePremiumUpgrade}
-                disabled={isCheckingOut}
+                disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
                 className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
               >
                 {isCheckingOut ? (
                   <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                 ) : (
-                  <>Upgrade to Premium <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
+                  profile?.ownedProducts?.[product.id] === 'premium' ? (
+                    <><ShieldCheck size={16} /> Already Owned</>
+                  ) : (
+                    profile?.ownedProducts?.[product.id] === 'free' ? 
+                    <>Upgrade to Premium <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></> :
+                    <>Get Premium Package <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
+                  )
                 )}
               </button>
               <p className="text-center text-[10px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1">

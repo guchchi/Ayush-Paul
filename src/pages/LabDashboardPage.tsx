@@ -35,11 +35,12 @@ export const LabDashboardPage = () => {
           const profileData = profileSnap.data();
           setProfile(profileData);
           
-          const purchasedIds = profileData?.purchasedProducts || [];
+          const ownedMap = profileData?.ownedProducts || {};
+          const ownedIds = Object.keys(ownedMap);
           const allProducts = await getPublishedProducts();
           
-          setOwnedProducts(allProducts.filter(p => purchasedIds.includes(p.id)));
-          setDiscoverProducts(allProducts.filter(p => !purchasedIds.includes(p.id) && p.type !== 'free'));
+          setOwnedProducts(allProducts.filter(p => ownedIds.includes(p.id)));
+          setDiscoverProducts(allProducts.filter(p => ownedMap[p.id] !== 'premium' && p.type !== 'free'));
         } else {
           setOwnedProducts([]);
           const allProducts = await getPublishedProducts();
@@ -179,7 +180,7 @@ export const LabDashboardPage = () => {
                       {product.category}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-green-500">
-                      Owned
+                      {profile?.ownedProducts?.[product.id] || 'Owned'}
                     </span>
                   </div>
                   <h3 className="text-lg font-bold mb-2 line-clamp-1">{product.title}</h3>
