@@ -27,21 +27,24 @@ export const ThankYouPage = () => {
     // Create a dynamic donation product logic or use a generic "Donation" product
     // For now, we'll use a special "Donation" identifier that the backend handles
     try {
-      const response = await fetch('/api/create-checkout-session', {
+      const response = await fetch('/api/create-donation-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          productId: `donation_${selectedTier}`, // Backend will detect this prefix
-          userId: 'anonymous', // Donations can be anonymous
           amount: selectedTier,
-          isDonation: true
+          userId: 'anonymous'
         }),
       });
 
       const data = await response.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Donation system temporarily unavailable. Please try again later.");
+      }
     } catch (e) {
       console.error("Donation redirect failed:", e);
+      alert("Something went wrong. Please try again.");
     }
   };
 

@@ -4,7 +4,7 @@ import {
   getRedirectResult, signOut, onAuthStateChanged,
   createUserWithEmailAndPassword, signInWithEmailAndPassword
 } from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer, limit } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer, limit, arrayUnion } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 // Health Check Layer: Detect environment readiness before bootstrapping
@@ -114,6 +114,7 @@ export {
   limit,
   ref,
   uploadBytesResumable,
-  getDownloadURL
+  getDownloadURL,
+  arrayUnion
 };
 

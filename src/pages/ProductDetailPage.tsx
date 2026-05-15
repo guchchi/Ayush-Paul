@@ -6,7 +6,7 @@ import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 import { getProductBySlug } from '../lib/product-utils';
-import { auth, onAuthStateChanged } from '../firebase';
+import { auth, onAuthStateChanged, db, doc, updateDoc, arrayUnion } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
 import { getRelatedContent } from '../lib/seo-utils';
@@ -126,7 +126,20 @@ export const ProductDetailPage = () => {
       product_name: product.title
     });
     
-    // 2. Trigger the actual file download in a hidden iframe or blank target
+    // 2. Unlock in Firestore (Digital Vault logic)
+    if (user) {
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          purchasedProducts: arrayUnion(product.id)
+        });
+        console.log(`[Lab] Product ${product.id} unlocked for ${user.uid}`);
+      } catch (err) {
+        console.error("Failed to unlock free product in Firestore:", err);
+      }
+    }
+
+    // 3. Trigger the actual file download
     const link = document.createElement('a');
     link.href = product.downloadFileURL;
     link.target = '_blank';
@@ -135,9 +148,9 @@ export const ProductDetailPage = () => {
     link.click();
     document.body.removeChild(link);
 
-    // 3. Redirect to Thank You page
+    // 4. Redirect to Lab Dashboard with success state
     setTimeout(() => {
-      navigate('/thank-you');
+      navigate('/lab/dashboard?unlocked=success');
     }, 1000);
   };
 
