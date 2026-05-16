@@ -15,7 +15,8 @@ if (!admin.apps.length) {
 }
 
 const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(default)");
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+const ADMIN_UIDS = ["80OJfcmVXCRNmSZuthVU68K6vJq2"];
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
@@ -32,22 +33,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // 1. Verify Admin Token
     const decodedToken = await admin.auth().verifyIdToken(token);
-    // You should verify if the decodedToken.uid belongs to your admin account
-    // For now, we assume any authenticated user triggering this from the Admin Panel is authorized
-    // if (decodedToken.uid !== process.env.ADMIN_UID) return res.status(403).json({ error: "Forbidden" });
+    if (!ADMIN_UIDS.includes(decodedToken.uid)) {
+      return res.status(403).json({ error: "Access Denied: You do not have permission to send newsletters." });
+    }
 
-    const { subject, content, campaignId } = req.body;
+    // 2. Validate Resend Config
+    if (!process.env.RESEND_API_KEY) {
+      return res.status(500).json({ 
+        error: "Newsletter system is not configured. Please add RESEND_API_KEY to your Vercel Environment Variables.",
+        code: "MISSING_API_KEY"
+      });
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { subject, content, campaignId, isTestMode } = req.body;
 
     if (!subject || !content) {
       return res.status(400).json({ error: "Subject and content are required" });
     }
 
-    // 2. Fetch Subscribers
-    const subSnapshot = await db.collection("subscribers").get();
-    const allSubscribers = subSnapshot.docs.map(doc => ({
-      id: doc.id,
-      email: doc.data().email
-    }));
+    // 3. Fetch Subscribers
+    let allSubscribers: any[] = [];
+    
+    if (isTestMode) {
+      // Test Mode: Only send to the admin who triggered the send
+      allSubscribers = [{ id: 'test-admin', email: decodedToken.email }];
+    } else {
+      const subSnapshot = await db.collection("subscribers").get();
+      allSubscribers = subSnapshot.docs.map(doc => ({
+        id: doc.id,
+        email: doc.data().email
+      }));
+    }
 
     if (allSubscribers.length === 0) {
       return res.status(400).json({ error: "No subscribers found" });
@@ -106,7 +123,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const successfulSends = results.filter(r => r.success).length;
     sentCount = startIndex + successfulSends;
 
-    // 5. Update/Create Campaign Log
+    // 6. Update/Create Campaign Log (Skip if test mode)
+    if (isTestMode) {
+      return res.status(200).json({
+        message: "Test email sent successfully to " + decodedToken.email,
+        sentCount: 1,
+        total: 1,
+        status: "test"
+      });
+    }
+
     const campaignData = {
       subject,
       content,

@@ -1557,7 +1557,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
     }
   };
 
-  const handleSendNewsletter = async (resumingCampaignId?: string) => {
+  const handleSendNewsletter = async (resumingCampaignId?: string, isTest?: boolean) => {
     setIsSending(true);
     try {
       const user = auth.currentUser;
@@ -1567,7 +1567,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
       let payload = {
         subject: newsletterData.subject,
         content: newsletterData.content,
-        campaignId: resumingCampaignId
+        campaignId: resumingCampaignId,
+        isTestMode: isTest
       };
 
       if (resumingCampaignId) {
@@ -1589,8 +1590,11 @@ const AdminDashboard = ({ user }: { user: any }) => {
       if (!response.ok) throw new Error(result.error || "Failed to send");
 
       addToast(result.message, "success");
-      setShowComposeModal(false);
-      setNewsletterData({ subject: '', content: '' });
+      
+      if (!isTest) {
+        setShowComposeModal(false);
+        setNewsletterData({ subject: '', content: '' });
+      }
     } catch (err: any) {
       addToast(err.message, "error");
     } finally {
@@ -3185,25 +3189,46 @@ published: true
                   </div>
                 </div>
 
-                <div className="p-10 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-white/20 text-xs font-medium">
-                    <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                    <span>Sending in batches of 100 to stay within free limits.</span>
+                <div className="p-10 bg-white/[0.02] border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-4 text-white/20 text-xs font-medium">
+                      <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                      <span>Sending in batches of 100 to stay within free limits.</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
+                      <Shield size={12} className="text-green-500" />
+                      <span>Admin Verification Active</span>
+                    </div>
                   </div>
-                  <button 
-                    disabled={isSending || !newsletterData.subject || !newsletterData.content}
-                    onClick={() => handleSendNewsletter()}
-                    className="px-12 py-5 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white disabled:opacity-20 disabled:hover:bg-brand-primary transition-all flex items-center gap-3 shadow-lg shadow-brand-primary/10"
-                  >
-                    {isSending ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                        Dispatching...
-                      </>
-                    ) : (
-                      <>Broadcast Newsletter <Zap size={18} /></>
-                    )}
-                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <button 
+                      disabled={isSending || !newsletterData.subject || !newsletterData.content}
+                      onClick={() => handleSendNewsletter(undefined, true)}
+                      className="px-8 py-5 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all flex items-center gap-3"
+                    >
+                      {isSending ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Eye size={18} />}
+                      Send Test
+                    </button>
+                    <button 
+                      disabled={isSending || !newsletterData.subject || !newsletterData.content}
+                      onClick={() => {
+                        if (confirm(`Are you sure you want to broadcast this newsletter to ${subscribers.length} subscribers?`)) {
+                          handleSendNewsletter();
+                        }
+                      }}
+                      className="px-12 py-5 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white disabled:opacity-20 disabled:hover:bg-brand-primary transition-all flex items-center gap-3 shadow-lg shadow-brand-primary/10"
+                    >
+                      {isSending ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                          Dispatching...
+                        </>
+                      ) : (
+                        <>Broadcast Newsletter <Zap size={18} /></>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>

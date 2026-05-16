@@ -1,7 +1,7 @@
 import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 import dotenv from 'dotenv';
-
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 import fs from 'fs';
