@@ -71,7 +71,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // 2. Create Stripe Checkout Session
+    // 2. Retrieve Price from Stripe to determine mode
+    const price = await stripe.prices.retrieve(product.stripePriceId);
+    const mode = price.type === 'recurring' ? 'subscription' : 'payment';
+
+    // 3. Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "upi"], // Optimized for Indian Users
       line_items: [
@@ -80,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           quantity: 1,
         },
       ],
-      mode: "payment",
+      mode: mode,
       success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: `${appUrl}/products/${product.slug}?payment=cancelled`,
       metadata: {
