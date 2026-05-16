@@ -13,7 +13,7 @@ if (!admin.apps.length) {
   }
 }
 
-const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(default)");
+const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Allow GET for simple link clicks from emails
@@ -58,10 +58,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).send(`
       <html>
         <head>
-          <title>Unsubscribed | Momentum</title>
+          <title>Unsubscribed | Innovation Lab</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #080808; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
-            .card { background: rgba(255, 255, 255, 0.03); border: 1px border rgba(255, 255, 255, 0.1); padding: 3rem; border-radius: 2rem; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+            .card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); padding: 3rem; border-radius: 2rem; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
             h1 { font-size: 1.5rem; margin-bottom: 1rem; }
             p { font-size: 0.9rem; opacity: 0.5; line-height: 1.6; }
             .brand { color: #00C2FF; font-weight: bold; margin-bottom: 2rem; display: block; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.7rem; }
@@ -70,10 +70,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         </head>
         <body>
           <div class="card">
-            <span class="brand">Momentum Lab</span>
+            <span class="brand">Innovation Lab</span>
             <h1>You have been unsubscribed</h1>
             <p>Your email has been removed from our list. You will no longer receive our newsletters or innovation updates.</p>
-            <a href="/" class="btn">Back to Momentum</a>
+            <a href="/" class="btn">Back to Lab</a>
           </div>
         </body>
       </html>
