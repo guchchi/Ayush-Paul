@@ -139,7 +139,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 customerName: customerName,
                 productName: productData.title,
                 amount: formattedAmount,
-                labUrl: `${process.env.APP_URL || 'https://ayushpaul.in'}/lab/dashboard`
+                labUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/lab/dashboard`
               })
             });
             console.log(`📧 Receipt email sent to ${customerEmail}`);

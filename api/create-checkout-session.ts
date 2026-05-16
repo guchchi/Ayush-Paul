@@ -37,7 +37,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     apiVersion: "2024-06-20",
   });
 
-  const appUrl = process.env.APP_URL || "http://localhost:5173"; // Use local default if missing
+  // Determine the base URL for redirects (Success/Cancel)
+  const protocol = req.headers["x-forwarded-proto"] || "http";
+  const host = req.headers.host || "localhost:5173";
+  const appUrl = process.env.APP_URL || `${protocol}://${host}`;
 
   try {
     // 1. Fetch Product from Firestore
