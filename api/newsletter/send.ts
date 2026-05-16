@@ -132,10 +132,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // 5. Critical Error Handling: If the entire batch failed, we need to let the admin know
     if (batch.length > 0 && successfulSends === 0) {
+      const isSandboxError = failedSends.some(f => f.error?.toLowerCase().includes("forbidden") || f.error?.toLowerCase().includes("unverified"));
+      
       return res.status(500).json({ 
-        error: "Delivery failed for the entire batch. This is usually due to an unverified domain in Resend or an invalid API key.",
+        error: isSandboxError 
+          ? "Resend Sandbox Limitation: In sandbox mode (unverified domain), you can ONLY send emails to your own Resend account email. Please verify your domain in the Resend dashboard to send to all subscribers."
+          : "Delivery failed for the entire batch. This is usually due to an unverified domain in Resend or an invalid API key.",
         details: failedSends[0]?.error,
-        code: "BATCH_DELIVERY_FAILED"
+        code: isSandboxError ? "RESEND_SANDBOX_LIMIT" : "BATCH_DELIVERY_FAILED"
       });
     }
 
