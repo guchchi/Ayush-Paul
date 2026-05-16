@@ -87,46 +87,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const batch = allSubscribers.slice(startIndex, startIndex + batchSize);
 
     // 4. Send Emails via Resend
+    const fromAddress = process.env.RESEND_FROM_EMAIL || "Ayush Paul <onboarding@resend.dev>";
+    
     const results = await Promise.all(batch.map(async (sub) => {
       try {
-        const unsubscribeUrl = `${process.env.APP_URL || 'https://ayushpaul.com'}/api/newsletter/unsubscribe?id=${sub.id}`;
+        const unsubscribeUrl = `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/api/newsletter/unsubscribe?id=${sub.id}`;
         
-        await resend.emails.send({
-          from: "Ayush Paul <newsletter@ayushpaul.com>",
+        const { data, error } = await resend.emails.send({
+          from: fromAddress,
           to: sub.email,
           subject: subject,
           html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; color: #1a1a1a; padding: 40px; border-radius: 12px;">
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; color: #1a1a1a; padding: 40px; border-radius: 12px; border: 1px solid #eeeeee;">
               <div style="margin-bottom: 30px;">
                 <span style="font-weight: bold; letter-spacing: 2px; text-transform: uppercase; font-size: 12px; color: #00C2FF;">Innovation Lab</span>
               </div>
-              <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">${subject}</h1>
+              <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; color: #000000;">${subject}</h1>
               <div style="font-size: 16px; line-height: 1.6; color: #444444; margin-bottom: 40px;">
                 ${content.replace(/\n/g, '<br/>')}
               </div>
               <div style="border-top: 1px solid #eeeeee; padding-top: 20px; font-size: 12px; color: #999999; text-align: center;">
                 <p>© ${new Date().getFullYear()} Ayush Paul Innovation Lab</p>
                 <p>
-                  You received this because you subscribed to updates on ayushpaul.com. 
-                  <a href="${unsubscribeUrl}" style="color: #00C2FF; text-decoration: none;">Unsubscribe instantly</a>
+                  You received this because you subscribed to updates on ayushpaul.vercel.app. 
+                  <br/>
+                  <a href="${unsubscribeUrl}" style="color: #00C2FF; text-decoration: none; font-weight: bold;">Unsubscribe instantly</a>
                 </p>
               </div>
             </div>
           `
         });
+
+        if (error) throw error;
         return { email: sub.email, success: true };
       } catch (err: any) {
-        return { email: sub.email, success: false, error: err.message };
+        console.error(`Failed to send to ${sub.email}:`, err);
+        return { email: sub.email, success: false, error: err.message || err.name };
       }
     }));
 
     const successfulSends = results.filter(r => r.success).length;
+    const failedSends = results.filter(r => !r.success);
     sentCount = startIndex + successfulSends;
+
+    // 5. Critical Error Handling: If the entire batch failed, we need to let the admin know
+    if (batch.length > 0 && successfulSends === 0) {
+      return res.status(500).json({ 
+        error: "Delivery failed for the entire batch. This is usually due to an unverified domain in Resend or an invalid API key.",
+        details: failedSends[0]?.error,
+        code: "BATCH_DELIVERY_FAILED"
+      });
+    }
 
     // 6. Update/Create Campaign Log (Skip if test mode)
     if (isTestMode) {
       return res.status(200).json({
-        message: "Test email sent successfully to " + decodedToken.email,
+        message: `Test email sent successfully to ${decodedToken.email}`,
         sentCount: 1,
         total: 1,
         status: "test"
@@ -154,11 +170,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(200).json({
-      message: sentCount >= allSubscribers.length ? "Newsletter fully sent!" : "Batch sent successfully. Resume tomorrow.",
+      message: sentCount >= allSubscribers.length 
+        ? `Newsletter fully sent to ${sentCount} subscribers!` 
+        : `Batch processed: ${successfulSends} sent, ${failedSends.length} failed. Total progress: ${sentCount}/${allSubscribers.length}`,
       campaignId: currentCampaignId,
       sentCount,
       total: allSubscribers.length,
-      status: campaignData.status
+      status: campaignData.status,
+      failures: failedSends.length > 0 ? failedSends.slice(0, 5) : undefined // Send first few failures for debugging
     });
 
   } catch (error: any) {
