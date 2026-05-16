@@ -12,6 +12,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { VARIANTS } from "../lib/motion-presets";
 import { getRelatedContent } from "../lib/seo-utils";
 import { Product } from "../types";
+import { WaitlistForm } from "../components/ui/WaitlistForm";
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
@@ -427,10 +428,9 @@ export const BlogPostPage = () => {
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold mb-4">Stay at the <span className="text-brand-primary">Edge of Innovation</span></h3>
                   <p className="text-white/40 text-sm mb-8 max-w-md mx-auto">Join 2,000+ developers and engineers receiving weekly insights on AI, hardware, and engineering.</p>
-                  <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
-                    <input type="email" placeholder="you@example.com" className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary/40 transition-all text-sm" />
-                    <button className="px-8 py-4 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white transition-all text-sm shadow-lg shadow-brand-primary/10">Subscribe</button>
-                  </form>
+                  <div className="max-w-xl mx-auto">
+                    <WaitlistForm context="blog-engagement" variant="inline" />
+                  </div>
                 </div>
               </div>
             </article>

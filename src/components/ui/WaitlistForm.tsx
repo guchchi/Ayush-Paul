@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Zap, CheckCircle2, ArrowRight, AlertCircle } from 'lucide-react';
 import { db, collection, addDoc, serverTimestamp, getDocs, query, where, limit } from '../../firebase';
+import { cn } from '../../lib/utils';
 
-export const WaitlistForm = ({ context = "footer-waitlist" }: { context?: string }) => {
+export const WaitlistForm = ({ 
+  context = "footer-waitlist",
+  variant = "compact" 
+}: { 
+  context?: string,
+  variant?: "compact" | "inline"
+}) => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'duplicate'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -64,23 +71,36 @@ export const WaitlistForm = ({ context = "footer-waitlist" }: { context?: string
           <motion.form 
             key="form"
             onSubmit={handleSubmit}
-            className="relative group"
+            className={cn(
+              "relative group",
+              variant === "inline" ? "flex flex-col sm:flex-row gap-4" : ""
+            )}
           >
-            <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-white/20 group-focus-within:text-brand-primary transition-colors">
-              <Mail size={18} />
+            <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-white/20 group-focus-within:text-brand-primary transition-colors">
+                <Mail size={18} />
+              </div>
+              <input 
+                type="email" 
+                placeholder="Join the blueprint waitlist..."
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={cn(
+                  "w-full bg-white/5 border border-white/10 rounded-2xl pl-14 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white",
+                  variant === "compact" ? "pr-32" : "pr-6"
+                )}
+              />
             </div>
-            <input 
-              type="email" 
-              placeholder="Join the blueprint waitlist..."
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-32 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white"
-            />
             <button 
               type="submit"
               disabled={status === 'loading'}
-              className="absolute right-2 top-2 bottom-2 px-6 rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center gap-2"
+              className={cn(
+                "rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2",
+                variant === "compact" 
+                  ? "absolute right-2 top-2 bottom-2 px-6" 
+                  : "px-10 py-4 sm:py-0"
+              )}
             >
               {status === 'loading' ? (
                 <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
