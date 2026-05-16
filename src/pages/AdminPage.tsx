@@ -1124,6 +1124,10 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [projects, setProjects] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [showComposeModal, setShowComposeModal] = useState(false);
+  const [newsletterData, setNewsletterData] = useState({ subject: '', content: '' });
+  const [isSending, setIsSending] = useState(false);
   const [updates, setUpdates] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
@@ -1456,10 +1460,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
 
     fetchSecondaryData();
 
+    // 3. Campaigns
+    const qCampaigns = query(collection(db, "newsletter_campaigns"), orderBy("createdAt", "desc"));
+    const unsubscribeCampaigns = onSnapshot(qCampaigns, (snapshot) => {
+      setCampaigns(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+
     return () => {
-      console.log("🛑 [SYNC] Terminating Dashboard Listeners...");
       unsubscribeBlogs();
       unsubscribeProjects();
+      unsubscribeCampaigns();
     };
   }, []);
 
@@ -1544,6 +1554,47 @@ const AdminDashboard = ({ user }: { user: any }) => {
       addToast("AI assistance failed.", "error");
     } finally {
       setIsAIProcessing(false);
+    }
+  };
+
+  const handleSendNewsletter = async (resumingCampaignId?: string) => {
+    setIsSending(true);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      const token = await user.getIdToken();
+
+      let payload = {
+        subject: newsletterData.subject,
+        content: newsletterData.content,
+        campaignId: resumingCampaignId
+      };
+
+      if (resumingCampaignId) {
+        const camp = campaigns.find(c => c.id === resumingCampaignId);
+        payload.subject = camp.subject;
+        payload.content = camp.content;
+      }
+
+      const response = await fetch('/api/newsletter/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed to send");
+
+      addToast(result.message, "success");
+      setShowComposeModal(false);
+      setNewsletterData({ subject: '', content: '' });
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -2997,26 +3048,78 @@ published: true
               </div>
             )}
             {activeTab === "subscribers" && (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {subscribers.map((sub) => (
-                  <div key={sub.id} className="glass-card p-8 rounded-[40px] border border-white/10 flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20">
-                        <Mail size={18} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-white/80 group-hover:text-white transition-colors">{sub.email}</div>
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">Joined {formatDate(sub.subscribedAt)}</div>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => handleDelete(sub.id, "newsletter")}
-                      className="p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity text-white/20 hover:text-red-500"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+              <div className="space-y-12">
+                <div className="flex justify-between items-center bg-white/5 p-8 rounded-[40px] border border-white/10">
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-2">Subscriber Base</h3>
+                    <p className="text-white/40 text-sm">{subscribers.length} innovators following your journey.</p>
                   </div>
-                ))}
+                  <button 
+                    onClick={() => setShowComposeModal(true)}
+                    className="px-8 py-4 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white transition-all flex items-center gap-2"
+                  >
+                    <Plus size={18} /> Compose Newsletter
+                  </button>
+                </div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {subscribers.map((sub) => (
+                    <div key={sub.id} className="glass-card p-8 rounded-[40px] border border-white/10 flex items-center justify-between group">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20">
+                          <Mail size={18} />
+                        </div>
+                        <div>
+                          <div className="font-bold text-white/80 group-hover:text-white transition-colors">{sub.email}</div>
+                          <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">Joined {formatDate(sub.createdAt)}</div>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleDelete(sub.id, "newsletter")}
+                        className="p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity text-white/20 hover:text-red-500"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {campaigns.length > 0 && (
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-white/60 px-2 uppercase tracking-widest text-[11px]">Campaign History</h3>
+                    <div className="grid gap-4">
+                      {campaigns.map((camp) => (
+                        <div key={camp.id} className="glass-card p-8 rounded-[32px] border border-white/5 flex items-center justify-between group">
+                          <div className="flex items-center gap-6">
+                            <div className={cn(
+                              "w-12 h-12 rounded-2xl flex items-center justify-center",
+                              camp.status === 'completed' ? "bg-green-500/10 text-green-500" : "bg-brand-primary/10 text-brand-primary animate-pulse"
+                            )}>
+                              {camp.status === 'completed' ? <CheckCircle2 size={20} /> : <Zap size={20} />}
+                            </div>
+                            <div>
+                              <div className="font-bold text-white mb-1">{camp.subject}</div>
+                              <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-white/20">
+                                <span>{formatDate(camp.createdAt)}</span>
+                                <div className="w-1 h-1 rounded-full bg-white/10" />
+                                <span>Sent: {camp.sentCount} / {camp.totalSubscribers}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {camp.status === 'processing' && (
+                            <button 
+                              disabled={isSending}
+                              onClick={() => handleSendNewsletter(camp.id)}
+                              className="px-6 py-3 rounded-xl bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-black transition-all"
+                            >
+                              Resume Next Batch
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             {((activeTab === "blogs" && posts.length === 0) || 
@@ -3031,6 +3134,81 @@ published: true
           </div>
         )}
         <Toaster toasts={toasts} removeToast={removeToast} />
+
+        {/* Newsletter Compose Modal */}
+        <AnimatePresence>
+          {showComposeModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowComposeModal(false)}
+                className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-4xl bg-[#0D0D0D] border border-white/10 rounded-[48px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              >
+                <div className="p-10 border-b border-white/5 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-3xl font-bold text-white mb-2">Compose Newsletter</h3>
+                    <p className="text-white/40 text-sm">Drafting a message to {subscribers.length} innovators.</p>
+                  </div>
+                  <button onClick={() => setShowComposeModal(false)} className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-10 space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Subject Line</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g., Innovation Weekly: The Future of Robotics"
+                      value={newsletterData.subject}
+                      onChange={(e) => setNewsletterData(prev => ({ ...prev, subject: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-lg font-bold text-white outline-none focus:border-brand-primary/40 transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-3 flex-1 flex flex-col">
+                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Message Content</label>
+                    <textarea 
+                      placeholder="Write your newsletter content here... (HTML tags allowed)"
+                      value={newsletterData.content}
+                      onChange={(e) => setNewsletterData(prev => ({ ...prev, content: e.target.value }))}
+                      className="w-full flex-1 bg-white/5 border border-white/10 rounded-3xl px-8 py-6 text-white/80 outline-none focus:border-brand-primary/40 transition-all resize-none min-h-[300px] leading-relaxed"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-10 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-white/20 text-xs font-medium">
+                    <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
+                    <span>Sending in batches of 100 to stay within free limits.</span>
+                  </div>
+                  <button 
+                    disabled={isSending || !newsletterData.subject || !newsletterData.content}
+                    onClick={() => handleSendNewsletter()}
+                    className="px-12 py-5 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white disabled:opacity-20 disabled:hover:bg-brand-primary transition-all flex items-center gap-3 shadow-lg shadow-brand-primary/10"
+                  >
+                    {isSending ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                        Dispatching...
+                      </>
+                    ) : (
+                      <>Broadcast Newsletter <Zap size={18} /></>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
