@@ -82,13 +82,13 @@ export const WaitlistForm = ({
               </div>
               <input 
                 type="email" 
-                placeholder="Join the blueprint waitlist..."
+                placeholder="Enter your email..."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className={cn(
-                  "w-full bg-white/5 border border-white/10 rounded-2xl pl-14 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white",
-                  variant === "compact" ? "pr-32" : "pr-6"
+                  "w-full bg-white/5 border border-white/10 rounded-2xl pl-12 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white",
+                  variant === "compact" ? "pr-36" : "pr-6"
                 )}
               />
             </div>

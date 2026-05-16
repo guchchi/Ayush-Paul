@@ -39,7 +39,7 @@ export const Footer = () => {
               {[
                 { name: "Home", href: "/#home" },
                 { name: "Projects", href: "/projects" },
-                { name: "Lab", href: "/products" },
+                { name: "Innovation Lab", href: "/products" },
                 { name: "Momentum", href: "/momentum" },
                 { name: "Blog", href: "/blog" },
                 { name: "About", href: "/about" },
