@@ -72,42 +72,63 @@ export const WaitlistForm = ({
             key="form"
             onSubmit={handleSubmit}
             className={cn(
-              "relative group",
+              "relative group w-full",
               variant === "inline" ? "flex flex-col sm:flex-row gap-4" : ""
             )}
           >
-            <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-white/20 group-focus-within:text-brand-primary transition-colors">
-                <Mail size={18} />
+            {variant === "compact" ? (
+              <div className="flex items-center bg-white/5 border border-white/10 rounded-2xl p-1.5 focus-within:border-brand-primary/50 focus-within:bg-white/[0.08] transition-all group/input">
+                <div className="pl-4 pr-2 text-white/20 group-focus-within/input:text-brand-primary transition-colors shrink-0">
+                  <Mail size={18} />
+                </div>
+                <input 
+                  type="email" 
+                  placeholder="Enter your email..."
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="flex-1 bg-transparent border-none outline-none py-2.5 text-sm font-medium text-white placeholder:text-white/20 min-w-0"
+                />
+                <button 
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="px-6 py-3 rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-brand-primary/10"
+                >
+                  {status === 'loading' ? (
+                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>Subscribe <ArrowRight size={14} /></>
+                  )}
+                </button>
               </div>
-              <input 
-                type="email" 
-                placeholder="Enter your email..."
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className={cn(
-                  "w-full bg-white/5 border border-white/10 rounded-2xl pl-12 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white",
-                  variant === "compact" ? "pr-36" : "pr-6"
-                )}
-              />
-            </div>
-            <button 
-              type="submit"
-              disabled={status === 'loading'}
-              className={cn(
-                "rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2",
-                variant === "compact" 
-                  ? "absolute right-2 top-2 bottom-2 px-6" 
-                  : "px-10 py-4 sm:py-0"
-              )}
-            >
-              {status === 'loading' ? (
-                <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-              ) : (
-                <>Subscribe <ArrowRight size={14} /></>
-              )}
-            </button>
+            ) : (
+              <>
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-white/20 group-focus-within:text-brand-primary transition-colors">
+                    <Mail size={18} />
+                  </div>
+                  <input 
+                    type="email" 
+                    placeholder="Enter your email..."
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 py-4 text-sm font-medium outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-white pr-6"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="px-10 py-4 rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2"
+                >
+                  {status === 'loading' ? (
+                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>Subscribe <ArrowRight size={14} /></>
+                  )}
+                </button>
+              </>
+            )}
           </motion.form>
         )}
       </AnimatePresence>

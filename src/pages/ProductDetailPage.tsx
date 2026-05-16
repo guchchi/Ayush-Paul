@@ -369,7 +369,7 @@ export const ProductDetailPage = () => {
         <div className="max-w-4xl mx-auto mb-32">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight mb-4">Choose Your Tier</h2>
-            <p className="text-white/40">Start with the free blueprint, or get the complete engineering package.</p>
+            <p className="text-white/40 italic">Scroll down to unlock the complete engineering package for this specific blueprint.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
@@ -424,9 +424,9 @@ export const ProductDetailPage = () => {
               </div>
               
               <div className="flex items-baseline gap-3 mb-8">
-                <div className="text-4xl font-bold text-white">${product.salePrice || product.basePrice}</div>
+                <div className="text-4xl font-bold text-white">₹{product.salePrice || product.basePrice}</div>
                 {hasDiscount && (
-                  <div className="text-lg text-white/30 line-through">${product.basePrice}</div>
+                  <div className="text-lg text-white/30 line-through">₹{product.basePrice}</div>
                 )}
               </div>
               
