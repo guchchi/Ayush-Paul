@@ -6,7 +6,7 @@ import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 import { getProductBySlug } from '../lib/product-utils';
-import { auth, onAuthStateChanged, db, doc, updateDoc, arrayUnion, getDoc } from '../firebase';
+import { auth, onAuthStateChanged, db, doc, updateDoc, setDoc, getDoc, serverTimestamp } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
 import { getRelatedContent } from '../lib/seo-utils';
@@ -146,9 +146,15 @@ export const ProductDetailPage = () => {
       if (user) {
         console.log("[Lab] Unlocking free product for user:", user.uid);
         const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          [`ownedProducts.${product.id}`]: "free"
-        });
+        
+        // Use setDoc with merge: true instead of updateDoc to ensure it works even if doc doesn't exist
+        await setDoc(userRef, {
+          ownedProducts: {
+            [product.id]: "free"
+          },
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        
         console.log(`[Lab] Product ${product.id} (Free Tier) unlocked successfully.`);
       }
 
