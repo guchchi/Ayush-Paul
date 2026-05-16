@@ -44,15 +44,9 @@ async function inspectProducts() {
 
     snapshot.forEach(doc => {
       const data = doc.data();
-      console.log(`\nID: ${doc.id}`);
-      console.log(`Title: ${data.title}`);
-      console.log(`Slug: ${data.slug}`);
-      console.log(`Type: ${data.type}`);
-      console.log(`Price: ${data.basePrice} / ${data.salePrice}`);
-      console.log(`Currency: ${data.currency}`);
-      console.log(`StripePriceId: ${data.stripePriceId || "MISSING"}`);
-      console.log(`DownloadURL: ${data.downloadFileURL || "MISSING"}`);
-      console.log(`--------------------------`);
+      console.log(`ID: ${doc.id}`);
+      console.log("Full Data:", JSON.stringify(data, null, 2));
+      console.log("--------------------------");
     });
   } catch (err: any) {
     console.error(`Error with database ${dbId}:`, err.message);

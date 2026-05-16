@@ -37,9 +37,15 @@ export const LabDashboardPage = () => {
           
           const ownedMap = profileData?.ownedProducts || {};
           const ownedIds = Object.keys(ownedMap);
-          const allProducts = await getPublishedProducts();
+          console.log("[Lab] Profile found. Owned IDs:", ownedIds);
           
-          setOwnedProducts(allProducts.filter(p => ownedIds.includes(p.id)));
+          const allProducts = await getPublishedProducts();
+          console.log("[Lab] All Products from DB:", allProducts.map(p => p.id));
+          
+          const filtered = allProducts.filter(p => ownedIds.includes(p.id));
+          console.log("[Lab] Filtered Owned Products:", filtered.map(p => p.id));
+          
+          setOwnedProducts(filtered);
           setDiscoverProducts(allProducts.filter(p => ownedMap[p.id] !== 'premium' && p.type !== 'free'));
         } else {
           setOwnedProducts([]);
