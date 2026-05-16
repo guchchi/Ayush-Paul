@@ -1442,7 +1442,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
         console.log("📊 [SYNC] Fetching secondary metrics...");
         const [msgSnap, subSnap, updSnap] = await Promise.all([
           getDocs(query(collection(db, "contacts"), orderBy("timestamp", "desc"))),
-          getDocs(query(collection(db, "newsletter"), orderBy("subscribedAt", "desc"))),
+          getDocs(query(collection(db, "subscribers"), orderBy("createdAt", "desc"))),
           getDocs(query(collection(db, "updates"), orderBy("date", "desc")))
         ]);
         
@@ -2712,15 +2712,11 @@ published: true
                     value={subscribers.length} 
                     icon={<Mail size={24} />} 
                     trend={subscribers.filter(s => {
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                      const subscribedAt = s.subscribedAt?.seconds ? new Date(s.subscribedAt.seconds * 1000) : new Date(s.subscribedAt);
-                      return subscribedAt > sevenDaysAgo;
+                      const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
+                      return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
                     }).length > 0 ? `+${subscribers.filter(s => {
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                      const subscribedAt = s.subscribedAt?.seconds ? new Date(s.subscribedAt.seconds * 1000) : new Date(s.subscribedAt);
-                      return subscribedAt > sevenDaysAgo;
+                      const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
+                      return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
                     }).length} weekly` : undefined}
                   />
                   <AdminStatCard label="Projects" value={projects.length} icon={<Layers size={24} />} />
