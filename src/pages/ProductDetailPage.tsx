@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Product } from '../types';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft } from 'lucide-react';
