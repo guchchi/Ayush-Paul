@@ -13,7 +13,7 @@ if (!admin.apps.length) {
   }
 }
 
-const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || 'ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a');
+const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only allow POST
