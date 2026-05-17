@@ -9,7 +9,8 @@
     "build": "tsx scripts/generate-sitemap.ts && vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "security:scan": "tsx scripts/security-scan.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

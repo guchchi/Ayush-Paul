@@ -1165,8 +1165,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
     setIsAIProcessing(true);
     try {
       const content = blocks.filter(b => b.type === 'text' || b.type === 'heading').map(b => b.content).join(' ');
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY is not defined");
+      const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+      if (!apiKey) throw new Error("GOOGLE_API_KEY is not defined");
       
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -1487,8 +1487,8 @@ const AdminDashboard = ({ user }: { user: any }) => {
     setIsAIProcessing(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) throw new Error("GEMINI_API_KEY is not defined");
+      const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+      if (!apiKey) throw new Error("GOOGLE_API_KEY is not defined");
       
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

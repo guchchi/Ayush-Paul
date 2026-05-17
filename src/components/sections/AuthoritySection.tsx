@@ -10,10 +10,10 @@ import { VARIANTS, EASING } from '../../lib/motion-presets';
 
 const StatsDashboard = () => {
   const stats = [
-    { label: "Projects Completed", value: "50+", icon: <Rocket size={20} />, color: "text-blue-400" },
+    { label: "Active SaaS Products", value: "3 Nodes", icon: <Rocket size={20} />, color: "text-blue-400" },
     { label: "Lines of Code", value: "100k+", icon: <Code size={20} />, color: "text-purple-400" },
     { label: "Robots Built", value: "12", icon: <Cpu size={20} />, color: "text-orange-400" },
-    { label: "Happy Clients", value: "25+", icon: <User size={20} />, color: "text-green-400" },
+    { label: "Blueprints Shipped", value: "3 Catalogs", icon: <Layers size={20} />, color: "text-green-400" },
   ];
 
   return (
@@ -45,9 +45,9 @@ const StatsDashboard = () => {
 
 const BrandEcosystem = () => {
   const items = [
-    { title: "Currently Building", content: "A multi-agent AI framework for autonomous robotics.", icon: <Zap size={20} /> },
-    { title: "Learning in Public", content: "Deep diving into Rust and WebAssembly for high-performance web apps.", icon: <BookOpen size={20} /> },
-    { title: "Tech Philosophy", content: "Simplicity is the ultimate sophistication. Build for impact, not just for code.", icon: <Lightbulb size={20} /> },
+    { title: "Currently Building", content: "A premium, unified SaaS ecosystem and open-source robotics hardware platform.", icon: <Zap size={20} /> },
+    { title: "Learning in Public", content: "Deep diving into ROS2 and edge-AI integration for autonomous navigation.", icon: <BookOpen size={20} /> },
+    { title: "Venture Philosophy", content: "Simplicity is the ultimate sophistication. Formulate modular digital assets that scale autonomously.", icon: <Lightbulb size={20} /> },
   ];
 
   return (
@@ -92,25 +92,25 @@ export const AuthoritySection = () => {
       id: 'builder',
       title: 'Builder',
       icon: <Box className="w-8 h-8 text-brand-primary" />,
-      description: 'Production-grade systems and shipped products.',
-      metrics: ['50+ Shipped Modules', 'Scalable Architecture', 'Production Reliability'],
-      details: 'Expertise in building robust web applications and robotics systems that handle real-world scale.'
+      description: 'Production-ready SaaS platforms and software systems.',
+      metrics: ['Modular Abstractions', 'High Availability', 'Production Analytics'],
+      details: 'Building secure, full-stack applications with dynamic caching, seamless state synchronizations, and serverless scaling.'
     },
     {
       id: 'creator',
       title: 'Creator',
       icon: <Zap className="w-8 h-8 text-brand-secondary" />,
-      description: 'Design-led technical implementation.',
-      metrics: ['4+ Years Design Ops', 'High-Signal UI/UX', 'Video & Motion Mastery'],
-      details: 'Bridging the gap between high-end digital aesthetics and performant engineering.'
+      description: 'Design-led technical products and micro-animations.',
+      metrics: ['Design Ops & Aesthetics', 'High-Signal UI/UX', 'Dynamic Motion Prefabs'],
+      details: 'Fusing sleek, glassmorphic typography, smooth interactions, and micro-telemetry elements into venture interfaces.'
     },
     {
       id: 'technologist',
       title: 'Technologist',
       icon: <Brain className="w-8 h-8 text-brand-accent" />,
-      description: 'AI, Automation, and Hardware crossover.',
-      metrics: ['AI/ML Integration', 'Hardware-Software Sync', 'Workflow Automation'],
-      details: 'Specializing in intelligent automation and robotics, connecting physical hardware with digital brains.'
+      description: 'Cyber-physical systems, ROS2, and Edge AI.',
+      metrics: ['AI Agent System Design', 'ROS2 Spatial Blueprints', 'ESP32 Control Networks'],
+      details: 'Bridging deep analytical software with low-latency physical systems, open-sourcing production CAD and code.'
     }
   ];
 

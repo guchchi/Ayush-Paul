@@ -92,10 +92,10 @@ async function startServer() {
   app.post("/api/chat", async (req, res) => {
     try {
       const { messages, systemPrompt } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.GOOGLE_API_KEY;
       
       if (!apiKey) {
-        return res.status(500).json({ error: "GEMINI_API_KEY is not set in local .env" });
+        return res.status(500).json({ error: "GOOGLE_API_KEY is not set in local .env" });
       }
 
       const { GoogleGenerativeAI } = await import("@google/generative-ai");

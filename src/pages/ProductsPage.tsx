@@ -1,46 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
-import { Package, Search, Filter, Cpu, Code, BookOpen, Layers } from 'lucide-react';
+import { Layers, Terminal, Sparkles } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
-import { ProductCard } from '../components/ui/ProductCard';
-import { getPublishedProducts } from '../lib/product-utils';
-import { Product } from '../types';
+import { EcosystemCard, EcosystemProduct } from '../components/ui/EcosystemCard';
 
-const CATEGORIES = [
-  { id: 'all', label: 'All Resources', icon: Layers },
-  { id: 'robotics', label: 'Robotics', icon: Cpu },
-  { id: 'source-code', label: 'Source Code', icon: Code },
-  { id: 'blueprints', label: 'Blueprints', icon: BookOpen },
+const ECOSYSTEM_PRODUCTS: EcosystemProduct[] = [
+  {
+    id: "ai-life-navigator",
+    title: "AI Life Navigator",
+    slug: "ai-life-navigator",
+    category: "AI & Productivity",
+    description: "An agentic productivity nervous system standardizing the bridge between human life goals and daily task execution. Built with intelligent planning systems.",
+    logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=200",
+    appUrl: "https://ai-life-navigator.vercel.app",
+    githubUrl: "https://github.com/guchchi/ai-life-navigator",
+    status: "Production",
+    tech: ["React", "TypeScript", "Google Gemini API", "Tailwind CSS", "Express"]
+  }
 ];
 
 export const ProductsPage = () => {
   useSEO({
-    title: "Innovation Lab | Digital Products & Blueprints by Ayush Paul",
-    description: "Download premium robotics source code, engineering blueprints, and innovation guides created by Ayush Paul.",
-    keywords: "Ayush Paul Lab, Robotics Source Code, Digital Products, Engineering Blueprints",
-    canonicalUrl: getCanonicalUrl("/lab")
-  });
-
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const data = await getPublishedProducts();
-      setProducts(data);
-      setLoading(false);
-    };
-    fetchProducts();
-  }, []);
-
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = activeCategory === 'all' || product.category.toLowerCase() === activeCategory;
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    title: "Digital Products Ecosystem | Ayush Paul",
+    description: "Discover production-grade SaaS platforms, AI-ready agents, and software tools engineered by Ayush Paul.",
+    keywords: "Ayush Paul Products, SaaS Ecosystem, AI Life Navigator, Software Products",
+    url: getCanonicalUrl("/products")
   });
 
   return (
@@ -53,13 +38,13 @@ export const ProductsPage = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-20">
+        <div className="flex flex-col items-center text-center mb-24">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-bold uppercase tracking-widest mb-8"
           >
-            <Package size={14} /> The Innovation Lab
+            <Layers size={14} /> Production Nodes
           </motion.div>
           
           <motion.h1 
@@ -68,7 +53,7 @@ export const ProductsPage = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-display font-extrabold tracking-tighter mb-6"
           >
-            Digital <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">Blueprints.</span>
+            Digital <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-accent">Ecosystem.</span>
           </motion.h1>
           
           <motion.p 
@@ -77,71 +62,41 @@ export const ProductsPage = () => {
             transition={{ delay: 0.2 }}
             className="text-white/40 text-lg md:text-xl max-w-2xl font-medium"
           >
-            Download the exact source codes, CAD designs, and engineering systems behind my award-winning projects. Built for creators.
+            Discover standalone production-grade SaaS systems, AI-powered developer utilities, and web services built and managed by Ayush Paul.
           </motion.p>
         </div>
 
-        {/* Tools & Filters */}
-        <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-16">
-          <div className="flex flex-wrap items-center gap-3">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
-                    activeCategory === cat.id 
-                      ? 'bg-brand-primary text-black shadow-[0_0_20px_rgba(0,194,255,0.3)]' 
-                      : 'bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Icon size={14} /> {cat.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="relative w-full md:w-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search lab..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full md:w-64 pl-12 pr-6 py-3 bg-white/5 border border-white/10 rounded-full text-sm text-white focus:outline-none focus:border-brand-primary/50 transition-colors placeholder:text-white/20 font-medium"
-            />
-          </div>
-        </div>
-
         {/* Product Grid */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <div className="w-12 h-12 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20">Loading Lab Data...</span>
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-32 text-center border border-white/5 rounded-[3rem] glass">
-            <Package size={48} className="text-white/10 mb-6" />
-            <h3 className="text-2xl font-bold text-white mb-2">No blueprints found</h3>
-            <p className="text-white/40">Try adjusting your filters or search query.</p>
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {ECOSYSTEM_PRODUCTS.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <EcosystemCard project={product} />
+            </motion.div>
+          ))}
+          
+          {/* Future Scaling Placeholder */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="border-2 border-dashed border-white/5 rounded-[2.5rem] p-10 flex flex-col items-center justify-center text-center group hover:border-brand-primary/10 transition-colors py-20"
+          >
+            <Terminal size={32} className="text-white/10 mb-6 group-hover:text-brand-primary/40 transition-colors" />
+            <h3 className="text-lg font-bold text-white/50 mb-2">Next Node Compiling</h3>
+            <p className="text-xs text-white/20 max-w-[200px] leading-relaxed">
+              New autonomous apps and services are built continuously. Stay updated.
+            </p>
+          </motion.div>
+        </div>
 
       </div>
     </motion.div>
   );
 };
+
+export default ProductsPage;

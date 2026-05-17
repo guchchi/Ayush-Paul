@@ -53,7 +53,7 @@ Want to run this project locally? Follow these steps:
 - Node.js (v18+ recommended)
 - A Firebase Project (for Authentication & Firestore)
 - A Stripe Account (for checkout features)
-- Google Gemini API Key
+- Google API Key (for AI features and Gemini integrations)
 
 ### 1. Clone & Install
 ```bash
@@ -73,10 +73,11 @@ VITE_FIREBASE_STORAGE_BUCKET="your_storage_bucket"
 VITE_FIREBASE_MESSAGING_SENDER_ID="your_sender_id"
 VITE_FIREBASE_APP_ID="your_app_id"
 VITE_FIREBASE_FIRESTORE_DB_ID="your_db_id"
+VITE_GOOGLE_API_KEY="your_google_api_key"
 
 # Server-side secrets
 STRIPE_SECRET_KEY="your_stripe_secret"
-GEMINI_API_KEY="your_gemini_api_key"
+GOOGLE_API_KEY="your_google_api_key"
 PUBLISH_API_KEY="your_custom_publish_key"
 ```
 
@@ -88,7 +89,12 @@ npm run dev
 ## 🔒 Security Architecture Note
 
 This repository enforces strict security standards, guaranteeing a secure environment:
-- **Secret Isolation**: All sensitive tokens and service account keys are completely decoupled from the codebase and stored exclusively in private environment variables.
+- **Secret Isolation & Zero-Hardcoding**: All sensitive tokens, API keys, and service accounts are completely decoupled from the codebase and loaded exclusively via environment variables (`VITE_GOOGLE_API_KEY` for client, `GOOGLE_API_KEY` for server).
+- **Incident Mitigation**: If any API key is exposed (e.g. via Git history), it must be manually deactivated and rotated immediately inside the Google Cloud / Firebase console. No codebase workarounds can substitute manual key invalidation.
+- **Automated Scanning**: The project includes a non-blocking secret scanner script `npm run security:scan` to scan the codebase locally for accidental leaks before commits.
+- **Pre-commit Protection**: You can optionally configure this script to run as a git pre-commit hook by executing `tsx scripts/security-scan.ts --strict`. If any hardcoded secrets (matching pattern `AIzaSy...`, `PRIVATE_KEY`, or generic secrets) are found, the commit will be blocked automatically.
+- **Production Environment Separation**: Local environments are powered exclusively by gitignored `.env` / `.env.local` files, whereas production builds in Vercel fetch keys directly from serverless secure secrets, guaranteeing that no `.env` files are ever compiled or deployed.
+- **Rotation Policy Reminder**: All API keys must be manually rotated immediately inside the Google Cloud Console / Firebase Console upon any external exposure alert (e.g., GitGuardian alerts).
 - **Firestore Security**: Data reads are open for public viewing, but writes are firmly restricted via `firestore.rules` using explicitly whitelisted Admin UIDs, entirely preventing privilege escalation.
 - **Fail-Safe Client**: The Firebase client initialization gracefully handles missing environment configurations, falling back to safe defaults without crashing the frontend.
 

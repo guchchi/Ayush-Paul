@@ -27,6 +27,8 @@ const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 const ProductsPage = lazy(() => import("./pages/ProductsPage").then(m => ({ default: m.ProductsPage })));
 const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage").then(m => ({ default: m.ProductDetailPage })));
+const LabsPage = lazy(() => import("./pages/LabsPage").then(m => ({ default: m.LabsPage })));
+const LabDetailPage = lazy(() => import("./pages/LabDetailPage").then(m => ({ default: m.LabDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const LabDashboardPage = lazy(() => import("./pages/LabDashboardPage").then(m => ({ default: m.LabDashboardPage })));
 const MomentumPage = lazy(() => import("./pages/MomentumPage").then(m => ({ default: m.MomentumPage })));
@@ -139,6 +141,8 @@ export default function App() {
               <Route path="/cancel" element={<CancelPage />} />
               <Route path="/products" element={wrapInLayout(<ProductsPage />)} />
               <Route path="/products/:slug" element={wrapInLayout(<ProductDetailPage />)} />
+              <Route path="/labs" element={wrapInLayout(<LabsPage />)} />
+              <Route path="/labs/:slug" element={wrapInLayout(<LabDetailPage />)} />
               <Route path="/thank-you" element={wrapInLayout(<ThankYouPage />)} />
               <Route path="/lab/dashboard" element={wrapInLayout(<LabDashboardPage />)} />
               <Route path="/momentum" element={wrapInLayout(<MomentumPage />)} />

@@ -70,6 +70,7 @@ export interface Product {
   id: string;
   title: string;
   slug: string;
+  currency?: string;
   description: string;
   thumbnail: string;
   category: string;

@@ -192,18 +192,18 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                 className="badge mb-6 sm:mb-8 shadow-2xl shadow-brand-primary/10"
               >
                 <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                <span className="tracking-[0.25em]">Founder • Lead Developer • AI Architect</span>
+                <span className="tracking-[0.25em]">Founder • Lead Engineer • AI Architect</span>
               </motion.div>
 
               {/* Power Headline & Authority Statement */}
               <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
                 <h1 className="leading-[1.1]">
                   <span className="sr-only">Ayush Paul</span>
-                  Engineering the <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Next Era of Intelligence</span>
+                  Compounding Value <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Through Digital Ventures</span>
                   <br />
                   <span className="text-brand-primary italic block mt-2 sm:mt-4 text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold">
-                    Through Code & Silicon.
+                    And Intelligent Systems.
                   </span>
                 </h1>
               </motion.div>
@@ -213,12 +213,12 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  className="space-y-8 mb-12 sm:mb-20"
               >
                 <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
-                  I architect production-ready systems that bridge the gap between high-level software and intelligent hardware innovation.
+                  I build production-grade SaaS platforms, autonomous agents, and open-source robotics blueprints, uniting software design and hardware R&D.
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
-                  Currently Building: AI Tools • Creative Systems
+                  Currently Building: SaaS Ecosystems • Autonomous Agents
                 </div>
               </motion.div>
 

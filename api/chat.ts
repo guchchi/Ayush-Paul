@@ -12,9 +12,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: "System prompt is required" });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    console.error("GEMINI_API_KEY is not set in environment variables");
+    console.error("GOOGLE_API_KEY is not set in environment variables");
     return res.status(500).json({ error: "AI system not configured. Please check Vercel settings." });
   }
 
