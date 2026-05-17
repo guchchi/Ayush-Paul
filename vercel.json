@@ -2,9 +2,5 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ],
-  "_comment_future_stage_2_rewrites": [
-    { "source": "/products/ai-life-navigator", "destination": "https://ai-life-navigator.vercel.app" },
-    { "source": "/products/ai-life-navigator/:path*", "destination": "https://ai-life-navigator.vercel.app/:path*" }
   ]
 }
