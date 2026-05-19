@@ -82,7 +82,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Home", href: "/#home", id: "home" },
+    { name: "Home", href: "/", id: "home" },
     { name: "Products", href: "/products", id: "products" },
     { name: "Labs", href: "/labs", id: "labs" },
     { name: "Blog", href: "/blog", id: "latest-blogs" },
@@ -124,9 +124,13 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     }
   }, [location.pathname]);
 
-  const handleNavClick = (link: any) => {
+  const handleNavClick = (link: any, e: React.MouseEvent) => {
     setIsMobileMenuOpen(false);
-    if (link.href.startsWith("/#")) {
+    if (link.href === '/' && location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.history.pushState(null, '', '/');
+    } else if (link.href.startsWith("/#")) {
       const id = link.href.split("#")[1];
       scrollToSection(id);
     }
@@ -172,7 +176,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
             <Link
               key={link.name}
               to={link.href}
-              onClick={() => handleNavClick(link)}
+              onClick={(e) => handleNavClick(link, e)}
               className={cn(
                 "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden block",
                 (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
@@ -370,7 +374,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                       <Link
                         key={link.name}
                         to={link.href}
-                        onClick={() => handleNavClick(link)}
+                        onClick={(e) => handleNavClick(link, e)}
                         className={cn(
                           "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300",
                           (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))

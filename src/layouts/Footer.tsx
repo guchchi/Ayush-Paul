@@ -37,7 +37,7 @@ export const Footer = () => {
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Navigation</h4>
             <ul className="space-y-4">
               {[
-                { name: "Home", href: "/#home" },
+                { name: "Home", href: "/" },
                 { name: "Projects", href: "/projects" },
                 { name: "Products", href: "/products" },
                 { name: "Labs", href: "/labs" },

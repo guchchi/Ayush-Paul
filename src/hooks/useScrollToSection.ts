@@ -36,7 +36,11 @@ export const useScrollToSection = () => {
         });
         
         // Update URL hash without reload for browser history consistency
-        window.history.pushState(null, '', `/#${targetId}`);
+        if (targetId === 'home') {
+          window.history.pushState(null, '', '/');
+        } else {
+          window.history.pushState(null, '', `/#${targetId}`);
+        }
       }, 100);
     } else {
       console.warn(`Target section #${targetId} not found.`);
