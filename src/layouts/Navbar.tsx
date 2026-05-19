@@ -134,15 +134,15 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
   return (
     <nav className={cn(
-      "fixed top-0 left-0 w-full z-[1000] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+      "fixed top-0 left-0 w-full z-[1000] border-b transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
       isScrolled 
-        ? "bg-black/40 backdrop-blur-2xl py-3 border-b border-white/5" 
-        : "bg-transparent py-5 sm:py-10"
+        ? "bg-black/40 backdrop-blur-2xl py-3 border-white/5" 
+        : "bg-transparent py-5 sm:py-10 border-transparent"
     )}>
       {/* Scroll Progress Indicator */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left"
-        style={{ scaleX }}
+        className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300"
+        style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
       />
 
       <Container className="flex items-center justify-between gap-8">
