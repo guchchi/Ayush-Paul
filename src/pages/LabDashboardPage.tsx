@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Package, Download, Bell, Sparkles, ChevronRight, Zap, ShieldCheck, LogOut } from 'lucide-react';
 import { auth, onAuthStateChanged, signOut, db, collection, query, where, getDocs, doc, getDoc } from '../firebase';
 import { useSEO } from '../hooks/useSEO';
-import { ProductCard } from '../components/ui/ProductCard';
+import { LabCard } from '../components/ui/LabCard';
 import { Product } from '../types';
 import { getPublishedProducts } from '../lib/product-utils';
 import { useAnalytics } from '../hooks/useAnalytics';
@@ -206,7 +206,7 @@ export const LabDashboardPage = () => {
               <Package size={48} className="text-white/10 mb-6" />
               <h3 className="text-xl font-bold mb-2">Your vault is empty</h3>
               <p className="text-white/40 mb-8">You haven't downloaded or purchased any blueprints yet.</p>
-              <Link to="/products" className="px-6 py-3 rounded-full bg-brand-primary text-black font-bold text-sm hover:bg-white transition-colors">
+              <Link to="/labs" className="px-6 py-3 rounded-full bg-brand-primary text-black font-bold text-sm hover:bg-white transition-colors">
                 Explore The Lab
               </Link>
             </div>
@@ -220,14 +220,14 @@ export const LabDashboardPage = () => {
               <Sparkles className="text-brand-primary" size={24} />
               <h2 className="text-2xl font-bold tracking-tight">Discover Premium Systems</h2>
             </div>
-            <Link to="/products" className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors flex items-center gap-1">
+            <Link to="/labs" className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors flex items-center gap-1">
               View All <ChevronRight size={14} />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {discoverProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <LabCard key={product.id} product={product} />
             ))}
           </div>
         </div>
