@@ -275,19 +275,19 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
         </div>
 
         {/* Right Action CTA */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-4 shrink-0">
           {user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 shrink-0">
               <Link 
                 to="/lab/dashboard"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors shrink-0"
               >
                 <img 
                   src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=0D8ABC&color=fff`} 
                   alt="Avatar" 
-                  className="w-6 h-6 rounded-full"
+                  className="w-6 h-6 rounded-full shrink-0"
                 />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white">Lab</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white whitespace-nowrap">Lab</span>
               </Link>
             </div>
           ) : (
