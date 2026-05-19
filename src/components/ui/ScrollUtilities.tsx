@@ -4,14 +4,34 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronUp } from 'lucide-react';
 
 export const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // Only scroll to top if there's no hash in the URL
-    if (!window.location.hash) {
+    if (!hash) {
       window.scrollTo(0, 0);
+    } else {
+      const targetId = hash.startsWith('#') ? hash.substring(1) : hash;
+      
+      const handleHashScroll = () => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      // Try immediately in case it's already mounted
+      handleHashScroll();
+
+      // Delay to handle client-side rendering and mount times
+      const timer = setTimeout(handleHashScroll, 100);
+      const timerLong = setTimeout(handleHashScroll, 400);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timerLong);
+      };
     }
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return null;
 };
