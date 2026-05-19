@@ -83,16 +83,16 @@ export const WaitlistForm = ({
                 </div>
                 <input 
                   type="email" 
-                  placeholder="Enter your email..."
+                  placeholder="Your email..."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 bg-transparent border-none outline-none py-2.5 text-sm font-medium text-white placeholder:text-white/20 min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none py-2.5 text-sm font-medium text-white placeholder:text-white/20 min-w-0 pr-3"
                 />
                 <button 
                   type="submit"
                   disabled={status === 'loading'}
-                  className="px-6 py-3 rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-brand-primary/10"
+                  className="px-4 sm:px-5 py-3 rounded-xl bg-brand-primary text-black font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-colors flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-brand-primary/10"
                 >
                   {status === 'loading' ? (
                     <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
