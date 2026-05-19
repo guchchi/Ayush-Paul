@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Mail, Lock, User, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import { 
@@ -87,8 +88,9 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
   };
 
   if (!isOpen) return null;
+  if (typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -226,6 +228,7 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

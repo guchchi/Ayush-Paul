@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
 import { useScrollToSection } from "@/src/hooks/useScrollToSection";
@@ -17,6 +17,8 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('home');
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
+  const [isMobileExploreOpen, setIsMobileExploreOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { scrollToSection } = useScrollToSection();
@@ -88,6 +90,40 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
+  const exploreLinks = [
+    {
+      name: "Projects",
+      href: "/projects",
+      description: "Innovative builds & apps",
+      icon: FolderGit2
+    },
+    {
+      name: "Collaborate",
+      href: "/collaborate",
+      description: "Build something epic together",
+      icon: Users2
+    },
+    {
+      name: "Momentum",
+      href: "/momentum",
+      description: "Real-time logs & milestones",
+      icon: Flame
+    },
+    {
+      name: "Now",
+      href: "/now",
+      description: "What I'm focused on right now",
+      icon: Clock
+    }
+  ];
+
+  // Auto-expand mobile explore section if current path is an explore link
+  useEffect(() => {
+    if (exploreLinks.some(l => location.pathname === l.href)) {
+      setIsMobileExploreOpen(true);
+    }
+  }, [location.pathname]);
+
   const handleNavClick = (link: any) => {
     setIsMobileMenuOpen(false);
     if (link.href.startsWith("/#")) {
@@ -155,6 +191,87 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             </Link>
           ))}
+
+          {/* Explore Dropdown Trigger & Panel */}
+          <div 
+            className="relative"
+            onMouseEnter={() => setIsExploreOpen(true)}
+            onMouseLeave={() => setIsExploreOpen(false)}
+          >
+            <button
+              className={cn(
+                "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full flex items-center gap-1.5 group select-none outline-none",
+                isExploreOpen || exploreLinks.some(l => location.pathname === l.href)
+                  ? "text-white" 
+                  : "text-white/30 hover:text-white/60"
+              )}
+            >
+              <span className="relative z-10">Explore</span>
+              <ChevronDown 
+                size={12} 
+                className={cn(
+                  "relative z-10 transition-transform duration-500",
+                  isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
+                )}
+              />
+              {(exploreLinks.some(l => location.pathname === l.href)) && (
+                <motion.div 
+                  layoutId="nav-pill"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+                  className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                />
+              )}
+            </button>
+
+            {/* Dropdown Menu */}
+            <AnimatePresence>
+              {isExploreOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ type: "spring", damping: 20, stiffness: 200, mass: 0.8 }}
+                  className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[#0A0A0B]/95 border border-white/10 rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
+                >
+                  {/* Subtle Gradient Glow inside dropdown */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
+                  
+                  <div className="flex flex-col gap-1 relative z-10">
+                    {exploreLinks.map((link) => {
+                      const Icon = link.icon;
+                      const isActive = location.pathname === link.href;
+                      return (
+                        <Link
+                          key={link.name}
+                          to={link.href}
+                          onClick={() => setIsExploreOpen(false)}
+                          className={cn(
+                            "flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 group/item border border-transparent",
+                            isActive 
+                              ? "bg-white/[0.06] border-white/10 text-white" 
+                              : "text-white/55 hover:bg-white/[0.03] hover:border-white/5 hover:text-white"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
+                            isActive 
+                              ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                              : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
+                          )}>
+                            <Icon size={16} className="transition-transform group-hover/item:scale-110" />
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <span className="text-xs font-bold tracking-wider font-display">{link.name}</span>
+                            <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Right Action CTA */}
@@ -272,6 +389,71 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                         </div>
                       </Link>
                     ))}
+
+                    {/* Collapsible Explore Section */}
+                    <div className="space-y-1">
+                      <button
+                        onClick={() => setIsMobileExploreOpen(prev => !prev)}
+                        className={cn(
+                          "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300 text-left outline-none",
+                          isMobileExploreOpen || exploreLinks.some(l => location.pathname === l.href)
+                            ? "bg-white/5 text-white" 
+                            : "text-white/40 hover:text-white hover:bg-white/5"
+                        )}
+                      >
+                        <span className="text-xl font-display font-bold tracking-tight">Explore</span>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white/40 group-hover:text-white">
+                          <ChevronDown 
+                            size={16} 
+                            className={cn("transition-transform duration-300", isMobileExploreOpen && "rotate-180 text-brand-primary")} 
+                          />
+                        </div>
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {isMobileExploreOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+                            className="overflow-hidden pl-4 pr-2 space-y-1"
+                          >
+                            {exploreLinks.map((link) => {
+                              const Icon = link.icon;
+                              const isActive = location.pathname === link.href;
+                              return (
+                                <Link
+                                  key={link.name}
+                                  to={link.href}
+                                  onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    setIsMobileExploreOpen(false);
+                                  }}
+                                  className={cn(
+                                    "flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 border border-transparent",
+                                    isActive 
+                                      ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                                      : "text-white/40 hover:text-white hover:bg-white/5"
+                                  )}
+                                >
+                                  <div className={cn(
+                                    "w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
+                                    isActive ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" : "bg-white/5 text-white/30"
+                                  )}>
+                                    <Icon size={14} />
+                                  </div>
+                                  <div className="flex flex-col text-left">
+                                    <span className="text-sm font-bold font-display">{link.name}</span>
+                                    <span className="text-[10px] text-white/20 font-medium mt-0.5">{link.description}</span>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
 
                   {/* Drawer Footer */}

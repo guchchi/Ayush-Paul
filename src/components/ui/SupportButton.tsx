@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, Coffee, Sparkles, X, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -35,7 +36,9 @@ export const SupportModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     }
   };
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
@@ -106,7 +109,8 @@ export const SupportModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: ()
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
