@@ -23,6 +23,16 @@ export const LabDetailPage = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const getCurrencySymbol = (currency?: string) => {
+    if (!currency) return '₹';
+    const c = currency.toLowerCase();
+    if (c === 'usd') return '$';
+    if (c === 'eur') return '€';
+    if (c === 'gbp') return '£';
+    if (c === 'inr') return '₹';
+    return '₹';
+  };
+
   const { trackEvent } = useAnalytics();
 
   useEffect(() => {
@@ -414,9 +424,9 @@ export const LabDetailPage = () => {
               </div>
               
               <div className="flex items-baseline gap-3 mb-8">
-                <div className="text-4xl font-bold text-white">₹{product.salePrice || product.basePrice}</div>
+                <div className="text-4xl font-bold text-white">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
                 {hasDiscount && (
-                  <div className="text-lg text-white/30 line-through">₹{product.basePrice}</div>
+                  <div className="text-lg text-white/30 line-through">{getCurrencySymbol(product.currency)}{product.basePrice}</div>
                 )}
               </div>
               
