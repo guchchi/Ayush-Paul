@@ -11,8 +11,8 @@ export const Footer = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
       
       <Container>
-        <div className="grid md:grid-cols-4 gap-16 mb-20">
-          <div className="md:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
+          <div className="md:col-span-5 space-y-8">
             <Link to="/" className="text-3xl font-display font-bold tracking-tighter block group">
               ayushpaul<span className="text-brand-primary group-hover:neon-glow-blue transition-all">.in</span>
             </Link>
@@ -33,7 +33,7 @@ export const Footer = () => {
             </div>
           </div>
 
-          <div>
+          <div className="md:col-span-3">
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Navigation</h4>
             <ul className="space-y-4">
               {[
@@ -54,7 +54,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div>
+          <div className="md:col-span-4">
             <h4 className="text-sm font-bold uppercase tracking-widest text-white mb-8">Join the Lab</h4>
             <p className="text-white/30 text-xs mb-6 leading-relaxed">
               Get notified whenever I drop a new engineering blueprint or system update.
