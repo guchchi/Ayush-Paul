@@ -34,46 +34,68 @@ export const SuccessPage = () => {
       }
 
       try {
-        // 1. Fetch Product Details
-        const { getProductBySlug } = await import('../lib/product-utils');
-        // Since we only have ID in URL, we need to find it. 
-        // For now, let's assume getProductBySlug also works with IDs or we fetch from Firestore
-        const { db, doc, getDoc, auth } = await import('../firebase');
+        const { db, doc, getDoc, auth, onAuthStateChanged } = await import('../firebase');
         const productSnap = await getDoc(doc(db, "products", productId));
         
         if (productSnap.exists()) {
           const pData = productSnap.data();
           setProduct(pData);
+        }
 
-          // 2. Wait for webhook (Poll for up to 10 seconds)
-          let attempts = 0;
-          const checkOwnership = async () => {
-            const user = auth.currentUser;
-            if (!user) return false;
+        let unsubscribe: (() => void) | null = null;
+        let attempts = 0;
+        let pollInterval: NodeJS.Timeout | null = null;
 
-            const userSnap = await getDoc(doc(db, "users", user.uid));
-            if (userSnap.exists()) {
-              const userData = userSnap.data();
-              return userData.ownedProducts?.[productId] === "premium";
+        const checkOwnership = async (uid: string) => {
+          const userSnap = await getDoc(doc(db, "users", uid));
+          if (userSnap.exists()) {
+            const userData = userSnap.data() as any;
+            return userData?.ownedProducts?.[productId] === "premium";
+          }
+          return false;
+        };
+
+        unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+          if (!currentUser) return;
+
+          // 1. Fallback secure API call for instantaneous checkout verification
+          if (sessionId) {
+            try {
+              const res = await fetch('/api/verify-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId, userId: currentUser.uid })
+              });
+              const vData = await res.json();
+              if (vData.success) {
+                console.log("Session verified successfully via backend API fallback.");
+                setIsOwned(true);
+                setLoading(false);
+                if (unsubscribe) unsubscribe();
+                return;
+              }
+            } catch (err) {
+              console.error("Backend checkout verification failed:", err);
             }
-            return false;
-          };
+          }
 
-          const poll = setInterval(async () => {
-            const owned = await checkOwnership();
+          // 2. Poll Firestore ownedProducts as safe backup check
+          pollInterval = setInterval(async () => {
+            const owned = await checkOwnership(currentUser.uid);
             if (owned) {
               setIsOwned(true);
-              clearInterval(poll);
               setLoading(false);
-            } else if (attempts > 20) { // 10 seconds
-              clearInterval(poll);
+              if (pollInterval) clearInterval(pollInterval);
+              if (unsubscribe) unsubscribe();
+            } else if (attempts > 20) {
               setLoading(false);
+              if (pollInterval) clearInterval(pollInterval);
+              if (unsubscribe) unsubscribe();
             }
             attempts++;
           }, 500);
-        } else {
-          setLoading(false);
-        }
+        });
+
       } catch (error) {
         console.error("Verification error:", error);
         setLoading(false);
