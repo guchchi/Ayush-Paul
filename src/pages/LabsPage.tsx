@@ -37,9 +37,9 @@ export const LabsPage = () => {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = activeCategory === 'all' || product.category.toLowerCase() === activeCategory;
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || (product.category ?? '').toLowerCase() === activeCategory;
+    const matchesSearch = (product.title ?? '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (product.description ?? '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 

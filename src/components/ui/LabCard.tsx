@@ -9,11 +9,18 @@ interface LabCardProps {
 }
 
 export const LabCard = ({ product }: LabCardProps) => {
+  // Defensive fallbacks for legacy Firestore docs that may be missing fields
+  const author = product.author ?? { name: 'Ayush Paul', role: 'Engineer', avatar: '' };
+  const tags = product.tags ?? [];
+  const downloadCount = product.downloadCount ?? 0;
+  const basePrice = product.basePrice ?? 0;
+  const salePrice = product.salePrice ?? 0;
+
   const isFree = product.type === 'free';
-  const hasDiscount = product.salePrice > 0 && product.salePrice < product.basePrice;
+  const hasDiscount = salePrice > 0 && salePrice < basePrice;
 
   // Custom R&D specific parameters parsed from tags or ID
-  const nodeComplexity = product.tags.some(t => t.toLowerCase().includes('advanced') || t.toLowerCase().includes('robotics')) ? 'LEVEL_A' : 'LEVEL_B';
+  const nodeComplexity = tags.some(t => t.toLowerCase().includes('advanced') || t.toLowerCase().includes('robotics')) ? 'LEVEL_A' : 'LEVEL_B';
   const deploymentType = isFree ? 'STARTER_CORE' : 'MASTER_CAD';
 
   return (
@@ -44,9 +51,9 @@ export const LabCard = ({ product }: LabCardProps) => {
             ) : (
               <div className="flex items-center gap-1.5">
                 {hasDiscount && (
-                  <span className="text-white/40 line-through text-[8px]">${product.basePrice}</span>
+                  <span className="text-white/40 line-through text-[8px]">${basePrice}</span>
                 )}
-                <span className="text-white">${product.salePrice || product.basePrice}</span>
+                <span className="text-white">${salePrice || basePrice}</span>
               </div>
             )}
           </div>
@@ -73,7 +80,7 @@ export const LabCard = ({ product }: LabCardProps) => {
           {/* Active telemetry counter */}
           <div className="absolute bottom-4 left-4 flex items-center gap-2 z-10">
             <div className="bg-white/[0.03] backdrop-blur-md border border-white/5 rounded-full px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest text-white/60 flex items-center gap-1.5 font-mono">
-              <Download size={10} className="text-brand-primary" /> {product.downloadCount + 120} deploys
+              <Download size={10} className="text-brand-primary" /> {downloadCount + 120} deploys
             </div>
           </div>
         </div>
@@ -113,10 +120,16 @@ export const LabCard = ({ product }: LabCardProps) => {
           {/* Footer Card Navigation */}
           <div className="mt-auto pt-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <img src={product.author.avatar} alt={product.author.name} className="w-7 h-7 rounded-full border border-white/10" />
+              {author.avatar ? (
+                <img src={author.avatar} alt={author.name} className="w-7 h-7 rounded-full border border-white/10" />
+              ) : (
+                <div className="w-7 h-7 rounded-full border border-white/10 bg-brand-primary/10 flex items-center justify-center text-[9px] font-bold text-brand-primary">
+                  {author.name.charAt(0)}
+                </div>
+              )}
               <div className="flex flex-col font-mono text-[9px]">
-                <span className="font-bold text-white/80">{product.author.name}</span>
-                <span className="uppercase text-white/30 tracking-widest">{product.author.role}</span>
+                <span className="font-bold text-white/80">{author.name}</span>
+                <span className="uppercase text-white/30 tracking-widest">{author.role}</span>
               </div>
             </div>
             <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-brand-primary group-hover:border-brand-primary group-hover:text-black transition-all">
