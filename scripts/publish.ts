@@ -54,7 +54,7 @@ async function publish(type: string, data: any) {
     console.log(`--------------------------------\n`);
     
     process.exit(0);
-    return docRef.id;
+    return docId;
   } catch (error: any) {
     console.error("❌ Publishing Error:", error.message);
     process.exit(1);

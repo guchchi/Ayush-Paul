@@ -1,28 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Rocket, LogIn, GripVertical, Trash2, Wand2, Plus, Type, List, ListOrdered, ImageIcon, 
-  Code, Quote, Info, Minus, Shield, Clock, X, Save, Monitor, Layout, FileText, Layers, 
-  MessageSquare, Edit, Calendar, Eye, Search, TrendingUp, Sparkles, Globe, AlertCircle, 
-  CheckCircle2, Settings, BarChart3, History, Link as LinkIcon, Tag, Star, ArrowLeft, LogOut, Upload, Mail, Zap, Maximize2, Minimize2, ShieldAlert
+import {
+  Rocket,
+  LogIn,
+  Trash2,
+  Wand2,
+  Plus,
+  Type,
+  ImageIcon,
+  Code,
+  Quote,
+  Info,
+  Shield,
+  Clock,
+  X,
+  Save,
+  Layout,
+  FileText,
+  Layers,
+  MessageSquare,
+  Edit,
+  Calendar,
+  Eye,
+  Search,
+  Sparkles,
+  Globe,
+  AlertCircle,
+  CheckCircle2,
+  BarChart3,
+  History,
+  Link as LinkIcon,
+  Tag,
+  Star,
+  ArrowLeft,
+  LogOut,
+  Mail,
+  Zap,
+  Maximize2,
+  Minimize2,
+  ShieldAlert,
 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { 
-  auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, 
-  signOut, onAuthStateChanged, 
-  collection, doc, setDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, addDoc, getDocs, 
-  serverTimestamp, getFirebaseStatus 
+import {
+  auth,
+  db,
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  serverTimestamp,
+  getFirebaseStatus,
 } from "../firebase";
 import { cn } from "../lib/utils";
 import { handleFirestoreError, formatDate } from "../lib/firebase-utils";
 import { Block, BlockType, SEOData, OperationType } from "../types";
-import { useSEO } from "../hooks/useSEO";
 import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
 import { uploadImage, deleteImageByPath } from "../lib/storage-utils";
-import { TipTapEditor } from "../components/editor/TipTapEditor";
-import { parseSmartContent } from "../lib/content-parser";
-import { AIAssistant } from "../components/editor/AIAssistant";
 import { Toaster, Toast } from "../components/ui/Toaster";
+import { useSEO } from "../hooks/useSEO";
+
+// Import Extracted Atoms & Subsystems
+import { HealthDashboard } from "../components/admin/layout/HealthDashboard";
+import { ImageUploadField } from "../components/admin/shared/ImageUploadField";
+import { AdminStatCard } from "../components/admin/analytics/AdminStatCard";
+import { SEOPanel } from "../components/admin/seo/SEOPanel";
+import { AIWritingAssistant } from "../components/admin/ai/AIWritingAssistant";
+import { LiveBlogPreview } from "../components/admin/cms/LiveBlogPreview";
+import { SortableBlock } from "../components/admin/cms/SortableBlock";
+import { BlogEditorWrapper } from "../components/admin/cms/BlogEditorWrapper";
+import { ComposeNewsletterModal } from "../components/admin/shared/ComposeNewsletterModal";
 
 const BLOG_CATEGORIES = [
   "Artificial Intelligence",
@@ -34,1297 +82,73 @@ const BLOG_CATEGORIES = [
   "Productivity & Workflow",
   "Future Tech",
   "Cybersecurity",
-  "Data Science"
+  "Data Science",
 ];
 
-
-/**
- * Validates an image URL by protocol (HTTPS), file type (blocks SVG), and an async pre-load test.
- */
-const validateImageUrl = async (url: string): Promise<{ isValid: boolean, error?: string }> => {
-  if (!url) return { isValid: false };
-  
-  // 1. Protocol Validation
-  if (!url.startsWith('https://')) {
-    return { isValid: false, error: "Security Error: Only HTTPS URLs are allowed." };
-  }
-  
-  // 2. SVG Block (XSS Mitigation)
-  const isSvg = url.toLowerCase().endsWith('.svg') || url.split('?')[0].toLowerCase().endsWith('.svg');
-  if (isSvg) {
-    return { isValid: false, error: "Security Error: SVG images are blocked for your safety." };
-  }
-
-  // 3. Async Image Load Test (supports CDN URLs without extensions like Unsplash)
-  return new Promise((resolve) => {
-    const img = new Image();
-    
-    // Set a 5-second industry-standard timeout
-    const timer = setTimeout(() => {
-      img.onload = null;
-      img.onerror = null;
-      resolve({ isValid: false, error: "Validation Error: Image load timed out (5s)." });
-    }, 5000);
-
-    img.onload = () => {
-      clearTimeout(timer);
-      resolve({ isValid: true });
-    };
-
-    img.onerror = () => {
-      clearTimeout(timer);
-      resolve({ isValid: false, error: "Validation Error: The URL is not a valid or accessible image." });
-    };
-
-    img.src = url;
-  });
-};
-
-const ImageUploadField = ({ 
-  value, 
-  onChange, 
-  onPathChange,
-  path = "blog_images", 
-  label = "Image URL or Upload" 
-}: { 
-  value: string, 
-  onChange: (url: string) => void, 
-  onPathChange?: (path: string) => void,
-  path?: string,
-  label?: string
-}) => {
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError("Please upload an image file.");
-      return;
-    }
-
-    // Validate size (e.g., 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image size should be less than 5MB.");
-      return;
-    }
-
-    setIsUploading(true);
-    setError(null);
-    setUploadProgress(0);
-
-    try {
-      const result = await uploadImage(file, path, (progress) => {
-        setUploadProgress(progress);
-      });
-      onChange(result.url);
-      if (onPathChange) onPathChange(result.fullPath);
-    } catch (err: any) {
-      setError(`Upload failed: ${err.message}`);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">{label}</label>
-        {isUploading && (
-          <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Uploading {Math.round(uploadProgress)}%
-          </div>
-        )}
-      </div>
-      <div className="flex gap-3">
-        <div className="relative flex-1">
-          <input 
-            type="text" 
-            value={value}
-            onChange={(e) => {
-              setError(null);
-              onChange(e.target.value);
-            }}
-            placeholder="https://..."
-            className={cn(
-              "w-full bg-white/5 border rounded-2xl px-6 py-4 outline-none transition-all pr-12",
-              error ? "border-red-500/50 text-red-500" : "border-white/10 focus:border-brand-primary text-white"
-            )}
-          />
-          {value && (
-            <button 
-              onClick={() => onChange('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
-            >
-              <X size={16} />
-            </button>
-          )}
-        </div>
-        <label className={cn(
-          "shrink-0 w-14 h-14 rounded-2xl border border-white/10 flex items-center justify-center cursor-pointer transition-all hover:bg-white/5 hover:border-brand-primary group",
-          isUploading && "pointer-events-none opacity-50"
-        )}>
-          <Upload size={20} className="text-white/20 group-hover:text-brand-primary transition-colors" />
-          <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-        </label>
-      </div>
-      {error && (
-        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 ml-1">
-          <AlertCircle size={12} /> {error}
-        </div>
-      )}
-      {isUploading && (
-        <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-          <motion.div 
-            className="h-full bg-brand-primary"
-            initial={{ width: 0 }}
-            animate={{ width: `${uploadProgress}%` }}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
-// --- CMS Components ---
-
-const SortableBlock = ({ block, onUpdate, onDelete, onAIAction }: { 
-  block: Block, 
-  onUpdate: (id: string, updates: Partial<Block>) => void,
-  onDelete: (id: string) => void,
-  onAIAction: (id: string, action: string) => void
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id: block.id });
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [isValidating, setIsValidating] = useState(false);
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 50 : 'auto',
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  const renderEditor = () => {
-    const modules = {
-      toolbar: [
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'color': [] }, { 'background': [] }],
-        ['link', 'code'],
-        ['clean']
-      ],
-    };
-
-    switch (block.type) {
-      case 'text':
-        return (
-          <ReactQuill
-            theme="snow"
-            value={block.content}
-            onChange={(content) => onUpdate(block.id, { content })}
-            placeholder="Start writing..."
-            modules={modules}
-            className="quill-editor-dark"
-          />
-        );
-      case 'heading':
-        const Level = `h${block.metadata?.level || 2}` as any;
-        return (
-          <div className="flex items-center gap-4">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary shrink-0">H{block.metadata?.level || 2}</div>
-            <input
-              type="text"
-              value={block.content}
-              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
-              placeholder={`Heading ${block.metadata?.level || 2}...`}
-              className={cn(
-                "w-full bg-transparent border-none outline-none font-bold text-white/90",
-                block.metadata?.level === 1 ? "text-4xl" : 
-                block.metadata?.level === 2 ? "text-3xl" : 
-                block.metadata?.level === 3 ? "text-2xl" : "text-xl"
-              )}
-            />
-          </div>
-        );
-      case 'list':
-        return (
-          <ReactQuill
-            theme="snow"
-            value={block.content}
-            onChange={(content) => onUpdate(block.id, { content })}
-            placeholder={block.metadata?.listType === 'ordered' ? "Ordered list..." : "Unordered list..."}
-            modules={{
-              toolbar: [
-                [block.metadata?.listType === 'ordered' ? 'ordered' : 'bullet'],
-                ['bold', 'italic', 'link'],
-                ['clean']
-              ]
-            }}
-            className="quill-editor-dark"
-          />
-        );
-      case 'image': {
-        const handleUrlChange = async (url: string) => {
-          onUpdate(block.id, { content: url });
-          if (!url) {
-            setValidationError(null);
-            return;
-          }
-
-          setIsValidating(true);
-          const result = await validateImageUrl(url);
-          setIsValidating(false);
-
-          if (!result.isValid) {
-            setValidationError(result.error || "Invalid Image");
-          } else {
-            setValidationError(null);
-          }
-        };
-
-        return (
-          <div className="space-y-4">
-            <div className="space-y-4">
-              <label className="text-sm font-bold text-white/40 ml-1">Image URL (optional if uploading a file)</label>
-              <input
-                type="text"
-                value={block.content}
-                onChange={async (e) => {
-                  const url = e.target.value;
-                  onUpdate(block.id, { content: url });
-                  if (!url) return;
-                  setIsValidating(true);
-                  const result = await validateImageUrl(url);
-                  setIsValidating(false);
-                  if (!result.isValid) setValidationError(result.error || "Invalid Image");
-                  else setValidationError(null);
-                }}
-                placeholder="https://..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
-              />
-
-              <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0] ?? null;
-                  
-                  if (block.localPreview) URL.revokeObjectURL(block.localPreview);
-
-                  if (!file) {
-                    onUpdate(block.id, { localFile: undefined, localPreview: undefined });
-                    return;
-                  }
-
-                  onUpdate(block.id, { 
-                    localFile: file, 
-                    localPreview: URL.createObjectURL(file),
-                    content: '' // Clear URL when file is selected
-                  });
-                }}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
-              />
-              
-              {isValidating && (
-                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-primary animate-pulse ml-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" /> Verifying...
-                </div>
-              )}
-              {validationError && (
-                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-red-500 ml-1">
-                  <AlertCircle size={12} /> {validationError}
-                </div>
-              )}
-            </div>
-
-            {(block.localPreview || block.content) && !validationError && !isValidating && (
-              <div className={cn(
-                "relative group rounded-2xl overflow-hidden border border-white/10",
-                block.metadata?.alignment === 'center' ? "max-w-2xl mx-auto" : 
-                block.metadata?.alignment === 'full' ? "w-full" : "max-w-xl"
-              )}>
-                <img 
-                  src={block.localPreview || block.content} 
-                  alt={block.metadata?.alt} 
-                  className="w-full h-auto"
-                />
-                <button 
-                  onClick={() => onUpdate(block.id, { content: '' })}
-                  className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-md rounded-full text-white/60 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            )}
-            
-            {!(block.localPreview || block.content) && !isValidating && (
-              <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-white/20 pb-8">
-                <ImageIcon size={48} className="mb-4 text-white/5" />
-                <p className="font-bold">Paste an HTTPS image URL above to preview</p>
-                <p className="text-[10px] uppercase tracking-widest mt-2">Supports Unsplash, Cloudinary, etc.</p>
-              </div>
-            )}
-            <div className="flex gap-4">
-              <input 
-                type="text"
-                placeholder="Alt text (SEO)"
-                value={block.metadata?.alt || ''}
-                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, alt: e.target.value } })}
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-brand-primary"
-              />
-              <select 
-                value={block.metadata?.alignment || 'left'}
-                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, alignment: e.target.value as any } })}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none"
-              >
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="full">Full Width</option>
-              </select>
-            </div>
-          </div>
-        );
-      }
-      case 'code':
-        return (
-          <div className="space-y-2">
-            <div className="flex justify-between items-center px-4 py-2 bg-white/5 border border-white/10 rounded-t-xl">
-              <select 
-                value={block.metadata?.language || 'javascript'}
-                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, language: e.target.value } })}
-                className="bg-transparent text-xs font-bold uppercase tracking-widest text-white/40 outline-none"
-              >
-                <option value="javascript">JavaScript</option>
-                <option value="typescript">TypeScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="bash">Bash</option>
-              </select>
-            </div>
-            <textarea
-              value={block.content}
-              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
-              placeholder="Paste your code here..."
-              className="w-full bg-black/40 border border-white/10 rounded-b-xl p-6 font-mono text-sm text-brand-primary outline-none resize-none min-h-[150px]"
-            />
-          </div>
-        );
-      case 'quote':
-        return (
-          <div className="flex gap-6 p-8 bg-brand-primary/5 border-l-4 border-brand-primary rounded-r-2xl">
-            <Quote className="text-brand-primary shrink-0" size={32} />
-            <textarea
-              value={block.content}
-              onChange={(e) => onUpdate(block.id, { content: e.target.value })}
-              placeholder="Enter quote..."
-              className="w-full bg-transparent border-none outline-none text-2xl font-display italic text-white/90 resize-none min-h-[60px]"
-            />
-          </div>
-        );
-      case 'callout': {
-        const variants = {
-          info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-          warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
-          success: 'bg-green-500/10 border-green-500/20 text-green-400',
-          danger: 'bg-red-500/10 border-red-500/20 text-red-400',
-        };
-        const variant = block.metadata?.variant || 'info';
-        return (
-          <div className={cn("p-6 rounded-2xl border flex gap-4", variants[variant])}>
-            <Info size={24} className="shrink-0" />
-            <div className="flex-1 space-y-2">
-              <select 
-                value={variant}
-                onChange={(e) => onUpdate(block.id, { metadata: { ...block.metadata, variant: e.target.value as any } })}
-                className="bg-transparent text-[10px] font-bold uppercase tracking-widest outline-none"
-              >
-                <option value="info">Info</option>
-                <option value="warning">Warning</option>
-                <option value="success">Success</option>
-                <option value="danger">Danger</option>
-              </select>
-              <textarea
-                value={block.content}
-                onChange={(e) => onUpdate(block.id, { content: e.target.value })}
-                placeholder="Callout message..."
-                className="w-full bg-transparent border-none outline-none text-sm font-medium resize-none min-h-[40px]"
-              />
-            </div>
-          </div>
-        );
-      }
-      case 'divider':
-        return <div className="h-px w-full bg-white/10 my-8" />;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div 
-      ref={setNodeRef} 
-      style={style} 
-      className="group relative mb-4"
-    >
-      <div className="absolute -left-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
-        <div {...attributes} {...listeners} className="p-2 cursor-grab active:cursor-grabbing text-white/20 hover:text-white transition-colors">
-          <GripVertical size={20} />
-        </div>
-        <button 
-          onClick={() => onDelete(block.id)}
-          className="p-2 text-white/20 hover:text-red-500 transition-colors"
-        >
-          <Trash2 size={20} />
-        </button>
-      </div>
-
-      <div className="absolute -right-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        {block.type === 'text' && (
-          <button 
-            onClick={() => onAIAction(block.id, 'improve')}
-            className="p-2 text-white/20 hover:text-brand-primary transition-colors"
-            title="AI Improve"
-          >
-            <Wand2 size={20} />
-          </button>
-        )}
-      </div>
-
-      <div className="p-4 rounded-2xl hover:bg-white/[0.02] transition-colors">
-        {renderEditor()}
-      </div>
-    </div>
-  );
-};
+// Import Extracted Custom Hooks
+import { useAdminAuth } from "../hooks/admin/useAdminAuth";
+import { useAdminData } from "../hooks/admin/useAdminData";
 
 // Defensive Normalization Layer: Heals malformed blocks before state updates
 const normalizeBlocks = (rawBlocks: any[]): Block[] => {
   return rawBlocks
-    .filter(b => b && typeof b === 'object') // Filter out non-objects
-    .map(b => ({
+    .filter((b) => b && typeof b === "object") // Filter out non-objects
+    .map((b) => ({
       id: b.id || Math.random().toString(36).substr(2, 9),
-      type: (['text', 'heading', 'image', 'list', 'quote', 'code', 'callout'].includes(b.type) ? b.type : 'text') as BlockType,
-      content: typeof b.content === 'string' ? b.content : '',
-      metadata: (b.metadata && typeof b.metadata === 'object') ? b.metadata : {}
+      type: (["text", "heading", "image", "list", "quote", "code", "callout", "divider"].includes(b.type)
+        ? b.type
+        : "text") as BlockType,
+      content: typeof b.content === "string" ? b.content : "",
+      metadata: b.metadata && typeof b.metadata === "object" ? b.metadata : {},
     }));
 };
 
-const BlogEditor = ({ 
-  blocks, 
-  setBlocks, 
-  onAIAction,
-  activeTab,
-  setBlogFormData,
-  setProjectFormData,
-  setSeoData
-}: { 
-  blocks: Block[], 
-  setBlocks: React.Dispatch<React.SetStateAction<Block[]>>,
-  onAIAction: (id: string, action: string) => void,
-  activeTab: string,
-  setBlogFormData: React.Dispatch<React.SetStateAction<any>>,
-  setProjectFormData: React.Dispatch<React.SetStateAction<any>>,
-  setSeoData: React.Dispatch<React.SetStateAction<SEOData>>
-}) => {
-  const [importText, setImportText] = useState("");
-  const [showSmartImport, setShowSmartImport] = useState(false);
+const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void }) => {
+  const [activeTab, setActiveTab] = useState<
+    "blogs" | "projects" | "updates" | "messages" | "dashboard" | "subscribers"
+  >("dashboard");
 
-  const parseContentToBlocks = (text: string) => {
-    // Simple heuristic for stats in the modal
-    const lines = text.split('\n').filter(l => l.trim());
-    const blocks: Block[] = lines.map(line => ({
-      id: Math.random().toString(36).substr(2, 9),
-      type: line.startsWith('#') ? 'heading' : (line.match(/^[-*•\d]/) ? 'list' : 'text'),
-      content: line
-    }));
-    return blocks;
-  };
-
-  const handleSmartImport = (append = false) => {
-    if (!importText.trim()) return;
-    
-    let result: any;
-    try {
-      // Try parsing as JSON first
-      const json = JSON.parse(importText);
-      // Support both { data: { ... } } (from API/File) and direct payload
-      const payload = json.data || json;
-      
-      result = {
-        title: payload.title || payload.name || '',
-        category: payload.category || 'Artificial Intelligence',
-        slug: payload.slug || '',
-        blocks: payload.blocks || [],
-        seo: payload.seo || {},
-        description: payload.description || payload.seo?.description || ''
-      };
-    } catch (e) {
-      // Fallback to text parser
-      const parsed = parseSmartContent(importText);
-      result = {
-        title: parsed.title,
-        category: parsed.category,
-        slug: parsed.slug,
-        blocks: parsed.blocks,
-        seo: {
-          title: parsed.title,
-          description: parsed.metadata.excerpt,
-          keywords: ""
-        },
-        description: parsed.metadata.excerpt
-      };
-    }
-
-    if (activeTab === "projects") {
-      setProjectFormData(prev => ({
-        ...prev,
-        title: result.title !== 'Untitled Narrative' ? result.title : prev.title,
-        category: result.category,
-        slug: result.slug || prev.slug,
-        description: result.description,
-      }));
-    } else {
-      setBlogFormData(prev => ({ 
-        ...prev, 
-        title: result.title !== 'Untitled Narrative' ? result.title : prev.title, 
-        slug: result.slug || prev.slug,
-        category: result.category,
-        description: result.description,
-        coverImage: result.coverImage || prev.coverImage,
-        tags: result.tags || prev.tags || []
-      }));
-      
-      setSeoData(prev => ({
-        ...prev,
-        title: result.seo?.title || result.title || prev.title,
-        description: result.seo?.description || result.description || prev.description,
-        keywords: result.seo?.keywords || prev.keywords || ""
-      }));
-    }
-
-    if (append) {
-      setBlocks(prev => [...prev, ...result.blocks]);
-    } else {
-      setBlocks(result.blocks);
-    }
-    
-    setImportText("");
-    setShowSmartImport(false);
-  };
-
-  return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-            <Edit size={20} />
-          </div>
-          <h3 className="text-xl font-bold">Innovation Narrative</h3>
-        </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => setShowSmartImport(true)}
-            className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-brand-primary hover:bg-brand-primary/5 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
-          >
-            <Sparkles size={14} /> Smart Paste
-          </button>
-        </div>
-      </div>
-
-      <TipTapEditor blocks={blocks} onChange={setBlocks} />
-
-      {showSmartImport && (
-        <div className="fixed inset-0 z-[11000] bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#111111] border border-white/10 rounded-[40px] p-12 max-w-4xl w-full space-y-8"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 text-brand-primary">
-                <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center">
-                  <Sparkles size={24} />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">Smart Auto-Formatter</h3>
-                  <p className="text-white/40 text-sm">Paste raw text to analyze and format into blocks instantly</p>
-                </div>
-              </div>
-              <button onClick={() => setShowSmartImport(false)} className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-white transition-all">
-                <X size={20} />
-              </button>
-            </div>
-
-            <textarea 
-              value={importText}
-              onChange={(e) => setImportText(e.target.value)}
-              className="w-full h-80 bg-black/40 border border-white/10 rounded-3xl p-8 outline-none focus:border-brand-primary text-white/80 font-mono text-sm resize-none"
-              placeholder="Paste everything here (Title: ..., Category: ..., then your content). We'll handle the rest."
-            />
-
-            {importText.trim() && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="grid grid-cols-2 lg:grid-cols-5 gap-4"
-              >
-                {(() => {
-                  const result = parseSmartContent(importText);
-                  return [
-                    { label: 'Title', value: result.title !== 'Untitled Narrative' ? 'Detected' : 'Missing', icon: <Type size={14} />, color: result.title !== 'Untitled Narrative' ? 'text-green-400' : 'text-white/20' },
-                    { label: 'Reading Time', value: `${result.metadata.readingTime} min`, icon: <Clock size={14} />, color: 'text-brand-primary' },
-                    { label: 'Headings', value: result.blocks.filter(b => b.type === 'heading').length, icon: <Type size={14} />, color: 'text-white' },
-                    { label: 'Lists', value: result.blocks.filter(b => b.type === 'list').length, icon: <List size={14} />, color: 'text-white' },
-                    { label: 'Paragraphs', value: result.blocks.filter(b => b.type === 'text').length, icon: <FileText size={14} />, color: 'text-white' },
-                  ];
-                })().map(stat => (
-                  <div key={stat.label} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20">
-                      {stat.icon} {stat.label}
-                    </div>
-                    <div className={cn("text-lg font-bold", stat.color)}>{stat.value}</div>
-                  </div>
-                ))}
-              </motion.div>
-            )}
-
-            <div className="flex justify-between items-center gap-6">
-              <div className="flex items-center gap-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">
-                  Detection: Elite Smart Parser v2
-                </p>
-                {importText.includes('---') && (
-                  <div className="px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-[8px] font-bold uppercase tracking-widest text-brand-primary">
-                    Markdown Detected
-                  </div>
-                )}
-                {importText.includes('\t') && (
-                  <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[8px] font-bold uppercase tracking-widest text-blue-400">
-                    Doc Formatting Detected
-                  </div>
-                )}
-              </div>
-              <div className="flex gap-4">
-                <button 
-                  onClick={() => handleSmartImport(true)}
-                  className="px-8 py-4 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-2xl font-bold transition-all text-sm"
-                >
-                  Append to Editor
-                </button>
-                <button 
-                  onClick={() => handleSmartImport(false)}
-                  className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-sm shadow-lg shadow-brand-primary/20"
-                >
-                  Format & Start Fresh
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-    </div>
-  );
-};
-
-const SEOPanel = ({ data, setData, blocks, onAIAction, isProcessing }: { 
-  data: SEOData, 
-  setData: React.Dispatch<React.SetStateAction<SEOData>>,
-  blocks: Block[],
-  onAIAction: (id: string, action: string) => void,
-  isProcessing: boolean
-}) => {
-  const [score, setScore] = useState(0);
-  const [issues, setIssues] = useState<string[]>([]);
-
-  useEffect(() => {
-    let s = 0;
-    let i = [];
-
-    // Title Length Check
-    if (data.title.length >= 50 && data.title.length <= 60) s += 15;
-    else if (data.title.length > 0) i.push("SEO Title should be between 50-60 characters");
-    else i.push("SEO Title is missing");
-
-    // Description Length Check
-    if (data.description.length >= 120 && data.description.length <= 160) s += 15;
-    else if (data.description.length > 0) i.push("Meta description should be between 120-160 characters");
-    else i.push("Meta description is missing");
-
-    // Focus Keyword Presence
-    if (data.keywords) {
-      s += 10;
-      const kw = data.keywords.toLowerCase();
-      
-      // Keyword in Title
-      if (data.title.toLowerCase().includes(kw)) s += 20;
-      else i.push(`Focus keyword "${data.keywords}" missing from SEO Title`);
-
-      // Keyword in Content (First 500 chars)
-      const textContent = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').toLowerCase();
-      if (textContent.includes(kw)) s += 20;
-      else i.push(`Focus keyword "${data.keywords}" not found in early content`);
-    } else {
-      i.push("Focus keyword is missing");
-    }
-
-    // Image Alt Text Check
-    const hasImages = blocks.some(b => b.type === 'image');
-    if (hasImages) {
-      const hasImagesWithAlt = blocks.filter(b => b.type === 'image').every(b => b.metadata?.alt);
-      if (hasImagesWithAlt) s += 10;
-      else i.push("Some images are missing descriptive alt text");
-    } else {
-      s += 10; // No images is fine for simple posts
-    }
-
-    // Content Length Check
-    const wordCount = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(/\s+/).length;
-    if (wordCount > 300) s += 10;
-    else i.push("Content is too short (minimum 300 words recommended)");
-
-    setScore(Math.min(100, s));
-    setIssues(i);
-  }, [data, blocks]);
-
-  return (
-    <div className="space-y-12">
-      <div className="grid lg:grid-cols-2 gap-12">
-        <div className="space-y-8">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">SEO Title</label>
-              <button 
-                onClick={() => onAIAction('', 'title')}
-                disabled={isProcessing}
-                className={cn(
-                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
-                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
-                )}
-              >
-                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
-              </button>
-            </div>
-            <input 
-              type="text"
-              value={data.title}
-              onChange={(e) => setData({ ...data, title: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
-              placeholder="Enter SEO title..."
-            />
-            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-white/20">
-              <span>Characters: {data.title.length}</span>
-              <span>Recommended: 50-60</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Meta Description</label>
-              <button 
-                onClick={() => onAIAction('', 'summary')}
-                disabled={isProcessing}
-                className={cn(
-                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
-                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
-                )}
-              >
-                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
-              </button>
-            </div>
-            <textarea 
-              value={data.description}
-              onChange={(e) => setData({ ...data, description: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-32 resize-none"
-              placeholder="Enter meta description..."
-            />
-            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-white/20">
-              <span>Characters: {data.description.length}</span>
-              <span>Recommended: 120-160</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Focus Keyword</label>
-              <button 
-                onClick={() => onAIAction('', 'keywords')}
-                disabled={isProcessing}
-                className={cn(
-                  "text-[10px] font-bold uppercase tracking-widest hover:underline flex items-center gap-1 transition-all",
-                  isProcessing ? "text-white/20 cursor-wait" : "text-brand-primary"
-                )}
-              >
-                <Sparkles size={10} className={cn(isProcessing && "animate-pulse")} /> {isProcessing ? "Generating..." : "AI Generate"}
-              </button>
-            </div>
-            <input 
-              type="text"
-              value={data.keywords}
-              onChange={(e) => setData({ ...data, keywords: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
-              placeholder="Enter focus keyword..."
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-white/40 uppercase tracking-widest ml-1">Social Sharing Image (OG Image)</label>
-            <ImageUploadField 
-              value={data.ogImage || ""} 
-              onChange={(url) => setData({ ...data, ogImage: url })}
-              path="seo_images"
-              label="OG Image URL or Upload"
-            />
-            <p className="text-[10px] text-white/20 ml-1 italic">If left empty, the blog cover image will be used.</p>
-          </div>
-        </div>
-
-        <div className="space-y-8">
-          <div className="p-8 rounded-[40px] glass-card border border-white/10">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold">SEO Score</h3>
-              <div className={cn(
-                "w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold border-4",
-                score >= 80 ? "border-green-500 text-green-500" : 
-                score >= 50 ? "border-yellow-500 text-yellow-500" : "border-red-500 text-red-500"
-              )}>
-                {score}
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              {issues.length > 0 ? (
-                issues.map((issue, idx) => (
-                  <div key={idx} className="flex items-start gap-3 text-sm text-white/40">
-                    <AlertCircle size={16} className="text-yellow-500 shrink-0 mt-0.5" />
-                    {issue}
-                  </div>
-                ))
-              ) : (
-                <div className="flex items-center gap-3 text-sm text-green-500 font-bold">
-                  <CheckCircle2 size={16} />
-                  Your SEO is perfectly optimized!
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="p-8 rounded-[40px] bg-white/5 border border-white/10">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">Social Preview</h3>
-            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md">
-              <div className="aspect-video bg-white/5 flex items-center justify-center relative overflow-hidden">
-                {data.ogImage ? (
-                  <img src={data.ogImage} className="w-full h-full object-cover" alt="Preview" />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 opacity-20">
-                    <ImageIcon size={32} />
-                    <span className="text-[8px] font-bold uppercase tracking-widest">No Image</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6 space-y-2">
-                <div className="text-[9px] font-bold text-brand-primary uppercase tracking-[0.2em]">ayushpaul.in</div>
-                <div className="text-base font-bold text-white/90 line-clamp-1">
-                  {data.ogTitle || data.title || "Innovation Narrative Title"}
-                </div>
-                <div className="text-xs text-white/40 line-clamp-2 leading-relaxed">
-                  {(data.ogDescription || data.description || "Narrative description will appear here...").substring(0, 160)}
-                  {(data.ogDescription || data.description || "").length > 160 ? "..." : ""}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const AIWritingAssistant = ({ onAction, isProcessing }: { onAction: (action: string) => void, isProcessing: boolean }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const actions = [
-    { id: 'improve', label: 'Improve Writing', icon: <Sparkles size={16} />, desc: 'Enhance clarity and tone' },
-    { id: 'grammar', label: 'Fix Grammar', icon: <CheckCircle2 size={16} />, desc: 'Correct errors instantly' },
-    { id: 'expand', label: 'Expand Paragraph', icon: <Plus size={16} />, desc: 'Add more detail and depth' },
-    { id: 'simplify', label: 'Simplify Text', icon: <Minus size={16} />, desc: 'Make it easier to read' },
-    { id: 'summary', label: 'Generate Summary', icon: <FileText size={16} />, desc: 'Create meta description' },
-    { id: 'keywords', label: 'SEO Keywords', icon: <Tag size={16} />, desc: 'Suggest target keywords' },
-    { id: 'headings', label: 'Suggest Headings', icon: <Layout size={16} />, desc: 'Optimize structure' },
-  ];
-
-  return (
-    <div className="p-6 rounded-[32px] glass-card border border-white/10 space-y-6">
-      <div className="flex items-center justify-between">
-        <button 
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="flex items-center gap-2 hover:opacity-70 transition-opacity"
-        >
-          <Sparkles size={18} className="text-brand-primary" />
-          <h3 className="font-bold text-sm">AI Writing Assistant</h3>
-          <div className={cn("transition-transform duration-300", isCollapsed ? "rotate-180" : "")}>
-            <Minus size={12} className="text-white/20" />
-          </div>
-        </button>
-        {isProcessing && (
-          <div className="flex items-center gap-2 text-[8px] font-bold uppercase tracking-widest text-brand-primary animate-pulse">
-            <div className="w-1 h-1 rounded-full bg-brand-primary" /> Processing...
-          </div>
-        )}
-      </div>
-      
-      {!isCollapsed && (
-        <div className="grid grid-cols-1 gap-2">
-          {actions.map((action) => (
-            <button
-              key={action.id}
-              onClick={() => onAction(action.id)}
-              disabled={isProcessing}
-              className="group p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-brand-primary hover:border-brand-primary transition-all text-left disabled:opacity-50"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 group-hover:text-black group-hover:bg-white/20 transition-all">
-                  {action.icon}
-                </div>
-                <div>
-                  <span className="text-xs font-bold group-hover:text-black transition-colors block leading-tight">{action.label}</span>
-                  <p className="text-[9px] text-white/40 group-hover:text-black/60 transition-colors leading-tight">{action.desc}</p>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-// --- Health Dashboard Component ---
-
-const HealthDashboard = () => {
-  const status = getFirebaseStatus();
-  const [showTroubleshooter, setShowTroubleshooter] = useState(false);
-
-  return (
-    <div className="mb-12">
-      <div className="flex flex-wrap items-center justify-between gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-[24px] backdrop-blur-xl">
-        <div className="flex items-center gap-5">
-          <div className={cn(
-            "w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-inner",
-            status.isConfigured ? "bg-green-500/10 text-green-500 border border-green-500/20" : "bg-red-500/10 text-red-500 border border-red-500/20"
-          )}>
-            {status.isConfigured ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-          </div>
-          <div>
-            <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/20 mb-0.5">System Status</div>
-            <h3 className="text-base font-bold flex items-center gap-2">
-              {status.isConfigured ? "Engine Active" : "Action Required"}
-              <span className="px-2 py-0.5 rounded-md bg-white/5 text-[8px] font-bold uppercase tracking-widest text-white/20">{status.mode}</span>
-            </h3>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-10">
-          <div className="hidden lg:flex flex-col gap-0.5">
-            <span className="text-[8px] font-bold uppercase tracking-widest text-white/10">Auth Region</span>
-            <span className="text-[10px] font-mono font-bold text-white/40">US-Central-1</span>
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[8px] font-bold uppercase tracking-widest text-white/10">Database Route</span>
-            <span className="text-[10px] font-mono font-bold text-brand-primary/60">{status.databaseId}</span>
-          </div>
-          <button 
-            onClick={() => setShowTroubleshooter(!showTroubleshooter)}
-            className={cn(
-              "px-5 py-2.5 rounded-xl border text-[9px] font-bold uppercase tracking-widest transition-all",
-              showTroubleshooter ? "bg-white text-black border-white" : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
-            )}
-          >
-            {showTroubleshooter ? "Close Diagnostics" : "Run Audit"}
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {showTroubleshooter && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="grid md:grid-cols-2 gap-6 p-8 bg-white/[0.02] border border-white/5 rounded-[32px]">
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">Diagnostic Audit</h4>
-                <ul className="space-y-3">
-                  {[
-                    { label: "Firebase App Initialized", val: true },
-                    { label: "Environment Keys Verified", val: status.isConfigured },
-                    { label: "Database Route Set", val: !!status.databaseId },
-                    { label: "Auth Provider Active", val: true }
-                  ].map((check, i) => (
-                    <li key={i} className="flex items-center justify-between text-xs py-2 border-b border-white/5">
-                      <span className="text-white/60">{check.label}</span>
-                      {check.val ? <CheckCircle2 size={14} className="text-green-500" /> : <AlertCircle size={14} className="text-red-500" />}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-brand-secondary">Strategic Troubleshooting</h4>
-                <div className="space-y-4">
-                  {!status.isConfigured ? (
-                    <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/10 space-y-2">
-                      <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest">Action Required: Missing Env Vars</div>
-                      <p className="text-[11px] text-white/40 leading-relaxed">The following keys are missing in Vercel settings: <span className="text-red-400 font-mono">{status.missingVars.join(', ')}</span></p>
-                    </div>
-                  ) : status.databaseId === "MISSING_DB" ? (
-                    <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/10 space-y-2">
-                      <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest">CRITICAL: Database Not Found</div>
-                      <p className="text-[11px] text-white/40 leading-relaxed">The specified Firestore ID <code className="text-red-400 font-mono">({status.databaseId})</code> does not exist in project <code className="text-white/60">{status.projectId}</code>. Verify your Vercel env variable <code className="text-white/60">VITE_FIREBASE_FIRESTORE_DB_ID</code>.</p>
-                    </div>
-                  ) : (
-                    <div className="p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/10 space-y-2">
-                      <div className="text-[10px] font-bold text-brand-primary uppercase tracking-widest">Verify Data Container</div>
-                      <p className="text-[11px] text-white/40 leading-relaxed">Ensure the <code className="text-white/60">projectId</code> matches where you wrote the blogs locally. If blogs aren't appearing, check Firestore Security Rules for <code className="text-white/60">allow read</code> permissions.</p>
-                    </div>
-                  )}
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-                    <div className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Check Daily Quota</div>
-                    <p className="text-[11px] text-white/40 leading-relaxed">If the app is online but shows no data, your daily Firebase Read Quota may be hit. Check the browser console (F12) for "Quota Exceeded" errors.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-
-const AdminDashboard = ({ user }: { user: any }) => {
-  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "updates" | "messages" | "dashboard" | "subscribers">("dashboard");
-  const [posts, setPosts] = useState<any[]>([]);
-  const [projects, setProjects] = useState<any[]>([]);
-  const [messages, setMessages] = useState<any[]>([]);
-  const [subscribers, setSubscribers] = useState<any[]>([]);
-  const [campaigns, setCampaigns] = useState<any[]>([]);
   const [showComposeModal, setShowComposeModal] = useState(false);
-  const [newsletterData, setNewsletterData] = useState({ subject: '', content: '' });
+  const [newsletterData, setNewsletterData] = useState({ subject: "", content: "" });
   const [isSending, setIsSending] = useState(false);
-  const [updates, setUpdates] = useState<any[]>([]);
+
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState<any>(null);
   const [currentProject, setCurrentProject] = useState<any>(null);
+  const [currentUpdate, setCurrentUpdate] = useState<any>(null);
+
   const [isDistractionFree, setIsDistractionFree] = useState(false);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAuditing, setIsAuditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const saveInProgressRef = React.useRef(false);
+  const saveInProgressRef = useRef(false);
   const [showCustomCategoryInput, setShowCustomCategoryInput] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
-  const [systemStatus, setSystemStatus] = useState<{
-    isQuotaExceeded: boolean;
-    lastError: string | null;
-    lastSync: Date | null;
-  }>({
-    isQuotaExceeded: false,
-    lastError: null,
-    lastSync: null
-  });
 
-  const addToast = (message: string, type: Toast['type'] = 'info', duration = 5000) => {
+  const addToast = (message: string, type: Toast["type"] = "info", duration = 5000) => {
     const id = Math.random().toString(36).substr(2, 9);
-    setToasts(prev => [...prev, { id, message, type, duration }]);
+    setToasts((prev) => [...prev, { id, message, type, duration }]);
   };
 
   const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const handleOneClickPublish = async () => {
-    setIsAIProcessing(true);
-    try {
-      const content = blocks.filter(b => b.type === 'text' || b.type === 'heading').map(b => b.content).join(' ');
-      const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
-      if (!apiKey) throw new Error("GOOGLE_API_KEY is not defined");
-      
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      
-      const prompt = `Act as an expert SEO Specialist. Based on the following content, generate:
-      1. A catchy, SEO-friendly title (max 60 chars)
-      2. A compelling meta description (max 160 chars)
-      3. A list of 5 relevant tags (comma separated)
-      4. A clean URL slug
-      
-      Return JSON only in this format: {"title": "...", "description": "...", "tags": "...", "slug": "..."}
-      
-      Content: ${content.substring(0, 5000)}`;
-
-      const result = await model.generateContent(prompt);
-      const data = JSON.parse(result.response.text().replace(/```json|```/g, '').trim());
-
-      setSeoData({
-        ...seoData,
-        title: data.title,
-        description: data.description,
-        keywords: data.tags
-      });
-
-      setBlogFormData(prev => ({
-        ...prev,
-        title: data.title,
-        slug: data.slug,
-        description: data.description,
-        tags: data.tags,
-        published: true
-      }));
-
-      await handleSaveBlog(false);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("One-Click Publish failed:", error);
-    } finally {
-      setIsAIProcessing(false);
-    }
-  };
-
-  const LiveBlogPreview = ({ postData, blocks }: { postData: any, blocks: Block[] }) => (
-    <div className="bg-[#080808] rounded-[40px] border border-white/10 overflow-hidden shadow-2xl h-full overflow-y-auto custom-scrollbar p-12">
-      <div className="max-w-3xl mx-auto space-y-12">
-        <header className="text-center space-y-8">
-          <div className="flex items-center justify-center gap-4">
-            <div className="px-4 py-1.5 rounded-full bg-brand-primary/5 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-[0.2em]">
-              {postData.category}
-            </div>
-            <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2">
-              <Clock size={12} /> {Math.ceil(blocks.filter(b => b.type === 'text').map(b => b.content).join(' ').split(' ').length / 200)} min read
-            </div>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tighter">
-            {postData.title || "Untitled Masterpiece"}
-          </h1>
-          {postData.description && (
-            <p className="text-xl text-white/40 font-medium leading-relaxed">
-              {postData.description}
-            </p>
-          )}
-        </header>
-
-        {postData.coverImage && (
-          <div className="aspect-[21/9] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
-            <img src={postData.coverImage} alt="Cover" className="w-full h-full object-cover" />
-          </div>
-        )}
-
-        <article className="blog-prose prose prose-invert max-w-none">
-          {blocks.map((block) => {
-            switch (block.type) {
-              case 'text': return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-8" />;
-              case 'heading': 
-                const Tag = `h${block.metadata?.level || 2}` as any;
-                return <Tag key={block.id}>{block.content}</Tag>;
-              case 'list': return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-8" />;
-              case 'image': return (
-                <figure key={block.id} className="my-12">
-                  <img src={block.content} alt={block.metadata?.alt} className="rounded-2xl border border-white/5" />
-                </figure>
-              );
-              case 'quote': return <blockquote key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />;
-              case 'callout': return (
-                <div key={block.id} className="p-8 rounded-3xl border bg-brand-primary/5 border-brand-primary/10 text-brand-primary flex gap-4">
-                  <Info size={24} className="shrink-0" />
-                  <div dangerouslySetInnerHTML={{ __html: block.content }} />
-                </div>
-              );
-              case 'divider': return <div key={block.id} className="my-16 h-px w-full bg-white/5" />;
-              default: return null;
-            }
-          })}
-        </article>
-      </div>
-    </div>
-  );
-
-  const calculateContentScore = () => {
-    let score = 0;
-    if (blogFormData.title && blogFormData.title.length > 10) score += 20;
-    if (blogFormData.description && blogFormData.description.length > 50) score += 20;
-    if (blogFormData.coverImage) score += 10;
-    if (blogFormData.tags && blogFormData.tags.split(',').length >= 3) score += 10;
-    
-    const wordCount = blocks.filter(b => b.type === 'text').reduce((acc, b) => acc + b.content.split(' ').length, 0);
-    if (wordCount > 300) score += 20;
-    if (wordCount > 1000) score += 10;
-    
-    const hasHeadings = blocks.some(b => b.type === 'heading');
-    if (hasHeadings) score += 10;
-    
-    return Math.min(score, 100);
-  };
-
-  const getContentIssues = () => {
-    const issues = [];
-    if (!blogFormData.title || blogFormData.title.length < 10) issues.push("Title is too short or missing for optimal SEO.");
-    if (!blogFormData.description || blogFormData.description.length < 50) issues.push("Meta description is missing or lacks depth.");
-    if (!blogFormData.coverImage) issues.push("No hero image detected. Visuals increase engagement by 80%.");
-    
-    const wordCount = blocks.filter(b => b.type === 'text').reduce((acc, b) => acc + b.content.split(' ').length, 0);
-    if (wordCount < 300) issues.push("Content is thin. Aim for at least 500 words for authority.");
-    
-    const hasHeadings = blocks.some(b => b.type === 'heading');
-    if (!hasHeadings) issues.push("No headings found. Use H2/H3 for readability and structure.");
-    
-    return issues;
-  };
-
-  const testConnection = async () => {
-    setIsAuditing(true);
-    try {
-      const testRef = collection(db, "test_connection");
-      await addDoc(testRef, {
-        status: "firebase-working",
-        time: serverTimestamp(),
-        author: user.email
-      });
-      console.log("✅ Phase 3 SUCCESS: Firestore Write captured.");
-      addToast("Firebase Backend: ONLINE", "success");
-    } catch (error: any) {
-      console.error("❌ Phase 3 FAILURE:", error);
-      const errInfo = handleFirestoreError(error, OperationType.CREATE, "test_connection");
-      
-      if (errInfo.isQuotaExceeded) {
-        addToast("CRITICAL: Daily Limit Reached (Quota Exceeded). Wait for reset.", "error");
-        setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Quota Exceeded" }));
-      } else if (error.code === 'permission-denied') {
-        addToast("CRITICAL: Permission Denied. Check Firestore Rules.", "error");
-      } else {
-        addToast(`Backend Error: ${error.message}`, "error");
-      }
-    } finally {
-      setIsAuditing(false);
-    }
-  };
+  // Consume Extracted Data Synchronization Custom Hook
+  const {
+    posts,
+    projects,
+    messages,
+    subscribers,
+    campaigns,
+    updates,
+    systemStatus,
+    setSystemStatus,
+    forceRefresh,
+    refreshSecondary,
+  } = useAdminData(addToast);
 
   const [blogFormData, setBlogFormData] = useState({
     title: "",
@@ -1343,7 +167,9 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [blogCoverPath, setBlogCoverPath] = useState<string>("");
 
   useEffect(() => {
-    return () => { if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview); };
+    return () => {
+      if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
+    };
   }, [blogCoverPreview]);
 
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -1374,17 +200,16 @@ const AdminDashboard = ({ user }: { user: any }) => {
     slug: "",
     featured: false,
     projectDate: "",
-    gallery: ""
+    gallery: "",
   });
 
   const [updateFormData, setUpdateFormData] = useState({
     title: "",
     text: "",
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split("T")[0],
     relatedProject: "",
-    statusTag: "Building"
+    statusTag: "Building",
   });
-  const [currentUpdate, setCurrentUpdate] = useState<any>(null);
 
   const [projectImageFile, setProjectImageFile] = useState<File | null>(null);
   const [projectImagePreview, setProjectImagePreview] = useState<string>("");
@@ -1399,88 +224,144 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const [blogFilter, setBlogFilter] = useState<"all" | "published" | "draft" | "scheduled" | "featured">("all");
   const [blogSearchQuery, setBlogSearchQuery] = useState("");
 
-  useEffect(() => {
-    console.log("🔄 [SYNC] Initializing Dashboard Synchronization Pipeline...");
-    
-    // 1. Critical Real-time Listeners (Blogs & Projects)
-    const qBlogs = query(collection(db, "blogPosts"));
-    const unsubscribeBlogs = onSnapshot(qBlogs, (snapshot) => {
-      const data = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .sort((a: any, b: any) => {
-          const getMillis = (date: any) => {
-            if (!date) return 0;
-            if (typeof date.toMillis === 'function') return date.toMillis();
-            if (typeof date.toDate === 'function') return date.toDate().getTime();
-            if (date.seconds) return date.seconds * 1000;
-            if (date._seconds) return date._seconds * 1000;
-            const parsed = new Date(date).getTime();
-            return isNaN(parsed) ? 0 : parsed;
-          };
-          return getMillis(b.createdAt) - getMillis(a.createdAt);
-        });
-      setPosts(data);
-      setSystemStatus(prev => ({ ...prev, lastSync: new Date(), isQuotaExceeded: false, lastError: null }));
-    }, (error) => {
-      const errInfo = handleFirestoreError(error, OperationType.GET, "blogPosts");
-      if (errInfo.isQuotaExceeded) {
-        setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Daily usage limit reached (Quota Exceeded)" }));
-      }
-    });
-
-    const qProjects = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
-      setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, "projects");
-    });
-
-    // 2. Optimized One-Time Fetches (Messages, Subscribers, Updates)
-    // These are fetched once on mount to save daily read quota.
-    const fetchSecondaryData = async () => {
-      try {
-        console.log("📊 [SYNC] Fetching secondary metrics...");
-        const [msgSnap, subSnap, updSnap] = await Promise.all([
-          getDocs(query(collection(db, "contacts"), orderBy("timestamp", "desc"))),
-          getDocs(query(collection(db, "subscribers"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "updates"), orderBy("date", "desc")))
-        ]);
-        
-        setMessages(msgSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        setSubscribers(subSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        setUpdates(updSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        console.log("✅ [SYNC] Metrics updated successfully");
-      } catch (error: any) {
-        const errInfo = handleFirestoreError(error, OperationType.GET, "secondary_data");
-        if (errInfo.isQuotaExceeded) {
-          setSystemStatus(prev => ({ ...prev, isQuotaExceeded: true, lastError: "Usage limit reached" }));
-        }
-      }
-    };
-
-    fetchSecondaryData();
-
-    // 3. Campaigns
-    const qCampaigns = query(collection(db, "newsletter_campaigns"), orderBy("createdAt", "desc"));
-    const unsubscribeCampaigns = onSnapshot(qCampaigns, (snapshot) => {
-      setCampaigns(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-
-    return () => {
-      unsubscribeBlogs();
-      unsubscribeProjects();
-      unsubscribeCampaigns();
-    };
-  }, []);
-
+  // Autosave setup (Runs every 2 minutes inside editor)
   useEffect(() => {
     if (!isEditing || !currentPost) return;
     const timer = setInterval(() => {
-      // Only autosave if there are actual changes to prevent quota drain
       handleSaveBlog(true);
-    }, 120000); // Increased to 2 minutes to preserve free tier quota
+    }, 120000);
     return () => clearInterval(timer);
   }, [isEditing, currentPost, blogFormData, blocks, seoData]);
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  const handleOneClickPublish = async () => {
+    setIsAIProcessing(true);
+    try {
+      const content = blocks
+        .filter((b) => b.type === "text" || b.type === "heading")
+        .map((b) => b.content)
+        .join(" ");
+      const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+      if (!apiKey) throw new Error("GOOGLE_API_KEY is not defined");
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const prompt = `Act as an expert SEO Specialist. Based on the following content, generate:
+      1. A catchy, SEO-friendly title (max 60 chars)
+      2. A compelling meta description (max 160 chars)
+      3. A list of 5 relevant tags (comma separated)
+      4. A clean URL slug
+      
+      Return JSON only in this format: {"title": "...", "description": "...", "tags": "...", "slug": "..."}
+      
+      Content: ${content.substring(0, 5000)}`;
+
+      const result = await model.generateContent(prompt);
+      const data = JSON.parse(
+        result.response
+          .text()
+          .replace(/```json|```/g, "")
+          .trim()
+      );
+
+      setSeoData({
+        ...seoData,
+        title: data.title,
+        description: data.description,
+        keywords: data.tags,
+      });
+
+      setBlogFormData((prev) => ({
+        ...prev,
+        title: data.title,
+        slug: data.slug,
+        description: data.description,
+        tags: data.tags,
+        published: true,
+      }));
+
+      await handleSaveBlog(false);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("One-Click Publish failed:", error);
+      addToast("Failed to compile content payload.", "error");
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
+  const calculateContentScore = () => {
+    let score = 0;
+    if (blogFormData.title && blogFormData.title.length > 10) score += 20;
+    if (blogFormData.description && blogFormData.description.length > 50) score += 20;
+    if (blogFormData.coverImage) score += 10;
+    
+    const tagsStr = typeof blogFormData.tags === "string" ? blogFormData.tags : "";
+    if (tagsStr && tagsStr.split(",").length >= 3) score += 10;
+
+    const wordCount = blocks
+      .filter((b) => b.type === "text")
+      .reduce((acc, b) => acc + (typeof b.content === "string" ? b.content.split(" ").length : 0), 0);
+    if (wordCount > 300) score += 20;
+    if (wordCount > 1000) score += 10;
+
+    const hasHeadings = blocks.some((b) => b.type === "heading");
+    if (hasHeadings) score += 10;
+
+    return Math.min(score, 100);
+  };
+
+  const getContentIssues = () => {
+    const issues = [];
+    if (!blogFormData.title || blogFormData.title.length < 10)
+      issues.push("Title is too short or missing for optimal SEO.");
+    if (!blogFormData.description || blogFormData.description.length < 50)
+      issues.push("Meta description is missing or lacks depth.");
+    if (!blogFormData.coverImage)
+      issues.push("No cover visualization detected.");
+
+    const wordCount = blocks
+      .filter((b) => b.type === "text")
+      .reduce((acc, b) => acc + (typeof b.content === "string" ? b.content.split(" ").length : 0), 0);
+    if (wordCount < 300) issues.push("Content is thin. Aim for 500+ words.");
+
+    const hasHeadings = blocks.some((b) => b.type === "heading");
+    if (!hasHeadings) issues.push("No structure headings (H2/H3) found.");
+
+    return issues;
+  };
+
+  const testConnection = async () => {
+    setIsAuditing(true);
+    try {
+      const testRef = collection(db, "test_connection");
+      await addDoc(testRef, {
+        status: "firebase-working",
+        time: serverTimestamp(),
+        author: user.email,
+      });
+      addToast("Firebase connection confirmed.", "success");
+    } catch (error: any) {
+      console.error("Firestore test connection failure:", error);
+      const errInfo = handleFirestoreError(error, OperationType.CREATE, "test_connection");
+
+      if (errInfo.isQuotaExceeded) {
+        addToast("CRITICAL: daily limit reached (Quota Exceeded).", "error");
+        setSystemStatus((prev) => ({ ...prev, isQuotaExceeded: true, lastError: "Quota Exceeded" }));
+      } else {
+        addToast(`Backend Error: ${error.message}`, "error");
+      }
+    } finally {
+      setIsAuditing(false);
+    }
+  };
 
   const handleAIAction = async (action: string, blockId?: string) => {
     if (isAIProcessing) return;
@@ -1489,69 +370,93 @@ const AdminDashboard = ({ user }: { user: any }) => {
     try {
       const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
       if (!apiKey) throw new Error("GOOGLE_API_KEY is not defined");
-      
+
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      
+
       let prompt = "";
       let targetContent = "";
 
       if (blockId) {
-        const block = blocks.find(b => b.id === blockId);
+        const block = blocks.find((b) => b.id === blockId);
         if (!block) return;
         targetContent = block.content;
       } else {
-        targetContent = blocks.filter(b => b.type === 'text').map(b => b.content).join('\n');
+        targetContent = blocks
+          .filter((b) => b.type === "text")
+          .map((b) => b.content)
+          .join("\n");
       }
 
       switch (action) {
-        case 'improve': prompt = `Improve the following text for a professional tech blog. Make it more engaging and clear:\n\n${targetContent}`; break;
-        case 'grammar': prompt = `Fix any grammar or spelling mistakes in the following text:\n\n${targetContent}`; break;
-        case 'expand': prompt = `Expand on the following paragraph, adding more technical detail and depth:\n\n${targetContent}`; break;
-        case 'simplify': prompt = `Simplify the following text to make it easier to read for beginners:\n\n${targetContent}`; break;
-        case 'summary': prompt = `Generate a concise summary (max 160 characters) for the following blog content. This will be used as a meta description:\n\n${targetContent}`; break;
-        case 'keywords': prompt = `Suggest 5-10 SEO keywords for the following content. Return them as a comma-separated list:\n\n${targetContent}`; break;
-        case 'headings': prompt = `Suggest a better heading hierarchy for the following content:\n\n${targetContent}`; break;
-        case 'title': prompt = `Suggest a catchy, SEO-friendly title for a blog post with the following content:\n\n${targetContent}`; break;
+        case "improve":
+          prompt = `Improve the following text for a professional tech blog. Make it more engaging and clear:\n\n${targetContent}`;
+          break;
+        case "grammar":
+          prompt = `Fix any grammar or spelling mistakes in the following text:\n\n${targetContent}`;
+          break;
+        case "expand":
+          prompt = `Expand on the following paragraph, adding more technical detail and depth:\n\n${targetContent}`;
+          break;
+        case "simplify":
+          prompt = `Simplify the following text to make it easier to read for beginners:\n\n${targetContent}`;
+          break;
+        case "summary":
+          prompt = `Generate a concise summary (max 160 characters) for the following blog content. This will be used as a meta description:\n\n${targetContent}`;
+          break;
+        case "keywords":
+          prompt = `Suggest 5-10 SEO keywords for the following content. Return them as a comma-separated list:\n\n${targetContent}`;
+          break;
+        case "headings":
+          prompt = `Suggest a better heading hierarchy for the following content:\n\n${targetContent}`;
+          break;
+        case "title":
+          prompt = `Suggest a catchy, SEO-friendly title for a blog post with the following content:\n\n${targetContent}`;
+          break;
       }
 
       const response = await model.generateContent(prompt);
-      let result = response.response.text();
-      const cleanResult = result.replace(/^[-*•\d. ]+/gm, '').trim();
+      const result = response.response.text();
+      const cleanResult = result.replace(/^[-*•\d. ]+/gm, "").trim();
 
       if (blockId) {
-        setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, content: result } : b));
-        addToast("AI modification applied.", "success");
+        setBlocks((prev) =>
+          prev.map((b) => (b.id === blockId ? { ...b, content: result } : b))
+        );
+        addToast("AI formatting successfully applied.", "success");
       } else {
         switch (action) {
-          case 'summary':
-            setSeoData(prev => ({ ...prev, description: cleanResult }));
-            setBlogFormData(prev => ({ ...prev, description: cleanResult }));
+          case "summary":
+            setSeoData((prev) => ({ ...prev, description: cleanResult }));
+            setBlogFormData((prev) => ({ ...prev, description: cleanResult }));
             break;
-          case 'keywords':
-            const keywords = cleanResult.split('\n').join(', ');
-            setSeoData(prev => ({ ...prev, keywords: keywords }));
-            setBlogFormData(prev => ({ ...prev, tags: keywords }));
+          case "keywords":
+            const keywords = cleanResult.split("\n").join(", ");
+            setSeoData((prev) => ({ ...prev, keywords }));
+            setBlogFormData((prev) => ({ ...prev, tags: keywords }));
             break;
-          case 'title':
-            setSeoData(prev => ({ ...prev, title: cleanResult }));
-            setBlogFormData(prev => ({ ...prev, title: cleanResult, slug: generateSlug(cleanResult) }));
+          case "title":
+            setSeoData((prev) => ({ ...prev, title: cleanResult }));
+            setBlogFormData((prev) => ({
+              ...prev,
+              title: cleanResult,
+              slug: generateSlug(cleanResult),
+            }));
             break;
           default:
-            // Append as callout
             const newBlock: Block = {
               id: Date.now().toString(),
-              type: 'callout',
+              type: "callout",
               content: result,
-              metadata: { title: `AI ${action.charAt(0).toUpperCase() + action.slice(1)} Suggestion` }
+              metadata: { title: `AI ${action} Suggestion` },
             };
-            setBlocks(prev => normalizeBlocks([...prev, newBlock]));
+            setBlocks((prev) => normalizeBlocks([...prev, newBlock]));
         }
-        addToast(`AI ${action} completed.`, "success");
+        addToast(`AI ${action} suggestions rendered.`, "success");
       }
     } catch (error) {
-      console.error("AI Action failed:", error);
-      addToast("AI assistance failed.", "error");
+      console.error("AI Assistant failure:", error);
+      addToast("AI Assistant failed.", "error");
     } finally {
       setIsAIProcessing(false);
     }
@@ -1560,50 +465,47 @@ const AdminDashboard = ({ user }: { user: any }) => {
   const handleSendNewsletter = async (resumingCampaignId?: string, isTest?: boolean) => {
     setIsSending(true);
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error("Not authenticated");
-      const token = await user.getIdToken();
+      const userInstance = auth.currentUser;
+      if (!userInstance) throw new Error("Not authenticated");
+      const token = await userInstance.getIdToken();
 
-      let payload = {
+      const payload = {
         subject: newsletterData.subject,
         content: newsletterData.content,
         campaignId: resumingCampaignId,
-        isTestMode: isTest
+        isTestMode: isTest,
       };
 
       if (resumingCampaignId) {
-        const camp = campaigns.find(c => c.id === resumingCampaignId);
+        const camp = campaigns.find((c) => c.id === resumingCampaignId);
         payload.subject = camp.subject;
         payload.content = camp.content;
       }
 
-      const response = await fetch('/api/newsletter/send', {
-        method: 'POST',
+      const response = await fetch("/api/newsletter/send", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Failed to send");
 
       addToast(result.message, "success");
-      
+
       if (!isTest) {
         setShowComposeModal(false);
-        setNewsletterData({ subject: '', content: '' });
+        setNewsletterData({ subject: "", content: "" });
+        refreshSecondary();
       }
     } catch (err: any) {
       addToast(err.message, "error");
     } finally {
       setIsSending(false);
     }
-  };
-
-  const generateSlug = (title: string) => {
-    return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
   const handleEditBlog = (post: any) => {
@@ -1624,16 +526,18 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
     setBlogCoverPreview("");
     setShowCustomCategoryInput(post.category && !BLOG_CATEGORIES.includes(post.category));
-    setBlocks(normalizeBlocks(post.blocks || [{ id: '1', type: 'text', content: '' }]));
-    setSeoData(post.seo || {
-      title: post.title,
-      description: post.description || "",
-      keywords: "",
-      canonicalUrl: "",
-      ogTitle: "",
-      ogDescription: "",
-      ogImage: post.coverImage || "",
-    });
+    setBlocks(normalizeBlocks(post.blocks || [{ id: "1", type: "text", content: "" }]));
+    setSeoData(
+      post.seo || {
+        title: post.title,
+        description: post.description || "",
+        keywords: "",
+        canonicalUrl: "",
+        ogTitle: "",
+        ogDescription: "",
+        ogImage: post.coverImage || "",
+      }
+    );
     setIsEditing(true);
   };
 
@@ -1654,7 +558,7 @@ const AdminDashboard = ({ user }: { user: any }) => {
     if (blogCoverPreview) URL.revokeObjectURL(blogCoverPreview);
     setBlogCoverPreview("");
     setShowCustomCategoryInput(false);
-    setBlocks(normalizeBlocks([{ id: '1', type: 'text', content: '' }]));
+    setBlocks(normalizeBlocks([{ id: "1", type: "text", content: "" }]));
     setSeoData({
       title: "",
       description: "",
@@ -1667,23 +571,21 @@ const AdminDashboard = ({ user }: { user: any }) => {
   };
 
   const handleSaveBlog = async (eOrAutosave: React.FormEvent | boolean | "toggle") => {
-    if (typeof eOrAutosave !== 'boolean' && eOrAutosave !== "toggle") eOrAutosave.preventDefault();
-    const isAutosave = typeof eOrAutosave === 'boolean' ? eOrAutosave : false;
+    if (typeof eOrAutosave !== "boolean" && eOrAutosave !== "toggle") eOrAutosave.preventDefault();
+    const isAutosave = typeof eOrAutosave === "boolean" ? eOrAutosave : false;
     const isToggle = eOrAutosave === "toggle";
     let nextPublished = blogFormData.published;
 
     if (isToggle) {
       nextPublished = !blogFormData.published;
-      setBlogFormData(prev => ({ ...prev, published: nextPublished }));
+      setBlogFormData((prev) => ({ ...prev, published: nextPublished }));
     }
 
-    // 1. STRICT CONCURRENCY GUARD: Prevent multiple saves from running simultaneously
     if (saveInProgressRef.current) {
       console.log("⏳ [SAVE] Pipeline busy. Skipping concurrent request.");
       return;
     }
 
-    // 2. PRE-FLIGHT VALIDATION
     if (!isAutosave && !blogFormData.title.trim()) {
       addToast("Validation Error: Please add a title.", "warning");
       return;
@@ -1692,60 +594,52 @@ const AdminDashboard = ({ user }: { user: any }) => {
     const newlyUploadedPaths: string[] = [];
     const oldCoverPath = currentPost?.coverImagePath ?? blogCoverPath ?? "";
     const oldBlockPaths = (currentPost?.blocks || [])
-      .filter((b: any) => b.type === 'image')
+      .filter((b: any) => b.type === "image")
       .map((b: any) => b.metadata?.fullPath)
       .filter(Boolean);
 
     try {
       saveInProgressRef.current = true;
       if (!isAutosave) setIsSaving(true);
-      
-      console.log(`🚀 [SAVE] Starting ${isAutosave ? 'Autosave' : 'Manual Save'} pipeline...`);
 
-      // 3. INTERNAL PIPELINE WITH SAFETY TIMEOUT
+      console.log(`🚀 [SAVE] Starting ${isAutosave ? "Autosave" : "Manual Save"} pipeline...`);
+
       const pipelinePromise = (async () => {
         let finalCoverUrl = blogFormData.coverImage;
         let finalCoverPath = blogCoverPath;
 
-        // Cover Image Upload
         if (blogCoverFile) {
-          console.log("📸 [SAVE] Uploading cover image...");
           const up = await uploadImage(blogCoverFile, "blog_covers");
           newlyUploadedPaths.push(up.fullPath);
           finalCoverUrl = up.url;
           finalCoverPath = up.fullPath;
         }
 
-        // Sequential Block Image Uploads (Prevents network saturation/freezing)
         const finalBlocks = [...blocks];
         for (let i = 0; i < finalBlocks.length; i++) {
           const b = finalBlocks[i];
           if (b.type === "image" && b.localFile) {
-            console.log(`🖼️ [SAVE] Uploading block image ${i + 1}...`);
             const u = await uploadImage(b.localFile, "blog_images");
             newlyUploadedPaths.push(u.fullPath);
-            
-            // Update block with permanent storage info
+
             const { localFile, localPreview, metadata, ...rest } = b;
-            finalBlocks[i] = { 
-              ...rest, 
-              content: u.url, 
-              metadata: { ...metadata, fullPath: u.fullPath } 
+            finalBlocks[i] = {
+              ...rest,
+              content: u.url,
+              metadata: { ...metadata, fullPath: u.fullPath },
             };
           }
         }
 
-        // Strip local preview artifacts before DB write
-        const sanitizedBlocks = finalBlocks.map(b => {
+        const sanitizedBlocks = finalBlocks.map((b) => {
           const { localFile, localPreview, ...rest } = b;
           return rest;
         });
 
-        // Optimized Reading Time (More robust than split)
         const textContent = finalBlocks
-          .filter(b => b.type === 'text' || b.type === 'heading')
-          .map(b => typeof b.content === 'string' ? b.content.replace(/<[^>]*>/g, '') : '')
-          .join(' ');
+          .filter((b) => b.type === "text" || b.type === "heading")
+          .map((b) => (typeof b.content === "string" ? b.content.replace(/<[^>]*>/g, "") : ""))
+          .join(" ");
         const wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
         const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
@@ -1757,122 +651,86 @@ const AdminDashboard = ({ user }: { user: any }) => {
           blocks: sanitizedBlocks,
           seo: {
             ...seoData,
-            ogImage: seoData.ogImage || finalCoverUrl
+            ogImage: seoData.ogImage || finalCoverUrl,
           },
-          tags: typeof blogFormData.tags === 'string' ? blogFormData.tags.split(",").map(t => t.trim()).filter(t => t) : blogFormData.tags,
+          tags:
+            typeof blogFormData.tags === "string"
+              ? blogFormData.tags
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter((t) => t)
+              : blogFormData.tags,
           updatedAt: serverTimestamp(),
           author: user.email,
-          readingTime
+          readingTime,
         };
-        
-        if (collectionName === "blogPosts" && !isAutosave) {
-          console.log("📝 [SAVE] Compiling Markdown for Static Blog...");
-          
-          let mdContent = `---
-title: "${postData.title}"
-slug: "${postData.slug || currentPost?.id || new Date().getTime().toString()}"
-description: "${postData.description || postData.excerpt || ''}"
-date: "${new Date().toISOString()}"
-tags: ${JSON.stringify(postData.tags)}
-category: "${postData.category}"
-coverImage: "${postData.coverImage}"
-author: "${postData.author}"
-published: true
----
 
-`;
-          
-          // Convert Blocks to Markdown
-          sanitizedBlocks.forEach((block: any) => {
-            if (block.type === 'text') mdContent += `${block.content}\n\n`;
-            if (block.type === 'heading') mdContent += `${'#'.repeat(block.metadata?.level || 2)} ${block.content}\n\n`;
-            if (block.type === 'image') mdContent += `![${block.metadata?.alt || ''}](${block.content})\n\n`;
-            if (block.type === 'code') mdContent += `\`\`\`${block.metadata?.language || ''}\n${block.content}\n\`\`\`\n\n`;
-            if (block.type === 'quote') mdContent += `> ${block.content}\n\n`;
-            if (block.type === 'list') mdContent += `- ${block.content}\n\n`;
-          });
+        if (currentPost) {
+          await updateDoc(doc(db, "blogPosts", currentPost.id), postData);
 
-          // Trigger Download
-          const blob = new Blob([mdContent], { type: "text/markdown" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `${postData.slug || 'new-blog'}.md`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          
-        } else if (collectionName !== "blogPosts") {
-          if (currentPost) {
-            console.log("💾 [SAVE] Updating existing post...");
-            await updateDoc(doc(db, collectionName, currentPost.id), postData);
+          // Storage Cleanups
+          const newBlockPaths = sanitizedBlocks
+            .filter((b: any) => b.type === "image")
+            .map((b: any) => b.metadata?.fullPath)
+            .filter(Boolean);
+          const toDelete = new Set<string>();
 
-            // Storage Cleanup (Delete old images that were replaced)
-            const newBlockPaths = sanitizedBlocks.filter((b: any) => b.type === 'image').map((b: any) => b.metadata?.fullPath).filter(Boolean);
-            const toDelete = new Set<string>();
+          if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath)
+            toDelete.add(oldCoverPath);
 
-            if (finalCoverPath && oldCoverPath && finalCoverPath !== oldCoverPath) toDelete.add(oldCoverPath);
+          const newSet = new Set(newBlockPaths);
+          for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
 
-            const newSet = new Set(newBlockPaths);
-            for (const p of oldBlockPaths) if (p && !newSet.has(p)) toDelete.add(p);
-
-            if (toDelete.size > 0) {
-              console.log(`♻️ [SAVE] Cleaning up ${toDelete.size} orphaned images...`);
-              await Promise.all([...toDelete].map(p => deleteImageByPath(p)));
-            }
-          } else if (!isAutosave) {
-            console.log("🆕 [SAVE] Creating new post...");
-            await addDoc(collection(db, collectionName), {
-              ...postData,
-              createdAt: serverTimestamp(),
-              views: 0
-            });
+          if (toDelete.size > 0) {
+            await Promise.all([...toDelete].map((p) => deleteImageByPath(p)));
           }
+        } else if (!isAutosave) {
+          await addDoc(collection(db, "blogPosts"), {
+            ...postData,
+            createdAt: serverTimestamp(),
+            views: 0,
+          });
         }
-        
+
         return sanitizedBlocks;
       })();
 
-      // Apply 45-second safety timeout to the whole operation
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Operation timed out (45s). Network might be slow.")), 45000)
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Save pipeline timed out (45s).")), 45000)
       );
 
-      const processedBlocks = await Promise.race([pipelinePromise, timeoutPromise]) as Block[];
-      
-      setLastSaved(new Date());
-      console.log("✅ [SAVE] Pipeline completed successfully.");
+      const processedBlocks = (await Promise.race([
+        pipelinePromise,
+        timeoutPromise,
+      ])) as Block[];
 
+      setLastSaved(new Date());
       if (!isAutosave) {
         addToast(currentPost ? "Post Updated" : "Draft Saved", "success");
-        // We stay in the editor now for better flow, unless it was a fresh creation
         if (!currentPost) {
-           // Find the newly created post to set it as current, preventing double creation on next save
-           // In a real app, you'd get the ID back from addDoc
-           // For now, we'll just exit the editor on new creations to keep it simple, 
-           // but stay in for updates.
-           setIsEditing(false);
-           setCurrentPost(null);
-           resetBlogForm();
+          setIsEditing(false);
+          setCurrentPost(null);
+          resetBlogForm();
         }
       } else {
-        // Clear local file handles after successful autosave to prevent re-uploading
-        setBlocks(processedBlocks.map(b => ({ ...b, localFile: undefined, localPreview: undefined })));
+        setBlocks(
+          processedBlocks.map((b) => ({
+            ...b,
+            localFile: undefined,
+            localPreview: undefined,
+          }))
+        );
       }
     } catch (error: any) {
-      console.error("❌ [SAVE] Pipeline Failure:", error);
-      
-      // Cleanup newly uploaded files on failure to prevent storage bloat
+      console.error("Save pipeline failure:", error);
       if (newlyUploadedPaths.length > 0) {
-        console.log("🧹 [SAVE] Cleaning up partial uploads...");
-        await Promise.all(newlyUploadedPaths.map(p => deleteImageByPath(p)));
+        await Promise.all(newlyUploadedPaths.map((p) => deleteImageByPath(p)));
       }
 
       if (!isAutosave) {
         let errorMsg = `System Error: ${error.message}`;
-        if (error.code === 'permission-denied') {
-          errorMsg = "Security Error: You don't have permission.";
+        if (error.code === "permission-denied") {
+          errorMsg = "Security Error: Permission Denied.";
         }
         addToast(errorMsg, "error");
       }
@@ -1882,14 +740,13 @@ published: true
     }
   };
 
-  const handleSaveProject = async (e: React.FormEvent) => {
+  const handleSaveProject = async (e: FormEvent) => {
     e.preventDefault();
     if (saveInProgressRef.current) return;
 
     try {
       saveInProgressRef.current = true;
       setIsSaving(true);
-      console.log("🚀 [PROJECT] Starting save pipeline...");
 
       const pipelinePromise = (async () => {
         let uploaded: { url: string; fullPath: string } | null = null;
@@ -1901,29 +758,34 @@ published: true
 
         const finalImageUrl = uploaded?.url ?? projectFormData.image;
 
-        if (!projectImageFile && finalImageUrl) {
-          const check = await validateImageUrl(finalImageUrl);
-          if (!check.isValid) {
-            addToast(`Project Image Error: ${check.error}`, "error");
-            throw new Error(`Project Image Error: ${check.error}`);
-          }
-        }
-
         const projectData = {
           ...projectFormData,
           image: finalImageUrl || "",
           imagePath: uploaded?.fullPath ?? projectImagePath ?? "",
-          tech: projectFormData.tech.split(",").map(t => t.trim()).filter(Boolean),
-          vision: projectFormData.vision,
-          impact: projectFormData.impact,
-          status: projectFormData.status,
+          tech: projectFormData.tech
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
           slug: projectFormData.slug || generateSlug(projectFormData.title),
-          featured: projectFormData.featured,
-          projectDate: projectFormData.projectDate,
-          gallery: projectFormData.gallery.split(",").map(g => g.trim()).filter(Boolean),
-          metrics: (() => { try { return JSON.parse(projectFormData.metrics); } catch { return {}; } })(),
-          evolution: (() => { try { return JSON.parse(projectFormData.evolution); } catch { return []; } })(),
-          updatedAt: serverTimestamp()
+          gallery: projectFormData.gallery
+            .split(",")
+            .map((g) => g.trim())
+            .filter(Boolean),
+          metrics: (() => {
+            try {
+              return JSON.parse(projectFormData.metrics);
+            } catch {
+              return {};
+            }
+          })(),
+          evolution: (() => {
+            try {
+              return JSON.parse(projectFormData.evolution);
+            } catch {
+              return [];
+            }
+          })(),
+          updatedAt: serverTimestamp(),
         };
 
         if (currentProject) {
@@ -1935,29 +797,44 @@ published: true
           const newRef = doc(collection(db, "projects"));
           await setDoc(newRef, { ...projectData, createdAt: serverTimestamp() });
         }
-        
+
         return uploaded;
       })();
 
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Project save timed out (30s)")), 30000)
       );
 
-      const uploadedResult = await Promise.race([pipelinePromise, timeoutPromise]) as any;
+      await Promise.race([pipelinePromise, timeoutPromise]);
 
       setIsEditing(false);
       setCurrentProject(null);
-      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
+      setProjectFormData({
+        title: "",
+        category: "",
+        description: "",
+        image: "",
+        video: "",
+        tech: "",
+        caseStudy: "",
+        link: "",
+        vision: "",
+        impact: "",
+        status: "Live / Scale",
+        metrics: "{}",
+        evolution: "[]",
+        slug: "",
+        featured: false,
+        projectDate: "",
+        gallery: "",
+      });
       setProjectImagePath("");
       setProjectImageFile(null);
       if (projectImagePreview) URL.revokeObjectURL(projectImagePreview);
       setProjectImagePreview("");
       addToast(currentProject ? "Project Updated" : "Project Created", "success");
-      console.log("✅ [PROJECT] Save successful.");
-
     } catch (error: any) {
-      console.error("❌ [PROJECT] Save pipeline failed:", error);
-      handleFirestoreError(error, currentProject ? OperationType.UPDATE : OperationType.CREATE, "projects");
+      console.error("Project save failure:", error);
       addToast(`Project Error: ${error.message}`, "error");
     } finally {
       setIsSaving(false);
@@ -1965,7 +842,7 @@ published: true
     }
   };
 
-  const handleSaveUpdate = async (e: React.FormEvent) => {
+  const handleSaveUpdate = async (e: FormEvent) => {
     e.preventDefault();
     if (saveInProgressRef.current) return;
     try {
@@ -1979,10 +856,16 @@ published: true
       }
       setIsEditing(false);
       setCurrentUpdate(null);
-      setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
+      setUpdateFormData({
+        title: "",
+        text: "",
+        date: new Date().toISOString().split("T")[0],
+        relatedProject: "",
+        statusTag: "Building",
+      });
       addToast(currentUpdate ? "Update Modified" : "Update Published", "success");
+      refreshSecondary();
     } catch (error: any) {
-      handleFirestoreError(error, currentUpdate ? OperationType.UPDATE : OperationType.CREATE, "updates");
       addToast(`Update Error: ${error.message}`, "error");
     } finally {
       setIsSaving(false);
@@ -1993,40 +876,36 @@ published: true
   const handleToggleMessageStatus = async (id: string, currentStatus: string) => {
     try {
       await updateDoc(doc(db, "contacts", id), {
-        status: currentStatus === 'read' ? 'unread' : 'read'
+        status: currentStatus === "read" ? "unread" : "read",
       });
+      refreshSecondary();
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, "contacts");
     }
   };
 
   const handleDelete = async (id: string, collectionName: string) => {
-    const itemType = collectionName === "blogPosts" ? "post" : collectionName === "projects" ? "project" : collectionName === "updates" ? "update" : "message";
+    const itemType =
+      collectionName === "blogPosts"
+        ? "post"
+        : collectionName === "projects"
+        ? "project"
+        : collectionName === "updates"
+        ? "update"
+        : "message";
     if (window.confirm(`Are you sure you want to delete this ${itemType}?`)) {
       try {
         await deleteDoc(doc(db, collectionName, id));
+        addToast("Item successfully deleted.", "success");
+        if (collectionName !== "blogPosts" && collectionName !== "projects") {
+          refreshSecondary();
+        }
       } catch (error) {
         handleFirestoreError(error, OperationType.DELETE, collectionName);
+        addToast("Deletion failed.", "error");
       }
     }
   };
-
-  const AdminStatCard = ({ label, value, icon, trend }: { label: string, value: string | number, icon: React.ReactNode, trend?: string }) => (
-    <div className="p-8 rounded-[40px] glass-card border border-white/5 group hover:border-brand-primary/30 transition-all hover:translate-y-[-4px] duration-500">
-      <div className="flex justify-between items-start mb-6">
-        <div className="w-14 h-14 rounded-[20px] bg-white/5 flex items-center justify-center text-white/20 group-hover:text-brand-primary group-hover:bg-brand-primary/10 transition-all duration-500 ring-1 ring-white/10 group-hover:ring-brand-primary/20">
-          {icon}
-        </div>
-        {trend && (
-          <div className="px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-[9px] font-bold uppercase tracking-widest flex items-center gap-1.5 backdrop-blur-md border border-brand-primary/20">
-            <TrendingUp size={10} /> {trend}
-          </div>
-        )}
-      </div>
-      <div className="text-4xl font-bold mb-2 tracking-tighter bg-gradient-to-br from-white to-white/40 bg-clip-text text-transparent">{value}</div>
-      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 group-hover:text-white/40 transition-colors">{label}</div>
-    </div>
-  );
 
   if (isDistractionFree && isEditing) {
     return (
@@ -2035,34 +914,46 @@ published: true
           <div className="flex items-center justify-between mb-32">
             <div className="flex items-center gap-4 text-white/10">
               <Shield size={20} />
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Immersive Focus Mode</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em]">
+                Immersive Focus Mode
+              </span>
             </div>
             <div className="flex items-center gap-8">
               <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 flex items-center gap-3">
                 <div className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
-                {lastSaved ? `Synced ${lastSaved.toLocaleTimeString()}` : 'Buffer Active'}
+                {lastSaved ? `Synced ${lastSaved.toLocaleTimeString()}` : "Buffer Active"}
               </div>
-              <button 
+              <button
                 onClick={() => setIsDistractionFree(false)}
-                className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all animate-none"
               >
                 <Minimize2 size={24} />
               </button>
             </div>
           </div>
-          
-          <input 
-            type="text" 
+
+          <input
+            type="text"
             value={blogFormData.title}
-            onChange={(e) => setBlogFormData({ ...blogFormData, title: e.target.value, slug: generateSlug(e.target.value) })}
+            onChange={(e) =>
+              setBlogFormData({
+                ...blogFormData,
+                title: e.target.value,
+                slug: generateSlug(e.target.value),
+              })
+            }
             className="w-full bg-transparent border-none outline-none text-6xl md:text-8xl font-bold mb-16 tracking-tighter text-white placeholder:text-white/5"
             placeholder="Narrative Title"
           />
-          
-          <BlogEditor 
-            blocks={blocks} 
-            setBlocks={setBlocks} 
-            onAIAction={(id, action) => handleAIAction(action, id)} 
+
+          <BlogEditorWrapper
+            blocks={blocks}
+            setBlocks={setBlocks}
+            onAIAction={(id, action) => handleAIAction(action, id)}
+            activeTab={activeTab}
+            setBlogFormData={setBlogFormData}
+            setProjectFormData={setProjectFormData}
+            setSeoData={setSeoData}
           />
         </div>
         <Toaster toasts={toasts} removeToast={removeToast} />
@@ -2071,17 +962,19 @@ published: true
   }
 
   return (
-    <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen">
+    <div className="pt-32 pb-24 bg-[#0A0A0A] min-h-screen text-left">
       <div className="container mx-auto px-6">
         {!isEditing && (
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
             <div>
-              <h1 className="text-4xl font-bold">Creator <span className="text-brand-primary">Studio</span></h1>
+              <h1 className="text-4xl font-bold text-white">
+                Creator <span className="text-brand-primary">Studio</span>
+              </h1>
               <p className="text-white/40">Manage your content and authority signals</p>
             </div>
             <div className="flex gap-4">
               {activeTab !== "messages" && activeTab !== "dashboard" && !isEditing && (
-                <button 
+                <button
                   onClick={() => {
                     setIsEditing(true);
                     setCurrentPost(null);
@@ -2090,17 +983,49 @@ published: true
                     if (activeTab === "blogs") {
                       resetBlogForm();
                     } else if (activeTab === "projects") {
-                      setProjectFormData({ title: "", category: "", description: "", image: "", video: "", tech: "", caseStudy: "", link: "", vision: "", impact: "", status: "Live / Scale", metrics: "{}", evolution: "[]", slug: "", featured: false, projectDate: "", gallery: "" });
+                      setProjectFormData({
+                        title: "",
+                        category: "",
+                        description: "",
+                        image: "",
+                        video: "",
+                        tech: "",
+                        caseStudy: "",
+                        link: "",
+                        vision: "",
+                        impact: "",
+                        status: "Live / Scale",
+                        metrics: "{}",
+                        evolution: "[]",
+                        slug: "",
+                        featured: false,
+                        projectDate: "",
+                        gallery: "",
+                      });
                     } else if (activeTab === "updates") {
-                      setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" });
+                      setUpdateFormData({
+                        title: "",
+                        text: "",
+                        date: new Date().toISOString().split("T")[0],
+                        relatedProject: "",
+                        statusTag: "Building",
+                      });
                     }
                   }}
                   className="px-8 py-4 bg-brand-primary text-white rounded-2xl font-bold flex items-center gap-2"
                 >
-                  <Plus size={20} /> Create {activeTab === "blogs" ? "Post" : activeTab === "projects" ? "Project" : "Update"}
+                  <Plus size={20} /> Create{" "}
+                  {activeTab === "blogs"
+                    ? "Post"
+                    : activeTab === "projects"
+                    ? "Project"
+                    : "Update"}
                 </button>
               )}
-              <button onClick={() => signOut(auth)} className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors">
+              <button
+                onClick={onLogout}
+                className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold flex items-center gap-2 hover:text-white transition-colors"
+              >
                 <LogOut size={20} /> Logout
               </button>
             </div>
@@ -2110,19 +1035,21 @@ published: true
         {!isEditing && (
           <div className="flex flex-wrap gap-4 mb-12">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: <Layout size={18} /> },
-              { id: 'blogs', label: 'Blog Posts', icon: <FileText size={18} /> },
-              { id: 'projects', label: 'Projects', icon: <Layers size={18} /> },
-              { id: 'updates', label: 'Updates', icon: <Zap size={18} /> },
-              { id: 'messages', label: 'Messages', icon: <MessageSquare size={18} /> },
-              { id: 'subscribers', label: 'Newsletter', icon: <Mail size={18} /> },
+              { id: "dashboard", label: "Dashboard", icon: <Layout size={18} /> },
+              { id: "blogs", label: "Blog Posts", icon: <FileText size={18} /> },
+              { id: "projects", label: "Projects", icon: <Layers size={18} /> },
+              { id: "updates", label: "Updates", icon: <Zap size={18} /> },
+              { id: "messages", label: "Messages", icon: <MessageSquare size={18} /> },
+              { id: "subscribers", label: "Newsletter", icon: <Mail size={18} /> },
             ].map((tab) => (
-              <button 
+              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={cn(
-                  "px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-2", 
-                  activeTab === tab.id ? "bg-white text-black" : "bg-white/5 text-white/40 hover:bg-white/10"
+                  "px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-2",
+                  activeTab === tab.id
+                    ? "bg-white text-black"
+                    : "bg-white/5 text-white/40 hover:bg-white/10"
                 )}
               >
                 {tab.icon} {tab.label}
@@ -2137,50 +1064,59 @@ published: true
           <div className="space-y-12 flex flex-col">
             {activeTab === "blogs" ? (
               <>
-                {/* Editor Header & Controls - Sticky for high-efficiency workflow */}
-                <div className="sticky top-[80px] z-[80] flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl">
+                {/* Editor Header & Controls */}
+                <div className="sticky top-[80px] z-[80] flex flex-col lg:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5 bg-[#080808]/80 backdrop-blur-xl">
                   <div className="flex items-center gap-6">
-                    <button 
-                      onClick={() => { setIsEditing(false); setCurrentPost(null); setIsPreviewMode(false); }}
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setCurrentPost(null);
+                        setIsPreviewMode(false);
+                      }}
                       className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all group"
                     >
-                      <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                      <ArrowLeft
+                        size={20}
+                        className="group-hover:-translate-x-1 transition-transform"
+                      />
                     </button>
                     <div>
                       <div className="flex items-center gap-4 max-w-xl">
-                        <h2 className="text-2xl font-bold tracking-tight truncate">{blogFormData.title || "New Narrative"}</h2>
-                        <button 
-                          type="button"
-                          onClick={() => setShowSmartImport(true)}
-                          className="px-4 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[9px] uppercase tracking-widest shrink-0"
-                        >
-                          <Sparkles size={12} /> Smart Import
-                        </button>
+                        <h2 className="text-2xl font-bold tracking-tight text-white truncate">
+                          {blogFormData.title || "New Narrative"}
+                        </h2>
                       </div>
                       <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">
-                        <span className="flex items-center gap-1.5"><Clock size={12} className="text-brand-primary" /> {lastSaved ? `Autosaved ${lastSaved.toLocaleTimeString()}` : 'Draft'}</span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock size={12} className="text-brand-primary" />{" "}
+                          {lastSaved
+                            ? `Autosaved ${lastSaved.toLocaleTimeString()}`
+                            : "Draft"}
+                        </span>
                         <div className="w-1 h-1 rounded-full bg-white/10" />
                         <span className="text-brand-primary/60">Elite AI Pipeline v3</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 md:gap-3 shrink-0">
-                    <button 
+                  <div className="flex flex-wrap items-center gap-2 md:gap-3 shrink-0">
+                    <button
                       onClick={() => setIsPreviewMode(!isPreviewMode)}
                       className={cn(
                         "px-4 md:px-6 py-3 rounded-2xl font-bold text-xs md:text-sm flex items-center gap-2 transition-all border",
-                        isPreviewMode 
-                          ? "bg-brand-primary text-black border-brand-primary" 
+                        isPreviewMode
+                          ? "bg-brand-primary text-black border-brand-primary"
                           : "bg-white/5 text-white/40 border-white/10 hover:text-white hover:bg-white/10"
                       )}
                     >
                       {isPreviewMode ? <Edit size={16} /> : <Eye size={16} />}
-                      <span className="hidden sm:inline">{isPreviewMode ? "Edit Mode" : "Live Preview"}</span>
+                      <span className="hidden sm:inline">
+                        {isPreviewMode ? "Edit Mode" : "Live Preview"}
+                      </span>
                       {!isPreviewMode && <span className="sm:hidden">Preview</span>}
                     </button>
 
-                    <button 
+                    <button
                       onClick={() => setIsDistractionFree(true)}
                       className="p-3 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all group shrink-0"
                       title="Full Screen Writing"
@@ -2188,65 +1124,78 @@ published: true
                       <Maximize2 size={18} className="group-hover:scale-110 transition-transform" />
                     </button>
 
-                    <button 
+                    <button
                       onClick={handleOneClickPublish}
                       disabled={isAIProcessing}
                       className="px-4 md:px-8 py-3 bg-brand-primary text-white rounded-2xl font-bold hover:bg-brand-primary/90 transition-all text-xs md:text-sm shadow-lg shadow-brand-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait group shrink-0"
                     >
-                      {isAIProcessing ? <Sparkles size={16} className="animate-spin text-black" /> : <Zap size={16} className="group-hover:animate-pulse" />}
+                      {isAIProcessing ? (
+                        <Sparkles size={16} className="animate-spin text-black" />
+                      ) : (
+                        <Zap size={16} className="group-hover:animate-pulse" />
+                      )}
                       <span className="hidden md:inline">One-Click Publish</span>
                       <span className="md:hidden">Publish</span>
                     </button>
-                    
+
                     <div className="w-px h-6 bg-white/10 mx-1 hidden lg:block" />
-                    
-                    <button 
+
+                    <button
                       onClick={() => handleSaveBlog(false)}
                       disabled={isSaving}
                       className="px-4 md:px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-white/90 transition-all text-xs md:text-sm flex items-center gap-2 disabled:opacity-50 shrink-0"
                     >
-                       {isSaving ? <Clock size={16} className="animate-spin" /> : <Save size={16} />}
-                       {currentPost ? (blogFormData.published ? "Update Live" : "Update Draft") : "Save Draft"}
-                     </button>
- 
-                     <div className="w-px h-6 bg-white/10 mx-1 hidden lg:block" />
- 
-                     <button 
-                       onClick={() => handleSaveBlog("toggle")}
-                       disabled={isSaving}
-                       className={cn(
-                         "px-4 md:px-8 py-3 rounded-2xl font-bold transition-all text-xs md:text-sm flex items-center gap-2",
-                         blogFormData.published 
-                           ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20" 
-                           : "bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20"
-                       )}
-                     >
-                       {blogFormData.published ? "Unpublish" : "Go Live"}
-                     </button>
+                      {isSaving ? <Clock size={16} className="animate-spin" /> : <Save size={16} />}
+                      {currentPost
+                        ? blogFormData.published
+                          ? "Update Live"
+                          : "Update Draft"
+                        : "Save Draft"}
+                    </button>
+
+                    <div className="w-px h-6 bg-white/10 mx-1 hidden lg:block" />
+
+                    <button
+                      onClick={() => handleSaveBlog("toggle")}
+                      disabled={isSaving}
+                      className={cn(
+                        "px-4 md:px-8 py-3 rounded-2xl font-bold transition-all text-xs md:text-sm flex items-center gap-2",
+                        blogFormData.published
+                          ? "bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                          : "bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20"
+                      )}
+                    >
+                      {blogFormData.published ? "Unpublish" : "Go Live"}
+                    </button>
                   </div>
                 </div>
 
-                {/* Main Workspace: Editor | Preview */}
-                <div className={cn(
-                  "grid gap-12 flex-1 overflow-hidden transition-all duration-700",
-                  isPreviewMode ? "lg:grid-cols-[1fr_1fr]" : "lg:grid-cols-[1fr_380px] grid-cols-1"
-                )}>
-                  {/* Left Column: The Editor - Fluid Height */}
-                  <div className={cn(
-                    "min-h-screen pr-4 space-y-12 py-12",
-                    isPreviewMode && "hidden lg:block"
-                  )}>
-                  <div className="max-w-5xl mx-auto space-y-20">
+                {/* Editor Surface Panel */}
+                <div
+                  className={cn(
+                    "grid gap-12 flex-1 overflow-hidden transition-all duration-700",
+                    isPreviewMode
+                      ? "lg:grid-cols-[1fr_1fr]"
+                      : "lg:grid-cols-[1fr_380px] grid-cols-1"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "min-h-screen pr-4 space-y-12 py-12",
+                      isPreviewMode && "hidden lg:block"
+                    )}
+                  >
+                    <div className="max-w-5xl mx-auto space-y-20">
                       <div className="space-y-8">
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={blogFormData.title}
                           onChange={(e) => {
                             const newTitle = e.target.value;
-                            setBlogFormData(prev => ({ 
-                              ...prev, 
-                              title: newTitle, 
-                              slug: currentPost ? prev.slug : generateSlug(newTitle) 
+                            setBlogFormData((prev) => ({
+                              ...prev,
+                              title: newTitle,
+                              slug: currentPost ? prev.slug : generateSlug(newTitle),
                             }));
                           }}
                           className="w-full bg-transparent border-none outline-none text-6xl font-bold tracking-tighter text-white placeholder:text-white/10"
@@ -2255,21 +1204,29 @@ published: true
                         <div className="flex flex-wrap gap-4">
                           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
                             <LinkIcon size={14} className="text-white/20" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Slug:</span>
-                            <input 
-                              type="text" 
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                              Slug:
+                            </span>
+                            <input
+                              type="text"
                               value={blogFormData.slug}
-                              onChange={(e) => setBlogFormData({ ...blogFormData, slug: e.target.value })}
+                              onChange={(e) =>
+                                setBlogFormData({ ...blogFormData, slug: e.target.value })
+                              }
                               className="bg-transparent border-none outline-none text-xs font-bold text-brand-primary w-48"
                             />
                           </div>
                           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
                             <Tag size={14} className="text-white/20" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Tags:</span>
-                            <input 
-                              type="text" 
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                              Tags:
+                            </span>
+                            <input
+                              type="text"
                               value={blogFormData.tags}
-                              onChange={(e) => setBlogFormData({ ...blogFormData, tags: e.target.value })}
+                              onChange={(e) =>
+                                setBlogFormData({ ...blogFormData, tags: e.target.value })
+                              }
                               placeholder="Comma separated"
                               className="bg-transparent border-none outline-none text-xs font-bold text-white/60 w-48"
                             />
@@ -2277,9 +1234,9 @@ published: true
                         </div>
                       </div>
 
-                      <BlogEditor 
-                        blocks={blocks} 
-                        setBlocks={setBlocks} 
+                      <BlogEditorWrapper
+                        blocks={blocks}
+                        setBlocks={setBlocks}
                         onAIAction={(id, action) => handleAIAction(action, id)}
                         activeTab={activeTab}
                         setBlogFormData={setBlogFormData}
@@ -2287,44 +1244,69 @@ published: true
                         setSeoData={setSeoData}
                       />
 
-                      {/* Settings Panel at Bottom of Editor for better flow */}
                       <div className="grid md:grid-cols-2 gap-8 border-t border-white/5 pt-12">
                         <div className="space-y-4">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Featured Visualization</label>
-                          <ImageUploadField 
-                            value={blogFormData.coverImage} 
-                            onChange={(url) => setBlogFormData(prev => ({ ...prev, coverImage: url }))}
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">
+                            Featured Visualization
+                          </label>
+                          <ImageUploadField
+                            value={blogFormData.coverImage}
+                            onChange={(url) =>
+                              setBlogFormData((prev) => ({ ...prev, coverImage: url }))
+                            }
                             onPathChange={(path) => setBlogCoverPath(path)}
                           />
                         </div>
                         <div className="space-y-4">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Narrative Status</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">
+                            Narrative Status
+                          </label>
                           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                            <Globe size={20} className={blogFormData.published ? "text-green-500" : "text-white/20"} />
+                            <Globe
+                              size={20}
+                              className={blogFormData.published ? "text-green-500" : "text-white/20"}
+                            />
                             <div className="flex-1">
-                              <div className="font-bold text-sm">{blogFormData.published ? "Visible to World" : "Internal Draft"}</div>
-                              <div className="text-[10px] text-white/20 uppercase tracking-widest">Visibility Control</div>
+                              <div className="font-bold text-sm text-white">
+                                {blogFormData.published ? "Visible to World" : "Internal Draft"}
+                              </div>
+                              <div className="text-[10px] text-white/20 uppercase tracking-widest">
+                                Visibility Control
+                              </div>
                             </div>
-                            <button 
+                            <button
                               type="button"
-                              onClick={() => setBlogFormData(prev => ({ ...prev, published: !prev.published }))}
-                              className={cn("w-12 h-6 rounded-full relative transition-all", blogFormData.published ? "bg-green-500" : "bg-white/10")}
+                              onClick={() =>
+                                setBlogFormData((prev) => ({ ...prev, published: !prev.published }))
+                              }
+                              className={cn(
+                                "w-12 h-6 rounded-full relative transition-all",
+                                blogFormData.published ? "bg-green-500" : "bg-white/10"
+                              )}
                             >
-                              <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", blogFormData.published ? "right-1" : "left-1")} />
+                              <div
+                                className={cn(
+                                  "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                                  blogFormData.published ? "right-1" : "left-1"
+                                )}
+                              />
                             </button>
                           </div>
                         </div>
                         <div className="space-y-4">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Pillar (Category)</label>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">
+                            Pillar (Category)
+                          </label>
                           <div className="grid grid-cols-2 gap-2">
-                            {BLOG_CATEGORIES.slice(0, 4).map(cat => (
+                            {BLOG_CATEGORIES.slice(0, 4).map((cat) => (
                               <button
                                 key={cat}
+                                type="button"
                                 onClick={() => setBlogFormData({ ...blogFormData, category: cat })}
                                 className={cn(
                                   "px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-widest transition-all",
-                                  blogFormData.category === cat 
-                                    ? "bg-brand-primary/10 border-brand-primary/40 text-brand-primary" 
+                                  blogFormData.category === cat
+                                    ? "bg-brand-primary/10 border-brand-primary/40 text-brand-primary"
                                     : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
                                 )}
                               >
@@ -2337,54 +1319,50 @@ published: true
                     </div>
                   </div>
 
-                  {/* Right Column: Live Preview & AI Assistant - Sticky Behavior */}
                   <div className="relative py-12">
                     <div className="sticky top-40 space-y-8">
-                    {isPreviewMode ? (
-                      <LiveBlogPreview postData={blogFormData} blocks={blocks} />
-                    ) : (
-                      <div className="max-w-md mx-auto space-y-8">
-                        <AIAssistant 
-                          onAction={handleAIAction} 
-                          isProcessing={isAIProcessing} 
-                          score={calculateContentScore()}
-                          issues={getContentIssues()}
-                        />
-                        <div className="p-10 bg-white/[0.02] border border-white/10 rounded-[40px] space-y-10">
-                          <h3 className="text-xl font-bold flex items-center gap-3">
-                            <Globe size={20} className="text-brand-primary" /> SEO Engine
-                          </h3>
-                          <SEOPanel 
-                            data={seoData} 
-                            setData={setSeoData} 
-                            blocks={blocks} 
-                            onAIAction={(id, action) => handleAIAction(action, id)} 
+                      {isPreviewMode ? (
+                        <LiveBlogPreview postData={blogFormData} blocks={blocks} />
+                      ) : (
+                        <div className="max-w-md mx-auto space-y-8">
+                          <AIWritingAssistant
+                            onAction={handleAIAction}
                             isProcessing={isAIProcessing}
                           />
+                          <div className="p-10 bg-white/[0.02] border border-white/10 rounded-[40px] space-y-10">
+                            <h3 className="text-xl font-bold flex items-center gap-3 text-white">
+                              <Globe size={20} className="text-brand-primary" /> SEO Engine
+                            </h3>
+                            <SEOPanel
+                              data={seoData}
+                              setData={setSeoData}
+                              blocks={blocks}
+                              onAIAction={(id, action) => handleAIAction(action, id)}
+                              isProcessing={isAIProcessing}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
               </>
             ) : (
-              <form onSubmit={handleSaveProject} className="glass-card p-12 rounded-[40px] border border-white/10 space-y-8">
+              <form
+                onSubmit={handleSaveProject}
+                className="glass-card p-12 rounded-[40px] border border-white/10 space-y-8"
+              >
                 <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-6">
-                    <h2 className="text-2xl font-bold">{currentProject ? "Edit Project" : "New Project"}</h2>
-                    <button 
-                      type="button"
-                      onClick={() => setShowSmartImport(true)}
-                      className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 transition-all flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest"
-                    >
-                      <Sparkles size={14} /> Smart Import
-                    </button>
-                  </div>
-                  <button 
+                  <h2 className="text-2xl font-bold text-white">
+                    {currentProject ? "Edit Project" : "New Project"}
+                  </h2>
+                  <button
                     type="button"
-                    onClick={() => { setIsEditing(false); setCurrentProject(null); }}
-                    className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all"
+                    onClick={() => {
+                      setIsEditing(false);
+                      setCurrentProject(null);
+                    }}
+                    className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 hover:text-white transition-all animate-none"
                   >
                     <X size={20} />
                   </button>
@@ -2392,43 +1370,53 @@ published: true
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Title</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={projectFormData.title}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, title: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, title: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Category</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={projectFormData.category}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, category: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, category: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                       required
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-white/40 ml-1">Description</label>
-                  <textarea 
+                  <textarea
                     value={projectFormData.description}
-                    onChange={(e) => setProjectFormData({ ...projectFormData, description: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none"
+                    onChange={(e) =>
+                      setProjectFormData({ ...projectFormData, description: e.target.value })
+                    }
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none text-white"
                     required
                   />
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-white/40 ml-1">Image URL (optional if uploading a file)</label>
+                    <label className="text-sm font-bold text-white/40 ml-1">
+                      Image URL (optional if uploading a file)
+                    </label>
                     <input
                       type="text"
                       value={projectFormData.image}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, image: e.target.value })}
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, image: e.target.value })
+                      }
                       placeholder="https://..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary mb-4 text-white"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white mb-4"
                     />
 
                     <label className="text-sm font-bold text-white/40 ml-1">Or Upload Image</label>
@@ -2464,112 +1452,154 @@ published: true
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Video URL (Optional)</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={projectFormData.video}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, video: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, video: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Project Slug (URL)</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={projectFormData.slug}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, slug: e.target.value })}
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, slug: e.target.value })
+                      }
                       placeholder="e.g. ecosystem-alpha"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Project Date</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       value={projectFormData.projectDate}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, projectDate: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, projectDate: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-white/40 ml-1">Gallery Images (Comma separated URLs)</label>
-                    <textarea 
+                    <label className="text-sm font-bold text-white/40 ml-1">
+                      Gallery Images (Comma separated URLs)
+                    </label>
+                    <textarea
                       value={projectFormData.gallery}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, gallery: e.target.value })}
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, gallery: e.target.value })
+                      }
                       placeholder="https://img1.jpg, https://img2.jpg"
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none font-mono text-sm"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-24 resize-none font-mono text-sm text-white"
                     />
                   </div>
                   <div className="space-y-2 flex flex-col justify-center">
                     <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                      <Star size={20} className={projectFormData.featured ? "text-yellow-500" : "text-white/20"} />
-                      <span className="font-bold">Featured Project</span>
-                      <button 
+                      <Star
+                        size={20}
+                        className={projectFormData.featured ? "text-yellow-500" : "text-white/20"}
+                      />
+                      <span className="font-bold text-white">Featured Project</span>
+                      <button
                         type="button"
-                        onClick={() => setProjectFormData({ ...projectFormData, featured: !projectFormData.featured })}
-                        className={cn("w-12 h-6 rounded-full relative ml-auto transition-all", projectFormData.featured ? "bg-brand-primary" : "bg-white/10")}
+                        onClick={() =>
+                          setProjectFormData({
+                            ...projectFormData,
+                            featured: !projectFormData.featured,
+                          })
+                        }
+                        className={cn(
+                          "w-12 h-6 rounded-full relative ml-auto transition-all",
+                          projectFormData.featured ? "bg-brand-primary" : "bg-white/10"
+                        )}
                       >
-                        <div className={cn("absolute top-1 w-4 h-4 rounded-full bg-white transition-all", projectFormData.featured ? "right-1" : "left-1")} />
+                        <div
+                          className={cn(
+                            "absolute top-1 w-4 h-4 rounded-full bg-white transition-all",
+                            projectFormData.featured ? "right-1" : "left-1"
+                          )}
+                        />
                       </button>
                     </div>
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-white/40 ml-1">Technologies (comma separated)</label>
-                    <input 
-                      type="text" 
+                    <label className="text-sm font-bold text-white/40 ml-1">
+                      Technologies (comma separated)
+                    </label>
+                    <input
+                      type="text"
                       value={projectFormData.tech}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, tech: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, tech: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">Project Link</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={projectFormData.link}
-                      onChange={(e) => setProjectFormData({ ...projectFormData, link: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setProjectFormData({ ...projectFormData, link: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                 </div>
 
                 {/* Startup Product Fields */}
                 <div className="p-8 rounded-3xl bg-brand-primary/5 border border-brand-primary/10 space-y-8">
-                  <h3 className="text-lg font-bold text-brand-primary">Product Showcase Metadata</h3>
+                  <h3 className="text-lg font-bold text-brand-primary">
+                    Product Showcase Metadata
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-white/40 ml-1">Product Vision</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={projectFormData.vision}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, vision: e.target.value })}
+                        onChange={(e) =>
+                          setProjectFormData({ ...projectFormData, vision: e.target.value })
+                        }
                         placeholder="To become the decentralized nervous system..."
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-bold text-white/40 ml-1">Market Impact</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={projectFormData.impact}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, impact: e.target.value })}
+                        onChange={(e) =>
+                          setProjectFormData({ ...projectFormData, impact: e.target.value })
+                        }
                         placeholder="Automating cross-platform intelligence..."
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                       />
                     </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-white/40 ml-1">Development Status</label>
-                      <select 
+                      <label className="text-sm font-bold text-white/40 ml-1">
+                        Development Status
+                      </label>
+                      <select
                         value={projectFormData.status}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, status: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary"
+                        onChange={(e) =>
+                          setProjectFormData({ ...projectFormData, status: e.target.value })
+                        }
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary text-white"
                       >
                         <option value="Live / Scale">Live / Scale</option>
                         <option value="Beta Access">Beta Access</option>
@@ -2581,40 +1611,55 @@ published: true
                   </div>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-white/40 ml-1">Product Metrics (JSON)</label>
-                      <textarea 
+                      <label className="text-sm font-bold text-white/40 ml-1">
+                        Product Metrics (JSON)
+                      </label>
+                      <textarea
                         value={projectFormData.metrics}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, metrics: e.target.value })}
-                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32"
+                        onChange={(e) =>
+                          setProjectFormData({ ...projectFormData, metrics: e.target.value })
+                        }
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32 text-white"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-white/40 ml-1">Evolution Timeline (JSON Array)</label>
-                      <textarea 
+                      <label className="text-sm font-bold text-white/40 ml-1">
+                        Evolution Timeline (JSON Array)
+                      </label>
+                      <textarea
                         value={projectFormData.evolution}
-                        onChange={(e) => setProjectFormData({ ...projectFormData, evolution: e.target.value })}
-                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32"
+                        onChange={(e) =>
+                          setProjectFormData({ ...projectFormData, evolution: e.target.value })
+                        }
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary font-mono text-xs h-32 text-white"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-white/40 ml-1">Case Study Content (Markdown)</label>
-                  <textarea 
+                  <label className="text-sm font-bold text-white/40 ml-1">
+                    Case Study Content (Markdown)
+                  </label>
+                  <textarea
                     value={projectFormData.caseStudy}
-                    onChange={(e) => setProjectFormData({ ...projectFormData, caseStudy: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-64 resize-none font-mono"
+                    onChange={(e) =>
+                      setProjectFormData({ ...projectFormData, caseStudy: e.target.value })
+                    }
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-brand-primary h-64 resize-none font-mono text-white"
                   />
                 </div>
                 <div className="flex justify-end gap-4">
-                  <button 
+                  <button
                     type="button"
-                    onClick={() => { setIsEditing(false); setCurrentProject(null); }}
+                    onClick={() => {
+                      setIsEditing(false);
+                      setCurrentProject(null);
+                    }}
                     className="px-8 py-4 bg-white/5 border border-white/10 text-white/40 rounded-2xl font-bold hover:text-white transition-colors"
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     type="submit"
                     disabled={isSaving}
                     className={cn(
@@ -2622,8 +1667,16 @@ published: true
                       isSaving ? "opacity-70 cursor-not-allowed" : "hover:bg-brand-primary/90"
                     )}
                   >
-                    {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : null}
-                    {isSaving ? (currentProject ? "Updating..." : "Creating...") : (currentProject ? "Update Project" : "Create Project")}
+                    {isSaving ? (
+                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    ) : null}
+                    {isSaving
+                      ? currentProject
+                        ? "Updating..."
+                        : "Creating..."
+                      : currentProject
+                      ? "Update Project"
+                      : "Create Project"}
                   </button>
                 </div>
               </form>
@@ -2633,102 +1686,160 @@ published: true
           <div className="space-y-12">
             {activeTab === "dashboard" && (
               <div className="space-y-12">
-                {/* System Health Monitor */}
                 <div className="p-8 rounded-[40px] glass-card border border-white/10 overflow-hidden relative group">
                   <div className="absolute inset-0 bg-brand-primary/[0.01] pointer-events-none" />
                   <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
                     <div className="flex items-center gap-6 text-left">
-                      <div className={cn(
-                        "w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-500",
-                        systemStatus.isQuotaExceeded ? "bg-red-500/20 text-red-500 animate-pulse" : "bg-brand-primary/10 text-brand-primary"
-                      )}>
-                        {systemStatus.isQuotaExceeded ? <ShieldAlert size={32} /> : <Zap size={32} />}
+                      <div
+                        className={cn(
+                          "w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-500",
+                          systemStatus.isQuotaExceeded
+                            ? "bg-red-500/20 text-red-500 animate-pulse"
+                            : "bg-brand-primary/10 text-brand-primary"
+                        )}
+                      >
+                        {systemStatus.isQuotaExceeded ? (
+                          <ShieldAlert size={32} />
+                        ) : (
+                          <Zap size={32} />
+                        )}
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-3">
-                          <h3 className="text-xl font-bold">System Integrity</h3>
-                          <span className={cn(
-                            "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
-                            systemStatus.isQuotaExceeded ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"
-                          )}>
+                          <h3 className="text-xl font-bold text-white">System Integrity</h3>
+                          <span
+                            className={cn(
+                              "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
+                              systemStatus.isQuotaExceeded
+                                ? "bg-red-500/20 text-red-400"
+                                : "bg-green-500/20 text-green-400"
+                            )}
+                          >
                             {systemStatus.isQuotaExceeded ? "Degraded" : "Optimal"}
                           </span>
                         </div>
                         <p className="text-white/40 text-sm">
-                          {systemStatus.isQuotaExceeded 
-                            ? "Data visibility restricted due to Firestore daily quota limits." 
-                            : `Backend connected. Last heartbeat: ${systemStatus.lastSync ? systemStatus.lastSync.toLocaleTimeString() : 'Initializing...'}`}
+                          {systemStatus.isQuotaExceeded
+                            ? "Data visibility restricted due to Firestore daily quota limits."
+                            : `Backend connected. Last sync: ${
+                                systemStatus.lastSync
+                                  ? systemStatus.lastSync.toLocaleTimeString()
+                                  : "Initializing..."
+                              }`}
                         </p>
                       </div>
                     </div>
-                    
-                    <button 
-                      onClick={() => window.location.reload()}
-                      className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold hover:bg-white/10 transition-all flex items-center gap-3"
+
+                    <button
+                      onClick={forceRefresh}
+                      className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold hover:bg-white/10 transition-all flex items-center gap-3 text-white"
                     >
                       <History size={18} />
                       Refresh Sync
                     </button>
                   </div>
-                  
+
                   {systemStatus.isQuotaExceeded && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
+                      animate={{ opacity: 1, height: "auto" }}
                       className="mt-8 p-6 rounded-2xl bg-red-500/10 border border-red-500/20 flex gap-4 items-start text-left"
                     >
                       <AlertCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
                       <div className="space-y-2">
-                        <p className="text-sm font-bold text-red-400">Action Required: Read Limit Reached</p>
+                        <p className="text-sm font-bold text-red-400">
+                          Action Required: Read Limit Reached
+                        </p>
                         <p className="text-xs text-white/40 leading-relaxed">
-                          Your Firebase free tier (Spark plan) has reached its daily limit of 50,000 reads. 
-                          New content will not load until the quota resets at midnight or you upgrade to the Blaze plan.
+                          Your Firebase free tier has reached its daily limit of 50,000 reads.
+                          New content will not load until the quota resets at midnight.
                         </p>
                       </div>
                     </motion.div>
                   )}
                 </div>
+
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
-                  <AdminStatCard 
-                    label="Total Posts" 
-                    value={posts.length} 
-                    icon={<FileText size={24} />} 
-                    trend={posts.filter(p => {
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                      const createdAt = p.createdAt?.seconds ? new Date(p.createdAt.seconds * 1000) : new Date(p.createdAt);
-                      return createdAt > sevenDaysAgo;
-                    }).length > 0 ? `+${posts.filter(p => {
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                      const createdAt = p.createdAt?.seconds ? new Date(p.createdAt.seconds * 1000) : new Date(p.createdAt);
-                      return createdAt > sevenDaysAgo;
-                    }).length} new` : undefined} 
+                  <AdminStatCard
+                    label="Total Posts"
+                    value={posts.length}
+                    icon={<FileText size={24} />}
+                    trend={
+                      posts.filter((p) => {
+                        const sevenDaysAgo = new Date();
+                        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                        const createdAt = p.createdAt?.seconds
+                          ? new Date(p.createdAt.seconds * 1000)
+                          : new Date(p.createdAt);
+                        return createdAt > sevenDaysAgo;
+                      }).length > 0
+                        ? `+${
+                            posts.filter((p) => {
+                              const sevenDaysAgo = new Date();
+                              sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                              const createdAt = p.createdAt?.seconds
+                                ? new Date(p.createdAt.seconds * 1000)
+                                : new Date(p.createdAt);
+                              return createdAt > sevenDaysAgo;
+                            }).length
+                          } new`
+                        : undefined
+                    }
                   />
-                  <AdminStatCard label="Total Views" value={posts.reduce((acc, p) => acc + (p.views || 0), 0)} icon={<Eye size={24} />} trend={posts.some(p => p.views > 0) ? "Growth" : undefined} />
-                  <AdminStatCard label="Messages" value={messages.length} icon={<MessageSquare size={24} />} trend={messages.filter(m => m.status !== 'read').length > 0 ? `${messages.filter(m => m.status !== 'read').length} New` : undefined} />
-                  <AdminStatCard 
-                    label="Subscribers" 
-                    value={subscribers.length} 
-                    icon={<Mail size={24} />} 
-                    trend={subscribers.filter(s => {
-                      const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
-                      return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                    }).length > 0 ? `+${subscribers.filter(s => {
-                      const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
-                      return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-                    }).length} weekly` : undefined}
+                  <AdminStatCard
+                    label="Total Views"
+                    value={posts.reduce((acc, p) => acc + (p.views || 0), 0)}
+                    icon={<Eye size={24} />}
+                    trend={posts.some((p) => p.views > 0) ? "Growth" : undefined}
+                  />
+                  <AdminStatCard
+                    label="Messages"
+                    value={messages.length}
+                    icon={<MessageSquare size={24} />}
+                    trend={
+                      messages.filter((m) => m.status !== "read").length > 0
+                        ? `${messages.filter((m) => m.status !== "read").length} New`
+                        : undefined
+                    }
+                  />
+                  <AdminStatCard
+                    label="Subscribers"
+                    value={subscribers.length}
+                    icon={<Mail size={24} />}
+                    trend={
+                      subscribers.filter((s) => {
+                        const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
+                        return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                      }).length > 0
+                        ? `+${
+                            subscribers.filter((s) => {
+                              const date = s.createdAt?.toDate ? s.createdAt.toDate() : new Date(s.createdAt);
+                              return date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                            }).length
+                          } weekly`
+                        : undefined
+                    }
                   />
                   <AdminStatCard label="Projects" value={projects.length} icon={<Layers size={24} />} />
-                  
+
                   {/* Phase 3 Diagnostic Button */}
-                  <div className="p-8 rounded-[40px] bg-brand-primary/10 border border-brand-primary/20 flex flex-col items-center justify-center text-center gap-4 group hover:bg-brand-primary/20 transition-all cursor-pointer" onClick={testConnection}>
-                    <div className={cn("w-12 h-12 rounded-2xl bg-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-all", isAuditing && "animate-spin")}>
+                  <div
+                    className="p-8 rounded-[40px] bg-brand-primary/10 border border-brand-primary/20 flex flex-col items-center justify-center text-center gap-4 group hover:bg-brand-primary/20 transition-all cursor-pointer"
+                    onClick={testConnection}
+                  >
+                    <div
+                      className={cn(
+                        "w-12 h-12 rounded-2xl bg-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-110 transition-all",
+                        isAuditing && "animate-spin"
+                      )}
+                    >
                       <Shield size={24} />
                     </div>
                     <div>
-                      <div className="text-xl font-bold">Audit</div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary/60">Connection</div>
+                      <div className="text-xl font-bold text-white">Audit</div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary/60">
+                        Connection
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2736,32 +1847,43 @@ published: true
                 <div className="grid lg:grid-cols-2 gap-12">
                   <div className="glass-card p-10 rounded-[40px] border border-white/10">
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold">Popular Posts</h3>
+                      <h3 className="text-xl font-bold text-white">Popular Posts</h3>
                       <BarChart3 size={20} className="text-white/20" />
                     </div>
                     <div className="space-y-6">
-                      {posts.sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5).map((post, i) => (
-                        <div key={i} className="flex items-center justify-between group cursor-pointer" onClick={() => handleEditBlog(post)}>
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20 font-bold">
-                              {i + 1}
+                      {posts
+                        .sort((a, b) => (b.views || 0) - (a.views || 0))
+                        .slice(0, 5)
+                        .map((post, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center justify-between group cursor-pointer"
+                            onClick={() => handleEditBlog(post)}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20 font-bold">
+                                {i + 1}
+                              </div>
+                              <div>
+                                <div className="font-bold text-white/80 group-hover:text-brand-primary transition-colors line-clamp-1">
+                                  {post.title}
+                                </div>
+                                <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                                  {post.category}
+                                </div>
+                              </div>
                             </div>
-                            <div>
-                              <div className="font-bold text-white/80 group-hover:text-brand-primary transition-colors line-clamp-1">{post.title}</div>
-                              <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">{post.category}</div>
+                            <div className="flex items-center gap-2 text-white/40 font-bold text-sm">
+                              <Eye size={14} /> {post.views || 0}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-white/40 font-bold text-sm">
-                            <Eye size={14} /> {post.views || 0}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
 
                   <div className="glass-card p-10 rounded-[40px] border border-white/10">
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold">Recent Activity</h3>
+                      <h3 className="text-xl font-bold text-white">Recent Activity</h3>
                       <History size={20} className="text-white/20" />
                     </div>
                     <div className="space-y-8">
@@ -2769,8 +1891,13 @@ published: true
                         <div key={i} className="flex gap-4">
                           <div className="w-2 h-2 rounded-full bg-brand-primary mt-2 shrink-0" />
                           <div>
-                            <div className="text-sm text-white/80"><span className="font-bold text-white">{msg.name}</span> sent a message about <span className="font-bold text-white">{msg.subject}</span></div>
-                            <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">{formatDate(msg.timestamp)}</div>
+                            <div className="text-sm text-white/80">
+                              <span className="font-bold text-white">{msg.name}</span> sent a
+                              message about <span className="font-bold text-white">{msg.subject}</span>
+                            </div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">
+                              {formatDate(msg.timestamp)}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -2784,13 +1911,15 @@ published: true
               <div className="space-y-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-3xl">
                   <div className="flex flex-wrap gap-2">
-                    {(['all', 'published', 'draft', 'scheduled', 'featured'] as const).map((f) => (
-                      <button 
+                    {(["all", "published", "draft", "scheduled", "featured"] as const).map((f) => (
+                      <button
                         key={f}
                         onClick={() => setBlogFilter(f)}
                         className={cn(
                           "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
-                          blogFilter === f ? "bg-brand-primary text-white" : "text-white/40 hover:text-white hover:bg-white/5"
+                          blogFilter === f
+                            ? "bg-brand-primary text-white"
+                            : "text-white/40 hover:text-white hover:bg-white/5"
                         )}
                       >
                         {f}
@@ -2799,71 +1928,94 @@ published: true
                   </div>
                   <div className="relative w-full md:w-64">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Search posts..."
                       value={blogSearchQuery}
                       onChange={(e) => setBlogSearchQuery(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm outline-none focus:border-brand-primary"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-sm outline-none focus:border-brand-primary text-white"
                     />
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {posts
-                    .filter(p => {
+                    .filter((p) => {
                       const matchesFilter = (() => {
-                        if (blogFilter === 'published') return p.published;
-                        if (blogFilter === 'draft') return !p.published;
-                        if (blogFilter === 'featured') return p.featured;
-                        if (blogFilter === 'scheduled') return p.scheduledAt && new Date(p.scheduledAt) > new Date();
+                        if (blogFilter === "published") return p.published;
+                        if (blogFilter === "draft") return !p.published;
+                        if (blogFilter === "featured") return p.featured;
+                        if (blogFilter === "scheduled")
+                          return p.scheduledAt && new Date(p.scheduledAt) > new Date();
                         return true;
                       })();
 
-                      const matchesSearch = (p.title || "").toLowerCase().includes(blogSearchQuery.toLowerCase()) || 
-                                           (p.category || "").toLowerCase().includes(blogSearchQuery.toLowerCase());
+                      const matchesSearch =
+                        (p.title || "").toLowerCase().includes(blogSearchQuery.toLowerCase()) ||
+                        (p.category || "").toLowerCase().includes(blogSearchQuery.toLowerCase());
 
                       return matchesFilter && matchesSearch;
                     })
                     .map((post) => (
-                    <div key={post.id} className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all flex flex-col">
-                      <div className="aspect-video relative overflow-hidden">
-                        <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <div className="absolute top-4 left-4 flex gap-2">
-                          {post.published ? (
-                            <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Published</span>
-                          ) : (
-                            <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Draft</span>
-                          )}
-                          {post.featured && (
-                            <span className="px-3 py-1 rounded-full bg-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Featured</span>
-                          )}
+                      <div
+                        key={post.id}
+                        className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all flex flex-col"
+                      >
+                        <div className="aspect-video relative overflow-hidden">
+                          <img
+                            src={post.coverImage}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute top-4 left-4 flex gap-2">
+                            {post.published ? (
+                              <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                                Published
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-500 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                                Draft
+                              </span>
+                            )}
+                            {post.featured && (
+                              <span className="px-3 py-1 rounded-full bg-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                                Featured
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="p-8 flex-1 flex flex-col">
+                          <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">
+                            {post.category || "Technology"}
+                          </div>
+                          <h3 className="text-xl font-bold mb-4 line-clamp-2 text-white">
+                            {post.title}
+                          </h3>
+                          <div className="flex items-center gap-4 text-white/40 text-xs mb-8">
+                            <span className="flex items-center gap-1">
+                              <Calendar size={12} /> {formatDate(post.createdAt)}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Eye size={12} /> {post.views || 0}
+                            </span>
+                          </div>
+                          <div className="mt-auto flex gap-3 pt-6 border-t border-white/5">
+                            <button
+                              onClick={() => handleEditBlog(post)}
+                              className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                            >
+                              <Edit size={14} /> Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(post.id, "blogPosts")}
+                              className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="p-8 flex-1 flex flex-col">
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">{post.category || "Technology"}</div>
-                        <h3 className="text-xl font-bold mb-4 line-clamp-2">{post.title}</h3>
-                        <div className="flex items-center gap-4 text-white/40 text-xs mb-8">
-                          <span className="flex items-center gap-1"><Calendar size={12} /> {formatDate(post.createdAt)}</span>
-                          <span className="flex items-center gap-1"><Eye size={12} /> {post.views || 0}</span>
-                        </div>
-                        <div className="mt-auto flex gap-3 pt-6 border-t border-white/5">
-                          <button 
-                            onClick={() => handleEditBlog(post)}
-                            className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 font-bold text-xs hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                          >
-                            <Edit size={14} /> Edit
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(post.id, "blogPosts")}
-                            className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             )}
@@ -2871,15 +2023,24 @@ published: true
             {activeTab === "projects" && (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {projects.map((project) => (
-                  <div key={project.id} className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all">
+                  <div
+                    key={project.id}
+                    className="glass-card rounded-[40px] border border-white/10 overflow-hidden group hover:border-brand-primary/30 transition-all"
+                  >
                     <div className="aspect-video relative overflow-hidden">
-                      <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
                     <div className="p-8">
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">{project.category}</div>
-                      <h3 className="text-xl font-bold mb-6">{project.title}</h3>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2">
+                        {project.category}
+                      </div>
+                      <h3 className="text-xl font-bold mb-6 text-white">{project.title}</h3>
                       <div className="flex gap-3 pt-6 border-t border-white/5">
-                        <button 
+                        <button
                           onClick={() => {
                             setCurrentProject(project);
                             setProjectFormData({
@@ -2888,18 +2049,28 @@ published: true
                               description: project.description,
                               image: project.image,
                               video: project.video || "",
-                              tech: Array.isArray(project.tech) ? project.tech.join(", ") : project.tech,
+                              tech: Array.isArray(project.tech)
+                                ? project.tech.join(", ")
+                                : project.tech,
                               caseStudy: project.caseStudy || "",
                               link: project.link || "",
                               vision: project.vision || "",
                               impact: project.impact || "",
                               status: project.status || "Live / Scale",
-                              metrics: typeof project.metrics === 'object' ? JSON.stringify(project.metrics, null, 2) : project.metrics || "{}",
-                              evolution: typeof project.evolution === 'object' ? JSON.stringify(project.evolution, null, 2) : project.evolution || "[]",
+                              metrics:
+                                typeof project.metrics === "object"
+                                  ? JSON.stringify(project.metrics, null, 2)
+                                  : project.metrics || "{}",
+                              evolution:
+                                typeof project.evolution === "object"
+                                  ? JSON.stringify(project.evolution, null, 2)
+                                  : project.evolution || "[]",
                               slug: project.slug || "",
                               featured: project.featured || false,
                               projectDate: project.projectDate || "",
-                              gallery: Array.isArray(project.gallery) ? project.gallery.join(", ") : project.gallery || ""
+                              gallery: Array.isArray(project.gallery)
+                                ? project.gallery.join(", ")
+                                : project.gallery || "",
                             });
                             setProjectImagePath(project.imagePath || "");
                             setIsEditing(true);
@@ -2908,7 +2079,7 @@ published: true
                         >
                           <Edit size={14} /> Edit
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(project.id, "projects")}
                           className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
                         >
@@ -2923,44 +2094,55 @@ published: true
 
             {activeTab === "updates" && (
               <div className="space-y-8">
-                <form onSubmit={handleSaveUpdate} className="glass-card p-10 rounded-[40px] border border-white/10 space-y-6">
-                  <h3 className="text-xl font-bold">{currentUpdate ? "Edit Update" : "Publish Update"}</h3>
+                <form
+                  onSubmit={handleSaveUpdate}
+                  className="glass-card p-10 rounded-[40px] border border-white/10 space-y-6"
+                >
+                  <h3 className="text-xl font-bold text-white">
+                    {currentUpdate ? "Edit Update" : "Publish Update"}
+                  </h3>
                   <div className="grid md:grid-cols-2 gap-6">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={updateFormData.title}
-                      onChange={(e) => setUpdateFormData({ ...updateFormData, title: e.target.value })}
+                      onChange={(e) =>
+                        setUpdateFormData({ ...updateFormData, title: e.target.value })
+                      }
                       placeholder="Update Title"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-white"
                       required
                     />
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       value={updateFormData.date}
                       onChange={(e) => setUpdateFormData({ ...updateFormData, date: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-white"
                       required
                     />
                   </div>
-                  <textarea 
+                  <textarea
                     value={updateFormData.text}
                     onChange={(e) => setUpdateFormData({ ...updateFormData, text: e.target.value })}
                     placeholder="What's new? (Short update text)"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary h-24 resize-none"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary h-24 resize-none text-white"
                     required
                   />
                   <div className="grid md:grid-cols-2 gap-6">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={updateFormData.relatedProject}
-                      onChange={(e) => setUpdateFormData({ ...updateFormData, relatedProject: e.target.value })}
+                      onChange={(e) =>
+                        setUpdateFormData({ ...updateFormData, relatedProject: e.target.value })
+                      }
                       placeholder="Related Project (Optional)"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-white"
                     />
-                    <select 
+                    <select
                       value={updateFormData.statusTag}
-                      onChange={(e) => setUpdateFormData({ ...updateFormData, statusTag: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary"
+                      onChange={(e) =>
+                        setUpdateFormData({ ...updateFormData, statusTag: e.target.value })
+                      }
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-brand-primary text-white"
                     >
                       <option value="Building">Building</option>
                       <option value="Shipped">Shipped</option>
@@ -2970,30 +2152,79 @@ published: true
                   </div>
                   <div className="flex justify-end gap-4">
                     {currentUpdate && (
-                      <button type="button" onClick={() => { setCurrentUpdate(null); setUpdateFormData({ title: "", text: "", date: new Date().toISOString().split('T')[0], relatedProject: "", statusTag: "Building" }); }} className="px-6 py-3 rounded-xl bg-white/5 text-white/40 font-bold hover:text-white">Cancel</button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentUpdate(null);
+                          setUpdateFormData({
+                            title: "",
+                            text: "",
+                            date: new Date().toISOString().split("T")[0],
+                            relatedProject: "",
+                            statusTag: "Building",
+                          });
+                        }}
+                        className="px-6 py-3 rounded-xl bg-white/5 text-white/40 font-bold hover:text-white"
+                      >
+                        Cancel
+                      </button>
                     )}
-                    <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-xl bg-brand-primary text-white font-bold hover:bg-brand-primary/90 disabled:opacity-50 flex items-center gap-2">
-                      {isSaving && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
+                    <button
+                      type="submit"
+                      disabled={isSaving}
+                      className="px-6 py-3 rounded-xl bg-brand-primary text-white font-bold hover:bg-brand-primary/90 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isSaving && (
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      )}
                       {currentUpdate ? "Update" : "Publish"}
                     </button>
                   </div>
                 </form>
 
                 <div className="space-y-4">
-                  {updates.map(update => (
-                    <div key={update.id} className="glass-card p-6 rounded-3xl border border-white/10 flex items-start justify-between group">
+                  {updates.map((update) => (
+                    <div
+                      key={update.id}
+                      className="glass-card p-6 rounded-3xl border border-white/10 flex items-start justify-between group"
+                    >
                       <div>
                         <div className="flex items-center gap-3 mb-2">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary px-2 py-1 bg-brand-primary/10 rounded-md">{update.statusTag}</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary px-2 py-1 bg-brand-primary/10 rounded-md">
+                            {update.statusTag}
+                          </span>
                           <span className="text-white/40 text-xs">{update.date}</span>
                         </div>
-                        <h4 className="font-bold text-lg">{update.title}</h4>
+                        <h4 className="font-bold text-lg text-white">{update.title}</h4>
                         <p className="text-white/60 text-sm mt-1">{update.text}</p>
-                        {update.relatedProject && <div className="text-xs text-white/30 mt-2 flex items-center gap-1"><Layers size={12} /> {update.relatedProject}</div>}
+                        {update.relatedProject && (
+                          <div className="text-xs text-white/30 mt-2 flex items-center gap-1">
+                            <Layers size={12} /> {update.relatedProject}
+                          </div>
+                        )}
                       </div>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => { setCurrentUpdate(update); setUpdateFormData({ title: update.title, text: update.text, date: update.date, relatedProject: update.relatedProject || "", statusTag: update.statusTag || "Building" }); }} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white"><Edit size={14} /></button>
-                        <button onClick={() => handleDelete(update.id, "updates")} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-red-500"><Trash2 size={14} /></button>
+                        <button
+                          onClick={() => {
+                            setCurrentUpdate(update);
+                            setUpdateFormData({
+                              title: update.title,
+                              text: update.text,
+                              date: update.date,
+                              relatedProject: update.relatedProject || "",
+                              statusTag: update.statusTag || "Building",
+                            });
+                          }}
+                          className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white"
+                        >
+                          <Edit size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(update.id, "updates")}
+                          className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-red-500"
+                        >
+                          <Trash2 size={14} />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -3004,29 +2235,36 @@ published: true
             {activeTab === "messages" && (
               <div className="space-y-6">
                 {messages.map((msg) => (
-                  <div key={msg.id} className="glass-card p-8 rounded-[40px] border border-white/10 group hover:border-brand-primary/30 transition-all">
+                  <div
+                    key={msg.id}
+                    className="glass-card p-8 rounded-[40px] border border-white/10 group hover:border-brand-primary/30 transition-all"
+                  >
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary font-bold text-xl">
-                          {msg.name[0]}
+                          {msg.name ? msg.name[0] : "A"}
                         </div>
                         <div>
-                          <h3 className="font-bold text-lg">{msg.name}</h3>
+                          <h3 className="font-bold text-lg text-white">{msg.name}</h3>
                           <p className="text-white/40 text-sm">{msg.email}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-6">
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">{formatDate(msg.timestamp)}</div>
-                        <button 
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/20">
+                          {formatDate(msg.timestamp)}
+                        </div>
+                        <button
                           onClick={() => handleToggleMessageStatus(msg.id, msg.status)}
                           className={cn(
                             "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
-                            msg.status === 'read' ? "bg-white/5 text-white/20 hover:text-white" : "bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20"
+                            msg.status === "read"
+                              ? "bg-white/5 text-white/20 hover:text-white"
+                              : "bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20"
                           )}
                         >
-                          {msg.status === 'read' ? 'Mark Unread' : 'Mark Read'}
+                          {msg.status === "read" ? "Mark Unread" : "Mark Read"}
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(msg.id, "contacts")}
                           className="p-3 rounded-xl bg-white/5 border border-white/10 text-white/20 hover:text-red-500 transition-all"
                         >
@@ -3036,8 +2274,10 @@ published: true
                     </div>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{msg.subject}</div>
-                        {msg.status !== 'read' && (
+                        <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">
+                          {msg.subject}
+                        </div>
+                        {msg.status !== "read" && (
                           <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                         )}
                       </div>
@@ -3047,14 +2287,17 @@ published: true
                 ))}
               </div>
             )}
+
             {activeTab === "subscribers" && (
               <div className="space-y-12">
                 <div className="flex justify-between items-center bg-white/5 p-8 rounded-[40px] border border-white/10">
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">Subscriber Base</h3>
-                    <p className="text-white/40 text-sm">{subscribers.length} innovators following your journey.</p>
+                    <p className="text-white/40 text-sm">
+                      {subscribers.length} innovators following your journey.
+                    </p>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setShowComposeModal(true)}
                     className="px-8 py-4 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white transition-all flex items-center gap-2"
                   >
@@ -3064,18 +2307,25 @@ published: true
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {subscribers.map((sub) => (
-                    <div key={sub.id} className="glass-card p-8 rounded-[40px] border border-white/10 flex items-center justify-between group">
+                    <div
+                      key={sub.id}
+                      className="glass-card p-8 rounded-[40px] border border-white/10 flex items-center justify-between group"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20">
                           <Mail size={18} />
                         </div>
                         <div>
-                          <div className="font-bold text-white/80 group-hover:text-white transition-colors">{sub.email}</div>
-                          <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">Joined {formatDate(sub.createdAt)}</div>
+                          <div className="font-bold text-white/80 group-hover:text-white transition-colors">
+                            {sub.email}
+                          </div>
+                          <div className="text-[10px] font-bold uppercase tracking-widest text-white/20 mt-1">
+                            Joined {formatDate(sub.createdAt)}
+                          </div>
                         </div>
                       </div>
-                      <button 
-                        onClick={() => handleDelete(sub.id, "newsletter")}
+                      <button
+                        onClick={() => handleDelete(sub.id, "subscribers")}
                         className="p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity text-white/20 hover:text-red-500"
                       >
                         <Trash2 size={16} />
@@ -3086,33 +2336,45 @@ published: true
 
                 {campaigns.length > 0 && (
                   <div className="space-y-6">
-                    <h3 className="text-xl font-bold text-white/60 px-2 uppercase tracking-widest text-[11px]">Campaign History</h3>
+                    <h3 className="text-white/60 px-2 uppercase tracking-widest text-[11px] font-bold">
+                      Campaign History
+                    </h3>
                     <div className="grid gap-4">
                       {campaigns.map((camp) => (
-                        <div key={camp.id} className="glass-card p-8 rounded-[32px] border border-white/5 flex items-center justify-between group">
+                        <div
+                          key={camp.id}
+                          className="glass-card p-8 rounded-[32px] border border-white/5 flex items-center justify-between group"
+                        >
                           <div className="flex items-center gap-6">
-                            <div className={cn(
-                              "w-12 h-12 rounded-2xl flex items-center justify-center",
-                              camp.status === 'completed' ? "bg-green-500/10 text-green-500" : "bg-brand-primary/10 text-brand-primary animate-pulse"
-                            )}>
-                              {camp.status === 'completed' ? <CheckCircle2 size={20} /> : <Zap size={20} />}
+                            <div
+                              className={cn(
+                                "w-12 h-12 rounded-2xl flex items-center justify-center",
+                                camp.status === "completed"
+                                  ? "bg-green-500/10 text-green-500"
+                                  : "bg-brand-primary/10 text-brand-primary animate-pulse"
+                              )}
+                            >
+                              <Mail size={20} />
                             </div>
                             <div>
-                              <div className="font-bold text-white mb-1">{camp.subject}</div>
-                              <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-white/20">
-                                <span>{formatDate(camp.createdAt)}</span>
-                                <div className="w-1 h-1 rounded-full bg-white/10" />
-                                <span>Sent: {camp.sentCount} / {camp.totalSubscribers}</span>
+                              <h4 className="font-bold text-white group-hover:text-brand-primary transition-colors">
+                                {camp.subject}
+                              </h4>
+                              <div className="flex items-center gap-4 text-xs text-white/40 mt-1">
+                                <span className="flex items-center gap-1">
+                                  <Clock size={12} /> {formatDate(camp.createdAt)}
+                                </span>
+                                <span>•</span>
+                                <span>Recipients: {camp.recipientCount || 0}</span>
                               </div>
                             </div>
                           </div>
-                          {camp.status === 'processing' && (
-                            <button 
-                              disabled={isSending}
+                          {camp.status !== "completed" && (
+                            <button
                               onClick={() => handleSendNewsletter(camp.id)}
-                              className="px-6 py-3 rounded-xl bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-black transition-all"
+                              className="px-6 py-3 bg-brand-primary/10 text-brand-primary rounded-xl font-bold text-xs hover:bg-brand-primary hover:text-black transition-all flex items-center gap-2"
                             >
-                              Resume Next Batch
+                              <Zap size={12} /> Resume Dispatch
                             </button>
                           )}
                         </div>
@@ -3122,115 +2384,21 @@ published: true
                 )}
               </div>
             )}
-            {((activeTab === "blogs" && posts.length === 0) || 
-              (activeTab === "projects" && projects.length === 0) || 
-              (activeTab === "messages" && messages.length === 0) ||
-              (activeTab === "subscribers" && subscribers.length === 0)
-            ) && (
-              <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
-                <p className="text-white/40">No {activeTab === "messages" ? "messages" : "items"} yet. {activeTab !== "messages" && `Start by creating your first ${activeTab === "blogs" ? "article" : "project"}!`}</p>
-              </div>
-            )}
           </div>
         )}
-        <Toaster toasts={toasts} removeToast={removeToast} />
-
-        {/* Newsletter Compose Modal */}
-        <AnimatePresence>
-          {showComposeModal && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12">
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowComposeModal(false)}
-                className="absolute inset-0 bg-black/80 backdrop-blur-xl"
-              />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative w-full max-w-4xl bg-[#0D0D0D] border border-white/10 rounded-[48px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
-              >
-                <div className="p-10 border-b border-white/5 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-3xl font-bold text-white mb-2">Compose Newsletter</h3>
-                    <p className="text-white/40 text-sm">Drafting a message to {subscribers.length} innovators.</p>
-                  </div>
-                  <button onClick={() => setShowComposeModal(false)} className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors">
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-10 space-y-8">
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Subject Line</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g., Innovation Weekly: The Future of Robotics"
-                      value={newsletterData.subject}
-                      onChange={(e) => setNewsletterData(prev => ({ ...prev, subject: e.target.value }))}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-lg font-bold text-white outline-none focus:border-brand-primary/40 transition-all"
-                    />
-                  </div>
-
-                  <div className="space-y-3 flex-1 flex flex-col">
-                    <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 px-2">Message Content</label>
-                    <textarea 
-                      placeholder="Write your newsletter content here... (HTML tags allowed)"
-                      value={newsletterData.content}
-                      onChange={(e) => setNewsletterData(prev => ({ ...prev, content: e.target.value }))}
-                      className="w-full flex-1 bg-white/5 border border-white/10 rounded-3xl px-8 py-6 text-white/80 outline-none focus:border-brand-primary/40 transition-all resize-none min-h-[300px] leading-relaxed"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-10 bg-white/[0.02] border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-4 text-white/20 text-xs font-medium">
-                      <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                      <span>Sending in batches of 100 to stay within free limits.</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
-                      <Shield size={12} className="text-green-500" />
-                      <span>Admin Verification Active</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <button 
-                      disabled={isSending || !newsletterData.subject || !newsletterData.content}
-                      onClick={() => handleSendNewsletter(undefined, true)}
-                      className="px-8 py-5 bg-white/5 border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all flex items-center gap-3"
-                    >
-                      {isSending ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Eye size={18} />}
-                      Send Test
-                    </button>
-                    <button 
-                      disabled={isSending || !newsletterData.subject || !newsletterData.content}
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to broadcast this newsletter to ${subscribers.length} subscribers?`)) {
-                          handleSendNewsletter();
-                        }
-                      }}
-                      className="px-12 py-5 bg-brand-primary text-black font-bold rounded-2xl hover:bg-white disabled:opacity-20 disabled:hover:bg-brand-primary transition-all flex items-center gap-3 shadow-lg shadow-brand-primary/10"
-                    >
-                      {isSending ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                          Dispatching...
-                        </>
-                      ) : (
-                        <>Broadcast Newsletter <Zap size={18} /></>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
       </div>
+
+      <ComposeNewsletterModal
+        isOpen={showComposeModal}
+        onClose={() => setShowComposeModal(false)}
+        subscribersCount={subscribers.length}
+        newsletterData={newsletterData}
+        setNewsletterData={setNewsletterData}
+        isSending={isSending}
+        onSend={handleSendNewsletter}
+      />
+
+      <Toaster toasts={toasts} removeToast={removeToast} />
     </div>
   );
 };
@@ -3238,86 +2406,34 @@ published: true
 export const AdminPage = () => {
   useSEO({ title: "Admin Dashboard | Ayush Paul", noindex: true });
   const { isConfigured } = getFirebaseStatus();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  useEffect(() => {
-    if (!isConfigured) return;
-    console.log("🕵️ [AUTH] Starting Auth Listener & Redirect Check...");
-    
-    // Check for redirect results (if user was sent back from Google)
-    getRedirectResult(auth).then((result) => {
-      if (result?.user) {
-        console.log("✅ [AUTH] Redirect Login Success:", result.user.email);
-        setUser(result.user);
-      }
-    }).catch((error) => {
-      console.error("❌ [AUTH] Redirect Error:", error);
-      setLoginError(`Redirect Login Failed: ${error.message}`);
-    });
-
-    const unsub = onAuthStateChanged(auth, (u) => {
-      console.log("👤 [AUTH] User state changed:", u?.email || "Signed Out");
-      setUser(u);
-      setLoading(false);
-    });
-    return unsub;
-  }, []);
-
-  const handleLogin = async () => {
-    setLoginError(null);
-    setIsLoggingIn(true);
-    console.log("🚀 [AUTH] Attempting Popup Login...");
-
-    try {
-      await signInWithPopup(auth, googleProvider);
-      console.log("✅ [AUTH] Popup Login Success");
-    } catch (error: any) {
-      console.error("❌ [AUTH] Popup Error Code:", error.code);
-      console.error("❌ [AUTH] Popup Error Message:", error.message);
-
-      // Handle specific error cases
-      if (error.code === 'auth/popup-closed-by-user') {
-        setLoginError("Login cancelled. Please try again.");
-      } else if (error.code === 'auth/unauthorized-domain') {
-        setLoginError("This domain is not authorized. Please check Firebase Console.");
-      } else if (error.code === 'auth/popup-blocked') {
-        setLoginError("Popup blocked by browser. Switching to redirect...");
-        // Auto-fallback to redirect if popup is blocked
-        try {
-          await signInWithRedirect(auth, googleProvider);
-        } catch (redirectError: any) {
-          setLoginError(`Redirect Fallback Failed: ${redirectError.message}`);
-        }
-      } else {
-        // General fallback for all other popup issues on localhost
-        console.log("🔄 [AUTH] General Failure - Attempting Redirect Fallback...");
-        try {
-          await signInWithRedirect(auth, googleProvider);
-        } catch (redirectError: any) {
-          setLoginError(`Login Error: ${error.message}`);
-        }
-      }
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
+  // Consume Extracted Authentication Custom Hook
+  const {
+    user,
+    loading,
+    loginError,
+    isLoggingIn,
+    isAuthorized,
+    handleLogin,
+    handleLogout,
+  } = useAdminAuth();
 
   if (!isConfigured) {
     return <FirebaseConfigWarning variant="fullscreen" />;
   }
 
-  if (loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] gap-6">
-      <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
-      <div className="flex flex-col items-center gap-2">
-        <h2 className="text-xl font-bold tracking-tighter">Initializing Studio</h2>
-        <p className="text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">Checking Authority Keys...</p>
+  if (loading)
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A0A0A] gap-6">
+        <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-2">
+          <h2 className="text-xl font-bold tracking-tighter text-white">Initializing Studio</h2>
+          <p className="text-white/20 text-xs font-bold uppercase tracking-widest animate-pulse">
+            Checking Authority Keys...
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   if (!user) {
     return (
@@ -3326,9 +2442,11 @@ export const AdminPage = () => {
           <div className="w-20 h-20 bg-brand-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
             <Rocket size={40} className="text-brand-primary" />
           </div>
-          <h1 className="text-3xl font-bold mb-4">Admin Access</h1>
-          <p className="text-white/40 mb-12">Please sign in with your authorized account to manage the startup portal.</p>
-          
+          <h1 className="text-3xl font-bold mb-4 text-white">Admin Access</h1>
+          <p className="text-white/40 mb-12">
+            Please sign in with your authorized account to manage the startup portal.
+          </p>
+
           {loginError && (
             <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm text-left">
               <AlertCircle size={18} className="shrink-0" />
@@ -3336,12 +2454,14 @@ export const AdminPage = () => {
             </div>
           )}
 
-          <button 
+          <button
             onClick={handleLogin}
             disabled={isLoggingIn}
             className={cn(
               "w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all",
-              isLoggingIn ? "bg-white/10 text-white/20 cursor-not-allowed" : "bg-white text-black hover:scale-[1.02] active:scale-[0.98]"
+              isLoggingIn
+                ? "bg-white/10 text-white/20 cursor-not-allowed"
+                : "bg-white text-black hover:scale-[1.02] active:scale-[0.98]"
             )}
           >
             {isLoggingIn ? (
@@ -3351,19 +2471,10 @@ export const AdminPage = () => {
             )}
             {isLoggingIn ? "Authenticating..." : "Sign in with Google"}
           </button>
-
-          {loginError && loginError.includes("blocked") && (
-            <p className="mt-6 text-[10px] font-bold uppercase tracking-widest text-white/20 animate-pulse">
-              Switching to secure redirect...
-            </p>
-          )}
         </div>
       </div>
     );
   }
-
-  const ADMIN_UIDS = ["80OJfcmVXCRNmSZuthVU68K6vJq2"];
-  const isAuthorized = user && ADMIN_UIDS.includes(user.uid);
 
   if (!isAuthorized) {
     return (
@@ -3372,10 +2483,13 @@ export const AdminPage = () => {
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
             <Shield size={40} className="text-red-500" />
           </div>
-          <h1 className="text-3xl font-bold mb-4">Unauthorized</h1>
-          <p className="text-white/40 mb-12">This account does not have administrative privileges. Please switch to the authorized identity.</p>
-          <button 
-            onClick={() => signOut(auth)}
+          <h1 className="text-3xl font-bold mb-4 text-white">Unauthorized</h1>
+          <p className="text-white/40 mb-12">
+            This account does not have administrative privileges. Please switch to the authorized
+            identity.
+          </p>
+          <button
+            onClick={handleLogout}
             className="w-full py-5 rounded-2xl font-bold text-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
           >
             Sign Out
@@ -3385,5 +2499,5 @@ export const AdminPage = () => {
     );
   }
 
-  return <AdminDashboard user={user} />;
+  return <AdminDashboard user={user} onLogout={handleLogout} />;
 };

@@ -17,6 +17,7 @@ export interface BlogPost {
   createdAt?: any;
   updatedAt?: any;
   seo?: any;
+  excerpt?: string;
 }
 
 // Vite's import.meta.glob allows importing multiple modules.

@@ -12,7 +12,7 @@ import Blockquote from '@tiptap/extension-blockquote';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 import { 
   Plus, Type, List, ListOrdered, ImageIcon, Code, Quote, Info, Minus, 
-  Bold, Italic, Link as LinkIcon, Trash2, GripVertical, ChevronDown, Sparkles,
+  Bold, Italic, Link as LinkIcon, Trash2, GripVertical, ChevronDown, Terminal,
   Heading1, Heading2, Heading3, Text, Image as ImageLucide
 } from 'lucide-react';
 import { Block, BlockType } from '../../types';
@@ -87,7 +87,7 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
     
     const newBlocks: Block[] = nodes.map((node: any) => {
       const id = Math.random().toString(36).substr(2, 9);
-      if (node.nodeType !== Node.ELEMENT_NODE) {
+      if (node.nodeType !== 1) {
         if (node.textContent?.trim()) {
            return { id, type: 'text', content: `<p>${node.textContent}</p>` };
         }
@@ -205,7 +205,7 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
       
       // Only update if there's a meaningful change to avoid cursor resets
       if (currentHtml !== newHtml) {
-        editor.commands.setContent(newHtml, false);
+        editor.commands.setContent(newHtml, { emitUpdate: false });
       }
     }
   }, [editor, blocks]);
@@ -216,7 +216,7 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
 
   return (
     <div className="relative group/editor">
-      <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }}>
+      <FloatingMenu editor={editor}>
         <div className="flex items-center gap-1 p-1 bg-[#111111] border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl">
           <button 
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -267,7 +267,7 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
         </div>
       </FloatingMenu>
 
-      <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+      <BubbleMenu editor={editor}>
         <div className="flex items-center gap-1 p-1 bg-[#111111] border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl">
           <button
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -355,9 +355,9 @@ export const TipTapEditor: React.FC<TipTapEditorProps> = ({ blocks, onChange }) 
         )}
 
         {!editor.getText() && (
-          <div className="absolute top-12 left-12 pointer-events-none text-white/10 font-bold uppercase tracking-widest text-sm flex items-center gap-3">
-            <Sparkles size={16} className="animate-pulse" />
-            Paste your narrative or type '/' for magic...
+          <div className="absolute top-12 left-12 pointer-events-none text-white/10 font-mono font-bold uppercase tracking-widest text-[11px] flex items-center gap-3">
+            <Terminal size={14} className="animate-pulse text-brand-primary" />
+            Paste narrative index or type '/' to compile blocks...
           </div>
         )}
       </div>

@@ -18,7 +18,7 @@ export const ThankYouPage = () => {
   useSEO({
     title: "Thank You! | Ayush Paul Lab",
     description: "Your download is starting. Thank you for supporting innovation.",
-    canonicalUrl: getCanonicalUrl("/thank-you")
+    url: getCanonicalUrl("/thank-you")
   });
 
   const handleDonation = async () => {

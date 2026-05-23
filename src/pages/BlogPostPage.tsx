@@ -11,7 +11,7 @@ import { getBlogBySlug, getAllBlogs, BlogPost } from "../lib/blog-utils";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { VARIANTS } from "../lib/motion-presets";
 import { getRelatedContent } from "../lib/seo-utils";
-import { Product } from "../types";
+import { Product, Block } from "../types";
 import { WaitlistForm } from "../components/ui/WaitlistForm";
 
 export const BlogPostPage = () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft, Cpu, Terminal, Activity, Eye } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
@@ -23,6 +23,7 @@ export const LabDetailPage = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'architecture' | 'milestones' | 'telemetry'>('architecture');
   const getCurrencySymbol = (currency?: string) => {
     if (!currency) return '₹';
     const c = currency.toLowerCase();
@@ -261,134 +262,270 @@ export const LabDetailPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full min-h-screen bg-[#0A0A0A] pt-32 pb-32"
+      className="w-full min-h-screen bg-[#0A0A0A] pt-32 pb-32 relative overflow-hidden"
     >
+      {/* Visual Engineering Grid Pattern background */}
+      <div className="absolute top-0 right-0 w-full h-full grid-pattern opacity-[0.02] pointer-events-none -z-10" />
+      <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-brand-primary/5 blur-[130px] pointer-events-none -z-10" />
+
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         {/* Navigation */}
         <button 
           onClick={() => navigate('/labs')}
-          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest mb-12 group"
+          className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-xs font-mono font-bold uppercase tracking-widest mb-12 group"
         >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Labs
+          <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> R&D SYSTEMS REGISTRY
         </button>
 
         {/* Hero Conversion Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-24">
           
           {/* Left: Product Info & Triggers */}
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20">
+              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-brand-primary px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 font-mono">
                 {product.category}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 flex items-center gap-1">
-                <ShieldCheck size={12} className="text-green-500" /> Secure System
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/40 flex items-center gap-1 font-mono">
+                <ShieldCheck size={12} className="text-brand-primary animate-pulse" /> SECURE PROTOCOL LINK
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight font-display">
               {product.title}
             </h1>
 
-            <p className="text-lg text-white/60 leading-relaxed mb-10 max-w-xl">
+            <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-xl font-medium">
               {product.description}
             </p>
 
             {/* Psychological Triggers */}
-            <div className="flex flex-col gap-4 mb-10">
+            <div className="flex flex-col gap-4 mb-10 font-mono text-xs">
               {(product.inventoryCount ?? 0) < 10 && product.type !== 'free' && (
                 <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="flex items-center gap-3 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-sm font-bold shadow-[0_0_20px_rgba(234,179,8,0.1)]"
+                  className="flex items-center gap-3 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 font-bold shadow-[0_0_20px_rgba(234,179,8,0.05)]"
                 >
-                  <Clock size={18} className="animate-pulse" /> 
-                  High Demand: Only {product.inventoryCount} copies left at current tier.
+                  <Clock size={16} className="animate-pulse" /> 
+                  SYS_DEMAND: Only {product.inventoryCount} deployment tokens left at this tier.
                 </motion.div>
               )}
               
               {isFree && (
-                <div className="flex items-center gap-3 p-4 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-sm font-bold">
-                  <Zap size={18} /> 
-                  Starter Blueprint: Upgrade anytime to unlock full CAD + Source.
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary font-bold">
+                  <Zap size={16} /> 
+                  STARTER CORE NODE: Unrestricted parameter tuning access enabled.
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center gap-6 text-sm">
-                <div className="flex items-center gap-2 text-white/60 font-medium">
-                  <Zap size={16} className="text-brand-primary" />
-                  <span className="text-white font-bold">{product.downloadCount + 120}</span> innovators using this
+              <div className="flex flex-wrap items-center gap-6 text-[10px] text-white/50 font-mono">
+                <div className="flex items-center gap-2">
+                  <Activity size={12} className="text-brand-primary" />
+                  <span>DEPLOYED: <span className="text-white font-bold">{product.downloadCount + 120} UNITS</span></span>
                 </div>
-                <div className="w-1 h-1 rounded-full bg-white/20" />
-                <div className="flex items-center gap-2 text-white/60 font-medium">
-                  <span className="text-white font-bold">4.9/5</span> Rating
+                <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                <div className="flex items-center gap-2">
+                  <span>INDEX RATING: <span className="text-brand-accent font-bold">4.9/5 // SAFE</span></span>
                 </div>
               </div>
             </div>
 
             {/* Creator Credibility - Founder Profile Block */}
-            <div className="mt-4 p-6 rounded-[2rem] bg-white/5 border border-brand-primary/20 backdrop-blur-md flex flex-col sm:flex-row gap-6 items-center sm:items-start group hover:bg-brand-primary/5 transition-all">
+            <div className="mt-4 p-6 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-md flex flex-col sm:flex-row gap-6 items-center sm:items-start group hover:bg-brand-primary/5 hover:border-brand-primary/25 transition-all">
               <div className="relative shrink-0">
-                <div className="absolute inset-0 bg-brand-primary rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                <div className="absolute inset-0 bg-brand-primary rounded-full blur-xl opacity-10 group-hover:opacity-30 transition-opacity" />
                 <img 
                   src={product.author.avatar} 
                   alt={product.author.name} 
-                  className="w-16 h-16 rounded-full border-2 border-brand-primary/30 relative z-10" 
+                  className="w-14 h-14 rounded-full border border-white/10 relative z-10" 
                 />
               </div>
               <div className="flex flex-col text-center sm:text-left">
-                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary">Built By</span>
-                  <ShieldCheck size={14} className="text-brand-primary" />
+                <div className="flex items-center justify-center sm:justify-start gap-1.5 mb-1">
+                  <span className="text-[8px] font-bold uppercase tracking-widest text-brand-primary font-mono">SYSTEMS COORDINATOR</span>
+                  <ShieldCheck size={12} className="text-brand-primary" />
                 </div>
-                <span className="text-xl font-bold mb-2">{product.author.name}</span>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  Creator of the {product.title}. My mission is to open-source cutting edge robotics and software engineering systems to empower the next generation of innovators.
+                <span className="text-lg font-bold mb-2">{product.author.name}</span>
+                <p className="text-xs text-white/40 leading-relaxed font-medium">
+                  Principal architect of the {product.title}. Dedicated to engineering open-source advanced cybernetics and neural blueprints for the developer ecosystem.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right: Visual Preview */}
-          <div className="relative aspect-square md:aspect-[4/3] rounded-[3rem] overflow-hidden glass border border-white/10 shadow-2xl shadow-brand-primary/5 group h-full">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Right: Technical Blueprint Preview Frame */}
+          <div className="relative aspect-square md:aspect-[4/3] rounded-[2.5rem] overflow-hidden glass border border-white/5 shadow-2xl shadow-brand-primary/5 group h-full bg-black/40">
+            {/* Corner Industrial Schematic Marks */}
+            <div className="absolute top-0 left-4 w-6 h-[1px] bg-white/30 z-20" />
+            <div className="absolute top-4 left-0 w-[1px] h-6 bg-white/30 z-20" />
+            <div className="absolute bottom-0 right-4 w-6 h-[1px] bg-white/30 z-20" />
+            <div className="absolute bottom-4 right-0 w-[1px] h-6 bg-white/30 z-20" />
+            
+            {/* Schematic Overlay Indicators */}
+            <div className="absolute bottom-3 left-4 font-mono text-[7px] text-white/20 select-none pointer-events-none z-20 flex flex-col gap-0.5">
+              <span>COORD_REF: 42.194 // -88.08</span>
+              <span>AZIMUTH: 184.26 // PITCH: -12.44</span>
+            </div>
+            
+            <div className="absolute top-4 right-4 font-mono text-[8px] text-white/30 select-none pointer-events-none z-20 border border-white/10 px-2 py-0.5 rounded bg-black/40">
+              [SYS_NODE_PRV]
+            </div>
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <ProductBadge className="absolute bottom-8 left-8 z-20 shadow-2xl" />
+            
             <img 
               src={product.thumbnail} 
               alt={product.title} 
               loading="lazy"
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-700 opacity-60 group-hover:opacity-85"
             />
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0A0A]/60 via-transparent to-transparent pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Tabbed Systems Breakdown Panel */}
+        <div className="w-full glass border border-white/5 rounded-[2.5rem] p-8 mb-24 bg-black/20">
+          <div className="flex flex-wrap items-center gap-2 border-b border-white/5 pb-6 mb-8 font-mono text-[10px] tracking-wider">
+            <button 
+              onClick={() => setActiveTab('architecture')}
+              className={`px-5 py-2.5 rounded-xl border transition-all ${
+                activeTab === 'architecture' 
+                  ? 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary font-bold shadow-[0_0_15px_rgba(0,194,255,0.1)]' 
+                  : 'border-transparent text-white/40 hover:text-white hover:bg-white/[0.02]'
+              }`}
+            >
+              [NODE_ARCHITECTURE_BOM]
+            </button>
+            <button 
+              onClick={() => setActiveTab('milestones')}
+              className={`px-5 py-2.5 rounded-xl border transition-all ${
+                activeTab === 'milestones' 
+                  ? 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary font-bold shadow-[0_0_15px_rgba(0,194,255,0.1)]' 
+                  : 'border-transparent text-white/40 hover:text-white hover:bg-white/[0.02]'
+              }`}
+            >
+              [DEVELOPMENT_ROADMAP]
+            </button>
+            <button 
+              onClick={() => setActiveTab('telemetry')}
+              className={`px-5 py-2.5 rounded-xl border transition-all ${
+                activeTab === 'telemetry' 
+                  ? 'bg-brand-primary/10 border-brand-primary/30 text-brand-primary font-bold shadow-[0_0_15px_rgba(0,194,255,0.1)]' 
+                  : 'border-transparent text-white/40 hover:text-white hover:bg-white/[0.02]'
+              }`}
+            >
+              [TELEMETRY_PARAMETERS]
+            </button>
+          </div>
+
+          <div className="min-h-[220px]">
+            {activeTab === 'architecture' && (
+              <div className="space-y-6">
+                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+                  System Architecture & Dependency Modules
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {product.comparisonFree.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3.5 p-5 rounded-2xl bg-white/[0.01] border border-white/5 font-mono text-xs text-white/80">
+                      <span className="text-brand-primary font-bold">CORE_MOD_0{idx + 1}</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                  {product.comparisonPremium.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3.5 p-5 rounded-2xl bg-brand-primary/5 border border-brand-primary/15 font-mono text-xs text-brand-primary/90 shadow-[inset_0_0_20px_rgba(0,194,255,0.02)]">
+                      <span className="text-brand-primary font-bold">CAD_SCHEM_0{idx + 1}</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'milestones' && (
+              <div className="space-y-6">
+                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+                  Engineering Evolution Phases
+                </div>
+                <div className="relative border-l border-white/10 pl-6 ml-4 space-y-8 font-mono text-xs">
+                  <div className="relative">
+                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
+                    <div className="font-bold text-white uppercase">PHASE 01: THEORY & MODEL SIMULATION // 100% COMPLETE</div>
+                    <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
+                      Mathematical validation of kinematic motion vectors, physical load distribution modeling, and algorithm validation in isolated simulations.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
+                    <div className="font-bold text-white uppercase">PHASE 02: PHYSICAL HARDWARE POC // 100% COMPLETE</div>
+                    <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
+                      First-pass PCB fabrication, actuator thermal stress validation, embedded controller code integration, and mechanical stress modeling.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-brand-primary animate-pulse ring-4 ring-brand-primary/20" />
+                    <div className="font-bold text-brand-primary uppercase">PHASE 03: REGISTRY DEPLOYMENT // ACTIVE R&D PROTOCOL</div>
+                    <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
+                      Releasing index packages, compiling dynamic CAD blueprint vaults, and standardizing cross-platform neural automation layers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'telemetry' && (
+              <div className="space-y-6">
+                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
+                  Secure Mainframe Node Diagnostics
+                </div>
+                <div className="font-mono text-[11px] leading-relaxed p-6 rounded-2xl bg-black/40 border border-white/5 text-white/60">
+                  <div className="text-white/30 mb-3 font-bold">// SECURE PROTOCOL CORE CONFIG</div>
+                  <div><span className="text-brand-primary font-bold">const</span> SYSTEM_NODE_METADATA = &#123;</div>
+                  <div className="pl-4">node_hash: <span className="text-brand-accent">"SHA_256_{product.id.toUpperCase()}"</span>,</div>
+                  <div className="pl-4">node_slug: <span className="text-brand-accent">"{(product.slug || '').toUpperCase()}"</span>,</div>
+                  <div className="pl-4">research_domain: <span className="text-brand-accent">"{product.category.toUpperCase()}"</span>,</div>
+                  <div className="pl-4">deployment_tier: <span className="text-brand-accent">"{product.type === 'free' ? 'STARTER_CORE' : 'MASTER_CAD_Blueprints'}"</span>,</div>
+                  <div className="pl-4">build_integrity: <span className="text-green-400">"VERIFIED_OPERATIONAL"</span>,</div>
+                  <div className="pl-4">core_signals: [<span className="text-white/80">{product.tags.map(t => `"${t}"`).join(', ')}</span>],</div>
+                  <div className="pl-4">secure_handshake: <span className="text-brand-primary">true</span></div>
+                  <div>&#125;;</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Comparison Table Section */}
-        <div className="max-w-4xl mx-auto mb-32">
+        <div className="max-w-4xl mx-auto mb-24 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">Choose Your Tier</h2>
-            <p className="text-white/40 italic">Scroll down to unlock the complete engineering package for this specific blueprint.</p>
+            <h2 className="text-3xl font-bold tracking-tight mb-4 font-display">System Access Licensing</h2>
+            <p className="text-white/40 text-sm font-mono tracking-wider uppercase">[Select system deployment node authorization tier]</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
             {/* Free Tier */}
-            <div className="p-8 rounded-[2.5rem] border border-white/10 bg-white/5 flex flex-col">
-              <h3 className="text-xl font-bold mb-2">Basic Access</h3>
-              <div className="text-3xl font-bold text-white mb-8">Free</div>
+            <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.01] flex flex-col relative overflow-hidden bg-black/10">
+              {/* Corner marks */}
+              <div className="absolute top-0 left-4 w-4 h-[1px] bg-white/20" />
+              <div className="absolute top-4 left-0 w-[1px] h-4 bg-white/20" />
+
+              <h3 className="text-sm font-bold text-white/50 mb-2 uppercase font-mono tracking-widest">[Starter Core License]</h3>
+              <div className="text-3xl font-extrabold text-white mb-8 font-display">Free Deploy</div>
               
               <ul className="space-y-4 mb-10 flex-1">
                 {product.comparisonFree.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-white/60">
-                    <Check size={18} className="text-white/40 shrink-0 mt-0.5" />
-                    <span>{feature}</span>
+                    <Check size={16} className="text-white/40 shrink-0 mt-0.5" />
+                    <span className="font-medium">{feature}</span>
                   </li>
                 ))}
                 {product.comparisonPremium.slice(0, 2).map((feature, idx) => (
                   <li key={`missing-${idx}`} className="flex items-start gap-3 text-sm text-white/20">
-                    <X size={18} className="shrink-0 mt-0.5" />
-                    <span className="line-through">{feature}</span>
+                    <X size={16} className="shrink-0 mt-0.5 text-white/10" />
+                    <span className="line-through font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -396,50 +533,54 @@ export const LabDetailPage = () => {
               <button 
                 onClick={handleFreeDownload}
                 disabled={isDownloading || profile?.ownedProducts?.[product.id] === 'free' || profile?.ownedProducts?.[product.id] === 'premium'}
-                className="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/10 transition-all font-bold text-sm flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
               >
                 {isDownloading ? (
                   <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                 ) : (
                   profile?.ownedProducts?.[product.id] ? (
-                    <><ShieldCheck size={16} /> Tier Unlocked</>
+                    <><ShieldCheck size={14} className="text-brand-primary" /> Core Node Configured</>
                   ) : (
-                    <><Download size={16} /> Get Free Version</>
+                    <><Download size={14} /> Deploy Starter Node</>
                   )
                 )}
               </button>
             </div>
 
             {/* Premium Tier */}
-            <div className="p-8 rounded-[2.5rem] border border-brand-primary/30 bg-brand-primary/5 shadow-[0_0_50px_rgba(0,194,255,0.05)] flex flex-col relative overflow-hidden">
+            <div className="p-8 rounded-[2.5rem] border border-brand-primary/25 bg-brand-primary/[0.02] shadow-[0_0_50px_rgba(0,194,255,0.03)] flex flex-col relative overflow-hidden bg-black/10">
               <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
               
+              {/* Corner marks */}
+              <div className="absolute top-0 right-4 w-4 h-[1px] bg-brand-primary/45" />
+              <div className="absolute top-4 right-0 w-[1px] h-4 bg-brand-primary/45" />
+              
               <div className="flex justify-between items-start mb-2">
-                <h3 className="text-xl font-bold text-brand-primary">Complete Package</h3>
+                <h3 className="text-sm font-bold text-brand-primary uppercase font-mono tracking-widest">[Master CAD & Schematics]</h3>
                 {hasDiscount && (
-                  <span className="px-3 py-1 bg-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest rounded-full">
-                    Save {product.discountPercentage}%
+                  <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
+                    Node Sale -{product.discountPercentage}%
                   </span>
                 )}
               </div>
               
-              <div className="flex items-baseline gap-3 mb-8">
-                <div className="text-4xl font-bold text-white">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
+              <div className="flex items-baseline gap-2 mb-8">
+                <div className="text-4xl font-extrabold text-white font-display">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
                 {hasDiscount && (
-                  <div className="text-lg text-white/30 line-through">{getCurrencySymbol(product.currency)}{product.basePrice}</div>
+                  <div className="text-lg text-white/30 line-through font-display">{getCurrencySymbol(product.currency)}{product.basePrice}</div>
                 )}
               </div>
               
               <ul className="space-y-4 mb-10 flex-1">
                 {product.comparisonFree.map((feature, idx) => (
                   <li key={`inc-${idx}`} className="flex items-start gap-3 text-sm text-white/80">
-                    <Check size={18} className="text-brand-primary shrink-0 mt-0.5" />
-                    <span>{feature}</span>
+                    <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                    <span className="font-medium">{feature}</span>
                   </li>
                 ))}
                 {product.comparisonPremium.map((feature, idx) => (
-                  <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-medium">
-                    <Zap size={18} className="text-brand-primary shrink-0 mt-0.5" />
+                  <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-semibold">
+                    <Zap size={16} className="text-brand-primary shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -448,22 +589,22 @@ export const LabDetailPage = () => {
               <button 
                 onClick={handlePremiumUpgrade}
                 disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
-                className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-bold text-sm flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+                className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
               >
                 {isCheckingOut ? (
                   <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                 ) : (
                   profile?.ownedProducts?.[product.id] === 'premium' ? (
-                    <><ShieldCheck size={16} /> Already Owned</>
+                    <><ShieldCheck size={14} /> System Fully Unlocked</>
                   ) : (
                     profile?.ownedProducts?.[product.id] === 'free' ? 
-                    <>Upgrade to Premium <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></> :
-                    <>Get Premium Package <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></>
+                    <>Upgrade to Complete CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></> :
+                    <>Deploy Master CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
                   )
                 )}
               </button>
-              <p className="text-center text-[10px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1">
-                <ShieldCheck size={12} /> Secure Stripe Checkout
+              <p className="text-center text-[8px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1 font-mono">
+                <ShieldCheck size={12} className="text-brand-primary" /> SECURE END_TO_END STRIPE TUNNEL
               </p>
             </div>
           </div>
@@ -471,7 +612,7 @@ export const LabDetailPage = () => {
       </div>
 
       {/* Authority Graph: Related Content Sections */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 mt-32 border-t border-white/5 pt-32 space-y-32">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 mt-32 border-t border-white/5 pt-24 space-y-32 relative z-10">
         
         {/* Related Systems (Labs -> Labs) */}
         {related.products.length > 0 && (

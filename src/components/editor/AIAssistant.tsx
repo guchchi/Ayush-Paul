@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Wand2, Type, Tag, Layout, CheckCircle2, AlertCircle, Info, RefreshCw } from 'lucide-react';
+import { Cpu, Terminal, Type, Tag, Layout, CheckCircle2, AlertCircle, Info, RefreshCw } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface AIAssistantProps {
@@ -14,17 +14,17 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onAction, isProcessing
   return (
     <div className="bg-[#111111] border border-white/10 rounded-[40px] p-10 space-y-10 shadow-2xl overflow-hidden relative group">
       <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-        <Sparkles size={120} className="text-brand-primary animate-pulse" />
+        <Cpu size={120} className="text-brand-primary animate-pulse" />
       </div>
 
       <div className="relative z-10 space-y-8">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-            <Sparkles size={24} />
+            <Cpu size={24} />
           </div>
           <div>
-            <h3 className="text-2xl font-bold">AI Intelligence</h3>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/20">Creative Co-Pilot</p>
+            <h3 className="text-2xl font-bold font-mono">COGNITIVE_SYNTHESIZER</h3>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 font-mono">System Co-Processor</p>
           </div>
         </div>
 
@@ -32,13 +32,13 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onAction, isProcessing
         <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-6">
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">SEO Authority Score</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1 font-mono">SEO Index score</p>
               <div className="text-4xl font-bold tracking-tighter">
                 {score}<span className="text-white/20 text-xl">/100</span>
               </div>
             </div>
             <div className={cn(
-              "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest",
+              "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest font-mono",
               score >= 80 ? "bg-green-500/10 text-green-500" : 
               score >= 50 ? "bg-yellow-500/10 text-yellow-500" : "bg-red-500/10 text-red-500"
             )}>
@@ -60,13 +60,13 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onAction, isProcessing
 
         {/* AI Actions */}
         <div className="space-y-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Automations</p>
-          <div className="grid gap-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1 font-mono">Direct Ingestion pipelines</p>
+          <div className="grid gap-3 font-mono text-xs">
             {[
-              { id: 'title', label: 'Suggest Viral Title', icon: <Type size={18} /> },
-              { id: 'summary', label: 'Generate Meta Excerpt', icon: <Layout size={18} /> },
-              { id: 'keywords', label: 'Extract SEO Keywords', icon: <Tag size={18} /> },
-              { id: 'headings', label: 'Fix Heading Hierarchy', icon: <RefreshCw size={18} /> },
+              { id: 'title', label: 'Synthesize Narrative Title', icon: <Type size={18} /> },
+              { id: 'summary', label: 'Compile Excerpt Hash', icon: <Layout size={18} /> },
+              { id: 'keywords', label: 'Index Target Keywords', icon: <Tag size={18} /> },
+              { id: 'headings', label: 'Repair Outline Hierarchy', icon: <RefreshCw size={18} /> },
             ].map(action => (
               <button
                 key={action.id}
@@ -80,7 +80,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onAction, isProcessing
                   </div>
                   <span className="text-sm font-bold">{action.label}</span>
                 </div>
-                {isProcessing ? <RefreshCw size={16} className="animate-spin" /> : <Sparkles size={16} className="text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity" />}
+                {isProcessing ? <RefreshCw size={16} className="animate-spin" /> : <Terminal size={16} className="text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity" />}
               </button>
             ))}
           </div>
@@ -89,7 +89,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ onAction, isProcessing
         {/* Issue List */}
         {issues.length > 0 && (
           <div className="space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1">Critical Improvements</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 ml-1 font-mono">Compiler warnings</p>
             <div className="space-y-2">
               {issues.slice(0, 3).map((issue, i) => (
                 <div key={i} className="flex items-start gap-3 p-4 rounded-2xl bg-red-500/5 border border-red-500/10">

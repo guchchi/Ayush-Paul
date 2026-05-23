@@ -16,8 +16,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link to={`/products/${product.slug}`} className="block group">
       <motion.div 
-        whileHover={{ y: -5 }}
-        className="h-full rounded-[2.5rem] glass border border-white/5 overflow-hidden flex flex-col relative transition-all duration-500 hover:shadow-2xl hover:shadow-brand-primary/10 hover:border-brand-primary/20"
+        whileHover={{ y: -5, scale: 1.005 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="h-full glass-card glass-card-hover overflow-hidden flex flex-col relative"
       >
         {/* Scarcity / Highlight Badges */}
         <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-20 pointer-events-none">

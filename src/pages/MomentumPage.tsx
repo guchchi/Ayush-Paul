@@ -22,7 +22,7 @@ export const MomentumPage = () => {
   useSEO({
     title: "Momentum | Building in Public",
     description: "The live engineering log of Ayush Paul. Real-time updates on robotics, software systems, and laboratory progress.",
-    canonicalUrl: getCanonicalUrl("/momentum")
+    url: getCanonicalUrl("/momentum")
   });
 
   useEffect(() => {

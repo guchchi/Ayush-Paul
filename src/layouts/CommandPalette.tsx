@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Home, BookOpen, Layers, Mail, Shield, Search, ChevronRight } from 'lucide-react';
 
 export const CommandPalette = () => {

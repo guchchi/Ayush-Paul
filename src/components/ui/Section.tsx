@@ -24,8 +24,8 @@ export const Section = ({
         <SectionGlow variant={glowVariant} />
       </div>
     )}
-    <div className={cn("relative z-10 mx-auto max-w-7xl px-5", containerClassName)}>
+    <Container className={cn("relative z-10", containerClassName)}>
       {children}
-    </div>
+    </Container>
   </Component>
 );

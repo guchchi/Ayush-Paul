@@ -167,7 +167,7 @@ const VisionMissionSection = () => {
 
 const MilestonesCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [milestones, setMilestones] = useState<Array<{ year: string; title: string; desc: string; image?: string }>>([
+  const [milestones, setMilestones] = useState<Array<{ id?: string; year: string; title: string; desc: string; image?: string }>>([
     { year: "2021", title: "National Level Science Exhibition", desc: "Recognized for foundational hardware engineering." },
     { year: "2022", title: "Technology Projects Initiation", desc: "Started developing comprehensive software solutions." },
     { year: "2023", title: "INSPIRE Awards – MANAK", desc: "Awarded ₹10,000 innovation grant by Govt of India to develop 'Iron Code', applying scientific problem solving.", image: "/assets/milestones/inspire-award.png" },

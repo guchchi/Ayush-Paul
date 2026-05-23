@@ -20,16 +20,20 @@ import {
   LogOut,
   Calendar,
   Layout,
-  Rocket
+  Rocket,
+  Globe,
+  Sparkles
 } from 'lucide-react';
 import { 
   auth, db, signOut, onAuthStateChanged, 
   collection, query, orderBy, onSnapshot, limit, 
-  updateDoc, doc, getDocs, where, getDoc
+  updateDoc, doc, getDocs, where, getDoc,
+  addDoc, serverTimestamp
 } from '../firebase';
 import { cn } from '../lib/utils';
 import { Section } from '../components/ui/Section';
 import { useNavigate } from 'react-router-dom';
+import { VARIANTS } from '../lib/motion-presets';
 
 // --- Types ---
 
@@ -233,6 +237,7 @@ const ExecutionPanel = () => {
 };
 
 const AutomationHub = () => {
+  const navigate = useNavigate();
   const [isSyncing, setIsSyncing] = useState(false);
   const [newUpdate, setNewUpdate] = useState({ 
     title: '', 

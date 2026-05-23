@@ -29,9 +29,9 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
 
   return (
     <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-      className="group relative bg-[#0D0D0D] border border-white/5 rounded-[2.5rem] p-8 flex flex-col h-full hover:border-brand-primary/20 hover:shadow-[0_0_40px_rgba(0,194,255,0.05)] transition-all"
+      whileHover={{ y: -5, scale: 1.005 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative glass-card glass-card-hover p-8 flex flex-col h-full overflow-hidden"
     >
       {/* Upper Section */}
       <div className="flex justify-between items-start mb-6">
