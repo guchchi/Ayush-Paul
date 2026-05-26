@@ -107,19 +107,19 @@ const FounderSection = () => {
           <div className="flex-1 space-y-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-center md:text-left">
-                <h3 className="text-4xl md:text-5xl font-extrabold mb-3 tracking-tighter">Ayush Paul</h3>
+                <h3 className="text-4xl md:text-5xl font-extrabold mb-3 tracking-tighter">Antigravity Core</h3>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                  <p className="text-brand-primary text-xs font-bold uppercase tracking-[0.3em]">Founder & Builder</p>
+                  <p className="text-brand-primary text-xs font-bold uppercase tracking-[0.3em]">Engineering & Architecture</p>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/10 hidden sm:block" />
                   <span className="text-[10px] font-bold text-brand-secondary uppercase tracking-[0.4em] bg-brand-secondary/10 px-3 py-1 rounded-full border border-brand-secondary/20 shadow-[0_0_15px_rgba(255,0,60,0.15)]">
-                    National Level Winner
+                    Systems Driven
                   </span>
                 </div>
               </div>
             </div>
             
             <p className="text-xl text-white/70 leading-relaxed font-medium max-w-2xl text-center md:text-left">
-              National-level innovator and researcher. I specialize in translating complex challenges into robust digital infrastructure and environmental solutions. Recognised at Rashtriya Bal Vaigyanik Pradarshani 2025.
+              We specialize in translating complex challenges into robust digital infrastructure and edge-computing solutions. Built on a foundation of national-level hardware innovation and advanced systems engineering.
             </p>
           </div>
         </motion.div>
@@ -354,10 +354,10 @@ const CoreCapabilities = () => {
 
 const ImpactNumbers = () => {
   const numbers = [
-    { val: "50+", label: "Projects Built" },
-    { val: "15+", label: "Systems Developed" },
-    { val: "20+", label: "Skills Mastered" },
-    { val: "4+", label: "Years Creating" }
+    { val: "50+", label: "Nodes Deployed" },
+    { val: "15+", label: "Systems Engineered" },
+    { val: "20+", label: "Core Technologies" },
+    { val: "4+", label: "Years of R&D" }
   ];
 
   return (
@@ -610,10 +610,10 @@ const EcosystemModelSection = () => {
           <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-brand-primary/10 via-brand-primary/50 to-brand-primary/10 -translate-y-1/2 z-0" />
           
           {[
-            { title: "Creators", sub: "Ideas", icon: <BrainCircuit /> },
-            { title: "Executors", sub: "Skills", icon: <Terminal /> },
-            { title: "Platform", sub: "Execution", icon: <Layers /> },
-            { title: "Outcome", sub: "Scalable Innovation", icon: <Rocket />, active: true }
+            { title: "Architecture", sub: "Blueprints", icon: <BrainCircuit /> },
+            { title: "Engineering", sub: "Core Tech", icon: <Terminal /> },
+            { title: "Ecosystem", sub: "Deployment", icon: <Layers /> },
+            { title: "Impact", sub: "Operational Scale", icon: <Rocket />, active: true }
           ].map((item, i) => (
             <motion.div
               key={i}
@@ -642,11 +642,11 @@ const EcosystemModelSection = () => {
 
 const MomentumSection = () => {
   const momentum = [
-    "Growing personal brand",
-    "Product experimentation",
-    "Technology projects",
-    "Community building",
-    "Platform development"
+    "Ecosystem expansion",
+    "Hardware experimentation",
+    "Advanced systems",
+    "Partner networking",
+    "Platform architecture"
   ];
 
   return (
@@ -755,10 +755,10 @@ const InvestorCTASection = () => {
 
 const JourneyTimeline = () => {
   const steps = [
-    { label: "Phase 1", title: "Technology Foundations", desc: "Started building deep technical expertise and foundational projects." },
-    { label: "Phase 2", title: "Freelance Innovation", desc: "Executed complex client projects and independent builds." },
-    { label: "Phase 3", title: "System Architecture", desc: "Focus shifted to scalable product and system development." },
-    { label: "Phase 4", title: "Startup Ecosystem", desc: "Launching high-impact digital platforms and automation tools." }
+    { label: "Phase 1", title: "Technology Foundations", desc: "Established deep technical expertise and foundational hardware projects." },
+    { label: "Phase 2", title: "R&D Operations", desc: "Executed complex edge-computing experiments and cybernetic builds." },
+    { label: "Phase 3", title: "System Architecture", desc: "Shifted focus to scalable ecosystem and multi-node development." },
+    { label: "Phase 4", title: "Antigravity Launch", desc: "Deploying high-impact digital platforms and autonomous tools." }
   ];
 
   return (
@@ -796,8 +796,8 @@ import { FeaturedProjectsSection } from '../components/sections/FeaturedProjects
 
 export const AboutPage = () => {
   useSEO({
-    title: "About Ayush Paul | Senior AI Developer & Full Stack Engineer",
-    description: "Discover the journey, skills, and vision of Ayush Paul, a specialist in AI automation and high-performance digital engineering.",
+    title: "About Antigravity | Engineering Intelligence & Digital Systems",
+    description: "Discover the architecture, ecosystem, and vision of Antigravity, specializing in automation and high-performance engineering.",
     keywords: "Ayush Paul, Ayush Paul Bio, Ayush Paul Experience, AI Developer India"
   });
 

@@ -199,7 +199,7 @@ const PhilosophySection = () => {
             transition={{ delay: 0.1 }}
             className="text-2xl text-white/40 font-medium leading-relaxed"
           >
-            I don't just build products; I partner with founders to architect ecosystems that solve real problems with precision and speed.
+            We don't just build products; we partner with founders to architect ecosystems that solve real problems with precision and speed.
           </motion.p>
         </div>
 
@@ -277,7 +277,7 @@ const ExpertiseGrid = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="mb-20">
           <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">Expertise</h2>
-          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">What I Can <span className="text-brand-primary">Help With.</span></h3>
+          <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">What We <span className="text-brand-primary">Build.</span></h3>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -306,9 +306,9 @@ const ExpertiseGrid = () => {
 
 const CollaborationTypes = () => {
   const types = [
-    { type: "Freelance Projects", for: "Companies", desc: "Strategic engineering for high-impact milestones.", badge: "Project-Based" },
+    { type: "Enterprise Engagements", for: "Companies", desc: "Strategic engineering for high-impact milestones.", badge: "Project-Based" },
     { type: "Startup Collaboration", for: "Founders", desc: "Joining forces to build the next big thing.", badge: "Equity / Partnership" },
-    { type: "Internship / Roles", for: "Recruiters", desc: "Deep-diving into complex technical ecosystems.", badge: "Full-time / Lead" },
+    { type: "System Implementation", for: "Organizations", desc: "Deep-diving into complex technical ecosystems.", badge: "Full-time / Lead" },
     { type: "Speaking / Teaching", for: "Institutions", desc: "Sharing insights on AI, Robotics, and Building.", badge: "Engagement" }
   ];
 
@@ -445,7 +445,7 @@ const MomentumBoard = () => {
             <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">The Founder’s <span className="text-brand-primary italic">Console.</span></h3>
           </div>
           <p className="text-white/40 font-medium max-w-sm text-lg">
-            Real-time deployment logs, engineering sprints, and product upgrades from my building floor.
+            Real-time deployment logs, engineering sprints, and product upgrades from the Antigravity floor.
           </p>
         </div>
 
@@ -519,10 +519,10 @@ const TechStackSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div className="max-w-2xl">
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">The Engine</h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">My Startup <span className="text-brand-primary">Tech Stack.</span></h3>
+            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">Our Core <span className="text-brand-primary">Tech Stack.</span></h3>
           </div>
           <p className="text-white/40 font-medium max-w-sm text-lg">
-            I use a battle-tested stack designed for maximum development velocity and production scale.
+            We use a battle-tested stack designed for maximum development velocity and production scale.
           </p>
         </div>
 
@@ -607,7 +607,7 @@ const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    projectType: "Freelance Project",
+    projectType: "Enterprise Engagement",
     budgetRange: "$1k - $5k",
     message: ""
   });
@@ -623,7 +623,7 @@ const ContactForm = () => {
         timestamp: serverTimestamp()
       });
       setStatus("success");
-      setFormData({ name: "", email: "", projectType: "Freelance Project", budgetRange: "$1k - $5k", message: "" });
+      setFormData({ name: "", email: "", projectType: "Enterprise Engagement", budgetRange: "$1k - $5k", message: "" });
     } catch (error) {
       console.error("Error submitting request:", error);
       setStatus("error");
@@ -691,7 +691,7 @@ const ContactForm = () => {
                   onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium appearance-none"
                 >
-                  <option className="bg-[#0A0A0A]">Freelance Project</option>
+                  <option className="bg-[#0A0A0A]">Enterprise Engagement</option>
                   <option className="bg-[#0A0A0A]">Startup MVP</option>
                   <option className="bg-[#0A0A0A]">Growth System</option>
                   <option className="bg-[#0A0A0A]">Speaking Engagement</option>

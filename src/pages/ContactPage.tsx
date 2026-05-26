@@ -55,7 +55,7 @@ const Hero = () => (
         transition={{ delay: 0.2 }}
         className="text-2xl text-white/40 font-medium leading-relaxed max-w-2xl mx-auto"
       >
-        I partner with ambitious builders, founders, and teams solving meaningful problems with technical precision.
+        We partner with ambitious builders, founders, and teams solving meaningful problems with technical precision.
       </motion.p>
 
       <motion.div 
@@ -141,7 +141,7 @@ const SmartContactForm = () => {
                 type="text" 
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Ayush Paul"
+                placeholder="Antigravity Team"
                 className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium"
                 required
               />
@@ -230,7 +230,7 @@ const SmartContactForm = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex items-center justify-center gap-3 text-green-400 font-bold bg-green-400/5 py-4 rounded-2xl border border-green-400/20"
               >
-                <CheckCircle2 size={24} /> Transmission received. I'll be in touch.
+                <CheckCircle2 size={24} /> Transmission received. We'll be in touch.
               </motion.div>
             )}
           </AnimatePresence>
@@ -314,7 +314,7 @@ const FounderStatement = () => (
     <div className="max-w-3xl mx-auto px-6 space-y-8">
       <div className="text-[10px] font-bold uppercase tracking-[0.5em] text-brand-primary">Philosophy</div>
       <h3 className="text-[clamp(2rem,6vw,4rem)] font-extrabold tracking-tighter leading-[0.95]">
-        “I collaborate with <span className="text-brand-primary italic">ambitious</span> builders, founders, and teams solving meaningful problems.”
+        “We collaborate with <span className="text-brand-primary italic">ambitious</span> builders, founders, and teams solving meaningful problems.”
       </h3>
     </div>
   </Section>

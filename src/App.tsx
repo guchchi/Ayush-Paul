@@ -16,7 +16,7 @@ const NowPage = lazy(() => import("./pages/NowPage").then(m => ({ default: m.Now
 const AboutPage = lazy(() => import("./pages/AboutPage").then(m => ({ default: m.AboutPage })));
 const ExperimentsPage = lazy(() => import("./pages/ExperimentsPage").then(m => ({ default: m.ExperimentsPage })));
 const ExperimentDetailPage = lazy(() => import("./pages/ExperimentDetailPage").then(m => ({ default: m.ExperimentDetailPage })));
-const ProfileSelectionPage = lazy(() => import("./pages/ProfileSelectionPage").then(m => ({ default: m.ProfileSelectionPage })));
+
 const CollaboratePage = lazy(() => import("./pages/CollaboratePage").then(m => ({ default: m.CollaboratePage })));
 const ContactPage = lazy(() => import("./pages/ContactPage").then(m => ({ default: m.ContactPage })));
 const DashboardPage = lazy(() => import("./pages/DashboardPage").then(m => ({ default: m.DashboardPage })));
@@ -52,8 +52,6 @@ import { CookieConsent } from "./components/ui/CookieConsent";
 import { getFirebaseStatus } from "./firebase";
 
 export default function App() {
-  const [view, setView] = useState<"landing" | "profiles">("landing");
-  const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
   const [showConfigWarning, setShowConfigWarning] = useState(true);
   const { isConfigured, projectId, databaseId } = getFirebaseStatus();
 
@@ -83,19 +81,8 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleProfileSelect = (profile: string) => {
-    if (profile === "back") {
-      setView("landing");
-    } else {
-      setSelectedProfile(profile);
-      alert(`Welcome, ${profile}! Portfolio for this profile is coming soon.`);
-      setView("landing");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   const wrapInLayout = (Component: React.ReactNode) => (
-    <MainLayout onPortfolioClick={() => setView("profiles")}>
+    <MainLayout>
       {Component}
     </MainLayout>
   );
@@ -117,11 +104,7 @@ export default function App() {
           <Suspense fallback={<PageLoading />}>
             <Routes>
               <Route path="/" element={
-                view === "landing" ? (
-                  wrapInLayout(<HomePage onViewPortfolio={() => setView("profiles")} />)
-                ) : (
-                  <ProfileSelectionPage onSelect={handleProfileSelect} />
-                )
+                wrapInLayout(<HomePage />)
               } />
               <Route path="/now" element={wrapInLayout(<NowPage />)} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />

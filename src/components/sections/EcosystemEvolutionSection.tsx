@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
-import { Zap, Layers, History, ShieldCheck } from 'lucide-react';
+import { History, ShieldCheck, Layers, GitCommit } from 'lucide-react';
 import { db, collection, query, orderBy, onSnapshot, limit } from "../../firebase";
 import { VARIANTS } from '../../lib/motion-presets';
 import { cn } from '../../lib/utils';
@@ -11,7 +11,7 @@ export const EcosystemEvolutionSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "updates"), orderBy("date", "desc"), limit(6));
+    const q = query(collection(db, "updates"), orderBy("date", "desc"), limit(4));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setUpdates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       setLoading(false);
@@ -22,58 +22,79 @@ export const EcosystemEvolutionSection = () => {
   if (loading || updates.length === 0) return null;
 
   return (
-    <Section id="ecosystem-evolution" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
+    <Section id="ecosystem-milestones" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
           <div>
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-4 flex items-center gap-2">
-              <History size={16} className="text-brand-primary" /> Active Evolution & Milestones
+              <History size={16} className="text-brand-primary" /> System Chronology
             </h2>
-            <h3 className="text-4xl md:text-5xl font-bold tracking-tighter">Ecosystem <span className="text-brand-primary">Evolution.</span></h3>
+            <h3 className="text-4xl md:text-5xl font-bold tracking-tighter">Ecosystem <span className="text-brand-primary">Milestones.</span></h3>
           </div>
           <p className="max-w-md text-white/40 leading-relaxed font-medium">
-            Real-time shipped systems, deployed experiments, and architectural transitions synced straight from the building floor.
+            Chronological registry of architectural breakthroughs, deployed nodes, and physical system expansions.
           </p>
         </div>
 
-        {/* Timeline Grid layout */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {updates.map((update, i) => (
-            <motion.div
-              key={update.id}
-              variants={VARIANTS.fadeUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-8 rounded-[32px] glass-card border border-white/5 group hover:border-brand-primary/30 transition-all flex flex-col h-full bg-[#0D0D0E]"
-              style={{ willChange: 'transform' }}
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <span className={cn(
-                  "text-[9px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border",
-                  update.statusTag === 'Shipped' ? "bg-green-500/10 text-green-500 border-green-500/20" :
-                  update.statusTag === 'Building' ? "bg-brand-primary/10 text-brand-primary border-brand-primary/20" :
-                  update.statusTag === 'Fix' ? "bg-red-500/10 text-red-500 border-red-500/20" :
-                  "bg-white/10 text-white/60 border-white/10"
-                )}>
-                  {update.statusTag || 'Update'}
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{update.date}</span>
-              </div>
-              <h4 className="text-xl font-bold mb-4 tracking-tight leading-snug">{update.title}</h4>
-              <p className="text-white/50 text-sm leading-relaxed mb-6 flex-1 font-medium">{update.text}</p>
-              
-              {update.relatedProject && (
-                <div className="pt-6 border-t border-white/5 flex items-center gap-2 text-[9px] font-bold text-white/30 uppercase tracking-[0.2em]">
-                  <Layers size={14} className="text-brand-primary/60" /> {update.relatedProject}
+        {/* Industrial Vertical Timeline Layout */}
+        <div className="relative max-w-4xl mx-auto pl-8 sm:pl-10 border-l border-white/5 space-y-16">
+          {updates.map((update, i) => {
+            const tag = update.statusTag || 'Milestone';
+            const isShipped = tag === 'Shipped';
+            
+            return (
+              <motion.div
+                key={update.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative group"
+              >
+                {/* Timeline Dot Node */}
+                <div className="absolute -left-[41px] sm:-left-[45px] top-1.5 w-6 h-6 rounded-full bg-[#0A0A0A] border border-white/10 flex items-center justify-center group-hover:border-brand-primary/40 transition-colors">
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-brand-primary animate-pulse transition-colors" />
                 </div>
-              )}
-            </motion.div>
-          ))}
+
+                {/* Milestone Card Content */}
+                <div className="p-8 rounded-[32px] bg-[#0D0D0E] border border-white/5 hover:border-white/10 transition-all flex flex-col sm:flex-row sm:items-start gap-6 group shadow-xl">
+                  
+                  {/* Left Metadata Panel (Mobile/Desktop friendly) */}
+                  <div className="sm:w-36 shrink-0 space-y-2">
+                    <div className="text-[10px] font-mono font-bold tracking-wider text-white/30">{update.date}</div>
+                    <span className={cn(
+                      "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[8px] font-mono font-bold uppercase tracking-wider border",
+                      isShipped ? "bg-green-500/5 text-green-400 border-green-500/25" : "bg-brand-primary/5 text-brand-primary border-brand-primary/25"
+                    )}>
+                      <GitCommit size={10} /> {tag}
+                    </span>
+                  </div>
+
+                  {/* Right Details Panel */}
+                  <div className="flex-grow space-y-3">
+                    <h4 className="text-xl font-bold tracking-tight text-white leading-snug group-hover:text-brand-primary transition-colors">
+                      {update.title}
+                    </h4>
+                    <p className="text-white/45 text-sm leading-relaxed font-medium">
+                      {update.text}
+                    </p>
+
+                    {/* Infrastructure Tag References */}
+                    {update.relatedProject && (
+                      <div className="pt-4 border-t border-white/5 flex items-center gap-2 text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
+                        <Layers size={12} className="text-brand-primary/60" /> {update.relatedProject}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
       </div>
     </Section>
   );

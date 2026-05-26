@@ -10,7 +10,7 @@ import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
 import { auth, onAuthStateChanged, signOut } from "../firebase";
 
-export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
+export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
@@ -85,6 +85,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     { name: "Home", href: "/", id: "home" },
     { name: "Systems", href: "/systems", id: "systems" },
     { name: "Experiments", href: "/experiments", id: "experiments" },
+    { name: "Research", href: "/blog", id: "research" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
@@ -92,19 +93,13 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     {
       name: "About",
       href: "/about",
-      description: "My journey & background",
+      description: "Ecosystem architectural vision",
       icon: Users2
-    },
-    {
-      name: "Research Publications",
-      href: "/blog",
-      description: "Engineering & design logs",
-      icon: BookOpen
     },
     {
       name: "Milestones",
       href: "/milestones",
-      description: "Ecosystem milestones & logs",
+      description: "Ecosystem milestones & achievements",
       icon: Trophy
     },
     {
@@ -113,12 +108,32 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
       description: "Real-time compile details (Soon)",
       icon: Terminal,
       disabled: true
+    },
+    {
+      name: "Publications",
+      href: "/blog",
+      description: "Deep tech research publications",
+      icon: BookOpen
+    },
+    {
+      name: "Ecosystem Updates",
+      href: "/blog",
+      description: "Platform updates & announcements",
+      icon: Flame
     }
   ];
 
-  const activeExploreLinks = user 
-    ? [...exploreLinks, { name: "Vault", href: "/vault", description: "Your owned systems", icon: Clock }]
-    : exploreLinks;
+  // Construct activeExploreLinks preserving the requested order: About -> Milestones -> Engineering Logs -> Vault -> Publications -> Ecosystem Updates
+  const activeExploreLinks = [...exploreLinks];
+  if (user) {
+    activeExploreLinks.splice(3, 0, {
+      name: "Vault",
+      href: "/vault",
+      description: "Your active digital blueprints",
+      icon: Clock,
+      disabled: false
+    });
+  }
 
   useEffect(() => {
     if (activeExploreLinks.some(l => location.pathname === l.href)) {

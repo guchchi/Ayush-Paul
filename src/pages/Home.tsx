@@ -2,14 +2,16 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { HeroSection } from '../components/sections/HeroSection';
 import { SystemsEcosystemSection } from '../components/sections/SystemsEcosystemSection';
+import { AuthoritySection } from '../components/sections/AuthoritySection';
 import { ExperimentsRDSection } from '../components/sections/ExperimentsRDSection';
 import { ResearchPublicationsSection } from '../components/sections/ResearchPublicationsSection';
+import { UpdatesSection } from '../components/sections/UpdatesSection';
 import { EcosystemEvolutionSection } from '../components/sections/EcosystemEvolutionSection';
 import { FinalCTASection } from '../components/sections/FinalCTASection';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 
-export const HomePage = ({ onViewPortfolio }: { onViewPortfolio?: () => void }) => {
+export const HomePage = () => {
   useSEO({
     title: "Antigravity | Ecosystem of Intelligent Systems & Cybernetic R&D",
     description: "Explore flagship digital systems, cyber-physical blueprints, deep-tech research, and autonomous workflows engineered by Antigravity.",
@@ -50,21 +52,27 @@ export const HomePage = ({ onViewPortfolio }: { onViewPortfolio?: () => void }) 
       className="relative w-full"
     >
       {/* 1. HERO SECTION */}
-      <HeroSection onViewPortfolio={onViewPortfolio} />
+      <HeroSection />
       
-      {/* 2. SYSTEMS ECOSYSTEM SECTION */}
+      {/* 2. FEATURED OPERATIONAL SYSTEMS */}
       <SystemsEcosystemSection />
+
+      {/* 3. SYSTEMS INTELLIGENCE LAYER */}
+      <AuthoritySection />
       
-      {/* 3. EXPERIMENTS / R&D SECTION */}
+      {/* 4. ACTIVE EXPERIMENTS */}
       <ExperimentsRDSection />
       
-      {/* 4. RESEARCH PUBLICATIONS SECTION */}
+      {/* 5. RESEARCH PUBLICATIONS */}
       <ResearchPublicationsSection />
+
+      {/* 6. ENGINEERING LOGS */}
+      <UpdatesSection />
       
-      {/* 5. MILESTONES / EVOLUTION SECTION */}
+      {/* 7. ECOSYSTEM MILESTONES */}
       <EcosystemEvolutionSection />
 
-      {/* 6. FINAL CTA */}
+      {/* 8. FINAL CTA */}
       <FinalCTASection />
     </motion.div>
   );

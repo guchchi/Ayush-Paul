@@ -9,10 +9,9 @@ import { SmoothScrollProvider } from '../components/ui/motion/SmoothScroll';
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  onPortfolioClick: () => void;
 }
 
-export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
+export const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -65,7 +64,7 @@ export const MainLayout = ({ children, onPortfolioClick }: MainLayoutProps) => {
     <SmoothScrollProvider>
       <CommandPalette />
       <SocialProofTicker />
-      <Navbar onPortfolioClick={onPortfolioClick} />
+      <Navbar />
       
       <main className="w-full relative z-[10]">
         <AnimatePresence mode="wait">

@@ -58,7 +58,7 @@ export const NowPage = () => {
               <ul className="space-y-4 text-white/60 text-lg">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-brand-primary mt-2.5 shrink-0" />
-                  Building custom AI solutions for startups as a freelance developer.
+                  Architecting custom AI solutions and systems for enterprise partners.
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full bg-brand-primary mt-2.5 shrink-0" />

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
 import { 
-  Rocket, Code, Cpu, User, Zap, BookOpen, Lightbulb, Github, 
+  Rocket, Code, Cpu, Zap, BookOpen, Lightbulb, 
   Box, Brain, ShieldCheck, Trophy, Layers 
 } from 'lucide-react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -10,10 +10,10 @@ import { VARIANTS, EASING } from '../../lib/motion-presets';
 
 const StatsDashboard = () => {
   const stats = [
-    { label: "Active SaaS Products", value: "3 Nodes", icon: <Rocket size={20} />, color: "text-blue-400" },
-    { label: "Lines of Code", value: "100k+", icon: <Code size={20} />, color: "text-purple-400" },
-    { label: "Robots Built", value: "12", icon: <Cpu size={20} />, color: "text-orange-400" },
-    { label: "Blueprints Shipped", value: "3 Catalogs", icon: <Layers size={20} />, color: "text-green-400" },
+    { label: "Deployable Systems", value: "3 Nodes", icon: <Rocket size={20} />, color: "text-blue-400" },
+    { label: "Production Codebase", value: "100k+", icon: <Code size={20} />, color: "text-purple-400" },
+    { label: "Physical Nodes Deployed", value: "12", icon: <Cpu size={20} />, color: "text-orange-400" },
+    { label: "Active Digital Blueprints", value: "3 Catalogs", icon: <Layers size={20} />, color: "text-green-400" },
   ];
 
   return (
@@ -30,7 +30,7 @@ const StatsDashboard = () => {
           variants={VARIANTS.fadeUp}
           whileHover={VARIANTS.lift.whileHover}
           transition={{ ...VARIANTS.fadeUp.transition, delay: i * 0.1 }}
-          className="glass-card p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-white/5 text-center group hover:border-brand-primary/30 transition-all shadow-xl min-w-0 break-words overflow-hidden"
+          className="glass-card p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-white/5 text-center group hover:border-brand-primary/30 transition-all shadow-xl min-w-0 break-words overflow-hidden bg-[#0D0D0E]"
         >
           <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4 md:mb-6 ${stat.color} group-hover:scale-110 group-hover:bg-brand-primary/10 transition-all duration-500`}>
             {stat.icon}
@@ -45,9 +45,9 @@ const StatsDashboard = () => {
 
 const BrandEcosystem = () => {
   const items = [
-    { title: "Currently Building", content: "A premium, unified SaaS ecosystem and open-source robotics hardware platform.", icon: <Zap size={20} /> },
-    { title: "Learning in Public", content: "Deep diving into ROS2 and edge-AI integration for autonomous navigation.", icon: <BookOpen size={20} /> },
-    { title: "Venture Philosophy", content: "Simplicity is the ultimate sophistication. Formulate modular digital assets that scale autonomously.", icon: <Lightbulb size={20} /> },
+    { title: "System Mission", content: "A premium, unified operational systems catalog and deployable digital architecture infrastructure.", icon: <Zap size={20} /> },
+    { title: "Active Deep R&D", content: "Deep tech systems integration, ROS2 control networks, and decentralized intelligence workflows.", icon: <BookOpen size={20} /> },
+    { title: "Engineering Integrity", content: "Simplicity is the ultimate sophistication. Formulate modular physical & digital assets that execute autonomously.", icon: <Lightbulb size={20} /> },
   ];
 
   return (
@@ -64,7 +64,7 @@ const BrandEcosystem = () => {
           variants={VARIANTS.fadeUp}
           whileHover={VARIANTS.lift.whileHover}
           transition={{ ...VARIANTS.fadeUp.transition, delay: i * 0.1 }}
-          className="p-8 md:p-12 rounded-[32px] md:rounded-[48px] glass-card border border-white/5 hover:border-brand-primary/20 transition-all group min-w-0 break-words overflow-hidden"
+          className="p-8 md:p-12 rounded-[32px] md:rounded-[48px] glass-card border border-white/5 hover:border-brand-primary/20 transition-all group min-w-0 break-words overflow-hidden bg-[#0D0D0E]"
         >
           <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mb-8 md:mb-10 group-hover:scale-110 transition-transform">
             {item.icon}
@@ -89,33 +89,33 @@ export const AuthoritySection = () => {
 
   const pillars = [
     {
-      id: 'builder',
-      title: 'Builder',
+      id: 'software',
+      title: 'Software Infrastructure',
       icon: <Box className="w-8 h-8 text-brand-primary" />,
-      description: 'Production-ready SaaS platforms and software systems.',
+      description: 'Production-ready SaaS platforms and software ecosystems.',
       metrics: ['Modular Abstractions', 'High Availability', 'Production Analytics'],
       details: 'Building secure, full-stack applications with dynamic caching, seamless state synchronizations, and serverless scaling.'
     },
     {
-      id: 'creator',
-      title: 'Creator',
+      id: 'diagnostics',
+      title: 'UX Diagnostics',
       icon: <Zap className="w-8 h-8 text-brand-secondary" />,
-      description: 'Design-led technical products and micro-animations.',
+      description: 'Design-led technical interfaces and micro-interactions.',
       metrics: ['Design Ops & Aesthetics', 'High-Signal UI/UX', 'Dynamic Motion Prefabs'],
       details: 'Fusing sleek, glassmorphic typography, smooth interactions, and micro-telemetry elements into venture interfaces.'
     },
     {
-      id: 'technologist',
-      title: 'Technologist',
+      id: 'cyber-physical',
+      title: 'Cyber-Physical Systems',
       icon: <Brain className="w-8 h-8 text-brand-accent" />,
-      description: 'Cyber-physical systems, ROS2, and Edge AI.',
+      description: 'Cyber-physical systems, ROS2, and Edge AI integrations.',
       metrics: ['AI Agent System Design', 'ROS2 Spatial Blueprints', 'ESP32 Control Networks'],
       details: 'Bridging deep analytical software with low-latency physical systems, open-sourcing production CAD and code.'
     }
   ];
 
   return (
-    <Section id="achievements" glowVariant="center">
+    <Section id="systems-intelligence" glowVariant="center" className="py-24 border-t border-white/5">
       <div className="section-header">
         <motion.div 
           variants={VARIANTS.fadeUp} 
@@ -124,7 +124,7 @@ export const AuthoritySection = () => {
           viewport={{ once: true }}
           className="badge"
         >
-          Credibility & Impact
+          Capability & Diagnostics
         </motion.div>
         <motion.h2 
           variants={VARIANTS.fadeUp} 
@@ -132,7 +132,7 @@ export const AuthoritySection = () => {
           whileInView="animate" 
           viewport={{ once: true }} 
         >
-          Architecture of <span className="text-brand-primary">Authority</span>
+          Systems <span className="text-brand-primary">Intelligence Layer</span>
         </motion.h2>
         <motion.p 
           variants={VARIANTS.fadeUp} 
@@ -141,7 +141,7 @@ export const AuthoritySection = () => {
           viewport={{ once: true }} 
           className="text-center"
         >
-          A quantified view of my impact across software engineering, AI research, and robotics innovation.
+          A real-time telemetry matrix showing system execution metrics, technology architectures, and operational nodes.
         </motion.p>
       </div>
 
@@ -156,9 +156,9 @@ export const AuthoritySection = () => {
           viewport={{ once: true }}
           className="space-y-8 lg:space-y-12"
         >
-          <motion.h2 variants={VARIANTS.fadeUp} className="text-4xl lg:text-5xl">Technical <span className="text-brand-primary">Radar</span></motion.h2>
+          <motion.h2 variants={VARIANTS.fadeUp} className="text-4xl lg:text-5xl">Architecture <span className="text-brand-primary">Radar</span></motion.h2>
           <motion.p variants={VARIANTS.fadeUp} className="text-lg lg:text-xl leading-relaxed font-medium">
-            Core technical competencies across the full stack. I focus on the intersection of high-level software architecture and low-level hardware integration.
+            Core technical competencies across the operational stack. We focus on the intersection of high-level software architecture and low-level hardware integration.
           </motion.p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -172,7 +172,7 @@ export const AuthoritySection = () => {
                 key={i} 
                 variants={VARIANTS.fadeUp}
                 whileHover={VARIANTS.lift.whileHover}
-                className="p-8 glass-card border-white/5 glass-card-hover shadow-lg"
+                className="p-8 glass-card border-white/5 glass-card-hover shadow-lg bg-[#0D0D0E]"
               >
                 <div className="text-brand-primary font-bold text-xl mb-1">{item.value}</div>
                 <div className="text-white font-bold text-sm mb-2 uppercase tracking-wide">{item.label}</div>
@@ -187,7 +187,7 @@ export const AuthoritySection = () => {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden"
+          className="h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden bg-[#0D0D0E]"
         >
           <div className="absolute inset-0 bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
           <div className="relative w-full h-full min-h-[300px]">
@@ -212,7 +212,7 @@ export const AuthoritySection = () => {
             whileInView="animate"
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="p-10 glass-card border-white/5 relative group glass-card-hover overflow-hidden"
+            className="p-10 glass-card border-white/5 relative group glass-card-hover overflow-hidden bg-[#0D0D0E]"
           >
             <div className={`absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 blur-[80px] -z-10 group-hover:opacity-100 transition-opacity opacity-30`} />
             <div className="flex flex-col h-full space-y-8 relative z-10">
