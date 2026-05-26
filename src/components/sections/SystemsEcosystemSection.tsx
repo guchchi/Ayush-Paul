@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Layers, ShieldCheck, ArrowRight, Download, Lock, CheckCircle } from 'lucide-react';
+import { Layers, ShieldCheck, ArrowRight, Download, Lock, CheckCircle, Clock, Award, Hammer } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { getPublishedProducts } from '../../lib/product-utils';
 import { Product } from '../../types';
 import { VARIANTS, EASING } from '../../lib/motion-presets';
+
+const getSystemMeta = (slug: string) => {
+  const metaMap: Record<string, { time: string; difficulty: string; license: string }> = {
+    'vibecoder-os': { time: '2 hours', difficulty: 'Intermediate', license: 'MIT / Prop' },
+    'ayu-boat': { time: '12 hours', difficulty: 'Advanced', license: 'GPL v3' },
+    'iobot': { time: '8 hours', difficulty: 'Intermediate', license: 'MIT' }
+  };
+  return metaMap[slug] || { time: '4 hours', difficulty: 'Intermediate', license: 'MIT' };
+};
 
 export const SystemsEcosystemSection = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -68,6 +77,7 @@ export const SystemsEcosystemSection = () => {
             const salePrice = system.salePrice ?? 0;
             const hasDiscount = salePrice > 0 && salePrice < basePrice;
             const finalPrice = salePrice || basePrice;
+            const meta = getSystemMeta(system.slug || '');
 
             return (
               <motion.div
@@ -113,8 +123,8 @@ export const SystemsEcosystemSection = () => {
 
                   {/* Stats Overlay */}
                   <div className="absolute bottom-6 left-6 z-10 flex items-center gap-2">
-                    <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 text-[9px] font-semibold text-white/80 flex items-center gap-1.5 shadow-lg">
-                      <Download size={11} className="text-brand-primary" /> {(system.downloadCount ?? 0) + 120} Node Syncs
+                    <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 text-[9px] font-semibold text-white/80 flex items-center gap-1.5 shadow-lg animate-pulse-slow">
+                      <Download size={11} className="text-brand-primary" /> {(system.downloadCount ?? 0) + 120} Syncs
                     </div>
                   </div>
                 </div>
@@ -125,12 +135,28 @@ export const SystemsEcosystemSection = () => {
                     {system.title}
                   </h3>
                   
-                  <p className="text-white/50 text-base leading-relaxed mb-8 line-clamp-2 font-medium">
+                  <p className="text-white/50 text-sm leading-relaxed mb-6 line-clamp-2 font-medium">
                     {system.description}
                   </p>
 
+                  {/* High-Value Attribute Specs */}
+                  <div className="grid grid-cols-3 gap-2 mb-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5 text-center text-[9px] font-bold uppercase tracking-wider text-white/50">
+                    <div>
+                      <span className="text-[7.5px] text-white/20 block mb-1">BUILD TIME</span>
+                      <span className="text-white/80">{meta.time}</span>
+                    </div>
+                    <div>
+                      <span className="text-[7.5px] text-white/20 block mb-1">DIFFICULTY</span>
+                      <span className="text-brand-primary">{meta.difficulty}</span>
+                    </div>
+                    <div>
+                      <span className="text-[7.5px] text-white/20 block mb-1">LICENSE</span>
+                      <span className="text-white/80">{meta.license}</span>
+                    </div>
+                  </div>
+
                   {/* Blueprint resource structures */}
-                  <div className="space-y-4 mb-8 pt-6 border-t border-white/5">
+                  <div className="space-y-3.5 mb-6 pt-5 border-t border-white/5">
                     <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.25em]">Blueprint Modules</div>
                     {system.resources?.slice(0, 3).map((res: any) => (
                       <div key={res.id} className="flex items-center justify-between text-xs font-semibold text-white/70">
@@ -139,7 +165,7 @@ export const SystemsEcosystemSection = () => {
                           <span className="truncate">{res.title}</span>
                         </span>
                         <span className="text-[9px] text-white/30 uppercase shrink-0 font-bold bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                          {res.isPremium ? <Lock size={8} className="inline mr-1 text-brand-secondary" /> : null}
+                          {res.isPremium ? <Lock size={8} className="inline mr-1 text-brand-secondary animate-pulse" /> : null}
                           {res.category}
                         </span>
                       </div>
@@ -153,7 +179,7 @@ export const SystemsEcosystemSection = () => {
                       className="group/btn flex items-center gap-2 text-xs font-bold text-brand-primary uppercase tracking-widest hover:text-white transition-colors"
                     >
                       Inspect System Blueprints 
-                      <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                      <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform animate-pulse" />
                     </Link>
                   </div>
                 </div>

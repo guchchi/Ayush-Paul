@@ -146,7 +146,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio?: () => void 
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full pt-44 pb-20 flex flex-col justify-center items-center overflow-hidden"
+      className="relative w-full pt-40 pb-20 flex flex-col justify-center items-center overflow-hidden"
     >
       <Particles />
 
@@ -155,38 +155,13 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio?: () => void 
         <SectionGlow variant="hero" />
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex w-full items-center justify-center lg:justify-between">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center w-full">
           
-          {/* Left Social Rail */}
-          <div className="hidden lg:flex w-64 items-center justify-start min-w-0">
-            <div className="flex flex-col gap-6">
-              {[
-                { icon: <Github size={20} />, href: "https://github.com/guchchi/Ayush-Paul" },
-                { icon: <Linkedin size={20} />, href: "https://www.linkedin.com/in/paulayush/" },
-                { icon: <Youtube size={20} />, href: "https://www.youtube.com/@ALX-17" }
-              ].map((item, i) => (
-                <motion.a
-                  key={i}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.2 + i * 0.1, ease: EASING.PREMIUM as any }}
-                  whileHover={{ x: 5, color: "var(--color-brand-primary)", opacity: 1 }}
-                  className={cn("block text-white/30 transition-all hover:text-brand-primary")}
-                >
-                  {item.icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
-
-          {/* Center Hero Content */}
-          <div className="flex flex-col justify-center items-center w-full max-w-4xl mx-auto">
+          {/* Left Column: Systems Positioning */}
+          <div className="col-span-12 lg:col-span-7 flex flex-col items-start text-left">
             <motion.div 
-              className="w-full text-center flex flex-col items-center"
+              className="w-full flex flex-col items-start"
               variants={VARIANTS.staggerContainer}
               initial="initial"
               animate="animate"
@@ -194,69 +169,131 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio?: () => void 
               {/* Premium Systems Badge */}
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="badge mb-6 sm:mb-8 shadow-2xl shadow-brand-primary/10"
+                className="badge mb-6 shadow-2xl shadow-brand-primary/10"
               >
                 <ShieldCheck size={14} className="text-brand-primary animate-pulse" />
                 <span className="tracking-[0.25em] uppercase">Antigravity • Engineering Intelligence</span>
               </motion.div>
 
               {/* Power Headline */}
-              <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
-                <h1 className="leading-[1.05] tracking-tighter">
-                  <span className="sr-only">Antigravity</span>
-                  Ecosystem of <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Intelligent Digital Operations</span>
-                  <br />
-                  <span className="text-brand-primary italic block mt-2 sm:mt-4 text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold">
-                    And Hardware Systems.
-                  </span>
+              <motion.div variants={VARIANTS.fadeUp} className="mb-6">
+                <h1 className="leading-[1.1] tracking-tighter text-left text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+                  Building <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Experimental Systems</span> <br />
+                  & Digital Infrastructure.
                 </h1>
               </motion.div>
 
               <motion.div 
                  variants={VARIANTS.fadeUp}
-                 className="space-y-8 mb-12 sm:mb-20"
+                 className="space-y-6 mb-10 w-full"
               >
-                <p className="text-xl sm:text-2xl text-white/50 max-w-3xl mx-auto font-medium leading-relaxed">
-                  We engineer premium production-grade digital systems, autonomous workflows, and low-latency robotics blueprints uniting digital architecture and cybernetic R&D.
+                <p className="text-lg sm:text-xl text-white/50 font-medium leading-relaxed max-w-xl text-left">
+                  Operational architectures, low-latency firmware, and physical cybernetics engineered for scalable digital and physical intelligence.
                 </p>
                 
-                <div className="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
+                <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/30">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-ping" />
-                  Ecosystem Nodes Active: VibeCoder OS • Autonomous Control Systems • Spatial Interfaces
+                  Active Nodes: VibeCoder OS • Control Systems • Spatial Interfaces
                 </div>
               </motion.div>
 
               {/* Cinematic Ecosystem Navigation */}
               <motion.div
                 variants={VARIANTS.fadeUp}
-                className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
+                className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
               >
                 <MagneticButton className="w-full sm:w-auto">
                   <button 
                     onClick={() => handleScrollToSection('systems-ecosystem')}
-                    className="group relative flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-lg transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95 overflow-hidden w-full"
+                    className="group relative flex items-center justify-center px-10 py-4.5 bg-white text-black rounded-2xl font-bold text-base transition-all shadow-[0_20px_50px_rgba(255,255,255,0.05)] active:scale-95 overflow-hidden w-full sm:w-auto"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
-                    <span className="relative z-10 flex items-center gap-2">Explore Ecosystem <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></span>
+                    <span className="relative z-10 flex items-center gap-2">Explore Systems <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></span>
                   </button>
                 </MagneticButton>
                 
                 <MagneticButton className="w-full sm:w-auto">
                   <button
                     onClick={() => handleScrollToSection('experiments-rd')}
-                    className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-3 group relative overflow-hidden w-full"
+                    className="flex items-center justify-center px-10 py-4.5 glass-card border-white/10 text-white rounded-2xl font-bold text-base hover:bg-white/5 transition-all shadow-xl gap-2.5 group relative overflow-hidden w-full sm:w-auto"
                   >
                     <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl" />
-                    <span className="relative z-10">Research & Blueprints</span>
+                    <span className="relative z-10">View Experiments</span>
                   </button>
                 </MagneticButton>
               </motion.div>
             </motion.div>
           </div>
 
-          {/* Right Breathing Space */}
-          <div className="hidden lg:block w-64" />
+          {/* Right Column: Feature ONE Flagship System (VibeCoder OS) */}
+          <div className="col-span-12 lg:col-span-5 flex justify-center w-full">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8, ease: EASING.PREMIUM as any }}
+              className="w-full max-w-md glass-card rounded-[32px] border border-white/5 hover:border-white/10 shadow-2xl relative bg-[#0D0D0E] group overflow-hidden"
+              style={{ willChange: 'transform' }}
+            >
+              {/* Cover area */}
+              <div className="aspect-[16/10] overflow-hidden relative bg-black/40 border-b border-white/5">
+                <img 
+                  src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200" 
+                  alt="VibeCoder OS Technical Visual" 
+                  className="w-full h-full object-cover opacity-70 group-hover:scale-102 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
+                
+                {/* Overlays */}
+                <div className="absolute top-4 left-4">
+                  <span className="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[8px] font-bold text-white tracking-widest uppercase">
+                    NEURAL INTERFACE
+                  </span>
+                </div>
+                <div className="absolute top-4 right-4">
+                  <span className="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-brand-primary/20 text-[8px] font-bold text-brand-primary tracking-widest uppercase">
+                    v2.4-STABLE
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-4">
+                  <span className="px-3 py-1.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-[8px] font-bold text-white/80 flex items-center gap-1.5 shadow-lg uppercase tracking-wide">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> 45ms latency active
+                  </span>
+                </div>
+              </div>
+
+              {/* Details card content */}
+              <div className="p-8">
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-2 group-hover:text-brand-primary transition-colors">
+                  VibeCoder OS
+                </h3>
+                <p className="text-white/40 text-sm leading-relaxed mb-6 font-medium">
+                  Flagship local environment mapping speech inputs directly to production systems execution.
+                </p>
+
+                {/* Specs List */}
+                <div className="space-y-3 mb-8 pt-4 border-t border-white/5 text-xs text-white/60">
+                  <div className="flex justify-between">
+                    <span className="text-white/30">Architecture</span>
+                    <span className="font-bold">Neural Core Event-Loop</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/30">Interface Nodes</span>
+                    <span className="font-bold">Voice & Spatial Audio</span>
+                  </div>
+                </div>
+
+                {/* Inspect Link */}
+                <Link 
+                  to="/systems/vibecoder-os" 
+                  className="flex items-center justify-center gap-2.5 w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-bold text-sm transition-all uppercase tracking-wider group/inspect"
+                >
+                  Inspect System Blueprints
+                  <ArrowRight size={14} className="group-hover/inspect:translate-x-0.5 transition-transform text-brand-primary" />
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+
         </div>
       </div>
     </section>
