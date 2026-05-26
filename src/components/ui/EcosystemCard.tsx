@@ -1,21 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Download, ShieldCheck, ArrowRight, Lock, Hammer, ShieldAlert } from 'lucide-react';
+import { Download, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Product } from '../../types';
 
 interface EcosystemCardProps {
   project: Product;
 }
-
-const getSystemMeta = (slug: string) => {
-  const metaMap: Record<string, { time: string; difficulty: string; license: string; version: string }> = {
-    'vibecoder-os': { time: '2h Build', difficulty: 'Intermediate', license: 'MIT', version: 'v2.4-Stable' },
-    'ayu-boat': { time: '12h Build', difficulty: 'Advanced', license: 'GPLv3', version: 'v1.5-Release' },
-    'iobot': { time: '8h Build', difficulty: 'Intermediate', license: 'MIT', version: 'v1.0-Beta' }
-  };
-  return metaMap[slug] || { time: '4h Build', difficulty: 'Intermediate', license: 'MIT', version: 'v1.0' };
-};
 
 export const EcosystemCard = ({ project }: EcosystemCardProps) => {
   const downloadCount = project.downloadCount ?? 0;
@@ -23,7 +14,6 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
   const salePrice = project.salePrice ?? 0;
   const isFree = project.type === 'free';
   const hasDiscount = salePrice > 0 && salePrice < basePrice;
-  const meta = getSystemMeta(project.slug || '');
 
   return (
     <Link to={`/systems/${project.slug}`} className="block group h-full">
@@ -58,17 +48,10 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
             </span>
           </div>
 
-          {/* Top-Left Version Pill */}
-          <div className="absolute top-4 left-4 z-10">
-            <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-brand-primary/20 text-[9px] font-bold text-brand-primary tracking-wide shadow-lg uppercase">
-              {meta.version}
-            </span>
-          </div>
-
           {/* Bottom-Left Downloads Overlay */}
           <div className="absolute bottom-4 left-4 z-10">
-            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-3.5 py-1.5 text-[9px] font-semibold text-white/80 flex items-center gap-1.5 shadow-lg">
-              <Download size={11} className="text-brand-primary animate-pulse" /> {downloadCount + 120} Syncs
+            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-3.5 py-1.5 text-[9px] font-semibold text-white/80 flex items-center gap-1.5">
+              <Download size={11} className="text-brand-primary" /> {downloadCount + 120} Downloads
             </div>
           </div>
         </div>
@@ -96,22 +79,6 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
           <p className="text-white/40 text-sm leading-relaxed mb-6 line-clamp-2 font-medium">
             {project.description}
           </p>
-
-          {/* High-Value Specifications Grid */}
-          <div className="grid grid-cols-3 gap-2 mb-6 p-3.5 rounded-xl bg-white/[0.02] border border-white/5 text-center text-[9px] font-bold uppercase tracking-wider text-white/50">
-            <div>
-              <span className="text-[7px] text-white/25 block mb-1">COMPLEXITY</span>
-              <span className="text-brand-primary">{meta.difficulty}</span>
-            </div>
-            <div>
-              <span className="text-[7px] text-white/25 block mb-1">BUILD TIME</span>
-              <span className="text-white/80">{meta.time}</span>
-            </div>
-            <div>
-              <span className="text-[7px] text-white/25 block mb-1">MODULES</span>
-              <span className="text-white/80">{project.resources?.length || 3} units</span>
-            </div>
-          </div>
 
           {/* Footer Action Profile */}
           <div className="mt-auto pt-5 border-t border-white/5 flex items-center justify-between">

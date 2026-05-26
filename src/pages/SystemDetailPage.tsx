@@ -235,9 +235,10 @@ export const SystemDetailPage = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
               {product.features.map((feat, idx) => {
-                const [title, desc] = feat.name.includes(": ") 
-                  ? feat.name.split(": ") 
-                  : [feat.name, ""];
+                const featureName = typeof feat === 'string' ? feat : (feat?.name ?? '');
+                const [title, desc] = featureName.includes(": ") 
+                  ? featureName.split(": ") 
+                  : [featureName, ""];
                 return (
                   <div key={idx} className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.03] transition-colors flex flex-col space-y-4">
                     <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/80">

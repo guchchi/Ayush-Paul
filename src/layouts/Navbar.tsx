@@ -85,7 +85,6 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     { name: "Home", href: "/", id: "home" },
     { name: "Systems", href: "/systems", id: "systems" },
     { name: "Experiments", href: "/experiments", id: "experiments" },
-    { name: "Research", href: "/research", id: "research" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
@@ -93,49 +92,32 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
     {
       name: "About",
       href: "/about",
-      description: "Ecosystem background & vision",
+      description: "My journey & background",
       icon: Users2
+    },
+    {
+      name: "Research Publications",
+      href: "/blog",
+      description: "Engineering & design logs",
+      icon: BookOpen
     },
     {
       name: "Milestones",
       href: "/milestones",
-      description: "Ecosystem evolution timeline",
+      description: "Ecosystem milestones & logs",
       icon: Trophy
     },
     {
-      name: "Blogs",
-      href: "/blog",
-      description: "Engineering notes & updates",
-      icon: BookOpen
-    },
-    {
-      name: "Updates / Logs",
-      href: "/milestones",
-      description: "Active system log & compile feed",
-      icon: Terminal
-    },
-    {
-      name: "Collaborations",
-      href: "/collaborate",
-      description: "Engineering partnership protocols",
-      icon: Flame
-    },
-    {
-      name: "Awards",
-      href: "/about",
-      description: "National Level Innovation recognition",
-      icon: Heart
-    },
-    {
-      name: "Research Papers",
-      href: "/research",
-      description: "Deep architecture publications",
-      icon: FolderGit2
+      name: "Engineering Logs",
+      href: "#",
+      description: "Real-time compile details (Soon)",
+      icon: Terminal,
+      disabled: true
     }
   ];
 
   const activeExploreLinks = user 
-    ? [...exploreLinks, { name: "Vault", href: "/vault", description: "Your secure unlocked systems", icon: Clock }]
+    ? [...exploreLinks, { name: "Vault", href: "/vault", description: "Your owned systems", icon: Clock }]
     : exploreLinks;
 
   useEffect(() => {
