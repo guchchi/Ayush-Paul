@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useTransform, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useSafeScroll } from '../../hooks/useSafeScroll';
-import { ArrowRight, Github, Linkedin, Youtube } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Youtube, ShieldCheck } from 'lucide-react';
 import { Container } from '../ui/Container';
 import { MagneticButton } from '../ui/MagneticButton';
-import { SupportButton } from '../ui/SupportButton';
 import { cn } from '@/src/lib/utils';
-import { VARIANTS, EASING, DURATION } from '../../lib/motion-presets';
+import { VARIANTS, EASING } from '../../lib/motion-presets';
+import { SectionGlow } from '../ui/SectionGlow';
 
 const Particles = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -109,13 +109,10 @@ const Particles = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />;
 };
 
-import { SectionGlow } from '../ui/SectionGlow';
-
-export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }) => {
+export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio?: () => void }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
   
-  // Parallax setup for high-prestige feel
   const { scrollYProgress } = useSafeScroll(containerRef);
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const ySpring = useSpring(yParallax, { stiffness: 100, damping: 30 });
@@ -138,22 +135,30 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
     };
   }, []);
 
+  const handleScrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full pt-44 pb-20 flex flex-col justify-center items-center"
+      className="relative w-full pt-44 pb-20 flex flex-col justify-center items-center overflow-hidden"
     >
-      {/* Global Neon Glow Engine — variant: hero */}
+      <Particles />
+
+      {/* Global Neon Glow Engine */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
         <SectionGlow variant="hero" />
       </div>
 
-      {/* Hero Content — isolated at z-10 */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex w-full items-center justify-center lg:justify-between">
           
-          {/* Left Social Rail (lg only) */}
+          {/* Left Social Rail */}
           <div className="hidden lg:flex w-64 items-center justify-start min-w-0">
             <div className="flex flex-col gap-6">
               {[
@@ -168,7 +173,7 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.2 + i * 0.1, ease: EASING.PREMIUM }}
+                  transition={{ delay: 1.2 + i * 0.1, ease: EASING.PREMIUM as any }}
                   whileHover={{ x: 5, color: "var(--color-brand-primary)", opacity: 1 }}
                   className={cn("block text-white/30 transition-all hover:text-brand-primary")}
                 >
@@ -186,24 +191,24 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
               initial="initial"
               animate="animate"
             >
-              {/* High-Authority Identity Badge */}
+              {/* Premium Systems Badge */}
               <motion.div
                 variants={VARIANTS.fadeUp}
                 className="badge mb-6 sm:mb-8 shadow-2xl shadow-brand-primary/10"
               >
-                <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-                <span className="tracking-[0.25em]">Founder • Lead Engineer • AI Architect</span>
+                <ShieldCheck size={14} className="text-brand-primary animate-pulse" />
+                <span className="tracking-[0.25em] uppercase">Antigravity • Engineering Intelligence</span>
               </motion.div>
 
-              {/* Power Headline & Authority Statement */}
+              {/* Power Headline */}
               <motion.div variants={VARIANTS.fadeUp} className="mb-10 sm:mb-16">
-                <h1 className="leading-[1.1]">
-                  <span className="sr-only">Ayush Paul</span>
-                  Compounding Value <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Through Digital Ventures</span>
+                <h1 className="leading-[1.05] tracking-tighter">
+                  <span className="sr-only">Antigravity</span>
+                  Ecosystem of <br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40">Intelligent Digital Operations</span>
                   <br />
                   <span className="text-brand-primary italic block mt-2 sm:mt-4 text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold">
-                    And Intelligent Systems.
+                    And Hardware Systems.
                   </span>
                 </h1>
               </motion.div>
@@ -212,48 +217,45 @@ export const HeroSection = ({ onViewPortfolio }: { onViewPortfolio: () => void }
                  variants={VARIANTS.fadeUp}
                  className="space-y-8 mb-12 sm:mb-20"
               >
-                <p className="text-xl sm:text-3xl text-white/50 max-w-3xl mx-auto font-medium leading-tight">
-                  I build production-grade SaaS platforms, autonomous agents, and open-source robotics blueprints, uniting software design and hardware R&D.
+                <p className="text-xl sm:text-2xl text-white/50 max-w-3xl mx-auto font-medium leading-relaxed">
+                  We engineer premium production-grade digital systems, autonomous workflows, and low-latency robotics blueprints uniting digital architecture and cybernetic R&D.
                 </p>
                 
-                <div className="flex items-center justify-center gap-4 text-[11px] font-bold uppercase tracking-[0.3em] text-white/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-ping" />
-                  Currently Building: SaaS Ecosystems • Autonomous Agents
+                <div className="flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-ping" />
+                  Ecosystem Nodes Active: VibeCoder OS • Autonomous Control Systems • Spatial Interfaces
                 </div>
               </motion.div>
 
+              {/* Cinematic Ecosystem Navigation */}
               <motion.div
                 variants={VARIANTS.fadeUp}
                 className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg mx-auto"
               >
                 <MagneticButton className="w-full sm:w-auto">
-                  <Link 
-                    to="/contact" 
-                    className="group relative flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-xl transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95 overflow-hidden"
+                  <button 
+                    onClick={() => handleScrollToSection('systems-ecosystem')}
+                    className="group relative flex items-center justify-center px-12 py-5 bg-white text-black rounded-3xl font-bold text-lg transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95 overflow-hidden w-full"
                   >
-                    {/* Premium Shimmer Effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
-                    <span className="relative z-10">Work With Me</span>
-                  </Link>
+                    <span className="relative z-10 flex items-center gap-2">Explore Ecosystem <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></span>
+                  </button>
                 </MagneticButton>
                 
-                <MagneticButton
-                  onClick={onViewPortfolio}
-                  className="w-full sm:w-auto"
-                >
-                  <div className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-xl hover:bg-white/5 transition-all shadow-xl gap-3 group relative overflow-hidden">
-                    {/* Animated Liquid Glow */}
+                <MagneticButton className="w-full sm:w-auto">
+                  <button
+                    onClick={() => handleScrollToSection('experiments-rd')}
+                    className="flex items-center justify-center px-12 py-5 glass-card border-white/10 text-white rounded-3xl font-bold text-lg hover:bg-white/5 transition-all shadow-xl gap-3 group relative overflow-hidden w-full"
+                  >
                     <div className="absolute inset-0 bg-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl" />
-                    
-                    <span className="relative z-10">View Projects</span>
-                    <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-2 group-hover:text-brand-primary transition-all duration-300" />
-                  </div>
+                    <span className="relative z-10">Research & Blueprints</span>
+                  </button>
                 </MagneticButton>
               </motion.div>
             </motion.div>
           </div>
 
-          {/* Right Breathing Space (lg only) */}
+          {/* Right Breathing Space */}
           <div className="hidden lg:block w-64" />
         </div>
       </div>
