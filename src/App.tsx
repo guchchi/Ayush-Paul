@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 
 // --- Layouts ---
@@ -14,8 +14,8 @@ const SuccessPage = lazy(() => import("./pages/SuccessPage").then(m => ({ defaul
 const CancelPage = lazy(() => import("./pages/CancelPage").then(m => ({ default: m.CancelPage })));
 const NowPage = lazy(() => import("./pages/NowPage").then(m => ({ default: m.NowPage })));
 const AboutPage = lazy(() => import("./pages/AboutPage").then(m => ({ default: m.AboutPage })));
-const ProjectsPage = lazy(() => import("./pages/ProjectsPage").then(m => ({ default: m.ProjectsPage })));
-const ProjectDetailPage = lazy(() => import("./pages/ProjectDetailPage").then(m => ({ default: m.ProjectDetailPage })));
+const ExperimentsPage = lazy(() => import("./pages/ExperimentsPage").then(m => ({ default: m.ExperimentsPage })));
+const ExperimentDetailPage = lazy(() => import("./pages/ExperimentDetailPage").then(m => ({ default: m.ExperimentDetailPage })));
 const ProfileSelectionPage = lazy(() => import("./pages/ProfileSelectionPage").then(m => ({ default: m.ProfileSelectionPage })));
 const CollaboratePage = lazy(() => import("./pages/CollaboratePage").then(m => ({ default: m.CollaboratePage })));
 const ContactPage = lazy(() => import("./pages/ContactPage").then(m => ({ default: m.ContactPage })));
@@ -25,12 +25,12 @@ const TermsPage = lazy(() => import("./pages/TermsPage").then(m => ({ default: m
 const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default: m.CookiePage })));
 const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
-const ProductsPage = lazy(() => import("./pages/ProductsPage").then(m => ({ default: m.ProductsPage })));
-const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage").then(m => ({ default: m.ProductDetailPage })));
+const SystemsPage = lazy(() => import("./pages/SystemsPage").then(m => ({ default: m.SystemsPage })));
+const SystemDetailPage = lazy(() => import("./pages/SystemDetailPage").then(m => ({ default: m.SystemDetailPage })));
 const LabsPage = lazy(() => import("./pages/LabsPage").then(m => ({ default: m.LabsPage })));
 const LabDetailPage = lazy(() => import("./pages/LabDetailPage").then(m => ({ default: m.LabDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
-const LabDashboardPage = lazy(() => import("./pages/LabDashboardPage").then(m => ({ default: m.LabDashboardPage })));
+const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
 const MomentumPage = lazy(() => import("./pages/MomentumPage").then(m => ({ default: m.MomentumPage })));
 
 // --- Loading Fallback ---
@@ -125,8 +125,10 @@ export default function App() {
               } />
               <Route path="/now" element={wrapInLayout(<NowPage />)} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
-              <Route path="/projects" element={wrapInLayout(<ProjectsPage />)} />
-              <Route path="/projects/:slug" element={wrapInLayout(<ProjectDetailPage />)} />
+              <Route path="/projects" element={wrapInLayout(<ExperimentsPage />)} />
+              <Route path="/projects/:slug" element={wrapInLayout(<ExperimentDetailPage />)} />
+              <Route path="/experiments" element={wrapInLayout(<ExperimentsPage />)} />
+              <Route path="/experiments/:slug" element={wrapInLayout(<ExperimentDetailPage />)} />
               <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
               <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
               <Route path="/collaborate" element={wrapInLayout(<CollaboratePage />)} />
@@ -139,12 +141,18 @@ export default function App() {
               <Route path="/admin/content" element={<ContentAdminPage />} />
               <Route path="/success" element={<SuccessPage />} />
               <Route path="/cancel" element={<CancelPage />} />
-              <Route path="/products" element={wrapInLayout(<ProductsPage />)} />
-              <Route path="/products/:slug" element={wrapInLayout(<ProductDetailPage />)} />
-              <Route path="/labs" element={wrapInLayout(<LabsPage />)} />
-              <Route path="/labs/:slug" element={wrapInLayout(<LabDetailPage />)} />
+              <Route path="/products" element={wrapInLayout(<SystemsPage />)} />
+              <Route path="/products/:slug" element={wrapInLayout(<SystemDetailPage />)} />
+              <Route path="/systems" element={wrapInLayout(<SystemsPage />)} />
+              <Route path="/systems/:slug" element={wrapInLayout(<SystemDetailPage />)} />
+              <Route path="/labs" element={<Navigate to="/systems" replace />} />
+              <Route path="/labs/:slug" element={<Navigate to="/systems" replace />} />
               <Route path="/thank-you" element={wrapInLayout(<ThankYouPage />)} />
-              <Route path="/lab/dashboard" element={wrapInLayout(<LabDashboardPage />)} />
+              <Route path="/lab/dashboard" element={wrapInLayout(<VaultPage />)} />
+              <Route path="/vault" element={wrapInLayout(<VaultPage />)} />
+              <Route path="/blogs" element={<Navigate to="/blog" replace />} />
+              <Route path="/research" element={<Navigate to="/blog" replace />} />
+              <Route path="/milestones" element={wrapInLayout(<MomentumPage />)} />
               <Route path="/momentum" element={wrapInLayout(<MomentumPage />)} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

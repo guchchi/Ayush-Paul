@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock, Layers, BookOpen, Trophy, Terminal } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
 import { useScrollToSection } from "@/src/hooks/useScrollToSection";
@@ -83,46 +83,48 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
 
   const navLinks = [
     { name: "Home", href: "/", id: "home" },
-    { name: "Products", href: "/products", id: "products" },
-    { name: "Labs", href: "/labs", id: "labs" },
-    { name: "Blog", href: "/blog", id: "latest-blogs" },
-    { name: "About", href: "/about", id: "about" },
+    { name: "Systems", href: "/systems", id: "systems" },
+    { name: "Experiments", href: "/experiments", id: "experiments" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
   const exploreLinks = [
     {
-      name: "Projects",
-      href: "/projects",
-      description: "Innovative builds & apps",
-      icon: FolderGit2
-    },
-    {
-      name: "Collaborate",
-      href: "/collaborate",
-      description: "Build something epic together",
+      name: "About",
+      href: "/about",
+      description: "My journey & background",
       icon: Users2
     },
     {
-      name: "Momentum",
-      href: "/momentum",
-      description: "Real-time logs & milestones",
-      icon: Flame
+      name: "Research Publications",
+      href: "/blog",
+      description: "Engineering & design logs",
+      icon: BookOpen
     },
     {
-      name: "Now",
-      href: "/now",
-      description: "What I'm focused on right now",
-      icon: Clock
+      name: "Milestones",
+      href: "/milestones",
+      description: "Ecosystem milestones & logs",
+      icon: Trophy
+    },
+    {
+      name: "Engineering Logs",
+      href: "#",
+      description: "Real-time compile details (Soon)",
+      icon: Terminal,
+      disabled: true
     }
   ];
 
-  // Auto-expand mobile explore section if current path is an explore link
+  const activeExploreLinks = user 
+    ? [...exploreLinks, { name: "Vault", href: "/vault", description: "Your owned systems", icon: Clock }]
+    : exploreLinks;
+
   useEffect(() => {
-    if (exploreLinks.some(l => location.pathname === l.href)) {
+    if (activeExploreLinks.some(l => location.pathname === l.href)) {
       setIsMobileExploreOpen(true);
     }
-  }, [location.pathname]);
+  }, [location.pathname, user]);
 
   const handleNavClick = (link: any, e: React.MouseEvent) => {
     setIsMobileMenuOpen(false);
@@ -178,7 +180,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
               to={link.href}
               onClick={(e) => handleNavClick(link, e)}
               className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden block",
+                "text-xs font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden block",
                 (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
                   ? "text-white" 
                   : "text-white/30 hover:text-white/60"
@@ -204,8 +206,8 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
           >
             <button
               className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full flex items-center gap-1.5 group select-none outline-none",
-                isExploreOpen || exploreLinks.some(l => location.pathname === l.href)
+                "text-xs font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full flex items-center gap-1.5 group select-none outline-none",
+                isExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
                   ? "text-white" 
                   : "text-white/30 hover:text-white/60"
               )}
@@ -218,7 +220,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
                 )}
               />
-              {(exploreLinks.some(l => location.pathname === l.href)) && (
+              {(activeExploreLinks.some(l => location.pathname === l.href)) && (
                 <motion.div 
                   layoutId="nav-pill"
                   transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
@@ -241,9 +243,39 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
                   
                   <div className="flex flex-col gap-1 relative z-10">
-                    {exploreLinks.map((link) => {
+                    {activeExploreLinks.map((link) => {
                       const Icon = link.icon;
                       const isActive = location.pathname === link.href;
+                      const content = (
+                        <>
+                          <div className={cn(
+                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
+                            isActive 
+                              ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                              : link.disabled
+                                ? "bg-white/[0.01] text-white/10"
+                                : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
+                          )}>
+                            <Icon size={16} className={cn("transition-transform", !link.disabled && "group-hover/item:scale-110")} />
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <span className={cn("text-xs font-bold tracking-wider font-display", link.disabled ? "text-white/25" : "text-white")}>{link.name}</span>
+                            <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
+                          </div>
+                        </>
+                      );
+
+                      if (link.disabled) {
+                        return (
+                          <div
+                            key={link.name}
+                            className="flex items-center gap-4 p-3 rounded-2xl border border-transparent text-white/20 select-none cursor-not-allowed bg-white/[0.01]"
+                          >
+                            {content}
+                          </div>
+                        );
+                      }
+
                       return (
                         <Link
                           key={link.name}
@@ -256,18 +288,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                               : "text-white/55 hover:bg-white/[0.03] hover:border-white/5 hover:text-white"
                           )}
                         >
-                          <div className={cn(
-                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
-                            isActive 
-                              ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                              : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
-                          )}>
-                            <Icon size={16} className="transition-transform group-hover/item:scale-110" />
-                          </div>
-                          <div className="flex flex-col text-left">
-                            <span className="text-xs font-bold tracking-wider font-display">{link.name}</span>
-                            <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
-                          </div>
+                          {content}
                         </Link>
                       );
                     })}
@@ -283,7 +304,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
           {user ? (
             <div className="flex items-center gap-4 shrink-0">
               <Link 
-                to="/lab/dashboard"
+                to="/vault"
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors shrink-0"
               >
                 <img 
@@ -291,7 +312,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                   alt="Avatar" 
                   className="w-6 h-6 rounded-full shrink-0"
                 />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white whitespace-nowrap">Lab</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white whitespace-nowrap">Vault</span>
               </Link>
             </div>
           ) : (
@@ -400,7 +421,7 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                         onClick={() => setIsMobileExploreOpen(prev => !prev)}
                         className={cn(
                           "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300 text-left outline-none",
-                          isMobileExploreOpen || exploreLinks.some(l => location.pathname === l.href)
+                          isMobileExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
                             ? "bg-white/5 text-white" 
                             : "text-white/40 hover:text-white hover:bg-white/5"
                         )}
@@ -423,37 +444,58 @@ export const Navbar = ({ onPortfolioClick }: { onPortfolioClick: () => void }) =
                             transition={{ type: "spring", duration: 0.4, bounce: 0 }}
                             className="overflow-hidden pl-4 pr-2 space-y-1"
                           >
-                            {exploreLinks.map((link) => {
-                              const Icon = link.icon;
-                              const isActive = location.pathname === link.href;
-                              return (
-                                <Link
-                                  key={link.name}
-                                  to={link.href}
-                                  onClick={() => {
-                                    setIsMobileMenuOpen(false);
-                                    setIsMobileExploreOpen(false);
-                                  }}
-                                  className={cn(
-                                    "flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 border border-transparent",
-                                    isActive 
-                                      ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                                      : "text-white/40 hover:text-white hover:bg-white/5"
-                                  )}
-                                >
-                                  <div className={cn(
-                                    "w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
-                                    isActive ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" : "bg-white/5 text-white/30"
-                                  )}>
-                                    <Icon size={14} />
-                                  </div>
-                                  <div className="flex flex-col text-left">
-                                    <span className="text-sm font-bold font-display">{link.name}</span>
-                                    <span className="text-[10px] text-white/20 font-medium mt-0.5">{link.description}</span>
-                                  </div>
-                                </Link>
-                              );
-                            })}
+                             {activeExploreLinks.map((link) => {
+                               const Icon = link.icon;
+                               const isActive = location.pathname === link.href;
+                               const content = (
+                                 <>
+                                   <div className={cn(
+                                     "w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
+                                     isActive 
+                                       ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                                       : link.disabled
+                                         ? "bg-white/[0.01] text-white/10"
+                                         : "bg-white/5 text-white/30"
+                                   )}>
+                                     <Icon size={14} />
+                                   </div>
+                                   <div className="flex flex-col text-left">
+                                     <span className={cn("text-sm font-bold font-display", link.disabled ? "text-white/20" : "text-white")}>{link.name}</span>
+                                     <span className="text-[10px] text-white/20 font-medium mt-0.5">{link.description}</span>
+                                   </div>
+                                 </>
+                               );
+
+                               if (link.disabled) {
+                                 return (
+                                   <div
+                                     key={link.name}
+                                     className="flex items-center gap-4 p-3.5 rounded-2xl border border-transparent text-white/20 cursor-not-allowed bg-white/[0.01]"
+                                   >
+                                     {content}
+                                   </div>
+                                 );
+                               }
+
+                               return (
+                                 <Link
+                                   key={link.name}
+                                   to={link.href}
+                                   onClick={() => {
+                                     setIsMobileMenuOpen(false);
+                                     setIsMobileExploreOpen(false);
+                                   }}
+                                   className={cn(
+                                     "flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 border border-transparent",
+                                     isActive 
+                                       ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                                       : "text-white/40 hover:text-white hover:bg-white/5"
+                                   )}
+                                 >
+                                   {content}
+                                 </Link>
+                               );
+                             })}
                           </motion.div>
                         )}
                       </AnimatePresence>

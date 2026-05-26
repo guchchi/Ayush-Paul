@@ -62,32 +62,32 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 const isPublicRoute = () => {
   if (typeof window === 'undefined') return false;
   const path = window.location.pathname;
-  return !path.startsWith('/dashboard') && !path.startsWith('/admin') && !path.startsWith('/lab/dashboard');
+  return !path.startsWith('/dashboard') && !path.startsWith('/admin') && !path.startsWith('/lab/dashboard') && !path.startsWith('/vault');
 };
 
-const monitoredGetDoc = async (...args: Parameters<typeof getDoc>) => {
+const monitoredGetDoc = ((...args: any[]) => {
   if (import.meta.env.DEV) {
     console.log("%c📊 [QUOTA] Firestore Read: getDoc", "color: #00C2FF; font-weight: bold;");
   }
-  return getDoc(...args);
-};
+  return (getDoc as any)(...args);
+}) as unknown as typeof getDoc;
 
-const monitoredGetDocs = async (...args: Parameters<typeof getDocs>) => {
+const monitoredGetDocs = ((...args: any[]) => {
   if (import.meta.env.DEV) {
     console.log("%c📊 [QUOTA] Firestore Read: getDocs", "color: #00C2FF; font-weight: bold;");
   }
-  return getDocs(...args);
-};
+  return (getDocs as any)(...args);
+}) as unknown as typeof getDocs;
 
-const monitoredOnSnapshot = (...args: Parameters<typeof onSnapshot>) => {
+const monitoredOnSnapshot = ((...args: any[]) => {
   if (isPublicRoute()) {
     console.warn("%c🚨 [GUARD] Accidental onSnapshot detected on public route! Use getDocs + Cache instead to save quota.", "color: #FF0055; font-weight: bold;");
   }
   if (import.meta.env.DEV) {
     console.log("%c📡 [LISTENER] Firestore onSnapshot active", "color: #FFCC00; font-weight: bold;");
   }
-  return onSnapshot(...args);
-};
+  return (onSnapshot as any)(...args);
+}) as unknown as typeof onSnapshot;
 
 export { 
   signInWithPopup, 

@@ -9,7 +9,7 @@ import { VARIANTS, EASING } from '../lib/motion-presets';
 import { cn } from '../lib/utils';
 import ReactMarkdown from 'react-markdown';
 
-export const ProjectDetailPage = () => {
+export const ExperimentDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,8 +43,8 @@ export const ProjectDetailPage = () => {
   if (!project) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center text-center">
-        <h1 className="text-4xl font-bold mb-4">Project Not Found</h1>
-        <Link to="/projects" className="text-brand-primary hover:underline">Return to Projects</Link>
+        <h1 className="text-4xl font-bold mb-4">Experiment Not Found</h1>
+        <Link to="/experiments" className="text-brand-primary hover:underline">Return to Experiments</Link>
       </div>
     );
   }
@@ -52,8 +52,8 @@ export const ProjectDetailPage = () => {
   return (
     <div className="w-full bg-[#0A0A0A] min-h-screen pt-44 pb-24">
       <div className="max-w-4xl mx-auto px-6 lg:px-8">
-        <Link to="/projects" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-12 text-sm font-bold uppercase tracking-widest">
-          <ArrowLeft size={16} /> Back to Showcase
+        <Link to="/experiments" className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors mb-12 text-sm font-bold uppercase tracking-widest">
+          <ArrowLeft size={16} /> Back to Experiments
         </Link>
 
         <motion.div variants={VARIANTS.fadeUp} initial="initial" animate="animate" className="space-y-8 mb-16">
@@ -144,3 +144,5 @@ export const ProjectDetailPage = () => {
     </div>
   );
 };
+
+export default ExperimentDetailPage;

@@ -38,8 +38,8 @@ export const Footer = () => {
             <ul className="space-y-4">
               {[
                 { name: "Home", href: "/" },
-                { name: "Projects", href: "/projects" },
-                { name: "Products", href: "/products" },
+                { name: "Experiments", href: "/experiments" },
+                { name: "Systems", href: "/systems" },
                 { name: "Labs", href: "/labs" },
                 { name: "Momentum", href: "/momentum" },
                 { name: "Blog", href: "/blog" },

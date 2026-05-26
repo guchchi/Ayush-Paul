@@ -80,6 +80,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: "completed"
       });
       console.log(`[Verify API] Logged purchase for session: ${sessionId}`);
+
+      // Also log safe public purchase for SocialProofTicker
+      await db.collection("public_purchases").add({
+        productId,
+        currency: session.currency,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+      console.log(`[Verify API] Logged public purchase proof for session: ${sessionId}`);
     }
 
     console.log(`[Verify API] Successfully verified and granted access to ${productId} for ${userId}`);

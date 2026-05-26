@@ -109,6 +109,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: "completed"
       });
 
+      // 2b. Record the public proof for the SocialProofTicker (safe, non-sensitive)
+      await db.collection("public_purchases").add({
+        productId,
+        currency: session.currency,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+
       // 3. Send automated delivery email via Resend
       const resendApiKey = process.env.RESEND_API_KEY;
       if (resendApiKey) {
@@ -139,7 +146,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 customerName: customerName,
                 productName: productData.title,
                 amount: formattedAmount,
-                labUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/lab/dashboard`
+                labUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/vault`
               })
             });
             console.log(`📧 Receipt email sent to ${customerEmail}`);

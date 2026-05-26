@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft, Cpu, Terminal, Activity, Eye } from 'lucide-react';
+import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft, Cpu, Terminal, Activity, Eye, Lock, FileText, MessageSquare, Layers } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
@@ -398,7 +398,7 @@ export const LabDetailPage = () => {
                   : 'border-transparent text-white/40 hover:text-white hover:bg-white/[0.02]'
               }`}
             >
-              [NODE_ARCHITECTURE_BOM]
+              [SYSTEM_MODULE_DIRECTORY]
             </button>
             <button 
               onClick={() => setActiveTab('milestones')}
@@ -425,54 +425,182 @@ export const LabDetailPage = () => {
           <div className="min-h-[220px]">
             {activeTab === 'architecture' && (
               <div className="space-y-6">
-                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
-                  System Architecture & Dependency Modules
+                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest flex items-center justify-between gap-4">
+                  <span>System Resource & Module Index</span>
+                  <span className="text-brand-primary font-bold">SHA256_VERIFIED</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {product.comparisonFree.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3.5 p-5 rounded-2xl bg-white/[0.01] border border-white/5 font-mono text-xs text-white/80">
-                      <span className="text-brand-primary font-bold">CORE_MOD_0{idx + 1}</span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                  {product.comparisonPremium.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3.5 p-5 rounded-2xl bg-brand-primary/5 border border-brand-primary/15 font-mono text-xs text-brand-primary/90 shadow-[inset_0_0_20px_rgba(0,194,255,0.02)]">
-                      <span className="text-brand-primary font-bold">CAD_SCHEM_0{idx + 1}</span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
+                  {product.resources?.map((resource) => {
+                    const isOwned = profile?.ownedProducts?.[product.id] === 'premium' || product.type === 'free';
+                    const hasAccess = !resource.isPremium || isOwned;
+                    
+                    // Select appropriate Lucide icon depending on Category
+                    let IconComponent = FileText;
+                    if (resource.category === 'code_snippet') IconComponent = Terminal;
+                    else if (resource.category === 'prompt') IconComponent = MessageSquare;
+                    else if (resource.category === 'template') IconComponent = Layers;
+                    else if (resource.category === 'workflow') IconComponent = Activity;
+                    else if (resource.category === 'diagram') IconComponent = Eye;
+                    
+                    return (
+                      <div 
+                        key={resource.id} 
+                        className={`p-5 rounded-2xl border transition-all flex items-start justify-between gap-6 group/item ${
+                          resource.isPremium 
+                            ? 'bg-brand-primary/[0.01] border-brand-primary/10 hover:bg-brand-primary/[0.03] hover:border-brand-primary/20' 
+                            : 'bg-white/[0.01] border-white/5 hover:bg-white/[0.02] hover:border-white/10'
+                        }`}
+                      >
+                        <div className="flex gap-4 min-w-0 flex-1">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${
+                            resource.isPremium
+                              ? 'bg-brand-primary/10 border-brand-primary/20 text-brand-primary'
+                              : 'bg-white/5 border-white/10 text-white/60'
+                          }`}>
+                            <IconComponent size={18} />
+                          </div>
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-[9px] uppercase tracking-wider text-white/40">
+                                [{resource.category}]
+                              </span>
+                              {resource.fileSize && (
+                                <span className="font-mono text-[9px] text-brand-primary font-semibold">
+                                  {resource.fileSize}
+                                </span>
+                              )}
+                            </div>
+                            <h4 className="text-sm font-bold text-white group-hover/item:text-brand-primary transition-colors truncate">
+                              {resource.title}
+                            </h4>
+                            <p className="text-xs text-white/40 leading-relaxed font-sans font-medium line-clamp-2">
+                              {resource.description}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="shrink-0 pt-1">
+                          {hasAccess ? (
+                            <button 
+                              onClick={() => {
+                                if (product.type === 'free') {
+                                  handleFreeDownload();
+                                } else {
+                                  // Trigger master bundle download
+                                  if (product.downloadFileURL) {
+                                    window.open(product.downloadFileURL, '_blank');
+                                  } else {
+                                    alert("🔧 Direct download not yet configured for this system node. Please contact support.");
+                                  }
+                                }
+                              }}
+                              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-brand-primary hover:text-black hover:border-brand-primary transition-all shadow-sm"
+                              title="Extract Resource Bundle"
+                            >
+                              <Download size={14} />
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={handlePremiumUpgrade}
+                              className="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-black border border-red-500/20 hover:border-red-500 transition-all font-mono text-[9px] font-bold uppercase tracking-wider flex items-center gap-1.5"
+                              title="Locked - Unlock premium access"
+                            >
+                              <Lock size={10} /> Locked
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
             {activeTab === 'milestones' && (
-              <div className="space-y-6">
+              <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
                   Engineering Evolution Phases
                 </div>
-                <div className="relative border-l border-white/10 pl-6 ml-4 space-y-8 font-mono text-xs">
+                <div className="relative border-l border-white/10 pl-6 ml-4 space-y-8 font-mono text-xs mb-12">
                   <div className="relative">
-                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
+                    <span className="absolute -left-[31px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
                     <div className="font-bold text-white uppercase">PHASE 01: THEORY & MODEL SIMULATION // 100% COMPLETE</div>
                     <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
                       Mathematical validation of kinematic motion vectors, physical load distribution modeling, and algorithm validation in isolated simulations.
                     </p>
                   </div>
                   <div className="relative">
-                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
+                    <span className="absolute -left-[31px] top-1 w-2.5 h-2.5 rounded-full bg-green-500 ring-4 ring-green-500/20" />
                     <div className="font-bold text-white uppercase">PHASE 02: PHYSICAL HARDWARE POC // 100% COMPLETE</div>
                     <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
                       First-pass PCB fabrication, actuator thermal stress validation, embedded controller code integration, and mechanical stress modeling.
                     </p>
                   </div>
                   <div className="relative">
-                    <span className="absolute -left-[30px] top-1 w-2.5 h-2.5 rounded-full bg-brand-primary animate-pulse ring-4 ring-brand-primary/20" />
+                    <span className="absolute -left-[31px] top-1 w-2.5 h-2.5 rounded-full bg-brand-primary animate-pulse ring-4 ring-brand-primary/20" />
                     <div className="font-bold text-brand-primary uppercase">PHASE 03: REGISTRY DEPLOYMENT // ACTIVE R&D PROTOCOL</div>
                     <p className="text-white/40 mt-1.5 leading-relaxed max-w-2xl font-sans font-medium">
                       Releasing index packages, compiling dynamic CAD blueprint vaults, and standardizing cross-platform neural automation layers.
                     </p>
                   </div>
                 </div>
+
+                {product.changelog && product.changelog.length > 0 && (
+                  <div className="pt-10 border-t border-white/5 space-y-6">
+                    <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest flex items-center justify-between gap-4">
+                      <span>[SYSTEM_MAINTENANCE_LOGS]</span>
+                      <span>v{product.changelog[0].version} ACTIVE</span>
+                    </div>
+                    <div className="space-y-4 font-mono text-xs">
+                      {product.changelog.map((entry, idx) => (
+                        <div key={idx} className="p-6 rounded-2xl bg-white/[0.01] border border-white/5 space-y-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5">
+                              <span className="px-2 py-0.5 rounded bg-brand-primary/10 border border-brand-primary/25 text-brand-primary font-bold text-[9px]">
+                                {entry.version}
+                              </span>
+                              <h4 className="text-white font-bold tracking-tight">{entry.title}</h4>
+                            </div>
+                            <span className="text-white/20 text-[9px] font-mono">{entry.date}</span>
+                          </div>
+                          
+                          {entry.description && (
+                            <p className="text-white/40 font-sans text-xs font-medium leading-relaxed">
+                              {entry.description}
+                            </p>
+                          )}
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 border-t border-white/5">
+                            {entry.changes.added && entry.changes.added.length > 0 && (
+                              <div className="space-y-2">
+                                <div className="text-green-500 text-[8px] font-bold uppercase tracking-widest font-mono">// ADDED</div>
+                                <ul className="space-y-1.5 text-white/50 text-[10px] font-sans font-medium list-disc list-inside">
+                                  {entry.changes.added.map((item, i) => <li key={i}>{item}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                            {entry.changes.improved && entry.changes.improved.length > 0 && (
+                              <div className="space-y-2">
+                                <div className="text-brand-primary text-[8px] font-bold uppercase tracking-widest font-mono">// IMPROVED</div>
+                                <ul className="space-y-1.5 text-white/50 text-[10px] font-sans font-medium list-disc list-inside">
+                                  {entry.changes.improved.map((item, i) => <li key={i}>{item}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                            {entry.changes.fixed && entry.changes.fixed.length > 0 && (
+                              <div className="space-y-2">
+                                <div className="text-brand-accent text-[8px] font-bold uppercase tracking-widest font-mono">// FIXED</div>
+                                <ul className="space-y-1.5 text-white/50 text-[10px] font-sans font-medium list-disc list-inside">
+                                  {entry.changes.fixed.map((item, i) => <li key={i}>{item}</li>)}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

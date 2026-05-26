@@ -153,10 +153,10 @@ export const SuccessPage = () => {
         )}
         
         <button 
-          onClick={() => navigate('/lab/dashboard')}
+          onClick={() => navigate('/vault')}
           className="px-8 py-4 rounded-full bg-brand-primary text-black font-bold flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-xl shadow-brand-primary/20"
         >
-          Go to My Lab <ArrowRight size={18} />
+          Go to My Vault <ArrowRight size={18} />
         </button>
       </div>
 
@@ -164,7 +164,7 @@ export const SuccessPage = () => {
         <p className="mt-8 text-xs text-white/20">
           Not seeing the download? It can take a few seconds to process. 
           <br/>
-          Check your <button onClick={() => navigate('/lab/dashboard')} className="underline">Dashboard</button> in a moment.
+          Check your <button onClick={() => navigate('/vault')} className="underline">Vault</button> in a moment.
         </p>
       )}
     </motion.div>

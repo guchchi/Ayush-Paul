@@ -19,8 +19,8 @@ export const SocialProofTicker = () => {
   useEffect(() => {
     const fetchProof = async () => {
       try {
-        // Fetch last 10 purchases
-        const q = query(collection(db, "purchases"), orderBy("createdAt", "desc"), limit(10));
+        // Fetch last 10 public purchases for ticker telemetry
+        const q = query(collection(db, "public_purchases"), orderBy("createdAt", "desc"), limit(10));
         const snapshot = await getDocs(q);
         
         const mappedEvents: ProofEvent[] = snapshot.docs.map(doc => {

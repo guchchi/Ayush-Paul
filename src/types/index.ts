@@ -66,7 +66,41 @@ export interface ProductFeature {
   isPremiumOnly: boolean;
 }
 
-export interface Product {
+export enum AssetCategory {
+  PDF = 'pdf',
+  PROMPT = 'prompt',
+  TEMPLATE = 'template',
+  WORKFLOW = 'workflow',
+  DIAGRAM = 'diagram',
+  BUNDLE = 'bundle',
+  CODE = 'code_snippet',
+  MODULAR = 'modular_asset',
+}
+
+export interface ResourceItem {
+  id: string;
+  title: string;
+  description: string;
+  category: AssetCategory;
+  isPremium: boolean;
+  fileSize?: string;
+  url?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  title: string;
+  description?: string;
+  changes: {
+    added?: string[];
+    improved?: string[];
+    fixed?: string[];
+  };
+}
+
+export interface DigitalSystem {
   id: string;
   title: string;
   slug: string;
@@ -99,7 +133,14 @@ export interface Product {
     role: string;
     avatar: string;
   };
+  
+  // New Digital System Architecture fields
+  resources?: ResourceItem[];
+  changelog?: ChangelogEntry[];
+  architectureDiagramURL?: string;
 }
+
+export type Product = DigitalSystem;
 
 export interface DownloadAnalytics {
   id: string;

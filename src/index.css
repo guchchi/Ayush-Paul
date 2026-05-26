@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --color-brand-primary: #00C2FF; /* Cyan */
   --color-brand-secondary: #FF003C; /* Red */
@@ -16,18 +16,6 @@
 }
 
 @layer utilities {
-  .neon-glow-blue {
-    text-shadow: 0 0 10px rgba(0, 194, 255, 0.5), 0 0 20px rgba(0, 194, 255, 0.3);
-  }
-  .neon-glow-red {
-    text-shadow: 0 0 10px rgba(255, 0, 60, 0.5), 0 0 20px rgba(255, 0, 60, 0.3);
-  }
-  .neon-border-blue {
-    box-shadow: 0 0 15px rgba(0, 194, 255, 0.2), inset 0 0 5px rgba(0, 194, 255, 0.1);
-  }
-  .neon-border-red {
-    box-shadow: 0 0 15px rgba(255, 0, 60, 0.2), inset 0 0 5px rgba(255, 0, 60, 0.1);
-  }
   
   /* Modern Tech Scrollbar */
   .custom-scrollbar::-webkit-scrollbar {
@@ -158,21 +146,21 @@
     --radius-badge: 9999px;         /* capsule shapes */
     
     /* Glassmorphism System */
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-blur: blur(24px);
+    --glass-bg: rgba(255, 255, 255, 0.02);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-blur: blur(20px);
 
     --glass-bg-primary: rgba(255, 255, 255, 0.015);
-    --glass-bg-hover: rgba(255, 255, 255, 0.035);
-    --glass-border-low: rgba(255, 255, 255, 0.04);
-    --glass-border-mid: rgba(255, 255, 255, 0.08);
-    --glass-border-high: rgba(255, 255, 255, 0.12);
-    --glass-blur-premium: blur(32px);
+    --glass-bg-hover: rgba(255, 255, 255, 0.03);
+    --glass-border-low: rgba(255, 255, 255, 0.03);
+    --glass-border-mid: rgba(255, 255, 255, 0.06);
+    --glass-border-high: rgba(255, 255, 255, 0.1);
+    --glass-blur-premium: blur(24px);
 
     /* Glow Intensity Weights & Neon Tokens */
-    --glow-intensity-low: 0.05;
-    --glow-intensity-mid: 0.12;
-  --glow-intensity-high: 0.22;
+    --glow-intensity-low: 0.02;
+    --glow-intensity-mid: 0.05;
+  --glow-intensity-high: 0.1;
   --neon-primary: 0, 194, 255;    /* cyan */
     --neon-secondary: 255, 0, 60;   /* red */
     --neon-accent: 123, 97, 255;   /* purple */
@@ -236,21 +224,21 @@
 
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tighter text-white max-w-full break-words;
-    line-height: 1;
-    letter-spacing: -0.05em;
+    @apply font-display tracking-tight text-white max-w-full break-words;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
   h1 {
-    @apply text-[clamp(2.5rem,8vw,5.5rem)] font-extrabold;
+    @apply text-[clamp(2.5rem,8vw,4.5rem)] font-bold;
   }
 
   h2 {
-    @apply text-[clamp(2rem,6vw,4rem)] font-bold;
+    @apply text-[clamp(2rem,6vw,3.5rem)] font-bold;
   }
 
   h3 {
-    @apply text-[clamp(1.5rem,4vw,3rem)] font-bold;
+    @apply text-[clamp(1.5rem,4vw,2.5rem)] font-bold;
   }
 
   p {
@@ -433,7 +421,7 @@
 }
 
 @utility badge {
-  @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-bold uppercase tracking-widest;
+  @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-white/80 text-[11px] font-semibold tracking-wide;
 }
 
 .gradient-border {

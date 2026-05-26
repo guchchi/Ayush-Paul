@@ -789,7 +789,7 @@ export const DashboardPage = () => {
           setUser(u);
         } else {
           // If logged in but not founder, redirect to customer lab or home
-          navigate('/lab/dashboard');
+          navigate('/vault');
         }
       } else {
         navigate('/admin'); // Redirect to login if not authenticated

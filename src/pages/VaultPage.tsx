@@ -9,7 +9,7 @@ import { Product } from '../types';
 import { getPublishedProducts } from '../lib/product-utils';
 import { useAnalytics } from '../hooks/useAnalytics';
 
-export const LabDashboardPage = () => {
+export const VaultPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
@@ -21,8 +21,8 @@ export const LabDashboardPage = () => {
   const { trackEvent } = useAnalytics();
 
   useSEO({
-    title: "My Innovation Lab | Ayush Paul",
-    description: "Your private workspace for downloaded blueprints and digital assets.",
+    title: "My Digital Vault | Ayush Paul",
+    description: "Your private authenticated vault for downloaded blueprints and systems.",
   });
 
   useEffect(() => {
@@ -236,3 +236,5 @@ export const LabDashboardPage = () => {
     </motion.div>
   );
 };
+
+export default VaultPage;

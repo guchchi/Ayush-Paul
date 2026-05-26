@@ -141,7 +141,7 @@ const ProductCard = ({ product }: { product: any }) => {
       viewport={{ once: true }}
       className="group relative bg-[#0A0A0A] border border-white/5 rounded-[48px] overflow-hidden hover:border-white/20 transition-all duration-700 shadow-2xl block"
     >
-      <Link to={`/projects/${product.slug || product.id}`} className="block h-full">
+      <Link to={`/experiments/${product.slug || product.id}`} className="block h-full">
         <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
           <img src={product.image} alt={product.title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000" />
           <div className="absolute top-8 left-8 flex items-center gap-2">
@@ -269,7 +269,7 @@ const InnovationMetrics = () => {
   );
 };
 
-export const ProjectsPage = () => {
+export const ExperimentsPage = () => {
   const [products, setProducts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -300,8 +300,8 @@ export const ProjectsPage = () => {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
             <div className="max-w-2xl">
-              <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-8">The Product Lineup</h2>
-              <h3 className="text-5xl font-bold tracking-tighter">Our Core Systems.</h3>
+              <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-8">Research Explorations</h2>
+              <h3 className="text-5xl font-bold tracking-tighter">Core Experiments.</h3>
             </div>
           </div>
           
@@ -335,7 +335,7 @@ export const ProjectsPage = () => {
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-12">Ready to Build <br />the Future?</h2>
           <p className="text-2xl text-white/40 font-medium leading-relaxed mb-16 max-w-2xl mx-auto">
-            We partner with visionary organizations to architect and deploy high-signal digital products.
+            We partner with visionary organizations to architect and deploy high-signal digital experiences.
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
             <MagneticButton>
@@ -355,4 +355,4 @@ export const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export default ExperimentsPage;

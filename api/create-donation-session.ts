@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       ],
       mode: "payment",
-      success_url: `${appUrl}/lab/dashboard?donation=success`,
+      success_url: `${appUrl}/vault?donation=success`,
       cancel_url: `${appUrl}/thank-you`,
       metadata: {
         type: "donation",
