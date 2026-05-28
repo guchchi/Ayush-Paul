@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { HeroSection } from '../components/sections/HeroSection';
 import { SystemsEcosystemSection } from '../components/sections/SystemsEcosystemSection';
-import { AuthoritySection } from '../components/sections/AuthoritySection';
-import { ExperimentsRDSection } from '../components/sections/ExperimentsRDSection';
-import { ResearchPublicationsSection } from '../components/sections/ResearchPublicationsSection';
-import { UpdatesSection } from '../components/sections/UpdatesSection';
-import { EcosystemEvolutionSection } from '../components/sections/EcosystemEvolutionSection';
-import { FinalCTASection } from '../components/sections/FinalCTASection';
+import { FeaturedBlogsSection } from '../components/sections/FeaturedBlogsSection';
+import { InnovationLabsSection } from '../components/sections/InnovationLabsSection';
+import { CollaborationSection } from '../components/sections/CollaborationSection';
+import { VisionFutureSection } from '../components/sections/VisionFutureSection';
+import { SocialProofExperienceSection } from '../components/sections/SocialProofExperienceSection';
+import { ContactCTASection } from '../components/sections/ContactCTASection';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 
@@ -15,7 +15,7 @@ export const HomePage = () => {
   useSEO({
     title: "Antigravity | Ecosystem of Intelligent Systems & Cybernetic R&D",
     description: "Explore flagship digital systems, cyber-physical blueprints, deep-tech research, and autonomous workflows engineered by Antigravity.",
-    keywords: "Antigravity, Ayush Paul, Systems Ecosystem, Cybernetics, Robotics Blueprints, Autonomous Agents, Edge AI",
+    keywords: "Antigravity, Systems Ecosystem, Cybernetics, Robotics Blueprints, Autonomous Agents, Edge AI",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -49,31 +49,32 @@ export const HomePage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="relative w-full"
+      className="relative w-full bg-[#0A0A0B]"
     >
       {/* 1. HERO SECTION */}
       <HeroSection />
       
-      {/* 2. FEATURED OPERATIONAL SYSTEMS */}
+      {/* 2. ECOSYSTEM / SYSTEMS REGISTER */}
       <SystemsEcosystemSection />
 
-      {/* 3. SYSTEMS INTELLIGENCE LAYER */}
-      <AuthoritySection />
+      {/* 3. FEATURED TECHNICAL INSIGHTS (BENTO / SLIDER) */}
+      <FeaturedBlogsSection />
       
-      {/* 4. ACTIVE EXPERIMENTS */}
-      <ExperimentsRDSection />
+      {/* 4. INNOVATION LABS (CARD BLUEPRINT DECK STACKS) */}
+      <InnovationLabsSection />
       
-      {/* 5. RESEARCH PUBLICATIONS */}
-      <ResearchPublicationsSection />
+      {/* 5. MODULAR COLLABORATION DECK */}
+      <CollaborationSection />
 
-      {/* 6. ENGINEERING LOGS */}
-      <UpdatesSection />
-      
-      {/* 7. ECOSYSTEM MILESTONES */}
-      <EcosystemEvolutionSection />
+      {/* 6. VISION & FUTURE SCAPE */}
+      <VisionFutureSection />
 
-      {/* 8. FINAL CTA */}
-      <FinalCTASection />
+      {/* 7. MILESTONES & SOCIAL PROOF CHRONOLOGY */}
+      <SocialProofExperienceSection />
+
+      {/* 8. FUTURISTIC CONTACT / CTA */}
+      <ContactCTASection />
     </motion.div>
   );
 };
+export default HomePage;

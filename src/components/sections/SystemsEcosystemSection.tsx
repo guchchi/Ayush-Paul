@@ -1,15 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Layers, ShieldCheck, ArrowRight, Download, Lock, CheckCircle, Activity, Cpu } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Lock, CheckCircle, Activity, Cpu, Play, Terminal } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { getPublishedProducts } from '../../lib/product-utils';
 import { Product } from '../../types';
-import { VARIANTS, EASING } from '../../lib/motion-presets';
+import { VARIANTS } from '../../lib/motion-presets';
+import { cn } from '../../lib/utils';
+
+// ============================================================================
+// HELPER: Interactive Holographic 3D Mouse-Tilt Panel
+// ============================================================================
+const HolographicCard = ({ children, className = "", onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+  const [glowX, setGlowX] = useState(0);
+  const [glowY, setGlowY] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Smooth angle mapping
+    const rY = ((mouseX / width) - 0.5) * 8;
+    const rX = (0.5 - (mouseY / height)) * 8;
+    
+    setRotateX(rX);
+    setRotateY(rY);
+    setGlowX(mouseX);
+    setGlowY(mouseY);
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setRotateX(0);
+        setRotateY(0);
+      }}
+      onClick={onClick}
+      className={className}
+      style={{
+        transformStyle: "preserve-3d",
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transition: isHovered ? "none" : "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)",
+        willChange: "transform"
+      }}
+    >
+      {/* 3D Glowing Shimmer Grid overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-30 transition-opacity duration-300 rounded-[32px] overflow-hidden"
+        style={{
+          opacity: isHovered ? 1 : 0,
+          background: `radial-gradient(circle 240px at ${glowX}px ${glowY}px, rgba(0, 194, 255, 0.12), transparent 80%)`
+        }}
+      />
+      {children}
+    </div>
+  );
+};
 
 export const SystemsEcosystemSection = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // 3D Perspective Scroll Container Reference
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,267 +86,246 @@ export const SystemsEcosystemSection = () => {
     fetchProducts();
   }, []);
 
+  const getSystemMetadata = (product: Product) => {
+    const slug = product.slug || '';
+    let version = 'v1.0.0';
+    let difficulty = 'Intermediate';
+    let hardware = ['ESP32 DevKit', 'Solid-State Relays', 'I2C Display'];
+
+    if (slug.includes('vibecoder')) {
+      version = 'v1.4.0-alpha';
+      difficulty = 'Expert';
+      hardware = ['Jetson Nano', 'STM32 Core board', 'OLED Telemetry'];
+    } else if (slug.includes('boat') || slug.includes('marine')) {
+      version = 'v2.1.0-stable';
+      difficulty = 'Expert';
+      hardware = ['Arduino Mega', 'Ublox GPS', 'Telemetry Radio 433MHz'];
+    } else if (slug.includes('iobot') || slug.includes('companion')) {
+      version = 'v1.2.0-beta';
+      difficulty = 'Advanced';
+      hardware = ['ESP32-S3 Core', 'MPU6050 IMU', 'LiPo Charger'];
+    }
+
+    return { version, difficulty, hardware };
+  };
+
+  // 3D Perspective Scroll transformations
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 22 });
+
+  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [8, 0, 0, -8]);
+  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [40, 0, 0, -40]);
+  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.96, 1, 1, 0.96]);
+  const opacitySection = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+
   return (
-    <Section id="systems-ecosystem" glowVariant="bottom" className="py-24 border-t border-white/5 bg-[#0A0A0A]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <Section 
+      id="systems-ecosystem" 
+      glowVariant="bottom" 
+      className="py-24 md:py-36 bg-[#0A0A0B] relative overflow-hidden"
+    >
+      {/* Cinematic ambient glow carry-over from the Hero video */}
+      <div className="absolute top-0 left-1/4 right-1/4 h-32 bg-[#00C2FF]/3 rounded-full filter blur-[80px] pointer-events-none z-0 animate-pulse" />
+
+      {/* Cybernetic Micro-Grid Background Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50 z-0" />
+      
+      {/* Projection Cyber Glow Source */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00C2FF]/4 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
+
+      <div ref={sectionRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
+        <motion.div 
+          style={{ rotateX: rotateXSection, y: translateYSection, scale: scaleSection, opacity: opacitySection, transformStyle: "preserve-3d" }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        >
         
-        {/* Flagship Header */}
-        <div className="section-header max-w-3xl text-center mx-auto mb-20 flex flex-col items-center">
+        {/* Editorial Section Header */}
+        <div className="max-w-4xl mb-24 text-left">
           <motion.div
             variants={VARIANTS.fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="badge shadow-xl shadow-brand-primary/10"
+            className="badge shadow-[0_0_20px_rgba(0,194,255,0.08)] bg-white/[0.01] border border-white/[0.06] text-[10px] font-bold uppercase tracking-widest text-[#00C2FF] flex items-center gap-1.5 px-4 py-2 rounded-full w-fit mb-6"
           >
-            <ShieldCheck size={14} className="text-brand-primary" /> Active Systems Registry
+            <Terminal size={14} className="text-[#00C2FF]" /> DEPLOYED CORE REGISTRY
           </motion.div>
           <motion.h2 
             variants={VARIANTS.fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-bold tracking-tighter mt-6"
+            className="text-4xl sm:text-5xl lg:text-6.5xl font-black tracking-tight text-white leading-[1.08]"
           >
-            Featured Operational <span className="text-brand-primary">Systems.</span>
+            Operational Systems <br className="hidden sm:inline" />
+            & Edge Micro <span className="text-brand-primary font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.2)' }}>Runtimes.</span>
           </motion.h2>
           <motion.p 
             variants={VARIANTS.fadeUp}
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
-            className="text-white/40 text-lg md:text-xl font-medium mt-6"
+            className="text-white/40 text-base sm:text-lg max-w-2xl mt-6 font-medium leading-relaxed"
           >
-            Production-grade digital systems and modular assets. Inspect blueprints, calibrate hardware layouts, or unlock secure firmware modules.
+            Production-grade digital controllers, sensory modules, and physical firmware architectures built to bridge edge computing boundaries.
           </motion.p>
         </div>
 
-        {/* Flagship Systems Showcase Layout */}
-        <div className="space-y-8">
+        {/* Flagship Product: Large Asymmetric Layout */}
+        <div className="space-y-12">
           {loading ? (
             <div className="animate-pulse bg-white/5 rounded-[40px] aspect-[21/9] w-full" />
           ) : products.length > 0 && (
             (() => {
               const flagship = products[0];
-              const isFree = flagship.type === 'free';
-              const basePrice = flagship.basePrice ?? 0;
-              const salePrice = flagship.salePrice ?? 0;
-              const hasDiscount = salePrice > 0 && salePrice < basePrice;
-              const finalPrice = salePrice || basePrice;
+              const { version, difficulty, hardware } = getSystemMetadata(flagship);
 
               return (
-                <motion.div
-                  variants={VARIANTS.fadeUp}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true }}
-                  whileHover={{ y: -6, scale: 1.002 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="group bg-[#0D0D0E] border border-white/5 hover:border-brand-primary/20 rounded-[40px] overflow-hidden shadow-2xl relative w-full"
+                <HolographicCard
+                  className="group bg-[#0D0D0E]/30 border border-white/[0.06] hover:border-[#00C2FF]/30 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.6)] w-full"
                 >
-                  <div className="grid lg:grid-cols-12 gap-0">
+                  <div className="grid lg:grid-cols-12 gap-0 items-stretch">
                     {/* Visual Cover (7 cols) */}
-                    <div className="lg:col-span-7 aspect-[16/10] lg:aspect-auto min-h-[360px] relative overflow-hidden bg-black/40 border-b lg:border-b-0 lg:border-r border-white/5">
+                    <div className="lg:col-span-7 aspect-[16/10] lg:aspect-auto min-h-[340px] relative overflow-hidden bg-black/40 border-b lg:border-b-0 lg:border-r border-white/[0.06]">
                       <img 
                         src={flagship.thumbnail || "/placeholder.jpg"} 
                         alt={flagship.title} 
-                        className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                        className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-[1.01] transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
                       
                       {/* Active Status Tag */}
-                      <div className="absolute top-8 left-8 flex gap-2">
-                        <span className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-bold text-brand-primary tracking-widest uppercase flex items-center gap-1.5 shadow-lg">
-                          <Activity size={10} className="animate-pulse text-brand-primary" /> ACTIVE FLAGSHIP
+                      <div className="absolute top-6 left-6 sm:top-8 sm:left-8 flex gap-2">
+                        <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] text-[9px] font-bold text-[#00C2FF] tracking-widest uppercase flex items-center gap-1.5 shadow-lg">
+                          <Activity size={10} className="animate-pulse text-[#00C2FF]" /> CORE BLUEPRINT
                         </span>
-                        <span className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-bold text-white/80 tracking-widest uppercase shadow-lg">
+                        <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] text-[9px] font-bold text-white/50 tracking-widest uppercase shadow-lg">
                           {flagship.category}
                         </span>
                       </div>
 
-                      {/* Pricing Tag */}
-                      <div className="absolute top-8 right-8">
-                        <span className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold tracking-widest flex items-center gap-1.5 shadow-lg">
-                          {isFree ? (
-                            <span className="text-brand-primary font-bold">OPEN BLUEPRINT</span>
-                          ) : (
-                            <span className="text-white font-bold flex items-center gap-1.5">
-                              {hasDiscount && <span className="text-white/40 line-through text-[9px]">${basePrice}</span>}
-                              <span>${finalPrice}</span>
-                            </span>
-                          )}
-                        </span>
-                      </div>
-
-                      {/* Tech Metrics Overlay */}
-                      <div className="absolute bottom-8 left-8 flex flex-wrap gap-2">
-                        <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 text-[9px] font-bold uppercase tracking-wider text-white/70 flex items-center gap-1.5 shadow-lg">
-                          <Download size={11} className="text-brand-primary" /> {(flagship.downloadCount ?? 0) + 120} Node Syncs
+                      {/* Technical Spec Labels */}
+                      <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 flex flex-wrap gap-2">
+                        <div className="bg-black/60 backdrop-blur-md border border-white/[0.08] rounded-full px-3.5 py-1.5 text-[9px] font-bold uppercase tracking-wider text-white/60 flex items-center gap-1.5 shadow-lg">
+                          <Cpu size={11} className="text-[#00C2FF]" /> {difficulty} LEVEL
                         </div>
-                        <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 text-[9px] font-bold uppercase tracking-wider text-white/70 flex items-center gap-1.5 shadow-lg">
-                          <Cpu size={11} className="text-brand-primary" /> ALPHA STAGE
+                        <div className="bg-black/60 backdrop-blur-md border border-white/[0.08] rounded-full px-3.5 py-1.5 text-[9px] font-mono font-bold tracking-wider text-[#00C2FF] flex items-center gap-1.5 shadow-lg">
+                          {version}
                         </div>
                       </div>
                     </div>
 
                     {/* Metadata Content (5 cols) */}
-                    <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-center">
+                    <div className="lg:col-span-5 p-8 sm:p-12 flex flex-col justify-between">
                       <div className="space-y-6">
-                        <div className="text-[10px] font-mono text-brand-primary font-bold uppercase tracking-[0.25em]">Flagship Operational Node</div>
-                        <h3 className="text-3xl lg:text-4xl font-bold tracking-tight text-white group-hover:text-brand-primary transition-colors">
+                        <div className="text-[10px] font-mono text-[#00C2FF] font-bold uppercase tracking-[0.25em]">Flagship System Module</div>
+                        <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white group-hover:text-[#00C2FF] transition-colors leading-tight">
                           {flagship.title}
                         </h3>
-                        <p className="text-white/50 text-base leading-relaxed font-medium">
+                        <p className="text-white/45 text-sm leading-relaxed font-medium">
                           {flagship.description}
                         </p>
 
-                        {/* Blueprint Modules List */}
-                        <div className="space-y-3 pt-6 border-t border-white/5">
-                          <div className="text-[9px] font-mono text-white/20 uppercase tracking-[0.25em]">Included Infrastructure Modules</div>
-                          {flagship.resources?.slice(0, 3).map((res: any) => (
-                            <div key={res.id} className="flex items-center justify-between text-xs font-semibold text-white/70 bg-white/[0.01] border border-white/[0.03] p-3 rounded-xl">
-                              <span className="flex items-center gap-2 truncate pr-4">
-                                <CheckCircle size={12} className="text-brand-primary/70 shrink-0" />
-                                <span className="truncate">{res.title}</span>
-                              </span>
-                              <span className="text-[8px] font-mono text-white/30 uppercase shrink-0 font-bold bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                                {res.isPremium ? <Lock size={8} className="inline mr-1 text-brand-secondary" /> : null}
-                                {res.category}
-                              </span>
-                            </div>
-                          ))}
+                        {/* Telemetry Hardware specifications */}
+                        <div className="space-y-3 pt-6 border-t border-white/[0.06]">
+                          <div className="text-[9px] font-mono text-white/20 uppercase tracking-[0.2em] mb-3">HARDWARE INTERFACE SCHEMATIC</div>
+                          <div className="grid grid-cols-1 gap-2">
+                            {hardware.map((hw) => (
+                              <div key={hw} className="flex items-center gap-2 text-xs font-mono text-white/40">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#00C2FF]/30 shrink-0" /> {hw}
+                              </div>
+                            ))}
+                          </div>
                         </div>
 
                         {/* Action Link */}
-                        <div className="pt-6 border-t border-white/5">
+                        <div className="pt-6 border-t border-white/[0.06]">
                           <Link 
                             to={`/systems/${flagship.slug}`} 
-                            className="group/btn w-full py-4 bg-brand-primary/10 border border-brand-primary/20 text-[10px] font-bold uppercase tracking-widest text-brand-primary hover:bg-brand-primary hover:text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-2"
+                            className="group/btn w-full py-4 bg-white text-black hover:bg-[#00C2FF] rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
                           >
-                            Inspect System Blueprints
-                            <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                            Explore System Blueprints
+                            <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                           </Link>
                         </div>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </HolographicCard>
               );
             })()
           )}
 
-          {/* Secondary Systems Grid (grid-cols-2) */}
-          <div className="grid md:grid-cols-2 gap-8 pt-4">
-            {loading ? (
-              Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-[#0D0D0E] rounded-[32px] aspect-[4/3] w-full" />
-              ))
-            ) : products.slice(1).map((system, i) => {
-              const isFree = system.type === 'free';
-              const basePrice = system.basePrice ?? 0;
-              const salePrice = system.salePrice ?? 0;
-              const hasDiscount = salePrice > 0 && salePrice < basePrice;
-              const finalPrice = salePrice || basePrice;
+          {/* Secondary Systems Asymmetric Bento Grid (2 items split into different layouts) */}
+          <div className="grid lg:grid-cols-12 gap-8">
+            {!loading && products.slice(1).map((system, idx) => {
+              const { version, difficulty, hardware } = getSystemMetadata(system);
+              const isEven = idx % 2 === 0;
 
               return (
-                <motion.div
+                <div 
                   key={system.id}
-                  variants={VARIANTS.fadeUp}
-                  initial="initial"
-                  whileInView="animate"
-                  viewport={{ once: true }}
-                  whileHover={{ y: -6, scale: 1.005 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="group flex flex-col bg-[#0D0D0E] border border-white/5 hover:border-white/10 rounded-[36px] overflow-hidden shadow-2xl relative"
-                  style={{ willChange: 'transform' }}
+                  className={cn(
+                    "h-full",
+                    isEven ? "lg:col-span-7" : "lg:col-span-5"
+                  )}
                 >
-                  {/* Visual Image */}
-                  <div className="aspect-[16/10] relative overflow-hidden bg-black/40 border-b border-white/5">
-                    <img 
-                      src={system.thumbnail || "/placeholder.jpg"} 
-                      alt={system.title} 
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
-                    
-                    {/* Status / Category Tags */}
-                    <div className="absolute top-6 left-6 flex gap-2">
-                      <span className="px-3.5 py-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[8px] font-bold text-white tracking-widest uppercase flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" /> DEPLOYED
-                      </span>
-                      <span className="px-3.5 py-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[8px] font-bold text-white/50 tracking-widest uppercase">
+                  <HolographicCard
+                    className="group bg-[#0D0D0E]/30 border border-white/[0.06] hover:border-[#00C2FF]/30 rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.55)] flex flex-col justify-between h-full min-h-[460px] cursor-pointer"
+                  >
+                    {/* Visual Card Cover */}
+                    <div className="aspect-[16/10] relative overflow-hidden bg-black/40 border-b border-white/[0.06] shrink-0">
+                      <img 
+                        src={system.thumbnail || "/placeholder.jpg"} 
+                        alt={system.title} 
+                        className="w-full h-full object-cover opacity-80 group-hover:scale-[1.01] transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+                      
+                      <div className="absolute top-6 left-6 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] text-[9px] font-bold text-[#00C2FF] tracking-widest uppercase flex items-center gap-1.5 shadow-lg">
                         {system.category}
-                      </span>
+                      </div>
+
+                      <div className="absolute bottom-6 left-6 text-[10px] font-mono font-bold text-[#00C2FF] bg-black/60 backdrop-blur-md px-3.5 py-1.5 border border-white/[0.08] rounded-full">
+                        {version}
+                      </div>
                     </div>
 
-                    {/* Price */}
-                    <div className="absolute top-6 right-6">
-                      <span className="px-3.5 py-1.5 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-bold tracking-widest flex items-center gap-1 shadow-lg">
-                        {isFree ? (
-                          <span className="text-brand-primary font-bold">OPEN BLUEPRINT</span>
-                        ) : (
-                          <span className="text-white font-bold flex items-center gap-1">
-                            {hasDiscount && <span className="text-white/40 line-through text-[8px]">${basePrice}</span>}
-                            <span>${finalPrice}</span>
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  </div>
+                    {/* Card Description */}
+                    <div className="p-8 flex flex-col justify-between flex-grow">
+                      <div className="space-y-4 mb-6">
+                        <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#00C2FF] transition-colors leading-tight">
+                          {system.title}
+                        </h3>
+                        <p className="text-white/40 text-xs leading-relaxed font-medium font-display line-clamp-2">
+                          {system.description}
+                        </p>
+                      </div>
 
-                  {/* Specifications & CTA */}
-                  <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="text-2xl font-bold tracking-tight text-white mb-3 group-hover:text-brand-primary transition-colors">
-                      {system.title}
-                    </h3>
-                    <p className="text-white/50 text-sm leading-relaxed mb-6 line-clamp-2 font-medium font-display">
-                      {system.description}
-                    </p>
-
-                    <div className="space-y-2 mb-6 pt-4 border-t border-white/5">
-                      <div className="text-[8px] font-mono text-white/20 uppercase tracking-[0.25em]">Infrastructure Blueprints</div>
-                      {system.resources?.slice(0, 2).map((res: any) => (
-                        <div key={res.id} className="flex items-center justify-between text-xs font-semibold text-white/60 bg-white/[0.01] border border-white/[0.03] p-3.5 rounded-xl">
-                          <span className="flex items-center gap-2 truncate">
-                            <CheckCircle size={10} className="text-brand-primary/50 shrink-0" />
-                            <span className="truncate">{res.title}</span>
-                          </span>
-                          <span className="text-[8px] font-mono text-white/30 uppercase shrink-0 font-bold bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                            {res.category}
-                          </span>
-                        </div>
-                      ))}
+                      <div className="border-t border-white/[0.06] pt-6 flex items-center justify-between mt-auto">
+                        <Link 
+                          to={`/systems/${system.slug}`}
+                          className="flex items-center justify-between w-full text-[10px] font-bold uppercase tracking-widest text-[#00C2FF] group-hover:text-white transition-colors"
+                        >
+                          <span>Explore Deployed blueprint</span>
+                          <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                      </div>
                     </div>
-
-                    <div className="mt-auto pt-4 border-t border-white/5">
-                      <Link 
-                        to={`/systems/${system.slug}`} 
-                        className="group/btn flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-widest hover:text-white transition-colors"
-                      >
-                        Inspect Blueprint 
-                        <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
-                      </Link>
-                    </div>
-                  </div>
-                </motion.div>
+                  </HolographicCard>
+                </div>
               );
             })}
           </div>
         </div>
 
-        {/* Global Catalog Action */}
-        <div className="flex justify-center mt-20">
-          <Link 
-            to="/systems" 
-            className="px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl text-sm font-bold tracking-widest text-white transition-all uppercase flex items-center gap-2 group"
-          >
-            Access Complete Systems Registry 
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-brand-primary" />
-          </Link>
-        </div>
-
+        </motion.div>
       </div>
     </Section>
   );
 };
-
+export default SystemsEcosystemSection;

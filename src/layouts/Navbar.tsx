@@ -153,20 +153,15 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className={cn(
-      "fixed top-0 left-0 w-full z-[1000] border-b transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
-      isScrolled 
-        ? "bg-black/40 backdrop-blur-2xl py-3 border-white/5" 
-        : "bg-transparent py-5 sm:py-10 border-transparent"
-    )}>
-      {/* Scroll Progress Indicator */}
+    <nav className="fixed top-0 left-0 w-full z-[1000] pointer-events-none p-4 sm:p-6 md:p-8 flex items-center justify-between transition-all duration-500">
+      {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300 pointer-events-none z-[1001]"
         style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
       />
 
-      <Container className="flex items-center justify-between gap-8">
-        {/* Logo with intelligent home behavior */}
+      {/* LEFT ISLAND: Independent Logo (No padding, no background) */}
+      <div className="pointer-events-auto shrink-0 flex items-center z-10">
         <Link 
           to="/" 
           onClick={(e) => {
@@ -175,199 +170,209 @@ export const Navbar = () => {
               scrollToSection('home');
             }
           }}
-          className="text-2xl font-display font-extrabold tracking-tighter shrink-0 flex items-center gap-1 group relative z-10"
+          className="text-xl font-display font-extrabold tracking-tighter flex items-center gap-1 group"
         >
           <motion.span 
             initial={false}
             animate={{ scale: isScrolled ? 0.9 : 1 }}
-            className="transition-transform duration-500"
+            className="transition-transform duration-500 text-white"
           >
             ayushpaul<span className="text-brand-primary group-hover:neon-glow-blue transition-all">.in</span>
           </motion.span>
         </Link>
+      </div>
 
-        {/* Desktop Menu - Centered Architecture */}
-        <div className="hidden lg:flex items-center bg-white/[0.02] border border-white/[0.05] rounded-full px-1.5 py-1 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              onClick={(e) => handleNavClick(link, e)}
-              className={cn(
-                "text-xs font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full group overflow-hidden block",
-                (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
-                  ? "text-white" 
-                  : "text-white/30 hover:text-white/60"
-              )}
-            >
-              <span className="relative z-10">{link.name}</span>
-              {(location.pathname === link.href || (location.pathname === '/' && activeSection === link.id)) && (
-                <motion.div 
-                  layoutId="nav-pill"
-                  transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
-                  className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            </Link>
-          ))}
-
-          {/* Explore Dropdown Trigger & Panel */}
-          <div 
-            className="relative"
-            onMouseEnter={() => setIsExploreOpen(true)}
-            onMouseLeave={() => setIsExploreOpen(false)}
+      {/* CENTER ISLAND: Unified Compact Glassmorphic Pill Navbar (Only navigation links) */}
+      <div className={cn(
+        "absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] border rounded-full px-5",
+        (location.pathname === '/' && !isScrolled)
+          ? "bg-transparent border-transparent py-3 shadow-none backdrop-blur-none"
+          : isScrolled 
+            ? "bg-black/55 border-white/[0.08] py-2 sm:py-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl" 
+            : "bg-[#FFFFFF]/[0.02] border-white/[0.06] py-2.5 sm:py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.55)] backdrop-blur-xl"
+      )}>
+        {navLinks.map((link) => (
+          <Link
+            key={link.name}
+            to={link.href}
+            onClick={(e) => handleNavClick(link, e)}
+            className={cn(
+              "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full group overflow-hidden block",
+              (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
+                ? "text-white" 
+                : "text-white/30 hover:text-white/60"
+            )}
           >
-            <button
-              className={cn(
-                "text-xs font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-6 py-3 rounded-full flex items-center gap-1.5 group select-none outline-none",
-                isExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
-                  ? "text-white" 
-                  : "text-white/30 hover:text-white/60"
-              )}
-            >
-              <span className="relative z-10">Explore</span>
-              <ChevronDown 
-                size={12} 
+            <span className="relative z-10">{link.name}</span>
+            {(location.pathname === link.href || (location.pathname === '/' && activeSection === link.id)) && (
+              <motion.div 
+                layoutId="nav-pill"
+                transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
                 className={cn(
-                  "relative z-10 transition-transform duration-500",
-                  isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
+                  "absolute inset-0 rounded-full",
+                  (location.pathname === '/' && !isScrolled)
+                    ? "bg-white/5 border border-white/10"
+                    : "bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
                 )}
               />
-              {(activeExploreLinks.some(l => location.pathname === l.href)) && (
-                <motion.div 
-                  layoutId="nav-pill"
-                  transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
-                  className="absolute inset-0 bg-white/[0.08] border border-white/10 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
-                />
+            )}
+          </Link>
+        ))}
+
+        {/* Explore Dropdown Trigger */}
+        <div 
+          className="relative"
+          onMouseEnter={() => setIsExploreOpen(true)}
+          onMouseLeave={() => setIsExploreOpen(false)}
+        >
+          <button
+            className={cn(
+              "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full flex items-center gap-1.5 group select-none outline-none",
+              isExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
+                ? "text-white" 
+                : "text-white/30 hover:text-white/60"
+            )}
+          >
+            <span className="relative z-10">Explore</span>
+            <ChevronDown 
+              size={11} 
+              className={cn(
+                "relative z-10 transition-transform duration-500",
+                isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
               )}
-            </button>
+            />
+            {(activeExploreLinks.some(l => location.pathname === l.href)) && (
+              <motion.div 
+                layoutId="nav-pill"
+                transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+                className={cn(
+                  "absolute inset-0 rounded-full",
+                  (location.pathname === '/' && !isScrolled)
+                    ? "bg-white/5 border border-white/10"
+                    : "bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                )}
+              />
+            )}
+          </button>
 
-            {/* Dropdown Menu */}
-            <AnimatePresence>
-              {isExploreOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ type: "spring", damping: 20, stiffness: 200, mass: 0.8 }}
-                  className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[#0A0A0B]/95 border border-white/10 rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
-                >
-                  {/* Subtle Gradient Glow inside dropdown */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
-                  
-                  <div className="flex flex-col gap-1 relative z-10">
-                    {activeExploreLinks.map((link) => {
-                      const Icon = link.icon;
-                      const isActive = location.pathname === link.href;
-                      const content = (
-                        <>
-                          <div className={cn(
-                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
-                            isActive 
-                              ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                              : link.disabled
-                                ? "bg-white/[0.01] text-white/10"
-                                : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
-                          )}>
-                            <Icon size={16} className={cn("transition-transform", !link.disabled && "group-hover/item:scale-110")} />
-                          </div>
-                          <div className="flex flex-col text-left">
-                            <span className={cn("text-xs font-bold tracking-wider font-display", link.disabled ? "text-white/25" : "text-white")}>{link.name}</span>
-                            <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
-                          </div>
-                        </>
-                      );
+          {/* Dropdown Menu */}
+          <AnimatePresence>
+            {isExploreOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ type: "spring", damping: 20, stiffness: 200, mass: 0.8 }}
+                className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[#0A0A0B]/95 border border-white/10 rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
+                <div className="flex flex-col gap-1 relative z-10">
+                  {activeExploreLinks.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = location.pathname === link.href;
+                    const content = (
+                      <>
+                        <div className={cn(
+                          "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
+                          isActive 
+                            ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
+                            : link.disabled
+                              ? "bg-white/[0.01] text-white/10"
+                              : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
+                        )}>
+                          <Icon size={16} className={cn("transition-transform", !link.disabled && "group-hover/item:scale-110")} />
+                        </div>
+                        <div className="flex flex-col text-left">
+                          <span className={cn("text-xs font-bold tracking-wider font-display", link.disabled ? "text-white/25" : "text-white")}>{link.name}</span>
+                          <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
+                        </div>
+                      </>
+                    );
 
-                      if (link.disabled) {
-                        return (
-                          <div
-                            key={link.name}
-                            className="flex items-center gap-4 p-3 rounded-2xl border border-transparent text-white/20 select-none cursor-not-allowed bg-white/[0.01]"
-                          >
-                            {content}
-                          </div>
-                        );
-                      }
-
+                    if (link.disabled) {
                       return (
-                        <Link
+                        <div
                           key={link.name}
-                          to={link.href}
-                          onClick={() => setIsExploreOpen(false)}
-                          className={cn(
-                            "flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 group/item border border-transparent",
-                            isActive 
-                              ? "bg-white/[0.06] border-white/10 text-white" 
-                              : "text-white/55 hover:bg-white/[0.03] hover:border-white/5 hover:text-white"
-                          )}
+                          className="flex items-center gap-4 p-3 rounded-2xl border border-transparent text-white/20 select-none cursor-not-allowed bg-white/[0.01]"
                         >
                           {content}
-                        </Link>
+                        </div>
                       );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+                    }
 
-        {/* Right Action CTA */}
-        <div className="hidden lg:flex items-center gap-4 shrink-0">
-          {user ? (
-            <div className="flex items-center gap-4 shrink-0">
-              <Link 
-                to="/vault"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors shrink-0"
-              >
-                <img 
-                  src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=0D8ABC&color=fff`} 
-                  alt="Avatar" 
-                  className="w-6 h-6 rounded-full shrink-0"
-                />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white whitespace-nowrap">Vault</span>
-              </Link>
-            </div>
-          ) : (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsAuthModalOpen(true)}
-              className="px-6 py-2.5 bg-white text-black rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer shadow-[0_20px_40px_rgba(255,255,255,0.05)]"
-            >
-              Sign In
-            </motion.button>
-          )}
-          
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setIsSupportModalOpen(true)}
-            className="px-6 py-2.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-white transition-all duration-500 cursor-pointer flex items-center gap-2 group"
+                    return (
+                      <Link
+                        key={link.name}
+                        to={link.href}
+                        onClick={() => setIsExploreOpen(false)}
+                        className={cn(
+                          "flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 group/item border border-transparent",
+                          isActive 
+                            ? "bg-white/[0.06] border-white/10 text-white" 
+                            : "text-white/55 hover:bg-white/[0.03] hover:border-white/5 hover:text-white"
+                        )}
+                      >
+                        {content}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* RIGHT ISLAND: Independent Minimalist Action Text Links (No buttons, no grouping) */}
+      <div className="hidden lg:flex items-center gap-8 pointer-events-auto shrink-0 z-10">
+        {user ? (
+          <Link 
+            to="/vault"
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer"
           >
-            Support <Heart size={14} className="group-hover:scale-110 transition-transform" />
-          </motion.button>
-        </div>
-
-        {/* Mobile Menu Toggle */}
+            <img 
+              src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=0D8ABC&color=fff`} 
+              alt="Avatar" 
+              className="w-5 h-5 rounded-full shrink-0 border border-white/10"
+            />
+            <span className="whitespace-nowrap">Vault</span>
+          </Link>
+        ) : (
+          <button
+            onClick={() => setIsAuthModalOpen(true)}
+            className="text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer select-none bg-transparent border-none outline-none p-0"
+          >
+            Sign In
+          </button>
+        )}
+        
         <button
-          className="lg:hidden text-white relative z-[600] w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-all active:scale-90"
+          onClick={() => setIsSupportModalOpen(true)}
+          className="text-[10px] font-bold uppercase tracking-widest text-brand-primary hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer flex items-center gap-1.5 select-none bg-transparent border-none outline-none p-0"
+        >
+          Support <Heart size={12} className="text-brand-primary hover:scale-110 transition-transform" />
+        </button>
+      </div>
+
+      {/* MOBILE MENU TOGGLE BUTTON (Absolute Right on mobile viewports) */}
+      <div className="lg:hidden pointer-events-auto flex items-center z-10">
+        <button
+          className="text-white w-10 h-10 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-all active:scale-90"
           onClick={() => setIsMobileMenuOpen(prev => !prev)}
         >
           <AnimatePresence mode="wait">
             {isMobileMenuOpen ? (
               <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                <X size={20} />
+                <X size={18} />
               </motion.div>
             ) : (
               <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                <Menu size={20} />
+                <Menu size={18} />
               </motion.div>
             )}
           </AnimatePresence>
         </button>
-      </Container>
+      </div>
 
       {/* Mobile Menu Slide-out */}
       {typeof document !== 'undefined' && createPortal(
