@@ -20,9 +20,8 @@ async function generateSitemap() {
   const urls = [
     '/',
     '/about',
-    '/projects',
+    '/systems',
     '/blog',
-    '/products',
     '/momentum',
     '/now',
     '/collaborate',
@@ -34,13 +33,39 @@ async function generateSitemap() {
     const blogDir = path.resolve(process.cwd(), 'src/content/blog');
     if (fs.existsSync(blogDir)) {
       const files = fs.readdirSync(blogDir);
+      let addedCount = 0;
       files.forEach(file => {
         if (file.endsWith('.md')) {
+          const filePath = path.join(blogDir, file);
+          const fileContent = fs.readFileSync(filePath, 'utf-8');
+          
+          // Parse published flag from frontmatter
+          const fmMatch = fileContent.match(/^---\r?\n([\s\S]+?)\r?\n---/);
+          if (fmMatch) {
+            const lines = fmMatch[1].split(/\r?\n/);
+            let published = true;
+            for (const line of lines) {
+              const colonIndex = line.indexOf(':');
+              if (colonIndex !== -1) {
+                const key = line.slice(0, colonIndex).trim();
+                const value = line.slice(colonIndex + 1).trim();
+                if (key === 'published') {
+                  published = value !== 'false';
+                  break;
+                }
+              }
+            }
+            if (!published) {
+              return; // Skip drafts
+            }
+          }
+          
           const slug = file.replace('.md', '');
           urls.push(`/blog/${slug}`);
+          addedCount++;
         }
       });
-      console.log(`✅ Added ${files.length} local blog routes to sitemap.`);
+      console.log(`✅ Added ${addedCount} local blog routes to sitemap.`);
     }
   } catch (err) {
     console.error('Error scanning local blogs:', err);
@@ -51,7 +76,7 @@ async function generateSitemap() {
     if (!config.projectId || !config.apiKey) {
       console.warn('⚠️ Firebase credentials missing. Skipping dynamic product/project routes.');
     } else {
-      // Products
+      // Products (Systems Blueprints)
       const productUrl = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/products?key=${config.apiKey}`;
       const prodRes = await fetch(productUrl);
       if (prodRes.ok) {
@@ -61,22 +86,7 @@ async function generateSitemap() {
             const slug = doc.fields?.slug?.stringValue;
             const published = doc.fields?.published?.booleanValue;
             if (slug && published !== false) {
-              urls.push(`/products/${slug}`);
-            }
-          });
-        }
-      }
-
-      // Projects
-      const projectUrl = `https://firestore.googleapis.com/v1/projects/${config.projectId}/databases/${config.firestoreDatabaseId}/documents/projects?key=${config.apiKey}`;
-      const pResponse = await fetch(projectUrl);
-      if (pResponse.ok) {
-        const pData = await pResponse.json();
-        if (pData.documents) {
-          pData.documents.forEach((doc: any) => {
-            const slug = doc.fields?.slug?.stringValue;
-            if (slug) {
-              urls.push(`/projects/${slug}`);
+              urls.push(`/systems/${slug}`);
             }
           });
         }

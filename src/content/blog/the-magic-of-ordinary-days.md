@@ -1,7 +1,7 @@
 ---
 title: The Magic of Ordinary Days
 slug: the-magic-of-ordinary-days
-description: "If you want, I can also write:\n\na funny blog\na teen/student life blog\na motivational blog\na travel-style blog\nor a deep emotional blog\n\nJust tell me the vibe \U0001F44D."
+description: "A thoughtful reflection on finding extraordinary beauty, peace, and personal growth within the quiet, simple moments of our everyday lives."
 date: '2026-04-03T09:11:20.901Z'
 tags:
   - blog

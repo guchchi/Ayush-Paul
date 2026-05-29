@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useInView } from 'motion/react';
 import { Section } from '../ui/Section';
-import { Trophy, Compass, Star } from 'lucide-react';
+import { Trophy, Compass, Star, Activity, RefreshCw, ShieldCheck, Medal, Award } from 'lucide-react';
 import { VARIANTS } from '../../lib/motion-presets';
 
 // ============================================================================
@@ -76,16 +76,16 @@ export const SocialProofExperienceSection = () => {
 
   const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 22 });
 
-  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [8, 0, 0, -8]);
-  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [40, 0, 0, -40]);
-  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.96, 1, 1, 0.96]);
-  const opacitySection = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [4, 0, 0, -4]);
+  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [20, 0, 0, -20]);
+  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.98, 1, 1, 0.98]);
+  const opacitySection = useTransform(smoothScroll, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
 
   return (
     <Section 
       id="experience" 
       glowVariant="bottom" 
-      className="py-24 md:py-36 bg-[#070708] relative overflow-hidden"
+      className="!py-16 md:!py-24 bg-[#070708] relative overflow-hidden"
     >
       {/* Cybernetic Micro-Grid Background Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50 z-0" />
@@ -100,7 +100,7 @@ export const SocialProofExperienceSection = () => {
         >
           
           {/* Header */}
-          <div className="section-header max-w-3xl text-center mx-auto mb-24 flex flex-col items-center">
+          <div className="section-header max-w-3xl text-center mx-auto mb-12 flex flex-col items-center">
             <motion.div
               variants={VARIANTS.fadeUp}
               initial="initial"
@@ -108,17 +108,46 @@ export const SocialProofExperienceSection = () => {
               viewport={{ once: true }}
               className="badge shadow-[0_0_20px_rgba(0,194,255,0.08)] bg-white/[0.01] border border-white/[0.06] text-[10px] font-bold uppercase tracking-widest text-[#00C2FF] flex items-center gap-1.5 px-4 py-2 rounded-full mb-6"
             >
-              <Trophy size={14} className="text-[#00C2FF]" /> DEPLOYMENT LOGS
+              <Trophy size={14} className="text-[#00C2FF]" /> Recognition & Milestones
             </motion.div>
             <h2 className="text-4xl sm:text-5xl lg:text-6.5xl font-black tracking-tight text-white leading-[1.08]">
               Milestones & <span className="text-[#00C2FF] font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.2)' }}>Ledger.</span>
             </h2>
             <p className="text-white/40 text-base sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto mt-6">
-              Track actual hardware builds, telemetry data sets, CAD files milling metrics, and C++ edge runtimes.
+              A track record of real builds, recognized work, and shipped systems.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-24">
+          {/* === AWARDS ROW === */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+            {/* Award 1: INSPIRE MANAK */}
+            <div className="relative flex items-start gap-4 p-5 rounded-[24px] bg-amber-500/[0.04] border border-amber-500/20 overflow-hidden group hover:border-amber-400/35 transition-all duration-300">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                <Medal size={20} className="text-amber-400" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-amber-400/70 mb-1">National Recognition</span>
+                <h4 className="text-sm font-bold text-white leading-tight">INSPIRE Award — MANAK</h4>
+                <p className="text-[11px] text-white/40 font-medium mt-1 leading-relaxed">Selected by the Dept. of Science & Technology, Govt. of India for innovative student research.</p>
+              </div>
+            </div>
+
+            {/* Award 2: H2R Robot */}
+            <div className="relative flex items-start gap-4 p-5 rounded-[24px] bg-brand-primary/[0.03] border border-brand-primary/15 overflow-hidden group hover:border-brand-primary/30 transition-all duration-300">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-brand-primary/40 to-transparent" />
+              <div className="w-11 h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center shrink-0">
+                <Award size={20} className="text-brand-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-brand-primary/70 mb-1">Flagship Prototype</span>
+                <h4 className="text-sm font-bold text-white leading-tight">H2R Humanoid Robot</h4>
+                <p className="text-[11px] text-white/40 font-medium mt-1 leading-relaxed">Custom-built bipedal robotics platform featuring servo-driven articulation and autonomous balance control.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-12">
             
             {/* LEFT COLUMN: System Chronology Milestones Timeline (Spans 7 columns) */}
             <div className="lg:col-span-7">
@@ -154,29 +183,29 @@ export const SocialProofExperienceSection = () => {
             {/* RIGHT COLUMN: Diagnostic Telemetry stats ledger (Spans 5 columns) */}
             <div className="lg:col-span-5 bg-[#0D0D0E]/20 border border-white/[0.06] rounded-[32px] p-6 sm:p-8 relative overflow-hidden">
               <div className="text-[10px] font-mono font-bold text-white/20 uppercase tracking-[0.2em] border-b border-white/[0.06] pb-3 mb-6">
-                LABORATORY SPEC LEDGER
+                System Diagnostics Ledger
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <DiagnosticStat label="CNC MECHANICAL HOURS" target={420} suffix=" hrs" />
-                <DiagnosticStat label="DEPLOYED NODES CORE" target={50} suffix="+" />
-                <DiagnosticStat label="R&D CODE Blueprints" target={20} suffix="+" />
-                <DiagnosticStat label="SYSTEM RUNTIME LFT" target={99} suffix="%" />
+                <DiagnosticStat label="CAD R&D Hours" target={420} suffix=" hrs" />
+                <DiagnosticStat label="Active Blueprints" target={50} suffix="+" />
+                <DiagnosticStat label="Systems Deployed" target={20} suffix="+" />
+                <DiagnosticStat label="Average Uptime" target={99} suffix="%" />
               </div>
 
-              {/* Extra telemetry parameters block */}
-              <div className="mt-6 bg-black/40 border border-white/[0.04] p-5 rounded-2xl font-mono text-[9px] text-white/40 space-y-2">
-                <div className="flex justify-between">
-                  <span>LAST_SYNC_LATENCY:</span>
-                  <span className="text-[#00C2FF]">0.42ms</span>
+              {/* Extra telemetry parameters block with visual icons for scanning */}
+              <div className="mt-6 bg-black/40 border border-white/[0.04] p-5 rounded-2xl font-mono text-[10px] text-white/50 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-2"><Activity size={12} className="text-[#00C2FF]" /> Sync Latency:</span>
+                  <span className="text-[#00C2FF] font-bold">0.42ms</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>FIRMWARE_OTA_STATUS:</span>
-                  <span className="text-green-500">SYNCHRONIZED</span>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-2"><RefreshCw size={12} className="text-green-500 animate-spin" style={{ animationDuration: '6s' }} /> Compile Status:</span>
+                  <span className="text-green-500 font-bold">SYNCHRONIZED</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>ENCRYPTION_KERNEL:</span>
-                  <span className="text-white/60">AES-256-GCM</span>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center gap-2"><ShieldCheck size={12} className="text-white/60" /> Security Standard:</span>
+                  <span className="text-white/70 font-bold">AES-256-GCM</span>
                 </div>
               </div>
             </div>

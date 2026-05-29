@@ -52,7 +52,7 @@ export const SystemsPage = () => {
 
   useSEO({
     title: "Digital Systems Ecosystem | Ayush Paul",
-    description: "Discover production-grade SaaS platforms, operational systems, and software tools engineered by Ayush Paul.",
+    description: "Discover smart software applications, operational systems, and physical engineering designs built by Ayush Paul.",
     keywords: "Ayush Paul Systems, SaaS Ecosystem, AI Life Navigator, Software Systems",
     url: getCanonicalUrl("/systems")
   });
@@ -101,7 +101,7 @@ export const SystemsPage = () => {
             transition={{ delay: 0.2 }}
             className="text-white/50 text-lg md:text-xl max-w-2xl font-medium leading-relaxed"
           >
-            Deploy autonomous software systems, explore physical CAD schematics, and study active neural prototypes engineered by Ayush Paul.
+            Explore functional web systems, download physical 3D CAD models, and study active intelligence prototypes designed by Ayush Paul.
           </motion.p>
         </div>
 

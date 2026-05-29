@@ -35,7 +35,14 @@ export const MomentumPage = () => {
           limit(50)
         );
         const snapshot = await getDocs(q);
-        setLogs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MomentumLog)));
+        const data = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() } as MomentumLog))
+          .filter((item: any) => {
+            const t = (item.title || '').toLowerCase();
+            const txt = (item.text || '').toLowerCase();
+            return !t.includes('test') && !txt.includes('test');
+          });
+        setLogs(data);
       } catch (err) {
         console.error("Error fetching momentum logs:", err);
       } finally {

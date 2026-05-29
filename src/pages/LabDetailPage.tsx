@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft, Cpu, Terminal, Activity, Eye, Lock, FileText, MessageSquare, Layers } from 'lucide-react';
+import { Check, X, ShieldCheck, Download, Clock, Zap, ArrowRight, ArrowLeft, Cpu, Terminal, Activity, Eye, Lock, FileText, MessageSquare, Layers, BookOpen } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
@@ -23,7 +23,26 @@ export const LabDetailPage = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
   const [activeTab, setActiveTab] = useState<'architecture' | 'milestones' | 'telemetry'>('architecture');
+  const [telemetrySim, setTelemetrySim] = useState({
+    freq: 16.0,
+    temp: 42.4,
+    voltage: 11.8,
+    ping: 35
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTelemetrySim(prev => ({
+        freq: +(prev.freq + (Math.random() - 0.5) * 0.1).toFixed(2),
+        temp: +(prev.temp + (Math.random() - 0.5) * 0.2).toFixed(1),
+        voltage: +(prev.voltage + (Math.random() - 0.5) * 0.05).toFixed(2),
+        ping: Math.floor(prev.ping + (Math.random() - 0.5) * 4)
+      }));
+    }, 1500);
+    return () => clearInterval(timer);
+  }, []);
   const getCurrencySymbol = (currency?: string) => {
     if (!currency) return '₹';
     const c = currency.toLowerCase();
@@ -353,10 +372,8 @@ export const LabDetailPage = () => {
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Right: Technical Blueprint Preview Frame */}
-          <div className="relative aspect-square md:aspect-[4/3] rounded-[2.5rem] overflow-hidden glass border border-white/5 shadow-2xl shadow-brand-primary/5 group h-full bg-black/40">
+               {/* Right: Technical Blueprint Preview Frame */}
+          <div className="relative aspect-square md:aspect-[4/3] rounded-[2.5rem] overflow-hidden glass border border-white/5 shadow-2xl shadow-brand-primary/5 group h-full bg-black/40 cursor-crosshair">
             {/* Corner Industrial Schematic Marks */}
             <div className="absolute top-0 left-4 w-6 h-[1px] bg-white/30 z-20" />
             <div className="absolute top-4 left-0 w-[1px] h-6 bg-white/30 z-20" />
@@ -373,8 +390,40 @@ export const LabDetailPage = () => {
               [SYS_NODE_PRV]
             </div>
 
+            {/* Live Interactive Telemetry HUD (Visible on Hover) */}
+            <div className="absolute inset-0 bg-black/85 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15 flex flex-col justify-between p-6 sm:p-8 font-mono text-[9px] text-[#00C2FF] select-none pointer-events-none">
+              <div className="flex justify-between items-center border-b border-[#00C2FF]/20 pb-2">
+                <span className="font-bold flex items-center gap-1.5 uppercase"><Activity size={10} className="animate-pulse" /> Live Telemetry Deck</span>
+                <span className="bg-[#00C2FF]/10 px-2 py-0.5 rounded text-[8px] font-bold">MONITORING</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 my-auto">
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">NODE_FREQ</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.freq} MHz</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">CORE_TEMP</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.temp} °C</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">BUS_VOLTAGE</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.voltage}V</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">NODE_LATENCY</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.ping} ms</span>
+                </div>
+              </div>
+
+              <div className="border-t border-[#00C2FF]/20 pt-2 flex justify-between text-white/30 text-[8px]">
+                <span>REF_LOCK: ESTABLISHED</span>
+                <span className="animate-pulse flex items-center gap-1 text-green-400 font-bold">● SIGNAL STRONG</span>
+              </div>
+            </div>
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <ProductBadge className="absolute bottom-8 left-8 z-20 shadow-2xl" />
+            <ProductBadge className="absolute bottom-8 left-8 z-20 shadow-2xl transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-2" />
             
             <img 
               src={product.thumbnail} 
@@ -383,8 +432,9 @@ export const LabDetailPage = () => {
               className="w-full h-full object-cover transform group-hover:scale-[1.02] transition-transform duration-700 opacity-60 group-hover:opacity-85"
             />
             {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0A0A]/60 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0A0B]/60 via-transparent to-transparent pointer-events-none" />
           </div>
+        </div>
         </div>
 
         {/* Tabbed Systems Breakdown Panel */}
@@ -433,14 +483,15 @@ export const LabDetailPage = () => {
                   {product.resources?.map((resource) => {
                     const isOwned = profile?.ownedProducts?.[product.id] === 'premium' || product.type === 'free';
                     const hasAccess = !resource.isPremium || isOwned;
-                    
                     // Select appropriate Lucide icon depending on Category
                     let IconComponent = FileText;
-                    if (resource.category === 'code_snippet') IconComponent = Terminal;
-                    else if (resource.category === 'prompt') IconComponent = MessageSquare;
-                    else if (resource.category === 'template') IconComponent = Layers;
-                    else if (resource.category === 'workflow') IconComponent = Activity;
-                    else if (resource.category === 'diagram') IconComponent = Eye;
+                    const cat = (resource.category || '').toLowerCase();
+                    if (cat.includes('code') || cat.includes('firmware')) IconComponent = Terminal;
+                    else if (cat.includes('prompt')) IconComponent = MessageSquare;
+                    else if (cat.includes('template')) IconComponent = Layers;
+                    else if (cat.includes('workflow')) IconComponent = Activity;
+                    else if (cat.includes('diagram') || cat.includes('cad') || cat.includes('stl') || cat.includes('step')) IconComponent = Cpu;
+                    else if (cat.includes('pdf') || cat.includes('guide')) IconComponent = BookOpen;
                     
                     return (
                       <div 
@@ -628,116 +679,155 @@ export const LabDetailPage = () => {
 
         {/* Comparison Table Section */}
         <div className="max-w-4xl mx-auto mb-24 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold tracking-tight mb-4 font-display">System Access Licensing</h2>
             <p className="text-white/40 text-sm font-mono tracking-wider uppercase">[Select system deployment node authorization tier]</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-            {/* Free Tier */}
-            <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.01] flex flex-col relative overflow-hidden bg-black/10">
-              {/* Corner marks */}
-              <div className="absolute top-0 left-4 w-4 h-[1px] bg-white/20" />
-              <div className="absolute top-4 left-0 w-[1px] h-4 bg-white/20" />
-
-              <h3 className="text-sm font-bold text-white/50 mb-2 uppercase font-mono tracking-widest">[Starter Core License]</h3>
-              <div className="text-3xl font-extrabold text-white mb-8 font-display">Free Deploy</div>
-              
-              <ul className="space-y-4 mb-10 flex-1">
-                {product.comparisonFree.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-white/60">
-                    <Check size={16} className="text-white/40 shrink-0 mt-0.5" />
-                    <span className="font-medium">{feature}</span>
-                  </li>
-                ))}
-                {product.comparisonPremium.slice(0, 2).map((feature, idx) => (
-                  <li key={`missing-${idx}`} className="flex items-start gap-3 text-sm text-white/20">
-                    <X size={16} className="shrink-0 mt-0.5 text-white/10" />
-                    <span className="line-through font-medium">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button 
-                onClick={handleFreeDownload}
-                disabled={isDownloading || profile?.ownedProducts?.[product.id] === 'free' || profile?.ownedProducts?.[product.id] === 'premium'}
-                className="w-full py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+          {/* Segmented Pricing Toggle Switcher */}
+          <div className="flex justify-center mb-12">
+            <div className="inline-flex p-1.5 bg-white/[0.02] border border-white/5 rounded-2xl relative">
+              <button
+                onClick={() => setSelectedLicense('free')}
+                className={`px-6 py-2.5 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${
+                  selectedLicense === 'free' ? 'text-black bg-white shadow-lg' : 'text-white/40 hover:text-white/80'
+                }`}
               >
-                {isDownloading ? (
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                ) : (
-                  profile?.ownedProducts?.[product.id] ? (
-                    <><ShieldCheck size={14} className="text-brand-primary" /> Core Node Configured</>
-                  ) : (
-                    <><Download size={14} /> Deploy Starter Node</>
-                  )
-                )}
+                [ Starter Core ]
               </button>
-            </div>
-
-            {/* Premium Tier */}
-            <div className="p-8 rounded-[2.5rem] border border-brand-primary/25 bg-brand-primary/[0.02] shadow-[0_0_50px_rgba(0,194,255,0.03)] flex flex-col relative overflow-hidden bg-black/10">
-              <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
-              
-              {/* Corner marks */}
-              <div className="absolute top-0 right-4 w-4 h-[1px] bg-brand-primary/45" />
-              <div className="absolute top-4 right-0 w-[1px] h-4 bg-brand-primary/45" />
-              
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-sm font-bold text-brand-primary uppercase font-mono tracking-widest">[Master CAD & Schematics]</h3>
-                {hasDiscount && (
-                  <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
-                    Node Sale -{product.discountPercentage}%
-                  </span>
-                )}
-              </div>
-              
-              <div className="flex items-baseline gap-2 mb-8">
-                <div className="text-4xl font-extrabold text-white font-display">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
-                {hasDiscount && (
-                  <div className="text-lg text-white/30 line-through font-display">{getCurrencySymbol(product.currency)}{product.basePrice}</div>
-                )}
-              </div>
-              
-              <ul className="space-y-4 mb-10 flex-1">
-                {product.comparisonFree.map((feature, idx) => (
-                  <li key={`inc-${idx}`} className="flex items-start gap-3 text-sm text-white/80">
-                    <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
-                    <span className="font-medium">{feature}</span>
-                  </li>
-                ))}
-                {product.comparisonPremium.map((feature, idx) => (
-                  <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-semibold">
-                    <Zap size={16} className="text-brand-primary shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button 
-                onClick={handlePremiumUpgrade}
-                disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
-                className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+              <button
+                onClick={() => setSelectedLicense('premium')}
+                className={`px-6 py-2.5 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${
+                  selectedLicense === 'premium' ? 'text-black bg-[#00C2FF] shadow-lg shadow-[#00C2FF]/10' : 'text-white/40 hover:text-white/80'
+                }`}
               >
-                {isCheckingOut ? (
-                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                ) : (
-                  profile?.ownedProducts?.[product.id] === 'premium' ? (
-                    <><ShieldCheck size={14} /> System Fully Unlocked</>
-                  ) : (
-                    profile?.ownedProducts?.[product.id] === 'free' ? 
-                    <>Upgrade to Complete CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></> :
-                    <>Deploy Master CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
-                  )
-                )}
+                [ Master CAD ]
               </button>
-              <p className="text-center text-[8px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1 font-mono">
-                <ShieldCheck size={12} className="text-brand-primary" /> SECURE END_TO_END STRIPE TUNNEL
-              </p>
             </div>
           </div>
+
+          <div className="max-w-2xl mx-auto">
+            {selectedLicense === 'free' ? (
+              /* Free Tier */
+              <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.01] flex flex-col relative overflow-hidden bg-black/10">
+                {/* Corner marks */}
+                <div className="absolute top-0 left-4 w-4 h-[1px] bg-white/20" />
+                <div className="absolute top-4 left-0 w-[1px] h-4 bg-white/20" />
+
+                <h3 className="text-sm font-bold text-white/50 mb-2 uppercase font-mono tracking-widest">[Starter Core License]</h3>
+                <div className="text-3xl font-extrabold text-white mb-8 font-display">Free Deploy</div>
+                
+                {(() => {
+                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
+                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
+                    .filter(f => !uniqueFree.includes(f));
+
+                  return (
+                    <ul className="space-y-4 mb-10 flex-1">
+                      {uniqueFree.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm text-white/60">
+                          <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                          <span className="font-medium">{feature}</span>
+                        </li>
+                      ))}
+                      {uniquePrem.slice(0, 2).map((feature, idx) => (
+                        <li key={`missing-${idx}`} className="flex items-start gap-3 text-sm text-white/20">
+                          <X size={16} className="shrink-0 mt-0.5 text-white/10" />
+                          <span className="line-through font-medium">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
+
+                <button 
+                  onClick={handleFreeDownload}
+                  disabled={isDownloading || profile?.ownedProducts?.[product.id] === 'free' || profile?.ownedProducts?.[product.id] === 'premium'}
+                  className="w-full py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                >
+                  {isDownloading ? (
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    profile?.ownedProducts?.[product.id] ? (
+                      <><ShieldCheck size={14} className="text-brand-primary" /> Core Node Configured</>
+                    ) : (
+                      <><Download size={14} /> Deploy Starter Node</>
+                    )
+                  )}
+                </button>
+              </div>
+            ) : (
+              /* Premium Tier */
+              <div className="p-8 rounded-[2.5rem] border border-brand-primary/25 bg-brand-primary/[0.02] shadow-[0_0_50px_rgba(0,194,255,0.03)] flex flex-col relative overflow-hidden bg-black/10">
+                <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
+                
+                {/* Corner marks */}
+                <div className="absolute top-0 right-4 w-4 h-[1px] bg-brand-primary/45" />
+                <div className="absolute top-4 right-0 w-[1px] h-4 bg-brand-primary/45" />
+                
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-sm font-bold text-brand-primary uppercase font-mono tracking-widest">[Master CAD & Schematics]</h3>
+                  {hasDiscount && (
+                    <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-[#00C2FF] text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
+                      Node Sale -{product.discountPercentage}%
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="text-4xl font-extrabold text-white font-display">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
+                  {hasDiscount && (
+                    <div className="text-sm text-white/40 line-through font-mono">(WAS {getCurrencySymbol(product.currency)}{product.basePrice})</div>
+                  )}
+                </div>
+                
+                {(() => {
+                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
+                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
+                    .filter(f => !uniqueFree.includes(f));
+
+                  return (
+                    <ul className="space-y-4 mb-10 flex-1">
+                      {uniqueFree.map((feature, idx) => (
+                        <li key={`inc-${idx}`} className="flex items-start gap-3 text-sm text-white/80">
+                          <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                          <span className="font-medium">{feature}</span>
+                        </li>
+                      ))}
+                      {uniquePrem.map((feature, idx) => (
+                        <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-semibold">
+                          <Zap size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
+
+                <button 
+                  onClick={handlePremiumUpgrade}
+                  disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
+                  className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+                >
+                  {isCheckingOut ? (
+                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    profile?.ownedProducts?.[product.id] === 'premium' ? (
+                      <><ShieldCheck size={14} /> System Fully Unlocked</>
+                    ) : (
+                      profile?.ownedProducts?.[product.id] === 'free' ? 
+                      <>Upgrade to Complete CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></> :
+                      <>Deploy Master CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
+                    )
+                  )}
+                </button>
+                <p className="text-center text-[8px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1 font-mono">
+                  <ShieldCheck size={12} className="text-brand-primary" /> SECURE END_TO_END STRIPE TUNNEL
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
       {/* Authority Graph: Related Content Sections */}
       <div className="max-w-6xl mx-auto px-6 md:px-12 mt-32 border-t border-white/5 pt-24 space-y-32 relative z-10">
@@ -808,6 +898,7 @@ export const LabDetailPage = () => {
       </div>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} defaultMode="signup" />
+      </div>
     </motion.div>
   );
 };

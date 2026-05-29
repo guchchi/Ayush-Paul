@@ -8,6 +8,6 @@ category: Artificial Intelligence
 coverImage: >-
   https://static.vecteezy.com/system/resources/previews/023/436/368/non_2x/high-speed-splash-intricate-water-collision-water-splashes-forming-generative-ai-photo.jpg
 author: Ayush Paul
-published: true
+published: false
 ---
 ## H2 heading test

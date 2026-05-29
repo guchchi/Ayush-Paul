@@ -15,7 +15,13 @@ export const ExperimentsRDSection = () => {
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => {
+          const t = (item.title || '').toLowerCase();
+          const d = (item.description || '').toLowerCase();
+          return !t.includes('test') && !d.includes('test');
+        });
       setExperiments(data);
       setLoading(false);
     }, (error) => {
@@ -153,10 +159,10 @@ export const ExperimentsRDSection = () => {
         {/* Section Action */}
         <div className="flex justify-center mt-16">
           <Link 
-            to="/experiments" 
+            to="/systems" 
             className="px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl text-sm font-bold tracking-widest text-white transition-all uppercase flex items-center gap-2 group"
           >
-            Access All Experiment Logs 
+            Access All Systems & Blueprints 
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-brand-secondary" />
           </Link>
         </div>

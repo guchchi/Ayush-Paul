@@ -103,7 +103,14 @@ export const ResearchExperimentsSection = () => {
   useEffect(() => {
     const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setExperiments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => {
+          const t = (item.title || '').toLowerCase();
+          const d = (item.description || '').toLowerCase();
+          return !t.includes('test') && !d.includes('test');
+        });
+      setExperiments(data);
       setLoadingExps(false);
     }, (error) => {
       console.error("Firestore error loading experiments:", error);
@@ -146,7 +153,14 @@ export const ResearchExperimentsSection = () => {
   useEffect(() => {
     const q = query(collection(db, "updates"), orderBy("date", "desc"), limit(6));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setLogs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => {
+          const t = (item.title || '').toLowerCase();
+          const txt = (item.text || '').toLowerCase();
+          return !t.includes('test') && !txt.includes('test');
+        });
+      setLogs(data);
       setLoadingLogs(false);
     }, (error) => {
       console.error("Firestore error loading updates:", error);

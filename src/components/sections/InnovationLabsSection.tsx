@@ -122,7 +122,7 @@ export const InnovationLabsSection = () => {
       title: "VibeCoder Local LLM Prompt-Compiler",
       category: "COMPILER WORKSPACE",
       status: "COMPILER V1.4 ALPHA",
-      description: "Local large language model orchestrator driving natural-language translation directly into production-ready C++ edge microcontroller configurations.",
+      description: "An AI-powered system that translates plain-text instructions into efficient, ready-to-run code for local microcontrollers.",
       hardware: ["Nvidia Jetson Orin Nano", "ESP32-S3 WROOM Module", "Holographic telemetry console"],
       software: ["Local model orchestration", "VibeCoder code generator", "OTA compiler pipeline"],
       visualMetric: "0.28s",
@@ -163,10 +163,10 @@ export const InnovationLabsSection = () => {
 
   const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 22 });
 
-  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [8, 0, 0, -8]);
-  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [40, 0, 0, -40]);
-  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.96, 1, 1, 0.96]);
-  const opacitySection = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [4, 0, 0, -4]);
+  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [20, 0, 0, -20]);
+  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.98, 1, 1, 0.98]);
+  const opacitySection = useTransform(smoothScroll, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
 
   const handleNextCard = () => {
     setActiveIndex((prev) => (prev + 1) % concepts.length);
@@ -176,7 +176,7 @@ export const InnovationLabsSection = () => {
     <Section 
       id="innovation-labs" 
       glowVariant="center" 
-      className="py-24 md:py-36 bg-[#0A0A0B] relative overflow-hidden"
+      className="!py-16 md:!py-24 bg-[#0A0A0B] relative overflow-hidden"
     >
       {/* Cybernetic Micro-Grid Background Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50 z-0" />
@@ -191,7 +191,7 @@ export const InnovationLabsSection = () => {
         >
           
           {/* Header */}
-          <div className="section-header max-w-3xl text-center mx-auto mb-24 flex flex-col items-center">
+          <div className="section-header max-w-3xl text-center mx-auto mb-12 flex flex-col items-center">
             <motion.div
               variants={VARIANTS.fadeUp}
               initial="initial"
@@ -206,7 +206,7 @@ export const InnovationLabsSection = () => {
               Technology <span className="text-[#00C2FF] font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.2)' }}>Division.</span>
             </h2>
             <p className="text-white/40 text-base sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto mt-6">
-              Genuine engineering files, parametric CAD outlines, microcontroller telemetry loops, and stress analysis streams monitored continuously.
+              Real hardware. Real experiments. Here's how it works.
             </p>
           </div>
 
@@ -332,38 +332,50 @@ export const InnovationLabsSection = () => {
 
                     {concepts[activeIndex].telemetry.map((t) => (
                       <div key={t.label} className="flex flex-col gap-0.5 bg-black/30 border border-white/[0.04] p-3 rounded-xl backdrop-blur-sm z-10 font-mono">
-                        <span className="text-[7px] text-white/20 uppercase font-bold tracking-widest">{t.label}</span>
-                        <span className="text-xs font-bold text-[#00C2FF]">{t.value}</span>
+                        {/* Human-readable label */}
+                        <span className="text-[10px] text-white/55 font-semibold leading-tight">
+                          {t.label === 'SYS_FREQ' ? 'Clock Speed' :
+                           t.label === 'GPS_SATS' ? 'GPS Satellites' :
+                           t.label === 'COM_PING' ? 'Network Latency' :
+                           t.label === 'STEER_PID' ? 'PID Coefficients' :
+                           t.label === 'CORE_TEMP' ? 'Core Temperature' :
+                           t.label === 'LLM_RAM' ? 'Memory Usage' :
+                           t.label === 'CODE_TOK' ? 'Token Rate' :
+                           t.label === 'OTA_FREQ' ? 'Wireless Band' :
+                           t.label === 'CNC_TOL' ? 'Milling Tolerance' :
+                           t.label === 'SHOCK_MAX' ? 'Shock Resistance' :
+                           t.label === 'MASS_NET' ? 'Net Weight' :
+                           t.label === 'HEAT_DISS' ? 'Heat Dissipation' :
+                           t.label}
+                        </span>
+                        <span className="text-xs font-black text-[#00C2FF]">{t.value}</span>
+                        <span className="text-[8px] text-white/20 uppercase tracking-widest mt-0.5">{t.label}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Details specs lists */}
+                  {/* Details specs lists - collapsible on mobile */}
                   <div className="grid sm:grid-cols-2 gap-6 pt-2">
                     <div>
                       <span className="text-[8px] font-mono font-bold uppercase tracking-[0.2em] text-white/20 block mb-2.5">
-                        HARDWARE SCHEMA
+                        Hardware
                       </span>
-                      <ul className="space-y-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {concepts[activeIndex].hardware.map((hw) => (
-                          <li key={hw} className="flex items-center gap-2 text-xs font-mono text-white/40">
-                            <span className="w-1 h-1 rounded-full bg-[#00C2FF]/30 shrink-0" /> {hw}
-                          </li>
+                          <span key={hw} className="text-[10px] font-mono text-white/55 bg-white/[0.03] border border-white/[0.06] px-2.5 py-1 rounded-full">{hw}</span>
                         ))}
-                      </ul>
+                      </div>
                     </div>
 
                     <div>
                       <span className="text-[8px] font-mono font-bold uppercase tracking-[0.2em] text-white/20 block mb-2.5">
-                        SOFTWARE CORE
+                        Software
                       </span>
-                      <ul className="space-y-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {concepts[activeIndex].software.map((sw) => (
-                          <li key={sw} className="flex items-center gap-2 text-xs font-mono text-white/40">
-                            <span className="w-1 h-1 rounded-full bg-[#00C2FF]/20 shrink-0" /> {sw}
-                          </li>
+                          <span key={sw} className="text-[10px] font-mono text-brand-primary/60 bg-brand-primary/[0.04] border border-brand-primary/10 px-2.5 py-1 rounded-full">{sw}</span>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -372,9 +384,9 @@ export const InnovationLabsSection = () => {
               <div className="pt-6">
                 <button
                   onClick={handleNextCard}
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all py-3.5 px-6 rounded-full border border-white/[0.06] hover:border-white/10 bg-white/[0.01] cursor-pointer"
+                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all py-3.5 px-6 min-h-[44px] rounded-full border border-white/[0.06] hover:border-white/10 bg-white/[0.01] cursor-pointer"
                 >
-                  Inspect Next Blueprint Concept <ChevronRight size={14} className="text-[#00C2FF]" />
+                  Inspect Next Blueprint <ChevronRight size={14} className="text-[#00C2FF]" />
                 </button>
               </div>
 

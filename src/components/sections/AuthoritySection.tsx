@@ -45,8 +45,8 @@ const StatsDashboard = () => {
 
 const BrandEcosystem = () => {
   const items = [
-    { title: "System Mission", content: "A premium, unified operational systems catalog and deployable digital architecture infrastructure.", icon: <Zap size={20} /> },
-    { title: "Active Deep R&D", content: "Deep tech systems integration, ROS2 control networks, and decentralized intelligence workflows.", icon: <BookOpen size={20} /> },
+    { title: "System Mission", content: "A curated catalog of software systems, web applications, and digital blueprints.", icon: <Zap size={20} /> },
+    { title: "Active Deep R&D", content: "Robotics engineering, intelligent automation systems, and connected device applications.", icon: <BookOpen size={20} /> },
     { title: "Engineering Integrity", content: "Simplicity is the ultimate sophistication. Formulate modular physical & digital assets that execute autonomously.", icon: <Lightbulb size={20} /> },
   ];
 
@@ -92,9 +92,9 @@ export const AuthoritySection = () => {
       id: 'software',
       title: 'Software Infrastructure',
       icon: <Box className="w-8 h-8 text-brand-primary" />,
-      description: 'Production-ready SaaS platforms and software ecosystems.',
+      description: 'Scalable web applications and custom software platforms.',
       metrics: ['Modular Abstractions', 'High Availability', 'Production Analytics'],
-      details: 'Building secure, full-stack applications with dynamic caching, seamless state synchronizations, and serverless scaling.'
+      details: 'Developing secure, full-stack web applications with cloud integration, responsive design, and database systems.'
     },
     {
       id: 'diagnostics',
@@ -108,9 +108,9 @@ export const AuthoritySection = () => {
       id: 'cyber-physical',
       title: 'Cyber-Physical Systems',
       icon: <Brain className="w-8 h-8 text-brand-accent" />,
-      description: 'Cyber-physical systems, ROS2, and Edge AI integrations.',
+      description: 'Smart hardware devices, robotics systems, and physical computing solutions.',
       metrics: ['AI Agent System Design', 'ROS2 Spatial Blueprints', 'ESP32 Control Networks'],
-      details: 'Bridging deep analytical software with low-latency physical systems, open-sourcing production CAD and code.'
+      details: 'Connecting intelligent software with physical devices, open-sourcing real mechanical layouts and control code.'
     }
   ];
 

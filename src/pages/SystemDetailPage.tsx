@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, ArrowUpRight, Github, ShieldCheck, Code, ArrowRight, Download, Lock, Check, X, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Github, ShieldCheck, Code, ArrowRight, Download, Lock, Check, X, Zap, Cpu, Activity, Layers, Terminal } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import { Product } from '../types';
@@ -20,6 +20,25 @@ export const SystemDetailPage = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
+  const [telemetrySim, setTelemetrySim] = useState({
+    freq: 16.0,
+    temp: 42.4,
+    voltage: 11.8,
+    ping: 35
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTelemetrySim(prev => ({
+        freq: +(prev.freq + (Math.random() - 0.5) * 0.1).toFixed(2),
+        temp: +(prev.temp + (Math.random() - 0.5) * 0.2).toFixed(1),
+        voltage: +(prev.voltage + (Math.random() - 0.5) * 0.05).toFixed(2),
+        ping: Math.floor(prev.ping + (Math.random() - 0.5) * 4)
+      }));
+    }, 1500);
+    return () => clearInterval(timer);
+  }, []);
 
   const { trackEvent } = useAnalytics();
 
@@ -215,7 +234,55 @@ export const SystemDetailPage = () => {
           </div>
 
           {/* Right: Visual Schematics */}
-          <div className="relative aspect-square md:aspect-[4/3] rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-white/5 shadow-2xl group h-full">
+          <div className="relative aspect-square md:aspect-[4/3] rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-white/5 shadow-2xl group h-full cursor-crosshair">
+            {/* Corner Industrial Schematic Marks */}
+            <div className="absolute top-0 left-4 w-6 h-[1px] bg-white/30 z-20" />
+            <div className="absolute top-4 left-0 w-[1px] h-6 bg-white/30 z-20" />
+            <div className="absolute bottom-0 right-4 w-6 h-[1px] bg-white/30 z-20" />
+            <div className="absolute bottom-4 right-0 w-[1px] h-6 bg-white/30 z-20" />
+            
+            {/* Schematic Overlay Indicators */}
+            <div className="absolute bottom-3 left-4 font-mono text-[7px] text-white/20 select-none pointer-events-none z-20 flex flex-col gap-0.5">
+              <span>COORD_REF: 42.194 // -88.08</span>
+              <span>AZIMUTH: 184.26 // PITCH: -12.44</span>
+            </div>
+            
+            <div className="absolute top-4 right-4 font-mono text-[8px] text-white/30 select-none pointer-events-none z-20 border border-white/10 px-2 py-0.5 rounded bg-black/40">
+              [SYS_NODE_PRV]
+            </div>
+
+            {/* Live Interactive Telemetry HUD (Visible on Hover) */}
+            <div className="absolute inset-0 bg-black/85 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-15 flex flex-col justify-between p-6 sm:p-8 font-mono text-[9px] text-[#00C2FF] select-none pointer-events-none">
+              <div className="flex justify-between items-center border-b border-[#00C2FF]/20 pb-2">
+                <span className="font-bold flex items-center gap-1.5 uppercase"><Activity size={10} className="animate-pulse" /> Live Telemetry Deck</span>
+                <span className="bg-[#00C2FF]/10 px-2 py-0.5 rounded text-[8px] font-bold">MONITORING</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 my-auto">
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">NODE_FREQ</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.freq} MHz</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">CORE_TEMP</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.temp} °C</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">BUS_VOLTAGE</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.voltage}V</span>
+                </div>
+                <div className="flex flex-col bg-black/50 border border-white/5 p-3 rounded-2xl">
+                  <span className="text-white/20 mb-1 text-[8px] uppercase tracking-wider">NODE_LATENCY</span>
+                  <span className="text-xs sm:text-sm font-black text-white">{telemetrySim.ping} ms</span>
+                </div>
+              </div>
+
+              <div className="border-t border-[#00C2FF]/20 pt-2 flex justify-between text-white/30 text-[8px]">
+                <span>REF_LOCK: ESTABLISHED</span>
+                <span className="animate-pulse flex items-center gap-1 text-green-400 font-bold">● SIGNAL STRONG</span>
+              </div>
+            </div>
+
             <img 
               src={product.thumbnail} 
               alt={product.title} 
@@ -239,10 +306,17 @@ export const SystemDetailPage = () => {
                 const [title, desc] = featureName.includes(": ") 
                   ? featureName.split(": ") 
                   : [featureName, ""];
+                
+                let IconComponent = Code;
+                if (idx % 4 === 0) IconComponent = Cpu;
+                else if (idx % 4 === 1) IconComponent = Zap;
+                else if (idx % 4 === 2) IconComponent = Layers;
+                else if (idx % 4 === 3) IconComponent = Terminal;
+
                 return (
                   <div key={idx} className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.03] transition-colors flex flex-col space-y-4">
                     <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/80">
-                      <Code size={18} />
+                      <IconComponent size={18} />
                     </div>
                     <h4 className="text-lg font-bold tracking-tight text-white">{title}</h4>
                     {desc && <p className="text-sm text-white/40 leading-relaxed font-medium">{desc}</p>}
@@ -255,100 +329,164 @@ export const SystemDetailPage = () => {
 
         {/* Deployment / License Section */}
         <div className="max-w-4xl mx-auto border-t border-white/5 pt-20 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold tracking-tight mb-4">System Access Licensing</h2>
             <p className="text-white/40 text-sm">Select system deployment node authorization tier</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Free Tier */}
-            <div className="p-8 rounded-[2rem] border border-white/5 bg-white/[0.02] flex flex-col">
-              <h3 className="text-sm font-bold text-white/50 mb-2 uppercase tracking-wide">Starter Core License</h3>
-              <div className="text-3xl font-bold text-white mb-8">Free Deploy</div>
-              
-              <ul className="space-y-4 mb-10 flex-1">
-                {product.comparisonFree?.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-white/60">
-                    <Check size={16} className="text-white/40 shrink-0 mt-0.5" />
-                    <span className="font-medium">{feature}</span>
-                  </li>
-                ))}
-                {product.comparisonPremium?.slice(0, 2).map((feature, idx) => (
-                  <li key={`missing-${idx}`} className="flex items-start gap-3 text-sm text-white/20">
-                    <X size={16} className="shrink-0 mt-0.5 text-white/10" />
-                    <span className="line-through font-medium">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button 
-                onClick={handleFreeDownload}
-                disabled={isDownloading || profile?.ownedProducts?.[product.id]}
-                className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-semibold text-sm flex items-center justify-center gap-2"
+          {/* Segmented Pricing Toggle Switcher */}
+          <div className="flex justify-center mb-12">
+            <div className="inline-flex p-1.5 bg-white/[0.02] border border-white/5 rounded-2xl relative">
+              <button
+                onClick={() => setSelectedLicense('free')}
+                className={`px-6 py-2.5 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${
+                  selectedLicense === 'free' ? 'text-black bg-white shadow-lg' : 'text-white/40 hover:text-white/80'
+                }`}
               >
-                {isDownloading ? (
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                ) : (
-                  profile?.ownedProducts?.[product.id] ? (
-                    <><ShieldCheck size={16} /> System Acquired</>
-                  ) : (
-                    <><Download size={16} /> Download Free Version</>
-                  )
-                )}
+                Free
+              </button>
+              <button
+                onClick={() => setSelectedLicense('premium')}
+                className={`px-6 py-2.5 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${
+                  selectedLicense === 'premium' ? 'text-black bg-[#00C2FF] shadow-lg shadow-[#00C2FF]/10' : 'text-white/40 hover:text-white/80'
+                }`}
+              >
+                Premium
               </button>
             </div>
+          </div>
 
-            {/* Premium Tier */}
-            <div className="p-8 rounded-[2rem] border border-white/20 bg-white/[0.04] shadow-2xl flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-white/20" />
-              
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wide">Full Production License</h3>
-                {hasDiscount && (
-                  <span className="px-3 py-1 bg-white/10 text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
-                    Sale -{product.discountPercentage}%
-                  </span>
-                )}
-              </div>
-              
-              <div className="flex items-baseline gap-2 mb-8">
-                <div className="text-4xl font-bold text-white">${product.salePrice || product.basePrice}</div>
-                {hasDiscount && (
-                  <div className="text-lg text-white/30 line-through">${product.basePrice}</div>
-                )}
-              </div>
-              
-              <ul className="space-y-4 mb-10 flex-1">
-                {product.comparisonFree?.map((feature, idx) => (
-                  <li key={`inc-${idx}`} className="flex items-start gap-3 text-sm text-white/80">
-                    <Check size={16} className="text-white/60 shrink-0 mt-0.5" />
-                    <span className="font-medium">{feature}</span>
-                  </li>
-                ))}
-                {product.comparisonPremium?.map((feature, idx) => (
-                  <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-semibold">
-                    <Check size={16} className="text-white shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="max-w-2xl mx-auto">
+            {selectedLicense === 'free' ? (
+              /* Free Tier Card */
+              <div className="p-8 rounded-[2rem] border border-white/5 bg-white/[0.01] flex flex-col relative overflow-hidden bg-black/10">
+                {/* Schematic Notches */}
+                <div className="absolute top-0 left-4 w-4 h-[1px] bg-white/20" />
+                <div className="absolute top-4 left-0 w-[1px] h-4 bg-white/20" />
 
-              <button 
-                onClick={handlePremiumUpgrade}
-                disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
-                className="w-full py-4 rounded-xl bg-white hover:bg-white/90 text-black transition-all font-semibold text-sm flex items-center justify-center gap-2 shadow-xl group"
-              >
-                {isCheckingOut ? (
-                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                ) : (
-                  profile?.ownedProducts?.[product.id] === 'premium' ? (
-                    <><ShieldCheck size={16} /> Full System Unlocked</>
+                <h3 className="text-sm font-bold text-white/50 mb-2 uppercase font-mono tracking-widest">[Starter Core License]</h3>
+                <div className="text-3xl font-extrabold text-white mb-8 font-display">Free Deploy</div>
+                
+                {(() => {
+                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
+                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
+                    .filter(f => !uniqueFree.includes(f));
+
+                  return (
+                    <>
+                      <div className="text-[10px] font-mono text-white/30 mb-6">{uniqueFree.length} features included</div>
+                      <ul className="space-y-5 mb-10 flex-1">
+                        {uniqueFree.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-sm text-white/60 leading-6">
+                            <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                            <span className="font-medium">{feature}</span>
+                          </li>
+                        ))}
+                        {uniquePrem.slice(0, 2).map((feature, idx) => (
+                          <li key={`missing-${idx}`} className="flex items-start gap-3 text-sm text-white/20 leading-6">
+                            <X size={16} className="shrink-0 mt-0.5 text-white/10" />
+                            <span className="line-through font-medium">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  );
+                })()}
+
+                <button 
+                  onClick={handleFreeDownload}
+                  disabled={isDownloading || profile?.ownedProducts?.[product.id]}
+                  className="w-full py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                >
+                  {isDownloading ? (
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <>Deploy Full System <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" /></>
-                  )
-                )}
-              </button>
-            </div>
+                    profile?.ownedProducts?.[product.id] ? (
+                      <><ShieldCheck size={16} className="text-brand-primary" /> System Acquired</>
+                    ) : (
+                      <><Download size={16} /> Download Free Version</>
+                    )
+                  )}
+                </button>
+              </div>
+            ) : (
+              /* Premium Tier Card */
+              <div className="p-8 rounded-[2.5rem] border border-brand-primary/25 bg-brand-primary/[0.02] shadow-[0_0_50px_rgba(0,194,255,0.03)] flex flex-col relative overflow-hidden bg-black/10">
+                <div className="absolute top-0 left-0 w-full h-1 bg-[#00C2FF]" />
+                
+                {/* Corner marks */}
+                <div className="absolute top-0 right-4 w-4 h-[1px] bg-brand-primary/45" />
+                <div className="absolute top-4 right-0 w-[1px] h-4 bg-brand-primary/45" />
+                
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-sm font-bold text-brand-primary uppercase font-mono tracking-widest">[Master CAD & Schematics]</h3>
+                  {hasDiscount && (
+                    <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-[#00C2FF] text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
+                      Sale -{product.discountPercentage}%
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="text-4xl font-extrabold text-white font-display">${product.salePrice || product.basePrice}</div>
+                  {hasDiscount && (
+                    <div className="text-sm text-white/40 line-through font-mono">(WAS ${product.basePrice})</div>
+                  )}
+                </div>
+                
+                {(() => {
+                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
+                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
+                    .filter(f => !uniqueFree.includes(f));
+
+                  return (
+                    <>
+                      <div className="text-[10px] font-mono text-brand-primary/60 mb-6">{uniqueFree.length + uniquePrem.length} features included</div>
+                      <ul className="space-y-5 mb-10 flex-1">
+                        {uniqueFree.map((feature, idx) => (
+                          <li key={`inc-${idx}`} className="flex items-start gap-3 text-sm text-white/80 leading-6">
+                            <Check size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                            <span className="font-medium">{feature}</span>
+                          </li>
+                        ))}
+                        {uniquePrem.map((feature, idx) => (
+                          <li key={`prem-${idx}`} className="flex items-start gap-3 text-sm text-white font-semibold leading-6">
+                            <Zap size={16} className="text-brand-primary shrink-0 mt-0.5" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  );
+                })()}
+
+                <button 
+                  onClick={handlePremiumUpgrade}
+                  disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
+                  className="w-full py-4 rounded-xl bg-[#00C2FF] hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+                >
+                  {isCheckingOut ? (
+                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    profile?.ownedProducts?.[product.id] === 'premium' ? (
+                      <><ShieldCheck size={16} /> Full System Unlocked</>
+                    ) : (
+                      <>Deploy Full System <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" /></>
+                    )
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Choosing guide */}
+        <div className="max-w-2xl mx-auto mt-8 flex flex-col sm:flex-row gap-3 text-[11px] font-medium text-white/35 text-center">
+          <div className="flex-1 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/5">
+            <span className="font-bold text-white/55">Free</span> — great for learning, prototyping, or exploring the codebase.
+          </div>
+          <div className="flex-1 px-4 py-3 rounded-xl bg-brand-primary/[0.03] border border-brand-primary/10">
+            <span className="font-bold text-brand-primary">Premium</span> — full CAD schematics, firmware, and production-ready source.
           </div>
         </div>
 

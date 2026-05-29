@@ -83,49 +83,36 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/", id: "home" },
-    { name: "Systems", href: "/systems", id: "systems" },
-    { name: "Experiments", href: "/experiments", id: "experiments" },
+    { name: "Ecosystem", href: "/systems", id: "systems" },
+    { name: "Blog", href: "/blog", id: "blog" },
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
   const exploreLinks = [
     {
-      name: "About",
+      name: "Vision & About",
       href: "/about",
       description: "Ecosystem architectural vision",
       icon: Users2
     },
     {
-      name: "Milestones",
+      name: "Ecosystem Milestones",
       href: "/milestones",
-      description: "Ecosystem milestones & achievements",
+      description: "System milestones & achievements",
       icon: Trophy
     },
     {
-      name: "Engineering Logs",
-      href: "#",
-      description: "Real-time compile details (Soon)",
-      icon: Terminal,
-      disabled: true
-    },
-    {
-      name: "Publications",
+      name: "Research Papers",
       href: "/blog",
       description: "Deep tech research publications",
       icon: BookOpen
-    },
-    {
-      name: "Ecosystem Updates",
-      href: "/blog",
-      description: "Platform updates & announcements",
-      icon: Flame
     }
   ];
 
-  // Construct activeExploreLinks preserving the requested order: About -> Milestones -> Engineering Logs -> Vault -> Publications -> Ecosystem Updates
+  // Construct activeExploreLinks: Vision & About -> Ecosystem Milestones -> Vault (if authenticated) -> Research Papers
   const activeExploreLinks = [...exploreLinks];
   if (user) {
-    activeExploreLinks.splice(3, 0, {
+    activeExploreLinks.splice(2, 0, {
       name: "Vault",
       href: "/vault",
       description: "Your active digital blueprints",
@@ -191,33 +178,29 @@ export const Navbar = () => {
             ? "bg-black/55 border-white/[0.08] py-2 sm:py-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl" 
             : "bg-[#FFFFFF]/[0.02] border-white/[0.06] py-2.5 sm:py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.55)] backdrop-blur-xl"
       )}>
-        {navLinks.map((link) => (
-          <Link
-            key={link.name}
-            to={link.href}
-            onClick={(e) => handleNavClick(link, e)}
-            className={cn(
-              "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full group overflow-hidden block",
-              (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
-                ? "text-white" 
-                : "text-white/30 hover:text-white/60"
-            )}
-          >
-            <span className="relative z-10">{link.name}</span>
-            {(location.pathname === link.href || (location.pathname === '/' && activeSection === link.id)) && (
-              <motion.div 
-                layoutId="nav-pill"
-                transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
-                className={cn(
-                  "absolute inset-0 rounded-full",
-                  (location.pathname === '/' && !isScrolled)
-                    ? "bg-white/5 border border-white/10"
-                    : "bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
-                )}
-              />
-            )}
-          </Link>
-        ))}
+        {navLinks.map((link) => {
+          const isActive = location.pathname === link.href || (location.pathname === '/' && activeSection === link.id);
+          return (
+            <Link
+              key={link.name}
+              to={link.href}
+              onClick={(e) => handleNavClick(link, e)}
+              className={cn(
+                "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full group overflow-hidden block",
+                isActive ? "text-white" : "text-white/30 hover:text-white/60"
+              )}
+            >
+              <span className="relative z-10">{link.name}</span>
+              {isActive && (
+                <motion.div 
+                  layoutId="nav-pill"
+                  transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+                  className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                />
+              )}
+            </Link>
+          );
+        })}
 
         {/* Explore Dropdown Trigger */}
         <div 
@@ -225,35 +208,33 @@ export const Navbar = () => {
           onMouseEnter={() => setIsExploreOpen(true)}
           onMouseLeave={() => setIsExploreOpen(false)}
         >
-          <button
-            className={cn(
-              "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full flex items-center gap-1.5 group select-none outline-none",
-              isExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
-                ? "text-white" 
-                : "text-white/30 hover:text-white/60"
-            )}
-          >
-            <span className="relative z-10">Explore</span>
-            <ChevronDown 
-              size={11} 
-              className={cn(
-                "relative z-10 transition-transform duration-500",
-                isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
-              )}
-            />
-            {(activeExploreLinks.some(l => location.pathname === l.href)) && (
-              <motion.div 
-                layoutId="nav-pill"
-                transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+          {(() => {
+            const isActiveExplore = activeExploreLinks.some(l => location.pathname === l.href);
+            return (
+              <button
                 className={cn(
-                  "absolute inset-0 rounded-full",
-                  (location.pathname === '/' && !isScrolled)
-                    ? "bg-white/5 border border-white/10"
-                    : "bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full flex items-center gap-1.5 group select-none outline-none",
+                  isExploreOpen || isActiveExplore ? "text-white" : "text-white/30 hover:text-white/60"
                 )}
-              />
-            )}
-          </button>
+              >
+                <span className="relative z-10">Explore</span>
+                <ChevronDown 
+                  size={11} 
+                  className={cn(
+                    "relative z-10 transition-transform duration-500",
+                    isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
+                  )}
+                />
+                {isActiveExplore && (
+                  <motion.div 
+                    layoutId="nav-pill"
+                    transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
+                    className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  />
+                )}
+              </button>
+            );
+          })()}
 
           {/* Dropdown Menu */}
           <AnimatePresence>
@@ -325,6 +306,14 @@ export const Navbar = () => {
 
       {/* RIGHT ISLAND: Independent Minimalist Action Text Links (No buttons, no grouping) */}
       <div className="hidden lg:flex items-center gap-8 pointer-events-auto shrink-0 z-10">
+        {/* Newcomer Get Started CTA */}
+        <Link
+          to="/systems"
+          className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer flex items-center gap-1.5"
+        >
+          Get Started <ArrowRight size={11} className="text-brand-primary" />
+        </Link>
+
         {user ? (
           <Link 
             to="/vault"
@@ -410,6 +399,19 @@ export const Navbar = () => {
 
                   {/* High-Signal Nav Links */}
                   <div className="flex-1 overflow-y-auto py-6 px-6 space-y-1 custom-scrollbar">
+                    {/* Newcomer featured entry card */}
+                    <Link
+                      to="/systems"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between w-full p-4 mb-3 rounded-[20px] bg-brand-primary/10 border border-brand-primary/20 text-brand-primary group"
+                    >
+                      <div className="flex flex-col text-left">
+                        <span className="text-xs font-bold uppercase tracking-widest">New here?</span>
+                        <span className="text-base font-display font-bold tracking-tight mt-0.5">Explore the Ecosystem →</span>
+                      </div>
+                      <ArrowRight size={18} className="shrink-0 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+
                     {navLinks.map((link, i) => (
                       <Link
                         key={link.name}

@@ -116,9 +116,9 @@ export const VisionFutureSection = () => {
 
   // Core orb scaling and text rotation transformations
   const orbScale = useTransform(smoothScroll, [0, 0.5, 1], [0.8, 1.25, 0.8]);
-  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [8, 0, 0, -8]);
-  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [50, 0, 0, -50]);
-  const opacitySection = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [4, 0, 0, -4]);
+  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [20, 0, 0, -20]);
+  const opacitySection = useTransform(smoothScroll, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
 
   // Orb offset mapping based on mouse position
   const orbX = useSpring(isHovered ? (mousePosition.x - (containerRef.current?.offsetWidth || 0) / 2) * 0.05 : 0);
@@ -128,7 +128,7 @@ export const VisionFutureSection = () => {
     <Section 
       id="vision" 
       glowVariant="orbs" 
-      className="py-32 md:py-48 border-t border-white/[0.08] bg-[#0A0A0B] relative overflow-hidden"
+      className="!py-16 md:!py-24 border-t border-white/[0.08] bg-[#0A0A0B] relative overflow-hidden"
     >
       <div 
         ref={containerRef} 
@@ -147,7 +147,7 @@ export const VisionFutureSection = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10" style={{ perspective: 1200 }}>
         <motion.div 
           style={{ rotateX: rotateXSection, y: translateYSection, opacity: opacitySection, transformStyle: "preserve-3d" }}
-          className="relative z-10 flex flex-col items-center justify-center text-center space-y-16"
+          className="relative z-10 flex flex-col items-center justify-center text-center space-y-10"
         >
           
           {/* Status Capsule */}
@@ -216,7 +216,7 @@ export const VisionFutureSection = () => {
             </h3>
             
             <p className="text-white/40 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
-              Harnessing cognitive intelligence to bridge hardware and software frameworks, empowering modular systems at the edge.
+              We build systems where code meets the physical world — fast, modular, and always evolving.
             </p>
           </div>
 

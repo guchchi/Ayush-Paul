@@ -8,6 +8,8 @@ import { WaitlistForm } from '../components/ui/WaitlistForm';
 export const Footer = () => {
   return (
     <footer id="footer" className="layout-section border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
+      {/* Seamless gradient transition from last section */}
+      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#0A0A0B] to-transparent pointer-events-none z-0" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent" />
       
       <Container>
@@ -38,12 +40,10 @@ export const Footer = () => {
             <ul className="space-y-4">
               {[
                 { name: "Home", href: "/" },
-                { name: "Experiments", href: "/experiments" },
-                { name: "Systems", href: "/systems" },
-                { name: "Labs", href: "/labs" },
-                { name: "Momentum", href: "/momentum" },
-                { name: "Blog", href: "/blog" },
-                { name: "About", href: "/about" },
+                { name: "Ecosystem Systems", href: "/systems" },
+                { name: "Ecosystem Milestones", href: "/milestones" },
+                { name: "Research Logs", href: "/blog" },
+                { name: "Vision & About", href: "/about" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link to={link.href} className="text-white/40 hover:text-brand-primary transition-colors font-medium">

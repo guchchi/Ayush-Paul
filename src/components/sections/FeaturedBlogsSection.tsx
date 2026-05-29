@@ -109,10 +109,10 @@ export const FeaturedBlogsSection = () => {
 
   const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 22 });
 
-  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [8, 0, 0, -8]);
-  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [40, 0, 0, -40]);
-  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.96, 1, 1, 0.96]);
-  const opacitySection = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const rotateXSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [4, 0, 0, -4]);
+  const translateYSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [20, 0, 0, -20]);
+  const scaleSection = useTransform(smoothScroll, [0, 0.35, 0.65, 1], [0.98, 1, 1, 0.98]);
+  const opacitySection = useTransform(smoothScroll, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
 
   if (loading || posts.length === 0) return null;
 
@@ -123,7 +123,7 @@ export const FeaturedBlogsSection = () => {
     <Section 
       id="featured-blogs" 
       glowVariant="side" 
-      className="py-24 md:py-36 bg-[#070708] relative overflow-hidden"
+      className="!py-16 md:!py-24 bg-[#070708] relative overflow-hidden"
     >
       {/* Cybernetic Micro-Grid Background Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50 z-0" />
@@ -138,7 +138,7 @@ export const FeaturedBlogsSection = () => {
         >
           
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
             <div className="max-w-3xl">
               <motion.div
                 variants={VARIANTS.fadeUp}

@@ -47,6 +47,16 @@
   background-size: 40px 40px;
 }
 
+@utility text-outline {
+  -webkit-text-stroke: 1.5px currentColor;
+  color: transparent;
+}
+
+@utility text-outline-thick {
+  -webkit-text-stroke: 2.5px currentColor;
+  color: transparent;
+}
+
 @utility spotlight {
   background: radial-gradient(
     600px circle at var(--x) var(--y),
@@ -124,7 +134,7 @@
     --space-32: 8rem;    /* 128px */
     
     /* Section & Container Rules */
-    --layout-section-py: var(--space-24);
+    --layout-section-py: var(--space-16);
     --layout-container-px: var(--space-6);
     --layout-gap: 2rem;
     
@@ -172,13 +182,7 @@
     --motion-duration-standard: 0.4s;
     --motion-duration-slow: 0.8s;
   }
-  
-  @media (min-width: 1024px) {
-    :root {
-      --layout-section-py: var(--space-32);
-      --layout-container-px: var(--space-8);
-    }
-  }
+
 
   .glow-orb {
     position: absolute;
@@ -211,11 +215,12 @@
   
   @media (min-width: 1024px) {
     :root {
-      --layout-section-py: 6rem;
+      --layout-section-py: 4rem;
       --layout-container-px: 2rem; /* 32px */
       --navbar-height: 5rem;
     }
   }
+
 
   html {
     scroll-behavior: auto;

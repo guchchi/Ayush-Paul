@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { HeroSection } from '../components/sections/HeroSection';
+import { EcosystemArchitectureSection } from '../components/sections/EcosystemArchitectureSection';
 import { SystemsEcosystemSection } from '../components/sections/SystemsEcosystemSection';
 import { FeaturedBlogsSection } from '../components/sections/FeaturedBlogsSection';
 import { InnovationLabsSection } from '../components/sections/InnovationLabsSection';
@@ -54,27 +55,52 @@ export const HomePage = () => {
       {/* 1. HERO SECTION */}
       <HeroSection />
       
-      {/* 2. ECOSYSTEM / SYSTEMS REGISTER */}
-      <SystemsEcosystemSection />
-
-      {/* 3. FEATURED TECHNICAL INSIGHTS (BENTO / SLIDER) */}
-      <FeaturedBlogsSection />
+      {/* 1.5. ECOSYSTEM ARCHITECTURE */}
+      <EcosystemArchitectureSection />
       
-      {/* 4. INNOVATION LABS (CARD BLUEPRINT DECK STACKS) */}
-      <InnovationLabsSection />
-      
-      {/* 5. MODULAR COLLABORATION DECK */}
-      <CollaborationSection />
+      {/* Seamless blend: Hero → Ecosystem */}
+      <div className="relative">
+        {/* 2. ECOSYSTEM / SYSTEMS REGISTER */}
+        <SystemsEcosystemSection />
 
-      {/* 6. VISION & FUTURE SCAPE */}
-      <VisionFutureSection />
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
 
-      {/* 7. MILESTONES & SOCIAL PROOF CHRONOLOGY */}
-      <SocialProofExperienceSection />
+        {/* 3. FEATURED TECHNICAL INSIGHTS (BENTO / SLIDER) */}
+        <FeaturedBlogsSection />
 
-      {/* 8. FUTURISTIC CONTACT / CTA */}
-      <ContactCTASection />
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+        {/* 4. INNOVATION LABS (CARD BLUEPRINT DECK STACKS) */}
+        <InnovationLabsSection />
+
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+        {/* 5. MODULAR COLLABORATION DECK */}
+        <CollaborationSection />
+
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+        {/* 6. VISION & FUTURE SCAPE */}
+        <VisionFutureSection />
+
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+        {/* 7. MILESTONES & SOCIAL PROOF CHRONOLOGY */}
+        <SocialProofExperienceSection />
+
+        {/* Section blend divider */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+
+        {/* 8. FUTURISTIC CONTACT / CTA */}
+        <ContactCTASection />
+      </div>
     </motion.div>
   );
 };
 export default HomePage;
+

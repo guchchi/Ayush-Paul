@@ -384,8 +384,8 @@ const FeaturedProof = () => {
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">Proof of Work</h2>
             <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">Featured <span className="text-brand-accent">Showcase.</span></h3>
           </div>
-          <Link to="/projects" className="hidden md:flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors">
-            View All Projects <ArrowRight size={16} />
+          <Link to="/systems" className="hidden md:flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors">
+            View All Systems <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -406,8 +406,8 @@ const FeaturedProof = () => {
               <div className="p-8">
                 <h4 className="text-xl font-bold mb-2">{project.title}</h4>
                 <p className="text-white/40 text-sm line-clamp-2 font-medium mb-6">{project.vision || project.description}</p>
-                <Link to={`/projects/${project.slug || project.id}`} className="text-brand-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                  Explore Project <ChevronRight size={14} />
+                <Link to={`/systems/${project.slug || project.id}`} className="text-brand-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                  Explore System <ChevronRight size={14} />
                 </Link>
               </div>
             </motion.div>
@@ -425,7 +425,13 @@ const MomentumBoard = () => {
   useEffect(() => {
     const q = query(collection(db, "updates"), orderBy("date", "desc"), limit(8));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => {
+          const t = (item.title || '').toLowerCase();
+          const txt = (item.text || '').toLowerCase();
+          return !t.includes('test') && !txt.includes('test');
+        });
       setUpdates(data);
       setIsLoading(false);
     });

@@ -99,11 +99,11 @@ export const LabsPage = () => {
             </div>
             <div className="h-4 w-px bg-white/10 hidden md:block" />
             <div>
-              <span className="text-brand-primary">SECURE SHELL:</span> SH-256 // CRYPTO_OK
+              <span className="text-brand-primary">SECURITY:</span> AES-256 SCHEME
             </div>
             <div className="h-4 w-px bg-white/10 hidden md:block" />
             <div>
-              <span className="text-brand-accent">CORE RATENCY:</span> 84MS
+              <span className="text-brand-accent">CORE LATENCY:</span> 35MS
             </div>
             <div className="h-4 w-px bg-white/10 hidden md:block" />
             <div className="flex items-center gap-1.5">
@@ -113,7 +113,7 @@ export const LabsPage = () => {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-white/20">GRID:</span>
-            <span className="text-brand-primary font-bold">LATITUDE_NODE_VREF_3.0</span>
+            <span className="text-brand-primary font-bold">GRID LAYER: V3.12</span>
           </div>
         </motion.div>
 

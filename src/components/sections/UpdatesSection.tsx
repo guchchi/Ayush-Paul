@@ -13,7 +13,14 @@ export const UpdatesSection = () => {
   useEffect(() => {
     const q = query(collection(db, "updates"), orderBy("date", "desc"), limit(5));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setUpdates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter((item: any) => {
+          const t = (item.title || '').toLowerCase();
+          const txt = (item.text || '').toLowerCase();
+          return !t.includes('test') && !txt.includes('test');
+        });
+      setUpdates(data);
       setLoading(false);
     });
     return () => unsubscribe();

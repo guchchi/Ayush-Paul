@@ -158,7 +158,7 @@ const VisionMissionSection = () => {
             <Terminal size={120} />
           </div>
           <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/30 mb-8 block">02 / Mission</span>
-          <h3 className="text-4xl font-bold mb-6 tracking-tight leading-tight">Engineering production-ready systems, automation workflows, and high-signal interfaces today.</h3>
+          <h3 className="text-4xl font-bold mb-6 tracking-tight leading-tight">Building robust software systems, smart automation tools, and clear interfaces.</h3>
         </motion.div>
       </div>
     </Section>

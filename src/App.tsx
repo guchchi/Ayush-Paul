@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 
 // --- Layouts ---
@@ -50,6 +50,11 @@ import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
 import { CookieConsent } from "./components/ui/CookieConsent";
 import { getFirebaseStatus } from "./firebase";
+
+const RedirectWithSlug = () => {
+  const { slug } = useParams();
+  return <Navigate to={`/systems/${slug}`} replace />;
+};
 
 export default function App() {
   const [showConfigWarning, setShowConfigWarning] = useState(true);
@@ -108,10 +113,10 @@ export default function App() {
               } />
               <Route path="/now" element={wrapInLayout(<NowPage />)} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
-              <Route path="/projects" element={wrapInLayout(<ExperimentsPage />)} />
-              <Route path="/projects/:slug" element={wrapInLayout(<ExperimentDetailPage />)} />
-              <Route path="/experiments" element={wrapInLayout(<ExperimentsPage />)} />
-              <Route path="/experiments/:slug" element={wrapInLayout(<ExperimentDetailPage />)} />
+              <Route path="/projects" element={<Navigate to="/systems" replace />} />
+              <Route path="/projects/:slug" element={<RedirectWithSlug />} />
+              <Route path="/experiments" element={<Navigate to="/systems" replace />} />
+              <Route path="/experiments/:slug" element={<RedirectWithSlug />} />
               <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
               <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
               <Route path="/collaborate" element={wrapInLayout(<CollaboratePage />)} />
