@@ -132,7 +132,7 @@ export const HeroSection = () => {
         {/* Pre-headline (Operational Indicator in Cyan) */}
         <div className="flex items-center gap-3 text-[#00C2FF] text-[10px] sm:text-xs font-mono tracking-[0.35em] mb-4 select-none drop-shadow-[0_0_10px_rgba(0,194,255,0.3)]">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-          <span>FOUNDER ECOSYSTEM • MULTIDISCIPLINARY HEADQUARTERS</span>
+          <span>FOUNDER ECOSYSTEM • OPEN FOR COLLABORATION</span>
         </div>
 
         {/* Stacked Massive Hollow Headings in White with sharp high-contrast drop shadow */}
@@ -143,19 +143,19 @@ export const HeroSection = () => {
             fontSize: 'clamp(2.5rem, 6.8vw, 5.5rem)'
           }}
         >
-          <span className="text-outline text-white tracking-tight">SYSTEMS.</span>
-          <span className="text-outline text-white tracking-tight">INTELLIGENCE.</span>
-          <span className="text-white drop-shadow-[0_0_35px_rgba(0,194,255,0.25)]">INFRASTRUCTURE.</span>
+          <span className="text-outline text-white tracking-tight">BUILD.</span>
+          <span className="text-outline text-white tracking-tight">GROW.</span>
+          <span className="text-white drop-shadow-[0_0_35px_rgba(0,194,255,0.25)]">TOGETHER.</span>
         </h1>
 
         <p className="text-white/70 max-w-xl text-left mt-6 sm:mt-8 text-sm sm:text-base md:text-lg leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-          The private headquarters of a multidisciplinary builder. Architecting autonomous systems, cybernetic infrastructure, and <span className="text-[#00C2FF] font-bold drop-shadow-[0_0_12px_rgba(0,194,255,0.3)]">future-focused intelligence.</span>
+          A founder-led ecosystem for the next generation of builders. Robotics, software, knowledge, and <span className="text-[#00C2FF] font-bold drop-shadow-[0_0_12px_rgba(0,194,255,0.3)]">open collaboration.</span>
         </p>
 
         {/* Action Elements Deck */}
         <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6 pointer-events-auto">
           <Link
-            to="/systems"
+            to="/collaborate"
             className="relative group overflow-hidden px-8 py-3.5 rounded-full bg-white/5 border border-white/10 hover:border-[#00C2FF]/40 text-white font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:shadow-[0_0_35px_rgba(0,194,255,0.25)] active:scale-[0.98] flex items-center gap-2"
           >
             {/* Background gradient shine on hover */}
@@ -163,14 +163,14 @@ export const HeroSection = () => {
             {/* Active glow core */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-[#00C2FF]/0 via-[#00C2FF]/30 to-[#7B61FF]/0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none" />
             
-            <span className="relative z-10 text-white group-hover:text-[#00C2FF] transition-colors duration-300">Enter Systems</span>
+            <span className="relative z-10 text-white group-hover:text-[#00C2FF] transition-colors duration-300">Join the Ecosystem</span>
           </Link>
 
           <Link
-            to="/momentum"
+            to="/systems"
             className="group text-white/50 hover:text-white font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] transition-all duration-300 flex items-center gap-2 py-2"
           >
-            Explore Infrastructure
+            Explore the Work
             <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">→</span>
           </Link>
         </div>
@@ -182,48 +182,48 @@ export const HeroSection = () => {
         className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 border-t border-white/[0.08] pt-6 pb-6 md:pt-8 md:pb-8 mt-12 sm:mt-16"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-left">
-          {/* Pillar 1: SYSTEMS */}
+          {/* Pillar 1: BUILDER */}
           <div className="flex flex-col space-y-2 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 01 / SYSTEMS ]</span>
+              <span>[ 01 / BUILDER ]</span>
               <span className="flex items-center gap-1.5 text-[#00C2FF]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-                ACTIVE RUNTIMES
+                ACTIVE
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Autonomous Infrastructure</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Robotics & Hardware</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Bridging digital models and cyber-physical hardware blueprints.
+              Building competition robots, embedded systems, and physical prototypes from scratch.
             </p>
           </div>
 
-          {/* Pillar 2: COGNITION */}
+          {/* Pillar 2: FOUNDER */}
           <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 02 / COGNITION ]</span>
+              <span>[ 02 / FOUNDER ]</span>
               <span className="flex items-center gap-1.5 text-[#7B61FF]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF]" />
-                STABLE
+                BUILDING
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Intelligent R&D</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Software & Web</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Custom models, neural workflows, and semantic compute layers.
+              Full-stack web apps, AI tools, and developer platforms shipping to production.
             </p>
           </div>
 
-          {/* Pillar 3: LABORATORY */}
+          {/* Pillar 3: EDUCATOR */}
           <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 03 / VENTURE ]</span>
+              <span>[ 03 / EDUCATOR ]</span>
               <span className="flex items-center gap-1.5 text-white/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                SANDBOX
+                GROWING
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Experimental Tech</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Knowledge & Teaching</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Incubating tomorrow's media, publishing systems, and protocols.
+              Writing tutorials, running workshops, and designing learning kits for student builders.
             </p>
           </div>
         </div>

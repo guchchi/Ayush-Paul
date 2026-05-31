@@ -1,26 +1,26 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { HeroSection } from '../components/sections/HeroSection';
-import { EcosystemArchitectureSection } from '../components/sections/EcosystemArchitectureSection';
-import { SystemsEcosystemSection } from '../components/sections/SystemsEcosystemSection';
-import { FeaturedBlogsSection } from '../components/sections/FeaturedBlogsSection';
-import { InnovationLabsSection } from '../components/sections/InnovationLabsSection';
-import { CollaborationSection } from '../components/sections/CollaborationSection';
-import { VisionFutureSection } from '../components/sections/VisionFutureSection';
-import { SocialProofExperienceSection } from '../components/sections/SocialProofExperienceSection';
-import { ContactCTASection } from '../components/sections/ContactCTASection';
+import { HomeAboutSection } from '../components/sections/HomeAboutSection';
+import { HomeActiveSystemsSection } from '../components/sections/HomeActiveSystemsSection';
+import { HomeKnowledgeHubSection } from '../components/sections/HomeKnowledgeHubSection';
+import { HomeMomentumSection } from '../components/sections/HomeMomentumSection';
+import { HomeEcosystemAccessSection } from '../components/sections/HomeEcosystemAccessSection';
+import { HomeCurrentFocusSection } from '../components/sections/HomeCurrentFocusSection';
+import { HomeCollaborateSection } from '../components/sections/HomeCollaborateSection';
+import { HomeFinalCTASection } from '../components/sections/HomeFinalCTASection';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 
 export const HomePage = () => {
   useSEO({
-    title: "Antigravity | Ecosystem of Intelligent Systems & Cybernetic R&D",
-    description: "Explore flagship digital systems, cyber-physical blueprints, deep-tech research, and autonomous workflows engineered by Antigravity.",
-    keywords: "Antigravity, Systems Ecosystem, Cybernetics, Robotics Blueprints, Autonomous Agents, Edge AI",
+    title: "Ayush Paul | Student Founder, Builder & Systems Creator",
+    description: "The digital headquarters of Ayush Paul — a student founder building robotics, web platforms, and engineering education. Explore real projects, honest progress, and open knowledge.",
+    keywords: "Ayush Paul, Student Founder, Robotics, Arduino, WRO Robots, Web Development, INSPIRE Award, Builder, Engineering Education",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Antigravity Systems",
+      "name": "Ayush Paul",
       "url": getCanonicalUrl(),
       "potentialAction": {
         "@type": "SearchAction",
@@ -54,53 +54,34 @@ export const HomePage = () => {
     >
       {/* 1. HERO SECTION */}
       <HeroSection />
-      
-      {/* 1.5. ECOSYSTEM ARCHITECTURE */}
-      <EcosystemArchitectureSection />
-      
-      {/* Seamless blend: Hero → Ecosystem */}
-      <div className="relative">
-        {/* 2. ECOSYSTEM / SYSTEMS REGISTER */}
-        <SystemsEcosystemSection />
 
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      {/* 2. FOUNDER SNAPSHOT */}
+      <HomeAboutSection />
 
-        {/* 3. FEATURED TECHNICAL INSIGHTS (BENTO / SLIDER) */}
-        <FeaturedBlogsSection />
+      {/* 3. ACTIVE SYSTEMS & INNOVATION */}
+      <HomeActiveSystemsSection />
 
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      {/* 4. KNOWLEDGE HUB */}
+      <HomeKnowledgeHubSection />
 
-        {/* 4. INNOVATION LABS (CARD BLUEPRINT DECK STACKS) */}
-        <InnovationLabsSection />
+      {/* 5. MOMENTUM & PROGRESS */}
+      <HomeMomentumSection />
 
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      {/* 6. ECOSYSTEM ACCESS */}
+      <HomeEcosystemAccessSection />
 
-        {/* 5. MODULAR COLLABORATION DECK */}
-        <CollaborationSection />
+      {/* 7. CURRENT FOCUS */}
+      <HomeCurrentFocusSection />
 
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      {/* 8. COLLABORATE */}
+      <HomeCollaborateSection />
 
-        {/* 6. VISION & FUTURE SCAPE */}
-        <VisionFutureSection />
-
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-
-        {/* 7. MILESTONES & SOCIAL PROOF CHRONOLOGY */}
-        <SocialProofExperienceSection />
-
-        {/* Section blend divider */}
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-
-        {/* 8. FUTURISTIC CONTACT / CTA */}
-        <ContactCTASection />
-      </div>
+      {/* 9. FINAL CTA */}
+      <HomeFinalCTASection />
     </motion.div>
   );
 };
+
 export default HomePage;
+
 

@@ -51,8 +51,8 @@ const HolographicCard = ({ children, className = "", onClick }: { children: Reac
       className={className}
       style={{
         transformStyle: "preserve-3d",
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transition: isHovered ? "none" : "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)",
+        transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        transition: isHovered ? "transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)" : "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
         willChange: "transform"
       }}
     >
@@ -181,6 +181,9 @@ export const FeaturedBlogsSection = () => {
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/95 to-transparent" />
+                    
+                    {/* Cinematic scanline overlay */}
+                    <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30 z-10" />
                     
                     {/* Category tag */}
                     {featuredPost.category && (

@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Section } from '../ui/Section';
-import { Globe, Sparkles } from 'lucide-react';
+import { Globe, Sparkles, Milestone, ArrowRight } from 'lucide-react';
 import { VARIANTS } from '../../lib/motion-presets';
 
-export const VisionFutureSection = () => {
+export const LongTermVisionSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -158,7 +158,7 @@ export const VisionFutureSection = () => {
             viewport={{ once: true }}
             className="badge shadow-[0_0_20px_rgba(0,194,255,0.08)] bg-white/[0.02] border border-white/[0.08] text-[10px] font-bold uppercase tracking-widest text-white/60 flex items-center gap-1.5 px-4 py-2 rounded-full z-20"
           >
-            <Globe size={14} className="text-brand-primary animate-spin" /> Operational Horizon
+            <Globe size={14} className="text-brand-primary animate-spin" /> LONG-TERM HORIZON PLAN
           </motion.div>
 
           {/* Immersive Pulsing Core Orb */}
@@ -208,15 +208,15 @@ export const VisionFutureSection = () => {
           {/* Kinetic Editorial Typography */}
           <div className="max-w-4xl relative z-20 space-y-8">
             <h3 
-              className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08]"
+              className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08] uppercase"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              We inject code logic <br />
-              into physical <span className="text-brand-primary font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.28)' }}>blueprints.</span>
+              From Student Builder <br />
+              to Ecosystem <span className="text-brand-primary font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.28)' }}>Architect.</span>
             </h3>
             
-            <p className="text-white/40 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto">
-              We build systems where code meets the physical world — fast, modular, and always evolving.
+            <p className="text-white/40 text-base md:text-xl font-medium leading-relaxed max-w-2xl mx-auto font-display">
+              Unifying active learning programs, tactile hardware kits, local neural runtimes, and deep-tech collaborations into a commercial startup framework designed for massive structural impact.
             </p>
           </div>
 
@@ -225,4 +225,7 @@ export const VisionFutureSection = () => {
     </Section>
   );
 };
-export default VisionFutureSection;
+
+// Alias export for backward compatibility so other page imports do not break
+export const VisionFutureSection = LongTermVisionSection;
+export default LongTermVisionSection;

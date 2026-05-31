@@ -88,24 +88,35 @@ export const Navbar = () => {
     { name: "Contact", href: "/contact", id: "contact" },
   ];
 
-  const exploreLinks = [
+  interface ExploreLink {
+    name: string;
+    href: string;
+    description: string;
+    icon: any;
+    disabled?: boolean;
+  }
+
+  const exploreLinks: ExploreLink[] = [
     {
       name: "Vision & About",
       href: "/about",
       description: "Ecosystem architectural vision",
-      icon: Users2
+      icon: Users2,
+      disabled: false
     },
     {
       name: "Ecosystem Milestones",
       href: "/milestones",
       description: "System milestones & achievements",
-      icon: Trophy
+      icon: Trophy,
+      disabled: false
     },
     {
       name: "Research Papers",
       href: "/blog",
       description: "Deep tech research publications",
-      icon: BookOpen
+      icon: BookOpen,
+      disabled: false
     }
   ];
 
