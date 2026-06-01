@@ -3,47 +3,20 @@ import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
 import { ArrowRight, ChevronRight, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { db, collection, query, orderBy, limit, onSnapshot } from '../../firebase';
+import { db, collection, query, orderBy, limit, onSnapshot, where } from '../../firebase';
 import { VARIANTS } from '../../lib/motion-presets';
-
-// Fallback articles for when Firestore has no published posts
-const FALLBACK_ARTICLES = [
-  {
-    id: 'pid-tuning',
-    category: 'Robotics & Engineering',
-    title: 'PID Tuning for Arduino Servo Control',
-    description: 'How to tune Proportional-Integral-Derivative parameters for closed-loop motor control on Arduino and ESP32 platforms. Real examples from competition builds.',
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80',
-    readTime: '8 min',
-    date: 'May 2026',
-    featured: true,
-  },
-  {
-    id: 'student-to-founder',
-    category: 'Student Growth',
-    title: 'From Student to Builder: A Practical Roadmap',
-    description: 'A framework for students transitioning into founders — structuring learning sprints, finding mentors, and building publicly to gain momentum.',
-    image: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=600&q=80',
-    readTime: '6 min',
-    date: 'May 2026',
-  },
-  {
-    id: 'vector-embeddings',
-    category: 'AI & Technology',
-    title: 'Understanding Vector Embeddings & Semantic Search',
-    description: 'A practical introduction to high-dimensional vector spaces, cosine similarity, and how to build semantic search tools using modern embedding APIs.',
-    image: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?w=600&q=80',
-    readTime: '10 min',
-    date: 'April 2026',
-  },
-];
 
 export const HomeKnowledgeHubSection = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'blogPosts'), orderBy('createdAt', 'desc'), limit(3));
+    const q = query(
+      collection(db, 'blogPosts'),
+      where('featured', '==', true),
+      orderBy('createdAt', 'desc'),
+      limit(3)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -54,7 +27,7 @@ export const HomeKnowledgeHubSection = () => {
     return () => unsubscribe();
   }, []);
 
-  const displayPosts = posts.length > 0 ? posts : FALLBACK_ARTICLES;
+  const displayPosts = posts.slice(0, 3);
   const featuredPost = displayPosts.find((p: any) => p.featured) || displayPosts[0];
   const gridPosts = displayPosts.filter((p: any) => p.id !== featuredPost?.id).slice(0, 2);
 
@@ -63,18 +36,35 @@ export const HomeKnowledgeHubSection = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* Header */}
-        <div className="flex justify-between items-end mb-20">
-          <div>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-8">
+          <div className="max-w-3xl">
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">
-              Open Knowledge Platform
+              Knowledge Hub
             </h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">
+            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
               The Open <span className="text-brand-primary">Curriculum.</span>
             </h3>
+            <p className="text-white/40 font-medium text-lg leading-relaxed mb-6">
+              Documenting ideas, experiments, lessons, and systems to help others learn and build. This hub is the intellectual foundation of the ecosystem, translating practical builds into reusable guidance.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-4 border-t border-white/5 pt-6 text-xs text-white/40">
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">Why It Exists</span>
+                To translate engineering experience into accessible, reusable curriculum so creators don't start from scratch.
+              </div>
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">Who It Serves</span>
+                Learners, students, and hobbyists exploring robotics, embedded engineering, AI, and entrepreneurship.
+              </div>
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">How to Participate</span>
+                Study public build journals, read step-by-step guides, or subscribe to new article drops.
+              </div>
+            </div>
           </div>
           <Link
             to="/blog"
-            className="hidden md:flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors"
+            className="flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors shrink-0"
           >
             Access Full Library <ArrowRight size={16} />
           </Link>

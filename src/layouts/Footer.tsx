@@ -75,8 +75,7 @@ export const Footer = () => {
           </div>
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 text-white/20 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              System Status: Operational
+              <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
             </div>
           </div>
         </div>

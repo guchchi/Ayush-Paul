@@ -9,31 +9,31 @@ import { VARIANTS } from '../../lib/motion-presets';
 // How people join the ecosystem — pathways, not just "types of collaboration"
 const JOIN_PATHWAYS = [
   {
-    type: 'Sponsor an Initiative',
-    for: 'Companies & Organizations',
-    desc: 'Fund competition entries, lab equipment, or student innovation programs. Gain visibility, brand association, and direct impact in the student builder community.',
-    badge: 'High Impact',
+    type: 'Learn',
+    for: 'Learners & Hobbyists',
+    desc: 'Access the open knowledge hub, read step-by-step engineering journals, and study system schematics in public.',
+    badge: 'Knowledge Engine Access',
     number: '01',
   },
   {
-    type: 'Co-build a Product',
-    for: 'Founders & Engineers',
-    desc: 'Partner on robotics hardware, software platforms, or educational tools. I bring prototype speed, full-stack capability, and student distribution.',
-    badge: 'Partnership / Equity',
+    type: 'Build',
+    for: 'Builders & Engineers',
+    desc: 'Clone open-source code repos, deploy modular setups, and implement ecosystem blueprints in your own projects.',
+    badge: 'Technical Blueprints',
     number: '02',
   },
   {
-    type: 'Mentor or Teach',
-    for: 'Educators & Experts',
-    desc: 'Contribute knowledge to the Chronicles, run workshops, or guide the next phase of ecosystem growth. Mentorship multiplies impact at scale.',
-    badge: 'Open Engagement',
+    type: 'Contribute',
+    for: 'Founders & Researchers',
+    desc: 'Collaborate on active hardware-software systems, co-develop custom libraries, and participate in peer code reviews.',
+    badge: 'Co-Development Pathway',
     number: '03',
   },
   {
-    type: 'Join as a Builder',
-    for: 'Student Founders',
-    desc: 'Access open-source builds, learning frameworks, and community resources. Contribute back. The ecosystem grows when builders build together.',
-    badge: 'Free to Join',
+    type: 'Partner',
+    for: 'Sponsors & Institutions',
+    desc: 'Fund robotics research, sponsor student hardware kits, or back national competition entries to accelerate high-potential talent.',
+    badge: 'Ecosystem Alignment',
     number: '04',
   },
 ];
@@ -49,10 +49,10 @@ export const HomeCollaborateSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
           <div className="max-w-2xl">
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">
-              Join the Ecosystem
+              Participate
             </h2>
             <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">
-              How You <span className="text-brand-secondary">Get Involved.</span>
+              How would you like to <span className="text-brand-secondary">participate?</span>
             </h3>
           </div>
           <p className="text-white/40 font-medium max-w-sm text-lg">
@@ -111,23 +111,13 @@ export const HomeCollaborateSection = () => {
           ))}
         </div>
 
-        {/* CTA — mirrors CollaboratePage Hero CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-          <MagneticButton>
-            <Link
-              to="/collaborate"
-              className="px-12 py-6 bg-white text-black rounded-[24px] font-bold text-xl flex items-center gap-3 group shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:scale-105 transition-transform"
-            >
-              👉 Start Collaboration <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-            </Link>
-          </MagneticButton>
-
+        {/* Clean strategic gateway text link */}
+        <div className="flex justify-center">
           <Link
             to="/collaborate"
-            onClick={() => window.location.href = 'mailto:hello.ayushpaul.in?subject=Discovery%20Call%20Request'}
-            className="px-12 py-6 glass-card border-white/10 text-white rounded-[24px] font-bold text-xl hover:bg-white/5 transition-all flex items-center gap-2 group"
+            className="group flex items-center gap-3 text-xl md:text-2xl font-bold text-white hover:text-brand-primary transition-all duration-350 tracking-tight"
           >
-            Book Discovery Call <Zap size={20} className="text-brand-primary group-hover:animate-pulse" />
+            Enter the Collaboration Gateway <ArrowRight className="group-hover:translate-x-2 transition-transform text-brand-primary" size={24} />
           </Link>
         </div>
 

@@ -1,5 +1,4 @@
-import matter from 'gray-matter';
-import { db, collection, getDocs, query, where, orderBy, doc, getDoc } from '../firebase';
+import { db, collection, getDocs, query, where, orderBy } from '../firebase';
 
 export interface BlogPost {
   id: string;
@@ -19,45 +18,6 @@ export interface BlogPost {
   seo?: any;
   excerpt?: string;
 }
-
-// Vite's import.meta.glob allows importing multiple modules.
-// We use { as: 'raw' } to get the markdown as a string.
-// Note: In Vite 4/5, it's { query: '?raw', import: 'default' } or just { as: 'raw' } depending on setup.
-// Using '?raw' query is the standard Vite way to get raw strings.
-const rawFiles = import.meta.glob('../content/blog/*.md', { query: '?raw', import: 'default', eager: true });
-
-// Hybrid Fetching: Merge Static + Dynamic
-export const getAllBlogs = (): BlogPost[] => {
-  const posts: BlogPost[] = [];
-
-  for (const path in rawFiles) {
-    const rawContent = rawFiles[path] as string;
-    
-    if (typeof rawContent !== 'string') continue;
-
-    try {
-      const { data, content } = matter(rawContent);
-      if (data.published === false) continue;
-
-      posts.push({
-        id: data.slug,
-        slug: data.slug,
-        title: data.title || 'Untitled',
-        description: data.description || '',
-        date: data.date || new Date().toISOString(),
-        tags: Array.isArray(data.tags) ? data.tags : [],
-        category: data.category || 'Uncategorized',
-        coverImage: data.coverImage || '',
-        author: data.author || 'Ayush Paul',
-        published: true,
-        content: content,
-      });
-    } catch (e) {
-      console.error(`[Blog Loader] Static error for ${path}:`, e);
-    }
-  }
-  return posts;
-};
 
 export const getDynamicBlogs = async (): Promise<BlogPost[]> => {
   try {
@@ -88,26 +48,4 @@ export const getDynamicBlogs = async (): Promise<BlogPost[]> => {
     console.error("[Blog Loader] Dynamic error:", e);
     return [];
   }
-};
-
-export const getBlogBySlug = (slug: string): BlogPost | undefined => {
-  const allBlogs = getAllBlogs();
-  return allBlogs.find(post => post.slug === slug);
-};
-
-export const getBlogsByTag = (tag: string): BlogPost[] => {
-  return getAllBlogs().filter(post => post.tags.includes(tag));
-};
-
-export const searchBlogs = (query: string): BlogPost[] => {
-  const allBlogs = getAllBlogs();
-  if (!query) return allBlogs;
-  
-  const s = query.toLowerCase();
-  return allBlogs.filter(post => 
-    post.title.toLowerCase().includes(s) || 
-    post.description.toLowerCase().includes(s) ||
-    post.category.toLowerCase().includes(s) ||
-    post.tags.some(t => t.toLowerCase().includes(s))
-  );
 };

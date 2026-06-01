@@ -591,6 +591,9 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
       return;
     }
 
+    // Delegating validation entirely to Firestore Rules.
+    // Client strictly sends data; backend rejects invalid writes.
+
     const newlyUploadedPaths: string[] = [];
     const oldCoverPath = currentPost?.coverImagePath ?? blogCoverPath ?? "";
     const oldBlockPaths = (currentPost?.blocks || [])
@@ -649,6 +652,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
           coverImage: finalCoverUrl,
           coverImagePath: finalCoverPath,
           blocks: sanitizedBlocks,
+          content: textContent,
           seo: {
             ...seoData,
             ogImage: seoData.ogImage || finalCoverUrl,
@@ -743,6 +747,13 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
   const handleSaveProject = async (e: FormEvent) => {
     e.preventDefault();
     if (saveInProgressRef.current) return;
+
+    if (!projectFormData.title.trim()) {
+      addToast("Validation Error: Please add a title.", "warning");
+      return;
+    }
+
+    // Delegating validation entirely to Firestore Rules.
 
     try {
       saveInProgressRef.current = true;

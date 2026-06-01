@@ -1,154 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
-import { ArrowRight, ChevronRight, Clock, User } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { db, collection, query, orderBy, limit, onSnapshot } from '../../firebase';
-import { VARIANTS, EASING } from '../../lib/motion-presets';
+import { db, collection, query, orderBy, limit, onSnapshot, where } from '../../firebase';
+import { VARIANTS } from '../../lib/motion-presets';
 
-// Fallback projects shown when Firestore has no data
-const FALLBACK_PROJECTS = [
-  {
-    id: 'wro-robotics',
-    category: 'Robotics & Engineering',
-    title: 'WRO Competition Robots',
-    description: 'Autonomous robots built for the World Robot Olympiad — closed-loop motor control, custom chassis, real-time sensor feedback. Competed at national level.',
-    image: '/assets/projects/wro-robot.jpg',
-    year: '2024',
-    role: 'Solo Engineer',
-    slug: 'wro-robotics',
-    featured: true,
-  },
-  {
-    id: 'inspire-solar',
-    category: 'Innovation & Awards',
-    title: 'INSPIRE Award Solar Grid',
-    description: 'DST INSPIRE MANAK national award-winning prototype for automated remote solar load balancing. Recognized by the Government of India.',
-    image: '/assets/projects/inspire-award.png',
-    year: '2023',
-    role: 'Inventor',
-    slug: 'inspire-solar',
-  },
-  {
-    id: 'arduino-embedded',
-    category: 'Embedded Systems',
-    title: 'Arduino & ESP32 Builds',
-    description: 'Micro-controller based systems running sensor automation, motor control, and custom firmware routines. Hardware-software bridges that respond to the physical world.',
-    image: '/assets/projects/arduino-builds.jpg',
-    year: '2024',
-    role: 'Builder',
-    slug: 'arduino-embedded',
-  },
-  {
-    id: 'web-platforms',
-    category: 'Software & Web',
-    title: 'Web Apps & Digital Tools',
-    description: 'Full-stack web applications, developer tools, and AI-powered utilities built with React, TypeScript, and modern deployment pipelines.',
-    image: '/assets/projects/web-apps.jpg',
-    year: '2025',
-    role: 'Full-Stack Developer',
-    slug: 'web-platforms',
-  },
-];
+
 
 export const HomeActiveSystemsSection = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'), limit(4));
+    const q = query(
+      collection(db, 'projects'),
+      where('featured', '==', true),
+      orderBy('createdAt', 'desc'),
+      limit(3)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }));
       setProjects(data);
       setIsLoading(false);
     }, () => setIsLoading(false));
     return () => unsubscribe();
   }, []);
 
-  const displayProjects = projects.length > 0 ? projects : FALLBACK_PROJECTS;
-  const featuredProject = displayProjects.find(p => p.featured) || displayProjects[0];
-  const gridProjects = displayProjects.filter(p => !p.featured).slice(0, 3);
+  const displayProjects = projects.slice(0, 3);
 
   return (
     <Section id="active-systems" className="py-32 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         {/* Header */}
-        <div className="flex justify-between items-end mb-20">
-          <div>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-20 gap-8">
+          <div className="max-w-3xl">
             <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">
-              Flagship Initiatives
+              Engineering Outcomes
             </h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">
-              What We're <span className="text-brand-primary">Building.</span>
+            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
+              Ecosystem Blueprints & <span className="text-brand-primary">Proof.</span>
             </h3>
+            <p className="text-white/40 font-medium text-lg leading-relaxed mb-6">
+              These are not isolated projects, but verified outcomes of a modular engineering ecosystem—spanning autonomous robotics, research telemetry, and educational blueprints.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-4 border-t border-white/5 pt-6 text-xs text-white/40">
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">Verifiable Impact</span>
+                Every card represents a deployed physical or digital system with real-world validation.
+              </div>
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">Who Gains</span>
+                Clear user profiles mapping direct benefits to students, researchers, and partners.
+              </div>
+              <div>
+                <span className="font-bold text-white/70 block uppercase tracking-wider mb-1">Action Paths</span>
+                Explore technical case studies, download schemas, or sponsor active build nodes.
+              </div>
+            </div>
           </div>
           <Link
             to="/systems"
-            className="hidden md:flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors"
+            className="flex items-center gap-2 text-white/40 hover:text-brand-primary font-bold tracking-widest uppercase text-xs transition-colors shrink-0"
           >
             View All Initiatives <ArrowRight size={16} />
           </Link>
         </div>
 
-        {/* Featured Project — Blueprint Showcase card */}
-        {featuredProject && (
-          <motion.div
-            variants={VARIANTS.fadeUp}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="mb-20 group relative rounded-[32px] lg:rounded-[60px] glass-card border-white/5 overflow-hidden shadow-2xl hover:border-brand-primary/20 transition-all duration-500"
-          >
-            <div className="grid lg:grid-cols-2">
-              {/* Image side */}
-              <div className="aspect-[4/3] lg:aspect-auto overflow-hidden relative">
-                <img
-                  src={featuredProject.image || '/assets/placeholder.jpg'}
-                  alt={featuredProject.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                  onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80'; }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
-                <div className="absolute top-8 left-8">
-                  <div className="px-5 py-2 rounded-full bg-brand-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl">
-                    Flagship Initiative
-                  </div>
-                </div>
-              </div>
-
-              {/* Content side */}
-              <div className="p-10 lg:p-20 flex flex-col justify-center">
-                <span className="text-brand-primary font-bold uppercase tracking-[0.3em] text-[11px] mb-6 block">
-                  {featuredProject.category}
-                </span>
-                <h3 className="text-4xl lg:text-5xl font-bold text-white mb-8 tracking-tighter leading-tight">
-                  {featuredProject.title}
-                </h3>
-                <p className="text-xl text-white/50 mb-12 leading-relaxed line-clamp-3 font-medium">
-                  {featuredProject.description}
-                </p>
-                <Link
-                  to={`/systems/${featuredProject.slug || featuredProject.id}`}
-                  className="flex items-center gap-4 text-brand-primary font-bold text-lg group-hover:gap-6 transition-all uppercase tracking-widest"
-                >
-                  View Case Study <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Grid Projects — Blueprint Showcase style */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {(isLoading ? Array.from({ length: 3 }) : gridProjects).map((project: any, i) =>
+        {/* Symmetrical 3-Column Outcomes Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+          {(isLoading ? Array.from({ length: 3 }) : displayProjects).map((project: any, i) =>
             isLoading ? (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-video rounded-[32px] bg-white/5 mb-8" />
-                <div className="space-y-4 px-2">
+              <div key={i} className="animate-pulse glass-card rounded-[32px] p-8 border border-white/5">
+                <div className="aspect-[16/10] rounded-2xl bg-white/5 mb-8" />
+                <div className="space-y-4">
                   <div className="h-3 w-1/3 bg-white/5 rounded-full" />
                   <div className="h-7 w-3/4 bg-white/5 rounded-full" />
-                  <div className="h-4 w-full bg-white/5 rounded-full" />
+                  <div className="space-y-2 pt-4">
+                    <div className="h-4 w-full bg-white/5 rounded-full" />
+                    <div className="h-4 w-5/6 bg-white/5 rounded-full" />
+                  </div>
                 </div>
               </div>
             ) : (
@@ -159,42 +92,60 @@ export const HomeActiveSystemsSection = () => {
                 whileInView="animate"
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group cursor-pointer"
+                className="group flex flex-col h-full rounded-[32px] overflow-hidden glass-card border border-white/5 hover:border-brand-primary/20 transition-all duration-500 shadow-2xl relative"
               >
-                <div className="aspect-video rounded-[32px] overflow-hidden mb-8 glass-card border-white/5 relative shadow-xl">
+                {/* Image Section */}
+                <div className="relative w-full aspect-[16/10] overflow-hidden bg-black/20">
                   <img
                     src={project.image || '/assets/placeholder.jpg'}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80'; }}
+                    className="w-full h-full object-cover brightness-[0.85] contrast-[0.95] group-hover:brightness-95 group-hover:contrast-100 transition-all duration-700 ease-out"
+                    onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80'; }}
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
-                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white">
-                      <ArrowRight className="-rotate-45" size={20} />
-                    </div>
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500" />
+                  
+                  {/* Neon Pinging Proof Tag Overlay */}
+                  <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-md border border-white/10 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
+                    </span>
+                    <span className="text-[10px] font-bold text-white uppercase tracking-[0.15em]">
+                      {project.proofTag || 'Verified Build'}
+                    </span>
                   </div>
                 </div>
 
-                <div className="px-2">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-primary">
-                      {project.category}
-                    </span>
-                  </div>
-                  <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition-colors tracking-tight">
+                {/* Content Section */}
+                <div className="p-8 flex flex-col flex-grow">
+                  <span className="text-brand-primary text-[10px] font-bold uppercase tracking-[0.25em] mb-3 block">
+                    {project.category || 'System Outcome'}
+                  </span>
+                  
+                  <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-brand-primary transition-colors duration-300 tracking-tight">
                     {project.title}
                   </h4>
-                  <p className="text-white/40 font-medium line-clamp-2 leading-relaxed mb-6">
-                    {project.description}
+
+                  {/* Core Accomplishment Statement */}
+                  <p className="text-white/70 text-sm leading-relaxed mb-6">
+                    {project.accomplishment || project.description || 'System successfully deployed.'}
                   </p>
-                  <div className="flex items-center gap-6 pt-6 border-t border-white/5">
-                    <div className="flex items-center gap-2 text-white/30 text-[10px] font-bold uppercase tracking-[0.25em]">
-                      <Clock size={14} /> {project.year || '2024'}
-                    </div>
-                    <div className="flex items-center gap-2 text-white/30 text-[10px] font-bold uppercase tracking-[0.25em]">
-                      <User size={14} /> {project.role || 'Solo Build'}
-                    </div>
+
+                  {/* Verified Outcome Bullet */}
+                  <div className="flex items-start gap-2.5 text-sm text-white/90 font-semibold leading-snug mb-8">
+                    <span className="text-brand-primary font-bold mt-0.5">•</span>
+                    <span>{project.outcome || 'Deployed functional models for system validation.'}</span>
+                  </div>
+
+                  {/* Action Link Button */}
+                  <div className="pt-6 border-t border-white/5 mt-auto">
+                    <Link
+                      to={`/systems/${project.slug || project.id}`}
+                      className="w-full flex items-center justify-between py-3 px-5 rounded-2xl bg-white/5 hover:bg-brand-primary/10 border border-white/10 hover:border-brand-primary/30 transition-all duration-300 text-xs font-bold text-white/80 hover:text-white uppercase tracking-widest group-hover:shadow-lg group-hover:shadow-brand-primary/5"
+                    >
+                      <span>{project.ctaText || 'View Case Study'}</span>
+                      <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                    </Link>
                   </div>
                 </div>
               </motion.div>

@@ -5,7 +5,8 @@ import { useSEO } from "../hooks/useSEO";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
-import { getAllBlogs, BlogPost } from "../lib/blog-utils";
+import { getDynamicBlogs, BlogPost } from "../lib/blog-utils";
+import { SystemEmptyState } from "../components/ui/SystemEmptyState";
 
 export const BlogPage = () => {
   useSEO({
@@ -34,26 +35,15 @@ export const BlogPage = () => {
     const loadAllPosts = async () => {
       setLoading(true);
       try {
-        const { getAllBlogs, getDynamicBlogs } = await import('../lib/blog-utils');
+        const { getDynamicBlogs } = await import('../lib/blog-utils');
         
-        // 1. Load static
-        const staticPosts = getAllBlogs();
-        
-        // 2. Load dynamic
+        // 1. Load dynamic
         const dynamicPosts = await getDynamicBlogs();
 
-        // 3. Merge
-        const combined = [...staticPosts];
-        dynamicPosts.forEach(d => {
-          if (!combined.find(s => s.slug === d.slug)) {
-            combined.push(d);
-          }
-        });
-
-        // 4. Sort
-        combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        // 2. Sort
+        dynamicPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         
-        setPosts(combined);
+        setPosts(dynamicPosts);
       } catch (err) {
         console.error("[Blog] Error:", err);
       } finally {
@@ -290,9 +280,15 @@ export const BlogPage = () => {
             </Link>
           ))}
         </div>
-        {filteredPosts.length === 0 && (
+        {!loading && filteredPosts.length === 0 && (search || selectedTag || selectedCategory) && (
           <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
             <p className="text-white/40">No articles found matching your criteria.</p>
+          </div>
+        )}
+        
+        {!loading && posts.length === 0 && !(search || selectedTag || selectedCategory) && (
+          <div className="py-24">
+            <SystemEmptyState title="Database Offline" />
           </div>
         )}
       </div>

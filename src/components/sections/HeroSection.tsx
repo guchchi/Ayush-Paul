@@ -122,7 +122,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Spacer to push content down to accommodate Navbar height */}
-      <div className="h-8 sm:h-10 md:h-12 shrink-0" />
+      <div className="h-2 sm:h-6 md:h-12 shrink-0" />
 
       {/* ----------------- LAYER 2: HERO TEXT & ACTIONS GRID (LEFT-ALIGNED) ----------------- */}
       <motion.div 
@@ -132,7 +132,7 @@ export const HeroSection = () => {
         {/* Pre-headline (Operational Indicator in Cyan) */}
         <div className="flex items-center gap-3 text-[#00C2FF] text-[10px] sm:text-xs font-mono tracking-[0.35em] mb-4 select-none drop-shadow-[0_0_10px_rgba(0,194,255,0.3)]">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-          <span>FOUNDER ECOSYSTEM • OPEN FOR COLLABORATION</span>
+          <span>FOUNDER-LED INNOVATION ECOSYSTEM • OPEN bluepRINts</span>
         </div>
 
         {/* Stacked Massive Hollow Headings in White with sharp high-contrast drop shadow */}
@@ -143,34 +143,49 @@ export const HeroSection = () => {
             fontSize: 'clamp(2.5rem, 6.8vw, 5.5rem)'
           }}
         >
-          <span className="text-outline text-white tracking-tight">BUILD.</span>
-          <span className="text-outline text-white tracking-tight">GROW.</span>
-          <span className="text-white drop-shadow-[0_0_35px_rgba(0,194,255,0.25)]">TOGETHER.</span>
+          <span className="text-outline text-white tracking-tight">ROBOTICS.</span>
+          <span className="text-outline text-white tracking-tight">SOFTWARE.</span>
+          <span className="text-white drop-shadow-[0_0_35px_rgba(0,194,255,0.25)]">ECOSYSTEM.</span>
         </h1>
 
         <p className="text-white/70 max-w-xl text-left mt-6 sm:mt-8 text-sm sm:text-base md:text-lg leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-          A founder-led ecosystem for the next generation of builders. Robotics, software, knowledge, and <span className="text-[#00C2FF] font-bold drop-shadow-[0_0_12px_rgba(0,194,255,0.3)]">open collaboration.</span>
+          A founder-led engineering platform bridging physical robotics, software infrastructure, and open knowledge. Built for students to learn, developers to co-build, and sponsors to accelerate live outcomes.
         </p>
+
+        {/* Compact Proof Strip */}
+        <div className="flex flex-wrap gap-x-6 gap-y-2 items-center justify-start mt-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/50 border-l border-brand-primary/40 pl-4 py-1">
+          <div className="flex items-center gap-2">
+            <span className="text-brand-primary font-black">3</span> Shipped Systems
+          </div>
+          <span className="text-white/10 hidden sm:inline">•</span>
+          <div className="flex items-center gap-2">
+            <span className="text-brand-primary font-black">500+</span> Accelerated Builders
+          </div>
+          <span className="text-white/10 hidden sm:inline">•</span>
+          <div className="flex items-center gap-2">
+            <span className="text-brand-primary font-black">DST</span> National Award
+          </div>
+        </div>
 
         {/* Action Elements Deck */}
         <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6 pointer-events-auto">
-          <Link
-            to="/collaborate"
-            className="relative group overflow-hidden px-8 py-3.5 rounded-full bg-white/5 border border-white/10 hover:border-[#00C2FF]/40 text-white font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:shadow-[0_0_35px_rgba(0,194,255,0.25)] active:scale-[0.98] flex items-center gap-2"
+          <a
+            href="#ecosystem-access"
+            className="relative group overflow-hidden px-8 py-3.5 rounded-full bg-white/5 border border-white/10 hover:border-[#00C2FF]/40 text-white font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:shadow-[0_0_35px_rgba(0,194,255,0.25)] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
           >
             {/* Background gradient shine on hover */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00C2FF]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             {/* Active glow core */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-[#00C2FF]/0 via-[#00C2FF]/30 to-[#7B61FF]/0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none" />
             
-            <span className="relative z-10 text-white group-hover:text-[#00C2FF] transition-colors duration-300">Join the Ecosystem</span>
-          </Link>
+            <span className="relative z-10 text-white group-hover:text-[#00C2FF] transition-colors duration-300">Choose Your Pathway</span>
+          </a>
 
           <Link
             to="/systems"
             className="group text-white/50 hover:text-white font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] transition-all duration-300 flex items-center gap-2 py-2"
           >
-            Explore the Work
+            Explore Open Blueprints
             <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">→</span>
           </Link>
         </div>
@@ -179,51 +194,51 @@ export const HeroSection = () => {
       {/* ----------------- LAYER 3: ECOSYSTEM TELEMETRY PANEL ----------------- */}
       <motion.div
         style={{ opacity: contentOpacity }}
-        className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 border-t border-white/[0.08] pt-6 pb-6 md:pt-8 md:pb-8 mt-12 sm:mt-16"
+        className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 border-t border-white/[0.08] pt-6 pb-6 md:pt-8 md:pb-8 mt-6 sm:mt-10 md:mt-16"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-left">
-          {/* Pillar 1: BUILDER */}
+          {/* Pillar 1: ROBOTICS & EMBEDDED */}
           <div className="flex flex-col space-y-2 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 01 / BUILDER ]</span>
+              <span>[ 01 / ROBOTICS ]</span>
               <span className="flex items-center gap-1.5 text-[#00C2FF]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-                ACTIVE
+                ACTIVE DEPLOYMENTS
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Robotics & Hardware</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Robotics & Embedded Systems</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Building competition robots, embedded systems, and physical prototypes from scratch.
+              Engineering autonomous closed-loop physical systems, modular chassis, and ESP32 control networks.
             </p>
           </div>
 
-          {/* Pillar 2: FOUNDER */}
+          {/* Pillar 2: SOFTWARE INFRASTRUCTURE */}
           <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 02 / FOUNDER ]</span>
+              <span>[ 02 / SOFTWARE ]</span>
               <span className="flex items-center gap-1.5 text-[#7B61FF]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF]" />
-                BUILDING
+                SHIPPED TO PRODUCTION
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Software & Web</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Software Infrastructure</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Full-stack web apps, AI tools, and developer platforms shipping to production.
+              Full-stack platforms, telemetry dashboards, and AI agent systems designed for real scale.
             </p>
           </div>
 
-          {/* Pillar 3: EDUCATOR */}
+          {/* Pillar 3: KNOWLEDGE BLUEPRINTS */}
           <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
             <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 03 / EDUCATOR ]</span>
+              <span>[ 03 / BLUEPRINTS ]</span>
               <span className="flex items-center gap-1.5 text-white/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                GROWING
+                ACCELERATING LEARNERS
               </span>
             </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Knowledge & Teaching</h4>
+            <h4 className="text-sm font-bold tracking-tight text-white/90">Open Knowledge Blueprints</h4>
             <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Writing tutorials, running workshops, and designing learning kits for student builders.
+              Publishing schematics, closed-loop PID parameters, and detailed build chronicles transparently.
             </p>
           </div>
         </div>

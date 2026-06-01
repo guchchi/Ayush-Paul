@@ -52,31 +52,31 @@ export const HomePage = () => {
       exit={{ opacity: 0 }}
       className="relative w-full bg-[#0A0A0B]"
     >
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (PROBLEM) */}
       <HeroSection />
 
-      {/* 2. FOUNDER SNAPSHOT */}
+      {/* 2. FOUNDER SNAPSHOT & STRATEGIC VALUE LOOP (MISSION) */}
       <HomeAboutSection />
 
-      {/* 3. ACTIVE SYSTEMS & INNOVATION */}
+      {/* 3. ACTIVE SYSTEMS & INNOVATION (PROOF 1 - WHAT IS BEING BUILT) */}
       <HomeActiveSystemsSection />
 
-      {/* 4. KNOWLEDGE HUB */}
+      {/* 4. KNOWLEDGE ENGINE (PROOF 2 - WHAT IS BEING SHARED) */}
       <HomeKnowledgeHubSection />
 
-      {/* 5. MOMENTUM & PROGRESS */}
+      {/* 5. MOMENTUM & PROGRESS (PROOF 3 - ELEVATION & GROWTH) */}
       <HomeMomentumSection />
 
-      {/* 6. ECOSYSTEM ACCESS */}
+      {/* 6. ECOSYSTEM ACCESS MAP (ECOSYSTEM - HOW EVERYTHING CONNECTS) */}
       <HomeEcosystemAccessSection />
 
-      {/* 7. CURRENT FOCUS */}
-      <HomeCurrentFocusSection />
-
-      {/* 8. COLLABORATE */}
+      {/* 7. COLLABORATE PATHWAYS (HOW TO JOIN) */}
       <HomeCollaborateSection />
 
-      {/* 9. FINAL CTA */}
+      {/* 8. CURRENT FOCUS (CURRENT OPPORTUNITIES) */}
+      <HomeCurrentFocusSection />
+
+      {/* 9. FINAL CTA (CTA - CHOOSE YOUR PATH) */}
       <HomeFinalCTASection />
     </motion.div>
   );

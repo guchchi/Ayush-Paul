@@ -1,6 +1,6 @@
 import { db, collection, query, where, getDocs, limit } from '../firebase';
 import { Product } from '../types';
-import { getAllBlogs } from './blog-utils';
+import { getDynamicBlogs } from './blog-utils';
 
 interface RelatedResults {
   products: Product[];
@@ -31,8 +31,8 @@ export async function getRelatedContent(tags: string[], currentId: string, type:
         .filter(p => p.id !== currentId);
     }
 
-    // 2. Fetch Related Blogs from Static Content
-    const allBlogs = await getAllBlogs();
+    // 2. Fetch Related Blogs from Firebase Dynamic
+    const allBlogs = await getDynamicBlogs();
     results.blogs = allBlogs
       .filter(blog => {
         // Simple tag matching

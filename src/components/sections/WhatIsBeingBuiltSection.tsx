@@ -70,17 +70,6 @@ const ROADMAP_PHASES = [
   }
 ];
 
-const MOCK_LOGS = [
-  { time: "10:39:11", node: "sys-init", type: "system", msg: "systemctl: initializing local agent node connection..." },
-  { time: "10:39:14", node: "core-08", type: "success", msg: "status: ok - connected to [ESP32-CORE-08]" },
-  { time: "10:39:16", node: "telemetry", type: "telemetry", msg: "telemetry: pitch=1.04 rad, roll=-0.08 rad, balance=stabilized" },
-  { time: "10:39:19", node: "compiler", type: "process", msg: "compiler: building H2R_kinematic_filter.cpp..." },
-  { time: "10:39:22", node: "compiler", type: "process", msg: "compiler: optimizing servo loop calculations (latency=0.38ms)" },
-  { time: "10:39:25", node: "ota-firm", type: "success", msg: "firmware: successfully flashed OTA partition [v2.1.0-alpha]" },
-  { time: "10:39:28", node: "diagnose", type: "system", msg: "diagnostics: checking thermal margins... 38.4°C [optimal]" },
-  { time: "10:39:31", node: "telemetry", type: "success", msg: "status: monitoring active. streaming telemetry payload..." }
-];
-
 const DOME_IMAGE_POOL = [
   "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop",
@@ -96,25 +85,13 @@ const DOME_IMAGE_POOL = [
 // MAIN COMPONENT REDESIGN: Realignment with provided design structure
 // ============================================================================
 export const WhatIsBeingBuiltSection = () => {
-  const [logs, setLogs] = useState<typeof MOCK_LOGS>([]);
+  const [logs, setLogs] = useState<any[]>([]);
   const terminalContainerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Simulated live operator event stream (Closure safe)
+  // Terminal is now waiting for live Firebase connection (no mock data allowed)
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < MOCK_LOGS.length) {
-        const nextLog = MOCK_LOGS[index];
-        setLogs(prev => [...prev, nextLog]);
-        index++;
-      } else {
-        setLogs([]);
-        index = 0;
-      }
-    }, 3000);
-
-    return () => clearInterval(interval);
+    // Left empty: enforce Firebase -> Render only. If no Firebase data, show empty state.
   }, []);
 
   // Scroll stream terminal container smoothly
@@ -261,7 +238,7 @@ export const WhatIsBeingBuiltSection = () => {
             <AnimatePresence>
               {logs.length === 0 ? (
                 <div className="text-white/20 animate-pulse text-center py-6">
-                  Initializing operational telemetry stream...
+                  Awaiting live telemetry stream from Firebase...
                 </div>
               ) : (
                 logs.filter(Boolean).map((log, i) => (

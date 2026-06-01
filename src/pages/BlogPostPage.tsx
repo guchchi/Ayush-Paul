@@ -7,7 +7,7 @@ import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
 import { getCanonicalUrl } from "../lib/domain";
-import { getBlogBySlug, getAllBlogs, BlogPost } from "../lib/blog-utils";
+import { getDynamicBlogs, BlogPost } from "../lib/blog-utils";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { VARIANTS } from "../lib/motion-presets";
 import { getRelatedContent } from "../lib/seo-utils";
@@ -69,27 +69,17 @@ export const BlogPostPage = () => {
     const loadPost = async () => {
       setLoading(true);
       try {
-        const { getBlogBySlug, getDynamicBlogs, getAllBlogs } = await import('../lib/blog-utils');
+        const { getDynamicBlogs } = await import('../lib/blog-utils');
         
-        // 1. Try static
-        let data = getBlogBySlug(slug);
-        
-        // 2. Try dynamic if static not found
-        if (!data) {
-          const dynamics = await getDynamicBlogs();
-          data = dynamics.find(p => p.slug === slug);
-        }
+        // Fetch entirely from dynamic Firebase
+        const dynamics = await getDynamicBlogs();
+        const data = dynamics.find(p => p.slug === slug);
 
         if (data) {
           setPost(data);
 
           // Compute related posts
-          const allStatic = getAllBlogs();
-          const allDynamic = await getDynamicBlogs();
-          const combined = [...allStatic];
-          allDynamic.forEach(d => {
-            if (!combined.find(s => s.slug === d.slug)) combined.push(d);
-          });
+          const combined = dynamics;
 
           const others = combined.filter(p => p.slug !== slug);
           const currentTags = Array.isArray(data.tags) ? data.tags : [];
