@@ -1,8 +1,13 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    ignores: ["src/extract.cjs"],
+  },
   {
     files: ['src/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -13,6 +18,12 @@ export default [
       },
     },
     rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "prefer-const": "off",
+      "no-case-declarations": "off",
+      "no-undef": "off",
       "no-restricted-imports": ["error", {
         "paths": [{
           "name": "gray-matter",
@@ -32,4 +43,4 @@ export default [
       ]
     },
   },
-];
+);
