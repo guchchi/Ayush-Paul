@@ -6,9 +6,9 @@
   --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --color-brand-primary: #00C2FF; /* Cyan */
-  --color-brand-secondary: #FF003C; /* Red */
-  --color-brand-accent: #7B61FF; /* Purple */
+  --color-brand-primary: #00FFFF; /* Bright Neon Cyan */
+  --color-brand-secondary: #00E5FF; /* Slightly darker cyan */
+  --color-brand-accent: #00BFFF; /* Deep cyan */
   
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -84,7 +84,7 @@
     width: 100%;
     min-height: 100%;
     overflow-x: hidden;
-    @apply bg-[#0A0A0A] text-white antialiased selection:bg-brand-primary/30;
+    @apply bg-[#000000] text-white antialiased selection:bg-brand-primary/30;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -156,24 +156,24 @@
     --radius-badge: 9999px;         /* capsule shapes */
     
     /* Glassmorphism System */
-    --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(0, 255, 255, 0.02);
+    --glass-border: rgba(0, 255, 255, 0.15);
     --glass-blur: blur(20px);
 
-    --glass-bg-primary: rgba(255, 255, 255, 0.015);
-    --glass-bg-hover: rgba(255, 255, 255, 0.03);
-    --glass-border-low: rgba(255, 255, 255, 0.03);
-    --glass-border-mid: rgba(255, 255, 255, 0.06);
-    --glass-border-high: rgba(255, 255, 255, 0.1);
+    --glass-bg-primary: rgba(0, 20, 30, 0.4);
+    --glass-bg-hover: rgba(0, 40, 50, 0.6);
+    --glass-border-low: rgba(0, 255, 255, 0.3);
+    --glass-border-mid: rgba(0, 255, 255, 0.6);
+    --glass-border-high: rgba(0, 255, 255, 0.9);
     --glass-blur-premium: blur(24px);
 
     /* Glow Intensity Weights & Neon Tokens */
     --glow-intensity-low: 0.02;
     --glow-intensity-mid: 0.05;
   --glow-intensity-high: 0.1;
-  --neon-primary: 0, 194, 255;    /* cyan */
-    --neon-secondary: 255, 0, 60;   /* red */
-    --neon-accent: 123, 97, 255;   /* purple */
+  --neon-primary: 0, 255, 255;    /* cyan */
+    --neon-secondary: 0, 229, 255;   /* slightly darker cyan */
+    --neon-accent: 0, 191, 255;   /* deep cyan */
 
     /* Standard Motion Presets & Curves */
     --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* Apple / Linear standard curve */
@@ -402,6 +402,7 @@
   background: var(--glass-bg-primary);
   backdrop-filter: var(--glass-blur-premium);
   border: 1px solid var(--glass-border-low);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.05);
 }
 
 @utility glass-card {
@@ -417,7 +418,7 @@
     background: var(--glass-bg-hover);
     border-color: var(--glass-border-mid);
     transform: translateY(-5px) scale(1.005);
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 194, 255, 0.02);
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.15);
   }
 }
 

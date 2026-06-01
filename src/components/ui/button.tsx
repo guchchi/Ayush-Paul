@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-white text-black hover:bg-white/90 shadow-xl hover:scale-[1.02] active:scale-[0.98]",
+        default: "bg-brand-primary text-black hover:bg-brand-primary/90 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:scale-[1.02] active:scale-[0.98]",
         destructive:
           "bg-brand-secondary text-white hover:bg-brand-secondary/90 shadow-lg hover:scale-[1.02] active:scale-[0.98]",
         outline:
-          "border border-white/10 bg-transparent hover:bg-white/5 hover:border-white/20 text-white/80 hover:text-white",
+          "border border-brand-primary/30 bg-transparent hover:bg-brand-primary/10 hover:border-brand-primary text-white hover:text-brand-primary shadow-[inset_0_0_10px_rgba(0,255,255,0)] hover:shadow-[inset_0_0_15px_rgba(0,255,255,0.2),0_0_15px_rgba(0,255,255,0.2)]",
         secondary:
-          "bg-white/5 border border-white/5 text-white/60 hover:bg-white/10 hover:text-white",
-        ghost: "text-white/40 hover:text-white hover:bg-white/5",
+          "bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 hover:text-white",
+        ghost: "text-white/40 hover:text-brand-primary hover:bg-brand-primary/5",
         link: "text-brand-primary underline-offset-4 hover:underline lowercase",
-        premium: "bg-white text-black hover:bg-white/90 shadow-[0_0_30px_rgba(255,255,255,0.05)] hover:scale-[1.02] active:scale-[0.98]",
-        ghostCTA: "bg-white/5 border border-white/5 hover:border-white/10 text-white/80 hover:text-white backdrop-blur-md shadow-lg hover:scale-[1.02] active:scale-[0.98]",
+        premium: "bg-brand-primary text-black hover:bg-brand-primary/90 shadow-[0_0_30px_rgba(0,255,255,0.4)] hover:shadow-[0_0_40px_rgba(0,255,255,0.6)] hover:scale-[1.02] active:scale-[0.98]",
+        ghostCTA: "bg-brand-primary/5 border border-brand-primary/20 hover:border-brand-primary text-brand-primary hover:text-white backdrop-blur-md shadow-[0_0_15px_rgba(0,255,255,0.1)] hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]",
       },
       size: {
         default: "h-12 px-6",
