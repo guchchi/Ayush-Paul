@@ -1,39 +1,179 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Link } from 'react-router-dom';
-
-// ============================================================================
-// CONFIGURATION: Cloudinary Looping Video Source
-// ============================================================================
-export const CHARACTER_VIDEO_URL = "https://res.cloudinary.com/da4ftlm9x/video/upload/v1780040958/Futuristic_robot_looping_backgro__202605291319_qyr6ao.mp4"; 
+import { useScrollToSection } from "@/src/hooks/useScrollToSection";
+import { Button } from '../ui/button';
+import { ArrowRight, Terminal } from 'lucide-react';
 
 export const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Set up dynamic scroll tracking for immersive cinematic transitions
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { scrollToSection } = useScrollToSection();
   const { scrollY } = useScroll();
 
-  // Scroll animations (0 to 700px scroll window):
-  // 1. Video scales down slightly (zooms out) and fades out to blend into dark backgrounds
-  const videoScale = useTransform(scrollY, [0, 700], [1.06, 0.96]);
-  const videoOpacity = useTransform(scrollY, [0, 700], [1.0, 0.0]);
+  // Scroll animations:
+  const heroOpacity = useTransform(scrollY, [0, 600], [1.0, 0.0]);
+  const heroScale = useTransform(scrollY, [0, 600], [1.0, 0.95]);
+  const heroY = useTransform(scrollY, [0, 600], [0, -40]);
 
-  // 2. Parallax translate of typography and CTA (float upward and fade cleanly)
-  const contentY = useTransform(scrollY, [0, 700], [0, -75]);
-  const contentOpacity = useTransform(scrollY, [0, 700], [1, 0]);
-  const contentScale = useTransform(scrollY, [0, 700], [1, 0.93]);
-
-  // 3. Darkening mask dynamically blends the Hero card into the subsequent dark page section
-  const maskOpacity = useTransform(scrollY, [0, 700], [0.0, 1.0]);
-
-  // Inject Google Fonts dynamically
+  // System Matrix Canvas Animation
   useEffect(() => {
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+
+    // Resize Handler
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Systems Node Setup
+    const labels = ["Idea", "AI Agent", "Next.js Core", "SEO Engine", "Automation Flow", "Production Deploy"];
+    const nodes = labels.map((label, i) => {
+      const angle = (i / labels.length) * Math.PI * 2;
+      const radius = Math.min(width, height) * 0.28;
+      return {
+        x: width / 2 + Math.cos(angle) * radius,
+        y: height / 2 + Math.sin(angle) * radius,
+        baseX: width / 2 + Math.cos(angle) * radius,
+        baseY: height / 2 + Math.sin(angle) * radius,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: 4,
+        label,
+        glowPulse: Math.random() * Math.PI
+      };
+    });
+
+    // Data packet transmission animation
+    const packets: Array<{
+      from: number;
+      to: number;
+      progress: number;
+      speed: number;
+    }> = [];
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // 1. Draw subtle background grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // 2. Draw connections between nodes
+      ctx.strokeStyle = 'rgba(0, 194, 255, 0.06)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+
+      // 3. Update & Draw Data Packets
+      if (Math.random() < 0.03 && packets.length < 8) {
+        const fromIdx = Math.floor(Math.random() * nodes.length);
+        let toIdx = Math.floor(Math.random() * nodes.length);
+        while (toIdx === fromIdx) {
+          toIdx = Math.floor(Math.random() * nodes.length);
+        }
+        packets.push({
+          from: fromIdx,
+          to: toIdx,
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.01
+        });
+      }
+
+      packets.forEach((packet, pIdx) => {
+        packet.progress += packet.speed;
+        if (packet.progress >= 1) {
+          packets.splice(pIdx, 1);
+          return;
+        }
+
+        const startNode = nodes[packet.from];
+        const endNode = nodes[packet.to];
+        const currentX = startNode.x + (endNode.x - startNode.x) * packet.progress;
+        const currentY = startNode.y + (endNode.y - startNode.y) * packet.progress;
+
+        // Draw packet glow
+        const glowGrad = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 6);
+        glowGrad.addColorStop(0, 'rgba(0, 194, 255, 0.8)');
+        glowGrad.addColorStop(1, 'rgba(0, 194, 255, 0)');
+        ctx.fillStyle = glowGrad;
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(currentX, currentY, 2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // 4. Update & Draw Nodes
+      nodes.forEach((node) => {
+        // Subtle drift movement
+        node.glowPulse += 0.02;
+        node.x = node.baseX + Math.sin(node.glowPulse) * 8;
+        node.y = node.baseY + Math.cos(node.glowPulse) * 8;
+
+        // Glow ring
+        const currentGlowRadius = 8 + Math.abs(Math.sin(node.glowPulse)) * 8;
+        const nodeGlowGrad = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, currentGlowRadius);
+        nodeGlowGrad.addColorStop(0, 'rgba(0, 194, 255, 0.15)');
+        nodeGlowGrad.addColorStop(1, 'rgba(0, 194, 255, 0)');
+        
+        ctx.fillStyle = nodeGlowGrad;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, currentGlowRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Node dot
+        ctx.fillStyle = '#00C2FF';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.label, node.x, node.y - 12);
+      });
+
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
     return () => {
-      document.head.removeChild(link);
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
@@ -41,209 +181,84 @@ export const HeroSection = () => {
     <section 
       id="home"
       ref={containerRef}
-      className="relative w-full min-h-[100svh] lg:h-[100svh] overflow-hidden bg-[#0A0A0B] text-white flex flex-col justify-between px-4 pt-4 pb-4 sm:px-8 sm:pt-6 sm:pb-6 md:px-12 md:pt-8 md:pb-8 select-none z-10"
+      className="relative w-full min-h-screen lg:h-screen bg-[#000000] text-white flex flex-col justify-center px-6 py-12 md:px-12 lg:px-16 select-none z-10"
     >
-      {/* ----------------- LAYER 1: VIDEO BACKGROUND WITH PARALLAX SCROLL ----------------- */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#0A0A0B]">
-        <motion.video
-          style={{ scale: videoScale, opacity: videoOpacity }}
-          src={CHARACTER_VIDEO_URL}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover brightness-[1.18] contrast-[1.12] saturate-[1.25]"
-        />
-
-        {/* Cinematic high-fidelity film grain noise overlay */}
+      {/* 1. VISUAL SYSTEM MATRIX BACKGROUND */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden bg-[#000000]">
+        <canvas ref={canvasRef} className="w-full h-full opacity-60" />
+        
+        {/* Soft Ambient Glows */}
         <div 
-          className="absolute inset-0 pointer-events-none z-1 opacity-[0.015] mix-blend-overlay"
+          className="absolute left-[-10%] top-[10%] w-[65%] h-[80%] rounded-full pointer-events-none z-5 opacity-[0.25] blur-[150px]"
           style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")"
+            background: 'radial-gradient(circle, rgba(0, 194, 255, 0.08) 0%, transparent 100%)'
           }}
         />
         
-        {/* Subtle dot matrix overlay to preserve the technical/industrial texture, reduced opacity for sharpness */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay z-1"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 1.5px 1.5px, white 1.5px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }}
-        />
-
-        {/* Futuristic Ambient Blue & Purple Glow behind the text to enhance legibility naturally without dark masks */}
-        <div 
-          className="absolute left-[-10%] top-[10%] w-[65%] h-[80%] rounded-full pointer-events-none z-5 opacity-[0.45] blur-[140px]"
-          style={{
-            background: 'radial-gradient(circle, rgba(0, 194, 255, 0.18) 0%, rgba(123, 97, 255, 0.08) 50%, transparent 100%)'
-          }}
-        />
-
-        {/* Deep cosmic indigo background ambient wash */}
-        <div 
-          className="absolute left-[30%] top-[-10%] w-[70%] h-[60%] rounded-full pointer-events-none z-1 opacity-[0.35] blur-[160px]"
-          style={{
-            background: 'radial-gradient(circle, rgba(123, 97, 255, 0.06) 0%, transparent 70%)'
-          }}
-        />
-
-        {/* Luxury-tech Anamorphic warm flare at the bottom right */}
-        <div 
-          className="absolute right-[-5%] bottom-[10%] w-[50%] h-[50%] rounded-full pointer-events-none z-5 opacity-[0.25] blur-[150px]"
-          style={{
-            background: 'radial-gradient(circle, rgba(255, 230, 200, 0.08) 0%, rgba(0, 194, 255, 0.03) 60%, transparent 100%)'
-          }}
-        />
-
-        {/* Sleek, ultra-subtle dual-gradient overlay for light text/navbar legibility while keeping the video extremely bright */}
+        {/* Sleek Gradient Overlay for Content Contrast */}
         <div 
           className="absolute inset-0 pointer-events-none z-10"
           style={{
-            background: 'linear-gradient(to right, rgba(10, 10, 11, 0.35) 0%, rgba(10, 10, 11, 0.15) 35%, rgba(10, 10, 11, 0) 70%), linear-gradient(to bottom, rgba(10, 10, 11, 0.25) 0%, rgba(10, 10, 11, 0) 15%)'
+            background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.6) 100%)'
           }}
-        />
-
-        {/* Dynamic Darkening Mask that smooth-scrolls into solid theme base color */}
-        <motion.div 
-          style={{ opacity: maskOpacity }}
-          className="absolute inset-0 pointer-events-none z-10 bg-[#0A0A0B]"
-        />
-
-        {/* Cinematic vertical gradient mask transitioning into page content */}
-        <div 
-          className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-15 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/60 to-transparent"
-        />
-
-        {/* Glowing horizon line blending the two sections */}
-        <div 
-          className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-transparent via-[#00C2FF]/10 to-transparent pointer-events-none z-15 blur-[1px]"
         />
       </div>
 
-      {/* Spacer to push content down to accommodate Navbar height */}
-      <div className="h-2 sm:h-6 md:h-12 shrink-0" />
-
-      {/* ----------------- LAYER 2: HERO TEXT & ACTIONS GRID (LEFT-ALIGNED) ----------------- */}
+      {/* 2. TYPOGRAPHY AND ACTIONS CONTAINER */}
       <motion.div 
-        style={{ y: contentY, opacity: contentOpacity, scale: contentScale }}
-        className="relative z-20 flex-grow flex flex-col justify-center max-w-7xl mx-auto w-full px-4 md:px-8 pointer-events-none"
+        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
+        className="relative z-20 max-w-7xl mx-auto w-full px-4 md:px-8 flex flex-col justify-center pointer-events-none"
       >
-        {/* Pre-headline (Operational Indicator in Cyan) */}
-        <div className="flex items-center gap-3 text-[#00C2FF] text-[10px] sm:text-xs font-mono tracking-[0.35em] mb-4 select-none drop-shadow-[0_0_10px_rgba(0,194,255,0.3)]">
+        {/* Pre-headline (Indicator badge) */}
+        <div className="flex items-center gap-3 text-brand-primary text-xs font-bold uppercase tracking-[0.25em] mb-6 select-none">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-          <span>FOUNDER-LED INNOVATION ECOSYSTEM • OPEN bluepRINts</span>
+          <span>BUILDER • DEVELOPER • EDUCATOR</span>
         </div>
 
-        {/* Stacked Massive Hollow Headings in White with sharp high-contrast drop shadow */}
+        {/* Stacked Massive Headline */}
         <h1 
-          className="font-black leading-[0.9] text-left select-none uppercase tracking-tighter flex flex-col gap-1 drop-shadow-[0_4px_24px_rgba(0,0,0,0.65)]"
+          className="font-black leading-[0.95] text-left select-none uppercase tracking-tighter flex flex-col gap-1 text-white"
           style={{ 
             fontFamily: "'Inter', sans-serif",
-            fontSize: 'clamp(2.5rem, 6.8vw, 5.5rem)'
+            fontSize: 'clamp(2.8rem, 7.5vw, 6.2rem)'
           }}
         >
-          <span className="text-outline text-white tracking-tight">ROBOTICS.</span>
-          <span className="text-outline text-white tracking-tight">SOFTWARE.</span>
-          <span className="text-white drop-shadow-[0_0_35px_rgba(0,194,255,0.25)]">ECOSYSTEM.</span>
+          <span>TURN IDEAS INTO</span>
+          <span className="text-[#00C2FF]">DIGITAL SYSTEMS</span>
         </h1>
 
-        <p className="text-white/70 max-w-xl text-left mt-6 sm:mt-8 text-sm sm:text-base md:text-lg leading-relaxed font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-          A founder-led engineering platform bridging physical robotics, software infrastructure, and open knowledge. Built for students to learn, developers to co-build, and sponsors to accelerate live outcomes.
+        <p className="text-white/60 max-w-2xl text-left mt-6 sm:mt-8 text-base sm:text-lg md:text-xl leading-relaxed font-medium">
+          I document, build, and share frameworks for launching websites, products, automations, and AI-powered workflows.
         </p>
 
-        {/* Compact Proof Strip */}
-        <div className="flex flex-wrap gap-x-6 gap-y-2 items-center justify-start mt-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/50 border-l border-brand-primary/40 pl-4 py-1">
-          <div className="flex items-center gap-2">
-            <span className="text-brand-primary font-black">3</span> Shipped Systems
-          </div>
-          <span className="text-white/10 hidden sm:inline">•</span>
-          <div className="flex items-center gap-2">
-            <span className="text-brand-primary font-black">500+</span> Accelerated Builders
-          </div>
-          <span className="text-white/10 hidden sm:inline">•</span>
-          <div className="flex items-center gap-2">
-            <span className="text-brand-primary font-black">DST</span> National Award
-          </div>
-        </div>
-
-        {/* Action Elements Deck */}
-        <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-4 sm:gap-6 pointer-events-auto">
-          <a
-            href="#ecosystem-access"
-            className="relative group overflow-hidden px-8 py-3.5 rounded-full bg-white/5 border border-white/10 hover:border-[#00C2FF]/40 text-white font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:shadow-[0_0_35px_rgba(0,194,255,0.25)] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+        {/* CTAs Deck */}
+        <div className="mt-10 flex flex-wrap items-center gap-5 pointer-events-auto">
+          <Button
+            asChild
+            variant="primary"
+            size="lg"
+            className="relative group cursor-pointer"
           >
-            {/* Background gradient shine on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#00C2FF]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            {/* Active glow core */}
-            <div className="absolute -inset-[1px] bg-gradient-to-r from-[#00C2FF]/0 via-[#00C2FF]/30 to-[#7B61FF]/0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none" />
-            
-            <span className="relative z-10 text-white group-hover:text-[#00C2FF] transition-colors duration-300">Choose Your Pathway</span>
-          </a>
+            <a
+              href="#access"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('access');
+              }}
+            >
+              Explore Blueprints
+            </a>
+          </Button>
 
           <Link
-            to="/systems"
-            className="group text-white/50 hover:text-white font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] transition-all duration-300 flex items-center gap-2 py-2"
+            to="/blog"
+            className="group text-white/50 hover:text-white font-mono text-xs uppercase tracking-[0.25em] transition-all duration-300 flex items-center gap-2 py-2"
           >
-            Explore Open Blueprints
+            Read the Blog
             <span className="inline-block group-hover:translate-x-1.5 transition-transform duration-300">→</span>
           </Link>
         </div>
       </motion.div>
-
-      {/* ----------------- LAYER 3: ECOSYSTEM TELEMETRY PANEL ----------------- */}
-      <motion.div
-        style={{ opacity: contentOpacity }}
-        className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-8 border-t border-white/[0.08] pt-6 pb-6 md:pt-8 md:pb-8 mt-6 sm:mt-10 md:mt-16"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-left">
-          {/* Pillar 1: ROBOTICS & EMBEDDED */}
-          <div className="flex flex-col space-y-2 group">
-            <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 01 / ROBOTICS ]</span>
-              <span className="flex items-center gap-1.5 text-[#00C2FF]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00C2FF] animate-pulse" />
-                ACTIVE DEPLOYMENTS
-              </span>
-            </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Robotics & Embedded Systems</h4>
-            <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Engineering autonomous closed-loop physical systems, modular chassis, and ESP32 control networks.
-            </p>
-          </div>
-
-          {/* Pillar 2: SOFTWARE INFRASTRUCTURE */}
-          <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
-            <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 02 / SOFTWARE ]</span>
-              <span className="flex items-center gap-1.5 text-[#7B61FF]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7B61FF]" />
-                SHIPPED TO PRODUCTION
-              </span>
-            </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Software Infrastructure</h4>
-            <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Full-stack platforms, telemetry dashboards, and AI agent systems designed for real scale.
-            </p>
-          </div>
-
-          {/* Pillar 3: KNOWLEDGE BLUEPRINTS */}
-          <div className="flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-white/[0.08] pt-6 md:pt-0 md:pl-8 lg:pl-12 group">
-            <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-white/30 group-hover:text-white/50 transition-colors">
-              <span>[ 03 / BLUEPRINTS ]</span>
-              <span className="flex items-center gap-1.5 text-white/40">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                ACCELERATING LEARNERS
-              </span>
-            </div>
-            <h4 className="text-sm font-bold tracking-tight text-white/90">Open Knowledge Blueprints</h4>
-            <p className="text-white/40 text-[11px] sm:text-xs leading-relaxed max-w-xs">
-              Publishing schematics, closed-loop PID parameters, and detailed build chronicles transparently.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
     </section>
   );
 };

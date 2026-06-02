@@ -4,33 +4,60 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/src/lib/utils"
 
+/**
+ * UNIFIED BUTTON SYSTEM
+ * Two variants: primary (filled cyan) | secondary (ghost gradient-border)
+ * Three sizes:  sm | default | lg
+ * Shape: rounded-full (pill) — consistent everywhere
+ * Motion: hover lift + active scale on both variants
+ */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-bold tracking-wide uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary disabled:pointer-events-none disabled:opacity-50 transition-all duration-300",
+  // Base — shared across all variants and sizes
+  [
+    "inline-flex items-center justify-center gap-2",
+    "rounded-full",
+    "font-extrabold text-xs uppercase tracking-widest",
+    "whitespace-nowrap",
+    "cursor-pointer select-none",
+    "transition-all duration-300 ease-out",
+    "hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    "disabled:pointer-events-none disabled:opacity-40",
+  ].join(" "),
   {
     variants: {
       variant: {
-        default: "bg-brand-primary text-black hover:bg-brand-primary/90 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:scale-[1.02] active:scale-[0.98]",
-        destructive:
-          "bg-brand-secondary text-white hover:bg-brand-secondary/90 shadow-lg hover:scale-[1.02] active:scale-[0.98]",
-        outline:
-          "border border-brand-primary/30 bg-transparent hover:bg-brand-primary/10 hover:border-brand-primary text-white hover:text-brand-primary shadow-[inset_0_0_10px_rgba(0,255,255,0)] hover:shadow-[inset_0_0_15px_rgba(0,255,255,0.2),0_0_15px_rgba(0,255,255,0.2)]",
-        secondary:
-          "bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/20 hover:text-white",
-        ghost: "text-white/40 hover:text-brand-primary hover:bg-brand-primary/5",
-        link: "text-brand-primary underline-offset-4 hover:underline lowercase",
-        premium: "bg-brand-primary text-black hover:bg-brand-primary/90 shadow-[0_0_30px_rgba(0,255,255,0.4)] hover:shadow-[0_0_40px_rgba(0,255,255,0.6)] hover:scale-[1.02] active:scale-[0.98]",
-        ghostCTA: "bg-brand-primary/5 border border-brand-primary/20 hover:border-brand-primary text-brand-primary hover:text-white backdrop-blur-md shadow-[0_0_15px_rgba(0,255,255,0.1)] hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98]",
+        /**
+         * PRIMARY — filled cyan pill
+         * Use for: main CTAs, "Build", "Join", "Access", "Initiate"
+         */
+        primary: [
+          "bg-brand-primary text-black",
+          "shadow-[0_0_20px_rgba(0,245,255,0.18)]",
+          "hover:bg-[color-mix(in_srgb,var(--color-brand-primary)_88%,white)]",
+          "hover:shadow-[0_0_35px_rgba(0,245,255,0.38)]",
+        ].join(" "),
+
+        /**
+         * SECONDARY — ghost pill with gradient border
+         * Use for: supporting actions, "Learn More", "Explore", "View Docs"
+         */
+        secondary: [
+          "bg-transparent text-white",
+          "border border-white/15",
+          "hover:border-brand-primary/60 hover:text-brand-primary",
+          "hover:shadow-[0_0_18px_rgba(0,245,255,0.10)]",
+        ].join(" "),
       },
+
       size: {
-        default: "h-12 px-6",
-        sm: "h-10 rounded-xl px-4 text-xs",
-        lg: "h-14 rounded-2xl px-10 text-base",
-        icon: "h-12 w-12 rounded-xl",
-        cta: "w-full sm:w-auto h-14 px-10 rounded-2xl text-sm tracking-widest",
+        sm:      "h-9  px-5  text-[10px]",
+        default: "h-11 px-7  text-[11px]",
+        lg:      "h-13 px-10 text-xs",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "primary",
       size: "default",
     },
   },

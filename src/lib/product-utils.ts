@@ -20,121 +20,100 @@ export const enrichDigitalSystem = (system: any): Product => {
   if (!system) return system;
 
   const enriched = { ...system } as Product;
+  const slug = enriched.slug || '';
 
-  // 1. Safe resources fallback
-  if (!enriched.resources || enriched.resources.length === 0) {
-    const isPremiumSystem = enriched.type === 'paid';
-    const slug = enriched.slug || '';
+  // 1. Dynamic Override to translate robotics DB items to Digital Frameworks
+  if (slug.includes('boat') || slug.includes('water')) {
+    enriched.title = "AI Website Launch Blueprint";
+    enriched.category = "web";
+    enriched.description = "Learn how to research, design, build, and deploy a high-performance Next.js website using AI assistants without sacrificing technical SEO.";
+    enriched.thumbnail = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200";
     
-    // Generate logical resources depending on system slug or title
-    const generated: ResourceItem[] = [];
+    enriched.resources = [
+      {
+        id: `${enriched.id}_nextjs_boilerplate`,
+        title: "Next.js & Tailwind App Boilerplate",
+        description: "High-performance base template optimized for speed and SEO structure.",
+        category: AssetCategory.TEMPLATE,
+        isPremium: false,
+        fileSize: "1.2 MB"
+      },
+      {
+        id: `${enriched.id}_cursor_rules`,
+        title: "Custom Cursor AI Rules Config",
+        description: "System instructions files to guide AI assistants on styling and structures.",
+        category: AssetCategory.CODE,
+        isPremium: true,
+        fileSize: "8 KB"
+      },
+      {
+        id: `${enriched.id}_seo_checklist`,
+        title: "Website SEO Sitemap Checklist",
+        description: "The sitemap construction, redirect structure, and crawl checklist.",
+        category: AssetCategory.PDF,
+        isPremium: true,
+        fileSize: "2.4 MB"
+      }
+    ];
+  } else if (slug.includes('iobot') || slug.includes('companion')) {
+    enriched.title = "Automation Starter Pack";
+    enriched.category = "automation";
+    enriched.description = "Reusable operational workflows designed to link databases, trigger webhooks, and automate content delivery.";
+    enriched.thumbnail = "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200";
     
-    if (slug.includes('boat') || slug.includes('water')) {
-      generated.push(
-        {
-          id: `${enriched.id}_pdf_guide`,
-          title: "Ayu-Boat Mechanical Assembly Manual",
-          description: "Step-by-step physical calibration and structural assembly manual.",
-          category: AssetCategory.PDF,
-          isPremium: false,
-          fileSize: "12.4 MB"
-        },
-        {
-          id: `${enriched.id}_cad_step`,
-          title: "Hull & Keel Linkage STEP Files",
-          description: "High-precision CAD design blueprints for 3D printing and milling.",
-          category: AssetCategory.DIAGRAM,
-          isPremium: isPremiumSystem,
-          fileSize: "48.2 MB"
-        },
-        {
-          id: `${enriched.id}_esp_code`,
-          title: "Autonomous Navigation Firmware (ESP32)",
-          description: "C++ control loop telemetry, motor mixing, and GPS waypoint algorithm scripts.",
-          category: AssetCategory.CODE,
-          isPremium: isPremiumSystem,
-          fileSize: "180 KB",
-          metadata: { language: "cpp", extension: "ino" }
-        },
-        {
-          id: `${enriched.id}_ai_workflow`,
-          title: "ROS2 Autopilot Navigation Nodes",
-          description: "Standardized robotics communication architecture workflows.",
-          category: AssetCategory.WORKFLOW,
-          isPremium: isPremiumSystem,
-          fileSize: "1.2 MB"
-        }
-      );
-    } else if (slug.includes('iobot') || slug.includes('companion')) {
-      generated.push(
-        {
-          id: `${enriched.id}_stl_shell`,
-          title: "Desktop Shell Outer Chassis STL Models",
-          description: "3D printable STL files for the external robotics armor shell.",
-          category: AssetCategory.DIAGRAM,
-          isPremium: false,
-          fileSize: "18.6 MB"
-        },
-        {
-          id: `${enriched.id}_firmware_c`,
-          title: "Haptic Actuator & Voice Telemetry Firmware",
-          description: "Firmware code controlling dynamic servo motor sweeps.",
-          category: AssetCategory.CODE,
-          isPremium: isPremiumSystem,
-          fileSize: "240 KB",
-          metadata: { language: "cpp" }
-        },
-        {
-          id: `${enriched.id}_agentic_prompt`,
-          title: "Autonomous Agentic Conversational Prompts",
-          description: "Production system prompts mapping local speech-to-text inputs.",
-          category: AssetCategory.PROMPT,
-          isPremium: isPremiumSystem,
-          fileSize: "15 KB"
-        },
-        {
-          id: `${enriched.id}_voice_workflow`,
-          title: "Edge Speech Processing Workflow Diagram",
-          description: "Architecture wiring flow for offline text-to-speech feedback.",
-          category: AssetCategory.WORKFLOW,
-          isPremium: isPremiumSystem,
-          fileSize: "840 KB"
-        }
-      );
-    } else {
-      // Generic engineering template fallback
-      generated.push(
-        {
-          id: `${enriched.id}_core_guide`,
-          title: `${enriched.title} Quickstart Operational Blueprint`,
-          description: "Theoretical framework and deployment steps guide.",
-          category: AssetCategory.PDF,
-          isPremium: false,
-          fileSize: "4.2 MB"
-        },
-        {
-          id: `${enriched.id}_layout_template`,
-          title: "Production System Layout Template",
-          description: "Restrained premium component layout blocks for software integration.",
-          category: AssetCategory.TEMPLATE,
-          isPremium: isPremiumSystem,
-          fileSize: "1.5 MB"
-        },
-        {
-          id: `${enriched.id}_wiring_diagram`,
-          title: "Operational Flow & Data Wiring Schematics",
-          description: "Structural connectivity diagrams visualising operational systems data.",
-          category: AssetCategory.DIAGRAM,
-          isPremium: isPremiumSystem,
-          fileSize: "3.1 MB"
-        }
-      );
-    }
+    enriched.resources = [
+      {
+        id: `${enriched.id}_make_json`,
+        title: "Make.com Scenario JSON Config",
+        description: "Exported automation blueprints ready to import directly into Make.",
+        category: AssetCategory.TEMPLATE,
+        isPremium: false,
+        fileSize: "150 KB"
+      },
+      {
+        id: `${enriched.id}_webhook_code`,
+        title: "Webhook Middleware & Database Sync Node",
+        description: "NodeJS script to capture payloads and sync database records dynamically.",
+        category: AssetCategory.CODE,
+        isPremium: true,
+        fileSize: "45 KB"
+      },
+      {
+        id: `${enriched.id}_stripe_handler`,
+        title: "Stripe Event Webhook Handler",
+        description: "Secure, signature-verified endpoint scripts to manage user access.",
+        category: AssetCategory.CODE,
+        isPremium: true,
+        fileSize: "18 KB"
+      }
+    ];
+  } else if (slug.includes('haptic') || slug.includes('teleoperation')) {
+    enriched.title = "SEO Foundation Checklist";
+    enriched.category = "ai";
+    enriched.description = "The exact step-by-step technical checklist used to optimize, structure, and audit websites for search visibility.";
+    enriched.thumbnail = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200";
     
-    enriched.resources = generated;
+    enriched.resources = [
+      {
+        id: `${enriched.id}_schema_generator`,
+        title: "Technical JSON-LD Schema Generator",
+        description: "Script to automatically construct and inject structured data metadata.",
+        category: AssetCategory.CODE,
+        isPremium: false,
+        fileSize: "12 KB"
+      },
+      {
+        id: `${enriched.id}_audit_checklist`,
+        title: "Technical SEO Crawl Audit Checklist",
+        description: "Complete checklist covering robots.txt, canonicalization, and index rules.",
+        category: AssetCategory.PDF,
+        isPremium: false,
+        fileSize: "3.2 MB"
+      }
+    ];
   }
 
-  // 2. Safe changelog fallback
+  // 2. Changelog fallback
   if (!enriched.changelog || enriched.changelog.length === 0) {
     const generatedChangelog: ChangelogEntry[] = [
       {
@@ -144,25 +123,25 @@ export const enrichDigitalSystem = (system: any): Product => {
         description: "Official publication of system schematics, baseline components, and core blueprints.",
         changes: {
           added: [
-            "Baseline physical 3D printable mechanical CAD chassis designs",
-            "Core ESP32 embedded controller firmware and wiring schematics",
-            "PDF Assembly Instructions and system calibration setup guidelines"
+            "Baseline blueprints and configuration files",
+            "Technical checklists and wiring guides",
+            "Quickstart operational setup instructions"
           ]
         }
       },
       {
         version: "v1.1.0",
         date: "2026-05-10",
-        title: "Telemetry Refinements & Core Optimization",
-        description: "Significant performance tuning, data compression updates, and diagnostic repairs.",
+        title: "Workflow Refinements & Core Optimization",
+        description: "Performance tuning, data compression updates, and documentation repairs.",
         changes: {
           improved: [
-            "Reduced micro-controller latency overhead in telemetry loops",
-            "Optimized CAD polygon counts for ultra-smooth 3D printing slicing"
+            "Reduced latency overhead in webhook handlers",
+            "Updated and optimized code templates"
           ],
           fixed: [
-            "Resolved serial port handshake timing glitches under Windows",
-            "Fixed physical keystone alignment tolerances in 3D STEP models"
+            "Resolved sitemap crawl issues",
+            "Fixed webhook connection handshake timeouts"
           ]
         }
       }

@@ -1,173 +1,253 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BookOpen, FileCode, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VARIANTS } from '../../lib/motion-presets';
+import { Button } from '../ui/button';
 
-const PATHWAYS = [
-  {
-    title: 'Student',
-    role: 'Student ➔ Learn ➔ Build',
-    col1Title: 'Learn',
-    col1Bullets: ['Open blueprints', 'Build systems', 'Engineering guides'],
-    col2Title: 'Contribute',
-    col2Bullets: ['Test builds', 'Share feedback'],
-    flowTag: 'Deployed builds feed the co-development R&D cycle',
-    link: '/blog',
-    linkText: 'Enter Learning Engine',
-    badgeColor: 'bg-brand-secondary/10 text-brand-secondary border-brand-secondary/20',
-    hoverBorder: 'hover:border-brand-secondary/35 hover:shadow-[0_15px_40px_rgba(0,194,255,0.05)]'
-  },
-  {
-    title: 'Collaborator',
-    role: 'Collaborator ➔ Mentor ➔ Co-build',
-    col1Title: 'Co-Build',
-    col1Bullets: ['Active R&D projects', 'System reviews', 'Technical mentorship'],
-    col2Title: 'Contribute',
-    col2Bullets: ['Improve modules', 'Validate systems'],
-    flowTag: 'Validated systems enable institutional scale',
-    link: '/collaborate',
-    linkText: 'Access Collaboration Hub',
-    badgeColor: 'bg-brand-primary/10 text-brand-primary border-brand-primary/20',
-    hoverBorder: 'hover:border-brand-primary/35 hover:shadow-[0_15px_40px_rgba(0,102,255,0.05)]'
-  },
-  {
-    title: 'Sponsor',
-    role: 'Sponsor ➔ Enable ➔ Scale Impact',
-    col1Title: 'Enable',
-    col1Bullets: ['Support builders', 'Fund prototypes', 'Expand programs'],
-    col2Title: 'Impact',
-    col2Bullets: ['Visibility', 'Talent access', 'Innovation pipeline'],
-    flowTag: 'Funded resources cycle back to accelerate learners',
-    link: '/collaborate',
-    linkText: 'Initiate Partnership',
-    badgeColor: 'bg-green-500/10 text-green-400 border-green-500/20',
-    hoverBorder: 'hover:border-green-500/35 hover:shadow-[0_15px_40px_rgba(34,197,94,0.05)]'
-  }
-];
+interface PathwayCardProps {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  title: string;
+  subTitle: string;
+  description: string;
+  bullets: string[];
+  buttonText: string;
+  to: string;
+  isHighlighted?: boolean;
+  delay?: number;
+}
 
-export const HomeEcosystemAccessSection = () => {
+const PathwayCard: React.FC<PathwayCardProps> = ({
+  icon: Icon,
+  title,
+  subTitle,
+  description,
+  bullets,
+  buttonText,
+  to,
+  isHighlighted = false,
+  delay = 0,
+}) => {
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = React.useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setCoords({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
   return (
-    <Section id="ecosystem-access" className="py-32 border-t border-white/5 bg-white/[0.01]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      variants={VARIANTS.fadeUp}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true }}
+      transition={{ delay }}
+      className="h-full"
+    >
+      <div
+        className={`ds-card ds-card-hover flex flex-col h-full group relative overflow-hidden p-8 sm:p-10 ${
+          isHighlighted ? 'border-brand-primary/30 shadow-[0_0_20px_rgba(0,194,255,0.15)]' : ''
+        }`}
+      >
+        {/* Dynamic Glow Effect */}
+        <div
+          className="pointer-events-none absolute w-[200px] h-[200px] bg-[radial-gradient(circle,_rgba(59,_130,_246,_0.08)_0%,_rgba(0,0,0,0)_70%)] rounded-full transition-opacity duration-300 -translate-x-1/2 -translate-y-1/2 z-0"
+          style={{
+            left: `${coords.x}px`,
+            top: `${coords.y}px`,
+            opacity: isHovered ? 1 : 0,
+          }}
+        />
 
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-24 gap-8">
-          <div className="max-w-2xl">
-            <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">
-              Ecosystem Entryways
-            </h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">
-              A Living Structure.<br />
-              Choose Your <span className="text-brand-primary">Gateway.</span>
-            </h3>
+        {/* Corner radial background glow */}
+        <div
+          className={`absolute top-0 right-0 rounded-bl-full blur-3xl -z-10 transition-colors duration-500 ${
+            isHighlighted ? 'w-40 h-40 bg-brand-primary/5 group-hover:bg-brand-primary/10' : 'w-32 h-32 bg-brand-primary/3 group-hover:bg-brand-primary/5'
+          }`}
+        />
+
+        {isHighlighted && (
+          <div className="absolute top-6 right-6 px-3.5 py-1 rounded bg-brand-primary/15 border border-brand-primary/35 z-10 select-none">
+            <span className="font-mono text-[9px] font-bold text-brand-primary uppercase tracking-wider">
+              RECOMMENDED
+            </span>
           </div>
-          <p className="text-white/40 font-medium max-w-md text-lg leading-relaxed">
-            <span className="text-white/90 font-bold block mb-2">Learn. Build. Share. Scale.</span>
-            Every project, contribution, and partnership strengthens the same engineering ecosystem. Choose where you want to begin.
+        )}
+
+        <div className="mb-8 relative z-10">
+          {/* Icon Container */}
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center mb-6 border transition-all duration-300 ease-out ${
+              isHighlighted
+                ? 'bg-brand-primary/15 border-brand-primary/30 text-brand-primary group-hover:bg-brand-primary/25'
+                : 'bg-white/5 border-white/10 text-brand-primary group-hover:bg-brand-primary/10 group-hover:border-brand-primary/30'
+            }`}
+          >
+            <Icon size={20} />
+          </div>
+
+          <h3 className="text-3xl font-extrabold mb-2 text-white group-hover:text-brand-primary transition-colors duration-300 tracking-tight">{title}</h3>
+          <div className="font-mono text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mb-6">
+            {subTitle}
+          </div>
+
+          <div className={`h-px w-full mb-6 ${isHighlighted ? 'bg-brand-primary/20' : 'bg-white/10'}`} />
+
+          <p className="text-white/50 text-sm leading-relaxed mb-6 min-h-[60px] font-medium group-hover:text-white/60 transition-colors duration-300">
+            {description}
           </p>
         </div>
 
-        {/* Visual Operational Pipeline Connector */}
-        <div className="hidden lg:flex items-center justify-between px-16 mb-16 text-[10px] font-mono tracking-[0.3em] text-white/25 select-none">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-secondary animate-pulse" />
-            <span className="text-white/60">LEARN ENGINE</span>
-          </div>
-          <div className="flex-grow h-px bg-gradient-to-r from-brand-secondary/30 to-brand-primary/30 mx-6 relative">
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0A0A0B] px-3 text-[8px] text-white/30 font-bold uppercase">
-              STUDENT OUTCOMES FEED R&D ➔
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
-            <span className="text-white/60">CO-BUILD SPRINT</span>
-          </div>
-          <div className="flex-grow h-px bg-gradient-to-r from-brand-primary/30 to-green-500/30 mx-6 relative">
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0A0A0B] px-3 text-[8px] text-white/30 font-bold uppercase">
-              SPONSORS STAGE IMPACT ➔
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-white/60">SCALE IMPACT NODE</span>
-          </div>
+        {/* Bullet List */}
+        <ul className="space-y-4 mb-10 flex-grow relative z-10">
+          {bullets.map((bullet, idx) => (
+            <li key={idx} className="flex items-start gap-3 text-sm text-white/70 font-medium group-hover:text-white/80 transition-colors duration-300">
+              <div
+                className={`mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                  isHighlighted ? 'bg-brand-primary shadow-[0_0_8px_rgba(0,194,255,0.6)]' : 'bg-brand-primary'
+                }`}
+              />
+              <span>{bullet}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Action Button */}
+        <div className="mt-auto relative z-10">
+          <Button
+            asChild
+            variant={isHighlighted ? 'primary' : 'secondary'}
+            className="w-full group/btn cursor-pointer"
+          >
+            <Link to={to}>
+              {buttonText}
+              <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform duration-300" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export const HomeEcosystemAccessSection = () => {
+  return (
+    <Section id="access" className="border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
+      
+      {/* Atmospheric Background Effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-[radial-gradient(circle,_rgba(0,194,255,0.03)_0%,_rgba(0,0,0,0)_70%)] rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle,_rgba(0,194,255,0.03)_0%,_rgba(0,0,0,0)_70%)] rounded-full blur-[120px]" />
+        <div className="absolute top-[40%] left-[20%] w-[30vw] h-[30vw] bg-[radial-gradient(circle,_rgba(0,194,255,0.02)_0%,_rgba(0,0,0,0)_70%)] rounded-full blur-[80px]" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+
+        {/* Section Header */}
+        <div className="max-w-3xl mb-12 md:mb-16 lg:mb-20">
+          <motion.div
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="ds-section-label"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+            Choose Your Pathway
+          </motion.div>
+
+          <motion.h2
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            transition={{ delay: 0.05 }}
+            className="ds-section-h2"
+          >
+            Select Your <span className="italic font-extrabold text-brand-primary">Path.</span>
+          </motion.h2>
+
+          <motion.p
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="ds-section-body max-w-2xl text-white/50"
+          >
+            Select your entry path below to learn from my documented builds, download ready-to-run templates, or partner with me to launch a system.
+          </motion.p>
         </div>
 
-        {/* 3-Column Living Structure Pathway Cards */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {PATHWAYS.map((path, i) => (
-            <motion.div
-              key={i}
-              variants={VARIANTS.fadeUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`glass-card p-8 md:p-10 rounded-[40px] border border-white/5 flex flex-col justify-between transition-all duration-500 group ${path.hoverBorder}`}
-            >
-              {/* Top Section */}
-              <div className="space-y-8">
-                {/* Header Block */}
-                <div>
-                  <span className={`inline-block px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-wider mb-4 ${path.badgeColor}`}>
-                    {path.role}
-                  </span>
-                  <h4 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white group-hover:text-brand-primary transition-colors duration-300">
-                    {path.title}
-                  </h4>
-                </div>
+        {/* 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative items-stretch">
+          
+          {/* Connecting Flow Line (Desktop Only) */}
+          <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-primary/10 to-transparent -z-10 translate-y-[-50%]" />
 
-                <div className="space-y-6 border-t border-white/5 pt-6">
-                  {/* Column 1 */}
-                  <div>
-                    <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 mb-3">{path.col1Title}</div>
-                    <ul className="space-y-2.5">
-                      {path.col1Bullets.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-xs text-white/75 font-medium leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-brand-primary/60 shrink-0 mt-1.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+          {/* Card 1: Learn */}
+          <PathwayCard
+            icon={BookOpen}
+            title="Learn"
+            subTitle="Guides & Resources"
+            description="Read blog articles, case studies, detailed notes, experiments, and guides on AI, web development, and SEO."
+            bullets={[
+              "Free technical guides",
+              "Real-world case studies",
+              "Lessons from live experiments",
+              "Step-by-step design walk-throughs"
+            ]}
+            buttonText="Start Learning"
+            to="/blog"
+            delay={0.15}
+          />
 
-                  {/* Column 2 */}
-                  <div>
-                    <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 mb-3">{path.col2Title}</div>
-                    <ul className="space-y-2.5">
-                      {path.col2Bullets.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-xs text-white/50 font-medium leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-brand-primary/40 shrink-0 mt-1.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+          {/* Card 2: Build */}
+          <PathwayCard
+            icon={FileCode}
+            title="Build"
+            subTitle="Blueprints & Templates"
+            description="Get immediate access to ready-to-use boilerplate templates, prompt packs, playbooks, and checklists."
+            bullets={[
+              "AI Website Launch Blueprints",
+              "SaaS Starter Boilerplates",
+              "SEO Foundation Checklists",
+              "Make.com Automation Playbooks"
+            ]}
+            buttonText="Explore Blueprints"
+            to="/systems"
+            isHighlighted={true}
+            delay={0.2}
+          />
 
-                  {/* Operational Flow Cycle Indicator */}
-                  <div className="pt-4 border-t border-white/5 flex items-center gap-2 select-none">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shrink-0" />
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-white/30 group-hover:text-brand-primary transition-colors duration-300">
-                      {path.flowTag}
-                    </span>
-                  </div>
-                </div>
-              </div>
+          {/* Card 3: Collaborate */}
+          <PathwayCard
+            icon={Users}
+            title="Collaborate"
+            subTitle="Launch & Implementation"
+            description="Partner directly with me to launch your product, automate operational workflows, or build high-performance web systems."
+            bullets={[
+              "Product launch execution support",
+              "Custom automation implementations",
+              "Tailored web system design",
+              "Direct 1-on-1 collaboration slots"
+            ]}
+            buttonText="Work With Me"
+            to="/collaborate"
+            delay={0.25}
+          />
 
-              {/* Bottom Action Link */}
-              <div className="mt-10 pt-6 border-t border-white/5">
-                <Link
-                  to={path.link}
-                  className="w-full py-4 px-6 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm tracking-tight flex items-center justify-center gap-2 hover:bg-white hover:text-black hover:border-white transition-all duration-300 group/btn"
-                >
-                  {path.linkText}
-                  <ArrowRight size={16} className="group-hover/btn:translate-x-1.5 transition-transform" />
-                </Link>
-              </div>
-            </motion.div>
-          ))}
         </div>
 
       </div>

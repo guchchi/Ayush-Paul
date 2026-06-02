@@ -19,6 +19,8 @@ export interface SystemStatus {
 export const useAdminData = (addToast: (message: string, type?: "info" | "success" | "warning" | "error") => void) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -38,13 +40,27 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   const fetchSecondaryData = async () => {
     try {
       console.log("📊 [SYNC] Fetching secondary metrics...");
-      const [msgSnap, subSnap, updSnap] = await Promise.all([
-        getDocs(query(collection(db, "contacts"), orderBy("timestamp", "desc"))),
+      const [msgSnap, collabSnap, subSnap, updSnap] = await Promise.all([
+        getDocs(query(collection(db, "contact_messages"))),
+        getDocs(query(collection(db, "collaboration_requests"))),
         getDocs(query(collection(db, "subscribers"), orderBy("createdAt", "desc"))),
         getDocs(query(collection(db, "updates"), orderBy("date", "desc"))),
       ]);
 
-      setMessages(msgSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      const mergedInquiries = [
+        ...msgSnap.docs.map((doc) => ({ id: doc.id, inquiryType: "Contact Inquiry", ...doc.data() })),
+        ...collabSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+      ].sort((a: any, b: any) => {
+        const getMillis = (t: any) => {
+          if (!t) return 0;
+          if (typeof t.toMillis === "function") return t.toMillis();
+          if (typeof t.toDate === "function") return t.toDate().getTime();
+          return new Date(t).getTime() || 0;
+        };
+        return getMillis(b.timestamp || b.createdAt) - getMillis(a.timestamp || a.createdAt);
+      });
+
+      setMessages(mergedInquiries);
       setSubscribers(subSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       setUpdates(updSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       setSystemStatus((prev) => ({
@@ -76,7 +92,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     console.log("🔄 [SYNC] Initializing Dashboard Synchronization Pipeline...");
 
     // 1. Critical Real-time Listeners (Blogs & Projects & Campaigns)
-    const qBlogs = query(collection(db, "blogPosts"));
+    const qBlogs = query(collection(db, "blogs"));
     const unsubscribeBlogs = onSnapshot(
       qBlogs,
       (snapshot) => {
@@ -103,7 +119,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
         }));
       },
       (error) => {
-        const errInfo = handleFirestoreError(error, OperationType.GET, "blogPosts");
+        const errInfo = handleFirestoreError(error, OperationType.GET, "blogs");
         if (errInfo.isQuotaExceeded) {
           setSystemStatus((prev) => ({
             ...prev,
@@ -141,6 +157,38 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       }
     );
 
+    const qProducts = query(
+      collection(db, "products"),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeProducts = onSnapshot(
+      qProducts,
+      (snapshot) => {
+        setProducts(
+          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "products");
+      }
+    );
+
+    const qCourses = query(
+      collection(db, "courses"),
+      orderBy("createdAt", "desc")
+    );
+    const unsubscribeCourses = onSnapshot(
+      qCourses,
+      (snapshot) => {
+        setCourses(
+          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "courses");
+      }
+    );
+
     // 2. Optimized One-Time Fetches
     fetchSecondaryData();
 
@@ -148,6 +196,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       unsubscribeBlogs();
       unsubscribeProjects();
       unsubscribeCampaigns();
+      unsubscribeProducts();
+      unsubscribeCourses();
     };
   }, []);
 
@@ -156,6 +206,10 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     setPosts,
     projects,
     setProjects,
+    products,
+    setProducts,
+    courses,
+    setCourses,
     messages,
     setMessages,
     subscribers,

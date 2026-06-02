@@ -6,9 +6,19 @@
   --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --color-brand-primary: #00FFFF; /* Bright Neon Cyan */
-  --color-brand-secondary: #00E5FF; /* Slightly darker cyan */
-  --color-brand-accent: #00BFFF; /* Deep cyan */
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-elevated-hover: var(--bg-elevated-hover);
+  
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-color: var(--border-color);
   
   --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -84,7 +94,9 @@
     width: 100%;
     min-height: 100%;
     overflow-x: hidden;
-    @apply bg-[#000000] text-white antialiased selection:bg-brand-primary/30;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    @apply antialiased selection:bg-brand-primary/30;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -118,8 +130,21 @@
 
   :root {
     color-scheme: dark;
+    --bg-primary: #000000;
+    --bg-secondary: #050505;
+    --bg-elevated: #0A0A0A;
+    --bg-elevated-hover: #101010;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --grid-dot-color: rgba(255, 255, 255, 0.05);
+    --brand-primary: #00C2FF;
+    --brand-secondary: #1e3a8a;
+    --brand-accent: #ffffff;
+
     /* Global Layout Tokens — Senior Architect Redesign */
-    --layout-max-width: 1440px; /* Increased for ultra-wide premium feel */
+    --layout-max-width: 1280px; /* Capped container width */
     
     /* Strict Spacing Scale (8pt Grid System) */
     --space-1: 0.25rem;  /* 4px */
@@ -134,9 +159,9 @@
     --space-32: 8rem;    /* 128px */
     
     /* Section & Container Rules */
-    --layout-section-py: var(--space-16);
+    --layout-section-py: 7.5rem; /* Section Padding = 120px */
     --layout-container-px: var(--space-6);
-    --layout-gap: 2rem;
+    --layout-gap: 1.5rem; /* Card Gap = 24px */
     
     /* Navbar Elevation & Z-Indices */
     --navbar-height: 5rem;
@@ -156,31 +181,34 @@
     --radius-badge: 9999px;         /* capsule shapes */
     
     /* Glassmorphism System */
-    --glass-bg: rgba(0, 255, 255, 0.02);
-    --glass-border: rgba(0, 255, 255, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.02);
+    --glass-border: rgba(255, 255, 255, 0.08);
     --glass-blur: blur(20px);
 
-    --glass-bg-primary: rgba(0, 20, 30, 0.4);
-    --glass-bg-hover: rgba(0, 40, 50, 0.6);
-    --glass-border-low: rgba(0, 255, 255, 0.3);
-    --glass-border-mid: rgba(0, 255, 255, 0.6);
-    --glass-border-high: rgba(0, 255, 255, 0.9);
+    --glass-bg-primary: rgba(255, 255, 255, 0.03); /* Glass = rgba(255,255,255,0.03) */
+    --glass-bg-hover: rgba(255, 255, 255, 0.05);
+    --glass-border-low: rgba(255, 255, 255, 0.08);
+    --glass-border-mid: rgba(0, 194, 255, 0.3);
+    --glass-border-high: rgba(0, 194, 255, 0.6);
     --glass-blur-premium: blur(24px);
+
+    --navbar-bg: rgba(10, 10, 10, 0.75);
+    --navbar-border: rgba(255, 255, 255, 0.08);
 
     /* Glow Intensity Weights & Neon Tokens */
     --glow-intensity-low: 0.02;
     --glow-intensity-mid: 0.05;
-  --glow-intensity-high: 0.1;
-  --neon-primary: 0, 255, 255;    /* cyan */
-    --neon-secondary: 0, 229, 255;   /* slightly darker cyan */
-    --neon-accent: 0, 191, 255;   /* deep cyan */
+    --glow-intensity-high: 0.1;
+    --neon-primary: 0, 194, 255;    /* Electric Blue #00C2FF */
+    --neon-secondary: 30, 58, 138;   /* Deep Blue #1e3a8a */
+    --neon-accent: 255, 255, 255;   /* Crisp White */
 
     /* Standard Motion Presets & Curves */
-    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1); /* Apple / Linear standard curve */
+    --ease-premium: cubic-bezier(0.4, 0, 0.2, 1); /* Ease = cubic-bezier(0.4,0,0.2,1) */
     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --motion-duration-fast: 0.2s;
-    --motion-duration-standard: 0.4s;
-    --motion-duration-slow: 0.8s;
+    --motion-duration-fast: 0.15s;
+    --motion-duration-standard: 250ms; /* Duration = 250ms */
+    --motion-duration-slow: 0.5s;
   }
 
 
@@ -229,17 +257,18 @@
 
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-white max-w-full break-words;
+    @apply font-display tracking-tight max-w-full break-words;
+    color: var(--text-primary);
     line-height: 1.1;
     letter-spacing: -0.03em;
   }
 
   h1 {
-    @apply text-[clamp(2.5rem,8vw,4.5rem)] font-bold;
+    @apply text-[clamp(4.5rem,7.5vw,6rem)] font-bold;
   }
 
   h2 {
-    @apply text-[clamp(2rem,6vw,3.5rem)] font-bold;
+    @apply text-[clamp(3rem,5.5vw,4rem)] font-bold;
   }
 
   h3 {
@@ -247,8 +276,8 @@
   }
 
   p {
-    @apply leading-relaxed max-w-full break-words font-medium;
-    color: rgba(255, 255, 255, 0.4);
+    @apply text-[clamp(1.125rem,1.5vw,1.25rem)] leading-relaxed max-w-full break-words font-medium;
+    color: var(--text-secondary);
     letter-spacing: -0.01em;
   }
 
@@ -402,7 +431,7 @@
   background: var(--glass-bg-primary);
   backdrop-filter: var(--glass-blur-premium);
   border: 1px solid var(--glass-border-low);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(0, 255, 255, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 @utility glass-card {
@@ -417,8 +446,8 @@
   &:hover {
     background: var(--glass-bg-hover);
     border-color: var(--glass-border-mid);
-    transform: translateY(-5px) scale(1.005);
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.15);
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 194, 255, 0.15);
   }
 }
 
@@ -428,6 +457,168 @@
 
 @utility badge {
   @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-white/80 text-[11px] font-semibold tracking-wide;
+}
+
+/* ============================================================
+   GLOBAL DESIGN SYSTEM — SEMANTIC UTILITIES
+   Single source of truth for all section-level UI patterns.
+   Apply these classes in section components instead of
+   duplicating raw Tailwind utilities or inline <style> blocks.
+   ============================================================ */
+
+/* --- Typography Patterns --- */
+
+@utility ds-section-label {
+  /* Eyebrow / section label: dot indicator + uppercase mono text */
+  @apply flex items-center gap-2 text-brand-primary text-xs font-bold uppercase tracking-[0.25em] mb-8;
+}
+
+@utility ds-section-h2 {
+  /* Standard section heading: fluid clamp, extrabold, ultra-tight tracking */
+  @apply text-[clamp(2.8rem,6vw,4.8rem)] font-extrabold tracking-tighter leading-[0.9] text-white mb-8;
+}
+
+@utility ds-section-body {
+  /* Standard section body paragraph */
+  @apply text-base md:text-[17px] text-white/60 font-medium leading-relaxed;
+}
+
+/* --- Card Patterns --- */
+
+@utility ds-card {
+  /* Canonical card surface using layered dark theme (#101010) */
+  background: #101010;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2rem; /* 32px */
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--motion-duration-standard) var(--ease-premium);
+}
+
+@utility ds-card-hover {
+  /* Hover state for ds-card: scale 1.02 and clean accent borders */
+  &:hover {
+    border-color: rgba(0, 194, 255, 0.35);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 194, 255, 0.1);
+    transform: scale(1.02);
+    background: #151515;
+  }
+}
+
+/* Mouse-follow spotlight glow (positioned by JS via inline style left/top) */
+@utility ds-spotlight {
+  pointer-events: none;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(0, 194, 255, 0.08) 0%, rgba(0,0,0,0) 70%);
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* --- CTA Button Patterns --- */
+
+@utility ds-cta-primary {
+  /* PRIMARY button — mirrors Button variant="primary" exactly */
+  @apply inline-flex items-center justify-center gap-2;
+  @apply rounded-full;
+  @apply font-extrabold text-xs uppercase tracking-widest;
+  @apply bg-brand-primary text-black;
+  @apply transition-all duration-300 ease-out;
+  @apply cursor-pointer select-none;
+  @apply px-7 h-11;
+  box-shadow: 0 0 20px rgba(95, 168, 227, 0.18);
+  &:hover {
+    background: color-mix(in srgb, var(--color-brand-primary) 88%, white);
+    box-shadow: 0 0 35px rgba(95, 168, 227, 0.38);
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.97) translateY(0);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px black, 0 0 0 4px var(--color-brand-primary);
+  }
+}
+
+@utility ds-cta-ghost {
+  /* SECONDARY button — mirrors Button variant="secondary" exactly */
+  @apply inline-flex items-center justify-center gap-2;
+  @apply rounded-full;
+  @apply font-extrabold text-xs uppercase tracking-widest;
+  @apply bg-transparent text-white;
+  @apply border border-white/15;
+  @apply transition-all duration-300 ease-out;
+  @apply cursor-pointer select-none;
+  @apply px-7 h-11;
+  &:hover {
+    border-color: rgba(95, 168, 227, 0.6);
+    color: var(--color-brand-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(95, 168, 227, 0.10);
+  }
+  &:active {
+    transform: scale(0.97) translateY(0);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px black, 0 0 0 4px var(--color-brand-primary);
+  }
+}
+
+/* --- Shared Effects (lifted from inline <style> blocks) --- */
+
+/* Liquid gradient border — used on interactive cards */
+.liquid-border {
+  position: relative;
+}
+.liquid-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(0, 194, 255, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: background 0.250s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.liquid-border:hover::before {
+  background: linear-gradient(180deg, rgba(0, 194, 255, 0.4) 0%, rgba(0, 194, 255, 0.1) 100%);
+}
+
+/* Glass panel — heavy blur surface with tight blue border */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3rem;
+  position: relative;
+  transition: box-shadow 0.250s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.250s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 194, 255, 0.35);
+}
+
+/* Pill button — ghost variant with gradient border */
+.pill-button {
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, rgba(95, 168, 227, 0.5), transparent) border-box;
+}
+.pill-button-filled {
+  border-radius: 9999px;
 }
 
 .gradient-border {
@@ -605,4 +796,143 @@
   color: var(--color-brand-primary) !important;
   background-color: rgba(255, 255, 255, 0.05) !important;
 }
+
+/* ============================================================
+   LIGHT MODE STYLING & CLASS OVERRIDES
+   Injects off-white themes for all sections, cards, and texts.
+   ============================================================ */
+
+:root.light {
+  color-scheme: light;
+  --bg-primary: #FAFAFA;
+  --bg-secondary: #F4F4F5;
+  --bg-elevated: #FFFFFF;
+  --bg-elevated-hover: #E4E4E7;
+  --text-primary: #111111;
+  --text-secondary: rgba(17, 17, 17, 0.75);
+  --text-muted: rgba(17, 17, 17, 0.45);
+  --border-color: rgba(17, 17, 17, 0.08);
+  --grid-dot-color: rgba(17, 17, 17, 0.05);
+  
+  --brand-primary: #2563EB;
+  --brand-secondary: #1D4ED8;
+  --brand-accent: #3B82F6;
+
+  --glass-bg: rgba(17, 17, 17, 0.015);
+  --glass-border: rgba(17, 17, 17, 0.06);
+  --glass-bg-primary: rgba(17, 17, 17, 0.015);
+  --glass-bg-hover: rgba(17, 17, 17, 0.035);
+  --glass-border-low: rgba(17, 17, 17, 0.06);
+  --glass-border-mid: rgba(37, 99, 235, 0.2);
+  --glass-border-high: rgba(37, 99, 235, 0.45);
+  
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-border: rgba(17, 17, 17, 0.08);
+}
+
+/* Background Overrides */
+:root.light .bg-\[\#050505\],
+:root.light .bg-\[\#020b18\],
+:root.light .bg-\[\#000000\],
+:root.light .bg-black {
+  background-color: var(--bg-primary) !important;
+}
+
+:root.light .bg-\[\#0A0A0A\],
+:root.light .bg-\[\#080808\],
+:root.light .bg-\[\#090909\],
+:root.light .bg-\[\#070708\],
+:root.light .bg-\[\#070709\],
+:root.light .bg-\[\#0A0A0B\],
+:root.light .bg-\[\#030c18\] {
+  background-color: var(--bg-secondary) !important;
+}
+
+:root.light .bg-\[\#101010\],
+:root.light .bg-\[\#111111\],
+:root.light .bg-\[\#0D0D0E\],
+:root.light .bg-\[\#151515\] {
+  background-color: var(--bg-elevated) !important;
+}
+
+/* Text overrides */
+:root.light .text-white {
+  color: var(--text-primary) !important;
+}
+:root.light .text-white\/90 {
+  color: rgba(9, 9, 11, 0.9) !important;
+}
+:root.light .text-white\/80 {
+  color: rgba(9, 9, 11, 0.8) !important;
+}
+:root.light .text-white\/70,
+:root.light .text-white\/60,
+:root.light .text-white\/50 {
+  color: var(--text-secondary) !important;
+}
+:root.light .text-white\/40,
+:root.light .text-white\/30,
+:root.light .text-white\/20,
+:root.light .text-white\/10 {
+  color: var(--text-muted) !important;
+}
+
+/* Borders */
+:root.light .border-white\/5,
+:root.light .border-white\/10,
+:root.light .border-white\/\[0\.08\],
+:root.light .border-white\/\[0\.06\],
+:root.light .border-white\/\[0\.04\],
+:root.light .border-white\/\[0\.05\] {
+  border-color: var(--border-color) !important;
+}
+
+/* Glass background overlays */
+:root.light .bg-white\/5,
+:root.light .bg-white\/\[0\.05\],
+:root.light .bg-white\/\[0\.02\],
+:root.light .bg-white\/\[0\.01\],
+:root.light .bg-white\/\[0\.015\] {
+  background-color: var(--glass-bg-primary) !important;
+}
+
+/* Hover scales and special UI segments */
+:root.light .ds-card {
+  box-shadow: 0 10px 25px -10px rgba(9, 9, 11, 0.1) !important;
+}
+:root.light .glass-panel {
+  box-shadow: 0 10px 25px -10px rgba(9, 9, 11, 0.08) !important;
+}
+:root.light .bg-brand-primary\/10 {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+:root.light .bg-brand-primary\/15 {
+  background-color: rgba(37, 99, 235, 0.12) !important;
+}
+:root.light .bg-brand-accent\/10 {
+  background-color: rgba(9, 9, 11, 0.05) !important;
+}
+:root.light .bg-brand-accent\/15 {
+  background-color: rgba(9, 9, 11, 0.08) !important;
+}
+
+/* Forms input fields in light mode */
+:root.light input,
+:root.light textarea,
+:root.light select {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Telemetry console light overrides */
+:root.light .LiveTelemetryConsole {
+  border-color: var(--border-color) !important;
+}
+
+/* Active links in light navbar */
+:root.light .bg-white\/\[0\.08\] {
+  background-color: rgba(9, 9, 11, 0.08) !important;
+}
+
 

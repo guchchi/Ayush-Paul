@@ -22,8 +22,8 @@ export interface BlogPost {
 export const getDynamicBlogs = async (): Promise<BlogPost[]> => {
   try {
     const q = query(
-      collection(db, "blogPosts"), 
-      where("published", "==", true),
+      collection(db, "blogs"), 
+      where("status", "==", "published"),
       orderBy("createdAt", "desc")
     );
     const snap = await getDocs(q);
@@ -32,16 +32,23 @@ export const getDynamicBlogs = async (): Promise<BlogPost[]> => {
       return {
         id: doc.id,
         slug: d.slug,
-        title: d.title,
-        description: d.description || "",
+        title: d.title || "",
+        description: d.excerpt || d.description || "",
         date: d.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
         tags: Array.isArray(d.tags) ? d.tags : (d.tags || "").split(",").map((t: string) => t.trim()),
         category: d.category || "General",
         coverImage: d.coverImage || "",
         author: d.author || "Ayush Paul",
-        published: true,
+        published: d.status === "published",
         content: d.content || "",
-        blocks: d.blocks || []
+        blocks: d.blocks || [],
+        createdAt: d.createdAt,
+        updatedAt: d.updatedAt,
+        seo: {
+          title: d.seoTitle || d.title || "",
+          description: d.seoDescription || d.excerpt || "",
+          keywords: (d.tags || []).join(", ")
+        }
       } as BlogPost;
     });
   } catch (e) {

@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'mot
 import { Cpu, Terminal, Compass, ChevronRight, Activity, Zap } from 'lucide-react';
 import { Section } from '../ui/Section';
 import { VARIANTS, EASING } from '../../lib/motion-presets';
+import { Button } from '../ui/button';
 
 interface LabConcept {
   id: number;
@@ -182,7 +183,7 @@ export const InnovationLabsSection = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-50 z-0" />
       
       {/* Projection Cyber Glow Source */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00C2FF]/3 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-[#00C2FF]/3 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
 
       <div ref={sectionRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
         <motion.div 
@@ -382,12 +383,13 @@ export const InnovationLabsSection = () => {
               </AnimatePresence>
 
               <div className="pt-6">
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={handleNextCard}
-                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all py-3.5 px-6 min-h-[44px] rounded-full border border-white/[0.06] hover:border-white/10 bg-white/[0.01] cursor-pointer"
                 >
-                  Inspect Next Blueprint <ChevronRight size={14} className="text-[#00C2FF]" />
-                </button>
+                  Inspect Next Blueprint <ChevronRight size={14} className="text-brand-primary" />
+                </Button>
               </div>
 
             </div>

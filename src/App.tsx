@@ -32,6 +32,9 @@ const LabDetailPage = lazy(() => import("./pages/LabDetailPage").then(m => ({ de
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
 const MomentumPage = lazy(() => import("./pages/MomentumPage").then(m => ({ default: m.MomentumPage })));
+const AcademyPage = lazy(() => import("./pages/AcademyPage").then(m => ({ default: m.AcademyPage })));
+const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m => ({ default: m.CourseDetailPage })));
+const LessonViewerPage = lazy(() => import("./pages/LessonViewerPage").then(m => ({ default: m.LessonViewerPage })));
 
 // --- Loading Fallback ---
 const PageLoading = () => (
@@ -133,6 +136,11 @@ export default function App() {
               <Route path="/products/:slug" element={wrapInLayout(<SystemDetailPage />)} />
               <Route path="/systems" element={wrapInLayout(<SystemsPage />)} />
               <Route path="/systems/:slug" element={wrapInLayout(<SystemDetailPage />)} />
+              <Route path="/blueprints" element={wrapInLayout(<SystemsPage />)} />
+              <Route path="/blueprints/:slug" element={wrapInLayout(<SystemDetailPage />)} />
+              <Route path="/academy" element={wrapInLayout(<AcademyPage />)} />
+              <Route path="/academy/courses/:courseId" element={wrapInLayout(<CourseDetailPage />)} />
+              <Route path="/academy/courses/:courseId/lessons/:lessonId" element={wrapInLayout(<LessonViewerPage />)} />
               <Route path="/labs" element={<Navigate to="/systems" replace />} />
               <Route path="/labs/:slug" element={<Navigate to="/systems" replace />} />
               <Route path="/thank-you" element={wrapInLayout(<ThankYouPage />)} />

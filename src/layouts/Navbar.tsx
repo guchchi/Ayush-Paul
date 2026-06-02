@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock, Layers, BookOpen, Trophy, Terminal } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock, Layers, BookOpen, Trophy, Terminal, Sun, Moon } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { Container } from "@/src/components/ui/Container";
 import { useScrollToSection } from "@/src/hooks/useScrollToSection";
@@ -23,6 +23,25 @@ export const Navbar = () => {
   const location = useLocation();
   const { scrollToSection } = useScrollToSection();
 
+  // Theme Toggle Logic
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('theme') as 'dark' | 'light') || 'light';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+
   // Scroll Progress Logic
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -36,7 +55,7 @@ export const Navbar = () => {
       setIsScrolled(window.scrollY > 20);
       
       // Active section detection with improved threshold logic
-      const sections = ['home', 'projects', 'latest-blogs', 'contact'];
+      const sections = ['home', 'systems', 'blog', 'about', 'contact'];
       let current = 'home';
       
       for (const section of sections) {
@@ -82,10 +101,11 @@ export const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Home", href: "/", id: "home" },
-    { name: "Ecosystem", href: "/systems", id: "systems" },
-    { name: "Blog", href: "/blog", id: "blog" },
-    { name: "Contact", href: "/contact", id: "contact" },
+    { name: "Home", href: "/#home", id: "home" },
+    { name: "Blueprints", href: "/#systems", id: "systems" },
+    { name: "Blog", href: "/#blog", id: "blog" },
+    { name: "About", href: "/#about", id: "about" },
+    { name: "Collaborate", href: "/#contact", id: "contact" },
   ];
 
   interface ExploreLink {
@@ -98,23 +118,23 @@ export const Navbar = () => {
 
   const exploreLinks: ExploreLink[] = [
     {
-      name: "Vision & About",
+      name: "About Me",
       href: "/about",
-      description: "Ecosystem architectural vision",
+      description: "My story, principles, and tech stack",
       icon: Users2,
       disabled: false
     },
     {
-      name: "Ecosystem Milestones",
+      name: "Milestones",
       href: "/milestones",
-      description: "System milestones & achievements",
+      description: "My building journey & progress",
       icon: Trophy,
       disabled: false
     },
     {
-      name: "Research Papers",
+      name: "Blog",
       href: "/blog",
-      description: "Deep tech research publications",
+      description: "Articles, case studies, and guides",
       icon: BookOpen,
       disabled: false
     }
@@ -140,13 +160,15 @@ export const Navbar = () => {
 
   const handleNavClick = (link: any, e: React.MouseEvent) => {
     setIsMobileMenuOpen(false);
-    if (link.href === '/' && location.pathname === '/') {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      window.history.pushState(null, '', '/');
-    } else if (link.href.startsWith("/#")) {
-      const id = link.href.split("#")[1];
-      scrollToSection(id);
+    if (location.pathname === '/') {
+      if (link.href === '/' || link.href === '/#home') {
+        e.preventDefault();
+        scrollToSection('home');
+      } else if (link.href.startsWith("/#")) {
+        e.preventDefault();
+        const id = link.href.split("#")[1];
+        scrollToSection(id);
+      }
     }
   };
 
@@ -175,7 +197,7 @@ export const Navbar = () => {
             animate={{ scale: isScrolled ? 0.9 : 1 }}
             className="transition-transform duration-500 text-white"
           >
-            ayushpaul<span className="text-brand-primary group-hover:neon-glow-blue transition-all">.in</span>
+            ayushpaul<span className="text-brand-primary group-hover:text-white transition-colors duration-300">.in</span>
           </motion.span>
         </Link>
       </div>
@@ -185,9 +207,8 @@ export const Navbar = () => {
         "absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] border rounded-full px-5",
         (location.pathname === '/' && !isScrolled)
           ? "bg-transparent border-transparent py-3 shadow-none backdrop-blur-none"
-          : isScrolled 
-            ? "bg-black/55 border-white/[0.08] py-2 sm:py-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl" 
-            : "bg-[#FFFFFF]/[0.02] border-white/[0.06] py-2.5 sm:py-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.55)] backdrop-blur-xl"
+          : "bg-[var(--navbar-bg)] border-[var(--navbar-border)] backdrop-blur-xl",
+        isScrolled ? "py-2 sm:py-2.5 shadow-lg" : "py-2.5 sm:py-3.5 shadow-md"
       )}>
         {navLinks.map((link) => {
           const isActive = location.pathname === link.href || (location.pathname === '/' && activeSection === link.id);
@@ -255,7 +276,7 @@ export const Navbar = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ type: "spring", damping: 20, stiffness: 200, mass: 0.8 }}
-                className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[#0A0A0B]/95 border border-white/10 rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
+                className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[var(--navbar-bg)] border-[var(--navbar-border)] rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
                 <div className="flex flex-col gap-1 relative z-10">
@@ -352,10 +373,33 @@ export const Navbar = () => {
         >
           Support <Heart size={12} className="text-brand-primary hover:scale-110 transition-transform" />
         </button>
+
+        <button
+          onClick={toggleTheme}
+          className="text-text-secondary hover:text-brand-primary hover:scale-110 transition-all duration-300 cursor-pointer select-none bg-transparent border-none outline-none p-0 flex items-center justify-center shrink-0"
+          aria-label="Toggle Theme"
+        >
+          {theme === 'light' ? (
+            <Moon size={16} className="text-brand-primary" />
+          ) : (
+            <Sun size={16} className="text-brand-primary" />
+          )}
+        </button>
       </div>
 
       {/* MOBILE MENU TOGGLE BUTTON (Absolute Right on mobile viewports) */}
-      <div className="lg:hidden pointer-events-auto flex items-center z-10">
+      <div className="lg:hidden pointer-events-auto flex items-center gap-3 z-10">
+        <button
+          onClick={toggleTheme}
+          className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all active:scale-90 text-brand-primary"
+          aria-label="Toggle Theme"
+        >
+          {theme === 'light' ? (
+            <Moon size={16} className="text-brand-primary" />
+          ) : (
+            <Sun size={16} className="text-brand-primary" />
+          )}
+        </button>
         <button
           className="text-white w-10 h-10 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-all active:scale-90"
           onClick={() => setIsMobileMenuOpen(prev => !prev)}
@@ -394,7 +438,7 @@ export const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-                className="absolute top-0 right-0 bottom-0 w-[88%] max-w-sm bg-[#0A0A0A] border-l border-white/10 flex flex-col shadow-2xl"
+                className="absolute top-0 right-0 bottom-0 w-[88%] max-w-sm bg-[var(--bg-elevated)] border-l border-[var(--border-color)] flex flex-col shadow-2xl"
               >
                 <div className="flex flex-col h-full">
                   {/* Drawer Header */}
@@ -418,7 +462,7 @@ export const Navbar = () => {
                     >
                       <div className="flex flex-col text-left">
                         <span className="text-xs font-bold uppercase tracking-widest">New here?</span>
-                        <span className="text-base font-display font-bold tracking-tight mt-0.5">Explore the Ecosystem →</span>
+                        <span className="text-base font-display font-bold tracking-tight mt-0.5">Explore the Blueprints →</span>
                       </div>
                       <ArrowRight size={18} className="shrink-0 group-hover:translate-x-1 transition-transform" />
                     </Link>

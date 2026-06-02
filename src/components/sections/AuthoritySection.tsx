@@ -187,7 +187,7 @@ export const AuthoritySection = () => {
           initial="initial"
           whileInView="animate"
           viewport={{ once: true }}
-          className="h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden bg-[#0D0D0E]"
+          className="min-h-[320px] sm:min-h-[400px] lg:h-[550px] w-full glass-card p-6 lg:p-12 flex items-center justify-center relative shadow-2xl overflow-hidden bg-[#0D0D0E]"
         >
           <div className="absolute inset-0 bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
           <div className="relative w-full h-full min-h-[300px]">

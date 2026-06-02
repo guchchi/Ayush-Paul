@@ -114,7 +114,7 @@ export const ProofOfExecutionSection = () => {
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-20 z-0" />
       
       {/* Background radial spotlight source */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#00C2FF]/3 rounded-full filter blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[700px] max-h-[700px] bg-[#00C2FF]/3 rounded-full filter blur-[140px] pointer-events-none z-0" />
 
       <div ref={containerRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
         <motion.div

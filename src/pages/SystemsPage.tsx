@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Layers, Search, Cpu, Code, Eye, Package, ShieldCheck } from 'lucide-react';
+import { Layers, Search, Cpu, Code, Settings, Package, ShieldCheck, Globe } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import { EcosystemCard } from '../components/ui/EcosystemCard';
@@ -8,10 +8,11 @@ import { getPublishedProducts } from '../lib/product-utils';
 import { Product } from '../types';
 
 const CATEGORIES = [
-  { id: 'all', label: 'Ecosystem Nodes', icon: Layers, refCode: 'ALL_NODES' },
-  { id: 'robotics', label: 'Cybernetics & Robotics', icon: Cpu, refCode: 'ROBOTICS' },
-  { id: 'source-code', label: 'Neural Intelligence', icon: Code, refCode: 'SRC_CODE' },
-  { id: 'blueprints', label: 'Spatial Interfaces', icon: Eye, refCode: 'BLUEPRINTS' },
+  { id: 'all', label: 'All Blueprints', icon: Layers, refCode: 'ALL_BLUEPRINTS' },
+  { id: 'ai', label: 'AI Workflows', icon: Cpu, refCode: 'AI_WORKFLOWS' },
+  { id: 'web', label: 'Website Systems', icon: Code, refCode: 'WEBSITE_SYSTEMS' },
+  { id: 'seo', label: 'SEO Systems', icon: Globe, refCode: 'SEO_SYSTEMS' },
+  { id: 'automation', label: 'Automation Playbooks', icon: Settings, refCode: 'AUTOMATION' },
 ];
 
 export const SystemsPage = () => {
@@ -35,10 +36,10 @@ export const SystemsPage = () => {
   // Simulate verified acquisition live updates
   useEffect(() => {
     const notifications = [
-      "User unlocked Haptic Teleoperation Rig Spatial Control Blueprint",
-      "Developer deployed Ayu-Boat Autonomous Water Drone",
-      "Engineering Node synchronized IOBot Intelligent Companion Robot",
-      "Secure payment completed: Neural Intelligence Repository synchronized"
+      "User unlocked AI Website Launch Blueprint",
+      "Developer downloaded SEO Foundation Checklist",
+      "Automation Starter Pack Scenario JSON configured",
+      "Stripe payment synchronized: SaaS Boilerplate unlocked"
     ];
     
     const interval = setInterval(() => {
@@ -51,10 +52,22 @@ export const SystemsPage = () => {
   }, []);
 
   useSEO({
-    title: "Digital Systems Ecosystem | Ayush Paul",
-    description: "Discover smart software applications, operational systems, and physical engineering designs built by Ayush Paul.",
-    keywords: "Ayush Paul Systems, SaaS Ecosystem, AI Life Navigator, Software Systems",
-    url: getCanonicalUrl("/systems")
+    title: "Blueprints & Templates | Ayush Paul",
+    description: "Get access to ready-to-run Next.js templates, AI rules configs, SEO checklists, and Make.com automation playbooks.",
+    keywords: "Ayush Paul, Blueprints, Next.js Templates, Cursor AI Rules, SEO Checklist, Make.com Playbooks, Automation",
+    url: getCanonicalUrl("/systems"),
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Blueprints & Templates Registry by Ayush Paul",
+      "description": "A registry of templates, checklists, and automation playbooks built by Ayush Paul.",
+      "url": getCanonicalUrl("/systems"),
+      "provider": {
+        "@type": "Person",
+        "name": "Ayush Paul",
+        "url": getCanonicalUrl()
+      }
+    }
   });
 
   const filteredProducts = products.filter(product => {
@@ -83,7 +96,7 @@ export const SystemsPage = () => {
             animate={{ y: 0, opacity: 1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/10 text-white/80 text-[11px] font-semibold tracking-wide mb-8"
           >
-            <ShieldCheck size={14} className="text-brand-primary" /> Active Ecosystem Registry
+            <ShieldCheck size={14} className="text-brand-primary" /> Active Blueprints Registry
           </motion.div>
           
           <motion.h1 
@@ -92,7 +105,7 @@ export const SystemsPage = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
           >
-            Operational <span className="text-white/60">Systems.</span>
+            Blueprints &amp; <span className="text-white/60">Templates.</span>
           </motion.h1>
           
           <motion.p 
@@ -101,7 +114,7 @@ export const SystemsPage = () => {
             transition={{ delay: 0.2 }}
             className="text-white/50 text-lg md:text-xl max-w-2xl font-medium leading-relaxed"
           >
-            Explore functional web systems, download physical 3D CAD models, and study active intelligence prototypes designed by Ayush Paul.
+            Explore Next.js templates, download Cursor AI configs, and study automation playbooks designed by Ayush Paul.
           </motion.p>
         </div>
 
@@ -133,7 +146,7 @@ export const SystemsPage = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/35" size={14} />
             <input 
               type="text" 
-              placeholder="Search active registry..." 
+              placeholder="Search active blueprints..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-6 py-3.5 bg-white/[0.02] border border-white/5 rounded-2xl text-xs text-white focus:outline-none focus:border-white/15 transition-colors placeholder:text-white/20 font-medium"
@@ -145,7 +158,7 @@ export const SystemsPage = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-4">
             <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-            <span className="text-[10px] font-semibold tracking-wider text-white/20">Synchronizing nodes...</span>
+            <span className="text-[10px] font-semibold tracking-wider text-white/20">Synchronizing registry...</span>
           </div>
         ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
@@ -163,8 +176,8 @@ export const SystemsPage = () => {
         ) : (
           <div className="flex flex-col items-center justify-center py-32 text-center border border-white/5 rounded-[2.5rem] bg-white/[0.01] relative z-10">
             <Package size={40} className="text-white/10 mb-6" />
-            <h3 className="text-xl font-bold text-white mb-2">No systems matched</h3>
-            <p className="text-white/40 text-sm max-w-sm">The queried parameters did not match any currently active software nodes.</p>
+            <h3 className="text-xl font-bold text-white mb-2">No blueprints matched</h3>
+            <p className="text-white/40 text-sm max-w-sm">The queried parameters did not match any currently active blueprints.</p>
           </div>
         )}
 
@@ -180,7 +193,7 @@ export const SystemsPage = () => {
             className="fixed bottom-6 left-6 z-[100] max-w-sm p-4 bg-[#0F0F11]/90 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl flex items-center gap-3"
           >
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mr-1 shrink-0">Ecosystem Unlock</span>
+            <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mr-1 shrink-0">Blueprint Unlock</span>
             <p className="text-xs text-white/80 leading-normal font-semibold font-display line-clamp-1">{tickerNotification}</p>
           </motion.div>
         )}

@@ -7,6 +7,7 @@ import { Section } from '../ui/Section';
 import { VARIANTS, EASING } from '../../lib/motion-presets';
 import { formatDate } from "../../lib/firebase-utils";
 import { cn } from '../../lib/utils';
+import { Button } from '../ui/button';
 
 // ============================================================================
 // HELPER: Interactive Holographic 3D Mouse-Tilt Panel
@@ -153,12 +154,11 @@ export const FeaturedBlogsSection = () => {
                 Editorial & <span className="text-[#00C2FF] font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.2)' }}>Chronicles.</span>
               </h2>
             </div>
-            <Link 
-              to="/blog" 
-              className="group flex items-center gap-2.5 text-white/40 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest border border-white/[0.06] hover:border-white/10 px-6 py-3.5 rounded-full bg-white/[0.01] shrink-0"
-            >
-              View Full Feed <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+            <Button asChild variant="secondary" size="sm" className="shrink-0">
+              <Link to="/blog">
+                View Full Feed <ArrowRight size={13} />
+              </Link>
+            </Button>
           </div>
 
           {/* Asymmetric Bento-Grid Layout */}

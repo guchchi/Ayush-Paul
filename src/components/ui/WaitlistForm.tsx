@@ -6,10 +6,12 @@ import { cn } from '../../lib/utils';
 
 export const WaitlistForm = ({ 
   context = "footer-waitlist",
-  variant = "compact" 
+  variant = "compact",
+  interest = "general"
 }: { 
   context?: string,
-  variant?: "compact" | "inline"
+  variant?: "compact" | "inline",
+  interest?: string
 }) => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'duplicate'>('idle');
@@ -42,7 +44,8 @@ export const WaitlistForm = ({
         email: email.toLowerCase().trim(),
         createdAt: serverTimestamp(),
         source: context,
-        page: window.location.pathname
+        page: window.location.pathname,
+        interest: interest
       });
 
       setStatus('success');

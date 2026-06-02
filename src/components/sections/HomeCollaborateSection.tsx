@@ -1,129 +1,173 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Section } from '../ui/Section';
-import { MagneticButton } from '../ui/MagneticButton';
-import { ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, BookOpen, Code, Handshake, Users, Download, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VARIANTS } from '../../lib/motion-presets';
 
-// How people join the ecosystem — pathways, not just "types of collaboration"
-const JOIN_PATHWAYS = [
-  {
-    type: 'Learn',
-    for: 'Learners & Hobbyists',
-    desc: 'Access the open knowledge hub, read step-by-step engineering journals, and study system schematics in public.',
-    badge: 'Knowledge Engine Access',
-    number: '01',
-  },
-  {
-    type: 'Build',
-    for: 'Builders & Engineers',
-    desc: 'Clone open-source code repos, deploy modular setups, and implement ecosystem blueprints in your own projects.',
-    badge: 'Technical Blueprints',
-    number: '02',
-  },
-  {
-    type: 'Contribute',
-    for: 'Founders & Researchers',
-    desc: 'Collaborate on active hardware-software systems, co-develop custom libraries, and participate in peer code reviews.',
-    badge: 'Co-Development Pathway',
-    number: '03',
-  },
-  {
-    type: 'Partner',
-    for: 'Sponsors & Institutions',
-    desc: 'Fund robotics research, sponsor student hardware kits, or back national competition entries to accelerate high-potential talent.',
-    badge: 'Ecosystem Alignment',
-    number: '04',
-  },
-];
+interface PathwayCardProps {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  title: string;
+  description: string;
+  linkText: string;
+  to: string;
+  delay?: number;
+}
 
-const TRUST_TAGS = ['Response within 24h', 'NDAs available', 'Student-founder transparency'];
-
-export const HomeCollaborateSection = () => {
+const PathwayCard: React.FC<PathwayCardProps> = ({
+  icon: Icon,
+  title,
+  description,
+  linkText,
+  to,
+  delay = 0,
+}) => {
   return (
-    <Section id="collaborate" className="py-32 border-t border-white/5 bg-white/[0.01]">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
-          <div className="max-w-2xl">
-            <h2 className="text-sm font-bold uppercase tracking-[0.4em] text-white/20 mb-6">
-              Participate
-            </h2>
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tighter">
-              How would you like to <span className="text-brand-secondary">participate?</span>
-            </h3>
+    <motion.div
+      variants={VARIANTS.fadeUp}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true }}
+      transition={{ delay }}
+      className="h-full"
+    >
+      <div className="bg-[#101010] border border-white/5 p-8 rounded-3xl group hover:border-brand-primary/30 transition-all duration-300 h-full flex flex-col justify-between text-left">
+        <div>
+          {/* Icon */}
+          <div className="w-12 h-12 rounded-full bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center mb-8 text-brand-primary group-hover:bg-brand-primary group-hover:text-white group-hover:border-brand-primary transition-all duration-300">
+            <Icon size={20} />
           </div>
-          <p className="text-white/40 font-medium max-w-sm text-lg">
-            There are four ways to plug into this ecosystem — pick the one that matches where you are.
+
+          {/* Title */}
+          <h3 className="text-xl font-extrabold text-white mb-4 tracking-tight group-hover:text-brand-primary transition-colors duration-300">
+            {title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-white/50 text-sm leading-relaxed mb-8 font-medium group-hover:text-white/75 transition-colors duration-300">
+            {description}
           </p>
         </div>
 
-        {/* Join pathway rows — mirrors CollaborationTypes in CollaboratePage */}
-        <div className="grid gap-6 mb-20">
-          {JOIN_PATHWAYS.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={VARIANTS.fadeUp}
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="flex flex-col md:flex-row items-center justify-between p-8 md:p-12 glass-card rounded-[40px] border-white/5 hover:bg-white/[0.04] hover:border-brand-primary/20 transition-all group"
-            >
-              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10 text-center md:text-left">
-                <div className="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary text-xl font-bold border border-brand-primary/20 shrink-0">
-                  {item.number}
-                </div>
-                <div>
-                  <h4 className="text-2xl font-bold tracking-tight mb-2 group-hover:text-brand-primary transition-colors">
-                    {item.type}
-                  </h4>
-                  <div className="flex items-center gap-2 justify-center md:justify-start">
-                    <span className="text-white/40 font-medium">For:</span>
-                    <span className="text-white/80 font-bold">{item.for}</span>
-                  </div>
-                </div>
-              </div>
+        {/* Action Link */}
+        <Link to={to} className="flex items-center gap-2 text-xs font-extrabold tracking-widest text-brand-primary group-hover:text-white transition-colors duration-300 uppercase">
+          <span>{linkText}</span>
+          <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+        </Link>
+      </div>
+    </motion.div>
+  );
+};
 
-              <div className="mt-8 md:mt-0 flex flex-col items-center md:items-end gap-4">
-                <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/40">
-                  {item.badge}
-                </span>
-                <p className="text-white/30 text-sm font-medium max-w-xs text-center md:text-right leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+export default PathwayCard;
 
-        {/* Trust tags */}
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-          {TRUST_TAGS.map((tag) => (
-            <div
-              key={tag}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-primary/5 border border-brand-primary/10 text-[10px] font-bold uppercase tracking-widest text-brand-primary/60"
-            >
-              <CheckCircle2 size={12} /> {tag}
-            </div>
-          ))}
-        </div>
+export const HomeCollaborateSection = () => {
+  return (
+    <Section id="collaborate" className="py-16 md:py-24 lg:py-32 border-t border-white/5 bg-[#0A0A0A] relative overflow-hidden">
+      
+      {/* Background ambient glowing orbs */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[600px] bg-brand-primary/3 rounded-full blur-[160px] pointer-events-none -z-10" />
 
-        {/* Clean strategic gateway text link */}
-        <div className="flex justify-center">
-          <Link
-            to="/collaborate"
-            className="group flex items-center gap-3 text-xl md:text-2xl font-bold text-white hover:text-brand-primary transition-all duration-350 tracking-tight"
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+
+        {/* Section Header */}
+        <div className="max-w-3xl mb-12 md:mb-16 lg:mb-20">
+          <motion.div
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="ds-section-label"
           >
-            Enter the Collaboration Gateway <ArrowRight className="group-hover:translate-x-2 transition-transform text-brand-primary" size={24} />
-          </Link>
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+            Build Together
+          </motion.div>
+
+          <motion.h2
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            transition={{ delay: 0.05 }}
+            className="ds-section-h2"
+          >
+            Work With <span className="italic font-extrabold text-brand-primary">Ayush Paul.</span>
+          </motion.h2>
+
+          <motion.p
+            variants={VARIANTS.fadeUp}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="ds-section-body max-w-2xl text-white/50"
+          >
+            No complex scoping templates or corporate gateway portals. Choose an authentic path below to build, research, or collaborate.
+          </motion.p>
         </div>
+
+        {/* 3-Column Solid Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-20">
+          
+          {/* Card 1: Build */}
+          <PathwayCard
+            icon={Code}
+            title="Build With Me"
+            description="Fork my open-source code repositories, download physical STEP/STL models, and assemble your own machines."
+            linkText="Get Blueprints"
+            to="/systems"
+            delay={0.15}
+          />
+
+          {/* Card 2: Research */}
+          <PathwayCard
+            icon={BookOpen}
+            title="Research With Me"
+            description="Partner on experimental hardware rigs, custom sensor deployments, or science exhibition prototyping projects."
+            linkText="Contact Workspace"
+            to="/collaborate"
+            delay={0.2}
+          />
+
+          {/* Card 3: Collaborate */}
+          <PathwayCard
+            icon={Handshake}
+            title="Collaborate With Me"
+            description="Sponsor new physical systems R&D, commission dedicated custom robotics configurations, or book tech consulting."
+            linkText="Start Partnership"
+            to="/collaborate"
+            delay={0.25}
+          />
+
+        </div>
+
+        {/* ----------------- SUBTLE SOCIAL PROOF STRIP ----------------- */}
+        <motion.div
+          variants={VARIANTS.fadeUp}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="border-t border-white/5 pt-12 mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center"
+        >
+          <div className="flex flex-col items-center justify-center p-4">
+            <Users size={20} className="text-brand-primary mb-2" />
+            <span className="font-mono text-lg font-bold text-white">500+</span>
+            <span className="font-mono text-[9px] text-white/30 uppercase mt-1 tracking-wider">Student Builders Accelerated</span>
+          </div>
+          <div className="flex flex-col items-center justify-center p-4 border-t sm:border-t-0 sm:border-x border-white/5">
+            <Download size={20} className="text-brand-accent mb-2" />
+            <span className="font-mono text-lg font-bold text-white">100+</span>
+            <span className="font-mono text-[9px] text-white/30 uppercase mt-1 tracking-wider">Blueprint Package Downloads</span>
+          </div>
+          <div className="flex flex-col items-center justify-center p-4">
+            <Trophy size={20} className="text-brand-primary mb-2" />
+            <span className="font-mono text-lg font-bold text-white">National Level</span>
+            <span className="font-mono text-[9px] text-white/30 uppercase mt-1 tracking-wider">DST Science Placements</span>
+          </div>
+        </motion.div>
 
       </div>
     </Section>
   );
 };
-
-export default HomeCollaborateSection;

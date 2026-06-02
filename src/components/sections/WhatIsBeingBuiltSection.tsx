@@ -114,7 +114,7 @@ export const WhatIsBeingBuiltSection = () => {
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none opacity-20 z-0" />
 
       {/* Floating subtle ambient design orb */}
-      <div className="absolute -top-40 right-10 w-[500px] h-[500px] glow-orb glow-cyan opacity-[0.03] z-0" />
+      <div className="absolute -top-40 right-10 w-[80vw] h-[80vw] max-w-[500px] max-h-[500px] glow-orb glow-cyan opacity-[0.03] z-0" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10" ref={sectionRef}>
         
@@ -272,7 +272,7 @@ export const WhatIsBeingBuiltSection = () => {
         </div>
 
         {/* 3D Visual Sandbox Frame (Consolidated width) */}
-        <div className="w-full h-[400px] relative rounded-2xl overflow-hidden border border-white/[0.03] bg-[#070709] mb-16 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)]">
+        <div className="w-full aspect-[16/10] sm:aspect-auto sm:h-[400px] h-[300px] relative rounded-2xl overflow-hidden border border-white/[0.03] bg-[#070709] mb-16 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)]">
           <div className="absolute top-4 left-6 z-20 flex items-center gap-3 font-mono text-[9px] text-[#00C2FF] bg-black/60 px-4 py-2 border border-[#00C2FF]/20 rounded-full tracking-widest uppercase shadow-[0_8px_16px_rgba(0,0,0,0.5)] select-none">
             <span className="w-2 h-2 rounded-full bg-[#00C2FF] animate-pulse" />
             3D TELEMETRY SANDBOX — ACTIVE DRAG VIEWPORT

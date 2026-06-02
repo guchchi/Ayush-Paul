@@ -4,6 +4,7 @@ import { Section } from '../components/ui/Section';
 import { VARIANTS } from '../lib/motion-presets';
 import { useSEO } from '../hooks/useSEO';
 import { ShieldCheck, Info, MousePointer2, Settings } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
 export const CookiePage = () => {
   useSEO({
@@ -90,14 +91,15 @@ export const CookiePage = () => {
                 Third-party vendors, including Google, use cookies to serve ads based on your previous visits to this website or other websites across the Internet. This enables us to display content that is most relevant to your professional interests.
               </p>
               <div className="pt-4">
-                <a 
-                  href="https://www.google.com/settings/ads" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-brand-primary text-black font-bold text-xs uppercase tracking-widest rounded-full hover:scale-105 transition-transform"
-                >
-                  Opt Out of Personalized Ads
-                </a>
+                <Button asChild variant="primary" size="sm">
+                  <a 
+                    href="https://www.google.com/settings/ads" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Opt Out of Personalized Ads
+                  </a>
+                </Button>
               </div>
             </div>
 

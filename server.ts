@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
   // Initialize Firebase Admin
   if (admin.apps.length === 0) {
@@ -50,26 +50,135 @@ async function startServer() {
 
   app.use(express.json());
 
-  // API Route: Create Checkout Session
+  // API Route: Create Checkout Session (Product & Support)
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const { amount, tierName } = req.body;
-      const validTiers = [99, 299, 999];
-      if (!validTiers.includes(amount)) {
-        return res.status(400).json({ error: "Invalid support tier" });
+      const { productId, userId, email, amount, tierName } = req.body;
+
+      // Handle donation tier purchase (legacy support)
+      if (amount && tierName) {
+        const validTiers = [99, 299, 999];
+        if (!validTiers.includes(amount)) {
+          return res.status(400).json({ error: "Invalid support tier" });
+        }
+
+        const stripeClient = getStripe();
+        const session = await stripeClient.checkout.sessions.create({
+          payment_method_types: ["card", "upi"],
+          line_items: [
+            {
+              price_data: {
+                currency: "inr",
+                product_data: {
+                  name: `Support Ayush Paul - ${tierName}`,
+                  description: "Thank you for supporting my work and projects!",
+                  images: ["https://ayushpaul.in/og-image.png"],
+                },
+                unit_amount: amount * 100,
+              },
+              quantity: 1,
+            },
+          ],
+          mode: "payment",
+          success_url: `${process.env.APP_URL || "http://localhost:3000"}/success`,
+          cancel_url: `${process.env.APP_URL || "http://localhost:3000"}/cancel`,
+        });
+
+        return res.json({ url: session.url });
+      }
+
+      // Handle product purchase flow
+      if (!productId || !userId) {
+        return res.status(400).json({ error: "Missing required parameters (productId or userId)" });
+      }
+
+      // 1. Fetch Product from Firestore
+      const productDoc = await db.collection("products").doc(productId).get();
+      if (!productDoc.exists) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      const product = productDoc.data();
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      if (product.type === "free") {
+        return res.status(400).json({ error: "Invalid product for checkout (free product)" });
+      }
+
+      if (!product.stripePriceId) {
+        return res.status(400).json({ error: "Product not configured with a Stripe Price ID" });
+      }
+
+      // 1.5. Prevent Duplicate Purchases
+      const userDoc = await db.collection("users").doc(userId).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        const ownedProducts = userData?.ownedProducts || {};
+        if (ownedProducts[productId] === "premium") {
+          return res.status(400).json({ error: "You already own the Premium tier for this product." });
+        }
       }
 
       const stripeClient = getStripe();
+      
+      // Determine the base URL for redirects (Success/Cancel)
+      const protocol = req.headers["x-forwarded-proto"] || "http";
+      const host = req.headers.host || "localhost:3000";
+      const appUrl = process.env.APP_URL || `${protocol}://${host}`;
+
+      // 2. Retrieve Price from Stripe to determine mode
+      const price = await stripeClient.prices.retrieve(product.stripePriceId);
+      const mode = price.type === 'recurring' ? 'subscription' : 'payment';
+
+      // 3. Create Stripe Checkout Session
       const session = await stripeClient.checkout.sessions.create({
-        payment_method_types: ["card"],
+        payment_method_types: ["card", "upi"], // Optimized for Indian Users
+        line_items: [
+          {
+            price: product.stripePriceId,
+            quantity: 1,
+          },
+        ],
+        mode: mode,
+        success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
+        cancel_url: `${appUrl}/products/${product.slug || product.productId || productId || "unknown"}?payment=cancelled`,
+        metadata: {
+          productId,
+          userId
+        },
+        customer_email: email || undefined,
+      });
+
+      return res.json({ url: session.url });
+    } catch (error: any) {
+      console.error("Stripe Session Error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // API Route: Create Donation Session
+  app.post("/api/create-donation-session", async (req, res) => {
+    try {
+      const { amount, userId } = req.body;
+      if (!amount) {
+        return res.status(400).json({ error: "Missing donation amount" });
+      }
+
+      const stripeClient = getStripe();
+      const appUrl = process.env.APP_URL || "http://localhost:3000";
+
+      const session = await stripeClient.checkout.sessions.create({
+        payment_method_types: ["card", "upi"],
         line_items: [
           {
             price_data: {
-              currency: "inr",
+              currency: "usd", // Donations are typically USD
               product_data: {
-                name: `Support Ayush Paul - ${tierName}`,
-                description: "Thank you for supporting my work and projects!",
-                images: ["https://ayushpaul.in/og-image.png"],
+                name: "Donation: Support Open Innovation",
+                description: "Thank you for supporting Ayush Paul's engineering research.",
+                images: ["https://ayushpaul.in/founder.png"],
               },
               unit_amount: amount * 100,
             },
@@ -77,14 +186,81 @@ async function startServer() {
           },
         ],
         mode: "payment",
-        success_url: `${process.env.APP_URL || "http://localhost:3000"}/success`,
-        cancel_url: `${process.env.APP_URL || "http://localhost:3000"}/cancel`,
+        success_url: `${appUrl}/vault?donation=success`,
+        cancel_url: `${appUrl}/thank-you`,
+        metadata: {
+          type: "donation",
+          userId: userId || "anonymous",
+        },
       });
 
-      res.json({ url: session.url });
+      return res.json({ url: session.url });
     } catch (error: any) {
-      console.error("Stripe Session Error:", error);
-      res.status(500).json({ error: error.message });
+      console.error("Stripe Donation Error:", error.message);
+      return res.status(500).json({ error: "Failed to create donation session" });
+    }
+  });
+
+  // API Route: Verify Checkout Session
+  app.post("/api/verify-checkout-session", async (req, res) => {
+    try {
+      const { sessionId, userId } = req.body;
+      if (!sessionId || !userId) {
+        return res.status(400).json({ error: "Missing required parameters" });
+      }
+
+      const stripeClient = getStripe();
+      const session = await stripeClient.checkout.sessions.retrieve(sessionId);
+
+      if (session.payment_status !== "paid") {
+        return res.status(400).json({ error: "Session has not been paid yet" });
+      }
+
+      const metaUserId = session.metadata?.userId;
+      const productId = session.metadata?.productId;
+
+      if (!productId) {
+        return res.status(400).json({ error: "No product ID found in session metadata" });
+      }
+
+      if (metaUserId !== userId) {
+        return res.status(403).json({ error: "Unauthorized: User ID mismatch" });
+      }
+
+      // Idempotently update user's ownedProducts map in Firestore
+      const userRef = db.collection("users").doc(userId);
+      await userRef.set({
+        ownedProducts: {
+          [productId]: "premium"
+        },
+        purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId)
+      }, { merge: true });
+
+      // Idempotently log to purchases collection
+      const purchaseQuery = await db.collection("purchases").where("stripeSessionId", "==", sessionId).get();
+      if (purchaseQuery.empty) {
+        await db.collection("purchases").add({
+          userId,
+          productId,
+          stripeSessionId: sessionId,
+          amountTotal: session.amount_total,
+          currency: session.currency,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          status: "completed"
+        });
+
+        // Also log safe public purchase for SocialProofTicker
+        await db.collection("public_purchases").add({
+          productId,
+          currency: session.currency,
+          createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
+
+      return res.json({ success: true, productId });
+    } catch (error: any) {
+      console.error("Stripe verification error:", error.message);
+      return res.status(500).json({ error: error.message || "Failed to verify payment session" });
     }
   });
 

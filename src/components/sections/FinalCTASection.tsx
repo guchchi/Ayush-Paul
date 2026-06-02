@@ -32,7 +32,7 @@ export const FinalCTASection = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60 z-0" />
       
       {/* Projection Cyber Glow Source */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-primary/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-brand-primary/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
 
       <div ref={sectionRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
         <motion.div 

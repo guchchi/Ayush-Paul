@@ -60,7 +60,7 @@ export const EcosystemFlowSection = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60 z-0" />
 
       {/* Dynamic Projected Cyber Light Source */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-brand-primary/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[550px] max-h-[550px] bg-brand-primary/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
 
       <div ref={sectionRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
         <motion.div 
@@ -113,7 +113,7 @@ export const EcosystemFlowSection = () => {
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ y: -10, scale: 1.01 }}
-                  className="group bg-[#0D0D0E]/30 backdrop-blur-xl border border-white/[0.08] hover:border-brand-primary/30 rounded-[32px] p-8 flex flex-col justify-between min-h-[340px] shadow-[0_20px_50px_rgba(0,0,0,0.55)] transition-all duration-500 relative"
+                  className="group bg-[#0D0D0E]/30 backdrop-blur-xl border border-white/[0.08] hover:border-brand-primary/30 rounded-[32px] p-8 flex flex-col justify-between min-h-[280px] sm:min-h-[340px] shadow-[0_20px_50px_rgba(0,0,0,0.55)] transition-all duration-500 relative"
                 >
                   {/* Subtle inner radial gradient on hover */}
                   <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[32px] pointer-events-none" />
