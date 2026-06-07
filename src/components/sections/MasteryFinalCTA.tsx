@@ -1,162 +1,109 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
-import { BookOpen, Users, ArrowUpRight } from 'lucide-react';
+import { BookOpen, Users, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
 
-const options = [
-  {
-    icon: BookOpen,
-    title: 'Browse Blueprints',
-    description:
-      'Explore ready-to-use boilerplate repositories, sitemap checklists, prompt modules, and automated Make scenarions.',
-    cta: 'Explore Blueprints',
-    href: '/blueprints',
-    style: 'secondary',
-    iconBg: '#eff4ff',
-    iconColor: '#0058be',
-    trackLabel: 'Explore Blueprints',
-  },
-  {
-    icon: Users,
-    title: 'Work Together',
-    description:
-      'Partner directly to configure webhook automations, coordinate custom API checks, or build a production-grade SaaS.',
-    cta: 'Start Building',
-    href: '/collaborate',
-    style: 'primary',
-    iconBg: 'rgba(255,255,255,0.05)',
-    iconColor: '#dce9ff',
-    trackLabel: 'Start Building',
-  },
-];
-
 interface MasteryFinalCTAProps {
+  onExploreCoursesClick: () => void;
+  onBookSessionClick: () => void;
   trackEvent?: (eventName: string, payload?: Record<string, any>) => void;
 }
 
-export const MasteryFinalCTA = ({ trackEvent }: MasteryFinalCTAProps) => {
+export const MasteryFinalCTA = ({ 
+  onExploreCoursesClick, 
+  onBookSessionClick,
+  trackEvent 
+}: MasteryFinalCTAProps) => {
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
+    <section className="py-24 px-6 max-w-5xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
       
-      {/* Header */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-14 text-left">
-        <div>
+      {/* Background Soft Glow */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+        <div className="w-[400px] h-[400px] bg-[#0058be]/5 rounded-full filter blur-[100px]" />
+      </div>
+
+      <div className="bg-[#0b1c30] text-white border border-[#0b1c30] rounded-[32px] p-10 md:p-16 text-center shadow-xl relative overflow-hidden">
+        {/* Soft glowing orb on top right */}
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#0058be]/15 rounded-full filter blur-[80px] pointer-events-none" />
+        
+        <div className="max-w-2xl mx-auto space-y-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-[#d1f34d] shadow-sm"
           >
-            <span className="w-1.5 h-1.5 bg-[#0058be] rounded-full animate-pulse" />
-            <span className="tracking-[0.22em]">Next Step</span>
+            <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-pulse" />
+            <span className="tracking-[0.22em]">Start Today</span>
           </motion.div>
 
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.06 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-none"
           >
-            Ready To Go<br />
-            Beyond Tutorials?
+            Start Building Skills<br />
+            <span className="text-[#d1f34d]">That Actually Compound</span>
           </motion.h2>
-        </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[#424754] text-base leading-relaxed font-medium"
-        >
-          Equip yourself with practical, compound skills, build real projects, and launch platforms with technical confidence.
-        </motion.p>
-      </div>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.12 }}
+            className="text-white/70 text-sm md:text-base leading-relaxed font-semibold max-w-xl mx-auto"
+          >
+            Acquire high-leverage capabilities, participate in live workshops, or learn directly with me through private 1-on-1 sessions.
+          </motion.p>
 
-      {/* Two Options Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 text-left">
-        {options.map((opt, i) => {
-          const Icon = opt.icon;
-          const isPrimary = opt.style === 'primary';
-
-          return (
-            <motion.div
-              key={opt.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.45, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`group relative rounded-[32px] border p-10 flex flex-col gap-6 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-ambient hover:scale-[1.01]
-                ${isPrimary
-                  ? 'bg-[#0b1c30] border-[#0b1c30] text-white'
-                  : 'bg-white border-[#c2c6d6]/30 hover:border-[#0058be]/20'
-                }`}
-            >
-              {/* Soft blue glow for primary card */}
-              {isPrimary && (
-                <div className="absolute -top-16 -right-16 w-48 h-48 bg-[#0058be]/10 rounded-full blur-3xl pointer-events-none" />
-              )}
-
-              {/* Icon */}
-              <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border"
-                style={{ 
-                  backgroundColor: isPrimary ? 'rgba(255,255,255,0.05)' : opt.iconBg,
-                  borderColor: isPrimary ? 'rgba(255,255,255,0.1)' : '#dce9ff'
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.18 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+          >
+            <MagneticButton>
+              <button
+                onClick={() => {
+                  trackEvent?.('CTA Clicked', { location: 'Mastery Final CTA', label: 'Explore Courses' });
+                  onExploreCoursesClick();
                 }}
+                className="px-8 py-4 bg-[#d1f34d] hover:bg-[#c0e045] text-black rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 group transition-transform shadow-md cursor-pointer border-none"
               >
-                <Icon size={20} style={{ color: isPrimary ? '#dce9ff' : opt.iconColor }} />
-              </div>
+                <BookOpen size={14} />
+                Explore Courses
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </MagneticButton>
 
-              {/* Content */}
-              <div className="flex flex-col gap-3 flex-1">
-                <h3 className={`text-xl font-extrabold tracking-tight ${isPrimary ? 'text-white' : 'text-[#0b1c30]'}`}>
-                  {opt.title}
-                </h3>
-                <p className={`text-xs leading-relaxed font-semibold ${isPrimary ? 'text-white/65' : 'text-[#424754]'}`}>
-                  {opt.description}
-                </p>
-              </div>
-
-              {/* Action Link */}
-              <MagneticButton>
-                <Link
-                  to={opt.href}
-                  onClick={() => trackEvent?.('CTA Clicked', { location: 'Mastery Final CTA', label: opt.trackLabel, targetUrl: opt.href })}
-                  className={`inline-flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-widest
-                              transition-all duration-300 w-fit
-                              ${isPrimary
-                                ? 'text-[#dce9ff] hover:text-white'
-                                : 'text-[#0b1c30] hover:text-[#0058be]'
-                              }`}
-                >
-                  {opt.cta}
-                  <span
-                    className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-300
-                      ${isPrimary
-                        ? 'bg-[#0058be] border-[#0058be] text-white group-hover:bg-white group-hover:border-white group-hover:text-black'
-                        : 'bg-bg-secondary border-[#c2c6d6]/20 text-[#0058be] group-hover:bg-[#0058be] group-hover:border-[#0058be] group-hover:text-white'
-                      }`}
-                  >
-                    <ArrowUpRight size={13} />
-                  </span>
-                </Link>
-              </MagneticButton>
-            </motion.div>
-          );
-        })}
+            <MagneticButton>
+              <button
+                onClick={() => {
+                  trackEvent?.('CTA Clicked', { location: 'Mastery Final CTA', label: 'Book Session' });
+                  onBookSessionClick();
+                }}
+                className="px-8 py-4 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <Users size={14} />
+                Book Session
+                <ArrowUpRight size={14} className="text-[#d1f34d]" />
+              </button>
+            </MagneticButton>
+          </motion.div>
+        </div>
       </div>
 
       {/* Bottom Tagline */}
       <motion.p
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="text-center text-[10px] font-bold uppercase tracking-[0.28em] text-[#424754]/30 select-none"
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="text-center text-[10px] font-bold uppercase tracking-[0.28em] text-[#424754]/30 select-none pt-12"
       >
         Learn it. Use it. Build it. Scale it.
       </motion.p>

@@ -13,23 +13,23 @@ import { MasteryPaths } from "../components/sections/MasteryPaths";
 import { MasteryTracks } from "../components/sections/MasteryTracks";
 import { MasteryWorkshops } from "../components/sections/MasteryWorkshops";
 import { MasteryMentorship } from "../components/sections/MasteryMentorship";
-import { MasteryFreeResources } from "../components/sections/MasteryFreeResources";
-import { MasteryTestimonials } from "../components/sections/MasteryTestimonials";
 import { MasteryWhy } from "../components/sections/MasteryWhy";
 import { MasteryFAQ } from "../components/sections/MasteryFAQ";
 import { MasteryFinalCTA } from "../components/sections/MasteryFinalCTA";
 
 const PRESET_CATEGORIES = [
   { id: 'ai', name: 'AI & Automation' },
-  { id: 'websites', name: 'Website Development' },
-  { id: 'design', name: 'UI/UX Design' },
+  { id: 'web-dev', name: 'Web Development' },
   { id: 'typography', name: 'Typography' },
   { id: 'color', name: 'Color Theory' },
+  { id: 'ux-psychology', name: 'UX Psychology' },
   { id: 'seo', name: 'SEO' },
   { id: 'robotics', name: 'Robotics' },
   { id: 'branding', name: 'Personal Branding' },
+  { id: 'entrepreneurship', name: 'Entrepreneurship' },
   { id: 'products', name: 'Digital Products' },
-  { id: 'entrepreneurship', name: 'Entrepreneurship' }
+  { id: 'content-systems', name: 'Content Systems' },
+  { id: 'no-code', name: 'No-Code Tools' }
 ];
 
 const DEFAULT_COURSES_COUNT_FALLBACK = [
@@ -37,7 +37,10 @@ const DEFAULT_COURSES_COUNT_FALLBACK = [
   { category: 'typography' },
   { category: 'seo' },
   { category: 'robotics' },
-  { category: 'ai' }
+  { category: 'ai' },
+  { category: 'web-dev' },
+  { category: 'ux-psychology' },
+  { category: 'products' }
 ];
 
 const trackEvent = (eventName: string, payload?: Record<string, any>) => {
@@ -233,7 +236,7 @@ export const MasteryPage = () => {
       {/* 1. HERO SECTION */}
       <MasteryHero 
         onExploreClick={scrollToExploreSkills} 
-        onPathsClick={scrollToPaths} 
+        onCoursesClick={scrollToCourses} 
       />
 
       {/* 2. EXPLORE SKILLS (Pill Tags directory) */}
@@ -265,20 +268,18 @@ export const MasteryPage = () => {
       {/* 6. LEARN DIRECTLY WITH AYUSH */}
       <MasteryMentorship />
 
-      {/* 7. FREE RESOURCES */}
-      <MasteryFreeResources />
-
-      {/* 8. STUDENT RESULTS */}
-      <MasteryTestimonials />
-
-      {/* 9. WHY MASTERY */}
+      {/* 7. WHY MASTERY */}
       <MasteryWhy />
 
-      {/* 10. FAQ SECTION */}
+      {/* 8. FAQ SECTION */}
       <MasteryFAQ />
 
-      {/* 11. FINAL CTA */}
-      <MasteryFinalCTA trackEvent={trackEvent} />
+      {/* 9. FINAL CTA */}
+      <MasteryFinalCTA 
+        onExploreCoursesClick={scrollToCourses}
+        onBookSessionClick={scrollToMentorship}
+        trackEvent={trackEvent} 
+      />
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </motion.div>

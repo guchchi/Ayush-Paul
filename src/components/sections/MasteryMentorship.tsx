@@ -8,14 +8,13 @@ export const MasteryMentorship = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [skillFocus, setSkillFocus] = useState('AI & Automation');
-  const [goals, setGoals] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !goals) {
+    if (!name || !email) {
       setError('Please fill out all fields.');
       return;
     }
@@ -28,7 +27,7 @@ export const MasteryMentorship = () => {
         name,
         email,
         skillFocus,
-        goals,
+        goals: 'Requested via booking form',
         source: 'mentorship_section_form',
         requestedAt: serverTimestamp(),
         status: 'pending'
@@ -37,7 +36,6 @@ export const MasteryMentorship = () => {
       setSuccess(true);
       setName('');
       setEmail('');
-      setGoals('');
     } catch (err) {
       console.error('Failed to submit booking request:', err);
       setError('Something went wrong. Please try again.');
@@ -47,11 +45,12 @@ export const MasteryMentorship = () => {
   };
 
   const benefits = [
-    { title: 'Private Classes', desc: '1-on-1 focused live sessions structured entirely around your learning pace.' },
-    { title: 'Customized Learning Path', desc: 'Curriculum built specifically to target your individual technical objectives.' },
-    { title: 'Homework & Projects', desc: 'Practical exercises to practice code structures and automation frameworks.' },
-    { title: 'Live Doubt Solving', desc: 'Address specific system bugs, config issues, and logic errors in real time.' },
-    { title: 'Faster Progress', desc: 'Bypass long tutorial loops and accelerate capability acquisition immediately.' }
+    { title: 'Personalized learning', desc: '1-on-1 focused live sessions structured entirely around your learning pace.' },
+    { title: 'Flexible scheduling', desc: 'Book sessions at times that suit you, and reschedule easily if plans change.' },
+    { title: 'Homework & projects', desc: 'Practical exercises to practice code structures and automation frameworks.' },
+    { title: 'Faster progress', desc: 'Bypass long tutorial loops and accelerate capability acquisition immediately.' },
+    { title: 'Live doubt solving', desc: 'Address specific system bugs, config issues, and logic errors in real time.' },
+    { title: 'Direct support', desc: 'Reach out anytime between sessions for continuous slack/email guidance.' }
   ];
 
   return (
@@ -82,8 +81,8 @@ export const MasteryMentorship = () => {
               transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
               className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30] mb-4"
             >
-              Learn Directly<br />
-              With Ayush
+              Private Learning<br />
+              Sessions
             </motion.h2>
 
             <motion.p
@@ -93,7 +92,7 @@ export const MasteryMentorship = () => {
               transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-[#424754] text-base leading-relaxed font-medium max-w-xl"
             >
-              Skip the generic feedback audits. Engage in direct 1-on-1 tutoring sessions focused entirely on helping you master complex technical structures.
+              Learn directly with Ayush. Choose any available course and learn it through private sessions, custom guidance, assignments, and live doubt solving.
             </motion.p>
           </div>
 
@@ -134,14 +133,14 @@ export const MasteryMentorship = () => {
 
             <div className="flex items-center gap-2 mb-6">
               <Users size={16} className="text-[#558b2f]" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Private training intake</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Direct Mentorship</span>
             </div>
 
             <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight mb-2">
-              Book a Session
+              Book Session
             </h3>
             <p className="text-xs text-[#424754] font-semibold leading-relaxed mb-6">
-              Enter your details to request private training. I will reach out to construct your customized roadmap and finalize pricing.
+              Choose any available course and learn it through private sessions, custom guidance, assignments, and live doubt solving.
             </p>
 
             {success ? (
@@ -151,13 +150,13 @@ export const MasteryMentorship = () => {
                   <span>Request Sent Successfully!</span>
                 </div>
                 <p className="font-semibold text-[#33691e]/80 text-[11px] leading-relaxed">
-                  Thanks for requesting training! I will review your goals and email you in 24 hours to schedule our first live session.
+                  Thanks for requesting a session! I will review your request and email you in 24 hours to schedule our first live call.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Your Name</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Name</label>
                   <input
                     type="text"
                     placeholder="Enter your name"
@@ -170,7 +169,7 @@ export const MasteryMentorship = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email Address</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email</label>
                   <input
                     type="email"
                     placeholder="you@domain.com"
@@ -183,7 +182,7 @@ export const MasteryMentorship = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Primary Focus Area</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Skill Interested In</label>
                   <select
                     value={skillFocus}
                     onChange={(e) => setSkillFocus(e.target.value)}
@@ -191,24 +190,16 @@ export const MasteryMentorship = () => {
                     className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#558b2f] text-[#0b1c30] font-semibold"
                   >
                     <option value="AI & Automation">AI & Automation</option>
-                    <option value="Website Development">Website Development</option>
+                    <option value="Web Development">Web Development</option>
                     <option value="UI/UX Design">UI/UX Design</option>
-                    <option value="SEO & Growth">SEO & Growth</option>
-                    <option value="Robotics & Hardware">Robotics & Hardware</option>
+                    <option value="Typography">Typography</option>
+                    <option value="Color Theory">Color Theory</option>
+                    <option value="SEO">SEO</option>
+                    <option value="Robotics">Robotics</option>
+                    <option value="Personal Branding">Personal Branding</option>
+                    <option value="Entrepreneurship">Entrepreneurship</option>
+                    <option value="Digital Products">Digital Products</option>
                   </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">What do you want to build/master?</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Describe your current targets and technical level..."
-                    value={goals}
-                    onChange={(e) => setGoals(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="w-full px-4 py-3 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-[20px] focus:outline-none focus:border-[#558b2f] text-[#0b1c30] font-semibold resize-none"
-                  />
                 </div>
 
                 {error && <p className="text-[9px] font-bold text-red-600">{error}</p>}
@@ -218,9 +209,9 @@ export const MasteryMentorship = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3.5 bg-[#0b1c30] hover:bg-[#558b2f] text-white rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md"
+                      className="w-full py-3.5 bg-[#0b1c30] hover:bg-[#558b2f] text-white rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md border-none"
                     >
-                      {loading ? 'Submitting...' : 'Request Private Training'}
+                      {loading ? 'Submitting...' : 'Request Session'}
                       <Send size={11} />
                     </button>
                   </MagneticButton>

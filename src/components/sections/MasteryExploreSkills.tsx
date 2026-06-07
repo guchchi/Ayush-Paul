@@ -46,8 +46,7 @@ export const MasteryExploreSkills = ({
             transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
           >
-            Skills That<br />
-            Compound
+            Explore Skills
           </motion.h2>
         </div>
 
@@ -58,7 +57,7 @@ export const MasteryExploreSkills = ({
           transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-[#424754] text-base leading-relaxed font-medium"
         >
-          Select a skill category to filter our featured courses and workshops. Acquire the exact high-leverage capability you need to build next.
+          Select a skill to filter courses and workshops. Acquire the exact high-leverage capability you need to build next.
         </motion.p>
       </div>
 

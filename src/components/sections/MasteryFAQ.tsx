@@ -26,16 +26,8 @@ const FAQ_DATA: FAQItem[] = [
     a: 'Self-Paced Courses are deep-dive guides you follow at your own speed. Live Workshops are interactive scheduled cohorts where we code a specific integration together in real time, audit setups, and answer questions live.',
   },
   {
-    q: 'How do 1-on-1 private training sessions work?',
-    a: 'Private training sessions are highly focused, 1-on-1 classes. When you submit a request, we outline a personalized roadmap targeting your exact goals (e.g. launching a SaaS or setting up CRM automation) and schedule live screen-share classes to build it together.',
-  },
-  {
-    q: 'How do I join the waitlist for upcoming workshops?',
-    a: 'You can submit your email directly in the "Choose How You Want To Learn" card or the waitlist form under the "Upcoming Workshops" section. We will email you the moment new cohort dates and topics are scheduled.',
-  },
-  {
-    q: 'Are the Free Resources really free to use?',
-    a: 'Yes. The Free Resources section contains entry-point blueprints, setup guides, and workshop recordings to help you start building without any upfront cost. Once you enter your email, the download links are sent straight to your inbox.',
+    q: 'How do 1-on-1 private learning sessions work?',
+    a: 'Private learning sessions are highly focused, 1-on-1 classes. When you submit a request, we review your selected skills and schedule live screen-share classes to learn it through private sessions, custom guidance, assignments, and live doubt solving.',
   },
   {
     q: 'Is there a monthly subscription fee for Mastery?',
@@ -46,16 +38,8 @@ const FAQ_DATA: FAQItem[] = [
     a: 'The Vault (/vault) is your authenticated dashboard. All sitemaps, courses, workshop recordings, and private training audit logs you own reside there. Simply log in to access your downloaded materials at any time.',
   },
   {
-    q: 'Can I request a custom course or workshop topic?',
-    a: 'Yes! If there is a high-leverage skill or automation scenario you want covered, builders can submit requests. Popular topics are prioritized for upcoming live workshops.',
-  },
-  {
     q: 'What is your refund policy?',
     a: 'We offer a 14-day, no-questions-asked refund policy on all self-paced course tracks, provided you have not downloaded more than 3 associated codebases or blueprints from your Vault.',
-  },
-  {
-    q: 'How are payments processed securely?',
-    a: 'All transactions are handled securely via Stripe. We accept all major credit/debit cards, Apple Pay, and Google Pay to ensure secure checkouts.',
   },
 ];
 

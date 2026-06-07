@@ -100,13 +100,18 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
           <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#0058be]/15 rounded-full filter blur-[60px] pointer-events-none" />
           
           <div className="relative z-10 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#d1f34d]">
-                <BookOpen size={20} />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#d1f34d]">
+                  <BookOpen size={20} />
+                </div>
+                <h3 className="text-xl font-extrabold tracking-tight text-white leading-none">
+                  Self-Paced Courses
+                </h3>
               </div>
-              <h3 className="text-xl font-extrabold tracking-tight text-white leading-none">
-                Self-Paced Courses
-              </h3>
+              <span className="px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-wider shrink-0">
+                12 Courses
+              </span>
             </div>
 
             <p className="text-xs text-white/70 leading-relaxed font-medium">
@@ -115,9 +120,10 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
 
             <div className="space-y-3 pt-2">
               {[
-                'Lifetime access & updates',
-                'Code downloads included',
-                'Progress tracking dashboard'
+                'Lifetime Access',
+                'Downloadable Assets',
+                'Progress Tracking',
+                'Learn Anytime'
               ].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-white/90 font-bold">
                   <Sparkles size={12} className="text-[#d1f34d]" />
@@ -131,7 +137,7 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             <MagneticButton>
               <button
                 onClick={onExploreCoursesClick}
-                className="px-6 py-3.5 bg-[#d1f34d] hover:bg-[#c0e045] text-black rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 group transition-transform shadow-md cursor-pointer w-full"
+                className="px-6 py-3.5 bg-[#d1f34d] hover:bg-[#c0e045] text-black rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 group transition-transform shadow-md cursor-pointer w-full border-none"
               >
                 Explore Courses
                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -164,9 +170,9 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
 
             <div className="space-y-3 pt-2">
               {[
-                'Interactive upcoming sessions',
-                'Live audit & feedback loops',
-                'Collaborative builder cohorts'
+                'Upcoming Cohorts',
+                'Hands-on Builds',
+                'Live Q&A'
               ].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-[#0b1c30] font-bold">
                   <Sparkles size={12} className="text-[#6b35ff]/70" />
@@ -201,7 +207,7 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-4 py-2 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[9px] uppercase tracking-wider transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-2 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[9px] uppercase tracking-wider transition-colors shrink-0 disabled:opacity-50 cursor-pointer border-none"
                   >
                     {loading ? '...' : 'Notify Me'}
                   </button>
@@ -226,19 +232,24 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
                 <Users size={20} />
               </div>
               <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-none">
-                1-on-1 Sessions
+                1-on-1 Learning
               </h3>
             </div>
 
-            <p className="text-xs text-[#424754] font-semibold leading-relaxed">
-              Accelerate your progress with private, highly-focused live sessions. Work directly on your system architectures and configuration logic.
-            </p>
+            <div className="space-y-2">
+              <p className="text-xs text-[#0b1c30] font-bold leading-relaxed">
+                Learn directly with Ayush.
+              </p>
+              <p className="text-xs text-[#424754] font-semibold leading-relaxed">
+                Choose any available course and learn it through private sessions, custom guidance, assignments, and live doubt solving.
+              </p>
+            </div>
 
             <div className="space-y-3 pt-2">
               {[
-                'Private custom classes',
-                'Personalized learning roadmap',
-                'Flexible session scheduling'
+                'Private sessions',
+                'Custom guidance & projects',
+                'Live doubt solving'
               ].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-[#0b1c30] font-bold">
                   <Sparkles size={12} className="text-[#558b2f]/70" />
@@ -254,7 +265,7 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
                 onClick={onMentorshipClick}
                 className="px-6 py-3.5 bg-white border border-[#c2c6d6]/30 text-[#0b1c30] hover:bg-gray-50 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 group transition-all w-full shadow-sm cursor-pointer"
               >
-                Book A Session
+                Book Session
                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </MagneticButton>
