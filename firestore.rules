@@ -108,5 +108,17 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+
+    // mentorship_applications rules
+    match /mentorship_applications/{applicationId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // workshop_registrations rules
+    match /workshop_registrations/{registrationId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }
