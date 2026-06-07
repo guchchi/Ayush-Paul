@@ -38,26 +38,26 @@ export const MasteryFinalCTA = ({
             <span className="tracking-[0.22em]">Start Today</span>
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.06 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-none"
-          >
-            Start Building Skills<br />
-            <span className="text-[#d1f34d]">That Actually Compound</span>
-          </motion.h2>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.06 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tighter leading-none"
+            >
+              Ready To<br />
+              <span className="text-[#d1f34d]">Build Real Skills?</span>
+            </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.12 }}
-            className="text-white/70 text-sm md:text-base leading-relaxed font-semibold max-w-xl mx-auto"
-          >
-            Acquire high-leverage capabilities, participate in live workshops, or learn directly with me through private 1-on-1 sessions.
-          </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: 0.12 }}
+              className="text-white/85 text-sm md:text-base leading-relaxed font-semibold max-w-xl mx-auto"
+            >
+              Start with a course, join a workshop, or book private 1-on-1 sessions. Every purchase lives in your Vault permanently.
+            </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -83,13 +83,13 @@ export const MasteryFinalCTA = ({
             <MagneticButton>
               <button
                 onClick={() => {
-                  trackEvent?.('CTA Clicked', { location: 'Mastery Final CTA', label: 'Book Session' });
+                  trackEvent?.('CTA Clicked', { location: 'Mastery Final CTA', label: 'Book 1-on-1 Learning' });
                   onBookSessionClick();
                 }}
                 className="px-8 py-4 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 <Users size={14} />
-                Book Session
+                Book 1-on-1 Learning
                 <ArrowUpRight size={14} className="text-[#d1f34d]" />
               </button>
             </MagneticButton>
@@ -105,7 +105,7 @@ export const MasteryFinalCTA = ({
         transition={{ duration: 0.5, delay: 0.3 }}
         className="text-center text-[10px] font-bold uppercase tracking-[0.28em] text-[#424754]/30 select-none pt-12"
       >
-        Learn it. Use it. Build it. Scale it.
+        Learn. Build. Apply. Repeat.
       </motion.p>
 
     </section>

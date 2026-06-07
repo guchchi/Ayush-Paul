@@ -115,7 +115,7 @@ export const MasteryWorkshops = () => {
       id="upcoming-workshops-section"
     >
       {/* Background radial soft light */}
-      <div className="absolute top-[20%] right-[10%] w-80 h-80 bg-[#6b35ff]/5 rounded-full filter blur-[80px] pointer-events-none" />
+      <div className="absolute top-[20%] right-[10%] w-80 h-80 bg-[#0058be]/5 rounded-full filter blur-[80px] pointer-events-none" />
 
       {/* Header */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-16 text-left">
@@ -127,7 +127,7 @@ export const MasteryWorkshops = () => {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
           >
-            <span className="w-1.5 h-1.5 bg-[#6b35ff] rounded-full animate-pulse" />
+            <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-pulse" />
             <span className="tracking-[0.22em]">Cohort Builds</span>
           </motion.div>
 
@@ -163,12 +163,12 @@ export const MasteryWorkshops = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="p-8 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm hover:shadow-ambient hover:scale-[1.005] hover:border-[#6b35ff]/20 transition-all duration-300 flex flex-col justify-between"
+            className="p-8 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 hover:border-[#d1f34d] transition-all duration-300 flex flex-col justify-between"
           >
             <div>
               {/* Top Meta info */}
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#6b35ff] px-2.5 py-0.5 rounded-full bg-[#f3efff] border border-[#ebe5ff]">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] px-2.5 py-0.5 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/20">
                   Live Session
                 </span>
                 
@@ -191,15 +191,15 @@ export const MasteryWorkshops = () => {
               {/* Details Row */}
               <div className="grid grid-cols-2 gap-4 bg-gray-50/50 border border-gray-100/50 p-4.5 rounded-2xl mb-8">
                 <div className="flex items-center gap-2 text-xs font-bold text-[#424754]">
-                  <Calendar size={13} className="text-[#6b35ff]" />
+                  <Calendar size={13} className="text-[#d1f34d]" />
                   <span>{workshop.date}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#424754]">
-                  <Clock size={13} className="text-[#6b35ff]" />
+                  <Clock size={13} className="text-[#d1f34d]" />
                   <span>{workshop.time}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#424754] col-span-2 border-t border-[#c2c6d6]/10 pt-2.5 mt-1">
-                  <Users2 size={13} className="text-[#6b35ff]" />
+                  <Users2 size={13} className="text-[#d1f34d]" />
                   <span>{workshop.totalSeats} seats total • <span className="text-[#558b2f]">{workshop.seatsLeft} left</span></span>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export const MasteryWorkshops = () => {
             {/* Bottom Register Action */}
             <div className="flex items-center justify-between pt-4 border-t border-[#c2c6d6]/10">
               <span className="text-sm font-extrabold text-[#0b1c30]">
-                ${workshop.price}
+                ₹{workshop.price.toLocaleString('en-IN')}
               </span>
               <MagneticButton>
                 <button
@@ -217,7 +217,7 @@ export const MasteryWorkshops = () => {
                     setRegSuccess(false);
                     setError('');
                   }}
-                  className="px-6 py-2.5 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm"
+                  className="px-6 py-2.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm"
                 >
                   Reserve Seat
                 </button>
@@ -236,7 +236,7 @@ export const MasteryWorkshops = () => {
         className="max-w-2xl mx-auto p-8 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm text-center"
       >
         <div className="flex flex-col items-center max-w-md mx-auto space-y-4">
-          <div className="w-10 h-10 rounded-xl bg-[#f3efff] border border-[#ebe5ff] text-[#6b35ff] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 text-[#d1f34d] flex items-center justify-center">
             <Video size={18} />
           </div>
           <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight">
@@ -260,12 +260,12 @@ export const MasteryWorkshops = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="flex-1 px-4.5 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#6b35ff] text-[#0b1c30] font-medium"
+                className="flex-1 px-4.5 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-medium"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="px-5 py-2.5 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+                className="px-5 py-2.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {loading ? '...' : 'Notify Me'}
               </button>
@@ -295,7 +295,7 @@ export const MasteryWorkshops = () => {
 
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <Video size={18} className="text-[#6b35ff]" />
+                  <Video size={18} className="text-[#d1f34d]" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Seat Reservation</span>
                 </div>
 
@@ -314,8 +314,8 @@ export const MasteryWorkshops = () => {
                     <span>{selectedWorkshop.time}</span>
                   </div>
                   <div className="text-xs font-bold text-[#0b1c30] flex justify-between">
-                    <span className="text-[#424754]">Price:</span>
-                    <span>${selectedWorkshop.price}</span>
+                  <span className="text-[#424754]">Price:</span>
+                  <span>₹{selectedWorkshop.price.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
 
@@ -346,7 +346,7 @@ export const MasteryWorkshops = () => {
                         onChange={(e) => setRegName(e.target.value)}
                         required
                         disabled={loading}
-                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#6b35ff] text-[#0b1c30] font-semibold"
+                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
                       />
                     </div>
 
@@ -359,7 +359,7 @@ export const MasteryWorkshops = () => {
                         onChange={(e) => setRegEmail(e.target.value)}
                         required
                         disabled={loading}
-                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#6b35ff] text-[#0b1c30] font-semibold"
+                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
                       />
                     </div>
 
@@ -376,7 +376,7 @@ export const MasteryWorkshops = () => {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="flex-1 py-3 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md"
+                        className="flex-1 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md"
                       >
                         {loading ? 'Processing...' : 'Reserve Seat'}
                       </button>

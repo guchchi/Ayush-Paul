@@ -20,26 +20,26 @@ const trackEvent = (eventName: string, payload?: Record<string, any>) => {
 
 export const CollaboratePage = () => {
   useSEO({
-    title: "Work Together | AyushPaul.in",
-    description: "Partner with Ayush to build better systems, digital products, and workflows designed for execution and scale.",
-    keywords: "Ayush Paul, Collaboration, Build, MVP, Systems, Strategy",
+    title: "Studio | Ayush Paul",
+    description: "Direct collaboration, implementation support, technical mentorship, and project development with Ayush Paul.",
+    keywords: "Ayush Paul, Studio, Build, MVP, Systems, Strategy",
     url: getCanonicalUrl("/collaborate"),
     schema: {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "Collaborate with Ayush Paul",
-      "description": "Work together to turn plans into execution.",
+      "name": "Studio — Work With Ayush Paul",
+      "description": "Direct collaboration, implementation support, and project development.",
       "url": getCanonicalUrl("/collaborate")
     }
   });
 
   const handleStartConversation = () => {
-    trackEvent('CTA Clicked', { location: 'Collaborate Page', label: 'Start A Conversation' });
-    window.location.href = "mailto:hello@ayushpaul.in?subject=Collaboration%20Inquiry";
+    trackEvent('CTA Clicked', { location: 'Studio Page', label: 'Start A Project' });
+    window.location.href = "mailto:hello@ayushpaul.in?subject=Studio%20Inquiry";
   };
 
   const handleExploreWork = () => {
-    trackEvent('CTA Clicked', { location: 'Collaborate Page', label: 'Explore Previous Work' });
+    trackEvent('CTA Clicked', { location: 'Studio Page', label: 'Work With Me' });
     const el = document.getElementById('capabilities-section');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });

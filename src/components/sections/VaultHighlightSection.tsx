@@ -65,7 +65,7 @@ export const VaultHighlightSection = () => {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-60 z-0" />
       
       {/* Projection Cyber Glow Source */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-brand-primary/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-brand-accent/5 rounded-full filter blur-[120px] pointer-events-none z-0 animate-pulse" />
 
       <div ref={sectionRef} className="w-full h-full relative z-10" style={{ perspective: 1200 }}>
         <motion.div 
@@ -103,7 +103,7 @@ export const VaultHighlightSection = () => {
                 />
 
                 {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.01] to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-brand-accent/[0.01] to-transparent pointer-events-none" />
 
                 {/* Title Bar */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-white/[0.01]">
@@ -126,11 +126,11 @@ export const VaultHighlightSection = () => {
                     {fileAssets.map((asset, idx) => (
                       <div 
                         key={idx}
-                        className="bg-white/[0.01] border border-white/[0.06] hover:bg-white/[0.03] hover:border-brand-primary/20 p-4 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300"
+                        className="bg-white/[0.01] border border-white/[0.06] hover:bg-white/[0.03] hover:border-brand-accent/20 p-4 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300"
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5">
-                            <span className="px-2 py-0.5 rounded bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[8px] font-mono font-bold tracking-wider">
+                            <span className="px-2 py-0.5 rounded bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-[8px] font-mono font-bold tracking-wider">
                               {asset.type}
                             </span>
                             <span className="text-[9px] font-mono text-white/20">{asset.size}</span>
@@ -152,7 +152,7 @@ export const VaultHighlightSection = () => {
                       <span>128-BIT TLS</span>
                     </div>
                     <div>&gt; Authenticating hardware keystone handshake...</div>
-                    <div className="text-brand-primary/80">&gt; Identity verified. Blueprint extraction permitted.</div>
+                    <div className="text-brand-accent/80">&gt; Identity verified. Blueprint extraction permitted.</div>
                   </div>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export const VaultHighlightSection = () => {
                 viewport={{ once: true }}
                 className="badge mb-6 shadow-[0_0_20px_rgba(0,194,255,0.08)] bg-white/[0.02] border border-white/[0.08] text-[10px] font-bold uppercase tracking-widest text-white/60 flex items-center gap-1.5 px-4 py-2 rounded-full"
               >
-                <Database size={14} className="text-brand-primary" /> Premium Storage Hub
+                <Database size={14} className="text-brand-accent" /> Premium Storage Hub
               </motion.div>
               
               <motion.h2
@@ -177,7 +177,7 @@ export const VaultHighlightSection = () => {
                 viewport={{ once: true }}
                 className="text-4xl md:text-5.5xl font-black tracking-tight text-white mt-6 leading-[1.1]"
               >
-                Your Private <span className="text-brand-primary font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.28)' }}>Systems Vault.</span>
+                Your Private <span className="text-brand-accent font-normal italic font-serif" style={{ fontFamily: "'Playfair Display', Georgia, serif", textShadow: '0 0 35px rgba(0, 194, 255, 0.28)' }}>Systems Vault.</span>
               </motion.h2>
 
               <motion.p
@@ -205,7 +205,7 @@ export const VaultHighlightSection = () => {
                   'Seamless, offline local-host integration pipelines'
                 ].map((feat, i) => (
                   <div key={i} className="flex items-center gap-3 text-sm font-semibold text-white/70">
-                    <CheckCircle size={16} className="text-brand-primary shrink-0" />
+                    <CheckCircle size={16} className="text-brand-accent shrink-0" />
                     <span>{feat}</span>
                   </div>
                 ))}
@@ -221,7 +221,7 @@ export const VaultHighlightSection = () => {
               >
                 <Link
                   to="/vault"
-                  className="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-brand-primary hover:text-black rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-500 shadow-[0_15px_35px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95 overflow-hidden w-full sm:w-auto cursor-pointer"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-brand-accent hover:text-black rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-500 shadow-[0_15px_35px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95 overflow-hidden w-full sm:w-auto cursor-pointer"
                 >
                   <span>Authenticate & Access Vault</span>
                   <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />

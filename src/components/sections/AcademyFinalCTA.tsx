@@ -19,9 +19,9 @@ const options = [
   },
   {
     icon: Users,
-    title: 'Work Together',
+    title: 'Studio',
     description:
-      'Collaborate on products, workflows, and custom frameworks designed for your long-term growth.',
+      'Work with me on products, workflows, and custom frameworks designed for your long-term growth.',
     cta: 'Start Building',
     href: '/collaborate',
     style: 'primary',

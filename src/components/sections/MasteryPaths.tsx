@@ -1,48 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, Video, Users, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Video, Users, Sparkles, ArrowRight, ArrowDown } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
-import { db, collection, addDoc, serverTimestamp } from '../../firebase';
 
 interface MasteryPathsProps {
   onExploreCoursesClick: () => void;
   onMentorshipClick: () => void;
 }
 
+const PROGRESSION_STEPS = [
+  {
+    label: 'Start with a Course',
+    items: ['Learn at your own pace', 'Video guides + template assets', 'Lifetime access', 'Progress tracking']
+  },
+  {
+    label: 'Go Deeper in Workshops',
+    items: ['Live cohort-based builds', 'Real-time Q&A and audits', 'Hands-on projects', 'Community learning']
+  },
+  {
+    label: 'Accelerate with 1-on-1',
+    items: ['Private sessions with Ayush', 'Custom learning path', 'Homework and projects', 'Live doubt solving']
+  }
+];
+
 export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: MasteryPathsProps) => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleWaitlistSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address.');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-      
-      await addDoc(collection(db, 'workshop_registrations'), {
-        email,
-        source: 'modality_waitlist_card',
-        registeredAt: serverTimestamp(),
-        status: 'waitlist'
-      });
-
-      setSuccess(true);
-      setEmail('');
-    } catch (err) {
-      console.error('Failed to submit waitlist:', err);
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <section 
       className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20 scroll-mt-24"
@@ -58,8 +39,8 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
           >
-            <span className="w-1.5 h-1.5 bg-[#0058be] rounded-full animate-pulse" />
-            <span className="tracking-[0.22em]">Modalities</span>
+            <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-pulse" />
+            <span className="tracking-[0.22em]">Learning Path</span>
           </motion.div>
 
           <motion.h2
@@ -69,8 +50,8 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
           >
-            Choose How You<br />
-            Want To Learn
+            Your Learning<br />
+            <span className="text-[#d1f34d]">Progression Path</span>
           </motion.h2>
         </div>
 
@@ -81,50 +62,40 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
           transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-[#424754] text-base leading-relaxed font-medium"
         >
-          Acquire capabilities through self-paced tracks, participate in scheduled live audit cohorts, or requests 1-on-1 private training.
+          Start with a self-paced course. Go deeper through live workshops. Accelerate with private 1-on-1 sessions. Each level builds on the last.
         </motion.p>
       </div>
 
-      {/* 3-Column Modality Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-left">
+      {/* 3-Column Progression Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
         
-        {/* Modality 1: Self-Paced Courses (Primary Dark Focus) */}
+        {/* Card 1: Courses */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="relative bg-[#0b1c30] text-white border border-[#0b1c30] rounded-[32px] p-8 md:p-10 shadow-xl overflow-hidden flex flex-col justify-between group hover:scale-[1.005] transition-all duration-300 min-h-[440px]"
+          className="relative bg-[#0b1c30] text-white border border-[#0b1c30] rounded-[32px] p-8 md:p-10 shadow-xl overflow-hidden flex flex-col group hover:scale-[1.005] transition-all duration-300"
         >
-          {/* Subtle glowing orb */}
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#0058be]/15 rounded-full filter blur-[60px] pointer-events-none" />
+          <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#d1f34d]/15 rounded-full filter blur-[60px] pointer-events-none" />
           
           <div className="relative z-10 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#d1f34d]">
-                  <BookOpen size={20} />
-                </div>
-                <h3 className="text-xl font-extrabold tracking-tight text-white leading-none">
-                  Self-Paced Courses
-                </h3>
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#d1f34d]">
+                <BookOpen size={20} />
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-wider shrink-0">
-                12 Courses
-              </span>
+              <div>
+                <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#d1f34d] block mb-0.5">Step 1</span>
+                <h3 className="text-xl font-extrabold tracking-tight text-white leading-none">Self-Paced Courses</h3>
+              </div>
             </div>
 
-            <p className="text-xs text-white/70 leading-relaxed font-medium">
-              Acquire production-grade systems on your own schedule. Build practical architectures step-by-step with video guides and template assets.
+            <p className="text-xs text-white/85 leading-relaxed font-medium">
+              Learn at your own pace with video guides, template assets, and downloadable codebases. Build practical architectures step by step.
             </p>
 
             <div className="space-y-3 pt-2">
-              {[
-                'Lifetime Access',
-                'Downloadable Assets',
-                'Progress Tracking',
-                'Learn Anytime'
-              ].map((benefit) => (
+              {['Lifetime Access', 'Downloadable Assets', 'Progress Tracking', 'Learn Anytime'].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-white/90 font-bold">
                   <Sparkles size={12} className="text-[#d1f34d]" />
                   <span>{benefit}</span>
@@ -133,7 +104,7 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             </div>
           </div>
 
-          <div className="pt-8 relative z-10">
+          <div className="pt-8 mt-6 relative z-10">
             <MagneticButton>
               <button
                 onClick={onExploreCoursesClick}
@@ -146,34 +117,63 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
           </div>
         </motion.div>
 
-        {/* Modality 2: Live Workshops (Secondary Outline Card) */}
+        {/* Progression Arrow Connector (desktop) */}
+        <div className="hidden lg:flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 flex items-center justify-center text-[#d1f34d]">
+              <ArrowRight size={16} />
+            </div>
+            <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/40">Go Deeper</span>
+          </motion.div>
+        </div>
+
+        {/* Progression Arrow Connector (mobile) */}
+        <div className="flex lg:hidden items-center justify-center -my-2">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 flex items-center justify-center text-[#d1f34d]">
+              <ArrowDown size={16} />
+            </div>
+            <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/40">Go Deeper</span>
+          </motion.div>
+        </div>
+
+        {/* Card 2: Workshops */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="p-8 md:p-10 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm flex flex-col justify-between group hover:border-[#0058be]/20 hover:scale-[1.01] transition-all duration-300 min-h-[440px]"
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="p-8 md:p-10 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm flex flex-col group hover:border-[#d1f34d] hover:scale-[1.01] transition-all duration-300"
         >
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-11 h-11 rounded-2xl bg-[#f3efff] border border-[#ebe5ff] text-[#6b35ff] flex items-center justify-center">
                 <Video size={20} />
               </div>
-              <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-none">
-                Live Workshops
-              </h3>
+              <div>
+                <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#6b35ff] block mb-0.5">Step 2</span>
+                <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-none">Live Workshops</h3>
+              </div>
             </div>
 
             <p className="text-xs text-[#424754] font-semibold leading-relaxed">
-              Participate in scheduled cohorts, ask live questions, watch real-time product reviews, and build alongside other makers.
+              Join scheduled cohorts, build alongside other makers, ask live questions, and watch real-time code reviews and system audits.
             </p>
 
             <div className="space-y-3 pt-2">
-              {[
-                'Upcoming Cohorts',
-                'Hands-on Builds',
-                'Live Q&A'
-              ].map((benefit) => (
+              {['Upcoming Cohorts', 'Hands-on Builds', 'Live Q&A', 'Community Support'].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-[#0b1c30] font-bold">
                   <Sparkles size={12} className="text-[#6b35ff]/70" />
                   <span>{benefit}</span>
@@ -182,58 +182,69 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             </div>
           </div>
 
-          {/* Waitlist Form Inside Card */}
-          <div className="pt-8 mt-auto">
-            {success ? (
-              <div className="p-3 bg-[#e1f7d2] border border-[#c0e8a7] text-[#33691e] rounded-2xl flex items-center gap-2 text-xs font-bold animate-fadeIn">
-                <CheckCircle2 size={16} className="shrink-0" />
-                <span>You're on the waitlist!</span>
-              </div>
-            ) : (
-              <form onSubmit={handleWaitlistSubmit} className="space-y-2">
-                <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/55 block mb-1">
-                  GET NOTIFIED OF COHORTS
-                </span>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="flex-1 px-4 py-2 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#6b35ff] focus:ring-1 focus:ring-[#6b35ff]/20 disabled:opacity-50 text-[#0b1c30] font-medium"
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="px-4 py-2 bg-[#0b1c30] hover:bg-[#6b35ff] text-white rounded-full font-bold text-[9px] uppercase tracking-wider transition-colors shrink-0 disabled:opacity-50 cursor-pointer border-none"
-                  >
-                    {loading ? '...' : 'Notify Me'}
-                  </button>
-                </div>
-                {error && <p className="text-[9px] font-bold text-red-600 mt-1">{error}</p>}
-              </form>
-            )}
+          <div className="pt-8 mt-auto relative z-10">
+            <div className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/40 mb-2">View upcoming dates below</div>
+            <MagneticButton>
+              <button
+                onClick={onExploreCoursesClick}
+                className="px-6 py-3.5 bg-white border border-[#c2c6d6]/30 text-[#0b1c30] hover:bg-gray-50 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all w-full shadow-sm cursor-pointer"
+              >
+                Browse Workshops
+                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform text-[#d1f34d]" />
+              </button>
+            </MagneticButton>
           </div>
         </motion.div>
 
-        {/* Modality 3: 1-on-1 Learning (Secondary Outline Card) */}
+        {/* Progression Arrow Connector (desktop) */}
+        <div className="hidden lg:flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 flex items-center justify-center text-[#d1f34d]">
+              <ArrowRight size={16} />
+            </div>
+            <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/40">Accelerate</span>
+          </motion.div>
+        </div>
+
+        {/* Progression Arrow Connector (mobile) */}
+        <div className="flex lg:hidden items-center justify-center -my-2">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 flex items-center justify-center text-[#d1f34d]">
+              <ArrowDown size={16} />
+            </div>
+            <span className="text-[8px] font-extrabold uppercase tracking-widest text-[#424754]/40">Accelerate</span>
+          </motion.div>
+        </div>
+
+        {/* Card 3: 1-on-1 Learning */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="p-8 md:p-10 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm flex flex-col justify-between group hover:border-[#0058be]/20 hover:scale-[1.01] transition-all duration-300 min-h-[440px]"
+          transition={{ duration: 0.5, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="p-8 md:p-10 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm flex flex-col group hover:border-[#d1f34d] hover:scale-[1.01] transition-all duration-300"
         >
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-11 h-11 rounded-2xl bg-[#f0fbe8] border border-[#e1f7d2] text-[#558b2f] flex items-center justify-center">
                 <Users size={20} />
               </div>
-              <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-none">
-                1-on-1 Learning
-              </h3>
+              <div>
+                <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#558b2f] block mb-0.5">Step 3</span>
+                <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-none">1-on-1 Learning</h3>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -241,16 +252,12 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
                 Learn directly with Ayush.
               </p>
               <p className="text-xs text-[#424754] font-semibold leading-relaxed">
-                Choose any available course and learn it through private sessions, custom guidance, assignments, and live doubt solving.
+                Choose any course and learn it through private sessions, custom guidance, assignments, and live doubt solving — at your pace.
               </p>
             </div>
 
             <div className="space-y-3 pt-2">
-              {[
-                'Private sessions',
-                'Custom guidance & projects',
-                'Live doubt solving'
-              ].map((benefit) => (
+              {['Private Sessions', 'Custom Learning Path', 'Homework & Projects', 'Live Doubt Solving'].map((benefit) => (
                 <div key={benefit} className="flex items-center gap-2 text-xs text-[#0b1c30] font-bold">
                   <Sparkles size={12} className="text-[#558b2f]/70" />
                   <span>{benefit}</span>
@@ -259,14 +266,14 @@ export const MasteryPaths = ({ onExploreCoursesClick, onMentorshipClick }: Maste
             </div>
           </div>
 
-          <div className="pt-8">
+          <div className="pt-8 mt-auto">
             <MagneticButton>
               <button
                 onClick={onMentorshipClick}
                 className="px-6 py-3.5 bg-white border border-[#c2c6d6]/30 text-[#0b1c30] hover:bg-gray-50 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 group transition-all w-full shadow-sm cursor-pointer"
               >
-                Book Session
-                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                Book 1-on-1 Learning
+                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform text-[#d1f34d]" />
               </button>
             </MagneticButton>
           </div>

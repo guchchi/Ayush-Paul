@@ -19,7 +19,7 @@ const options = [
   },
   {
     icon: Users,
-    title: 'Work Together',
+    title: 'Studio',
     description:
       'Bring in Ayush for custom implementation, API configuration, product builds, and systems designed for long-term execution.',
     cta: 'Start Building',

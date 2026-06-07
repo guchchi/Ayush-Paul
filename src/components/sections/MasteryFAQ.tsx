@@ -10,36 +10,36 @@ interface FAQItem {
 
 const FAQ_DATA: FAQItem[] = [
   {
-    q: 'What makes Mastery different from traditional online course platforms?',
-    a: 'Traditional platforms prioritize passive video consumption and course completion badges. Mastery focuses entirely on capability acquisition. We provide self-paced courses, live interactive workshops, and 1-on-1 sessions backed by downloadable, ready-to-deploy boilerplates so you can build real systems immediately.',
+    q: 'What is Mastery?',
+    a: 'Mastery is a skill acquisition ecosystem for builders. It combines self-paced courses, live workshops, and private 1-on-1 learning — all connected through your Digital Vault. Every course includes downloadable blueprints and templates you can deploy immediately.',
   },
   {
-    q: 'Do I need advanced coding knowledge to start learning?',
-    a: 'No. Our courses and workshops are structured to start from fundamental concepts (like color systems or basic API routes) and progress to advanced configurations (like autonomous agent scrapers and Next.js database syncing). Course cards show difficulty levels to help you choose.',
+    q: 'Who is Mastery for?',
+    a: 'Mastery is designed for students, creators, developers, founders, and builders who want to turn knowledge into real projects, products, and opportunities. Whether you are starting your first project or shipping your tenth product, there is a path for you.',
   },
   {
-    q: 'Are the blueprints and codebases included in the course price?',
-    a: 'Yes. Enrolling in any featured course unlocks all associated blueprints, sitemaps, prompt packages, and checklist repositories. You learn the logic behind the system and get the pre-built codebase ready to launch.',
+    q: 'How is this different from Udemy or Coursera?',
+    a: 'Traditional platforms focus on passive video consumption and completion badges. Mastery focuses on capability acquisition. Every course includes companion blueprints (prompt packs, templates, workflows) that you can deploy immediately. Workshops are live and interactive. 1-on-1 sessions are private and tailored to your goals.',
   },
   {
-    q: 'How do Live Workshops differ from Self-Paced Courses?',
-    a: 'Self-Paced Courses are deep-dive guides you follow at your own speed. Live Workshops are interactive scheduled cohorts where we code a specific integration together in real time, audit setups, and answer questions live.',
+    q: 'Do I need coding experience to start?',
+    a: 'No. Courses are structured to start from fundamental concepts and progress to advanced configurations. Each course card shows a difficulty level so you can choose the right starting point.',
   },
   {
-    q: 'How do 1-on-1 private learning sessions work?',
-    a: 'Private learning sessions are highly focused, 1-on-1 classes. When you submit a request, we review your selected skills and schedule live screen-share classes to learn it through private sessions, custom guidance, assignments, and live doubt solving.',
+    q: 'How do courses, workshops, and 1-on-1 learning work together?',
+    a: 'Each format serves a different need. Self-paced courses let you learn on your own schedule. Workshops give you live, cohort-based builds with real-time support. Private 1-on-1 sessions are fully tailored to your goals. You can use any combination depending on what works best for you.',
   },
   {
-    q: 'Is there a monthly subscription fee for Mastery?',
-    a: 'No. Mastery operates entirely on a single-payment model. You pay once for the specific course, workshop, or private training session you need. There are no recurring fees or subscription traps.',
+    q: 'How do I access my purchases?',
+    a: 'Everything you purchase — courses, workshop recordings, blueprints, and templates — lives in your Digital Vault at /vault. Simply log in with your account to access your materials anytime, across any device.',
   },
   {
-    q: 'What is the Digital Vault and how do I access my purchases?',
-    a: 'The Vault (/vault) is your authenticated dashboard. All sitemaps, courses, workshop recordings, and private training audit logs you own reside there. Simply log in to access your downloaded materials at any time.',
+    q: 'What are Blueprints?',
+    a: 'Blueprints are downloadable assets that accompany courses — prompt packs, code templates, automation workflows, design systems, and checklists. They are pre-built systems you can deploy immediately without setup.',
   },
   {
-    q: 'What is your refund policy?',
-    a: 'We offer a 14-day, no-questions-asked refund policy on all self-paced course tracks, provided you have not downloaded more than 3 associated codebases or blueprints from your Vault.',
+    q: 'What is the pricing model?',
+    a: 'Mastery operates on a single-payment model. You pay once for each course, workshop, or private session. There are no subscriptions or recurring fees. 1-on-1 learning starts at ₹2,499 per session. All prices are in INR.',
   },
 ];
 
@@ -59,7 +59,7 @@ export const MasteryFAQ = () => {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bg-secondary border border-[#c2c6d6]/20 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
           >
-            <span className="w-1.5 h-1.5 bg-[#424754] rounded-full" />
+            <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full" />
             <span className="tracking-[0.22em]">FAQ</span>
           </motion.div>
 
@@ -99,7 +99,7 @@ export const MasteryFAQ = () => {
               transition={{ duration: 0.35, delay: 0.05 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
               className={cn(
                 "bg-white border rounded-[24px] overflow-hidden transition-all duration-300 shadow-sm text-left",
-                isOpen ? "border-[#0058be] ring-1 ring-[#0058be]/10" : "border-[#c2c6d6]/35 hover:border-[#c2c6d6]/55"
+                isOpen ? "border-[#0b1c30] ring-1 ring-[#0b1c30]/10" : "border-[#c2c6d6]/35 hover:border-[#c2c6d6]/55"
               )}
             >
               {/* Question row */}
@@ -110,7 +110,7 @@ export const MasteryFAQ = () => {
                 <span
                   className={cn(
                     "text-base font-extrabold tracking-tight leading-snug transition-colors duration-200 flex-1",
-                    isOpen ? "text-[#0058be]" : "text-[#0b1c30]"
+                    isOpen ? "text-[#0b1c30]" : "text-[#0b1c30]"
                   )}
                 >
                   {item.q}
@@ -121,8 +121,8 @@ export const MasteryFAQ = () => {
                   className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 border",
                     isOpen
-                      ? "bg-[#eff4ff] border-[#dce9ff] text-[#0058be]"
-                      : "bg-bg-secondary border-[#c2c6d6]/20 text-[#424754]/60 group-hover:border-[#0058be]/20 group-hover:text-[#0058be]"
+                      ? "bg-[#d1f34d] border-[#c0e045] text-[#0b1c30]"
+                      : "bg-bg-secondary border-[#c2c6d6]/20 text-[#424754]/60 group-hover:border-[#d1f34d]/30 group-hover:text-[#d1f34d]"
                   )}
                 >
                   {isOpen ? <Minus size={13} /> : <Plus size={13} />}

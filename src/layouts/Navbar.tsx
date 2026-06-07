@@ -90,7 +90,7 @@ export const Navbar = () => {
   const navLinks = [
     { name: "Mastery", href: "/mastery" },
     { name: "Blueprints", href: "/blueprints" },
-    { name: "Work Together", href: "/collaborate" }
+    { name: "Studio", href: "/collaborate" }
   ];
 
   const mobileLinks = [...navLinks];

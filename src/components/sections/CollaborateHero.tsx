@@ -22,7 +22,7 @@ export const CollaborateHero: React.FC<CollaborateHeroProps> = ({ onStartClick, 
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#0058be] shadow-sm mb-2"
             >
               <Workflow size={12} className="text-[#0058be]" />
-              Collaborate
+              STUDIO
             </motion.div>
             
             <motion.h1 
@@ -32,9 +32,8 @@ export const CollaborateHero: React.FC<CollaborateHeroProps> = ({ onStartClick, 
               transition={{ delay: 0.1 }}
               className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tighter leading-[1.05] text-[#0b1c30]"
             >
-              Build Better Systems,<br />
-              <span className="text-[#0058be]">Products, & Teams</span><br />
-              Together.
+              Build Faster.<br />
+              <span className="text-[#0058be]">Ship Better.</span>
             </motion.h1>
 
             <motion.p 
@@ -44,7 +43,7 @@ export const CollaborateHero: React.FC<CollaborateHeroProps> = ({ onStartClick, 
               transition={{ delay: 0.2 }}
               className="text-lg md:text-xl text-[#424754] font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Whether you're launching a website, validating an idea, implementing AI workflows, improving SEO, or designing scalable systems, let's work together to turn plans into execution.
+              Work directly with Ayush on websites, AI systems, automation workflows, robotics projects, and technical implementation.
             </motion.p>
 
             <motion.div 
@@ -59,7 +58,7 @@ export const CollaborateHero: React.FC<CollaborateHeroProps> = ({ onStartClick, 
                   onClick={onStartClick}
                   className="px-8 py-4 bg-[#0b1c30] text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 group hover:scale-105 transition-transform w-full sm:w-auto shadow-sm"
                 >
-                  Start A Conversation
+                  Start a Project
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </MagneticButton>
@@ -69,7 +68,7 @@ export const CollaborateHero: React.FC<CollaborateHeroProps> = ({ onStartClick, 
                   onClick={onExploreClick}
                   className="px-8 py-4 bg-white border border-[#c2c6d6]/30 text-[#0b1c30] rounded-full font-bold text-xs uppercase tracking-widest hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm"
                 >
-                  Explore Previous Work
+                  Work With Me
                 </button>
               </MagneticButton>
             </motion.div>

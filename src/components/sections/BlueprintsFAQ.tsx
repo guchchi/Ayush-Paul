@@ -27,7 +27,7 @@ const FAQ_DATA: FAQItem[] = [
   },
   {
     q: 'Can I get help implementing a Blueprint?',
-    a: 'Yes. For custom modifications, API integrations, or full system deployment, you can collaborate directly with Ayush Paul through the Work Together page at ayushpaul.in/collaborate.',
+    a: 'Yes. For custom modifications, API integrations, or full system deployment, you can work directly with Ayush Paul through Studio at ayushpaul.in/collaborate.',
   },
   {
     q: 'How do I get started with Blueprints?',

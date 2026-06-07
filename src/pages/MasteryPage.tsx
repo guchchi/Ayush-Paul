@@ -9,7 +9,7 @@ import { AuthModal } from "../components/ui/AuthModal";
 // Modular Sections
 import { MasteryHero } from "../components/sections/MasteryHero";
 import { MasteryExploreSkills } from "../components/sections/MasteryExploreSkills";
-import { MasteryPaths } from "../components/sections/MasteryPaths";
+import { MasteryHowToLearn } from "../components/sections/MasteryHowToLearn";
 import { MasteryTracks } from "../components/sections/MasteryTracks";
 import { MasteryWorkshops } from "../components/sections/MasteryWorkshops";
 import { MasteryMentorship } from "../components/sections/MasteryMentorship";
@@ -19,28 +19,15 @@ import { MasteryFinalCTA } from "../components/sections/MasteryFinalCTA";
 
 const PRESET_CATEGORIES = [
   { id: 'ai', name: 'AI & Automation' },
-  { id: 'web-dev', name: 'Web Development' },
+  { id: 'robotics', name: 'Robotics' },
+  { id: 'websites', name: 'Web Development' },
+  { id: 'design', name: 'UI/UX Design' },
   { id: 'typography', name: 'Typography' },
   { id: 'color', name: 'Color Theory' },
-  { id: 'ux-psychology', name: 'UX Psychology' },
   { id: 'seo', name: 'SEO' },
-  { id: 'robotics', name: 'Robotics' },
   { id: 'branding', name: 'Personal Branding' },
-  { id: 'entrepreneurship', name: 'Entrepreneurship' },
   { id: 'products', name: 'Digital Products' },
-  { id: 'content-systems', name: 'Content Systems' },
-  { id: 'no-code', name: 'No-Code Tools' }
-];
-
-const DEFAULT_COURSES_COUNT_FALLBACK = [
-  { category: 'color' },
-  { category: 'typography' },
-  { category: 'seo' },
-  { category: 'robotics' },
-  { category: 'ai' },
-  { category: 'web-dev' },
-  { category: 'ux-psychology' },
-  { category: 'products' }
+  { id: 'entrepreneurship', name: 'Entrepreneurship' }
 ];
 
 const trackEvent = (eventName: string, payload?: Record<string, any>) => {
@@ -121,15 +108,15 @@ export const MasteryPage = () => {
   }, []);
 
   useSEO({
-    title: "Mastery | AyushPaul.in",
-    description: "Build high-leverage skills that compound over time. Self-paced courses, live workshops, and 1-on-1 mentorship designed for founders and creators.",
-    keywords: "Ayush Paul Mastery, Design, AI, Automation, Product Strategy, Personal Branding, Web Development",
+    title: "Mastery — Skill Acquisition Ecosystem for Builders | AyushPaul.in",
+    description: "Learn skills, build systems, and ship faster. Self-paced courses, live workshops, and private 1-on-1 learning.",
+    keywords: "Ayush Paul Mastery, skill acquisition, AI courses, robotics workshops, web development courses, 1-on-1 learning, design systems, entrepreneurship",
     url: getCanonicalUrl("/mastery"),
     schema: {
       "@context": "https://schema.org",
       "@type": "EducationEvent",
-      "name": "Ayush Paul Mastery Ecosystem",
-      "description": "Guided execution pathways covering Web Engineering, AI, and Automation.",
+      "name": "Mastery — Skill Acquisition Ecosystem",
+      "description": "Self-paced courses, live workshops, and private 1-on-1 learning for builders. Learn skills, build systems, and ship faster.",
       "url": getCanonicalUrl("/mastery"),
       "organizer": {
         "@type": "Person",
@@ -184,18 +171,13 @@ export const MasteryPage = () => {
   };
 
   // Scroll Actions
-  const scrollToExploreSkills = () => {
-    const el = document.getElementById("explore-skills-section");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const scrollToPaths = () => {
-    const el = document.getElementById("choose-learning-paths");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   const scrollToCourses = () => {
     const el = document.getElementById("featured-courses-section");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const scrollToExploreSkills = () => {
+    const el = document.getElementById("explore-skills-section");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -206,16 +188,14 @@ export const MasteryPage = () => {
 
   const handleCategorySelect = (categoryId: string) => {
     setActiveCategory(categoryId);
-    // Smooth scroll to featured courses after setting filter
     setTimeout(() => {
       scrollToCourses();
     }, 100);
   };
 
   // Aggregate skill categories and count course occurrences dynamically
-  const activeCourses = courses.length > 0 ? courses : DEFAULT_COURSES_COUNT_FALLBACK;
   const categoriesWithCounts = PRESET_CATEGORIES.map(cat => {
-    const count = activeCourses.filter(c => c.category && c.category.toLowerCase() === cat.id).length;
+    const count = courses.filter(c => c.category && c.category.toLowerCase() === cat.id).length;
     return {
       id: cat.id,
       name: cat.name,
@@ -233,13 +213,13 @@ export const MasteryPage = () => {
       {/* Background Soft Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,88,190,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,88,190,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-100 -z-10" />
 
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO */}
       <MasteryHero 
         onExploreClick={scrollToExploreSkills} 
         onCoursesClick={scrollToCourses} 
       />
 
-      {/* 2. EXPLORE SKILLS (Pill Tags directory) */}
+      {/* 2. EXPLORE SKILLS */}
       <MasteryExploreSkills 
         categories={categoriesWithCounts}
         activeCategory={activeCategory}
@@ -247,7 +227,7 @@ export const MasteryPage = () => {
       />
 
       {/* 3. CHOOSE HOW YOU WANT TO LEARN */}
-      <MasteryPaths 
+      <MasteryHowToLearn 
         onExploreCoursesClick={scrollToCourses}
         onMentorshipClick={scrollToMentorship}
       />
@@ -262,16 +242,16 @@ export const MasteryPage = () => {
         activeCategory={activeCategory}
       />
 
-      {/* 5. UPCOMING WORKSHOPS */}
+      {/* 5. WORKSHOPS */}
       <MasteryWorkshops />
 
-      {/* 6. LEARN DIRECTLY WITH AYUSH */}
+      {/* 6. 1-ON-1 LEARNING */}
       <MasteryMentorship />
 
-      {/* 7. WHY MASTERY */}
+      {/* 7. WHY MASTERY WORKS */}
       <MasteryWhy />
 
-      {/* 8. FAQ SECTION */}
+      {/* 8. FAQ */}
       <MasteryFAQ />
 
       {/* 9. FINAL CTA */}

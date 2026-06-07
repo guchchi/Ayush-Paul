@@ -22,7 +22,7 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="h-full rounded-[32px] overflow-hidden flex flex-col relative transition-all duration-300 shadow-sm bg-white border border-[#c2c6d6]/35 hover:border-[#0058be]/20 hover:shadow-ambient"
+        className="h-full rounded-[32px] overflow-hidden flex flex-col relative transition-all duration-300 shadow-sm bg-white border border-[#c2c6d6]/35 hover:border-[#d1f34d] hover:shadow-ambient"
       >
         {/* Thumbnail Frame */}
         <div className="relative aspect-[16/11] w-full overflow-hidden bg-gray-100 border-b border-[#c2c6d6]/20">
@@ -38,7 +38,7 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
           <div className="absolute top-4 right-4 z-10">
             <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/25 text-[9px] font-bold text-[#0b1c30] tracking-wider shadow-sm flex items-center">
               {isFree ? (
-                <span className="font-bold text-[#0058be]">FREE</span>
+                <span className="font-bold text-[#d1f34d]">FREE</span>
               ) : (
                 <span className="flex items-center gap-1">
                   {hasDiscount && (
@@ -53,7 +53,7 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
           {/* Bottom-Left Downloads Overlay */}
           <div className="absolute bottom-4 left-4 z-10">
             <div className="bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/25 rounded-full px-3 py-1 text-[8px] font-bold uppercase tracking-wider text-[#424754] flex items-center gap-1.5 shadow-sm">
-              <Download size={10} className="text-[#0058be]" /> {downloadCount + 120} Downloads
+              <Download size={10} className="text-[#d1f34d]" /> {downloadCount + 120} Downloads
             </div>
           </div>
         </div>
@@ -63,17 +63,17 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
           
           {/* Metadata Badges */}
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#0058be]">
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#d1f34d]">
               {project.category}
             </span>
             <span className="w-1 h-1 rounded-full bg-[#c2c6d6]/50" />
             <span className="text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 text-[#424754]/60">
-              <ShieldCheck size={9} className="text-[#0058be]" /> Verified Blueprint
+              <ShieldCheck size={9} className="text-[#d1f34d]" /> Verified Blueprint
             </span>
           </div>
 
           {/* Title */}
-          <h3 className="text-base font-extrabold mb-2 tracking-tight line-clamp-2 leading-snug transition-colors text-[#0b1c30] group-hover:text-[#0058be]">
+          <h3 className="text-base font-extrabold mb-2 tracking-tight line-clamp-2 leading-snug transition-colors text-[#0b1c30] group-hover:text-[#d1f34d]">
             {project.title}
           </h3>
           
@@ -103,7 +103,7 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
             </div>
 
             {/* Quick Action circular icon */}
-            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 border bg-bg-secondary border-[#c2c6d6]/30 text-[#424754]/60 group-hover:bg-[#0058be] group-hover:border-[#0058be] group-hover:text-white">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 border bg-bg-secondary border-[#c2c6d6]/30 text-[#424754]/60 group-hover:bg-[#d1f34d] group-hover:border-[#d1f34d] group-hover:text-black">
               <ArrowRight size={12} className="transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>

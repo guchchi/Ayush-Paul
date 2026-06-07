@@ -25,67 +25,11 @@ interface MasteryTracksProps {
   activeCategory: string;
 }
 
-const DEFAULT_COURSES: Course[] = [
-  {
-    id: 'course-color-theory',
-    title: 'Color Theory For Builders',
-    category: 'color',
-    description: 'Learn to design harmonious digital palettes, build premium contrast structures, and establish strict conversion-focused layouts.',
-    difficulty: 'Beginner',
-    duration: '2.5 Hours',
-    lessonsCount: 8,
-    price: 29,
-    thumbnail: '',
-  },
-  {
-    id: 'course-typography',
-    title: 'Typography Systems',
-    category: 'typography',
-    description: 'Establish strict responsive vertical rhythms, choose proportional font pairings, and design readable typography hierarchies.',
-    difficulty: 'Beginner',
-    duration: '3.5 Hours',
-    lessonsCount: 12,
-    price: 39,
-    thumbnail: '',
-  },
-  {
-    id: 'course-seo',
-    title: 'SEO Foundations',
-    category: 'seo',
-    description: 'Understand crawler index pipelines, construct optimal meta structures, and optimize load speeds for organic search ranking.',
-    difficulty: 'Intermediate',
-    duration: '4.5 Hours',
-    lessonsCount: 15,
-    price: 49,
-    thumbnail: '',
-  },
-  {
-    id: 'course-robotics',
-    title: 'Robotics Fundamentals',
-    category: 'robotics',
-    description: 'Connect hardware circuits to software interfaces, configure controllers, and read sensory inputs dynamically.',
-    difficulty: 'Intermediate',
-    duration: '6 Hours',
-    lessonsCount: 18,
-    price: 79,
-    thumbnail: '',
-  },
-  {
-    id: 'course-ai-workflow',
-    title: 'AI Workflow Design',
-    category: 'ai',
-    description: 'Design prompt systems, automate LLM queries, and configure multi-agent execution paths for daily developer workflows.',
-    difficulty: 'Advanced',
-    duration: '5 Hours',
-    lessonsCount: 14,
-    price: 69,
-    thumbnail: '',
-  }
-];
+
 
 const categoryNamesMap: Record<string, string> = {
   ai: 'AI & Automation',
-  websites: 'Website Development',
+  websites: 'Web Development',
   design: 'UI/UX Design',
   typography: 'Typography',
   color: 'Color Theory',
@@ -124,11 +68,8 @@ export const MasteryTracks = ({
   loading,
   activeCategory,
 }: MasteryTracksProps) => {
-  // Merge firestore courses or default courses
-  const loadedList = courses.length > 0 ? courses : DEFAULT_COURSES;
-
   // Filter courses by selected category pill
-  const filteredList = loadedList.filter(c => {
+  const filteredList = courses.filter(c => {
     if (!activeCategory || activeCategory === 'all') return true;
     return c.category.toLowerCase() === activeCategory.toLowerCase();
   });
@@ -148,8 +89,8 @@ export const MasteryTracks = ({
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
           >
-            <span className="w-1.5 h-1.5 bg-[#0058be] rounded-full" />
-            <span className="tracking-[0.22em]">Offerings</span>
+            <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full" />
+            <span className="tracking-[0.22em]">Courses</span>
           </motion.div>
 
           <motion.h2
@@ -170,7 +111,7 @@ export const MasteryTracks = ({
           transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-[#424754] text-base leading-relaxed font-medium"
         >
-          Acquire production-grade systems on your own schedule. Build practical architectures step-by-step with video guides and template assets.
+          Acquire production-grade systems on your own schedule. Build practical architectures step-by-step with video guides and template assets. Every course includes companion blueprints.
         </motion.p>
       </div>
 
@@ -202,7 +143,7 @@ export const MasteryTracks = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="group bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden shadow-sm hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 flex flex-col text-left hover:border-[#0058be]/20"
+                className="group bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden shadow-sm hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 flex flex-col text-left hover:border-[#d1f34d]"
               >
                 {/* Visual Thumbnail */}
                 <div className={cn("w-full h-40 bg-gradient-to-br flex flex-col items-center justify-center relative p-6 border-b border-[#c2c6d6]/20", thumbGradient)}>
@@ -243,7 +184,7 @@ export const MasteryTracks = ({
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-base font-extrabold text-[#0b1c30] tracking-tight mb-2 group-hover:text-[#0058be] transition-colors leading-snug">
+                  <h3 className="text-base font-extrabold text-[#0b1c30] tracking-tight mb-2 leading-snug">
                     {course.title}
                   </h3>
 
@@ -255,11 +196,11 @@ export const MasteryTracks = ({
                   {/* Meta stats row */}
                   <div className="grid grid-cols-2 gap-4 border-t border-[#c2c6d6]/10 pt-4 mt-auto">
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#424754]/80">
-                      <Clock size={12} className="text-[#0058be]/70" />
+                      <Clock size={12} className="text-[#d1f34d]/70" />
                       <span>{course.duration || '2-4 Hours'}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#424754]/80">
-                      <BookOpenCheck size={12} className="text-[#0058be]/70" />
+                      <BookOpenCheck size={12} className="text-[#d1f34d]/70" />
                       <span>{course.lessonsCount ? `${course.lessonsCount} lessons` : '10 lessons'}</span>
                     </div>
                   </div>
@@ -268,7 +209,7 @@ export const MasteryTracks = ({
                   <div className="mt-6 pt-4 border-t border-[#c2c6d6]/15 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[11px] font-extrabold text-[#0b1c30]">
                       {course.price && course.price > 0 ? (
-                        <span>${course.price}</span>
+                        <span>₹{course.price.toLocaleString('en-IN')}</span>
                       ) : (
                         <span className="text-[#558b2f]">FREE</span>
                       )}
@@ -284,7 +225,7 @@ export const MasteryTracks = ({
                     ) : (
                       <button
                         onClick={() => onEnroll(course.id)}
-                        className="bg-[#0058be] text-white hover:bg-[#004bb0] font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                        className="bg-[#0b1c30] text-[#d1f34d] hover:bg-[#d1f34d] hover:text-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
                       >
                         Enroll Now
                       </button>
@@ -296,15 +237,27 @@ export const MasteryTracks = ({
           })}
         </div>
       ) : (
-        <div className="w-full flex items-center justify-center py-20 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm">
-          <div className="text-center max-w-sm flex flex-col items-center">
-            <BookOpen size={36} className="text-gray-300 mb-4" />
-            <h3 className="text-lg font-bold text-[#0b1c30] mb-2">No courses available</h3>
-            <p className="text-xs text-[#424754]/60 leading-relaxed">
-              There are currently no active courses matching this category.
+        /* Premium Coming-Soon State */
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full py-20 px-8 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm"
+        >
+          <div className="max-w-lg mx-auto text-center flex flex-col items-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center text-[#d1f34d] mb-6">
+              <BookOpen size={28} />
+            </div>
+            <h3 className="text-2xl font-extrabold text-[#0b1c30] tracking-tight mb-2">Courses in Production</h3>
+            <p className="text-sm text-[#424754] font-medium leading-relaxed mb-8 max-w-sm">
+              Self-paced courses are being built and tested. They will cover AI workflows, robotics fundamentals, design systems, SEO architecture, and more. Join the waitlist to be notified when the first track launches.
+            </p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/40">
+              First courses launching soon
             </p>
           </div>
-        </div>
+        </motion.div>
       )}
     </section>
   );

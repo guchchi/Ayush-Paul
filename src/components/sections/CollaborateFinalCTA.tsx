@@ -61,7 +61,7 @@ export const CollaborateFinalCTA: React.FC<CollaborateFinalCTAProps> = ({ onStar
               onClick={onStartClick}
               className="px-8 py-4 bg-[#0b1c30] text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 group hover:scale-105 transition-transform w-full sm:w-auto shadow-sm"
             >
-              Start A Conversation
+              Start a Project
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </MagneticButton>

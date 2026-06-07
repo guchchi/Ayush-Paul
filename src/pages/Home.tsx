@@ -579,14 +579,14 @@ export const HomePage = () => {
                 Explore Mastery
               </Link>
             </div>
- 
-            {/* Path 3: Collaborate */}
+            {/* Path 3: Studio */}
+
             <div className="pathway-card p-8 flex flex-col justify-between min-h-[420px] shadow-sm group">
               <div>
                 <div className="w-12 h-12 pathway-badge rounded-2xl flex items-center justify-center mb-8">
                   <Cpu size={24} />
                 </div>
-                <h3 className="text-2xl font-extrabold text-[#0b1c30] mb-3">Work Together</h3>
+                <h3 className="text-2xl font-extrabold text-[#0b1c30] mb-3">Studio</h3>
                 <p className="text-sm text-[#424754] group-hover:text-[#0b1c30] leading-relaxed mb-6 font-medium">
                   Partner directly to outline roadmap strategies, configure custom data webhooks, and build high-performance products.
                 </p>
@@ -1065,7 +1065,7 @@ export const HomePage = () => {
             <div className="lg:col-span-7 flex flex-col items-start">
               {/* Eyebrow Label */}
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-sm w-fit inline-block mb-6">
-                WORK TOGETHER
+                STUDIO
               </span>
 
               {/* Main Heading */}
@@ -1113,14 +1113,14 @@ export const HomePage = () => {
                   onClick={() => trackEvent('work_together_cta_click')}
                   className="pathway-cta-dark-lime px-8 py-4 text-xs font-bold uppercase tracking-widest shadow-md inline-flex items-center justify-center w-full sm:w-auto"
                 >
-                  Work Together
+                  Start a Project
                 </Link>
                 <Link 
                   to="/collaborate" 
                   onClick={() => trackEvent('discussion_cta_click')}
                   className="bg-transparent hover:bg-gray-50 border border-[#c2c6d6]/30 text-[#0b1c30] px-8 py-4 rounded-full text-xs font-bold uppercase tracking-widest transition-all hover:scale-105 inline-flex items-center justify-center w-full sm:w-auto"
                 >
-                  Book A Discussion
+                  Work With Me
                 </Link>
               </div>
 
@@ -1235,11 +1235,11 @@ export const HomePage = () => {
             <div className="bg-[#0b1c30] border border-white/5 rounded-[24px] p-8 flex flex-col justify-between hover:border-white/10 transition-all duration-300 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full filter blur-xl pointer-events-none"></div>
               <div>
-                <h3 className="text-xl font-extrabold text-[#d1f34d] mb-2 uppercase tracking-tight">Work Together</h3>
+                <h3 className="text-xl font-extrabold text-[#d1f34d] mb-2 uppercase tracking-tight">Studio</h3>
                 <p className="text-xs text-white/90 leading-relaxed font-semibold mb-8">Partner to compile roadmap metrics, setup API webhooks, and build SaaS products.</p>
               </div>
               <Link to="/collaborate" className="w-full inline-flex items-center justify-center bg-[#d1f34d] text-black px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-colors">
-                Start Building
+                Start a Project
               </Link>
             </div>
           </div>

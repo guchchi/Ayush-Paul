@@ -187,7 +187,7 @@ export const BlueprintsPage = () => {
           "name": "Can I get help implementing a Blueprint?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. For custom modifications, API integrations, or full system deployment, you can collaborate directly with Ayush Paul through the Work Together page at ayushpaul.in/collaborate."
+            "text": "Yes. For custom modifications, API integrations, or full system deployment, you can work directly with Ayush Paul through Studio at ayushpaul.in/collaborate."
           }
         },
         {

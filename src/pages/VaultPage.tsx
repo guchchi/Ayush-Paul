@@ -135,7 +135,7 @@ export const VaultPage = () => {
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin mb-4" />
+        <div className="w-6 h-6 border-2 border-[#d1f34d]/25 border-t-[#d1f34d] rounded-full animate-spin mb-4" />
         <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
       </div>
     );
@@ -200,8 +200,8 @@ export const VaultPage = () => {
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be]">Innovator Profile</span>
-                <ShieldCheck size={12} className="text-[#0058be]" />
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[#d1f34d]">Innovator Profile</span>
+                <ShieldCheck size={12} className="text-[#d1f34d]" />
               </div>
               <h1 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">
                 {profile?.displayName || "Innovator"}
@@ -221,9 +221,9 @@ export const VaultPage = () => {
         </div>
 
         {/* Info alerts */}
-        <div className="p-4 rounded-2xl bg-[#eff4ff]/60 border border-[#dce9ff] flex items-start sm:items-center justify-between gap-4 mb-12 text-left">
+        <div className="p-4 rounded-2xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-start sm:items-center justify-between gap-4 mb-12 text-left">
           <div className="flex items-center gap-3">
-            <Bell size={14} className="text-[#0058be] shrink-0" />
+            <Bell size={14} className="text-[#d1f34d] shrink-0" />
             <p className="text-xs text-[#424754] font-semibold">
               <strong className="text-[#0b1c30]">Secure Vault:</strong> Every digital track, live workshop access link, and code audit is cataloged inside your authenticated profile.
             </p>
@@ -242,7 +242,7 @@ export const VaultPage = () => {
                 className={`flex items-center gap-2 px-5 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 cursor-pointer
                   ${isActive
                     ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
-                    : 'bg-white border-[#c2c6d6]/30 text-[#424754]/85 hover:text-[#0b1c30] hover:border-[#0058be]/20'
+                    : 'bg-white border-[#c2c6d6]/30 text-[#424754]/85 hover:text-[#0b1c30] hover:border-[#d1f34d]'
                   }`}
               >
                 <Icon size={12} />
@@ -266,12 +266,12 @@ export const VaultPage = () => {
                 {ownedProducts.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {ownedProducts.map(product => (
-                      <div key={product.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 shadow-sm">
+                      <div key={product.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                         <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10">
                           <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover transition-opacity duration-300" />
                         </div>
                         <div className="flex items-center gap-2 mb-3">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be] px-2.5 py-0.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#d1f34d] px-2.5 py-0.5 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/20">
                             {product.category}
                           </span>
                           <span className="text-[9px] font-bold uppercase tracking-wider text-green-650 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
@@ -284,7 +284,7 @@ export const VaultPage = () => {
                         <MagneticButton className="w-full">
                           <button 
                             onClick={() => handleDownload(product)}
-                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
                           >
                             <Download size={14} /> Access Files
                           </button>
@@ -298,7 +298,7 @@ export const VaultPage = () => {
                     <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">Your blueprints are empty</h3>
                     <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You haven't downloaded or purchased any blueprints yet.</p>
                     <MagneticButton>
-                      <Link to="/blueprints" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                      <Link to="/blueprints" className="px-6 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
                         Explore Blueprints
                       </Link>
                     </MagneticButton>
@@ -323,7 +323,7 @@ export const VaultPage = () => {
                       const percent = Math.min(100, Math.round((completedCount / totalCount) * 100));
 
                       return (
-                        <div key={course.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 shadow-sm">
+                        <div key={course.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                           <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10 flex items-center justify-center">
                             {course.thumbnail ? (
                               <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
@@ -332,9 +332,9 @@ export const VaultPage = () => {
                             )}
                           </div>
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be] px-2.5 py-0.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
-                              {course.category}
-                            </span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#d1f34d] px-2.5 py-0.5 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/20">
+                            {course.category}
+                          </span>
                             <span className="text-[9px] font-bold uppercase tracking-wider text-green-650 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
                               Active Track
                             </span>
@@ -345,19 +345,19 @@ export const VaultPage = () => {
                           <div className="mt-2 mb-6">
                             <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-2">
                               <span>Progress</span>
-                              <span className="text-[#0058be]">{percent}%</span>
+                              <span className="text-[#d1f34d]">{percent}%</span>
                             </div>
                             <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-[#0058be] transition-all duration-500" style={{ width: `${percent}%` }} />
+                              <div className="h-full bg-[#d1f34d] transition-all duration-500" style={{ width: `${percent}%` }} />
                             </div>
                           </div>
 
                           <MagneticButton className="w-full mt-auto">
                             <Link 
                               to={`/mastery/courses/${course.id}`}
-                              className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                              className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
                             >
-                              <Play size={12} className="text-[#d1f34d] fill-current" /> Resume Study
+                              <Play size={12} className="fill-current" /> Resume Study
                             </Link>
                           </MagneticButton>
                         </div>
@@ -370,7 +370,7 @@ export const VaultPage = () => {
                     <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">No enrolled tracks</h3>
                     <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You haven't enrolled in any self-paced compounding tracks yet.</p>
                     <MagneticButton>
-                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
                         Explore Mastery
                       </Link>
                     </MagneticButton>
@@ -390,7 +390,7 @@ export const VaultPage = () => {
                 {registeredWorkshops.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {registeredWorkshops.map(workshop => (
-                      <div key={workshop.id} className="p-8 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col justify-between group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.005] transition-all duration-300 shadow-sm">
+                      <div key={workshop.id} className="p-8 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col justify-between group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
                         <div className="space-y-4 text-left">
                           <div className="flex items-center gap-2">
                             <span className="px-2.5 py-0.5 rounded-full bg-red-50 text-red-650 border border-red-200 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
@@ -405,7 +405,7 @@ export const VaultPage = () => {
                           
                           <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-[#c2c6d6]/10 text-xs font-bold text-[#424754]/75">
                             <div className="flex items-center gap-1.5">
-                              <Clock size={14} className="text-[#0058be]" />
+                              <Clock size={14} className="text-[#d1f34d]" />
                               <span>{workshop.date || 'TBD'}</span>
                             </div>
                             <div className="flex items-center gap-1.5 justify-end">
@@ -419,7 +419,7 @@ export const VaultPage = () => {
                             href={workshop.meetingLink || '#'}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
                           >
                             Join Live Workspace <ArrowUpRight size={14} />
                           </a>
@@ -433,7 +433,7 @@ export const VaultPage = () => {
                     <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">No registered workshops</h3>
                     <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You are not registered for any upcoming live building sessions.</p>
                     <MagneticButton>
-                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
                         View Upcoming Workshops
                       </Link>
                     </MagneticButton>
@@ -457,7 +457,7 @@ export const VaultPage = () => {
                   <p className="text-[#424754]/60 text-xs mb-6 font-semibold">Prefer personalized learning? Book private sessions and learn directly with Ayush. Follow the same tracks with live guidance.</p>
                   <div className="flex gap-4 items-center justify-center flex-wrap">
                     <MagneticButton>
-                      <Link to="/collaborate" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                      <Link to="/collaborate" className="px-6 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
                         Book Learning Session
                       </Link>
                     </MagneticButton>
@@ -472,10 +472,10 @@ export const VaultPage = () => {
         <div>
           <div className="flex items-center justify-between mb-8 border-t border-[#c2c6d6]/20 pt-12 text-left">
             <div className="flex items-center gap-2">
-              <Sparkles className="text-[#0058be]" size={20} />
+              <Sparkles className="text-[#d1f34d]" size={20} />
               <h2 className="text-xl font-extrabold tracking-tight text-[#0b1c30]">Discover Premium Blueprints</h2>
             </div>
-            <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-wider text-[#0058be] hover:text-[#004bb0] transition-colors flex items-center gap-0.5 cursor-pointer">
+            <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-wider text-[#d1f34d] hover:text-[#c0e045] transition-colors flex items-center gap-0.5 cursor-pointer">
               View All <ChevronRight size={12} />
             </Link>
           </div>
