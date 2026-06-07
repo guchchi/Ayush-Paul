@@ -12,36 +12,33 @@ const BlogPostPage = lazy(() => import("./pages/BlogPostPage").then(m => ({ defa
 const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m.AdminPage })));
 const SuccessPage = lazy(() => import("./pages/SuccessPage").then(m => ({ default: m.SuccessPage })));
 const CancelPage = lazy(() => import("./pages/CancelPage").then(m => ({ default: m.CancelPage })));
-const NowPage = lazy(() => import("./pages/NowPage").then(m => ({ default: m.NowPage })));
 const AboutPage = lazy(() => import("./pages/AboutPage").then(m => ({ default: m.AboutPage })));
-const ExperimentsPage = lazy(() => import("./pages/ExperimentsPage").then(m => ({ default: m.ExperimentsPage })));
-const ExperimentDetailPage = lazy(() => import("./pages/ExperimentDetailPage").then(m => ({ default: m.ExperimentDetailPage })));
-
 const CollaboratePage = lazy(() => import("./pages/CollaboratePage").then(m => ({ default: m.CollaboratePage })));
-const ContactPage = lazy(() => import("./pages/ContactPage").then(m => ({ default: m.ContactPage })));
 const DashboardPage = lazy(() => import("./pages/DashboardPage").then(m => ({ default: m.DashboardPage })));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then(m => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("./pages/TermsPage").then(m => ({ default: m.TermsPage })));
 const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default: m.CookiePage })));
-const ContentAdminPage = lazy(() => import("./pages/ContentAdminPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
-const SystemsPage = lazy(() => import("./pages/SystemsPage").then(m => ({ default: m.SystemsPage })));
-const SystemDetailPage = lazy(() => import("./pages/SystemDetailPage").then(m => ({ default: m.SystemDetailPage })));
+const BlueprintsPage = lazy(() => import("./pages/BlueprintsPage").then(m => ({ default: m.BlueprintsPage })));
+const BlueprintDetailPage = lazy(() => import("./pages/BlueprintDetailPage").then(m => ({ default: m.BlueprintDetailPage })));
 const LabsPage = lazy(() => import("./pages/LabsPage").then(m => ({ default: m.LabsPage })));
 const LabDetailPage = lazy(() => import("./pages/LabDetailPage").then(m => ({ default: m.LabDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
-const MomentumPage = lazy(() => import("./pages/MomentumPage").then(m => ({ default: m.MomentumPage })));
+const BuildingPage = lazy(() => import("./pages/BuildingPage").then(m => ({ default: m.BuildingPage })));
 const AcademyPage = lazy(() => import("./pages/AcademyPage").then(m => ({ default: m.AcademyPage })));
+const MasteryPage = lazy(() => import("./pages/MasteryPage").then(m => ({ default: m.MasteryPage })));
 const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m => ({ default: m.CourseDetailPage })));
 const LessonViewerPage = lazy(() => import("./pages/LessonViewerPage").then(m => ({ default: m.LessonViewerPage })));
+const DesignSystemTestPage = lazy(() => import("./pages/DesignSystemTest").then(m => ({ default: m.DesignSystemTest })));
+
 
 // --- Loading Fallback ---
 const PageLoading = () => (
-  <div className="fixed inset-0 z-[500] bg-[#0A0A0A] flex items-center justify-center">
+  <div className="fixed inset-0 z-[500] bg-bg-primary flex items-center justify-center">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
-      <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20">Loading Environment</span>
+      <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#424754]/30">Loading Environment</span>
     </div>
   </div>
 );
@@ -56,7 +53,7 @@ import { getFirebaseStatus } from "./firebase";
 
 const RedirectWithSlug = () => {
   const { slug } = useParams();
-  return <Navigate to={`/systems/${slug}`} replace />;
+  return <Navigate to={`/blueprints/${slug}`} replace />;
 };
 
 export default function App() {
@@ -99,7 +96,7 @@ export default function App() {
     <ErrorBoundary>
       <Router>
         <ScrollToTop />
-        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-[#0A0A0A] min-h-screen w-full text-white">
+        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-bg-primary min-h-screen w-full text-text-primary">
           <CursorFollower />
           
           {!isConfigured && showConfigWarning && (
@@ -111,45 +108,50 @@ export default function App() {
           
           <Suspense fallback={<PageLoading />}>
             <Routes>
-              <Route path="/" element={
-                wrapInLayout(<HomePage />)
-              } />
-              <Route path="/now" element={wrapInLayout(<NowPage />)} />
+              <Route path="/" element={wrapInLayout(<HomePage />)} />
+              <Route path="/now" element={<Navigate to="/building" replace />} />
               <Route path="/about" element={wrapInLayout(<AboutPage />)} />
-              <Route path="/projects" element={<Navigate to="/systems" replace />} />
-              <Route path="/projects/:slug" element={<RedirectWithSlug />} />
-              <Route path="/experiments" element={<Navigate to="/systems" replace />} />
-              <Route path="/experiments/:slug" element={<RedirectWithSlug />} />
+              <Route path="/projects" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/projects/:slug" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/experiments" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/experiments/:slug" element={<Navigate to="/blueprints" replace />} />
               <Route path="/blog" element={wrapInLayout(<BlogPage />)} />
               <Route path="/blog/:slug" element={wrapInLayout(<BlogPostPage />)} />
               <Route path="/collaborate" element={wrapInLayout(<CollaboratePage />)} />
-              <Route path="/contact" element={wrapInLayout(<ContactPage />)} />
+              <Route path="/contact" element={<Navigate to="/collaborate" replace />} />
               <Route path="/privacy" element={wrapInLayout(<PrivacyPage />)} />
               <Route path="/terms" element={wrapInLayout(<TermsPage />)} />
               <Route path="/cookie-policy" element={wrapInLayout(<CookiePage />)} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/admin" element={<AdminPage />} />
-              <Route path="/admin/content" element={<ContentAdminPage />} />
               <Route path="/success" element={<SuccessPage />} />
               <Route path="/cancel" element={<CancelPage />} />
-              <Route path="/products" element={wrapInLayout(<SystemsPage />)} />
-              <Route path="/products/:slug" element={wrapInLayout(<SystemDetailPage />)} />
-              <Route path="/systems" element={wrapInLayout(<SystemsPage />)} />
-              <Route path="/systems/:slug" element={wrapInLayout(<SystemDetailPage />)} />
-              <Route path="/blueprints" element={wrapInLayout(<SystemsPage />)} />
-              <Route path="/blueprints/:slug" element={wrapInLayout(<SystemDetailPage />)} />
-              <Route path="/academy" element={wrapInLayout(<AcademyPage />)} />
-              <Route path="/academy/courses/:courseId" element={wrapInLayout(<CourseDetailPage />)} />
-              <Route path="/academy/courses/:courseId/lessons/:lessonId" element={wrapInLayout(<LessonViewerPage />)} />
-              <Route path="/labs" element={<Navigate to="/systems" replace />} />
-              <Route path="/labs/:slug" element={<Navigate to="/systems" replace />} />
+              <Route path="/products" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/products/:slug" element={<RedirectWithSlug />} />
+              <Route path="/ebooks" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/ebooks/:slug" element={<RedirectWithSlug />} />
+              <Route path="/systems" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/systems/:slug" element={<RedirectWithSlug />} />
+              <Route path="/blueprints" element={wrapInLayout(<BlueprintsPage />)} />
+              <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
+              <Route path="/academy" element={<Navigate to="/mastery" replace />} />
+              <Route path="/academy/courses/:courseId" element={<Navigate to="/mastery/courses/:courseId" replace />} />
+              <Route path="/academy/courses/:courseId/lessons/:lessonId" element={<Navigate to="/mastery/courses/:courseId/lessons/:lessonId" replace />} />
+              <Route path="/mastery" element={wrapInLayout(<MasteryPage />)} />
+              <Route path="/mastery/courses/:courseId" element={wrapInLayout(<CourseDetailPage />)} />
+              <Route path="/mastery/courses/:courseId/lessons/:lessonId" element={wrapInLayout(<LessonViewerPage />)} />
+              <Route path="/labs" element={<Navigate to="/blueprints" replace />} />
+              <Route path="/labs/:slug" element={<Navigate to="/blueprints" replace />} />
               <Route path="/thank-you" element={wrapInLayout(<ThankYouPage />)} />
-              <Route path="/lab/dashboard" element={wrapInLayout(<VaultPage />)} />
+              <Route path="/lab/dashboard" element={<Navigate to="/vault" replace />} />
               <Route path="/vault" element={wrapInLayout(<VaultPage />)} />
               <Route path="/blogs" element={<Navigate to="/blog" replace />} />
               <Route path="/research" element={<Navigate to="/blog" replace />} />
-              <Route path="/milestones" element={wrapInLayout(<MomentumPage />)} />
-              <Route path="/momentum" element={wrapInLayout(<MomentumPage />)} />
+              <Route path="/building" element={wrapInLayout(<BuildingPage />)} />
+              <Route path="/in-public" element={<Navigate to="/building" replace />} />
+              <Route path="/milestones" element={<Navigate to="/building" replace />} />
+              <Route path="/momentum" element={<Navigate to="/building" replace />} />
+              <Route path="/design-system" element={wrapInLayout(<DesignSystemTestPage />)} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

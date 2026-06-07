@@ -94,7 +94,7 @@ export const useAdminAuth = () => {
     }
   };
 
-  const isAuthorized = user && isUserAdmin(user.uid);
+  const isAuthorized = user && isUserAdmin(user.uid, user.email);
 
   return {
     user,

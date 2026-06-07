@@ -1,46 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, ArrowRight, Heart, ChevronDown, FolderGit2, Users2, Flame, Clock, Layers, BookOpen, Trophy, Terminal, Sun, Moon } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
-import { Container } from "@/src/components/ui/Container";
-import { useScrollToSection } from "@/src/hooks/useScrollToSection";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
-import { auth, onAuthStateChanged, signOut } from "../firebase";
+import { auth, onAuthStateChanged } from "../firebase";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const lastScrollY = React.useRef(0);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [activeSection, setActiveSection] = useState('home');
-  const [isExploreOpen, setIsExploreOpen] = useState(false);
-  const [isMobileExploreOpen, setIsMobileExploreOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
-  const { scrollToSection } = useScrollToSection();
 
-  // Theme Toggle Logic
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as 'dark' | 'light') || 'light';
-    }
-    return 'light';
-  });
+  const isLightTheme = location.pathname !== '/';
+  const isHomePage = location.pathname === '/';
+  const isNavLightText = isLightTheme;
+  const isDrawerLight = true;
 
+  // Force light mode class globally on root
   useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    document.documentElement.classList.add('light');
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+  }, []);
 
   // Scroll Progress Logic
   const { scrollYProgress } = useScroll();
@@ -52,26 +40,25 @@ export const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
       
-      // Active section detection with improved threshold logic
-      const sections = ['home', 'systems', 'blog', 'about', 'contact'];
-      let current = 'home';
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          // Offset for navbar height and threshold
-          if (rect.top <= 120) {
-            current = section;
-          }
-        }
+      setIsScrolled(currentScrollY > 20);
+
+      // Hide or show logic based on scroll direction
+      if (currentScrollY <= 50) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        // Scrolling down - hide navbar
+        setIsVisible(false);
+      } else {
+        // Scrolling up - show navbar
+        setIsVisible(true);
       }
-      setActiveSection(current);
+
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -101,328 +88,185 @@ export const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { name: "Home", href: "/#home", id: "home" },
-    { name: "Blueprints", href: "/#systems", id: "systems" },
-    { name: "Blog", href: "/#blog", id: "blog" },
-    { name: "About", href: "/#about", id: "about" },
-    { name: "Collaborate", href: "/#contact", id: "contact" },
+    { name: "Mastery", href: "/mastery" },
+    { name: "Blueprints", href: "/blueprints" },
+    { name: "Work Together", href: "/collaborate" }
   ];
 
-  interface ExploreLink {
-    name: string;
-    href: string;
-    description: string;
-    icon: any;
-    disabled?: boolean;
-  }
-
-  const exploreLinks: ExploreLink[] = [
-    {
-      name: "About Me",
-      href: "/about",
-      description: "My story, principles, and tech stack",
-      icon: Users2,
-      disabled: false
-    },
-    {
-      name: "Milestones",
-      href: "/milestones",
-      description: "My building journey & progress",
-      icon: Trophy,
-      disabled: false
-    },
-    {
-      name: "Blog",
-      href: "/blog",
-      description: "Articles, case studies, and guides",
-      icon: BookOpen,
-      disabled: false
-    }
-  ];
-
-  // Construct activeExploreLinks: Vision & About -> Ecosystem Milestones -> Vault (if authenticated) -> Research Papers
-  const activeExploreLinks = [...exploreLinks];
+  const mobileLinks = [...navLinks];
   if (user) {
-    activeExploreLinks.splice(2, 0, {
-      name: "Vault",
-      href: "/vault",
-      description: "Your active digital blueprints",
-      icon: Clock,
-      disabled: false
-    });
+    mobileLinks.push({ name: "Vault", href: "/vault" });
   }
-
-  useEffect(() => {
-    if (activeExploreLinks.some(l => location.pathname === l.href)) {
-      setIsMobileExploreOpen(true);
-    }
-  }, [location.pathname, user]);
-
-  const handleNavClick = (link: any, e: React.MouseEvent) => {
-    setIsMobileMenuOpen(false);
-    if (location.pathname === '/') {
-      if (link.href === '/' || link.href === '/#home') {
-        e.preventDefault();
-        scrollToSection('home');
-      } else if (link.href.startsWith("/#")) {
-        e.preventDefault();
-        const id = link.href.split("#")[1];
-        scrollToSection(id);
-      }
-    }
-  };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[1000] pointer-events-none p-4 sm:p-6 md:p-8 flex items-center justify-between transition-all duration-500">
-      {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300 pointer-events-none z-[1001]"
-        style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
-      />
+    <>
+      {/* Custom Styles for Navbar brand-lime button to match homepage exactly */}
+      <style>{`
+        .brand-lime {
+          background-color: #d1f34d;
+          color: #000000;
+        }
+        .brand-lime:hover {
+          background-color: #c0e045;
+        }
+        :root.light .nav-force-white a:not(.brand-lime),
+        :root.light .nav-force-white button:not(.brand-lime),
+        .nav-force-white a:not(.brand-lime),
+        .nav-force-white button:not(.brand-lime) {
+          color: #ffffff !important;
+        }
+        :root.light .nav-force-white a:not(.brand-lime):hover,
+        :root.light .nav-force-white button:not(.brand-lime):hover,
+        .nav-force-white a:not(.brand-lime):hover,
+        .nav-force-white button:not(.brand-lime):hover {
+          color: #ffffff !important;
+          opacity: 0.85;
+        }
+        :root.light .nav-force-white a.text-white\/60,
+        :root.light .nav-force-white button.text-white\/60,
+        .nav-force-white a.text-white\/60,
+        .nav-force-white button.text-white\/60 {
+          color: rgba(255, 255, 255, 0.6) !important;
+        }
+        :root.light .nav-force-white a.text-white\/60:hover,
+        :root.light .nav-force-white button.text-white\/60:hover,
+        .nav-force-white a.text-white\/60:hover,
+        .nav-force-white button.text-white\/60:hover {
+          color: #ffffff !important;
+          opacity: 1 !important;
+        }
+        :root.light .nav-force-white .text-white,
+        .nav-force-white .text-white {
+          color: #ffffff !important;
+        }
+        :root.light .nav-force-white .border-white\/10,
+        .nav-force-white .border-white\/10 {
+          border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        :root.light .nav-force-white .bg-white\/5,
+        .nav-force-white .bg-white\/5 {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+      `}</style>
 
-      {/* LEFT ISLAND: Independent Logo (No padding, no background) */}
-      <div className="pointer-events-auto shrink-0 flex items-center z-10">
-        <Link 
-          to="/" 
-          onClick={(e) => {
-            if (location.pathname === '/') {
-              e.preventDefault();
-              scrollToSection('home');
-            }
-          }}
-          className="text-xl font-display font-extrabold tracking-tighter flex items-center gap-1 group"
-        >
-          <motion.span 
-            initial={false}
-            animate={{ scale: isScrolled ? 0.9 : 1 }}
-            className="transition-transform duration-500 text-white"
-          >
-            ayushpaul<span className="text-brand-primary group-hover:text-white transition-colors duration-300">.in</span>
-          </motion.span>
-        </Link>
-      </div>
-
-      {/* CENTER ISLAND: Unified Compact Glassmorphic Pill Navbar (Only navigation links) */}
-      <div className={cn(
-        "absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] border rounded-full px-5",
-        (location.pathname === '/' && !isScrolled)
-          ? "bg-transparent border-transparent py-3 shadow-none backdrop-blur-none"
-          : "bg-[var(--navbar-bg)] border-[var(--navbar-border)] backdrop-blur-xl",
-        isScrolled ? "py-2 sm:py-2.5 shadow-lg" : "py-2.5 sm:py-3.5 shadow-md"
+      <nav className={cn(
+        isHomePage 
+          ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-transparent py-6"
+          : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out",
+        !isHomePage && (isVisible ? "translate-y-0" : "-translate-y-full"),
+        !isHomePage && (isScrolled 
+          ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
+          : "bg-transparent border-transparent py-6"),
+        !isNavLightText && "nav-force-white"
       )}>
-        {navLinks.map((link) => {
-          const isActive = location.pathname === link.href || (location.pathname === '/' && activeSection === link.id);
-          return (
-            <Link
-              key={link.name}
-              to={link.href}
-              onClick={(e) => handleNavClick(link, e)}
-              className={cn(
-                "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full group overflow-hidden block",
-                isActive ? "text-white" : "text-white/30 hover:text-white/60"
-              )}
-            >
-              <span className="relative z-10">{link.name}</span>
-              {isActive && (
-                <motion.div 
-                  layoutId="nav-pill"
-                  transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
-                  className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
-                />
-              )}
-            </Link>
-          );
-        })}
+        {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300 pointer-events-none z-[1001]"
+          style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
+        />
 
-        {/* Explore Dropdown Trigger */}
-        <div 
-          className="relative"
-          onMouseEnter={() => setIsExploreOpen(true)}
-          onMouseLeave={() => setIsExploreOpen(false)}
-        >
-          {(() => {
-            const isActiveExplore = activeExploreLinks.some(l => location.pathname === l.href);
-            return (
-              <button
-                className={cn(
-                  "text-[11px] font-semibold tracking-wide transition-all duration-500 cursor-pointer relative px-4 py-2 rounded-full flex items-center gap-1.5 group select-none outline-none",
-                  isExploreOpen || isActiveExplore ? "text-white" : "text-white/30 hover:text-white/60"
-                )}
-              >
-                <span className="relative z-10">Explore</span>
-                <ChevronDown 
-                  size={11} 
-                  className={cn(
-                    "relative z-10 transition-transform duration-500",
-                    isExploreOpen ? "rotate-180 text-brand-primary" : "text-white/30 group-hover:text-white/60"
-                  )}
-                />
-                {isActiveExplore && (
-                  <motion.div 
-                    layoutId="nav-pill"
-                    transition={{ type: "spring", bounce: 0.15, duration: 0.6 }}
-                    className="absolute inset-0 rounded-full bg-white/[0.08] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
-                  />
-                )}
-              </button>
-            );
-          })()}
-
-          {/* Dropdown Menu */}
-          <AnimatePresence>
-            {isExploreOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ type: "spring", damping: 20, stiffness: 200, mass: 0.8 }}
-                className="absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 w-72 bg-[var(--navbar-bg)] border-[var(--navbar-border)] rounded-[28px] p-3 backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-[2000] overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/[0.02] to-transparent pointer-events-none" />
-                <div className="flex flex-col gap-1 relative z-10">
-                  {activeExploreLinks.map((link) => {
-                    const Icon = link.icon;
-                    const isActive = location.pathname === link.href;
-                    const content = (
-                      <>
-                        <div className={cn(
-                          "w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
-                          isActive 
-                            ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                            : link.disabled
-                              ? "bg-white/[0.01] text-white/10"
-                              : "bg-white/[0.02] text-white/30 group-hover/item:text-brand-primary group-hover/item:border-brand-primary/20 group-hover/item:bg-brand-primary/5"
-                        )}>
-                          <Icon size={16} className={cn("transition-transform", !link.disabled && "group-hover/item:scale-110")} />
-                        </div>
-                        <div className="flex flex-col text-left">
-                          <span className={cn("text-xs font-bold tracking-wider font-display", link.disabled ? "text-white/25" : "text-white")}>{link.name}</span>
-                          <span className="text-[10px] text-white/35 font-medium mt-0.5 leading-normal">{link.description}</span>
-                        </div>
-                      </>
-                    );
-
-                    if (link.disabled) {
-                      return (
-                        <div
-                          key={link.name}
-                          className="flex items-center gap-4 p-3 rounded-2xl border border-transparent text-white/20 select-none cursor-not-allowed bg-white/[0.01]"
-                        >
-                          {content}
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <Link
-                        key={link.name}
-                        to={link.href}
-                        onClick={() => setIsExploreOpen(false)}
-                        className={cn(
-                          "flex items-center gap-4 p-3 rounded-2xl transition-all duration-300 group/item border border-transparent",
-                          isActive 
-                            ? "bg-white/[0.06] border-white/10 text-white" 
-                            : "text-white/55 hover:bg-white/[0.03] hover:border-white/5 hover:text-white"
-                        )}
-                      >
-                        {content}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* RIGHT ISLAND: Independent Minimalist Action Text Links (No buttons, no grouping) */}
-      <div className="hidden lg:flex items-center gap-8 pointer-events-auto shrink-0 z-10">
-        {/* Newcomer Get Started CTA */}
-        <Link
-          to="/systems"
-          className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer flex items-center gap-1.5"
-        >
-          Get Started <ArrowRight size={11} className="text-brand-primary" />
-        </Link>
-
-        {user ? (
+        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-16 flex justify-between items-center relative z-20">
+          {/* Logo */}
           <Link 
-            to="/vault"
-            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer"
-          >
-            <img 
-              src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=0D8ABC&color=fff`} 
-              alt="Avatar" 
-              className="w-5 h-5 rounded-full shrink-0 border border-white/10"
-            />
-            <span className="whitespace-nowrap">Vault</span>
-          </Link>
-        ) : (
-          <button
-            onClick={() => setIsAuthModalOpen(true)}
-            className="text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer select-none bg-transparent border-none outline-none p-0"
-          >
-            Sign In
-          </button>
-        )}
-        
-        <button
-          onClick={() => setIsSupportModalOpen(true)}
-          className="text-[10px] font-bold uppercase tracking-widest text-brand-primary hover:text-white hover:scale-105 transition-all duration-300 cursor-pointer flex items-center gap-1.5 select-none bg-transparent border-none outline-none p-0"
-        >
-          Support <Heart size={12} className="text-brand-primary hover:scale-110 transition-transform" />
-        </button>
-
-        <button
-          onClick={toggleTheme}
-          className="text-text-secondary hover:text-brand-primary hover:scale-110 transition-all duration-300 cursor-pointer select-none bg-transparent border-none outline-none p-0 flex items-center justify-center shrink-0"
-          aria-label="Toggle Theme"
-        >
-          {theme === 'light' ? (
-            <Moon size={16} className="text-brand-primary" />
-          ) : (
-            <Sun size={16} className="text-brand-primary" />
-          )}
-        </button>
-      </div>
-
-      {/* MOBILE MENU TOGGLE BUTTON (Absolute Right on mobile viewports) */}
-      <div className="lg:hidden pointer-events-auto flex items-center gap-3 z-10">
-        <button
-          onClick={toggleTheme}
-          className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all active:scale-90 text-brand-primary"
-          aria-label="Toggle Theme"
-        >
-          {theme === 'light' ? (
-            <Moon size={16} className="text-brand-primary" />
-          ) : (
-            <Sun size={16} className="text-brand-primary" />
-          )}
-        </button>
-        <button
-          className="text-white w-10 h-10 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-all active:scale-90"
-          onClick={() => setIsMobileMenuOpen(prev => !prev)}
-        >
-          <AnimatePresence mode="wait">
-            {isMobileMenuOpen ? (
-              <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                <X size={18} />
-              </motion.div>
-            ) : (
-              <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                <Menu size={18} />
-              </motion.div>
+            to="/" 
+            className={cn(
+              "flex items-center gap-2 font-bold text-2xl tracking-tight transition-all duration-300 hover:scale-[1.02]",
+              isNavLightText ? "text-[#0b1c30]" : "text-white"
             )}
-          </AnimatePresence>
-        </button>
-      </div>
+          >
+            Ayush Paul
+          </Link>
 
-      {/* Mobile Menu Slide-out */}
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex gap-12 items-center text-sm font-semibold tracking-widest uppercase">
+            {navLinks.map((link) => {
+              const isActive = location.pathname.startsWith(link.href);
+              return (
+                <Link 
+                  key={link.name} 
+                  className={cn(
+                    "transition-colors duration-300",
+                    isActive
+                      ? isNavLightText ? "text-[#0b1c30]" : "text-white"
+                      : isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                  )} 
+                  to={link.href}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Desktop Action Right Side */}
+          <div className="hidden md:flex items-center gap-8">
+            {user ? (
+              <Link 
+                to="/vault"
+                className={cn(
+                  "flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105",
+                  isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                )}
+              >
+                <img 
+                  src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email || 'user'}&background=0D8ABC&color=fff`} 
+                  alt="Avatar" 
+                  className="w-5 h-5 rounded-full shrink-0 border border-white/10"
+                />
+                <span className="whitespace-nowrap">Vault</span>
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className={cn(
+                  "text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 cursor-pointer bg-transparent border-none outline-none p-0",
+                  isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                )}
+              >
+                Sign In
+              </button>
+            )}
+
+            <Link 
+              className="brand-lime px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:scale-105 shadow-sm inline-flex items-center" 
+              to="/collaborate"
+            >
+              Start Building
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full border transition-all active:scale-90",
+                isNavLightText 
+                  ? "text-black bg-black/5 border-black/10 hover:bg-black/10"
+                  : "text-white bg-white/5 border-white/10 hover:bg-white/10"
+              )}
+              onClick={() => setIsMobileMenuOpen(prev => !prev)}
+            >
+              <AnimatePresence mode="wait">
+                {isMobileMenuOpen ? (
+                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                    <X size={18} />
+                  </motion.div>
+                ) : (
+                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                    <Menu size={18} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Drawer Portal */}
       {typeof document !== 'undefined' && createPortal(
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-[10000] lg:hidden overflow-hidden">
+            <div className="fixed inset-0 z-[10000] md:hidden overflow-hidden">
               {/* Glass Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -438,182 +282,152 @@ export const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-                className="absolute top-0 right-0 bottom-0 w-[88%] max-w-sm bg-[var(--bg-elevated)] border-l border-[var(--border-color)] flex flex-col shadow-2xl"
+                className={cn(
+                  "absolute top-0 right-0 bottom-0 w-[88%] max-w-sm flex flex-col shadow-2xl transition-colors duration-300",
+                  isDrawerLight 
+                    ? "bg-white border-l border-gray-200 text-black" 
+                    : "bg-[#121212] border-l border-white/5 text-white"
+                )}
               >
                 <div className="flex flex-col h-full">
                   {/* Drawer Header */}
-                  <div className="flex items-center justify-between p-8 border-b border-white/5">
-                    <span className="text-sm font-bold uppercase tracking-[0.3em] text-white/30">Navigation</span>
+                  <div className={cn(
+                    "flex items-center justify-between p-6 border-b",
+                    isDrawerLight ? "border-gray-100" : "border-white/5"
+                  )}>
+                    <span className={cn(
+                      "text-xs font-bold uppercase tracking-[0.3em]",
+                      isDrawerLight ? "text-black/40" : "text-white/30"
+                    )}>Navigation</span>
                     <button
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 active:scale-90 transition-all"
+                      className={cn(
+                        "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
+                        isDrawerLight 
+                          ? "bg-gray-100 text-black" 
+                          : "bg-white/5 text-white/70"
+                      )}
                     >
                       <X size={18} />
                     </button>
                   </div>
-
-                  {/* High-Signal Nav Links */}
-                  <div className="flex-1 overflow-y-auto py-6 px-6 space-y-1 custom-scrollbar">
-                    {/* Newcomer featured entry card */}
-                    <Link
-                      to="/systems"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between w-full p-4 mb-3 rounded-[20px] bg-brand-primary/10 border border-brand-primary/20 text-brand-primary group"
-                    >
-                      <div className="flex flex-col text-left">
-                        <span className="text-xs font-bold uppercase tracking-widest">New here?</span>
-                        <span className="text-base font-display font-bold tracking-tight mt-0.5">Explore the Blueprints →</span>
-                      </div>
-                      <ArrowRight size={18} className="shrink-0 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-
-                    {navLinks.map((link, i) => (
-                      <Link
-                        key={link.name}
-                        to={link.href}
-                        onClick={(e) => handleNavClick(link, e)}
-                        className={cn(
-                          "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300",
-                          (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
-                            ? "bg-brand-primary/10 text-brand-primary border border-brand-primary/20" 
-                            : "text-white/40 hover:text-white hover:bg-white/5 border border-transparent"
-                        )}
-                      >
-                        <span className="text-xl font-display font-bold tracking-tight">{link.name}</span>
-                        <div className={cn(
-                          "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-                          (location.pathname === link.href || (location.pathname === '/' && activeSection === link.id))
-                            ? "bg-brand-primary text-black scale-100" 
-                            : "bg-white/5 text-white/20 opacity-0 group-hover:opacity-100"
-                        )}>
-                          <ChevronRight size={16} />
-                        </div>
-                      </Link>
-                    ))}
-
-                    {/* Collapsible Explore Section */}
-                    <div className="space-y-1">
-                      <button
-                        onClick={() => setIsMobileExploreOpen(prev => !prev)}
-                        className={cn(
-                          "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300 text-left outline-none",
-                          isMobileExploreOpen || activeExploreLinks.some(l => location.pathname === l.href)
-                            ? "bg-white/5 text-white" 
-                            : "text-white/40 hover:text-white hover:bg-white/5"
-                        )}
-                      >
-                        <span className="text-xl font-display font-bold tracking-tight">Explore</span>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white/40 group-hover:text-white">
-                          <ChevronDown 
-                            size={16} 
-                            className={cn("transition-transform duration-300", isMobileExploreOpen && "rotate-180 text-brand-primary")} 
-                          />
-                        </div>
-                      </button>
-
-                      <AnimatePresence initial={false}>
-                        {isMobileExploreOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
-                            className="overflow-hidden pl-4 pr-2 space-y-1"
-                          >
-                             {activeExploreLinks.map((link) => {
-                               const Icon = link.icon;
-                               const isActive = location.pathname === link.href;
-                               const content = (
-                                 <>
-                                   <div className={cn(
-                                     "w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
-                                     isActive 
-                                       ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                                       : link.disabled
-                                         ? "bg-white/[0.01] text-white/10"
-                                         : "bg-white/5 text-white/30"
-                                   )}>
-                                     <Icon size={14} />
-                                   </div>
-                                   <div className="flex flex-col text-left">
-                                     <span className={cn("text-sm font-bold font-display", link.disabled ? "text-white/20" : "text-white")}>{link.name}</span>
-                                     <span className="text-[10px] text-white/20 font-medium mt-0.5">{link.description}</span>
-                                   </div>
-                                 </>
-                               );
-
-                               if (link.disabled) {
-                                 return (
-                                   <div
-                                     key={link.name}
-                                     className="flex items-center gap-4 p-3.5 rounded-2xl border border-transparent text-white/20 cursor-not-allowed bg-white/[0.01]"
-                                   >
-                                     {content}
-                                   </div>
-                                 );
-                               }
-
-                               return (
-                                 <Link
-                                   key={link.name}
-                                   to={link.href}
-                                   onClick={() => {
-                                     setIsMobileMenuOpen(false);
-                                     setIsMobileExploreOpen(false);
-                                   }}
-                                   className={cn(
-                                     "flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 border border-transparent",
-                                     isActive 
-                                       ? "bg-brand-primary/10 border-brand-primary/20 text-brand-primary" 
-                                       : "text-white/40 hover:text-white hover:bg-white/5"
-                                   )}
-                                 >
-                                   {content}
-                                 </Link>
-                               );
-                             })}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
+ 
+                  {/* Navigation Links */}
+                  <div className="flex-1 overflow-y-auto py-6 px-6 space-y-2 custom-scrollbar">
+                    {mobileLinks.map((link) => {
+                      const isActive = location.pathname.startsWith(link.href);
+                      return (
+                        <Link
+                          key={link.name}
+                          to={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={cn(
+                            "group flex items-center justify-between w-full p-4 rounded-[20px] transition-all duration-300 border",
+                            isActive
+                              ? isDrawerLight 
+                                ? "bg-black/5 text-black border-black/10"
+                                : "bg-brand-primary/10 text-brand-primary border-brand-primary/20"
+                              : isDrawerLight
+                                ? "text-black/60 hover:text-black hover:bg-gray-50 border-transparent"
+                                : "text-white/40 hover:text-white hover:bg-white/5 border-transparent"
+                          )}
+                        >
+                          <span className="text-lg font-bold tracking-tight uppercase">{link.name}</span>
+                          <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                            isActive
+                              ? isDrawerLight
+                                ? "bg-black text-white"
+                                : "bg-brand-primary text-black"
+                              : isDrawerLight
+                                ? "bg-gray-100 text-black/30 group-hover:text-black"
+                                : "bg-white/5 text-white/20 group-hover:text-white"
+                          )}>
+                            <ChevronRight size={16} />
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
-
+ 
                   {/* Drawer Footer */}
-                  <div className="p-10 border-t border-white/5 bg-gradient-to-t from-brand-primary/[0.03] to-transparent space-y-10">
+                  <div className={cn(
+                    "p-8 border-t space-y-8",
+                    isDrawerLight 
+                      ? "border-gray-100 bg-[#FAFAFA]" 
+                      : "border-white/5 bg-white/[0.01]"
+                  )}>
                     <div className="flex items-center justify-center gap-8">
                       {[
-                        { icon: <Github size={22} />, href: "https://github.com/guchchi" },
-                        { icon: <Linkedin size={22} />, href: "https://www.linkedin.com/in/paulayush/" },
-                        { icon: <Youtube size={22} />, href: "https://www.youtube.com/@ALX-17" }
+                        { icon: <Github size={20} />, href: "https://github.com/guchchi" },
+                        { icon: <Linkedin size={20} />, href: "https://www.linkedin.com/in/paulayush/" },
+                        { icon: <Youtube size={20} />, href: "https://www.youtube.com/@ALX-17" }
                       ].map((social, i) => (
                         <motion.a 
                           key={i} 
-                          whileHover={{ y: -3, color: "var(--color-brand-primary)" }}
+                          whileHover={{ y: -3 }}
                           href={social.href} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-white/30 transition-colors"
+                          className={cn(
+                            "transition-colors",
+                            isDrawerLight ? "text-black/40 hover:text-black" : "text-white/30 hover:text-white"
+                          )}
                         >
                           {social.icon}
                         </motion.a>
                       ))}
                     </div>
-
-                    <motion.button
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        setIsSupportModalOpen(true);
-                      }}
-                      className="w-full py-4 bg-white text-black rounded-[20px] font-bold text-base shadow-xl shadow-white/5 flex items-center justify-center gap-3"
+ 
+                    <Link
+                      to="/collaborate"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-4 bg-[#d1f34d] text-black hover:bg-black hover:text-white rounded-[20px] font-bold text-center text-xs uppercase tracking-widest transition-colors duration-300 block shadow-sm"
                     >
-                      Support <Heart size={18} />
-                    </motion.button>
+                      Start Building
+                    </Link>
+ 
+                    {!user ? (
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsAuthModalOpen(true);
+                        }}
+                        className={cn(
+                          "w-full text-center text-xs font-bold uppercase tracking-widest bg-transparent border-none outline-none py-2 block transition-colors",
+                          isDrawerLight ? "text-black/60 hover:text-black" : "text-white/60 hover:text-white"
+                        )}
+                      >
+                        Sign In
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          setIsSupportModalOpen(true);
+                        }}
+                        className={cn(
+                          "w-full text-center text-xs font-bold uppercase tracking-widest bg-transparent border-none outline-none py-2 block transition-colors",
+                          isDrawerLight ? "text-black/60 hover:text-black" : "text-white/60 hover:text-white"
+                        )}
+                      >
+                        Support
+                      </button>
+                    )}
                     
                     <div className="text-center space-y-2">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/10">Engineered by <span className="sr-only">Ayush Paul</span></p>
-                      <div className="flex items-center justify-center gap-2 text-[8px] font-bold uppercase tracking-widest text-brand-primary/40">
-                        <span className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
+                      <p className={cn(
+                        "text-[9px] font-bold uppercase tracking-[0.4em]",
+                        isDrawerLight ? "text-black/10" : "text-white/10"
+                      )}>Engineered by <span className="sr-only">Ayush Paul</span></p>
+                      <div className={cn(
+                        "flex items-center justify-center gap-2 text-[8px] font-bold uppercase tracking-widest",
+                        isDrawerLight ? "text-black/40" : "text-brand-primary/40"
+                      )}>
+                        <span className={cn(
+                          "w-1 h-1 rounded-full animate-pulse",
+                          isDrawerLight ? "bg-black" : "bg-brand-primary"
+                        )} />
                         Status: Active
                       </div>
                     </div>
@@ -625,8 +439,9 @@ export const Navbar = () => {
         </AnimatePresence>,
         document.body
       )}
+
       <SupportModal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} />
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-    </nav>
+    </>
   );
 };

@@ -115,7 +115,7 @@ export const HomeCollaborateSection = () => {
             title="Build With Me"
             description="Fork my open-source code repositories, download physical STEP/STL models, and assemble your own machines."
             linkText="Get Blueprints"
-            to="/systems"
+            to="/blueprints"
             delay={0.15}
           />
 

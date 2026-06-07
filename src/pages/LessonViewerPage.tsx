@@ -49,7 +49,7 @@ export const LessonViewerPage = () => {
         setLessons(lessonsList);
 
         // 4. Find current lesson
-        const lesson = lessonsList.find((l) => l.id === lessonId);
+        const lesson = lessonsList.find((l) => l.id === lessonId) as any;
         if (!lesson) {
           navigate(`/academy/courses/${courseId}`);
           return;
@@ -143,9 +143,9 @@ export const LessonViewerPage = () => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center space-y-4">
-        <div className="w-8 h-8 border-2 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
-        <span className="text-xs font-semibold text-gray-400">Booting lesson streaming server...</span>
+      <div className="w-full min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center space-y-4 text-[#000000]">
+        <div className="w-6 h-6 border-2 border-[#0058be]/20 border-t-[#0058be] rounded-full animate-spin" />
+        <span className="text-[10px] font-semibold text-[#424754]/40 tracking-wider">Booting lesson streaming server...</span>
       </div>
     );
   }
@@ -156,34 +156,38 @@ export const LessonViewerPage = () => {
   const videoEmbed = getEmbedUrl(currentLesson.videoUrl);
 
   return (
-    <div className="w-full min-h-screen bg-[#FAFAFA] text-[#111111] pt-24 flex flex-col selection:bg-blue-600/10 selection:text-blue-600">
+    <div className="w-full min-h-screen bg-[#FAFAFA] text-[#000000] pt-20 flex flex-col selection:bg-[#0058be]/35 selection:text-white relative overflow-hidden">
+      
+      {/* Background Soft Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,88,190,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,88,190,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-100 -z-10" />
+
       {/* Top Navbar */}
-      <div className="border-b border-gray-200 bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-40">
+      <div className="border-b border-gray-200 bg-white px-6 py-4 flex items-center justify-between sticky top-20 z-40">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(`/academy/courses/${courseId}`)}
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-black transition-colors"
+            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 hover:text-[#000000] transition-colors cursor-pointer bg-transparent border-none outline-none"
           >
-            <ArrowLeft size={16} /> Syllabus
+            <ArrowLeft size={14} className="text-[#0058be]" /> Syllabus
           </button>
           <div className="w-px h-4 bg-gray-200" />
-          <h2 className="text-sm font-bold text-black line-clamp-1">{course.title}</h2>
+          <h2 className="text-xs font-bold text-[#000000] line-clamp-1 uppercase tracking-wider">{course.title}</h2>
         </div>
 
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="lg:hidden p-2 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors"
+          className="lg:hidden p-2 rounded-lg bg-[#f8f9ff] border border-gray-200 hover:bg-gray-50 text-[#000000] transition-colors cursor-pointer"
         >
-          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+          {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row relative">
+      <div className="flex-1 flex flex-col lg:flex-row relative z-10">
         {/* Main Lesson Content */}
-        <div className="flex-1 p-6 md:p-12 overflow-y-auto max-w-5xl mx-auto space-y-8 w-full text-left">
+        <div className="flex-1 p-6 md:p-8 overflow-y-auto max-w-4xl mx-auto space-y-6 w-full text-left">
           {/* Video Player */}
           {videoEmbed ? (
-            <div className="aspect-video w-full rounded-3xl overflow-hidden border border-gray-200 shadow-sm bg-black">
+            <div className="aspect-video w-full rounded-2xl overflow-hidden border border-gray-200 bg-black shadow-sm">
               <iframe
                 src={videoEmbed}
                 title={currentLesson.title}
@@ -193,41 +197,41 @@ export const LessonViewerPage = () => {
               />
             </div>
           ) : (
-            <div className="aspect-video w-full rounded-3xl border border-gray-200 bg-white flex flex-col items-center justify-center text-center p-8 shadow-sm">
-              <Play size={48} className="text-blue-600 mb-4" />
-              <h3 className="text-lg font-bold text-black mb-2">No Video Available</h3>
-              <p className="text-gray-400 text-sm max-w-xs">This lesson contains documentation and downloadable blueprints below.</p>
+            <div className="aspect-video w-full rounded-2xl border border-gray-200 bg-white flex flex-col items-center justify-center text-center p-8 shadow-sm">
+              <Play size={36} className="text-[#0058be] mb-4 animate-pulse" />
+              <h3 className="text-sm font-bold text-[#000000] mb-1">No Video Available</h3>
+              <p className="text-[#424754] text-xs max-w-xs font-medium">This lesson contains documentation and downloadable blueprints below.</p>
             </div>
           )}
 
           {/* Lesson Metadata */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-gray-200">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-5 border-b border-gray-200">
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-black leading-tight">
+              <h1 className="text-xl md:text-2xl font-extrabold text-[#000000] leading-tight">
                 {currentLesson.title}
               </h1>
-              <p className="text-gray-500 text-sm mt-2">{currentLesson.description}</p>
+              <p className="text-[#424754] text-xs mt-1.5 font-medium">{currentLesson.description}</p>
             </div>
 
             {enrollment && (
               <button
                 onClick={handleToggleComplete}
-                className={`px-6 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 border shadow-sm ${
+                className={`px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all flex items-center gap-1.5 border cursor-pointer ${
                   isCompleted
-                    ? "bg-green-50 border-green-200 text-green-600 hover:bg-green-100"
-                    : "bg-white border-gray-200 text-gray-700 hover:border-blue-500/30 hover:text-blue-600"
+                    ? "bg-green-500/10 border-green-200 text-green-700 hover:bg-green-500/20"
+                    : "bg-white border-gray-200 text-[#424754] hover:border-gray-300 hover:text-[#000000]"
                 }`}
               >
-                <CheckCircle size={16} />
-                {isCompleted ? "Completed" : "Mark as Complete"}
+                <CheckCircle size={14} />
+                {isCompleted ? "Completed" : "Mark Complete"}
               </button>
             )}
           </div>
 
           {/* Downloadable Resources */}
           {currentLesson.resources && currentLesson.resources.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-black">Lesson Blueprints &amp; Configs</h3>
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#424754]/70">Lesson Blueprints &amp; Configs</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {currentLesson.resources.map((res: any, idx: number) => (
                   <a
@@ -235,15 +239,15 @@ export const LessonViewerPage = () => {
                     href={res.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex justify-between items-center p-5 bg-white border border-gray-200 rounded-2xl hover:border-blue-500/30 hover:shadow-sm transition-all"
+                    className="flex justify-between items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-[#adc6ff] hover:shadow-md transition-all shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                        <BookOpen size={16} />
+                      <div className="w-8 h-8 rounded bg-[#f8f9ff] border border-gray-100 flex items-center justify-center text-[#0058be]">
+                        <BookOpen size={14} />
                       </div>
-                      <span className="text-sm font-bold text-black">{res.title}</span>
+                      <span className="text-xs font-bold text-[#000000]">{res.title}</span>
                     </div>
-                    <ExternalLink size={14} className="text-gray-400" />
+                    <ExternalLink size={12} className="text-gray-400" />
                   </a>
                 ))}
               </div>
@@ -253,25 +257,25 @@ export const LessonViewerPage = () => {
 
         {/* Sidebar Syllabus Navigation */}
         <div
-          className={`lg:w-80 w-full bg-white border-l border-gray-200 flex flex-col absolute lg:static inset-y-0 right-0 z-30 lg:z-10 transition-transform duration-300 transform lg:translate-x-0 ${
+          className={`lg:w-72 w-full bg-white border-l border-gray-200 flex flex-col absolute lg:static inset-y-0 right-0 z-30 lg:z-10 transition-transform duration-300 transform lg:translate-x-0 ${
             sidebarOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="p-6 border-b border-gray-200 text-left">
-            <h3 className="font-bold text-black">Course Curriculum</h3>
-            <p className="text-xs text-gray-400 mt-1">Jump to any module or lesson</p>
+          <div className="p-5 border-b border-gray-200 text-left">
+            <h3 className="font-bold text-[#000000] text-sm uppercase tracking-wider">Course Syllabus</h3>
+            <p className="text-[10px] text-[#424754]/60 mt-0.5 font-medium">Jump to any module or lesson</p>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 text-left">
+          <div className="flex-1 overflow-y-auto p-4 space-y-6 text-left custom-scrollbar bg-white">
             {modules.map((mod) => {
               const moduleLessons = lessons.filter((les) => les.moduleId === mod.id);
               return (
-                <div key={mod.id} className="space-y-3">
-                  <div className="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">
+                <div key={mod.id} className="space-y-2">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-[#0058be]/75">
                     Mod {mod.order}: {mod.title}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {moduleLessons.map((les) => {
                       const isEnrolled = !!enrollment;
                       const isLesCompleted = enrollment?.progress?.includes(les.id);
@@ -287,21 +291,21 @@ export const LessonViewerPage = () => {
                               setSidebarOpen(false);
                             }
                           }}
-                          className={`flex items-center gap-3 p-3.5 rounded-xl border text-xs transition-all ${
+                          className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-[11px] transition-all ${
                             isSelected
-                              ? "bg-blue-600/5 border-blue-500/20 text-blue-600 font-bold"
+                              ? "bg-[#eff4ff] border-[#dce9ff] text-[#0058be] font-bold"
                               : isAccessible
-                              ? "bg-transparent border-transparent hover:bg-gray-50 text-gray-700 font-semibold cursor-pointer"
+                              ? "bg-transparent border-transparent hover:bg-gray-50 text-[#424754] font-semibold hover:text-[#000000] cursor-pointer"
                               : "bg-transparent border-transparent text-gray-300 cursor-not-allowed"
                           }`}
                         >
                           <div className="shrink-0">
                             {isLesCompleted ? (
-                              <CheckCircle size={14} className="text-green-500" />
+                                <CheckCircle size={12} className="text-green-500" />
                             ) : !isAccessible ? (
-                              <Lock size={12} className="text-gray-300" />
+                              <Lock size={10} className="text-gray-300" />
                             ) : (
-                              <Play size={12} className={isSelected ? "text-blue-600" : "text-gray-400"} />
+                              <Play size={10} className={isSelected ? "text-[#0058be]" : "text-gray-400"} />
                             )}
                           </div>
                           <span className="line-clamp-1">{les.title}</span>
@@ -318,3 +322,5 @@ export const LessonViewerPage = () => {
     </div>
   );
 };
+
+export default LessonViewerPage;

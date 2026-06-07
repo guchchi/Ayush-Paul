@@ -15,11 +15,11 @@ const GATEWAYS = [
     bgImg: 'https://images.unsplash.com/photo-1531747118685-ca8fa6e08806?q=80&w=800&auto=format&fit=crop'
   },
   {
-    id: 'systems',
-    title: 'Systems',
+    id: 'blueprints',
+    title: 'Blueprints',
     description: 'Core infrastructure and architectural blueprints.',
     icon: LayoutTemplate,
-    link: '/systems',
+    link: '/blueprints',
     color: '#7B61FF',
     bgImg: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=800&auto=format&fit=crop'
   },

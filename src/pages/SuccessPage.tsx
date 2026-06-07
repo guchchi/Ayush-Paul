@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { CheckCircle, ArrowRight, Download } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { MagneticButton } from '../components/ui/MagneticButton';
 
 export const SuccessPage = () => {
   const navigate = useNavigate();
@@ -121,22 +122,22 @@ export const SuccessPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center"
+      className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center p-6 text-center text-[#0b1c30]"
     >
       <motion.div 
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
-        className="w-24 h-24 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(34,197,94,0.2)]"
+        className="w-24 h-24 rounded-full bg-green-50 border border-green-200 flex items-center justify-center mx-auto mb-8 shadow-sm text-green-600"
       >
-        <CheckCircle size={48} className="text-green-500" />
+        <CheckCircle size={44} />
       </motion.div>
 
-      <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 leading-none text-[#0b1c30]">
         Payment Successful!
       </h1>
       
-      <p className="text-lg text-white/60 mb-12 max-w-md">
+      <p className="text-base text-[#424754] mb-12 max-w-md font-semibold">
         {isOwned 
           ? `Success! Your ${product?.title || 'blueprint'} is unlocked and ready for download.`
           : "Thank you for supporting the Innovation Lab. Your premium blueprint has been unlocked and is waiting for you."}
@@ -144,29 +145,35 @@ export const SuccessPage = () => {
 
       <div className="flex flex-col sm:flex-row gap-4">
         {isOwned && product?.downloadFileURL && (
-          <button 
-            onClick={handleDownload}
-            className="px-8 py-4 rounded-full bg-white text-black font-bold flex items-center justify-center gap-2 hover:bg-brand-primary transition-colors shadow-xl"
-          >
-            Download Now <Download size={18} />
-          </button>
+          <MagneticButton>
+            <button 
+              onClick={handleDownload}
+              className="px-8 py-4 rounded-full bg-[#eff4ff] hover:bg-[#e5eeff] border border-[#dce9ff] text-[#0058be] font-bold flex items-center justify-center gap-2 transition-colors shadow-sm text-xs uppercase tracking-wider h-12 cursor-pointer"
+            >
+              Download Now <Download size={14} />
+            </button>
+          </MagneticButton>
         )}
         
-        <button 
-          onClick={() => navigate('/vault')}
-          className="px-8 py-4 rounded-full bg-brand-primary text-black font-bold flex items-center justify-center gap-2 hover:bg-white transition-colors shadow-xl shadow-brand-primary/20"
-        >
-          Go to My Vault <ArrowRight size={18} />
-        </button>
+        <MagneticButton>
+          <button 
+            onClick={() => navigate('/vault')}
+            className="px-8 py-4 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold flex items-center justify-center gap-2 transition-colors shadow-sm text-xs uppercase tracking-wider h-12 cursor-pointer"
+          >
+            Go to My Vault <ArrowRight size={14} />
+          </button>
+        </MagneticButton>
       </div>
 
       {!isOwned && !loading && productId && (
-        <p className="mt-8 text-xs text-white/20">
+        <p className="mt-8 text-xs text-[#424754]/60 font-semibold">
           Not seeing the download? It can take a few seconds to process. 
           <br/>
-          Check your <button onClick={() => navigate('/vault')} className="underline">Vault</button> in a moment.
+          Check your <button onClick={() => navigate('/vault')} className="underline text-[#0058be] font-bold cursor-pointer bg-transparent border-none p-0">Vault</button> in a moment.
         </p>
       )}
     </motion.div>
   );
 };
+
+export default SuccessPage;

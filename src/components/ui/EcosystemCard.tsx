@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Download, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Product } from '../../types';
+import { cn } from '../../lib/utils';
 
 interface EcosystemCardProps {
   project: Product;
+  light?: boolean;
 }
 
-export const EcosystemCard = ({ project }: EcosystemCardProps) => {
+export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => {
   const downloadCount = project.downloadCount ?? 0;
   const basePrice = project.basePrice ?? 0;
   const salePrice = project.salePrice ?? 0;
@@ -16,31 +18,31 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
   const hasDiscount = salePrice > 0 && salePrice < basePrice;
 
   return (
-    <Link to={`/systems/${project.slug}`} className="block group h-full">
+    <Link to={`/blueprints/${project.slug}`} className="block group h-full cursor-pointer">
       <motion.div
-        whileHover={{ y: -6, scale: 1.005 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="h-full bg-[#0E0E10] border border-white/5 hover:border-white/10 rounded-[2.2rem] overflow-hidden flex flex-col relative transition-colors shadow-xl hover:shadow-2xl"
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="h-full rounded-[32px] overflow-hidden flex flex-col relative transition-all duration-300 shadow-sm bg-white border border-[#c2c6d6]/35 hover:border-[#0058be]/20 hover:shadow-ambient"
       >
         {/* Thumbnail Frame */}
-        <div className="relative aspect-[16/11] w-full overflow-hidden bg-black/40 border-b border-white/5">
+        <div className="relative aspect-[16/11] w-full overflow-hidden bg-gray-100 border-b border-[#c2c6d6]/20">
           <img 
             src={project.thumbnail} 
             alt={project.title} 
             loading="lazy"
-            className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-85 group-hover:opacity-100"
+            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-transparent" />
           
           {/* Top-Right Price/Type Pill */}
           <div className="absolute top-4 right-4 z-10">
-            <span className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white tracking-wide shadow-lg">
+            <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/25 text-[9px] font-bold text-[#0b1c30] tracking-wider shadow-sm flex items-center">
               {isFree ? (
-                <span className="text-brand-primary font-bold">FREE</span>
+                <span className="font-bold text-[#0058be]">FREE</span>
               ) : (
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1">
                   {hasDiscount && (
-                    <span className="text-white/40 line-through text-[9px]">${basePrice}</span>
+                    <span className="text-[#424754]/40 line-through text-[8px] font-semibold">${basePrice}</span>
                   )}
                   <span>${salePrice || basePrice}</span>
                 </span>
@@ -50,59 +52,59 @@ export const EcosystemCard = ({ project }: EcosystemCardProps) => {
 
           {/* Bottom-Left Downloads Overlay */}
           <div className="absolute bottom-4 left-4 z-10">
-            <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-3.5 py-1.5 text-[9px] font-semibold text-white/80 flex items-center gap-1.5">
-              <Download size={11} className="text-brand-primary" /> {downloadCount + 120} Downloads
+            <div className="bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/25 rounded-full px-3 py-1 text-[8px] font-bold uppercase tracking-wider text-[#424754] flex items-center gap-1.5 shadow-sm">
+              <Download size={10} className="text-[#0058be]" /> {downloadCount + 120} Downloads
             </div>
           </div>
         </div>
 
         {/* Card Body */}
-        <div className="p-7 flex flex-col flex-1 relative z-10">
+        <div className="p-6 flex flex-col flex-1 relative z-10 text-left">
           
           {/* Metadata Badges */}
-          <div className="flex items-center gap-2.5 mb-4">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-[#0058be]">
               {project.category}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-            <span className="text-[9px] uppercase tracking-widest text-white/30 flex items-center gap-1">
-              <ShieldCheck size={10} className="text-brand-primary/60" /> Verified Blueprint
+            <span className="w-1 h-1 rounded-full bg-[#c2c6d6]/50" />
+            <span className="text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 text-[#424754]/60">
+              <ShieldCheck size={9} className="text-[#0058be]" /> Verified Blueprint
             </span>
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-bold text-white mb-3 tracking-tight line-clamp-2 leading-snug group-hover:text-brand-primary transition-colors">
+          <h3 className="text-base font-extrabold mb-2 tracking-tight line-clamp-2 leading-snug transition-colors text-[#0b1c30] group-hover:text-[#0058be]">
             {project.title}
           </h3>
           
           {/* Description */}
-          <p className="text-white/40 text-sm leading-relaxed mb-6 line-clamp-2 font-medium">
+          <p className="text-xs leading-relaxed mb-6 line-clamp-2 font-semibold text-[#424754]">
             {project.description}
           </p>
 
           {/* Footer Action Profile */}
-          <div className="mt-auto pt-5 border-t border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="mt-auto pt-4 border-t border-[#c2c6d6]/10 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
               {project.author?.avatar ? (
                 <img 
                   src={project.author.avatar} 
                   alt={project.author.name} 
-                  className="w-8 h-8 rounded-full border border-white/10" 
+                  className="w-7 h-7 rounded-full border border-[#c2c6d6]/30"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full border border-white/10 bg-brand-primary/10 flex items-center justify-center text-[10px] font-bold text-brand-primary uppercase">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-bold uppercase border bg-bg-secondary border-[#c2c6d6]/30 text-[#424754]">
                   {project.author?.name?.charAt(0) || 'A'}
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-white/80">{project.author?.name || 'Ayush Paul'}</span>
-                <span className="text-[9px] text-white/30 uppercase tracking-wider font-semibold">Architect</span>
+                <span className="text-[11px] font-extrabold leading-none text-[#0b1c30]">{project.author?.name || 'Ayush Paul'}</span>
+                <span className="text-[8px] uppercase tracking-wider font-bold mt-0.5 text-[#424754]/60">Architect</span>
               </div>
             </div>
 
-            {/* Quick Action Circular Icon */}
-            <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 group-hover:bg-brand-primary group-hover:border-brand-primary group-hover:text-black transition-all duration-300">
-              <ArrowRight size={14} className="transform group-hover:translate-x-0.5 transition-transform" />
+            {/* Quick Action circular icon */}
+            <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 border bg-bg-secondary border-[#c2c6d6]/30 text-[#424754]/60 group-hover:bg-[#0058be] group-hover:border-[#0058be] group-hover:text-white">
+              <ArrowRight size={12} className="transform group-hover:translate-x-0.5 transition-transform" />
             </div>
           </div>
         </div>

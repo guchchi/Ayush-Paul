@@ -172,7 +172,7 @@ export const HomeFinalCTASection = () => {
             title="Build"
             description="Explore ready-to-run SaaS boilerplates, AI prompt packs, and technical SEO checklists."
             buttonText="Get Blueprints"
-            to="/systems"
+            to="/blueprints"
             delay={0.2}
           />
 

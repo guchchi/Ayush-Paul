@@ -284,7 +284,7 @@ const HeroContent: React.FC = () => {
   return (
     <motion.div 
       ref={containerRef}
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none px-4"
+      className="relative z-10 flex flex-col items-center justify-center pointer-events-none px-4 w-full"
       style={{
         y: heroY,
         rotateX: heroRotateX,
@@ -310,11 +310,11 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-md"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.08]"
         >
-          <span className="w-2 h-2 rounded-full bg-brand-secondary animate-pulse" />
-          <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50">
-            Available for Collaborations
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+          <span className="text-[9px] font-bold tracking-wider uppercase text-white/50">
+            Operational Systems Ecosystem
           </span>
         </motion.div>
 
@@ -323,15 +323,10 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[clamp(3.2rem,8vw,8rem)] font-display font-bold tracking-tighter leading-[1.05] sm:leading-[1] lg:leading-[0.9]"
+          className="text-[clamp(3rem,7vw,7rem)] font-display font-extrabold tracking-tight leading-[1.05] text-white"
           style={{ transformStyle: 'preserve-3d' }}
         >
-          <span className="block text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/30">
-            Building
-          </span>
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-primary via-brand-secondary to-brand-accent">
-            The Future
-          </span>
+          Antigravity R&D
         </motion.h1>
 
         {/* Subtitle / Identity */}
@@ -339,9 +334,9 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-2xl mx-auto text-[clamp(1.1rem,2.5vw,1.5rem)] text-white/60 font-medium tracking-tight leading-relaxed"
+          className="max-w-2xl mx-auto text-sm sm:text-base text-white/50 font-medium leading-relaxed"
         >
-          AI & Product Engineer
+          Open source blueprints, technical chronicles, and structured courses to help engineers construct robotics, software platforms, and automation systems.
         </motion.p>
 
         {/* CTA Buttons - Premium Hierarchy */}
@@ -349,24 +344,23 @@ const HeroContent: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-5 pt-8 w-full max-w-sm lg:max-w-none mx-auto"
+          className="flex flex-col lg:flex-row items-center justify-center gap-4 pt-4 w-full max-w-sm lg:max-w-none mx-auto animate-none"
         >
           {/* Primary CTA */}
           <a 
-            href="#hire"
-            className="group relative inline-flex items-center justify-center gap-3 w-full lg:w-auto px-10 py-4 bg-white text-black rounded-full font-bold tracking-wide overflow-hidden transition-all hover:scale-[1.03] active:scale-95 shadow-2xl shadow-white/10"
+            href="/blueprints"
+            className="group relative inline-flex items-center justify-center gap-2.5 w-full lg:w-auto px-8 py-3.5 bg-white text-black rounded-lg font-bold text-xs uppercase tracking-wider transition-all hover:bg-white/90"
           >
-            <span className="relative z-10 glass-text">Hire Me</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-100%] group-hover:animate-shimmer transition-opacity" />
+            <span>Explore Blueprints</span>
+            <ArrowRight className="w-4 h-4" />
           </a>
           
           {/* Secondary CTA */}
           <a 
-            href="#projects"
-            className="group inline-flex items-center justify-center gap-3 w-full lg:w-auto px-10 py-4 bg-white/[0.03] border border-white/10 text-white rounded-full font-bold tracking-wide hover:bg-white/[0.08] hover:border-white/20 transition-all backdrop-blur-md"
+            href="/academy"
+            className="group inline-flex items-center justify-center gap-2.5 w-full lg:w-auto px-8 py-3.5 bg-transparent border border-white/20 text-white rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white/5 hover:border-white transition-all"
           >
-            Explore Projects
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Academy Courses
           </a>
         </motion.div>
 
@@ -378,13 +372,13 @@ const HeroContent: React.FC = () => {
           className="flex flex-wrap items-center justify-center gap-3 lg:gap-4 pt-10 lg:pt-12 max-w-3xl mx-auto w-full"
         >
           {[
-            { label: "4+ Years Building Ideas", icon: <Code size={14} /> },
-            { label: "Silicon Valley Quality", icon: <Sparkles size={14} /> },
-            { label: "30+ Collaborators", icon: <Globe size={14} /> },
-            { label: "Full-Stack & Robotics", icon: <Cpu size={14} /> },
+            { label: "Level 1: System Blog", icon: <Code size={13} /> },
+            { label: "Level 2: Code Blueprints", icon: <Sparkles size={13} /> },
+            { label: "Level 3: Academy Courses", icon: <Globe size={13} /> },
+            { label: "Level 4: Partnerships", icon: <Cpu size={13} /> },
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/[0.02] border border-white/5 text-xs font-semibold tracking-wide text-white/50 backdrop-blur-md hover:bg-white/[0.05] hover:text-white/80 transition-all">
-              <span className="text-white/70">{item.icon}</span>
+            <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.02] border border-white/5 text-[10px] font-bold uppercase tracking-wider text-white/40 hover:bg-white/[0.05] hover:text-white transition-all">
+              <span className="text-white/60">{item.icon}</span>
               {item.label}
             </div>
           ))}
@@ -411,7 +405,7 @@ export default function AntiGravityHero() {
   const fadeOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full py-20 flex items-center justify-center">
+    <section ref={containerRef} className="relative w-full min-h-[90vh] md:min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden">
       
       {/* 1. LAYER: Monochromic Sharp Grid Background */}
       <motion.div 

@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Package, Download, Bell, Sparkles, ChevronRight, Zap, ShieldCheck, LogOut } from 'lucide-react';
-import { auth, onAuthStateChanged, signOut, db, collection, query, where, getDocs, doc, getDoc } from '../firebase';
+import { 
+  Package, Download, Bell, Sparkles, ChevronRight, Zap, 
+  ShieldCheck, LogOut, BookOpen, Video, Users, Play, Clock, ArrowUpRight 
+} from 'lucide-react';
+import { auth, onAuthStateChanged, signOut, db, doc, getDoc, getDocs, collection, query, where } from '../firebase';
 import { useSEO } from '../hooks/useSEO';
-import { LabCard } from '../components/ui/LabCard';
+import { EcosystemCard } from '../components/ui/EcosystemCard';
 import { Product } from '../types';
 import { getPublishedProducts } from '../lib/product-utils';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { MagneticButton } from '../components/ui/MagneticButton';
 
 export const VaultPage = () => {
   const navigate = useNavigate();
@@ -15,14 +19,17 @@ export const VaultPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
+  const [activeTab, setActiveTab] = useState('blueprints');
   const [ownedProducts, setOwnedProducts] = useState<Product[]>([]);
   const [discoverProducts, setDiscoverProducts] = useState<Product[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
+  const [registeredWorkshops, setRegisteredWorkshops] = useState<any[]>([]);
 
   const { trackEvent } = useAnalytics();
 
   useSEO({
     title: "My Digital Vault | Ayush Paul",
-    description: "Your private authenticated vault for downloaded blueprints and systems.",
+    description: "Your private authenticated vault for downloaded blueprints, courses, and registered workshops.",
   });
 
   useEffect(() => {
@@ -31,27 +38,70 @@ export const VaultPage = () => {
       if (currentUser) {
         setUser(currentUser);
         const profileSnap = await getDoc(doc(db, 'users', currentUser.uid));
+        
+        // Fetch all published blueprints
+        const allProducts = await getPublishedProducts();
+
         if (profileSnap.exists()) {
           const profileData = profileSnap.data();
           setProfile(profileData);
           
           const ownedMap = profileData?.ownedProducts || {};
           const ownedIds = Object.keys(ownedMap);
-          console.log("[Lab] Profile found. Owned IDs:", ownedIds);
           
-          const allProducts = await getPublishedProducts();
-          console.log("[Lab] All Products from DB:", allProducts.map(p => p.id));
-          
-          const filtered = allProducts.filter(p => ownedIds.includes(p.id));
-          console.log("[Lab] Filtered Owned Products:", filtered.map(p => p.id));
-          
-          setOwnedProducts(filtered);
+          const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
+          setOwnedProducts(filteredOwned);
           setDiscoverProducts(allProducts.filter(p => ownedMap[p.id] !== 'premium' && p.type !== 'free'));
         } else {
           setOwnedProducts([]);
-          const allProducts = await getPublishedProducts();
           setDiscoverProducts(allProducts.filter(p => p.type !== 'free'));
         }
+
+        // Fetch Enrolled Courses
+        try {
+          const enrollSnap = await getDocs(
+            query(collection(db, "enrollments"), where("userId", "==", currentUser.uid))
+          );
+          const enrollMap: Record<string, any> = {};
+          enrollSnap.docs.forEach((doc) => {
+            const data = doc.data();
+            if (data.courseId) {
+              enrollMap[data.courseId] = data;
+            }
+          });
+
+          const coursesSnap = await getDocs(
+            query(collection(db, "courses"), where("isPublished", "==", true))
+          );
+          const coursesList = coursesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          
+          const enrolledList = coursesList.filter(c => enrollMap[c.id]).map(c => ({
+            ...c,
+            progressData: enrollMap[c.id]
+          }));
+          setEnrolledCourses(enrolledList);
+        } catch (courseErr) {
+          console.error("Failed to load enrolled courses inside Vault:", courseErr);
+        }
+
+        // Fetch Registered Workshops
+        try {
+          const workshopSnap = await getDocs(
+            query(collection(db, "workshop_registrations"), where("userId", "==", currentUser.uid))
+          );
+          const registeredIds = workshopSnap.docs.map(doc => doc.data().workshopId);
+
+          const allWorkshopsSnap = await getDocs(
+            query(collection(db, "workshops"), where("isPublished", "==", true))
+          );
+          const workshopsList = allWorkshopsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+          const filteredWorkshops = workshopsList.filter(w => registeredIds.includes(w.id));
+          setRegisteredWorkshops(filteredWorkshops);
+        } catch (wErr) {
+          console.error("Failed to load registered workshops inside Vault:", wErr);
+        }
+
       } else {
         navigate('/'); // Redirect to home if not logged in
       }
@@ -84,21 +134,31 @@ export const VaultPage = () => {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20">Verifying Identity</span>
+      <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
+        <div className="w-6 h-6 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin mb-4" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
       </div>
     );
   }
+
+  const tabs = [
+    { id: 'blueprints', label: 'Blueprints & Systems', icon: Package },
+    { id: 'courses', label: 'Courses & Tracks', icon: BookOpen },
+    { id: 'workshops', label: 'Live Workshops', icon: Video },
+    { id: 'mentorship', label: '1-on-1 Sessions', icon: Users }
+  ];
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full min-h-screen bg-[#0A0A0A] pt-32 pb-32"
+      className="w-full min-h-screen bg-bg-primary pt-24 pb-32 relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
+      {/* Background Soft Grid Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(11,28,48,0.02)_1px,transparent_0)] bg-[size:40px_40px] pointer-events-none opacity-100 -z-10" />
+
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         
         {/* Success / Onboarding Alert */}
         <AnimatePresence>
@@ -107,15 +167,15 @@ export const VaultPage = () => {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="mb-8 p-6 rounded-3xl bg-green-500/10 border border-green-500/20 overflow-hidden"
+              className="mb-8 p-6 rounded-2xl bg-green-50 border border-green-200 overflow-hidden text-left"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center">
-                  <Zap size={24} className="text-green-500" />
+                <div className="w-10 h-10 rounded-xl bg-green-100 border border-green-200 flex items-center justify-center">
+                  <Zap size={20} className="text-green-600" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold text-white tracking-tight">System Unlocked Successfully</h4>
-                  <p className="text-sm text-green-500/80 font-medium">Your new innovation asset has been added to your Digital Vault.</p>
+                  <h4 className="text-base font-extrabold text-[#0b1c30] tracking-tight">System Unlocked Successfully</h4>
+                  <p className="text-xs text-green-700 font-semibold">Your new innovation asset has been added to your Digital Vault.</p>
                 </div>
               </div>
             </motion.div>
@@ -123,111 +183,306 @@ export const VaultPage = () => {
         </AnimatePresence>
 
         {/* Dashboard Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-full border-2 border-brand-primary/30 overflow-hidden relative">
-              <div className="absolute inset-0 bg-brand-primary/20" />
-              <img 
-                src={user?.photoURL || `https://ui-avatars.com/api/?name=${user?.email}&background=0D8ABC&color=fff`} 
-                alt="Profile" 
-                className="w-full h-full object-cover relative z-10"
-              />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 pb-8 border-b border-[#c2c6d6]/20">
+          <div className="flex items-center gap-4 text-left">
+            <div className="w-16 h-16 rounded-full border border-[#c2c6d6]/30 overflow-hidden relative bg-[#eff4ff] flex items-center justify-center">
+              {user?.photoURL ? (
+                <img 
+                  src={user.photoURL} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-lg font-bold text-[#0b1c30] uppercase">
+                  {user?.email?.charAt(0) || 'I'}
+                </div>
+              )}
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary">Innovator Profile</span>
-                <ShieldCheck size={14} className="text-brand-primary" />
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be]">Innovator Profile</span>
+                <ShieldCheck size={12} className="text-[#0058be]" />
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              <h1 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">
                 {profile?.displayName || "Innovator"}
               </h1>
-              <p className="text-white/40 text-sm mt-1">{user?.email}</p>
+              <p className="text-[#424754]/60 text-xs mt-0.5 font-semibold">{user?.email}</p>
             </div>
           </div>
           
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/20 text-red-500 hover:bg-red-500/10 transition-colors text-xs font-bold uppercase tracking-widest"
-          >
-            <LogOut size={14} /> Sign Out
-          </button>
+          <MagneticButton>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-red-500/30 text-red-650 hover:bg-red-55 transition-all duration-300 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+            >
+              <LogOut size={12} /> Sign Out
+            </button>
+          </MagneticButton>
         </div>
 
-        {/* Alerts / Updates */}
-        <div className="p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/20 flex items-start sm:items-center justify-between gap-4 mb-12">
+        {/* Info alerts */}
+        <div className="p-4 rounded-2xl bg-[#eff4ff]/60 border border-[#dce9ff] flex items-start sm:items-center justify-between gap-4 mb-12 text-left">
           <div className="flex items-center gap-3">
-            <Bell size={18} className="text-brand-primary shrink-0" />
-            <p className="text-sm text-white/80">
-              <strong className="text-white">Secure Workspace:</strong> All files are served via protected URLs. Sharing access is strictly monitored.
+            <Bell size={14} className="text-[#0058be] shrink-0" />
+            <p className="text-xs text-[#424754] font-semibold">
+              <strong className="text-[#0b1c30]">Secure Vault:</strong> Every digital track, live workshop access link, and code audit is cataloged inside your authenticated profile.
             </p>
           </div>
-          <button className="text-[10px] font-bold uppercase tracking-widest text-brand-primary hover:text-white transition-colors shrink-0">
-            Dismiss
-          </button>
         </div>
 
-        {/* Owned Assets (Primary Workspace) */}
-        <div className="mb-20">
-          <div className="flex items-center gap-3 mb-8">
-            <Package className="text-white" size={24} />
-            <h2 className="text-2xl font-bold tracking-tight">Your Digital Vault</h2>
-          </div>
+        {/* Tab switcher navigation */}
+        <div className="flex items-center gap-2 border-b border-[#c2c6d6]/20 pb-6 mb-12 flex-wrap text-left">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 cursor-pointer
+                  ${isActive
+                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
+                    : 'bg-white border-[#c2c6d6]/30 text-[#424754]/85 hover:text-[#0b1c30] hover:border-[#0058be]/20'
+                  }`}
+              >
+                <Icon size={12} />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
-          {ownedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {ownedProducts.map(product => (
-                <div key={product.id} className="p-6 rounded-[2rem] glass border border-white/10 flex flex-col group">
-                  <div className="aspect-video w-full rounded-2xl overflow-hidden mb-6 relative">
-                    <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors" />
+        {/* Active Tab Area */}
+        <div className="mb-20 text-left">
+          <AnimatePresence mode="wait">
+            {activeTab === 'blueprints' && (
+              <motion.div
+                key="blueprints"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {ownedProducts.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {ownedProducts.map(product => (
+                      <div key={product.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 shadow-sm">
+                        <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10">
+                          <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover transition-opacity duration-300" />
+                        </div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be] px-2.5 py-0.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
+                            {product.category}
+                          </span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-green-650 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
+                            {profile?.ownedProducts?.[product.id] || 'Owned'}
+                          </span>
+                        </div>
+                        <h3 className="text-base font-extrabold text-[#0b1c30] mb-1.5 line-clamp-1">{product.title}</h3>
+                        <p className="text-xs text-[#424754] mb-5 line-clamp-2 flex-1 leading-relaxed font-semibold">{product.description}</p>
+                        
+                        <MagneticButton className="w-full">
+                          <button 
+                            onClick={() => handleDownload(product)}
+                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                          >
+                            <Download size={14} /> Access Files
+                          </button>
+                        </MagneticButton>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary px-2 py-1 rounded bg-brand-primary/10">
-                      {product.category}
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-green-500">
-                      {profile?.ownedProducts?.[product.id] || 'Owned'}
-                    </span>
+                ) : (
+                  <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">
+                    <Package size={36} className="text-[#424754]/25 mb-4" />
+                    <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">Your blueprints are empty</h3>
+                    <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You haven't downloaded or purchased any blueprints yet.</p>
+                    <MagneticButton>
+                      <Link to="/blueprints" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                        Explore Blueprints
+                      </Link>
+                    </MagneticButton>
                   </div>
-                  <h3 className="text-lg font-bold mb-2 line-clamp-1">{product.title}</h3>
-                  <p className="text-sm text-white/40 mb-6 line-clamp-2 flex-1">{product.description}</p>
-                  
-                  <button 
-                    onClick={() => handleDownload(product)}
-                    className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 transition-colors font-bold text-sm flex items-center justify-center gap-2"
-                  >
-                    <Download size={16} /> Access Files
-                  </button>
+                )}
+              </motion.div>
+            )}
+
+            {activeTab === 'courses' && (
+              <motion.div
+                key="courses"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {enrolledCourses.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {enrolledCourses.map(course => {
+                      const completedCount = course.progressData?.progress?.length || 0;
+                      const totalCount = course.lessonsCount || 10;
+                      const percent = Math.min(100, Math.round((completedCount / totalCount) * 100));
+
+                      return (
+                        <div key={course.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 shadow-sm">
+                          <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10 flex items-center justify-center">
+                            {course.thumbnail ? (
+                              <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                            ) : (
+                              <BookOpen size={48} className="text-gray-200" />
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-[#0058be] px-2.5 py-0.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
+                              {course.category}
+                            </span>
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-green-650 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
+                              Active Track
+                            </span>
+                          </div>
+                          <h3 className="text-base font-extrabold text-[#0b1c30] mb-1.5 line-clamp-1">{course.title}</h3>
+                          
+                          {/* Progress bar */}
+                          <div className="mt-2 mb-6">
+                            <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-2">
+                              <span>Progress</span>
+                              <span className="text-[#0058be]">{percent}%</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                              <div className="h-full bg-[#0058be] transition-all duration-500" style={{ width: `${percent}%` }} />
+                            </div>
+                          </div>
+
+                          <MagneticButton className="w-full mt-auto">
+                            <Link 
+                              to={`/mastery/courses/${course.id}`}
+                              className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                            >
+                              <Play size={12} className="text-[#d1f34d] fill-current" /> Resume Study
+                            </Link>
+                          </MagneticButton>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">
+                    <BookOpen size={36} className="text-[#424754]/25 mb-4" />
+                    <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">No enrolled tracks</h3>
+                    <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You haven't enrolled in any self-paced compounding tracks yet.</p>
+                    <MagneticButton>
+                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                        Explore Mastery
+                      </Link>
+                    </MagneticButton>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {activeTab === 'workshops' && (
+              <motion.div
+                key="workshops"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {registeredWorkshops.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {registeredWorkshops.map(workshop => (
+                      <div key={workshop.id} className="p-8 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col justify-between group hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.005] transition-all duration-300 shadow-sm">
+                        <div className="space-y-4 text-left">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2.5 py-0.5 rounded-full bg-red-50 text-red-650 border border-red-200 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                              <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> Live Session
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/50">
+                              Workshop
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight">{workshop.title}</h3>
+                          <p className="text-xs text-[#424754] leading-relaxed font-semibold">{workshop.description}</p>
+                          
+                          <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-[#c2c6d6]/10 text-xs font-bold text-[#424754]/75">
+                            <div className="flex items-center gap-1.5">
+                              <Clock size={14} className="text-[#0058be]" />
+                              <span>{workshop.date || 'TBD'}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 justify-end">
+                              <span>Instructor: {workshop.instructor || 'Ayush Paul'}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <MagneticButton className="w-full mt-6">
+                          <a 
+                            href={workshop.meetingLink || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                          >
+                            Join Live Workspace <ArrowUpRight size={14} />
+                          </a>
+                        </MagneticButton>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">
+                    <Video size={36} className="text-[#424754]/25 mb-4" />
+                    <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">No registered workshops</h3>
+                    <p className="text-[#424754]/60 text-xs mb-6 font-semibold">You are not registered for any upcoming live building sessions.</p>
+                    <MagneticButton>
+                      <Link to="/mastery" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                        View Upcoming Workshops
+                      </Link>
+                    </MagneticButton>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {activeTab === 'mentorship' && (
+              <motion.div
+                key="mentorship"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {/* For Phase 1 we display the empty state with CTA or application statuses */}
+                <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">
+                  <Users size={36} className="text-[#424754]/25 mb-4" />
+                  <h3 className="text-lg font-extrabold text-[#0b1c30] mb-1">No active 1-on-1 sessions</h3>
+                  <p className="text-[#424754]/60 text-xs mb-6 font-semibold">Prefer personalized learning? Book private sessions and learn directly with Ayush. Follow the same tracks with live guidance.</p>
+                  <div className="flex gap-4 items-center justify-center flex-wrap">
+                    <MagneticButton>
+                      <Link to="/collaborate" className="px-6 py-3 bg-[#0b1c30] text-white hover:bg-[#0058be] font-bold text-[10px] uppercase tracking-wider rounded-full transition-colors flex items-center justify-center h-11">
+                        Book Learning Session
+                      </Link>
+                    </MagneticButton>
+                  </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="w-full p-12 rounded-[2.5rem] glass border border-white/5 flex flex-col items-center justify-center text-center">
-              <Package size={48} className="text-white/10 mb-6" />
-              <h3 className="text-xl font-bold mb-2">Your vault is empty</h3>
-              <p className="text-white/40 mb-8">You haven't downloaded or purchased any blueprints yet.</p>
-              <Link to="/labs" className="px-6 py-3 rounded-full bg-brand-primary text-black font-bold text-sm hover:bg-white transition-colors">
-                Explore The Lab
-              </Link>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Discovery / Upsell Section */}
         <div>
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <Sparkles className="text-brand-primary" size={24} />
-              <h2 className="text-2xl font-bold tracking-tight">Discover Premium Systems</h2>
+          <div className="flex items-center justify-between mb-8 border-t border-[#c2c6d6]/20 pt-12 text-left">
+            <div className="flex items-center gap-2">
+              <Sparkles className="text-[#0058be]" size={20} />
+              <h2 className="text-xl font-extrabold tracking-tight text-[#0b1c30]">Discover Premium Blueprints</h2>
             </div>
-            <Link to="/labs" className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors flex items-center gap-1">
-              View All <ChevronRight size={14} />
+            <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-wider text-[#0058be] hover:text-[#004bb0] transition-colors flex items-center gap-0.5 cursor-pointer">
+              View All <ChevronRight size={12} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {discoverProducts.map(product => (
-              <LabCard key={product.id} product={product} />
+              <EcosystemCard key={product.id} project={product} />
             ))}
           </div>
         </div>

@@ -84,37 +84,37 @@ export const BlogPage = () => {
         <button 
           onClick={() => setActiveDropdown(isOpen ? null : id)}
           className={cn(
-            "w-full bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-2xl py-5 px-7 flex items-center justify-between transition-all duration-300 group shadow-lg",
-            isOpen ? "border-brand-primary/40 bg-white/[0.05] ring-4 ring-brand-primary/5 scale-[1.02]" : "hover:border-white/20 hover:bg-white/[0.04]"
+            "w-full bg-white border border-[#c2c6d6]/35 rounded-[16px] py-4 px-6 flex items-center justify-between transition-colors group cursor-pointer",
+            isOpen ? "border-[#0058be] bg-bg-secondary" : "hover:border-[#c2c6d6]/50 hover:bg-[#f8f9ff]"
           )}
         >
           <div className="flex flex-col items-start gap-0.5">
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/20">{label}</span>
-            <span className="text-[13px] font-bold text-white/90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]">
+            <span className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60">{label}</span>
+            <span className="text-xs font-extrabold text-[#0b1c30] whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]">
               {value || `All ${label}s`}
             </span>
           </div>
-          <ChevronDown size={16} className={cn("text-white/20 group-hover:text-brand-primary transition-all duration-500", isOpen && "rotate-180 text-brand-primary")} />
+          <ChevronDown size={14} className={cn("text-[#424754]/40 group-hover:text-[#0058be] transition-transform duration-200", isOpen && "rotate-180")} />
         </button>
         
         {isOpen && (
-          <div className="absolute top-[calc(100%+12px)] left-0 w-full min-w-[240px] bg-[#0E0E0E]/95 backdrop-blur-3xl border border-white/[0.08] rounded-3xl overflow-hidden z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="p-2 max-h-[320px] overflow-y-auto custom-scrollbar">
+          <div className="absolute top-[calc(100%+8px)] left-0 w-full min-w-[240px] bg-white border border-[#c2c6d6]/30 rounded-2xl overflow-hidden z-[100] shadow-ambient">
+            <div className="p-1 max-h-[320px] overflow-y-auto custom-scrollbar">
               <button 
                 onClick={() => { onChange(null); setActiveDropdown(null); }}
-                className="w-full px-5 py-4 rounded-xl text-left text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-white/[0.05] transition-all flex items-center justify-between group"
+                className="w-full px-4 py-3 rounded-lg text-left text-[10px] font-bold uppercase tracking-wider hover:bg-[#f8f9ff] transition-colors flex items-center justify-between group cursor-pointer"
               >
-                <span className={cn(!value ? "text-brand-primary" : "text-white/30 group-hover:text-white/50")}>All {label}s</span>
-                {!value && <Check size={14} className="text-brand-primary" />}
+                <span className={cn(!value ? "text-[#0058be]" : "text-[#424754]/60 group-hover:text-[#424754]")}>All {label}s</span>
+                {!value && <Check size={12} className="text-[#0058be]" />}
               </button>
               {options.map((opt: string) => (
                 <button 
                   key={opt}
                   onClick={() => { onChange(opt); setActiveDropdown(null); }}
-                  className="w-full px-5 py-4 rounded-xl text-left text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-white/[0.05] transition-all flex items-center justify-between group"
+                  className="w-full px-4 py-3 rounded-lg text-left text-[10px] font-bold uppercase tracking-wider hover:bg-[#f8f9ff] transition-colors flex items-center justify-between group cursor-pointer"
                 >
-                  <span className={cn(value === opt ? "text-brand-primary" : "text-white/60 group-hover:text-white")}>{opt}</span>
-                  {value === opt && <Check size={14} className="text-brand-primary" />}
+                  <span className={cn(value === opt ? "text-[#0058be]" : "text-[#424754]/60 group-hover:text-[#0b1c30]")}>{opt}</span>
+                  {value === opt && <Check size={12} className="text-[#0058be]" />}
                 </button>
               ))}
             </div>
@@ -125,40 +125,45 @@ export const BlogPage = () => {
   };
 
   return (
-    <div className="page-content bg-[#0A0A0A]">
-      <div className="container mx-auto px-6">
-        <div className="mb-10">
+    <div className="page-content bg-bg-primary">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <div className="mb-10 text-left">
           <BackButton to="/" label="Back to Home" />
         </div>
 
         <div className="max-w-4xl mx-auto mb-20 text-center">
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight text-white/95 leading-tight">The <span className="text-brand-primary">Blog</span></h1>
-          <p className="text-white/50 text-xl font-medium max-w-2xl mx-auto leading-relaxed">Thoughts on Artificial Intelligence, Engineering, and the Future of Students.</p>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter text-[#0b1c30] leading-[1.05]">
+            The <span className="text-[#424754]/60">Chronicles.</span>
+          </h1>
+          <p className="text-[#424754] text-sm max-w-xl mx-auto leading-relaxed font-semibold">
+            Thoughts on systems design, AI architectures, and building products in public.
+          </p>
         </div>
 
+        {/* Search & Filter Panel */}
         <div 
           className={cn(
-            "max-w-4xl mx-auto mb-24 border border-white/[0.08] rounded-[32px] bg-[#0C0C0C] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] overflow-hidden backdrop-blur-3xl transition-all duration-500 ease-in-out",
-            (isFocused || search || selectedTag || selectedCategory) ? "ring-2 ring-brand-primary/20" : ""
+            "max-w-4xl mx-auto mb-24 border border-[#c2c6d6]/35 rounded-2xl bg-white shadow-sm overflow-hidden transition-all duration-200",
+            (isFocused || search || selectedTag || selectedCategory) ? "border-[#c2c6d6]/50 shadow-md" : ""
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Header */}
-          <div className="p-6 md:p-8 flex items-center justify-between group">
-            <div className="flex items-center gap-6 flex-1">
-              <Search className={cn("transition-colors duration-500", isFocused ? "text-brand-primary" : "text-white/10")} size={20} />
+          <div className="p-6 flex items-center justify-between group">
+            <div className="flex items-center gap-4 flex-1">
+              <Search className={cn("transition-colors duration-200", isFocused ? "text-[#0058be]" : "text-[#424754]/30")} size={16} />
               <input 
                 type="text" 
                 placeholder="Search for articles, topics or tags..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onFocus={() => setIsFocused(true)}
-                className="w-full bg-transparent outline-none text-xl font-medium placeholder:text-white/10 text-white"
+                className="w-full bg-transparent outline-none text-base font-semibold placeholder:text-[#424754]/40 text-[#0b1c30]"
               />
             </div>
             <div className="flex items-center gap-4">
-              <div className={cn("hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[10px] font-bold tracking-widest uppercase transition-all duration-500", (isFocused || search || selectedTag || selectedCategory) ? "text-brand-primary border-brand-primary/30" : "text-white/30")}>
-                <span className="text-[14px]">/</span> Focus
+              <div className={cn("hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-bg-secondary border border-[#c2c6d6]/20 text-[9px] font-bold tracking-wider uppercase transition-colors duration-200", (isFocused || search || selectedTag || selectedCategory) ? "text-[#0b1c30] border-[#c2c6d6]/35" : "text-[#424754]/40")}>
+                <span className="text-[11px] font-bold">/</span> Focus
               </div>
               {(isFocused || search || selectedTag || selectedCategory) && (
                 <button 
@@ -169,27 +174,45 @@ export const BlogPage = () => {
                     setSelectedTag(null);
                     setSelectedCategory(null);
                   }}
-                  className="p-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-white/40 hover:text-white transition-all group/close"
+                  className="px-3 py-1.5 rounded-full bg-[#eff4ff] hover:bg-[#e5eeff] border border-[#dce9ff] text-[#0058be] transition-colors text-[9px] font-bold uppercase tracking-wider cursor-pointer"
                 >
-                  <span className="flex items-center gap-2 px-1 text-[10px] font-bold uppercase tracking-widest">
-                    Close <span className="opacity-40 group-hover:opacity-100 transition-opacity">Esc</span>
-                  </span>
+                  Close
                 </button>
               )}
             </div>
           </div>
 
           {(isFocused || search || selectedTag || selectedCategory) && (
-            <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-              <div className="h-px bg-white/[0.05]" />
+            <div className="border-t border-[#c2c6d6]/20">
+              <div className="p-6 space-y-8 text-left">
+                {/* Filters */}
+                <div className="flex flex-wrap gap-4">
+                  {allCategories.length > 0 && (
+                    <CustomSelect 
+                      label="Category" 
+                      value={selectedCategory} 
+                      options={allCategories} 
+                      onChange={setSelectedCategory}
+                      id="category"
+                    />
+                  )}
+                  {allTags.length > 0 && (
+                    <CustomSelect 
+                      label="Tag" 
+                      value={selectedTag} 
+                      options={allTags} 
+                      onChange={setSelectedTag}
+                      id="tag"
+                    />
+                  )}
+                </div>
 
-              <div className="p-8 space-y-12">
                 {/* Search Results (Live Matches) */}
                 {search && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between px-2">
-                      <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">Top Results</div>
-                      <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary">{filteredPosts.length} matches</div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                      <div className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60">Top Results</div>
+                      <div className="text-[8px] font-bold uppercase tracking-wider text-[#0b1c30]">{filteredPosts.length} matches</div>
                     </div>
                     <div className="space-y-2">
                       {filteredPosts.length > 0 ? (
@@ -197,23 +220,23 @@ export const BlogPage = () => {
                           <Link 
                             to={`/blog/${post.slug}`} 
                             key={post.id}
-                            className="w-full px-5 py-4 rounded-xl flex items-center justify-between transition-all group bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] hover:border-brand-primary/30"
+                            className="w-full px-4 py-3 rounded-xl flex items-center justify-between transition-colors group bg-[#f8f9ff] hover:bg-[#eff4ff] border border-[#c2c6d6]/20 hover:border-[#0058be]/20"
                           >
-                            <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 shrink-0 relative">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg overflow-hidden border border-[#c2c6d6]/20 shrink-0 relative">
                                 <img src={post.coverImage} className="absolute inset-0 w-full h-full object-cover" alt="" referrerPolicy="no-referrer" />
                               </div>
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-sm font-bold text-white group-hover:text-brand-primary transition-colors">{post.title}</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">{post.category}</span>
+                              <div className="flex flex-col gap-0.5 text-left">
+                                <span className="text-sm font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">{post.title}</span>
+                                <span className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60">{post.category}</span>
                               </div>
                             </div>
-                            <ArrowRight size={14} className="text-white/10 group-hover:text-brand-primary transition-all group-hover:translate-x-1" />
+                            <ArrowRight size={12} className="text-[#424754]/40 group-hover:text-[#0058be] transition-all group-hover:translate-x-0.5" />
                           </Link>
                         ))
                       ) : (
-                        <div className="p-12 text-center rounded-2xl bg-white/[0.02] border border-dashed border-white/10">
-                          <p className="text-white/20 font-bold uppercase tracking-[0.2em] text-[10px]">No articles match your search</p>
+                        <div className="p-8 text-center rounded-xl bg-bg-secondary border border-dashed border-[#c2c6d6]/35">
+                          <p className="text-[#424754]/60 font-bold uppercase tracking-wider text-[8px]">No articles match your search</p>
                         </div>
                       )}
                     </div>
@@ -221,12 +244,11 @@ export const BlogPage = () => {
                 )}
 
                 {(selectedTag || selectedCategory || search) && (
-                  <div className="pt-4 flex justify-end">
+                  <div className="pt-2 flex justify-end">
                     <button 
                       onClick={() => { setSelectedTag(null); setSelectedCategory(null); setSearch(""); }}
-                      className="flex items-center gap-3 px-6 py-4 rounded-xl bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 hover:border-red-500/20 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500/60 hover:text-red-400 transition-all"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#f8f9ff] hover:bg-[#eff4ff] border border-[#c2c6d6]/25 text-[9px] font-bold uppercase tracking-wider text-[#0b1c30] transition-colors cursor-pointer"
                     >
-                      <span className="w-1 h-1 rounded-full bg-current" />
                       Reset Search
                     </button>
                   </div>
@@ -236,53 +258,56 @@ export const BlogPage = () => {
           )}
         </div>
 
+        {/* Blog Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {loading ? (
             Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="glass-card rounded-3xl overflow-hidden border border-white/5 h-[400px] animate-pulse">
-                <div className="aspect-video bg-white/5" />
-                <div className="p-8 space-y-4">
-                  <div className="h-4 w-1/3 bg-white/5 rounded-full" />
-                  <div className="h-8 w-full bg-white/5 rounded-full" />
-                  <div className="h-4 w-full bg-white/5 rounded-full" />
+              <div key={i} className="bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden h-[400px] animate-pulse">
+                <div className="aspect-video bg-bg-secondary" />
+                <div className="p-6 space-y-4">
+                  <div className="h-3 w-1/3 bg-bg-secondary rounded" />
+                  <div className="h-6 w-full bg-bg-secondary rounded" />
+                  <div className="h-3 w-full bg-bg-secondary rounded" />
                 </div>
               </div>
             ))
           ) : filteredPosts.map(post => (
-
             <Link to={`/blog/${post.slug}`} key={post.id} className="group">
-              <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-500 h-full flex flex-col shadow-2xl hover:shadow-brand-primary/5">
-                <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
-                  <img src={post.coverImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  <div className="absolute top-6 left-6">
-                    <span className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-[9px] font-bold uppercase tracking-[0.2em] text-white/90">
+              <div className="bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 h-full flex flex-col shadow-sm">
+                <div className="aspect-video overflow-hidden relative bg-gray-100 border-b border-[#c2c6d6]/10">
+                  <img src={post.coverImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/20 text-[8px] font-bold uppercase tracking-wider text-[#0b1c30]">
                       {post.category}
                     </span>
                   </div>
                 </div>
-                <div className="p-8 md:p-10 flex-1 flex flex-col">
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
+                <div className="p-8 flex-1 flex flex-col text-left">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60">
                       {Array.isArray(post.tags) ? post.tags[0] : post.tags}
                     </span>
-                    <div className="w-1 h-1 rounded-full bg-white/10" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">{formatDate(post.createdAt)}</span>
+                    <div className="w-1 h-1 rounded-full bg-[#c2c6d6]/50" />
+                    <span className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60">{formatDate(post.createdAt)}</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors leading-tight text-white/90">{post.title}</h3>
-                  <p className="text-white/40 mb-8 line-clamp-3 text-sm leading-relaxed font-medium">
+                  <h3 className="text-xl font-extrabold mb-3 group-hover:text-[#0058be] transition-colors leading-tight text-[#0b1c30] tracking-tight">
+                    {post.title}
+                  </h3>
+                  <p className="text-[#424754] mb-6 line-clamp-3 text-xs leading-relaxed font-semibold">
                     {post.description || (post.blocks?.find((b: any) => b.type === 'text')?.content?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, '').substring(0, 160).replace(/\.+$/, '') + '...') || "Read the full article to explore this topic further."}
                   </p>
-                  <div className="mt-auto flex items-center gap-2 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] group-hover:gap-3 transition-all">
-                    Explore Story <ArrowRight size={14} />
+                  <div className="mt-auto flex items-center gap-1.5 text-[9px] font-bold text-[#424754]/60 group-hover:text-[#0058be] uppercase tracking-wider transition-colors">
+                    Explore Story <ArrowRight size={10} className="transform group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
               </div>
             </Link>
           ))}
         </div>
+        
         {!loading && filteredPosts.length === 0 && (search || selectedTag || selectedCategory) && (
-          <div className="text-center py-24 glass-card rounded-[40px] border border-white/5">
-            <p className="text-white/40">No articles found matching your criteria.</p>
+          <div className="text-center py-24 border border-[#c2c6d6]/35 rounded-[32px] bg-white">
+            <p className="text-[#424754]/60 text-xs font-semibold">No articles found matching your criteria.</p>
           </div>
         )}
         
@@ -295,5 +320,3 @@ export const BlogPage = () => {
     </div>
   );
 };
-
-

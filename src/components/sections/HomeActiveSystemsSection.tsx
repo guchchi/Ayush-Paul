@@ -179,7 +179,7 @@ export const HomeActiveSystemsSection = () => {
                       ₹2,499 / Free Blueprint
                     </span>
                     <Link
-                      to="/systems/ayu-boat-blueprint"
+                      to="/blueprints/ayu-boat-blueprint"
                       className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(59,130,246,0.25)] transition-all duration-300 ease-out"
                     >
                       <ArrowUpRight size={18} />
@@ -244,7 +244,7 @@ export const HomeActiveSystemsSection = () => {
                         ₹4,999 / Free Blueprint
                       </span>
                       <Link
-                        to="/systems/iobot-blueprint"
+                        to="/blueprints/iobot-blueprint"
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(59,130,246,0.25)] transition-all duration-300 ease-out"
                       >
                         <ArrowUpRight size={18} />
@@ -287,7 +287,7 @@ export const HomeActiveSystemsSection = () => {
                         100% Free
                       </span>
                       <Link
-                        to="/systems/haptic-teleoperation-blueprint"
+                        to="/blueprints/haptic-teleoperation-blueprint"
                         className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(59,130,246,0.25)] transition-all duration-300 ease-out"
                       >
                         <ArrowUpRight size={18} />

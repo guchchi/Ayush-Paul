@@ -67,7 +67,7 @@ export const ScrollToTopButton = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={scrollToTop}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom)+96px)] right-6 sm:bottom-12 sm:right-12 z-[9999] w-14 h-14 rounded-full bg-brand-primary text-white shadow-[0_0_30px_rgba(0,194,255,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+96px)] right-6 sm:bottom-12 sm:right-12 z-[9999] w-12 h-12 rounded-full bg-[#1a1a1a] text-white border border-white/15 shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer pointer-events-auto"
         >
           <ChevronUp size={28} />
         </motion.button>

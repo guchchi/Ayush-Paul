@@ -20,95 +20,25 @@ export const enrichDigitalSystem = (system: any): Product => {
   if (!system) return system;
 
   const enriched = { ...system } as Product;
-  const slug = enriched.slug || '';
 
-  // 1. Dynamic Override to translate robotics DB items to Digital Frameworks
-  if (slug.includes('boat') || slug.includes('water')) {
-    enriched.title = "AI Website Launch Blueprint";
-    enriched.category = "web";
-    enriched.description = "Learn how to research, design, build, and deploy a high-performance Next.js website using AI assistants without sacrificing technical SEO.";
-    enriched.thumbnail = "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200";
-    
+  // Provide default assets/resources if none are defined
+  if (!enriched.resources || enriched.resources.length === 0) {
     enriched.resources = [
       {
-        id: `${enriched.id}_nextjs_boilerplate`,
-        title: "Next.js & Tailwind App Boilerplate",
-        description: "High-performance base template optimized for speed and SEO structure.",
-        category: AssetCategory.TEMPLATE,
-        isPremium: false,
-        fileSize: "1.2 MB"
-      },
-      {
-        id: `${enriched.id}_cursor_rules`,
-        title: "Custom Cursor AI Rules Config",
-        description: "System instructions files to guide AI assistants on styling and structures.",
-        category: AssetCategory.CODE,
-        isPremium: true,
-        fileSize: "8 KB"
-      },
-      {
-        id: `${enriched.id}_seo_checklist`,
-        title: "Website SEO Sitemap Checklist",
-        description: "The sitemap construction, redirect structure, and crawl checklist.",
-        category: AssetCategory.PDF,
-        isPremium: true,
-        fileSize: "2.4 MB"
-      }
-    ];
-  } else if (slug.includes('iobot') || slug.includes('companion')) {
-    enriched.title = "Automation Starter Pack";
-    enriched.category = "automation";
-    enriched.description = "Reusable operational workflows designed to link databases, trigger webhooks, and automate content delivery.";
-    enriched.thumbnail = "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200";
-    
-    enriched.resources = [
-      {
-        id: `${enriched.id}_make_json`,
-        title: "Make.com Scenario JSON Config",
-        description: "Exported automation blueprints ready to import directly into Make.",
-        category: AssetCategory.TEMPLATE,
-        isPremium: false,
-        fileSize: "150 KB"
-      },
-      {
-        id: `${enriched.id}_webhook_code`,
-        title: "Webhook Middleware & Database Sync Node",
-        description: "NodeJS script to capture payloads and sync database records dynamically.",
-        category: AssetCategory.CODE,
-        isPremium: true,
-        fileSize: "45 KB"
-      },
-      {
-        id: `${enriched.id}_stripe_handler`,
-        title: "Stripe Event Webhook Handler",
-        description: "Secure, signature-verified endpoint scripts to manage user access.",
-        category: AssetCategory.CODE,
-        isPremium: true,
-        fileSize: "18 KB"
-      }
-    ];
-  } else if (slug.includes('haptic') || slug.includes('teleoperation')) {
-    enriched.title = "SEO Foundation Checklist";
-    enriched.category = "ai";
-    enriched.description = "The exact step-by-step technical checklist used to optimize, structure, and audit websites for search visibility.";
-    enriched.thumbnail = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200";
-    
-    enriched.resources = [
-      {
-        id: `${enriched.id}_schema_generator`,
-        title: "Technical JSON-LD Schema Generator",
-        description: "Script to automatically construct and inject structured data metadata.",
-        category: AssetCategory.CODE,
-        isPremium: false,
-        fileSize: "12 KB"
-      },
-      {
-        id: `${enriched.id}_audit_checklist`,
-        title: "Technical SEO Crawl Audit Checklist",
-        description: "Complete checklist covering robots.txt, canonicalization, and index rules.",
+        id: `${enriched.id}_ebook_guide`,
+        title: "Copy-Paste Ready Ebook Guide",
+        description: "The core ebook containing step-by-step documentation, theory, and templates.",
         category: AssetCategory.PDF,
         isPremium: false,
-        fileSize: "3.2 MB"
+        fileSize: "4.5 MB"
+      },
+      {
+        id: `${enriched.id}_code_templates`,
+        title: "Deployment Assets & Codes",
+        description: "Production ready codes, scripts, CADs, or configs to run immediately.",
+        category: AssetCategory.CODE,
+        isPremium: true,
+        fileSize: "1.8 MB"
       }
     ];
   }

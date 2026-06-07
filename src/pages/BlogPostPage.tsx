@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Calendar, Clock, Info, ArrowRight, Twitter, Linkedin, MessageCircle, Link2, Check } from "lucide-react";
+import { Calendar, Clock, Info, ArrowRight, Twitter, Linkedin, Link2, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useSEO } from "../hooks/useSEO";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
 import { getCanonicalUrl } from "../lib/domain";
-import { getDynamicBlogs, BlogPost } from "../lib/blog-utils";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
-import { VARIANTS } from "../lib/motion-presets";
-import { getRelatedContent } from "../lib/seo-utils";
+import { BlogPost } from "../lib/blog-utils";
+import { motion, AnimatePresence } from "motion/react";
 import { Product, Block } from "../types";
 import { WaitlistForm } from "../components/ui/WaitlistForm";
 
@@ -23,12 +21,6 @@ export const BlogPostPage = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeHeading, setActiveHeading] = useState("");
   const [copied, setCopied] = useState(false);
-
-  const { scrollY } = useScroll();
-  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
-  const heroScale = useTransform(scrollY, [0, 500], [1, 0.9]);
-  const heroY = useTransform(scrollY, [0, 500], [0, -50]);
-  const heroBlur = useTransform(scrollY, [0, 500], [0, 10]);
 
   useSEO({
     title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
@@ -94,6 +86,33 @@ export const BlogPostPage = () => {
           });
           
           setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
+
+          // Compute related products matching categories or tags
+          try {
+            const { getPublishedProducts } = await import('../lib/product-utils');
+            const allProducts = await getPublishedProducts();
+            
+            const scoredProducts = allProducts.map(prod => {
+              let score = 0;
+              const prodTags = Array.isArray(prod.tags) ? prod.tags : [];
+              if (prod.category && data.category && prod.category.toLowerCase() === data.category.toLowerCase()) {
+                score += 5;
+              }
+              const commonTags = currentTags.filter(t => 
+                prodTags.some(pt => pt.toLowerCase() === t.toLowerCase())
+              );
+              score += commonTags.length * 2;
+              return { ...prod, score };
+            });
+            
+            const relevant = scoredProducts
+              .filter(p => p.score > 0)
+              .sort((a, b) => b.score - a.score);
+              
+            setRelatedProducts(relevant.length > 0 ? relevant.slice(0, 3) : allProducts.slice(0, 3));
+          } catch (pErr) {
+            console.error("Failed to load related products for blog post:", pErr);
+          }
         }
       } catch (err) {
         console.error("[Blog] Post load error:", err);
@@ -155,391 +174,376 @@ export const BlogPostPage = () => {
     }));
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]"><div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" /></div>;
-  if (!post) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] text-white">Post not found</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-bg-primary"><div className="w-6 h-6 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin" /></div>;
+  if (!post) return <div className="min-h-screen flex items-center justify-center bg-bg-primary text-[#0b1c30] font-bold">Post not found</div>;
 
   return (
-    <div className="page-content bg-[#080808] relative selection:bg-brand-primary selection:text-black">
-      <div className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-brand-primary to-brand-accent z-[90] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
+    <div className="page-content bg-bg-primary relative">
+      <div className="fixed top-0 left-0 h-[3px] bg-[#0058be] z-[90] transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }} />
       
-      {/* Cinematic Hero Container */}
-      <section className="relative h-[130vh] w-full">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-[#050505]">
-          {/* Background Layer with Ambient Lighting */}
-          <motion.div 
-            style={{ opacity: heroOpacity, scale: 1.1 }}
-            className="absolute inset-0 z-0"
-          >
-            {post.coverImage ? (
-              <img 
-                src={post.coverImage} 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover grayscale-[20%] brightness-[0.7]" 
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary/10 via-black to-brand-accent/5" />
-            )}
-            
-            {/* Dynamic Ambient Glows */}
-            <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vw] bg-brand-primary/10 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] bg-brand-accent/5 rounded-full blur-[100px] animate-pulse-slow" />
-            
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
-          </motion.div>
+      {/* Editorial Header Section */}
+      <section className="pt-16 pb-12 px-6 max-w-5xl mx-auto text-center relative z-10">
+        <div className="mb-8 flex justify-start">
+          <BackButton to="/blog" label="All Stories" />
+        </div>
 
-          <motion.div 
-            style={{ opacity: heroOpacity, scale: heroScale, y: heroY, filter: `blur(${heroBlur}px)` }}
-            className="relative z-10 h-full w-full flex flex-col items-center justify-start sm:justify-center text-center px-6 sm:px-12 md:px-24 pt-64 sm:pt-48 pb-20"
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-bold uppercase tracking-wider text-[#424754]/60">
+            {post.category && (
+              <span className="px-3 py-1.5 rounded-full bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] text-[10px]">
+                {post.category}
+              </span>
+            )}
+            <div className="w-1 h-1 rounded-full bg-[#c2c6d6]/60" />
+            <span className="flex items-center gap-1">
+              <Calendar size={12} />
+              {formatDate(post.createdAt)}
+            </span>
+            <div className="w-1 h-1 rounded-full bg-[#c2c6d6]/60" />
+            <span className="flex items-center gap-1">
+              <Clock size={12} />
+              {post.blocks ? 
+                 Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
+                 Math.ceil((post.content || '').split(" ").length / 200)
+              } min read
+            </span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]">
+            {post.title}
+          </h1>
+
+          {post.description && (
+            <p className="text-[#424754] text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-semibold">
+              {post.description}
+            </p>
+          )}
+
+          {post.updatedAt && (
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#c2c6d6]/30 text-[9px] font-bold uppercase tracking-wider text-[#424754]/50">
+              Narrative Refined: {formatDate(post.updatedAt)}
+            </div>
+          )}
+        </div>
+
+        {post.coverImage && (
+          <div className="w-full rounded-[32px] overflow-hidden aspect-[21/9] border border-[#c2c6d6]/30 shadow-sm mt-12">
+            <img 
+              src={post.coverImage} 
+              alt={post.title} 
+              className="w-full h-full object-cover" 
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        )}
+      </section>
+
+      {/* Main Content Layout */}
+      <div className="relative z-10 container mx-auto px-6 max-w-7xl pb-32">
+        <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative">
+          
+          {/* Left Rail: Reading Stats & Share */}
+          <aside className="hidden lg:flex flex-col items-end py-4 h-full">
+            <div className="sticky top-40 space-y-12 flex flex-col items-center">
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/40 mb-1">Read Progress</div>
+                <div className="text-xl font-mono font-bold text-[#0b1c30]">
+                  {Math.round(scrollProgress)}%
+                </div>
+                <div className="w-10 h-[2px] bg-[#c2c6d6]/20 relative overflow-hidden rounded-full">
+                  <div className="absolute inset-y-0 left-0 bg-[#0058be] rounded-full" style={{ width: `${scrollProgress}%` }} />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <a 
+                  href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="w-10 h-10 rounded-full bg-white border border-[#c2c6d6]/30 flex items-center justify-center text-[#424754]/50 hover:text-[#0058be] hover:border-[#0058be]/20 hover:bg-[#eff4ff] transition-all duration-300 shadow-sm group"
+                >
+                  <Twitter size={14} />
+                </a>
+                <a 
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="w-10 h-10 rounded-full bg-white border border-[#c2c6d6]/30 flex items-center justify-center text-[#424754]/50 hover:text-[#0058be] hover:border-[#0058be]/20 hover:bg-[#eff4ff] transition-all duration-300 shadow-sm group"
+                >
+                  <Linkedin size={14} />
+                </a>
+                <button 
+                  onClick={handleCopyLink} 
+                  className="w-10 h-10 rounded-full bg-white border border-[#c2c6d6]/30 flex items-center justify-center text-[#424754]/50 hover:text-[#0058be] hover:border-[#0058be]/20 hover:bg-[#eff4ff] transition-all duration-300 shadow-sm relative group cursor-pointer"
+                >
+                  {copied ? <Check size={14} className="text-[#0058be]" /> : <Link2 size={14} />}
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* Middle: Article Content */}
+          <article 
+            className="w-full min-w-0 relative z-[20]"
+            ref={(el) => {
+              if (el) {
+                const links = el.getElementsByTagName('a');
+                for (let i = 0; i < links.length; i++) {
+                  const link = links[i];
+                  if (!link.target) {
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                  }
+                }
+              }
+            }}
           >
-            {/* Navigation Context */}
-            <div className="absolute top-44 left-12 md:left-20 hidden lg:block">
-              <BackButton to="/blog" label="All Stories" />
+            <div className="prose prose-slate max-w-none text-[#424754] text-base md:text-lg leading-relaxed text-left">
+              {post.blocks ? (
+                <div className="space-y-4">
+                  {post.blocks.map((block: Block) => {
+                    switch (block.type) {
+                      case 'text':
+                        return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-8 font-medium leading-relaxed" />;
+                      case 'heading':
+                        const HeadingTag = `h${block.metadata?.level || 2}` as any;
+                        return (
+                          <HeadingTag 
+                            id={`heading-${block.id}`} 
+                            key={block.id} 
+                            className="scroll-m-32 text-[#0b1c30] font-extrabold tracking-tighter leading-snug mt-12 mb-6 text-2xl md:text-3xl"
+                          >
+                            {block.content}
+                          </HeadingTag>
+                        );
+                      case 'list':
+                        return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="list-container mb-8 pl-6 space-y-2 text-[#424754]" />;
+                      case 'image':
+                        return (
+                          <figure key={block.id} className={cn(
+                            "my-12 rounded-[32px] overflow-hidden border border-[#c2c6d6]/30 shadow-sm",
+                            block.metadata?.alignment === 'full' ? "-mx-4 md:-mx-12 lg:-mx-32 w-[calc(100%+2rem)] md:w-[calc(100%+6rem)] lg:w-[calc(100%+16rem)]" : "w-full"
+                          )}>
+                            <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto object-cover" referrerPolicy="no-referrer" />
+                            {block.metadata?.caption && (
+                              <figcaption className="p-6 text-center text-xs text-[#424754]/60 font-semibold tracking-wide leading-relaxed bg-[#f8f9ff] border-t border-[#c2c6d6]/20">
+                                {block.metadata.caption}
+                              </figcaption>
+                            )}
+                          </figure>
+                        );
+                      case 'code':
+                        return (
+                          <div key={block.id} className="my-12 rounded-2xl overflow-hidden border border-[#c2c6d6]/35 bg-[#f8f9ff] group relative text-left">
+                            <div className="px-6 py-3 bg-[#eff4ff] border-b border-[#c2c6d6]/25 flex justify-between items-center">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-[#424754]/60">{block.metadata?.language || 'code'}</span>
+                              <button 
+                                onClick={() => {
+                                  navigator.clipboard.writeText(block.content);
+                                }} 
+                                className="opacity-0 group-hover:opacity-100 transition-opacity text-[9px] font-bold uppercase text-[#0058be] hover:text-[#004395] cursor-pointer"
+                              >
+                                Copy Module
+                              </button>
+                            </div>
+                            <pre className="p-8 overflow-x-auto font-mono text-xs leading-relaxed text-[#0b1c30] max-h-[500px]"><code>{block.content}</code></pre>
+                          </div>
+                        );
+                      case 'quote':
+                        return (
+                          <blockquote 
+                            key={block.id} 
+                            className="border-l-4 border-[#0058be] pl-8 my-12 italic text-xl md:text-2xl font-bold text-[#0b1c30] bg-[#eff4ff]/30 py-6 pr-6 rounded-r-3xl"
+                            dangerouslySetInnerHTML={{ __html: block.content }} 
+                          />
+                        );
+                      case 'callout':
+                        return (
+                          <div key={block.id} className="my-12 p-8 rounded-[32px] border border-[#c2c6d6]/35 bg-white flex gap-6 items-start relative overflow-hidden shadow-sm text-left">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-[#0058be]" />
+                            <Info size={20} className="shrink-0 mt-0.5 text-[#0058be]" />
+                            <div className="text-sm font-semibold leading-relaxed text-[#424754] text-left" dangerouslySetInnerHTML={{ __html: block.content }} />
+                          </div>
+                        );
+                      case 'divider':
+                        return (
+                          <div key={block.id} className="my-16 flex items-center justify-center gap-3">
+                            <div className="w-8 h-px bg-[#c2c6d6]/40" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
+                            <div className="w-8 h-px bg-[#c2c6d6]/40" />
+                          </div>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                </div>
+              ) : (
+                <ReactMarkdown
+                  components={{
+                    a: ({ node, ...props }) => (
+                      <a
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0058be] hover:underline transition-all font-bold"
+                      />
+                    )
+                  }}
+                >
+                  {post.content}
+                </ReactMarkdown>
+              )}
             </div>
 
-            <div className="max-w-5xl mx-auto space-y-16">
-              <div className="lg:hidden mb-12">
-                <BackButton to="/blog" label="" />
+            {/* Authority Signal: Author Box */}
+            <div className="mt-24 p-8 md:p-10 rounded-[32px] border border-[#c2c6d6]/30 bg-white shadow-sm flex flex-col md:flex-row items-center gap-6 md:gap-8 text-left">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden border border-[#c2c6d6]/30 shrink-0">
+                <img src="/founder.png?v=2" alt="Ayush Paul" className="w-full h-full object-cover" />
               </div>
+              <div className="flex-1">
+                <div className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/60 mb-1">Written By</div>
+                <h4 className="text-xl font-extrabold text-[#0b1c30] mb-2">Ayush Paul</h4>
+                <p className="text-[#424754] text-xs font-semibold leading-relaxed mb-4">
+                  Founder, Lead Developer, and AI Architect. Passionate about bridging the gap between high-level software and intelligent hardware innovation.
+                </p>
+                <div className="flex items-center gap-4">
+                  <a href="https://twitter.com/paulayush" target="_blank" rel="noreferrer" className="text-[9px] font-bold uppercase tracking-wider text-[#424754]/60 hover:text-[#0058be] transition-colors">Twitter</a>
+                  <a href="https://linkedin.com/in/paulayush" target="_blank" rel="noreferrer" className="text-[9px] font-bold uppercase tracking-wider text-[#424754]/60 hover:text-[#0058be] transition-colors">LinkedIn</a>
+                </div>
+              </div>
+            </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
-                <div className="hidden sm:flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-                  <Calendar size={14} className="text-brand-primary" />
-                  <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">{formatDate(post.createdAt)}</span>
+            {/* Engagement: Subscribe Section */}
+            <div className="mt-12 p-8 md:p-10 rounded-[32px] bg-[#eff4ff]/40 border border-[#c2c6d6]/30 text-center relative overflow-hidden">
+              <div className="relative z-10">
+                <h3 className="text-xl font-extrabold mb-3 text-[#0b1c30]">Stay at the <span className="text-[#424754]/60">Edge of Innovation</span></h3>
+                <p className="text-[#424754] text-xs mb-6 max-w-sm mx-auto font-semibold">Join 2,000+ developers and engineers receiving weekly insights on AI, hardware, and engineering.</p>
+                <div className="max-w-md mx-auto">
+                  <WaitlistForm context="blog-engagement" variant="inline" />
                 </div>
-                <div className="hidden sm:flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-                  <Clock size={14} className="text-brand-primary" />
-                  <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
-                    {post.blocks ? 
-                       Math.ceil(post.blocks.filter((b: any) => b.type === 'text').map((b: any) => b.content).join(' ').split(' ').length / 200) : 
-                       Math.ceil((post.content || '').split(" ").length / 200)
-                    } min read
-                  </span>
-                </div>
-                {post.category && (
-                  <div className="px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md shadow-[0_0_30px_rgba(0,194,255,0.1)]">
-                    {post.category}
+              </div>
+            </div>
+          </article>
+
+          {/* Right Rail: TOC */}
+          <aside className="hidden lg:block py-4">
+            <div className="sticky top-40 space-y-16">
+              {getTOC().length > 0 && (
+                <div className="space-y-8 text-left">
+                  <h3 className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/40">
+                    On This Page
+                  </h3>
+                  <div className="space-y-4 relative">
+                    <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[#c2c6d6]/20" />
+                    {getTOC().map((item: any) => (
+                      <a 
+                        key={item.id} 
+                        href={`#${item.id}`}
+                        className={cn(
+                          "block text-[10px] font-bold uppercase tracking-wider transition-colors hover:text-[#0b1c30] line-clamp-2 pl-6 relative group",
+                          activeHeading === item.id 
+                            ? "text-[#0058be]" 
+                            : "text-[#424754]/40"
+                        )}
+                        style={{ paddingLeft: item.level > 2 ? `${(item.level - 2) * 12 + 24}px` : undefined }}
+                      >
+                        {activeHeading === item.id && (
+                          <motion.div 
+                            layoutId="toc-indicator"
+                            className="absolute left-[-1px] top-0 bottom-0 w-[2px] bg-[#0058be]" 
+                          />
+                        )}
+                        <span className="group-hover:translate-x-0.5 transition-transform block">{item.text}</span>
+                      </a>
+                    ))}
                   </div>
-                )}
-              </div>
-
-              <div className="space-y-8">
-                <h1 className={cn(
-                  "font-extrabold tracking-tighter text-white/95 transition-all duration-700",
-                  post.title.length > 80
-                    ? "text-4xl md:text-6xl lg:text-7xl leading-[1.1]"
-                    : post.title.length > 50 
-                    ? "text-5xl md:text-7xl lg:text-8xl leading-[1.1]" 
-                    : "text-6xl md:text-9xl lg:text-[10rem] leading-[1.05]"
-                )}>
-                  {post.title}
-                </h1>
-
-                {post.description && (
-                  <p className="text-xl md:text-2xl text-white/50 leading-relaxed max-w-2xl mx-auto font-medium tracking-tight">
-                    {post.description}
-                  </p>
-                )}
-              </div>
-
-              {post.updatedAt && (
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/5 bg-white/[0.02] text-[9px] font-bold uppercase tracking-[0.3em] text-white/20">
-                  <span className="w-1 h-1 rounded-full bg-brand-primary animate-pulse" />
-                  Narrative Refined: {formatDate(post.updatedAt)}
                 </div>
               )}
             </div>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-white/20"
-          >
-            <div className="text-[9px] font-bold uppercase tracking-[0.3em]">Scroll to Enter</div>
-            <div className="w-px h-12 bg-gradient-to-b from-brand-primary to-transparent" />
-          </motion.div>
+          </aside>
         </div>
-      </section>
+      </div>
 
-      <div className="relative z-[100] container mx-auto px-6 pointer-events-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-[1fr_minmax(auto,720px)_1fr] gap-12 lg:gap-24 relative mb-32 pt-24">
-            {/* Left Rail: Reading Stats & Share */}
-            <aside className="hidden lg:flex flex-col items-end py-4 h-full">
-              <div className="sticky top-40 space-y-16 flex flex-col items-center">
-                <div className="flex flex-col items-center gap-4 text-center">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-2">Read Progress</div>
-                  <div className="text-2xl font-display font-bold text-brand-primary">
-                    {Math.round(scrollProgress)}%
-                  </div>
-                  <div className="w-12 h-[2px] bg-white/5 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-brand-primary" style={{ width: `${scrollProgress}%` }} />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-6">
-                  <a href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${post.title}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all group">
-                    <Twitter size={20} className="group-hover:scale-110 transition-transform" />
-                  </a>
-                  <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`} target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all group">
-                    <Linkedin size={20} className="group-hover:scale-110 transition-transform" />
-                  </a>
-                  <button onClick={handleCopyLink} className="w-14 h-14 rounded-2xl glass border border-white/5 flex items-center justify-center text-white/30 hover:text-brand-primary hover:border-brand-primary/20 hover:bg-brand-primary/5 transition-all relative group">
-                    {copied ? <Check size={20} className="text-brand-primary" /> : <Link2 size={20} className="group-hover:scale-110 transition-transform" />}
-                  </button>
-                </div>
+      {/* Related Content Area */}
+      <div className="relative z-10 container mx-auto px-6 max-w-7xl mt-24 border-t border-[#c2c6d6]/20 pt-24 space-y-24">
+        
+        {/* Related Systems */}
+        {relatedProducts.length > 0 && (
+          <section>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 text-left">
+              <div>
+                <h3 className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/40 mb-2">Innovation Lab</h3>
+                <h2 className="text-3xl font-extrabold text-[#0b1c30] tracking-tight">Related Blueprints</h2>
               </div>
-            </aside>
-
-            {/* Middle: Article Content */}
-            <article 
-              className="w-full min-w-0 relative z-[20] pointer-events-auto"
-              ref={(el) => {
-                if (el) {
-                  const links = el.getElementsByTagName('a');
-                  for (let i = 0; i < links.length; i++) {
-                    const link = links[i];
-                    if (!link.target) {
-                      link.target = '_blank';
-                      link.rel = 'noopener noreferrer';
-                    }
-                  }
-                }
-              }}
-            >
-              <div className="blog-prose prose prose-invert max-w-none editorial-dropcap pointer-events-auto">
-                {post.blocks ? (
-                  <div className="space-y-4">
-                    {post.blocks.map((block: Block) => {
-                      switch (block.type) {
-                        case 'text':
-                          return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="mb-10" />;
-                        case 'heading':
-                          const HeadingTag = `h${block.metadata?.level || 2}` as any;
-                          return <HeadingTag id={`heading-${block.id}`} key={block.id} className="scroll-m-32">{block.content}</HeadingTag>;
-                        case 'list':
-                          return <div key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} className="list-container mb-10" />;
-                        case 'image':
-                          return (
-                            <figure key={block.id} className={cn(
-                              "my-20 rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl",
-                              block.metadata?.alignment === 'full' ? "-mx-4 md:-mx-12 lg:-mx-32 w-[calc(100%+2rem)] md:w-[calc(100%+6rem)] lg:w-[calc(100%+16rem)]" : "w-full"
-                            )}>
-                              <img src={block.content} alt={block.metadata?.alt} className="w-full h-auto" referrerPolicy="no-referrer" />
-                              {block.metadata?.caption && <figcaption className="p-8 text-center text-sm text-white/40 font-medium tracking-wide leading-relaxed">{block.metadata.caption}</figcaption>}
-                            </figure>
-                          );
-                        case 'code':
-                          return (
-                            <div key={block.id} className="my-16 rounded-[2rem] overflow-hidden border border-white/5 bg-[#0D0D0D] shadow-inner group relative">
-                              <div className="px-8 py-4 bg-white/[0.02] border-b border-white/5 flex justify-between items-center">
-                                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">{block.metadata?.language || 'code'}</span>
-                                <button onClick={() => {
-                                  navigator.clipboard.writeText(block.content);
-                                }} className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold uppercase text-brand-primary hover:text-white">Copy Module</button>
-                              </div>
-                              <pre className="p-10 overflow-x-auto font-mono text-sm leading-[1.7] text-brand-primary/80"><code>{block.content}</code></pre>
-                            </div>
-                          );
-                        case 'quote':
-                          return (
-                            <blockquote key={block.id} dangerouslySetInnerHTML={{ __html: block.content }} />
-                          );
-                        case 'callout':
-                          const variants = {
-                            info: 'bg-brand-primary/5 border-brand-primary/10 text-brand-primary/90',
-                            warning: 'bg-yellow-500/5 border-yellow-500/10 text-yellow-400/90',
-                            success: 'bg-green-500/5 border-green-500/10 text-green-400/90',
-                            danger: 'bg-red-500/5 border-red-500/10 text-red-400/90',
-                          };
-                          return (
-                            <div key={block.id} className={cn("my-16 p-10 rounded-[2.5rem] border flex gap-8 items-start relative overflow-hidden group", variants[block.metadata?.variant || 'info'])}>
-                              <div className="absolute top-0 left-0 w-1 h-full bg-current opacity-20" />
-                              <Info size={28} className="shrink-0 mt-1 opacity-40 group-hover:opacity-100 transition-opacity" />
-                              <div className="text-xl font-medium leading-[1.6]" dangerouslySetInnerHTML={{ __html: block.content }} />
-                            </div>
-                          );
-                        case 'divider':
-                          return (
-                            <div key={block.id} className="my-24 flex items-center justify-center gap-4">
-                              <div className="w-12 h-px bg-white/5" />
-                              <div className="w-2 h-2 rounded-full bg-brand-primary/20" />
-                              <div className="w-12 h-px bg-white/5" />
-                            </div>
-                          );
-                        default:
-                          return null;
-                      }
-                    })}
+              <Link 
+                to="/blueprints" 
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#c2c6d6]/30 text-[10px] font-bold text-[#424754]/60 hover:text-[#0058be] hover:border-[#0058be]/20 hover:bg-[#eff4ff] transition-all duration-300 shadow-sm uppercase tracking-wider cursor-pointer"
+              >
+                Explore Blueprints <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedProducts.map(p => (
+                <Link 
+                  key={p.id} 
+                  to={`/blueprints/${p.slug}`}
+                  className="group p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 flex flex-col text-left shadow-sm"
+                >
+                  <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 border border-[#c2c6d6]/10">
+                    <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover" />
                   </div>
-                ) : (
-                  <ReactMarkdown
-                    components={{
-                      a: ({ node, ...props }) => (
-                        <a
-                          {...props}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-brand-primary hover:underline transition-all"
-                        />
-                      )
-                    }}
-                  >
-                    {post.content}
-                  </ReactMarkdown>
-                )}
-              </div>
-
-              {/* Authority Signal: Author Box */}
-              <div className="mt-32 p-8 md:p-12 rounded-[3rem] glass border border-white/5 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-10">
-                  <div className="w-24 h-24 rounded-3xl overflow-hidden border-2 border-brand-primary/20 shrink-0 shadow-2xl">
-                    <img src="/founder.png?v=2" alt="Ayush Paul" className="w-full h-full object-cover" />
+                  <h4 className="text-lg font-extrabold mb-3 text-[#0b1c30] group-hover:text-[#0058be] transition-colors leading-snug">{p.title}</h4>
+                  <div className="flex items-center gap-1.5 mt-auto">
+                    <span className="text-[8px] font-bold uppercase tracking-wider text-[#424754]/40">Blueprint</span>
+                    <ArrowRight size={10} className="text-[#424754]/40 group-hover:translate-x-0.5 transition-transform" />
                   </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-2">Written By</div>
-                    <h4 className="text-2xl font-bold text-white mb-2">Ayush Paul</h4>
-                    <p className="text-white/40 text-sm font-medium leading-relaxed mb-4">
-                      Founder, Lead Developer, and AI Architect. Passionate about bridging the gap between high-level software and intelligent hardware innovation.
-                    </p>
-                    <div className="flex items-center justify-center md:justify-start gap-4">
-                      <a href="https://twitter.com/paulayush" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-white/20 hover:text-brand-primary transition-colors">Twitter</a>
-                      <a href="https://linkedin.com/in/paulayush" target="_blank" rel="noreferrer" className="text-[10px] font-bold uppercase tracking-widest text-white/20 hover:text-brand-primary transition-colors">LinkedIn</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Engagement: Subscribe Section */}
-              <div className="mt-16 p-12 rounded-[3rem] bg-brand-primary/5 border border-brand-primary/10 text-center relative overflow-hidden">
-                <div className="relative z-10">
-                  <h3 className="text-2xl font-bold mb-4">Stay at the <span className="text-brand-primary">Edge of Innovation</span></h3>
-                  <p className="text-white/40 text-sm mb-8 max-w-md mx-auto">Join 2,000+ developers and engineers receiving weekly insights on AI, hardware, and engineering.</p>
-                  <div className="max-w-xl mx-auto">
-                    <WaitlistForm context="blog-engagement" variant="inline" />
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            {/* Right Rail: TOC & Stats */}
-            <aside className="hidden lg:block py-4">
-              <div className="sticky top-40 space-y-16">
-                {getTOC().length > 0 && (
-                  <div className="space-y-10">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
-                      On This Page
-                    </h3>
-                    <div className="space-y-6 relative">
-                      <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-white/5" />
-                      {getTOC().map((item: any) => (
-                        <a 
-                          key={item.id} 
-                          href={`#${item.id}`}
-                          className={cn(
-                            "block text-[11px] font-bold uppercase tracking-widest transition-all duration-500 hover:text-white line-clamp-2 pl-8 relative group",
-                            activeHeading === item.id 
-                              ? "text-brand-primary" 
-                              : "text-white/20"
-                          )}
-                          style={{ paddingLeft: item.level > 2 ? `${(item.level - 2) * 16 + 32}px` : undefined }}
-                        >
-                          {activeHeading === item.id && (
-                            <motion.div 
-                              layoutId="toc-indicator"
-                              className="absolute left-[-1px] top-0 bottom-0 w-[3px] bg-brand-primary shadow-[0_0_15px_rgba(0,194,255,0.6)]" 
-                            />
-                          )}
-                          <span className="group-hover:translate-x-1 transition-transform block">{item.text}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </aside>
-          </div>
-        </div>
-
-        {/* Related Content: Knowledge & Systems */}
-        <div className="mt-48 max-w-7xl mx-auto mb-32 border-t border-white/5 pt-32 space-y-32">
-          
-          {/* Related Systems (Blogs -> Products) */}
-          {relatedProducts.length > 0 && (
-            <section>
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-                <div>
-                  <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-primary mb-4">Innovation Lab</h3>
-                  <h2 className="text-4xl font-bold">🔬 Related Systems from Lab</h2>
-                </div>
-                <Link to="/products" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
-                  Explore Lab <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                 </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {relatedProducts.map(p => (
-                  <Link 
-                    key={p.id} 
-                    to={`/products/${p.slug}`}
-                    className="group p-8 rounded-[2.5rem] glass border border-white/5 hover:border-brand-primary/20 transition-all flex flex-col"
-                  >
-                    <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6">
-                      <img src={p.thumbnail} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    </div>
-                    <h4 className="text-xl font-bold mb-3 group-hover:text-brand-primary transition-colors">{p.title}</h4>
-                    <div className="flex items-center gap-2 mt-auto">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">System Blueprint</span>
-                      <ArrowRight size={14} className="text-brand-primary group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+              ))}
+            </div>
+          </section>
+        )}
 
-          {/* Related Blogs (Blogs -> Blogs) */}
-          {relatedPosts.length > 0 && (
-            <section>
-              <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
-                <div>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-4">Keep <span className="text-brand-primary">Exploring</span></h2>
-                  <p className="text-white/40 text-lg font-medium">Selected articles from the Ayush Paul Intelligence Archives.</p>
-                </div>
-                <Link to="/blog" className="group flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/[0.03] border border-white/5 text-[11px] font-bold text-white/40 hover:text-brand-primary hover:border-brand-primary/20 transition-all uppercase tracking-[0.2em]">
-                  View Full Archive <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                </Link>
+        {/* Related Blogs */}
+        {relatedPosts.length > 0 && (
+          <section>
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 text-left">
+              <div>
+                <h2 className="text-3xl font-extrabold text-[#0b1c30] tracking-tight mb-2">Keep Exploring</h2>
+                <p className="text-[#424754] text-xs font-semibold">Selected articles from the Ayush Paul Intelligence Archives.</p>
               </div>
-              <div className="grid md:grid-cols-3 gap-10">
-                {relatedPosts.map(relPost => (
-                  <Link to={`/blog/${relPost.slug}`} key={relPost.slug} className="group h-full">
-                    <div className="glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-brand-primary/20 hover:bg-white/[0.04] transition-all duration-700 flex flex-col h-full shadow-2xl">
-                      <div className="aspect-video overflow-hidden relative bg-white/[0.02]">
-                        <img src={relPost.coverImage} alt={relPost.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+              <Link 
+                to="/blog" 
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-full bg-white border border-[#c2c6d6]/30 text-[10px] font-bold text-[#424754]/60 hover:text-[#0058be] hover:border-[#0058be]/20 hover:bg-[#eff4ff] transition-all duration-300 shadow-sm uppercase tracking-wider cursor-pointer"
+              >
+                View Full Archive <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {relatedPosts.map(relPost => (
+                <Link to={`/blog/${relPost.slug}`} key={relPost.slug} className="group h-full">
+                  <div className="bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 flex flex-col h-full shadow-sm text-left">
+                    <div className="aspect-video overflow-hidden relative bg-gray-100 border-b border-[#c2c6d6]/10">
+                      <img src={relPost.coverImage} alt={relPost.title} className="absolute inset-0 w-full h-full object-cover" />
+                    </div>
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className="flex items-center gap-3 mb-4 text-[8px] font-bold uppercase tracking-wider text-[#424754]/40">
+                        <span>{relPost.category}</span>
+                        <div className="w-1 h-1 rounded-full bg-[#c2c6d6]/50" />
+                        <span className="text-[#424754]/60">{formatDate(relPost.date)}</span>
                       </div>
-                      <div className="p-10 flex flex-col flex-1">
-                        <div className="flex items-center gap-4 mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary/80">
-                          <span>{relPost.category}</span>
-                          <div className="w-1 h-1 rounded-full bg-white/10" />
-                          <span className="text-white/20">{formatDate(relPost.date)}</span>
-                        </div>
-                        <h4 className="text-2xl font-bold mb-6 group-hover:text-brand-primary transition-colors line-clamp-2 leading-tight text-white/90">{relPost.title}</h4>
-                        <div className="flex items-center gap-3 text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mt-auto group-hover:gap-4 transition-all">
-                          Read Analysis <ArrowRight size={14} />
-                        </div>
+                      <h4 className="text-base font-extrabold mb-4 group-hover:text-[#0058be] transition-colors line-clamp-2 leading-tight text-[#0b1c30]">{relPost.title}</h4>
+                      <div className="flex items-center gap-1.5 text-[8px] font-bold text-[#424754]/60 group-hover:text-[#0058be] uppercase tracking-wider mt-auto transition-colors">
+                        Read Analysis <ArrowRight size={10} className="transform group-hover:translate-x-0.5 transition-transform" />
                       </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
 };
-
-

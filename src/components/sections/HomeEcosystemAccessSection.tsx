@@ -226,7 +226,7 @@ export const HomeEcosystemAccessSection = () => {
               "Make.com Automation Playbooks"
             ]}
             buttonText="Explore Blueprints"
-            to="/systems"
+            to="/blueprints"
             isHighlighted={true}
             delay={0.2}
           />

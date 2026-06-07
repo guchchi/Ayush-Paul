@@ -80,12 +80,12 @@ export const LiveTelemetryConsole = () => {
                 <span className="w-2.5 h-2.5 rounded-full bg-[#eab308]/60 border border-[#eab308]" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e]/60 border border-[#22c55e]" />
               </div>
-              <Terminal size={14} className="text-brand-primary" />
+              <Terminal size={14} className="text-white/60" />
               <span className="font-mono text-[10px] font-semibold tracking-wider text-white/80 uppercase">AYUSH-WORKSPACE://LIVE-BUILD-ACTIVITY</span>
             </div>
             
-            <div className="flex items-center gap-1.5 font-mono text-[9px] text-[#22c55e] select-none">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-ping" />
+            <div className="flex items-center gap-1.5 font-mono text-[9px] text-white/60 select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-ping" />
               ACTIVE CONNECTION
             </div>
           </div>
@@ -106,10 +106,10 @@ export const LiveTelemetryConsole = () => {
                   <span
                     className={`font-bold shrink-0 ${
                       log.level === 'SYS'
-                        ? 'text-brand-accent'
+                        ? 'text-white/40'
                         : log.level === 'OK'
-                        ? 'text-green-400'
-                        : 'text-brand-primary'
+                        ? 'text-white/80'
+                        : 'text-white'
                     }`}
                   >
                     [{log.level}]
@@ -124,7 +124,7 @@ export const LiveTelemetryConsole = () => {
           {/* Footer details */}
           <div className="border-t border-white/5 px-5 py-3 bg-[#050505] flex items-center justify-between text-[10px] font-mono text-white/30 select-none">
             <div className="flex items-center gap-1.5">
-              <Cpu size={12} className="text-brand-primary" />
+              <Cpu size={12} className="text-white/40" />
               <span>Workspace diagnostics: All nodes reporting nominal.</span>
             </div>
             <div className="flex items-center gap-1">

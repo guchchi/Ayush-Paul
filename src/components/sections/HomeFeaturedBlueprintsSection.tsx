@@ -173,7 +173,7 @@ export const HomeFeaturedBlueprintsSection = () => {
                     Premium Blueprint • Spotlight
                   </span>
                   <Link
-                    to="/systems"
+                    to="/blueprints"
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(0,194,255,0.25)] transition-all duration-300 ease-out"
                   >
                     <ArrowUpRight size={18} />
@@ -224,7 +224,7 @@ export const HomeFeaturedBlueprintsSection = () => {
                     SaaS Checklist
                   </span>
                   <Link
-                    to="/systems"
+                    to="/blueprints"
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(0,194,255,0.25)] transition-all duration-300 ease-out"
                   >
                     <ArrowUpRight size={18} />
@@ -275,7 +275,7 @@ export const HomeFeaturedBlueprintsSection = () => {
                     Operational Playbook
                   </span>
                   <Link
-                    to="/systems"
+                    to="/blueprints"
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(0,194,255,0.25)] transition-all duration-300 ease-out"
                   >
                     <ArrowUpRight size={18} />
@@ -326,7 +326,7 @@ export const HomeFeaturedBlueprintsSection = () => {
                     Validation Framework
                   </span>
                   <Link
-                    to="/systems"
+                    to="/blueprints"
                     className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-black group-hover:border-brand-primary group-hover:shadow-[0_0_15px_rgba(0,194,255,0.25)] transition-all duration-300 ease-out"
                   >
                     <ArrowUpRight size={18} />

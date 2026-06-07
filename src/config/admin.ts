@@ -4,7 +4,9 @@ export const ADMIN_EMAILS = [
   "ap877@cornell.edu", // Add Cornell address or similar if desired
 ];
 
-export const isUserAdmin = (uid: string | undefined): boolean => {
+export const isUserAdmin = (uid: string | undefined, email?: string | null): boolean => {
   if (!uid) return false;
-  return ADMIN_UIDS.includes(uid);
+  if (ADMIN_UIDS.includes(uid)) return true;
+  if (email && ADMIN_EMAILS.includes(email)) return true;
+  return false;
 };

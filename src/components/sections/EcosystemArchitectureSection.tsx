@@ -271,7 +271,7 @@ const LargeDominantCard: React.FC<{ isInView: boolean }> = ({ isInView }) => {
 
         {/* CTA — magnetic */}
         <Link
-          to="/systems"
+          to="/blueprints"
           ref={magneticRef as React.RefObject<HTMLAnchorElement>}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
@@ -283,7 +283,7 @@ const LargeDominantCard: React.FC<{ isInView: boolean }> = ({ isInView }) => {
             transition: 'color 0.3s ease, transform 0.2s cubic-bezier(0.25,1,0.5,1)',
           }}
         >
-          Explore Systems
+          Explore Blueprints
           <ArrowRight size={14} style={{ transition: 'transform 0.3s ease', transform: hovered ? 'translateX(3px)' : 'translateX(0)' }} />
         </Link>
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { User, BookOpen, Layers, Mail } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 export const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => void }) => {
   const navigate = useNavigate();
@@ -26,13 +27,13 @@ export const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => 
 
   return (
     <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm">
-      <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-2 flex items-center justify-between px-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+      <div className="bg-white/90 backdrop-blur-2xl border border-[#c2c6d6]/35 rounded-[24px] p-2 flex items-center justify-between px-4 shadow-sm">
         {navItems.map((item) => (
           item.href ? (
             <Link
               key={item.name}
               to={item.href}
-              className="flex flex-col items-center gap-1 p-3 text-white/40 hover:text-brand-primary transition-all active:scale-90"
+              className="flex flex-col items-center gap-1 p-3 text-[#424754]/60 hover:text-[#0058be] transition-all active:scale-90"
             >
               {item.icon}
               <span className="text-[9px] font-bold uppercase tracking-tighter">{item.name}</span>
@@ -41,7 +42,7 @@ export const MobileBottomNav = ({ onPortfolioClick }: { onPortfolioClick: () => 
             <button
               key={item.name}
               onClick={item.onClick}
-              className="flex flex-col items-center gap-1 p-3 text-white/40 hover:text-brand-primary transition-all active:scale-90"
+              className="flex flex-col items-center gap-1 p-3 text-[#424754]/60 hover:text-[#0058be] transition-all active:scale-90 cursor-pointer"
             >
               {item.icon}
               <span className="text-[9px] font-bold uppercase tracking-tighter">{item.name}</span>

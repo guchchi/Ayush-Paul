@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { CheckCircle, Heart, ArrowRight, Twitter, Linkedin, Coffee, Zap, Rocket } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
+import { MagneticButton } from '../components/ui/MagneticButton';
 
 const DONATION_TIERS = [
   { amount: 1, label: "Buy me a coffee", icon: Coffee },
@@ -24,8 +25,6 @@ export const ThankYouPage = () => {
   const handleDonation = async () => {
     if (!selectedTier) return;
     
-    // Create a dynamic donation product logic or use a generic "Donation" product
-    // For now, we'll use a special "Donation" identifier that the backend handles
     try {
       const response = await fetch('/api/create-donation-session', {
         method: 'POST',
@@ -53,36 +52,36 @@ export const ThankYouPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full min-h-screen bg-[#0A0A0A] pt-32 pb-24 px-6 flex flex-col items-center justify-center"
+      className="w-full min-h-screen bg-bg-primary pt-24 pb-24 px-6 flex flex-col items-center justify-center text-center"
     >
-      <div className="max-w-2xl w-full mx-auto text-center">
+      <div className="max-w-2xl w-full mx-auto">
         
         {/* Success Icon */}
         <motion.div 
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", bounce: 0.5 }}
-          className="w-24 h-24 rounded-full bg-brand-primary/10 border-2 border-brand-primary/30 flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(0,194,255,0.2)]"
+          className="w-24 h-24 rounded-full bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center mx-auto mb-8 shadow-sm text-[#0058be]"
         >
-          <CheckCircle size={48} className="text-brand-primary" />
+          <CheckCircle size={44} />
         </motion.div>
 
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 leading-none text-[#0b1c30]">
           Your innovation is on its way.
         </h1>
         
-        <p className="text-lg text-white/60 mb-12">
+        <p className="text-base md:text-lg text-[#424754] mb-12 font-semibold">
           The download should have started automatically. If not, check your browser's download manager. Thank you for being part of this ecosystem!
         </p>
 
         {/* Donation & Support Panel */}
-        <div className="p-8 md:p-12 rounded-[3rem] glass border border-brand-primary/20 relative overflow-hidden mb-12">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent" />
+        <div className="p-8 md:p-12 rounded-[32px] bg-white border border-[#c2c6d6]/35 relative overflow-hidden mb-12 shadow-sm text-left">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-[#0058be]" />
           
-          <div className="flex flex-col items-center mb-8">
-            <Heart size={32} className="text-brand-primary mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Support Open Innovation</h2>
-            <p className="text-white/40 text-sm max-w-md">
+          <div className="flex flex-col items-center text-center mb-8">
+            <Heart size={32} className="text-[#0058be] mb-4" />
+            <h2 className="text-2xl font-extrabold mb-2 text-[#0b1c30]">Support Open Innovation</h2>
+            <p className="text-[#424754]/60 text-xs max-w-md font-semibold">
               I spend hundreds of hours designing, coding, and open-sourcing these blueprints. If this helped you, consider supporting the next project!
             </p>
           </div>
@@ -95,53 +94,59 @@ export const ThankYouPage = () => {
                 <button
                   key={tier.amount}
                   onClick={() => setSelectedTier(tier.amount)}
-                  className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${
+                  className={`flex flex-col items-center justify-center p-5 rounded-2xl border transition-all cursor-pointer ${
                     isSelected 
-                      ? 'border-brand-primary bg-brand-primary/10 text-brand-primary shadow-lg shadow-brand-primary/20 scale-105' 
-                      : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:border-white/20'
+                      ? 'border-[#0058be] bg-[#eff4ff] text-[#0058be] shadow-sm scale-105' 
+                      : 'border-[#c2c6d6]/30 bg-bg-secondary text-[#424754]/60 hover:bg-[#eff4ff]/50 hover:border-[#adc6ff]'
                   }`}
                 >
-                  <Icon size={24} className="mb-2" />
-                  <span className="text-2xl font-bold text-white mb-1">${tier.amount}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest">{tier.label}</span>
+                  <Icon size={24} className={isSelected ? 'text-[#0058be]' : 'text-[#424754]/60'} />
+                  <span className="text-2xl font-extrabold text-[#0b1c30] mt-2 mb-1">${tier.amount}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#424754]/60">{tier.label}</span>
                 </button>
               );
             })}
           </div>
 
           {selectedTier && (
-            <motion.button
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              onClick={handleDonation}
-              className="w-full sm:w-auto px-8 py-4 rounded-full bg-brand-primary text-black font-bold flex items-center justify-center gap-2 mx-auto hover:bg-white transition-colors shadow-xl shadow-brand-primary/20"
+              className="flex justify-center"
             >
-              Donate ${selectedTier} Securely <ArrowRight size={18} />
-            </motion.button>
+              <MagneticButton>
+                <button
+                  onClick={handleDonation}
+                  className="px-8 py-4 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold flex items-center justify-center gap-2 mx-auto cursor-pointer shadow-sm text-xs uppercase tracking-wider"
+                >
+                  Donate ${selectedTier} Securely <ArrowRight size={14} />
+                </button>
+              </MagneticButton>
+            </motion.div>
           )}
         </div>
 
-        {/* Viral Distribution Hook */}
+        {/* Share Protocol Hook */}
         <div className="mb-16">
-          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20 mb-6">Amplification Protocol</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#424754]/40 mb-6">Share Blueprint</div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just unlocked a new engineering blueprint from @paulayush's Lab. Time to build. 🚀\n\nCheck it out here: https://ayushpaul.in/products")}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just unlocked a new engineering blueprint from @paulayush's Lab. Time to build. 🚀\n\nCheck it out here: https://ayushpaul.in/blueprints")}`}
               target="_blank"
               rel="noreferrer"
-              className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30 transition-all flex items-center justify-center gap-3 group"
+              className="px-8 py-4 rounded-2xl bg-white border border-[#c2c6d6]/35 hover:bg-[#1DA1F2]/5 hover:border-[#1DA1F2]/20 hover:text-[#1DA1F2] text-[#424754] font-bold text-sm shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer"
             >
               <Twitter size={18} className="text-[#1DA1F2]" />
-              <span className="text-sm font-bold">Share on X</span>
+              <span>Share on X</span>
             </a>
             <a 
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://ayushpaul.in/products")}`}
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://ayushpaul.in/blueprints")}`}
               target="_blank"
               rel="noreferrer"
-              className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-[#0077B5]/10 hover:border-[#0077B5]/30 transition-all flex items-center justify-center gap-3 group"
+              className="px-8 py-4 rounded-2xl bg-white border border-[#c2c6d6]/35 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/20 hover:text-[#0077B5] text-[#424754] font-bold text-sm shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer"
             >
               <Linkedin size={18} className="text-[#0077B5]" />
-              <span className="text-sm font-bold">Share on LinkedIn</span>
+              <span>Share on LinkedIn</span>
             </a>
           </div>
         </div>
@@ -149,23 +154,23 @@ export const ThankYouPage = () => {
         {/* Next Steps / Community */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <button 
-            onClick={() => navigate('/products')}
-            className="p-8 rounded-[2.5rem] border border-white/5 bg-white/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-center text-center group"
+            onClick={() => navigate('/blueprints')}
+            className="p-8 rounded-[32px] border border-[#c2c6d6]/30 bg-white hover:bg-[#eff4ff]/40 hover:border-[#0058be]/20 transition-all flex flex-col items-center text-center group cursor-pointer shadow-sm"
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2 flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#0058be] mb-2 flex items-center gap-2">
               <Zap size={12} /> Explore Lab
             </span>
-            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">Return to Workspace</span>
+            <span className="text-lg font-extrabold text-[#0b1c30] group-hover:text-[#0058be] transition-colors leading-none tracking-tight">Return to Workspace</span>
           </button>
           
           <Link 
-            to="/momentum"
-            className="p-8 rounded-[2.5rem] border border-brand-primary/20 bg-brand-primary/5 hover:bg-brand-primary/10 transition-colors flex flex-col items-center text-center group"
+            to="/building"
+            className="p-8 rounded-[32px] border border-[#dce9ff] bg-[#eff4ff]/40 hover:bg-[#eff4ff]/70 hover:border-[#0058be]/20 transition-all flex flex-col items-center text-center group shadow-sm"
           >
-            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-primary mb-2 flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#0058be] mb-2 flex items-center gap-2">
               <Rocket size={12} /> Momentum
             </span>
-            <span className="text-lg font-bold group-hover:text-brand-primary transition-colors">See what's being built</span>
+            <span className="text-lg font-extrabold text-[#0b1c30] group-hover:text-[#0058be] transition-colors leading-none tracking-tight">See what's being built</span>
           </Link>
         </div>
 
@@ -173,3 +178,5 @@ export const ThankYouPage = () => {
     </motion.div>
   );
 };
+
+export default ThankYouPage;

@@ -21,6 +21,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   const [projects, setProjects] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [purchases, setPurchases] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -81,7 +83,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
         setSystemStatus((prev) => ({
           ...prev,
           isQuotaExceeded: true,
-          lastError: "Usage limit reached (Quota Exceeded)",
+          lastError: "Sync failed: Firestore Quota Exceeded.",
         }));
         addToast("Sync failed: Firestore Quota Exceeded.", "error");
       }
@@ -91,25 +93,25 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   useEffect(() => {
     console.log("🔄 [SYNC] Initializing Dashboard Synchronization Pipeline...");
 
+    // Helper to get milliseconds safely from timestamps/dates
+    const getMillis = (date: any) => {
+      if (!date) return 0;
+      if (typeof date.toMillis === "function") return date.toMillis();
+      if (typeof date.toDate === "function") return date.toDate().getTime();
+      if (date.seconds) return date.seconds * 1000;
+      if (date._seconds) return date._seconds * 1000;
+      const parsed = new Date(date).getTime();
+      return isNaN(parsed) ? 0 : parsed;
+    };
+
     // 1. Critical Real-time Listeners (Blogs & Projects & Campaigns)
-    const qBlogs = query(collection(db, "blogs"));
+    const qBlogs = query(collection(db, "blogPosts"));
     const unsubscribeBlogs = onSnapshot(
       qBlogs,
       (snapshot) => {
         const data = snapshot.docs
           .map((doc) => ({ id: doc.id, ...doc.data() }))
-          .sort((a: any, b: any) => {
-            const getMillis = (date: any) => {
-              if (!date) return 0;
-              if (typeof date.toMillis === "function") return date.toMillis();
-              if (typeof date.toDate === "function") return date.toDate().getTime();
-              if (date.seconds) return date.seconds * 1000;
-              if (date._seconds) return date._seconds * 1000;
-              const parsed = new Date(date).getTime();
-              return isNaN(parsed) ? 0 : parsed;
-            };
-            return getMillis(b.createdAt) - getMillis(a.createdAt);
-          });
+          .sort((a: any, b: any) => getMillis(b.createdAt) - getMillis(a.createdAt));
         setPosts(data);
         setSystemStatus((prev) => ({
           ...prev,
@@ -119,7 +121,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
         }));
       },
       (error) => {
-        const errInfo = handleFirestoreError(error, OperationType.GET, "blogs");
+        const errInfo = handleFirestoreError(error, OperationType.GET, "blogPosts");
         if (errInfo.isQuotaExceeded) {
           setSystemStatus((prev) => ({
             ...prev,
@@ -189,6 +191,34 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       }
     );
 
+    const qUsers = query(collection(db, "users"));
+    const unsubscribeUsers = onSnapshot(
+      qUsers,
+      (snapshot) => {
+        const sortedUsers = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => getMillis(b.createdAt) - getMillis(a.createdAt));
+        setUsers(sortedUsers);
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "users");
+      }
+    );
+
+    const qPurchases = query(collection(db, "purchases"));
+    const unsubscribePurchases = onSnapshot(
+      qPurchases,
+      (snapshot) => {
+        const sortedPurchases = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .sort((a: any, b: any) => getMillis(b.createdAt) - getMillis(a.createdAt));
+        setPurchases(sortedPurchases);
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "purchases");
+      }
+    );
+
     // 2. Optimized One-Time Fetches
     fetchSecondaryData();
 
@@ -198,6 +228,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       unsubscribeCampaigns();
       unsubscribeProducts();
       unsubscribeCourses();
+      unsubscribeUsers();
+      unsubscribePurchases();
     };
   }, []);
 
@@ -210,6 +242,10 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     setProducts,
     courses,
     setCourses,
+    users,
+    setUsers,
+    purchases,
+    setPurchases,
     messages,
     setMessages,
     subscribers,

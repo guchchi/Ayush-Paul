@@ -159,10 +159,10 @@ export const ExperimentsRDSection = () => {
         {/* Section Action */}
         <div className="flex justify-center mt-16">
           <Link 
-            to="/systems" 
+            to="/blueprints" 
             className="px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl text-sm font-bold tracking-widest text-white transition-all uppercase flex items-center gap-2 group"
           >
-            Access All Systems & Blueprints 
+            Access All Blueprints 
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform text-brand-secondary" />
           </Link>
         </div>

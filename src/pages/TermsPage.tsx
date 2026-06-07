@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Section } from '../components/ui/Section';
 import { VARIANTS } from '../lib/motion-presets';
 import { useSEO } from '../hooks/useSEO';
+import { MagneticButton } from '../components/ui/MagneticButton';
 
 export const TermsPage = () => {
   useSEO({
@@ -42,7 +43,7 @@ export const TermsPage = () => {
   ];
 
   return (
-    <div className="w-full bg-[#0A0A0A] pt-32 pb-24">
+    <div className="w-full bg-bg-primary pt-32 pb-24 text-left">
       <Section className="max-w-4xl mx-auto px-6">
         <motion.div
           variants={VARIANTS.staggerContainer}
@@ -51,27 +52,27 @@ export const TermsPage = () => {
           className="space-y-16"
         >
           <motion.div variants={VARIANTS.fadeUp} className="space-y-4">
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-none">
-              Terms of <span className="text-white/20 italic">Service</span>
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-none text-[#0b1c30]">
+              Terms of <span className="text-[#424754]/40 italic">Service</span>
             </h1>
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-brand-primary">
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#0058be]">
               Last updated: {date}
             </p>
           </motion.div>
 
           <motion.div variants={VARIANTS.fadeUp} className="space-y-10">
-            <p className="text-xl text-white/60 leading-relaxed font-medium italic border-l-2 border-brand-primary/30 pl-8">
+            <p className="text-xl text-[#424754] leading-relaxed font-semibold italic border-l-2 border-[#0058be]/30 pl-8">
               By accessing this website, you agree to comply with these Terms of Service. If you do not agree, please exit the environment immediately.
             </p>
 
             <div className="grid gap-8">
               {terms.map((term, i) => (
-                <div key={i} className="p-10 glass-card border-white/5 bg-white/[0.01] rounded-[40px] space-y-4 group hover:border-brand-primary/20 transition-all duration-500">
+                <div key={i} className="p-10 bg-white border border-[#c2c6d6]/35 rounded-[32px] space-y-4 group hover:border-[#0058be]/20 hover:shadow-ambient transition-all duration-300">
                   <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-bold text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">0{i + 1}</span>
-                    <h2 className="text-2xl font-bold tracking-tight text-white">{term.title}</h2>
+                    <span className="text-[10px] font-bold text-[#0058be] bg-[#eff4ff] border border-[#dce9ff] px-3 py-1 rounded-full uppercase tracking-widest">0{i + 1}</span>
+                    <h2 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">{term.title}</h2>
                   </div>
-                  <p className="text-white/50 leading-relaxed font-medium pl-12">
+                  <p className="text-[#424754] leading-relaxed font-semibold pl-12">
                     {term.desc}
                   </p>
                 </div>
@@ -79,31 +80,33 @@ export const TermsPage = () => {
             </div>
 
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold tracking-tight text-white">Changes to Terms</h2>
-              <p className="text-white/50 leading-relaxed">
+              <h2 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">Changes to Terms</h2>
+              <p className="text-[#424754] leading-relaxed font-semibold">
                 We reserve the right to update these Terms at any time without prior notice. Continued use of the website following any changes constitutes your acceptance of the revised Terms.
               </p>
             </div>
 
-            <div className="space-y-6 p-8 glass-card border-white/5 bg-white/[0.01] rounded-3xl">
-              <h2 className="text-2xl font-bold tracking-tight text-white">Governing Law</h2>
-              <p className="text-white/50 leading-relaxed">
+            <div className="space-y-6 p-8 bg-white border border-[#c2c6d6]/30 rounded-[32px] shadow-sm">
+              <h2 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">Governing Law</h2>
+              <p className="text-[#424754] leading-relaxed font-semibold">
                 These Terms shall be governed and interpreted in accordance with the laws of India. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in India.
               </p>
             </div>
 
-            <div className="pt-12 border-t border-white/5">
-              <div className="p-10 glass-card border-brand-primary/20 bg-brand-primary/[0.02] rounded-[40px] flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="pt-12 border-t border-[#c2c6d6]/20">
+              <div className="p-10 bg-[#eff4ff]/40 border border-[#c2c6d6]/35 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-8">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold tracking-tight text-white">Contact & Support</h2>
-                  <p className="text-white/40 text-sm">For questions regarding these Terms or legal inquiries.</p>
+                  <h2 className="text-2xl font-extrabold tracking-tight text-[#0b1c30]">Contact & Support</h2>
+                  <p className="text-[#424754]/60 text-sm font-semibold">For questions regarding these Terms or legal inquiries.</p>
                 </div>
-                <a 
-                  href={`mailto:${email}`} 
-                  className="px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl shadow-white/5"
-                >
-                  {email}
-                </a>
+                <MagneticButton>
+                  <a 
+                    href={`mailto:${email}`} 
+                    className="px-12 py-5 bg-[#0b1c30] hover:bg-[#0058be] text-white rounded-full font-bold text-lg hover:scale-105 transition-all shadow-sm block text-center"
+                  >
+                    {email}
+                  </a>
+                </MagneticButton>
               </div>
             </div>
           </motion.div>

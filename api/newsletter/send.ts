@@ -33,7 +33,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // 1. Verify Admin Token
     const decodedToken = await admin.auth().verifyIdToken(token);
-    if (!ADMIN_UIDS.includes(decodedToken.uid)) {
+    const ADMIN_EMAILS = ["ap877@cornell.edu"];
+    const isEmailAdmin = decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email);
+    if (!ADMIN_UIDS.includes(decodedToken.uid) && !isEmailAdmin) {
       return res.status(403).json({ error: "Access Denied: You do not have permission to send newsletters." });
     }
 

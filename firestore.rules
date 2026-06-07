@@ -2,15 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // Helper function to check if request is authenticated as admin
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.uid == "80OJfcmVXCRNmSZuthVU68K6vJq2" || 
+        request.auth.token.email == "ap877@cornell.edu"
+      );
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Publicly readable endpoints with strict schema enforcement on write
+    // blogPosts rules
     match /blogPosts/{postId} {
       allow read: if true;
-      allow write: if request.auth != null 
+      allow write: if isAdmin() 
                    && request.resource.data.keys().hasAll(['title', 'slug', 'content', 'published'])
                    && request.resource.data.title is string
                    && request.resource.data.content is string
@@ -18,17 +26,87 @@ service cloud.firestore {
                    && !(request.resource.data.content.lower().matches('.*test.*'));
     }
 
+    // projects rules
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if request.auth != null
+      allow write: if isAdmin()
                    && request.resource.data.keys().hasAll(['title', 'description', 'status'])
                    && request.resource.data.title is string
                    && !(request.resource.data.title.lower().matches('.*test.*'));
     }
 
+    // updates/momentum rules
     match /updates/{updateId} {
       allow read: if true;
-      allow write: if request.auth != null; // Basic auth check for admin writes
+      allow write: if isAdmin();
+    }
+
+    // users rules
+    match /users/{userId} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // products rules
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // courses, modules, lessons rules
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /modules/{moduleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /lessons/{lessonId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // enrollments rules
+    match /enrollments/{enrollmentId} {
+      allow read, write: if request.auth != null && (
+        resource == null || resource.data.userId == request.auth.uid || isAdmin()
+      ) && (
+        request.resource == null || request.resource.data.userId == request.auth.uid || isAdmin()
+      );
+    }
+
+    // contact_messages and collaboration_requests rules
+    match /contact_messages/{messageId} {
+      allow create: if true; // Public can create messages
+      allow read, update, delete: if isAdmin();
+    }
+    match /collaboration_requests/{requestId} {
+      allow create: if true; // Public can create requests
+      allow read, update, delete: if isAdmin();
+    }
+
+    // subscribers rules
+    match /subscribers/{subscriberId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // analytics_events rules
+    match /analytics_events/{eventId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // purchases rules
+    match /purchases/{purchaseId} {
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin(); // Server-side updates only
+    }
+
+    // content rules
+    match /content/{contentId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

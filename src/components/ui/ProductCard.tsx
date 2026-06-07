@@ -14,7 +14,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const hasDiscount = product.salePrice > 0 && product.salePrice < product.basePrice;
 
   return (
-    <Link to={`/systems/${product.slug}`} className="block group">
+    <Link to={`/blueprints/${product.slug}`} className="block group">
       <motion.div 
         whileHover={{ y: -5, scale: 1.005 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}

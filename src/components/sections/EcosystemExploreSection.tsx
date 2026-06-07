@@ -11,8 +11,8 @@ const GATEWAY_ITEMS = [
     image: "https://images.unsplash.com/photo-1531747118685-ca8fa6e08806?q=80&w=600&auto=format&fit=crop"
   },
   {
-    link: "/systems",
-    text: "Systems & Firmware",
+    link: "/blueprints",
+    text: "Blueprints Library",
     image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=600&auto=format&fit=crop"
   },
   {
