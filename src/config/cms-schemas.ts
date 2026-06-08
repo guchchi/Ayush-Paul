@@ -293,7 +293,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
     pluralName: "Creator Affiliates",
     iconName: "UserCheck",
     primaryField: "code",
-    defaultSortField: "totalEarnings",
+    defaultSortField: "totalCommission",
     defaultSortOrder: "desc",
     allowCreate: true,
     allowEdit: true,

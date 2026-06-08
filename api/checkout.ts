@@ -273,7 +273,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
     const userRef = db.collection("users").doc(userId);
     const existingSnap = await userRef.get();
-    const currentOwned = existingSnap.exists() ? (existingSnap.data()?.ownedProducts || {}) : {};
+    const currentOwned = existingSnap.exists ? (existingSnap.data()?.ownedProducts || {}) : {};
     currentOwned[productId] = "premium";
     await userRef.set({
       ownedProducts: currentOwned,

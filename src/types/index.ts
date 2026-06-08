@@ -219,7 +219,7 @@ export interface CreatorCode {
   userId?: string;
   commissionRate: number;
   totalSales: number;
-  totalEarnings: number;
+  totalEarnings?: number;
   isActive: boolean;
   createdAt: any;
   updatedAt: any;

@@ -260,7 +260,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     // Creator Affiliate listeners
     const qCreatorCodes = query(
       collection(db, "creator_codes"),
-      orderBy("totalEarnings", "desc")
+      orderBy("totalCommission", "desc")
     );
     const unsubscribeCreatorCodes = onSnapshot(
       qCreatorCodes,
@@ -269,6 +269,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       },
       (error) => {
         handleFirestoreError(error, OperationType.GET, "creator_codes");
+        addToast("Failed to load creator affiliates. Check Firestore indexes.", "error");
       }
     );
 

@@ -575,7 +575,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                     />
                     <AdminStatCard
                       label="Total Commission Paid"
-                      value={`₹${creatorCodes.reduce((sum, c) => sum + (c.totalEarnings || 0), 0).toLocaleString('en-IN')}`}
+                      value={`₹${creatorCodes.reduce((sum, c) => sum + (c.totalCommission || 0), 0).toLocaleString('en-IN')}`}
                       icon={<DollarSign size={18} />}
                     />
                     <AdminStatCard

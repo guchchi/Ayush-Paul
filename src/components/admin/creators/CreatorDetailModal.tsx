@@ -16,7 +16,7 @@ interface CreatorData {
   creatorCommissionPercent?: number;
   commissionRate?: number;
   totalSales: number;
-  totalEarnings: number;
+  totalEarnings?: number;
   totalRevenue?: number;
   totalCommission?: number;
   totalCustomers?: number;

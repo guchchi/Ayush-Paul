@@ -91,7 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // 1. Grant product access — use field-path update to deep-merge ownedProducts map
       const userRef = db.collection("users").doc(userId);
       const existingSnap = await userRef.get();
-      const currentOwned = existingSnap.exists() ? (existingSnap.data()?.ownedProducts || {}) : {};
+      const currentOwned = existingSnap.exists ? (existingSnap.data()?.ownedProducts || {}) : {};
       currentOwned[productId] = "premium";
       await userRef.set({
         ownedProducts: currentOwned,

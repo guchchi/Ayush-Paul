@@ -239,10 +239,11 @@ async function startServer() {
 
       // Idempotently update user's ownedProducts map in Firestore
       const userRef = db.collection("users").doc(userId);
+      const existingSnap = await userRef.get();
+      const currentOwned = existingSnap.exists ? (existingSnap.data()?.ownedProducts || {}) : {};
+      currentOwned[productId] = "premium";
       await userRef.set({
-        ownedProducts: {
-          [productId]: "premium"
-        },
+        ownedProducts: currentOwned,
         purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId)
       }, { merge: true });
 
