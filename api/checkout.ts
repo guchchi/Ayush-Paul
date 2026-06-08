@@ -44,7 +44,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       return res.status(404).json({ error: "Product not found" });
     }
 
-    if (product.type === "free") {
+    if (product.type === "free" && !product.stripePriceId) {
       return res.status(400).json({ error: "Invalid product for checkout" });
     }
 

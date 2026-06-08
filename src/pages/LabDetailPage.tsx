@@ -81,6 +81,10 @@ export const LabDetailPage = () => {
     fetchRelated();
   }, [product]);
 
+  useEffect(() => {
+    if (product?.type === 'free') setSelectedLicense('free');
+  }, [product]);
+
   useSEO({
     title: product ? `${product.title} | Ayush Paul Labs` : "Loading R&D...",
     description: product?.description || "",
@@ -698,7 +702,7 @@ export const LabDetailPage = () => {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            {selectedLicense === 'free' ? (
+            {selectedLicense === 'free' || isFree ? (
               /* Free Tier */
               <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.01] flex flex-col relative overflow-hidden bg-black/10">
                 {/* Corner marks */}

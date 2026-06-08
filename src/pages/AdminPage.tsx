@@ -233,6 +233,9 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         }
         payload.basePrice = Number(payload.basePrice) || 0;
         payload.salePrice = Number(payload.salePrice) || 0;
+        if (payload.stripePriceId && payload.salePrice > 0) {
+          payload.type = "paid";
+        }
       }
 
       if (currentRecord?.id) {
@@ -240,7 +243,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         console.log("PAYLOAD (edit):", payload);
         await updateDoc(doc(db, collectionName, currentRecord.id), payload);
         if (collectionName === "products") {
-          try { localStorage.removeItem("products_cache"); } catch {}
+          try { localStorage.removeItem("products_cache"); } catch { /* localStorage may be unavailable */ }
         }
         addToast("Item updated successfully.", "success");
       } else {
