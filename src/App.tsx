@@ -22,7 +22,7 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ defa
 const BlueprintsPage = lazy(() => import("./pages/BlueprintsPage").then(m => ({ default: m.BlueprintsPage })));
 const BlueprintDetailPage = lazy(() => import("./pages/BlueprintDetailPage").then(m => ({ default: m.BlueprintDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
-const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
+const VaultPage = lazy(() => import("./pages/VaultPage"));
 const BuildingPage = lazy(() => import("./pages/BuildingPage").then(m => ({ default: m.BuildingPage })));
 const MasteryPage = lazy(() => import("./pages/MasteryPage").then(m => ({ default: m.MasteryPage })));
 const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m => ({ default: m.CourseDetailPage })));
