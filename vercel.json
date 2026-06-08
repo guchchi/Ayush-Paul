@@ -1,6 +1,23 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/chat", "destination": "/api/chat" },
+    { "source": "/api/stripe-webhook", "destination": "/api/stripe-webhook" },
+    { "source": "/api/publish", "destination": "/api/publish" },
+    { "source": "/api/newsletter/send", "destination": "/api/newsletter/send" },
+    { "source": "/api/newsletter/unsubscribe", "destination": "/api/newsletter/unsubscribe" },
+    { "source": "/api/claim-referral", "destination": "/api/growth?action=claim-referral" },
+    { "source": "/api/track-share", "destination": "/api/growth?action=track-share" },
+    { "source": "/api/generate-streak-report", "destination": "/api/growth?action=generate-streak-report" },
+    { "source": "/api/create-checkout-session", "destination": "/api/checkout?action=create-checkout-session" },
+    { "source": "/api/create-donation-session", "destination": "/api/checkout?action=create-donation-session" },
+    { "source": "/api/verify-checkout-session", "destination": "/api/checkout?action=verify-checkout-session" },
+    { "source": "/api/validate-coupon", "destination": "/api/checkout?action=validate-coupon" },
+    { "source": "/api/validate-creator-code", "destination": "/api/checkout?action=validate-creator-code" },
+    { "source": "/api/schedule-email", "destination": "/api/email?action=schedule-email" },
+    { "source": "/api/process-scheduled-emails", "destination": "/api/email?action=process-scheduled-emails" },
+    { "source": "/api/process-email-triggers", "destination": "/api/email?action=process-email-triggers" },
+    { "source": "/api/trigger-abandoned-check", "destination": "/api/email?action=trigger-abandoned-check" },
+    { "source": "/api/trigger-enrollment-email", "destination": "/api/email?action=trigger-enrollment-email" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
