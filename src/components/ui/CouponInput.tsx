@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
 import { formatCurrency } from '../../lib/format';
 
@@ -15,13 +15,46 @@ export interface CouponResult {
 interface CouponInputProps {
   onValidated: (coupon: CouponResult | null) => void;
   disabled?: boolean;
+  initialCoupon?: CouponResult | null;
 }
 
-export function CouponInput({ onValidated, disabled }: CouponInputProps) {
-  const [code, setCode] = useState('');
-  const [status, setStatus] = useState<'idle' | 'validating' | 'valid' | 'invalid'>('idle');
-  const [message, setMessage] = useState('');
-  const [validatedData, setValidatedData] = useState<CouponResult | null>(null);
+export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInputProps) {
+  const [code, setCode] = useState(initialCoupon?.code || '');
+  const [status, setStatus] = useState<'idle' | 'validating' | 'valid' | 'invalid'>(
+    initialCoupon?.valid ? 'valid' : 'idle'
+  );
+  const [message, setMessage] = useState(
+    initialCoupon?.valid && initialCoupon?.code
+      ? `${initialCoupon.code} — ${
+          initialCoupon.discountType === 'percentage'
+            ? `${initialCoupon.value}% OFF`
+            : `${formatCurrency(initialCoupon.value || 0)} OFF`
+        }`
+      : ''
+  );
+  const [validatedData, setValidatedData] = useState<CouponResult | null>(
+    initialCoupon?.valid ? initialCoupon : null
+  );
+
+  useEffect(() => {
+    if (initialCoupon?.valid) {
+      setCode(initialCoupon.code || '');
+      setStatus('valid');
+      setValidatedData(initialCoupon);
+      setMessage(
+        `${initialCoupon.code} — ${
+          initialCoupon.discountType === 'percentage'
+            ? `${initialCoupon.value}% OFF`
+            : `${formatCurrency(initialCoupon.value || 0)} OFF`
+        }`
+      );
+    } else if (!initialCoupon) {
+      setCode('');
+      setStatus('idle');
+      setMessage('');
+      setValidatedData(null);
+    }
+  }, [initialCoupon]);
 
   const validate = async () => {
     const trimmed = code.trim();

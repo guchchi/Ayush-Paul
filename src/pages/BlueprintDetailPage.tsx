@@ -563,6 +563,7 @@ export const BlueprintDetailPage = () => {
                 <CouponInput
                   onValidated={(coupon) => setAppliedCoupon(coupon)}
                   disabled={isCheckingOut}
+                  initialCoupon={appliedCoupon}
                 />
 
                 {/* Price breakdown with coupon */}

@@ -13,7 +13,7 @@ import { Product, ProductTier } from '../types';
 import { getPublishedProducts } from '../lib/product-utils';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { MagneticButton } from '../components/ui/MagneticButton';
-import { resolveTier, TIER_ORDER, TIERS, formatPrice } from '../lib/pricing';
+import { resolveTier, TIER_ORDER, TIERS } from '../lib/pricing';
 import { cn } from '../lib/utils';
 import { getContinueLearning, getRecommendedUnlocks, getUpgradePaths } from '../lib/recommendations';
 import { ensureReferralCode } from '../lib/referral';

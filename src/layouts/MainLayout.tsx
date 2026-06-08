@@ -63,7 +63,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <SmoothScrollProvider>
       <CommandPalette />
-      <SocialProofTicker />
+      {import.meta.env.VITE_FEATURE_FLAG_SOCIAL_PROOF === 'true' && <SocialProofTicker />}
       <Navbar />
       
       <main className="w-full relative z-[10]">
