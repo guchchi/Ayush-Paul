@@ -123,6 +123,7 @@ export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInpu
             setStatus('idle');
             setMessage('');
             setValidatedData(null);
+            onValidated(null);
           }}
           placeholder="Enter coupon code"
           disabled={isDisabled}

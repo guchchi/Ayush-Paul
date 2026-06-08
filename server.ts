@@ -53,7 +53,7 @@ async function startServer() {
   // API Route: Create Checkout Session (Product & Support)
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const { productId, userId, email, amount, tierName, creatorCode } = req.body;
+      const { productId, userId, email, amount, tierName, creatorCode, couponCode } = req.body;
 
       // Handle donation tier purchase (legacy support)
       if (amount && tierName) {
@@ -133,7 +133,33 @@ async function startServer() {
       const mode = stripePrice.type === 'recurring' ? 'subscription' : 'payment';
       const effectivePrice = Number(product.salePrice) || Number(product.basePrice) || (stripePrice.unit_amount ? stripePrice.unit_amount / 100 : 0);
 
-      // 3. Create Stripe Checkout Session
+      // 3. Build metadata with creator commission info if applicable
+      const metadata: Record<string, string> = {
+        productId,
+        userId,
+        productTitle: product?.title || '',
+        originalPrice: String(effectivePrice),
+      };
+      if (creatorCode) {
+        const normalizedCreator = creatorCode.trim().toUpperCase();
+        metadata.creatorCode = normalizedCreator;
+        try {
+          const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
+          if (!creatorQuery.empty) {
+            const creatorData = creatorQuery.docs[0].data();
+            metadata.commissionPercent = String(creatorData.creatorCommissionPercent || creatorData.commissionRate || 10);
+          } else {
+            metadata.commissionPercent = '10';
+          }
+        } catch {
+          metadata.commissionPercent = '10';
+        }
+      }
+      if (couponCode) {
+        metadata.couponCode = couponCode.trim().toUpperCase();
+      }
+
+      // 4. Create Stripe Checkout Session
       const session = await stripeClient.checkout.sessions.create({
         payment_method_types: ["card", "upi"], // Optimized for Indian Users
         line_items: [
@@ -152,12 +178,7 @@ async function startServer() {
         mode: mode,
         success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
         cancel_url: `${appUrl}/products/${product.slug || product.productId || productId || "unknown"}?payment=cancelled`,
-        metadata: {
-          productId,
-          userId,
-          productTitle: product?.title || '',
-          ...(creatorCode ? { creatorCode: creatorCode.trim().toUpperCase() } : {}),
-        },
+        metadata,
         customer_email: email || undefined,
       });
 
@@ -250,14 +271,18 @@ async function startServer() {
       // Idempotently log to purchases collection
       const purchaseQuery = await db.collection("purchases").where("stripeSessionId", "==", sessionId).get();
       if (purchaseQuery.empty) {
+        const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
         await db.collection("purchases").add({
           userId,
           productId,
           stripeSessionId: sessionId,
           amountTotal: session.amount_total,
+          originalPrice: Math.round(originalPrice * 100),
           currency: session.currency,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          status: "completed"
+          status: "completed",
+          ...(session.metadata?.creatorCode ? { creatorCode: session.metadata.creatorCode } : {}),
+          ...(session.metadata?.couponCode ? { couponCode: session.metadata.couponCode } : {}),
         });
 
         // Also log safe public purchase for SocialProofTicker
@@ -267,6 +292,62 @@ async function startServer() {
           currency: session.currency,
           createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
+
+        // Track coupon usage
+        const couponCode = session.metadata?.couponCode;
+        if (couponCode) {
+          const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
+          if (!couponQuery.empty) {
+            await db.collection('coupons').doc(couponQuery.docs[0].id).update({
+              usedCount: admin.firestore.FieldValue.increment(1),
+              lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+            }).catch((err: any) => console.warn(`[Coupon] Could not increment ${couponCode}: ${err.message}`));
+          }
+        }
+
+        // Process creator commission
+        const creatorCode = session.metadata?.creatorCode;
+        if (creatorCode) {
+          try {
+            const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
+            const amountPaid = (session.amount_total || 0) / 100;
+            const discountApplied = Math.max(0, originalPrice - amountPaid);
+            const commissionPercent = Number(session.metadata?.commissionPercent) || 10;
+            const commission = +(originalPrice * commissionPercent / 100).toFixed(2);
+
+            const creatorQuery = await db.collection('creator_codes').where('code', '==', creatorCode).limit(1).get();
+            if (!creatorQuery.empty) {
+              const creatorDoc = creatorQuery.docs[0];
+              const creatorData = creatorDoc.data()!;
+              await db.collection('creator_sales_log').add({
+                creatorCode,
+                creatorName: creatorData.creatorName || 'Creator',
+                orderId: sessionId,
+                productId,
+                productTitle: session.metadata?.productTitle || '',
+                userId,
+                originalPrice,
+                paidAmount: amountPaid,
+                discountApplied,
+                commission,
+                commissionPercent,
+                currency: session.currency || 'inr',
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              });
+              await db.collection('creator_codes').doc(creatorDoc.id).update({
+                totalSales: admin.firestore.FieldValue.increment(1),
+                totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+                totalCommission: admin.firestore.FieldValue.increment(commission),
+                totalCustomers: admin.firestore.FieldValue.increment(1),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
+            } else {
+              console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes`);
+            }
+          } catch (creatorError) {
+            console.error('[Creator] Failed to process commission:', creatorError);
+          }
+        }
       }
 
       return res.json({ success: true, productId });
