@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Container } from './ui/Container';
 import { FirebaseConfigWarning } from './FirebaseConfigWarning';
-import { getFirebaseStatus } from '../firebase';
+import { getFirebaseStatus } from '../config/firebase-config';
 
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
   constructor(props: { children: React.ReactNode }) {

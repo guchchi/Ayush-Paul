@@ -6,35 +6,10 @@ import {
 } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer, limit, arrayUnion } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { firebaseConfig } from './config/firebase-config';
 
-// Health Check Layer: Detect environment readiness before bootstrapping
-const getRawConfig = () => ({
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  firestoreDatabaseId: import.meta.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a"
-});
-
-const rawConfig = getRawConfig();
-const missingVars = Object.entries(rawConfig)
-  .filter(([key, value]) => !value && key !== 'firestoreDatabaseId')
-  .map(([key]) => key);
-
-const isConfigured = missingVars.length === 0;
-
-// FAIL-SAFE: If config is missing, initialize with dummy values to prevent early vendor crashes, 
-// but flag clearly so the UI can intercept.
-const firebaseConfig = isConfigured ? rawConfig : {
-  ...rawConfig,
-  apiKey: rawConfig.apiKey || "MISSING_KEY",
-  projectId: rawConfig.projectId || "MISSING_PROJECT"
-};
-
-if (!isConfigured) {
-  console.warn("⚠️ [SYSTEM HEALTH] Firebase is NOT configured. Missing:", missingVars);
+if (!firebaseConfig.projectId || firebaseConfig.projectId === "MISSING_PROJECT") {
+  console.warn("⚠️ [SYSTEM HEALTH] Firebase is NOT configured.");
 }
 
 // Initialize Firebase SDK Fail-Safe
@@ -42,17 +17,6 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-
-// Export environment info helper for UI diagnostics
-export const getFirebaseStatus = () => ({
-  projectId: firebaseConfig.projectId,
-  authDomain: firebaseConfig.authDomain,
-  databaseId: firebaseConfig.firestoreDatabaseId,
-  isConfigured,
-  missingVars,
-  mode: import.meta.env.MODE,
-  isProduction: import.meta.env.PROD
-});
 
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });

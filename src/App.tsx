@@ -46,7 +46,7 @@ import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities"
 import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
 import { CookieConsent } from "./components/ui/CookieConsent";
-import { getFirebaseStatus } from "./firebase";
+import { getFirebaseStatus } from "./config/firebase-config";
 
 const RedirectWithSlug = () => {
   const { slug } = useParams();

@@ -1,24 +1,48 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if request is authenticated as admin
+
+    // ============================================================
+    // REUSABLE HELPER FUNCTIONS
+    // ============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
     function isAdmin() {
-      return request.auth != null && (
-        request.auth.uid == "80OJfcmVXCRNmSZuthVU68K6vJq2" || 
-        request.auth.token.email == "ap877@cornell.edu"
+      // Bootstrap fallback: hardcoded UID of initial admin.
+      // Once the seed script creates admin_users/{uid}, this hardcoded
+      // check can be removed.
+      return isAuthenticated() && (
+        request.auth.uid == "80OJfcmVXCRNmSZuthVU68K6vJq2" ||
+        exists(/databases/$(database)/documents/admin_users/$(request.auth.uid))
       );
     }
 
-    // Default deny
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+
+    // ============================================================
+    // DEFAULT DENY — catches every collection not explicitly listed
+    // ============================================================
+
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // blogPosts rules
-    match /blogPosts/{postId} {
+
+    // ============================================================
+    // PUBLIC READ, ADMIN WRITE — Content Collections
+    // Public-facing content that anyone can browse.
+    // Writes restricted to admin via CMS or server-side API.
+    // ============================================================
+
+    match /blogPosts/{docId} {
       allow read: if true;
-      allow write: if isAdmin() 
+      allow write: if isAdmin()
                    && request.resource.data.keys().hasAll(['title', 'slug', 'content', 'published'])
                    && request.resource.data.title is string
                    && request.resource.data.content is string
@@ -26,8 +50,7 @@ service cloud.firestore {
                    && !(request.resource.data.content.lower().matches('.*test.*'));
     }
 
-    // projects rules
-    match /projects/{projectId} {
+    match /projects/{docId} {
       allow read: if true;
       allow write: if isAdmin()
                    && request.resource.data.keys().hasAll(['title', 'description', 'status'])
@@ -35,90 +58,173 @@ service cloud.firestore {
                    && !(request.resource.data.title.lower().matches('.*test.*'));
     }
 
-    // updates/momentum rules
-    match /updates/{updateId} {
+    match /updates/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // users rules
+    match /products/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /courses/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /modules/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lessons/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /workshops/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+
+    // ============================================================
+    // PUBLIC CREATE, ADMIN READ — User Submissions
+    // Public visitors submit data (contact forms, newsletter signups,
+    // workshop registrations, etc). Read and manage restricted to admin.
+    // ============================================================
+
+    match /contact_messages/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /collaboration_requests/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /subscribers/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /analytics_events/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /mentorship_applications/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /contacts/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /newsletter/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+
+    // ============================================================
+    // AUTH-OWNED — User Identity, Enrollments, Purchases
+    // Authenticated users read their own data; admin full access.
+    // ============================================================
+
     match /users/{userId} {
-      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow read, write: if isOwner(userId) || isAdmin();
     }
 
-    // products rules
-    match /products/{productId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    // courses, modules, lessons rules
-    match /courses/{courseId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /modules/{moduleId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    match /lessons/{lessonId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    // enrollments rules
-    match /enrollments/{enrollmentId} {
-      allow read, write: if request.auth != null && (
-        resource == null || resource.data.userId == request.auth.uid || isAdmin()
+    match /enrollments/{docId} {
+      allow read, write: if (
+        resource == null || resource.data.userId == request.auth.uid
       ) && (
-        request.resource == null || request.resource.data.userId == request.auth.uid || isAdmin()
-      );
+        request.resource == null || request.resource.data.userId == request.auth.uid
+      ) || isAdmin();
     }
 
-    // contact_messages and collaboration_requests rules
-    match /contact_messages/{messageId} {
-      allow create: if true; // Public can create messages
-      allow read, update, delete: if isAdmin();
-    }
-    match /collaboration_requests/{requestId} {
-      allow create: if true; // Public can create requests
-      allow read, update, delete: if isAdmin();
+    match /purchases/{docId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
     }
 
-    // subscribers rules
-    match /subscribers/{subscriberId} {
+    match /workshop_registrations/{docId} {
       allow create: if true;
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow read, update, delete: if isAdmin();
     }
 
-    // analytics_events rules
-    match /analytics_events/{eventId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
-    }
 
-    // purchases rules
-    match /purchases/{purchaseId} {
-      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || isAdmin());
-      allow write: if isAdmin(); // Server-side updates only
-    }
+    // ============================================================
+    // PUBLIC READ, ADMIN WRITE — Social Proof
+    // Public_purchases displays recent purchase notifications site-wide.
+    // Only non-sensitive fields are exposed (product name, timestamp).
+    // ============================================================
 
-    // content rules
-    match /content/{contentId} {
+    match /public_purchases/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // mentorship_applications rules
-    match /mentorship_applications/{applicationId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
+
+    // ============================================================
+    // ADMIN ONLY — CMS-Managed Collections
+    // Displayed and managed exclusively via the admin dashboard.
+    // No public or authenticated-user access.
+    // ============================================================
+
+    match /creator_codes/{docId} {
+      allow read, write: if isAdmin();
     }
 
-    // workshop_registrations rules
-    match /workshop_registrations/{registrationId} {
-      allow create: if true;
-      allow read, update, delete: if isAdmin();
+    match /creator_sales_log/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /coupons/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /scheduled_emails/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /share_events/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /streak_milestones/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /newsletter_campaigns/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /referrals/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /user_unlocks/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /blueprints/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /test_connection/{docId} {
+      allow read, write: if isAdmin();
     }
   }
 }

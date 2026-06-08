@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AlertCircle, Terminal, ShieldAlert, X, Settings2, Database } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { getFirebaseStatus } from '../firebase';
+import { getFirebaseStatus } from '../config/firebase-config';
 
 interface Props {
   variant?: 'banner' | 'fullscreen';

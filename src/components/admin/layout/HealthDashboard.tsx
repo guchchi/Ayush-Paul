@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle2, AlertCircle, Minus } from "lucide-react";
-import { getFirebaseStatus } from "../../../firebase";
+import { getFirebaseStatus } from "../../../config/firebase-config";
 import { cn } from "../../../lib/utils";
 
 export const HealthDashboard: React.FC = () => {

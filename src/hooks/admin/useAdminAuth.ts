@@ -7,8 +7,8 @@ import {
   getRedirectResult,
   signOut,
   onAuthStateChanged,
-  getFirebaseStatus,
 } from "../../firebase";
+import { getFirebaseStatus } from "../../config/firebase-config";
 
 import { isUserAdmin } from "../../config/admin";
 

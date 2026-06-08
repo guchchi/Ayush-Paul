@@ -45,8 +45,8 @@ import {
   deleteDoc,
   addDoc,
   serverTimestamp,
-  getFirebaseStatus,
 } from "../firebase";
+import { getFirebaseStatus } from "../config/firebase-config";
 import { cn } from "../lib/utils";
 import { handleFirestoreError } from "../lib/firebase-utils";
 import { OperationType } from "../types";
