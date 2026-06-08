@@ -28,7 +28,7 @@ export const SocialProofTicker = () => {
           return {
             id: doc.id,
             type: 'purchase',
-            title: data.productId || 'Blueprint',
+            title: data.productTitle || data.productId || 'Blueprint',
             location: data.currency === 'inr' ? 'India' : 'International',
             timeAgo: 'Recently'
           };

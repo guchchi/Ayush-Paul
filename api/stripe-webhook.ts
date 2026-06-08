@@ -180,6 +180,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // 2c. Record the public proof for the SocialProofTicker (safe, non-sensitive)
       await db.collection("public_purchases").add({
         productId,
+        productTitle: session.metadata?.productTitle || '',
         currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp()
       });

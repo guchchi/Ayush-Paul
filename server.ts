@@ -262,6 +262,7 @@ async function startServer() {
         // Also log safe public purchase for SocialProofTicker
         await db.collection("public_purchases").add({
           productId,
+          productTitle: session.metadata?.productTitle || '',
           currency: session.currency,
           createdAt: admin.firestore.FieldValue.serverTimestamp()
         });

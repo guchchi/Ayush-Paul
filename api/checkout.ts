@@ -109,6 +109,37 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       console.log(`[Coupon] Applied ${appliedCoupon.code} to session metadata`);
     }
 
+    // Validate minimum payable amount after discounts
+    const MIN_AMOUNT_PAISE = 5000; // ₹50 (Stripe minimum for INR)
+    const effectivePricePaise = effectivePrice * 100;
+    let finalAmountPaise = effectivePricePaise;
+    if (appliedCoupon) {
+      if (appliedCoupon.discountType === 'percentage') {
+        finalAmountPaise = effectivePricePaise * (1 - appliedCoupon.value / 100);
+      } else {
+        const fixedDiscountPaise = Math.min(appliedCoupon.value * 100, effectivePricePaise);
+        finalAmountPaise = effectivePricePaise - fixedDiscountPaise;
+      }
+      finalAmountPaise = Math.max(0, Math.round(finalAmountPaise));
+    }
+    console.log(
+      `[Pricing] original=₹${Number(product.basePrice) || '?'}, sale=₹${Number(product.salePrice) || '?'}` +
+      `, coupon=${appliedCoupon ? `${appliedCoupon.value}${appliedCoupon.discountType === 'percentage' ? '%' : ' fixed'}` : 'none'}` +
+      `, final=₹${(finalAmountPaise / 100).toFixed(2)}`
+    );
+    if (finalAmountPaise < MIN_AMOUNT_PAISE) {
+      console.warn(`[Pricing] Rejected: ₹${(finalAmountPaise / 100).toFixed(2)} below minimum ₹${(MIN_AMOUNT_PAISE / 100).toFixed(2)}`);
+      return res.status(400).json({
+        error: "Final payable amount must be at least ₹50.",
+        details: {
+          originalPrice: Number(product.basePrice) || 0,
+          salePrice: Number(product.salePrice) || 0,
+          couponDiscount: appliedCoupon ? `${appliedCoupon.value}${appliedCoupon.discountType === 'percentage' ? '%' : ' fixed'}` : null,
+          finalAmount: finalAmountPaise / 100,
+        },
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "upi"],
       line_items: [{
@@ -233,7 +264,8 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       });
 
       await db.collection("public_purchases").add({
-        productId, currency: session.currency,
+        productId, productTitle: session.metadata?.productTitle || '',
+        currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
