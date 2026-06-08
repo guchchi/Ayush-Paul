@@ -80,8 +80,9 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       }
     }
 
-    const price = await stripe.prices.retrieve(product.stripePriceId);
-    const mode = price.type === 'recurring' ? 'subscription' : 'payment';
+    const stripePrice = await stripe.prices.retrieve(product.stripePriceId);
+    const mode = stripePrice.type === 'recurring' ? 'subscription' : 'payment';
+    const effectivePrice = Number(product.salePrice) || Number(product.basePrice) || (stripePrice.unit_amount ? stripePrice.unit_amount / 100 : 0);
 
     let discounts: any[] = [];
     let finalMetadata: Record<string, string> = { productId, userId, productTitle: product.title || '' };
@@ -98,19 +99,31 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       if (appliedCoupon.discountType === 'percentage') {
         couponParams.percent_off = appliedCoupon.value;
       } else {
-        couponParams.amount_off = appliedCoupon.value * 100;
+        const fixedAmount = Math.min(appliedCoupon.value, effectivePrice);
+        couponParams.amount_off = fixedAmount * 100;
         couponParams.currency = 'inr';
       }
       const stripeCoupon = await stripe.coupons.create(couponParams);
       discounts = [{ coupon: stripeCoupon.id }];
       finalMetadata.couponCode = appliedCoupon.code;
+      console.log(`[Coupon] Applied ${appliedCoupon.code} to session metadata`);
     }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "upi"],
-      line_items: [{ price: product.stripePriceId, quantity: 1 }],
+      line_items: [{
+        price_data: {
+          currency: 'inr',
+          product_data: {
+            name: product.title || 'Product',
+            images: product.thumbnail ? [product.thumbnail] : undefined,
+          },
+          unit_amount: effectivePrice * 100,
+        },
+        quantity: 1,
+      }],
       mode,
-      discounts,
+      discounts: discounts.length > 0 ? discounts : undefined,
       success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
       cancel_url: `${appUrl}/blueprints/${product.slug}?payment=cancelled`,
       metadata: finalMetadata,
@@ -202,9 +215,13 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
     }
 
     const userRef = db.collection("users").doc(userId);
+    const existingSnap = await userRef.get();
+    const currentOwned = existingSnap.exists() ? (existingSnap.data()?.ownedProducts || {}) : {};
+    currentOwned[productId] = "premium";
     await userRef.set({
-      ownedProducts: { [productId]: "premium" },
+      ownedProducts: currentOwned,
       purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
     const purchaseQuery = await db.collection("purchases").where("stripeSessionId", "==", sessionId).get();
@@ -219,6 +236,27 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
         productId, currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+
+      // Track coupon usage if applied
+      const couponCode = session.metadata?.couponCode;
+      if (couponCode) {
+        const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
+        if (!couponQuery.empty) {
+          const couponDoc = couponQuery.docs[0];
+          const before = couponDoc.data().usedCount || 0;
+          await db.collection('coupons').doc(couponDoc.id).update({
+            usedCount: admin.firestore.FieldValue.increment(1),
+            lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+            lastUsedBy: userId,
+            lastUsedProduct: productId,
+          }).catch((err: any) => {
+            console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
+          });
+          console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
+        } else {
+          console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
+        }
+      }
     }
 
     return res.status(200).json({ success: true, productId });
@@ -265,6 +303,7 @@ async function handleValidateCoupon(req: VercelRequest, res: VercelResponse) {
       valid: true, code: normalized,
       discountType: coupon.discountType, value: coupon.value,
       description: coupon.description || '',
+      assignedToCreator: coupon.assignedToCreator || undefined,
     });
   } catch (err: any) {
     console.error('[Coupon] Validation error:', err.message);

@@ -97,8 +97,11 @@ export const BlueprintDetailPage = () => {
       
       if (user) {
         const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        const currentOwned = snap.exists() ? (snap.data()?.ownedProducts || {}) : {};
+        currentOwned[product.id] = "free";
         await setDoc(userRef, {
-          ownedProducts: { [product.id]: "free" },
+          ownedProducts: currentOwned,
           updatedAt: serverTimestamp()
         }, { merge: true });
       }
@@ -135,6 +138,7 @@ export const BlueprintDetailPage = () => {
     try {
       const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
       if (appliedCoupon?.code) body.couponCode = appliedCoupon.code;
+      if (appliedCoupon?.assignedToCreator) body.creatorCode = appliedCoupon.assignedToCreator;
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',

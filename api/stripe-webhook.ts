@@ -88,13 +88,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).json({ received: true, status: "already_processed" });
       }
 
-      // 1. Grant product access by updating ownedProducts map
+      // 1. Grant product access — use field-path update to deep-merge ownedProducts map
       const userRef = db.collection("users").doc(userId);
+      const existingSnap = await userRef.get();
+      const currentOwned = existingSnap.exists() ? (existingSnap.data()?.ownedProducts || {}) : {};
+      currentOwned[productId] = "premium";
       await userRef.set({
-        ownedProducts: {
-          [productId]: "premium"
-        },
-        purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId) // Legacy support
+        ownedProducts: currentOwned,
+        purchasedProducts: admin.firestore.FieldValue.arrayUnion(productId),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       }, { merge: true });
 
       // 2. Record the purchase in a 'purchases' collection for analytics
@@ -110,17 +112,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // 2a. Track coupon usage if applied
       const couponCode = session.metadata?.couponCode;
+      console.log(`[Coupon] Processing coupon: ${couponCode || 'none'}`);
       if (couponCode) {
         const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
         if (!couponQuery.empty) {
-          await db.collection('coupons').doc(couponQuery.docs[0].id).update({
+          const couponDoc = couponQuery.docs[0];
+          const before = couponDoc.data().usedCount || 0;
+          await db.collection('coupons').doc(couponDoc.id).update({
             usedCount: admin.firestore.FieldValue.increment(1),
             lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
             lastUsedBy: userId,
             lastUsedProduct: productId,
-          }).catch(() => {
-            console.warn(`[Coupon] Could not increment usage for ${couponCode}`);
+          }).catch((err: any) => {
+            console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
           });
+          console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
+        } else {
+          console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
         }
       }
 

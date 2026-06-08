@@ -168,11 +168,11 @@ export const LabDetailPage = () => {
       if (user) {
         console.log("[Lab] Unlocking free product for user:", user.uid);
         const userRef = doc(db, "users", user.uid);
-        
+        const snap = await getDoc(userRef);
+        const currentOwned = snap.exists() ? (snap.data()?.ownedProducts || {}) : {};
+        currentOwned[product.id] = "free";
         await setDoc(userRef, {
-          ownedProducts: {
-            [product.id]: "free"
-          },
+          ownedProducts: currentOwned,
           updatedAt: serverTimestamp()
         }, { merge: true });
       }

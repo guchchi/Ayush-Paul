@@ -129,15 +129,23 @@ async function startServer() {
       const appUrl = process.env.APP_URL || `${protocol}://${host}`;
 
       // 2. Retrieve Price from Stripe to determine mode
-      const price = await stripeClient.prices.retrieve(product.stripePriceId);
-      const mode = price.type === 'recurring' ? 'subscription' : 'payment';
+      const stripePrice = await stripeClient.prices.retrieve(product.stripePriceId);
+      const mode = stripePrice.type === 'recurring' ? 'subscription' : 'payment';
+      const effectivePrice = Number(product.salePrice) || Number(product.basePrice) || (stripePrice.unit_amount ? stripePrice.unit_amount / 100 : 0);
 
       // 3. Create Stripe Checkout Session
       const session = await stripeClient.checkout.sessions.create({
         payment_method_types: ["card", "upi"], // Optimized for Indian Users
         line_items: [
           {
-            price: product.stripePriceId,
+            price_data: {
+              currency: 'inr',
+              product_data: {
+                name: product.title || 'Product',
+                images: product.thumbnail ? [product.thumbnail] : undefined,
+              },
+              unit_amount: effectivePrice * 100,
+            },
             quantity: 1,
           },
         ],

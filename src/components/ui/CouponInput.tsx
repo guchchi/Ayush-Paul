@@ -9,6 +9,7 @@ export interface CouponResult {
   value?: number;
   description?: string;
   error?: string;
+  assignedToCreator?: string;
 }
 
 interface CouponInputProps {
