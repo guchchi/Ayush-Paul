@@ -114,16 +114,16 @@ export const Navbar = () => {
           color: #ffffff !important;
           opacity: 0.85;
         }
-        :root.light .nav-force-white a.text-white\/60,
-        :root.light .nav-force-white button.text-white\/60,
-        .nav-force-white a.text-white\/60,
-        .nav-force-white button.text-white\/60 {
+        :root.light .nav-force-white a.text-white/60,
+        :root.light .nav-force-white button.text-white/60,
+        .nav-force-white a.text-white/60,
+        .nav-force-white button.text-white/60 {
           color: rgba(255, 255, 255, 0.6) !important;
         }
-        :root.light .nav-force-white a.text-white\/60:hover,
-        :root.light .nav-force-white button.text-white\/60:hover,
-        .nav-force-white a.text-white\/60:hover,
-        .nav-force-white button.text-white\/60:hover {
+        :root.light .nav-force-white a.text-white/60:hover,
+        :root.light .nav-force-white button.text-white/60:hover,
+        .nav-force-white a.text-white/60:hover,
+        .nav-force-white button.text-white/60:hover {
           color: #ffffff !important;
           opacity: 1 !important;
         }
@@ -131,12 +131,12 @@ export const Navbar = () => {
         .nav-force-white .text-white {
           color: #ffffff !important;
         }
-        :root.light .nav-force-white .border-white\/10,
-        .nav-force-white .border-white\/10 {
+        :root.light .nav-force-white .border-white/10,
+        .nav-force-white .border-white/10 {
           border-color: rgba(255, 255, 255, 0.1) !important;
         }
-        :root.light .nav-force-white .bg-white\/5,
-        .nav-force-white .bg-white\/5 {
+        :root.light .nav-force-white .bg-white/5,
+        .nav-force-white .bg-white/5 {
           background-color: rgba(255, 255, 255, 0.05) !important;
         }
       `}</style>

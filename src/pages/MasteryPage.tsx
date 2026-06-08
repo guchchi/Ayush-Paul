@@ -182,7 +182,7 @@ export const MasteryPage = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: auth.currentUser.uid, courseId }),
           }).catch(() => {});
-        } catch (_) {}
+        } catch (_) { /* enrollment email dispatch is fire-and-forget */ }
       }
       
       // Update local state immediately
