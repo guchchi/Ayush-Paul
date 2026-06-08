@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Package, Download, Bell, Sparkles, ChevronRight, Zap, 
-  ShieldCheck, LogOut, BookOpen, Video, Users, Play, Clock, ArrowUpRight 
+  ShieldCheck, LogOut, BookOpen, Video, Users, Play, Clock, ArrowUpRight, Lock
 } from 'lucide-react';
 import { auth, onAuthStateChanged, signOut, db, doc, getDoc, getDocs, collection, query, where } from '../firebase';
 import { useSEO } from '../hooks/useSEO';
 import { EcosystemCard } from '../components/ui/EcosystemCard';
-import { Product } from '../types';
+import { PricingBadge } from '../components/ui/PricingBadge';
+import { Product, ProductTier } from '../types';
 import { getPublishedProducts } from '../lib/product-utils';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { MagneticButton } from '../components/ui/MagneticButton';
+import { resolveTier, TIER_ORDER, TIERS, formatPrice } from '../lib/pricing';
+import { cn } from '../lib/utils';
+import { getContinueLearning, getRecommendedUnlocks, getUpgradePaths } from '../lib/recommendations';
+import { ensureReferralCode } from '../lib/referral';
+import { VaultContinueLearning } from '../components/sections/VaultContinueLearning';
+import { VaultRecommendedUnlocks } from '../components/sections/VaultRecommendedUnlocks';
+import { VaultUpgradePath } from '../components/sections/VaultUpgradePath';
+import { VaultStreak } from '../components/sections/VaultStreak';
+import { VaultReferralShare } from '../components/sections/VaultReferralShare';
+import { VaultNextUnlock } from '../components/sections/VaultNextUnlock';
 
 export const VaultPage = () => {
   const navigate = useNavigate();
@@ -24,6 +35,8 @@ export const VaultPage = () => {
   const [discoverProducts, setDiscoverProducts] = useState<Product[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [registeredWorkshops, setRegisteredWorkshops] = useState<any[]>([]);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
 
   const { trackEvent } = useAnalytics();
 
@@ -35,27 +48,24 @@ export const VaultPage = () => {
   useEffect(() => {
     trackEvent('lab_visit');
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setAuthChecked(true);
       if (currentUser) {
         setUser(currentUser);
         const profileSnap = await getDoc(doc(db, 'users', currentUser.uid));
         
-        // Fetch all published blueprints
         const allProducts = await getPublishedProducts();
+        const profileData = profileSnap.exists() ? profileSnap.data() : {};
 
-        if (profileSnap.exists()) {
-          const profileData = profileSnap.data();
-          setProfile(profileData);
-          
-          const ownedMap = profileData?.ownedProducts || {};
-          const ownedIds = Object.keys(ownedMap);
-          
-          const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
-          setOwnedProducts(filteredOwned);
-          setDiscoverProducts(allProducts.filter(p => ownedMap[p.id] !== 'premium' && p.type !== 'free'));
-        } else {
-          setOwnedProducts([]);
-          setDiscoverProducts(allProducts.filter(p => p.type !== 'free'));
-        }
+        setProfile(profileData);
+        
+        const ownedMap = profileData?.ownedProducts || {};
+        const ownedIds = Object.keys(ownedMap);
+        
+        const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
+        setOwnedProducts(filteredOwned);
+        
+        const ownedOrClaimed = (p: Product) => ownedIds.includes(p.id) || p.type === 'free';
+        setDiscoverProducts(allProducts.filter(p => !ownedOrClaimed(p)));
 
         // Fetch Enrolled Courses
         try {
@@ -74,7 +84,8 @@ export const VaultPage = () => {
             query(collection(db, "courses"), where("isPublished", "==", true))
           );
           const coursesList = coursesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          
+          setAllCourses(coursesList);
+
           const enrolledList = coursesList.filter(c => enrollMap[c.id]).map(c => ({
             ...c,
             progressData: enrollMap[c.id]
@@ -102,13 +113,64 @@ export const VaultPage = () => {
           console.error("Failed to load registered workshops inside Vault:", wErr);
         }
 
-      } else {
-        navigate('/'); // Redirect to home if not logged in
       }
       setLoading(false);
     });
     return () => unsubscribe();
   }, [navigate]);
+
+  // Auto-generate referral code if missing
+  useEffect(() => {
+    if (user && profile && !profile.referralCode) {
+      ensureReferralCode(user.uid, profile).then((code) => {
+        if (code) setProfile((prev: any) => ({ ...prev, referralCode: code }));
+      });
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    if (!loading && authChecked && !user) {
+      navigate('/', { replace: true });
+    }
+  }, [loading, authChecked, user, navigate]);
+
+  if (loading || !user) {
+    return (
+      <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
+        <div className="w-6 h-6 border-2 border-[#d1f34d]/25 border-t-[#d1f34d] rounded-full animate-spin mb-4" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
+      </div>
+    );
+  }
+
+  const ownedByTier = useMemo(() => {
+    const groups: Record<ProductTier, Product[]> = { free: [], starter: [], pro: [], premium: [] };
+    for (const p of ownedProducts) {
+      const tier = resolveTier(p);
+      if (groups[tier]) groups[tier].push(p);
+    }
+    return groups;
+  }, [ownedProducts]);
+
+  const referralCode = profile?.referralCode || null;
+  const paidOwnedCount = ownedProducts.filter(p => resolveTier(p) !== 'free').length;
+  const freeOwnedCount = ownedByTier.free.length;
+  const totalProductCount = ownedProducts.length + discoverProducts.length;
+
+  const continueLearning = useMemo(
+    () => getContinueLearning(enrolledCourses, ownedProducts),
+    [enrolledCourses, ownedProducts],
+  );
+
+  const recommendedUnlocks = useMemo(
+    () => getRecommendedUnlocks(ownedProducts, enrolledCourses, discoverProducts, allCourses),
+    [ownedProducts, enrolledCourses, discoverProducts, allCourses],
+  );
+
+  const upgradePaths = useMemo(
+    () => getUpgradePaths(ownedProducts, [...ownedProducts, ...discoverProducts]),
+    [ownedProducts, discoverProducts],
+  );
 
   const handleLogout = async () => {
     try {
@@ -132,14 +194,38 @@ export const VaultPage = () => {
 
   const isNewPurchase = new URLSearchParams(window.location.search).get('product_id');
 
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#d1f34d]/25 border-t-[#d1f34d] rounded-full animate-spin mb-4" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
+const VaultProductCard = ({ product, profile, onDownload }: { product: Product; profile: any; onDownload: (p: Product) => void }) => {
+  const tier = resolveTier(product);
+  const isFree = tier === 'free';
+  const tierCfg = TIERS[tier];
+  return (
+    <div className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+      <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10">
+        <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover transition-opacity duration-300" />
       </div>
-    );
-  }
+      <div className="flex items-center gap-2 mb-3">
+        <PricingBadge product={product} size="sm" showPrice />
+      </div>
+      <h3 className="text-base font-extrabold text-[#0b1c30] mb-1.5 line-clamp-1">{product.title}</h3>
+      <p className="text-xs text-[#424754] mb-5 line-clamp-2 flex-1 leading-relaxed font-semibold">{product.description}</p>
+
+      <MagneticButton className="w-full">
+        <button
+          onClick={() => onDownload(product)}
+          className={`w-full py-3.5 rounded-full font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11 ${
+            isFree
+              ? 'bg-[#f0fbe8] hover:bg-[#e1f7d2] text-[#558b2f]'
+              : 'bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d]'
+          }`}
+        >
+          <Download size={14} /> {isFree ? 'Download Free' : 'Access Files'}
+        </button>
+      </MagneticButton>
+    </div>
+  );
+};
+
+
 
   const tabs = [
     { id: 'blueprints', label: 'Blueprints & Systems', icon: Package },
@@ -221,13 +307,22 @@ export const VaultPage = () => {
         </div>
 
         {/* Info alerts */}
-        <div className="p-4 rounded-2xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-start sm:items-center justify-between gap-4 mb-12 text-left">
+        <div className="p-4 rounded-2xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-start sm:items-center justify-between gap-4 text-left">
           <div className="flex items-center gap-3">
             <Bell size={14} className="text-[#d1f34d] shrink-0" />
             <p className="text-xs text-[#424754] font-semibold">
               <strong className="text-[#0b1c30]">Secure Vault:</strong> Every digital track, live workshop access link, and code audit is cataloged inside your authenticated profile.
             </p>
           </div>
+        </div>
+
+        {/* Engine: Next Unlock / Upgrade Pressure */}
+        <div className="mb-12">
+          <VaultNextUnlock
+            ownedTier={profile?.tier || null}
+            ownedCount={paidOwnedCount}
+            totalCount={totalProductCount}
+          />
         </div>
 
         {/* Tab switcher navigation */}
@@ -264,33 +359,51 @@ export const VaultPage = () => {
                 transition={{ duration: 0.25 }}
               >
                 {ownedProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {ownedProducts.map(product => (
-                      <div key={product.id} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
-                        <div className="aspect-[16/10] w-full rounded-2xl overflow-hidden mb-5 relative bg-bg-secondary border border-[#c2c6d6]/10">
-                          <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover transition-opacity duration-300" />
+                  <div className="space-y-16">
+                    {/* Free Content Section */}
+                    {freeOwnedCount > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-6">
+                          <ShieldCheck size={16} className="text-[#558b2f]" />
+                          <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#0b1c30]">Free Content</h3>
+                          <span className="text-[10px] font-bold text-[#424754]/40">({freeOwnedCount})</span>
                         </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#d1f34d] px-2.5 py-0.5 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/20">
-                            {product.category}
-                          </span>
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-green-650 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
-                            {profile?.ownedProducts?.[product.id] || 'Owned'}
-                          </span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {ownedByTier.free.map(product => (
+                            <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} />
+                          ))}
                         </div>
-                        <h3 className="text-base font-extrabold text-[#0b1c30] mb-1.5 line-clamp-1">{product.title}</h3>
-                        <p className="text-xs text-[#424754] mb-5 line-clamp-2 flex-1 leading-relaxed font-semibold">{product.description}</p>
-                        
-                        <MagneticButton className="w-full">
-                          <button 
-                            onClick={() => handleDownload(product)}
-                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
-                          >
-                            <Download size={14} /> Access Files
-                          </button>
-                        </MagneticButton>
                       </div>
-                    ))}
+                    )}
+
+                    {/* Owned Systems Section — paid products grouped by tier */}
+                    {paidOwnedCount > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-6">
+                          <Package size={16} className="text-[#6b35ff]" />
+                          <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#0b1c30]">Owned Systems</h3>
+                          <span className="text-[10px] font-bold text-[#424754]/40">({paidOwnedCount})</span>
+                        </div>
+                        {TIER_ORDER.filter(t => t !== 'free').map(tier => {
+                          const tierProducts = ownedByTier[tier];
+                          if (tierProducts.length === 0) return null;
+                          return (
+                            <div key={tier} className="mb-10 last:mb-0">
+                              <div className="flex items-center gap-2 mb-4">
+                                <span className={cn('w-2 h-2 rounded-full', TIERS[tier].dotColor)} />
+                                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/70">{TIERS[tier].label}</h4>
+                                <span className="text-[9px] font-bold text-[#424754]/30">({tierProducts.length})</span>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tierProducts.map(product => (
+                                  <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} />
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">
@@ -315,6 +428,10 @@ export const VaultPage = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.25 }}
               >
+                <div className="mb-8">
+                  <VaultStreak enrollments={enrolledCourses} />
+                </div>
+
                 {enrolledCourses.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {enrolledCourses.map(course => {
@@ -467,6 +584,20 @@ export const VaultPage = () => {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Engine: Referral Share */}
+        <div className="mb-12">
+          <VaultReferralShare referralCode={referralCode} />
+        </div>
+
+        {/* Engine: Continue Learning */}
+        <VaultContinueLearning items={continueLearning} />
+
+        {/* Engine: Recommended Unlocks */}
+        <VaultRecommendedUnlocks items={recommendedUnlocks} />
+
+        {/* Engine: Upgrade Path */}
+        <VaultUpgradePath offers={upgradePaths} />
 
         {/* Discovery / Upsell Section */}
         <div>

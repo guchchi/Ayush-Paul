@@ -61,6 +61,10 @@ export interface FirestoreErrorInfo {
 
 export type ProductType = 'free' | 'paid' | 'donation';
 
+export type ProductTier = 'free' | 'starter' | 'pro' | 'premium';
+
+export type ContentStatus = 'DRAFT_SEED' | 'PUBLISHED' | 'COMING_SOON';
+
 export interface ProductFeature {
   name: string;
   isPremiumOnly: boolean;
@@ -128,6 +132,8 @@ export interface DigitalSystem {
   viewCount: number;
   rating: number;
   stripePriceId?: string; // For Phase 3
+  productTier?: ProductTier;
+  status?: string; // DRAFT_SEED, PUBLISHED, etc.
   author: {
     name: string;
     role: string;
@@ -157,6 +163,81 @@ export interface DonationRecord {
   amount: number;
   productSupported: string | null;
   message: string;
+  timestamp: any;
+}
+
+// --- Email Scheduling System ---
+
+export type ScheduledEmailType = 'abandoned' | 'streak' | 'upsell' | 'streak_broken' | 'purchase_followup' | 'creator_promo';
+export type ScheduledEmailStatus = 'pending' | 'sent' | 'failed' | 'cancelled';
+
+export interface ScheduledEmail {
+  id?: string;
+  type: ScheduledEmailType;
+  userId: string;
+  userEmail?: string;
+  userName?: string;
+  sendAt: any;
+  sentAt?: any;
+  status: ScheduledEmailStatus;
+  metadata?: Record<string, any>;
+  error?: string;
+  createdAt: any;
+}
+
+// --- Share-to-Unlock System ---
+
+export interface ShareEvent {
+  id?: string;
+  userId: string;
+  shareTarget: 'whatsapp' | 'twitter' | 'linkedin' | 'copy_link' | 'other';
+  shareCount: number;
+  milestoneUnlocked?: string;
+  createdAt: any;
+}
+
+// --- Streak Milestones ---
+
+export interface StreakMilestone {
+  id?: string;
+  userId: string;
+  streakDays: number;
+  milestoneTier: 3 | 7 | 14;
+  rewardType: 'badge' | 'coupon' | 'content_unlock';
+  rewardValue: string;
+  claimed: boolean;
+  claimedAt?: any;
+  createdAt: any;
+}
+
+// --- Creator Affiliate System ---
+
+export interface CreatorCode {
+  id?: string;
+  code: string;
+  creatorName: string;
+  userId?: string;
+  commissionRate: number;
+  totalSales: number;
+  totalEarnings: number;
+  isActive: boolean;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface CreatorSaleLog {
+  id?: string;
+  creatorCode: string;
+  creatorName: string;
+  orderId: string;
+  productId: string;
+  productTitle?: string;
+  userId: string;
+  productPrice: number;
+  discountApplied: number;
+  commission: number;
+  commissionRate: number;
+  currency: string;
   timestamp: any;
 }
 

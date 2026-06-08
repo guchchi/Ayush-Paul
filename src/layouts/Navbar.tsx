@@ -18,17 +18,9 @@ export const Navbar = () => {
   const [user, setUser] = useState<any>(null);
   const location = useLocation();
 
-  const isLightTheme = location.pathname !== '/';
   const isHomePage = location.pathname === '/';
-  const isNavLightText = isLightTheme;
-  const isDrawerLight = true;
-
-  // Force light mode class globally on root
-  useEffect(() => {
-    document.documentElement.classList.add('light');
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
-  }, []);
+  const isNavLightText = !isHomePage;
+  const isDrawerLight = false;
 
   // Scroll Progress Logic
   const { scrollYProgress } = useScroll();

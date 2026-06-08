@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, Lock, User, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, ShieldCheck, Zap, Gift } from 'lucide-react';
 import { 
   auth, googleProvider, signInWithPopup, 
   signInWithEmailAndPassword, createUserWithEmailAndPassword, db, doc, setDoc, getDoc, serverTimestamp 
@@ -21,7 +21,28 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [referralClaimed, setReferralClaimed] = useState(false);
   const { trackEvent, identifyUser } = useAnalytics();
+
+  const claimReferral = async (newUserId: string) => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get('ref');
+    if (!refCode) return;
+    try {
+      const res = await fetch('/api/claim-referral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refCode, newUserId }),
+      });
+      if (res.ok) {
+        setReferralClaimed(true);
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    } catch (err) {
+      console.error('[Referral] Claim failed:', err);
+    }
+  };
 
   // Initialize user profile in Firestore
   const initUserProfile = async (user: any, additionalData?: any) => {
@@ -33,10 +54,11 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
         email: user.email,
         displayName: user.displayName || additionalData?.name || "Innovator",
         photoURL: user.photoURL || null,
-        role: "customer", // Default role
+        role: "customer",
         createdAt: serverTimestamp(),
       });
-      return true; // isNewUser
+      await claimReferral(user.uid);
+      return true;
     }
     return false;
   };
@@ -137,6 +159,12 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
                   {mode === 'login' ? 'Access your digital assets and blueprints.' : 'Join the Innovation Lab ecosystem.'}
                 </p>
               </div>
+
+              {referralClaimed && (
+                <div className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs text-center font-medium flex items-center justify-center gap-2">
+                  <Gift size={14} /> Referral claimed! You earned a welcome bonus.
+                </div>
+              )}
 
               {error && (
                 <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs text-center font-medium">

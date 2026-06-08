@@ -27,6 +27,12 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [updates, setUpdates] = useState<any[]>([]);
+  const [creatorCodes, setCreatorCodes] = useState<any[]>([]);
+  const [creatorSalesLog, setCreatorSalesLog] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<any[]>([]);
+  const [scheduledEmails, setScheduledEmails] = useState<any[]>([]);
+  const [shareEvents, setShareEvents] = useState<any[]>([]);
+  const [streakMilestones, setStreakMilestones] = useState<any[]>([]);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
     isQuotaExceeded: false,
     lastError: null,
@@ -219,6 +225,67 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       }
     );
 
+    // Coupons listener
+    const qCoupons = query(collection(db, 'coupons'), orderBy('createdAt', 'desc'));
+    const unsubscribeCoupons = onSnapshot(
+      qCoupons,
+      (snapshot) => { setCoupons(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'coupons'); }
+    );
+
+    // Scheduled Emails listener
+    const qScheduledEmails = query(collection(db, 'scheduled_emails'), orderBy('sendAt', 'asc'));
+    const unsubscribeScheduledEmails = onSnapshot(
+      qScheduledEmails,
+      (snapshot) => { setScheduledEmails(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'scheduled_emails'); }
+    );
+
+    // Share Events listener
+    const qShareEvents = query(collection(db, 'share_events'), orderBy('createdAt', 'desc'));
+    const unsubscribeShareEvents = onSnapshot(
+      qShareEvents,
+      (snapshot) => { setShareEvents(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'share_events'); }
+    );
+
+    // Streak Milestones listener
+    const qStreakMilestones = query(collection(db, 'streak_milestones'), orderBy('createdAt', 'desc'));
+    const unsubscribeStreakMilestones = onSnapshot(
+      qStreakMilestones,
+      (snapshot) => { setStreakMilestones(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'streak_milestones'); }
+    );
+
+    // Creator Affiliate listeners
+    const qCreatorCodes = query(
+      collection(db, "creator_codes"),
+      orderBy("totalEarnings", "desc")
+    );
+    const unsubscribeCreatorCodes = onSnapshot(
+      qCreatorCodes,
+      (snapshot) => {
+        setCreatorCodes(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "creator_codes");
+      }
+    );
+
+    const qCreatorSalesLog = query(
+      collection(db, "creator_sales_log"),
+      orderBy("timestamp", "desc")
+    );
+    const unsubscribeCreatorSalesLog = onSnapshot(
+      qCreatorSalesLog,
+      (snapshot) => {
+        setCreatorSalesLog(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, "creator_sales_log");
+      }
+    );
+
     // 2. Optimized One-Time Fetches
     fetchSecondaryData();
 
@@ -230,6 +297,12 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       unsubscribeCourses();
       unsubscribeUsers();
       unsubscribePurchases();
+      unsubscribeCreatorCodes();
+      unsubscribeCreatorSalesLog();
+      unsubscribeCoupons();
+      unsubscribeScheduledEmails();
+      unsubscribeShareEvents();
+      unsubscribeStreakMilestones();
     };
   }, []);
 
@@ -254,6 +327,18 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     setCampaigns,
     updates,
     setUpdates,
+    creatorCodes,
+    setCreatorCodes,
+    creatorSalesLog,
+    setCreatorSalesLog,
+    coupons,
+    setCoupons,
+    scheduledEmails,
+    setScheduledEmails,
+    shareEvents,
+    setShareEvents,
+    streakMilestones,
+    setStreakMilestones,
     systemStatus,
     setSystemStatus,
     forceRefresh,

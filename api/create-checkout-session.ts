@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { productId, userId, amount, isDonation } = req.body;
+  const { productId, userId, amount, isDonation, couponCode, creatorCode } = req.body;
 
   if (!productId || !userId) {
     return res.status(400).json({ error: "Missing required parameters" });
@@ -74,26 +74,74 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // 2. Retrieve Price from Stripe to determine mode
+    // 2. Validate coupon if provided
+    let appliedCoupon: { code: string; discountType: string; value: number } | null = null;
+
+    if (couponCode) {
+      const normalized = couponCode.trim().toUpperCase();
+      const couponSnap = await db.collection('coupons').doc(normalized).get();
+
+      if (couponSnap.exists) {
+        const c = couponSnap.data()!;
+
+        if (c.active) {
+          const expired = c.expiresAt?.toDate?.() ? new Date() > c.expiresAt.toDate() : false;
+          const exhausted = c.usageLimit && (c.usedCount || 0) >= c.usageLimit;
+
+          if (!expired && !exhausted) {
+            appliedCoupon = { code: normalized, discountType: c.discountType, value: c.value };
+          }
+        }
+      }
+
+      // If coupon was provided but invalid, still proceed (just don't apply it)
+    }
+
+    // 3. Calculate discounted amount
     const price = await stripe.prices.retrieve(product.stripePriceId);
     const mode = price.type === 'recurring' ? 'subscription' : 'payment';
+    const unitAmount = price.unit_amount || 0;
 
-    // 3. Create Stripe Checkout Session
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let discounts: any[] = [];
+    let finalMetadata: Record<string, string> = { productId, userId, productTitle: product.title || '' };
+
+    if (creatorCode) {
+      finalMetadata.creatorCode = creatorCode.trim().toUpperCase();
+    }
+
+    if (appliedCoupon) {
+      const couponParams: Stripe.CouponCreateParams = {
+        name: appliedCoupon.code,
+        duration: 'once',
+      };
+
+      if (appliedCoupon.discountType === 'percentage') {
+        couponParams.percent_off = appliedCoupon.value;
+      } else {
+        couponParams.amount_off = appliedCoupon.value * 100;
+        couponParams.currency = 'inr';
+      }
+
+      const stripeCoupon = await stripe.coupons.create(couponParams);
+      discounts = [{ coupon: stripeCoupon.id }];
+      finalMetadata.couponCode = appliedCoupon.code;
+    }
+
+    // 4. Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "upi"], // Optimized for Indian Users
+      payment_method_types: ["card", "upi"],
       line_items: [
         {
           price: product.stripePriceId,
           quantity: 1,
         },
       ],
-      mode: mode,
+      mode,
+      discounts,
       success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}&product_id=${productId}`,
-      cancel_url: `${appUrl}/products/${product.slug}?payment=cancelled`,
-      metadata: {
-        productId,
-        userId
-      },
+      cancel_url: `${appUrl}/blueprints/${product.slug}?payment=cancelled`,
+      metadata: finalMetadata,
       customer_email: req.body.email || undefined,
     });
 

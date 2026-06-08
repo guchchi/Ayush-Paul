@@ -1,47 +1,138 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Users2, Clock, CheckCircle2, Video, Sparkles, AlertCircle } from 'lucide-react';
+import { Calendar, Users2, Clock, CheckCircle2, Video, Sparkles, AlertCircle, BadgeCheck, MapPin } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
-import { db, collection, addDoc, serverTimestamp } from '../../firebase';
+import { db, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy } from '../../firebase';
 
 export interface Workshop {
   id: string;
-  name: string;
-  topic: string;
+  name?: string;
+  title?: string;
+  topic?: string;
   date: string;
   time?: string;
-  totalSeats: number;
-  seatsLeft: number;
+  duration?: string;
+  totalSeats?: number;
+  seatsLeft?: number;
   urgencyText?: string;
   price?: number;
+  isFree?: boolean;
+  status?: string;
+  category?: string;
+  instructor?: string;
+  meetingLink?: string;
+  description?: string;
+  maxParticipants?: number;
+  tags?: string[];
+  thumbnail?: string;
 }
 
 const DEFAULT_WORKSHOPS: Workshop[] = [
   {
     id: 'workshop-ai-agents',
     name: 'AI Automation Bootcamp',
+    title: 'AI Automation Bootcamp',
     topic: 'Building & Deploying Autonomous Research Agents',
-    date: 'June 28, 2026',
-    time: '2:00 PM EST',
-    totalSeats: 20,
-    seatsLeft: 5,
-    urgencyText: 'Only 5 seats left!',
-    price: 149
+    description: 'Join Ayush for a live 2-hour workshop where you\'ll build a functional AI agent from scratch using LangChain, OpenAI, and FastAPI. Covers tool calling, memory, and deployment.',
+    date: 'Coming Soon — Q3 2026',
+    time: 'To be announced',
+    duration: '2 hours',
+    totalSeats: 50,
+    seatsLeft: 50,
+    status: 'UPCOMING',
+    category: 'AI & Automation',
+    instructor: 'Ayush Paul',
+    meetingLink: '',
+    price: 0,
+    isFree: true,
+    tags: ['AI Agents', 'LangChain', 'Python', 'Live Workshop'],
   },
   {
-    id: 'workshop-web-eng',
-    name: 'Next-Gen Web Engineering',
-    topic: 'Next.js Server Actions, Edge Layouts & Caching Systems',
-    date: 'July 12, 2026',
-    time: '1:00 PM EST',
-    totalSeats: 15,
-    seatsLeft: 12,
-    urgencyText: 'Registration closes in 4 days',
-    price: 199
-  }
+    id: 'workshop-cursor-mastery',
+    name: 'Cursor AI Mastery',
+    title: 'Cursor AI Mastery',
+    topic: 'Ship a Feature in 60 Minutes with AI-Assisted Development',
+    description: 'Watch Ayush ship a complete feature using Cursor AI in under 60 minutes. Learn prompt patterns, Composer workflows, and how to integrate AI into your daily development loop.',
+    date: 'Coming Soon — Q3 2026',
+    time: 'To be announced',
+    duration: '1 hour',
+    totalSeats: 100,
+    seatsLeft: 100,
+    status: 'UPCOMING',
+    category: 'Development',
+    instructor: 'Ayush Paul',
+    meetingLink: '',
+    price: 0,
+    isFree: true,
+    tags: ['Cursor AI', 'AI-Assisted Development', 'Live Coding'],
+  },
+  {
+    id: 'workshop-saas-launch',
+    name: 'SaaS Launch Blueprint',
+    title: 'SaaS Launch Blueprint',
+    topic: 'From Idea to First Customer — Full SaaS Launch Process',
+    description: 'A 3-hour intensive workshop covering the entire SaaS launch process: idea validation, tech stack selection, MVP build, Stripe integration, and go-to-market strategy.',
+    date: 'Coming Soon — Q4 2026',
+    time: 'To be announced',
+    duration: '3 hours',
+    totalSeats: 25,
+    seatsLeft: 25,
+    status: 'UPCOMING',
+    category: 'Business & SaaS',
+    instructor: 'Ayush Paul',
+    meetingLink: '',
+    price: 49,
+    isFree: false,
+    tags: ['SaaS', 'Launch', 'Startup', 'Business'],
+  },
+  {
+    id: 'workshop-seo-audit',
+    name: 'Live Technical SEO Audit',
+    title: 'Live Technical SEO Audit',
+    topic: 'Real Site Walkthrough — Crawl, Fix, Optimize',
+    description: 'Ayush performs a live technical SEO audit on a real volunteer\'s website. You\'ll learn exactly how to identify crawl issues, fix structured data, optimize Core Web Vitals, and more.',
+    date: 'Coming Soon — Q4 2026',
+    time: 'To be announced',
+    duration: '2 hours',
+    totalSeats: 50,
+    seatsLeft: 50,
+    status: 'UPCOMING',
+    category: 'SEO & Growth',
+    instructor: 'Ayush Paul',
+    meetingLink: '',
+    price: 0,
+    isFree: true,
+    tags: ['SEO', 'Technical Audit', 'Live Demo'],
+  },
 ];
 
+const mapFirestoreWorkshop = (doc: any): Workshop => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    name: data.title || data.name || 'Untitled Workshop',
+    title: data.title || data.name || 'Untitled Workshop',
+    topic: data.topic || data.description?.slice(0, 80) || 'Workshop topic to be announced',
+    description: data.description || '',
+    date: data.date || 'Coming Soon',
+    time: data.time || 'To be announced',
+    duration: data.duration || '2 hours',
+    totalSeats: data.maxParticipants || data.totalSeats || 50,
+    seatsLeft: data.seatsLeft ?? data.maxParticipants ?? 50,
+    status: data.status || 'UPCOMING',
+    category: data.category || 'General',
+    instructor: data.instructor || 'Ayush Paul',
+    meetingLink: data.meetingLink || '',
+    price: data.price ?? 0,
+    isFree: data.isFree ?? true,
+    tags: data.tags || [],
+    thumbnail: data.thumbnail || '',
+  };
+};
+
 export const MasteryWorkshops = () => {
+  const [workshops, setWorkshops] = useState<Workshop[]>(DEFAULT_WORKSHOPS);
+  const [dbLoading, setDbLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
   const [regName, setRegName] = useState('');
@@ -50,6 +141,28 @@ export const MasteryWorkshops = () => {
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        const q = query(
+          collection(db, 'workshops'),
+          where('isPublished', '==', true),
+          orderBy('createdAt', 'desc')
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const firestoreWorkshops = snap.docs.map(mapFirestoreWorkshop);
+          setWorkshops(firestoreWorkshops);
+        }
+      } catch (e) {
+        console.warn('Failed to load workshops from Firestore, using defaults:', e);
+      } finally {
+        setDbLoading(false);
+      }
+    };
+    fetchWorkshops();
+  }, []);
 
   // General waitlist submission
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
@@ -156,7 +269,7 @@ export const MasteryWorkshops = () => {
 
       {/* Workshops Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-16">
-        {DEFAULT_WORKSHOPS.map((workshop, idx) => (
+        {workshops.map((workshop, idx) => (
           <motion.div
             key={workshop.id}
             initial={{ opacity: 0, y: 24 }}
@@ -168,9 +281,19 @@ export const MasteryWorkshops = () => {
             <div>
               {/* Top Meta info */}
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] px-2.5 py-0.5 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/20">
-                  Live Session
-                </span>
+                {workshop.status === 'UPCOMING' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-[#f57f17] px-2.5 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082]">
+                    <Sparkles size={11} /> Upcoming
+                  </span>
+                ) : workshop.status === 'LIVE' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-green-700 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
+                    <BadgeCheck size={11} className="animate-pulse" /> Live Now
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#424754]/50 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200">
+                    Completed
+                  </span>
+                )}
                 
                 {workshop.urgencyText && (
                   <span className="flex items-center gap-1 text-[9px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-full px-2.5 py-0.5">
@@ -178,15 +301,35 @@ export const MasteryWorkshops = () => {
                     {workshop.urgencyText}
                   </span>
                 )}
+
+                <span className="text-[8px] font-bold text-[#424754]/40 uppercase tracking-wider">
+                  {workshop.duration}
+                </span>
               </div>
 
               {/* Title & Topic */}
               <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-snug mb-2">
-                {workshop.name}
+                {workshop.name || workshop.title}
               </h3>
-              <p className="text-xs text-[#424754] font-semibold leading-relaxed mb-6">
+              <p className="text-xs text-[#424754] font-semibold leading-relaxed mb-3">
                 {workshop.topic}
               </p>
+
+              {/* Description */}
+              {workshop.description && (
+                <p className="text-[10px] text-[#424754]/70 leading-relaxed font-medium mb-6 line-clamp-2">
+                  {workshop.description}
+                </p>
+              )}
+
+              {/* Category Tag */}
+              {workshop.category && (
+                <div className="mb-4">
+                  <span className="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-[#eff4ff] border border-[#dce9ff] text-[#0058be]">
+                    {workshop.category}
+                  </span>
+                </div>
+              )}
 
               {/* Details Row */}
               <div className="grid grid-cols-2 gap-4 bg-gray-50/50 border border-gray-100/50 p-4.5 rounded-2xl mb-8">
@@ -196,19 +339,31 @@ export const MasteryWorkshops = () => {
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#424754]">
                   <Clock size={13} className="text-[#d1f34d]" />
-                  <span>{workshop.time}</span>
+                  <span>{workshop.time || 'To be announced'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#424754] col-span-2 border-t border-[#c2c6d6]/10 pt-2.5 mt-1">
                   <Users2 size={13} className="text-[#d1f34d]" />
-                  <span>{workshop.totalSeats} seats total • <span className="text-[#558b2f]">{workshop.seatsLeft} left</span></span>
+                  <span>{workshop.totalSeats || 50} seats total{workshop.seatsLeft != null ? ` • ${workshop.seatsLeft} left` : ''}</span>
                 </div>
               </div>
+
+              {/* Instructor */}
+              {workshop.instructor && (
+                <div className="flex items-center gap-1.5 mb-4 text-[10px] font-bold text-[#424754]/60">
+                  <BadgeCheck size={11} className="text-[#0058be]" />
+                  <span>Led by {workshop.instructor}</span>
+                </div>
+              )}
             </div>
 
             {/* Bottom Register Action */}
             <div className="flex items-center justify-between pt-4 border-t border-[#c2c6d6]/10">
               <span className="text-sm font-extrabold text-[#0b1c30]">
-                ₹{workshop.price.toLocaleString('en-IN')}
+                {workshop.isFree ? (
+                  <span className="text-[#558b2f]">FREE</span>
+                ) : (
+                  `₹${(workshop.price || 0).toLocaleString('en-IN')}`
+                )}
               </span>
               <MagneticButton>
                 <button
@@ -219,7 +374,7 @@ export const MasteryWorkshops = () => {
                   }}
                   className="px-6 py-2.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm"
                 >
-                  Reserve Seat
+                  {workshop.status === 'UPCOMING' ? 'Join Waitlist' : 'Reserve Seat'}
                 </button>
               </MagneticButton>
             </div>
@@ -311,11 +466,15 @@ export const MasteryWorkshops = () => {
                   </div>
                   <div className="text-xs font-bold text-[#0b1c30] flex justify-between">
                     <span className="text-[#424754]">Time:</span>
-                    <span>{selectedWorkshop.time}</span>
+                    <span>{selectedWorkshop.time || 'To be announced'}</span>
+                  </div>
+                  <div className="text-xs font-bold text-[#0b1c30] flex justify-between">
+                    <span className="text-[#424754]">Link:</span>
+                    <span>{selectedWorkshop.meetingLink ? 'Available after registration' : 'To be announced'}</span>
                   </div>
                   <div className="text-xs font-bold text-[#0b1c30] flex justify-between">
                   <span className="text-[#424754]">Price:</span>
-                  <span>₹{selectedWorkshop.price.toLocaleString('en-IN')}</span>
+                  <span>{selectedWorkshop.isFree ? 'FREE' : `₹${(selectedWorkshop.price || 0).toLocaleString('en-IN')}`}</span>
                   </div>
                 </div>
 

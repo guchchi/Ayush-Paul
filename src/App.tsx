@@ -21,12 +21,9 @@ const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default:
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 const BlueprintsPage = lazy(() => import("./pages/BlueprintsPage").then(m => ({ default: m.BlueprintsPage })));
 const BlueprintDetailPage = lazy(() => import("./pages/BlueprintDetailPage").then(m => ({ default: m.BlueprintDetailPage })));
-const LabsPage = lazy(() => import("./pages/LabsPage").then(m => ({ default: m.LabsPage })));
-const LabDetailPage = lazy(() => import("./pages/LabDetailPage").then(m => ({ default: m.LabDetailPage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
 const BuildingPage = lazy(() => import("./pages/BuildingPage").then(m => ({ default: m.BuildingPage })));
-const AcademyPage = lazy(() => import("./pages/AcademyPage").then(m => ({ default: m.AcademyPage })));
 const MasteryPage = lazy(() => import("./pages/MasteryPage").then(m => ({ default: m.MasteryPage })));
 const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m => ({ default: m.CourseDetailPage })));
 const LessonViewerPage = lazy(() => import("./pages/LessonViewerPage").then(m => ({ default: m.LessonViewerPage })));

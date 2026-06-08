@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search, ChevronLeft, ChevronRight, RotateCw,
-  Clock, Award, BarChart2, ArrowUpRight, Bot, Globe, Search as SearchIcon, Zap, Layers, CheckCircle2
+  Clock, Award, BarChart2, ArrowUpRight, Bot, Globe, Search as SearchIcon, Zap, Layers, CheckCircle2, Lock
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SystemEmptyState } from '../ui/SystemEmptyState';
@@ -105,6 +105,7 @@ const getCategoryStyle = (category: string) => {
 const BlueprintLibraryCard = ({ product, index }: { product: Product; index: number }) => {
   const outcomes = getOutcomeDetails(product);
   const catStyle = getCategoryStyle(product.category);
+  const isComingSoon = product.status === 'COMING_SOON';
 
   return (
     <motion.div
@@ -115,17 +116,35 @@ const BlueprintLibraryCard = ({ product, index }: { product: Product; index: num
       <Link
         to={`/blueprints/${product.slug}`}
         className="group flex flex-col bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden shadow-sm
-                   hover:shadow-ambient hover:scale-[1.01] hover:border-[#1a1a1a]/20 transition-all duration-300 h-full text-left"
+                   hover:shadow-ambient hover:scale-[1.01] hover:border-[#1a1a1a]/20 transition-all duration-300 h-full text-left relative"
       >
+        {/* Coming Soon Overlay */}
+        {isComingSoon && (
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[32px]">
+            <div className="w-12 h-12 rounded-full bg-[#0b1c30]/90 flex items-center justify-center mb-3 shadow-lg">
+              <Lock size={18} className="text-[#d1f34d]" />
+            </div>
+            <span className="text-xs font-extrabold text-[#0b1c30] tracking-tight">Unlock Soon</span>
+            <span className="text-[9px] text-[#424754]/70 font-semibold mt-0.5">Coming Soon</span>
+          </div>
+        )}
+
         <div className="h-1 w-full" style={{ backgroundColor: catStyle.color }} />
 
         <div className="flex flex-col flex-1 p-7">
-          <span
-            className="inline-flex w-fit items-center px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-[0.18em] mb-5 shadow-sm border"
-            style={{ backgroundColor: catStyle.bg, color: catStyle.color, borderColor: catStyle.border }}
-          >
-            {product.category}
-          </span>
+          <div className="flex items-center gap-2 mb-5">
+            <span
+              className="inline-flex w-fit items-center px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-[0.18em] shadow-sm border"
+              style={{ backgroundColor: catStyle.bg, color: catStyle.color, borderColor: catStyle.border }}
+            >
+              {product.category}
+            </span>
+            {isComingSoon && (
+              <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider">
+                Coming Soon
+              </span>
+            )}
+          </div>
 
           <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight leading-snug mb-3
                          group-hover:text-[#0b1c30] transition-colors duration-300 line-clamp-2">
@@ -155,7 +174,7 @@ const BlueprintLibraryCard = ({ product, index }: { product: Product; index: num
           <div className="flex items-center justify-between pt-5 border-t border-[#c2c6d6]/20">
             <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/60
                              group-hover:text-[#0b1c30] transition-colors duration-300">
-              Explore Blueprint
+              {isComingSoon ? 'Preview' : 'Explore Blueprint'}
             </span>
             <span
               className="w-8 h-8 rounded-full bg-bg-secondary border border-[#c2c6d6]/20 flex items-center justify-center
@@ -448,8 +467,8 @@ export const BlueprintsGrid = ({
                 Learn the architectural thinking, prompt engineering principles, and system configurations that sit behind every blueprint.
               </p>
             </div>
-            <Link to="/academy" className="text-xs font-bold text-[#0b1c30] hover:text-[#d1f34d] hover:bg-[#0b1c30] px-5 py-2.5 rounded-full border border-[#c2c6d6]/40 transition-colors bg-white">
-              Learn in the Academy →
+            <Link to="/mastery" className="text-xs font-bold text-[#0b1c30] hover:text-[#d1f34d] hover:bg-[#0b1c30] px-5 py-2.5 rounded-full border border-[#c2c6d6]/40 transition-colors bg-white">
+              Start Learning →
             </Link>
           </div>
 

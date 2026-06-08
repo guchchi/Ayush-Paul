@@ -2,9 +2,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
-import { Resend } from "resend";
-import { PurchaseReceiptEmail } from "./emails/PurchaseReceipt";
-import React from 'react';
+import { renderPurchaseConfirmation } from "./emails/PurchaseConfirmation";
+import { sendEmail } from "./lib/email";
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -109,54 +108,102 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: "completed"
       });
 
-      // 2b. Record the public proof for the SocialProofTicker (safe, non-sensitive)
+      // 2a. Track coupon usage if applied
+      const couponCode = session.metadata?.couponCode;
+      if (couponCode) {
+        await db.collection('coupons').doc(couponCode).update({
+          usedCount: admin.firestore.FieldValue.increment(1),
+          lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+          lastUsedBy: userId,
+          lastUsedProduct: productId,
+        }).catch(() => {
+          console.warn(`[Coupon] Could not increment usage for ${couponCode}`);
+        });
+      }
+
+      // 2b. Process creator code commission if present
+      const creatorCode = session.metadata?.creatorCode;
+      if (creatorCode) {
+        try {
+          const creatorDoc = await db.collection('creator_codes').doc(creatorCode).get();
+          if (creatorDoc.exists) {
+            const creatorData = creatorDoc.data()!;
+            const commissionRate = creatorData.commissionRate || 10;
+            const amountPaid = (session.amount_total || 0) / 100;
+            const amountSubtotal = (session.amount_subtotal || 0) / 100;
+            const discountApplied = Math.max(0, amountSubtotal - amountPaid);
+            const commission = +(amountPaid * commissionRate / 100).toFixed(2);
+
+            // Log the sale
+            await db.collection('creator_sales_log').add({
+              creatorCode,
+              creatorName: creatorData.creatorName || 'Creator',
+              orderId: session.id,
+              productId,
+              productTitle: session.metadata?.productTitle || '',
+              userId,
+              productPrice: amountPaid,
+              discountApplied,
+              commission,
+              commissionRate,
+              currency: session.currency || 'inr',
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+
+            // Update creator stats
+            await creatorDoc.ref.update({
+              totalSales: admin.firestore.FieldValue.increment(1),
+              totalEarnings: admin.firestore.FieldValue.increment(commission),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+
+            console.log(`[Creator] Commission logged: ${creatorCode} earned ₹${commission} on ${productId}`);
+          } else {
+            console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes`);
+          }
+        } catch (creatorError) {
+          console.error('[Creator] Failed to process creator commission:', creatorError);
+        }
+      }
+
+      // 2c. Record the public proof for the SocialProofTicker (safe, non-sensitive)
       await db.collection("public_purchases").add({
         productId,
         currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      // 3. Send automated delivery email via Resend
-      const resendApiKey = process.env.RESEND_API_KEY;
-      if (resendApiKey) {
-        try {
-          const resend = new Resend(resendApiKey);
-          
-          // Get user details
-          const userSnap = await userRef.get();
-          const userData = userSnap.data();
-          const customerEmail = session.customer_details?.email || userData?.email;
-          const customerName = session.customer_details?.name || userData?.displayName || 'Innovator';
-          
-          // Get product details
-          const productSnap = await db.collection("products").doc(productId).get();
-          const productData = productSnap.data();
-          
-          if (customerEmail && productData) {
-            const formattedAmount = new Intl.NumberFormat('en-IN', {
-              style: 'currency',
-              currency: session.currency || 'inr',
-            }).format((session.amount_total || 0) / 100);
+      // 3. Send automated delivery email via shared email utility
+      try {
+        const userSnap = await userRef.get();
+        const userData = userSnap.data();
+        const customerEmail = session.customer_details?.email || userData?.email;
+        const customerName = session.customer_details?.name || userData?.displayName || 'Innovator';
 
-            await resend.emails.send({
-              from: 'Ayush Paul <lab@ayushpaul.in>', // Note: Must verify domain in Resend
-              to: customerEmail,
-              subject: `Unlocked: ${productData.title} 🚀`,
-              react: React.createElement(PurchaseReceiptEmail, {
-                customerName: customerName,
-                productName: productData.title,
-                amount: formattedAmount,
-                labUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/vault`
-              })
-            });
-            console.log(`📧 Receipt email sent to ${customerEmail}`);
-          }
-        } catch (emailError) {
-          // Log but don't fail the webhook if email fails
-          console.error("Failed to send receipt email:", emailError);
+        const productSnap = await db.collection("products").doc(productId).get();
+        const productData = productSnap.data();
+
+        if (customerEmail && productData) {
+          const formattedAmount = new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: session.currency || 'inr',
+          }).format((session.amount_total || 0) / 100);
+
+          const html = renderPurchaseConfirmation({
+            customerName,
+            productName: productData.title,
+            amount: formattedAmount,
+            vaultUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/vault`,
+          });
+
+          await sendEmail({
+            to: customerEmail,
+            subject: `Unlocked: ${productData.title}`,
+            html,
+          });
         }
-      } else {
-        console.warn("⚠️ RESEND_API_KEY missing, skipping email delivery.");
+      } catch (emailError) {
+        console.error("Failed to send receipt email:", emailError);
       }
 
       console.log(`✅ Granted product ${productId} to user ${userId}`);

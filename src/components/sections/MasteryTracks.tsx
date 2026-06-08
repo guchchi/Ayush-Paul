@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, ShieldCheck, PlayCircle, Clock, BookOpenCheck, DollarSign } from 'lucide-react';
+import { BookOpen, ShieldCheck, PlayCircle, Clock, BookOpenCheck, DollarSign, Lock, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export interface Course {
@@ -14,6 +14,7 @@ export interface Course {
   price?: number;
   thumbnail?: string;
   isPublished?: boolean;
+  status?: string;
 }
 
 interface MasteryTracksProps {
@@ -169,6 +170,15 @@ export const MasteryTracks = ({
                       {course.difficulty || 'All Levels'}
                     </span>
                   </div>
+
+                  {/* Coming Soon Badge */}
+                  {course.status === 'COMING_SOON' && (
+                    <div className="absolute top-4 right-4">
+                      <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                        <Sparkles size={9} /> Coming Soon
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Body */}
@@ -208,14 +218,25 @@ export const MasteryTracks = ({
                   {/* Footer Action Profile */}
                   <div className="mt-6 pt-4 border-t border-[#c2c6d6]/15 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[11px] font-extrabold text-[#0b1c30]">
-                      {course.price && course.price > 0 ? (
+                      {course.status === 'COMING_SOON' ? (
+                        <span className="text-[#f57f17] flex items-center gap-1">
+                          <Lock size={10} /> Unlock Soon
+                        </span>
+                      ) : course.price && course.price > 0 ? (
                         <span>₹{course.price.toLocaleString('en-IN')}</span>
                       ) : (
                         <span className="text-[#558b2f]">FREE</span>
                       )}
                     </div>
 
-                    {isEnrolled ? (
+                    {course.status === 'COMING_SOON' ? (
+                      <button
+                        onClick={() => onNavigateToCourse(course.id)}
+                        className="inline-flex items-center gap-1 bg-[#0b1c30]/60 text-white font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                      >
+                        <Sparkles size={11} /> Preview
+                      </button>
+                    ) : isEnrolled ? (
                       <button
                         onClick={() => onNavigateToCourse(course.id)}
                         className="inline-flex items-center gap-1 bg-[#0b1c30] text-white hover:bg-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"

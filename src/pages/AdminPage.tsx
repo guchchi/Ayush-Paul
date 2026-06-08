@@ -25,6 +25,16 @@ import {
   BookOpen,
   Users,
   Folder,
+  UserCheck,
+  Receipt,
+  TrendingUp,
+  DollarSign,
+  ShoppingCart,
+  Percent,
+  Tag,
+  CalendarClock,
+  Share2,
+  Trophy,
 } from "lucide-react";
 import {
   auth,
@@ -55,6 +65,8 @@ import { ComposeNewsletterModal } from "../components/admin/shared/ComposeNewsle
 import { CMS_SCHEMAS } from "../config/cms-schemas";
 import { SchemaDrivenList } from "../components/admin/cms/SchemaDrivenList";
 import { SchemaDrivenForm } from "../components/admin/cms/SchemaDrivenForm";
+import { CouponManagementPanel } from "../components/admin/coupons/CouponManagementPanel";
+import { PurchaseAnalyticsDashboard } from "../components/admin/analytics/PurchaseAnalyticsDashboard";
 
 const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void }) => {
   const [activeTab, setActiveTab] = useState<
@@ -68,6 +80,10 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     | "subscribers"
     | "users"
     | "purchases"
+    | "creators"
+    | "coupons"
+    | "analytics"
+    | "scheduled_emails"
   >("dashboard");
 
   const [showComposeModal, setShowComposeModal] = useState(false);
@@ -100,6 +116,12 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     subscribers,
     campaigns,
     updates,
+    creatorCodes,
+    creatorSalesLog,
+    coupons,
+    scheduledEmails,
+    shareEvents,
+    streakMilestones,
     systemStatus,
     setSystemStatus,
     forceRefresh,
@@ -124,6 +146,18 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         return projects;
       case "updates":
         return updates;
+      case "creator_codes":
+        return creatorCodes;
+      case "creator_sales_log":
+        return creatorSalesLog;
+      case "coupons":
+        return coupons;
+      case "scheduled_emails":
+        return scheduledEmails;
+      case "share_events":
+        return shareEvents;
+      case "streak_milestones":
+        return streakMilestones;
       default:
         return [];
     }
@@ -149,6 +183,9 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
       subscribers: "subscribers",
       projects: "projects",
       updates: "updates",
+      creators: "creator_codes",
+      coupons: "coupons",
+      scheduled_emails: "scheduled_emails",
     };
     const collectionName = schemaMap[activeTab];
     if (!collectionName) return;
@@ -374,8 +411,12 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               { id: "updates", label: "Momentum", icon: <Zap size={16} /> },
               { id: "messages", label: "Inbox Messages", icon: <MessageSquare size={16} /> },
               { id: "subscribers", label: "Subscribers", icon: <Mail size={16} /> },
+              { id: "creators", label: "Creator Affiliates", icon: <UserCheck size={16} /> },
+              { id: "coupons", label: "Coupons", icon: <Tag size={16} /> },
+              { id: "analytics", label: "Revenue Analytics", icon: <BarChart3 size={16} /> },
+              { id: "scheduled_emails", label: "Email Queue", icon: <CalendarClock size={16} /> },
               { id: "users", label: "Users Registry", icon: <Users size={16} /> },
-              { id: "purchases", label: "Orders Ledger", icon: <BarChart3 size={16} /> },
+              { id: "purchases", label: "Orders Ledger", icon: <ShoppingCart size={16} /> },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -458,6 +499,218 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               </div>
             )}
 
+            {/* Creator Affiliate Analytics Panel */}
+            {activeTab === "creators" && (
+              <div className="space-y-8">
+                {/* Hero Summary */}
+                <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+                      <UserCheck size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Creator Affiliate Analytics</h3>
+                      <p className="text-white/40 text-xs">Track, log, calculate, and summarize all creator-driven sales automatically.</p>
+                    </div>
+                  </div>
+
+                  {/* Summary Stats */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <AdminStatCard
+                      label="Total Creators"
+                      value={creatorCodes.length}
+                      icon={<Users size={18} />}
+                    />
+                    <AdminStatCard
+                      label="Total Sales"
+                      value={creatorSalesLog.length}
+                      icon={<ShoppingCart size={18} />}
+                    />
+                    <AdminStatCard
+                      label="Total Commission Paid"
+                      value={`₹${creatorCodes.reduce((sum, c) => sum + (c.totalEarnings || 0), 0).toLocaleString('en-IN')}`}
+                      icon={<DollarSign size={18} />}
+                    />
+                    <AdminStatCard
+                      label="Avg Commission Rate"
+                      value={`${creatorCodes.length > 0 ? Math.round(creatorCodes.reduce((sum, c) => sum + (c.commissionRate || 0), 0) / creatorCodes.length) : 0}%`}
+                      icon={<Percent size={18} />}
+                    />
+                  </div>
+                </div>
+
+                {/* Per-Creator Breakdown */}
+                {creatorCodes.length === 0 ? (
+                  <div className="bg-white/5 rounded-[2.5rem] border border-white/10 p-16 text-center">
+                    <UserCheck className="mx-auto mb-4 text-white/20" size={48} />
+                    <h4 className="text-lg font-bold text-white mb-1">No Creators Yet</h4>
+                    <p className="text-white/40 text-xs">Create a creator code from the schema list below to start tracking affiliate sales.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-6">
+                    {creatorCodes.map((creator) => {
+                      const creatorSales = creatorSalesLog.filter(s => s.creatorCode === creator.code);
+                      const totalCommission = creatorSales.reduce((sum, s) => sum + (s.commission || 0), 0);
+                      const uniqueBuyers = new Set(creatorSales.map(s => s.userId)).size;
+
+                      return (
+                        <div
+                          key={creator.id || creator.code}
+                          className="bg-white/5 rounded-[2.5rem] border border-white/10 p-8 group hover:border-brand-primary/20 transition-all"
+                        >
+                          {/* Creator Header */}
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary font-bold text-lg">
+                                {creator.creatorName?.[0] || 'C'}
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h4 className="text-lg font-bold text-white">{creator.creatorName}</h4>
+                                  <span className="px-2.5 py-0.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[9px] font-bold uppercase tracking-wider">
+                                    {creator.code}
+                                  </span>
+                                  {!creator.isActive && (
+                                    <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] font-bold uppercase tracking-wider">
+                                      Inactive
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-white/40 text-xs mt-0.5">{creator.userId ? `UID: ${creator.userId.slice(0, 12)}...` : 'No user linked'}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right">
+                                <div className="text-lg font-bold text-brand-primary">₹{totalCommission.toLocaleString('en-IN')}</div>
+                                <div className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Earned</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Creator Metrics */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Sales</div>
+                              <div className="text-xl font-bold text-white">{creator.totalSales ?? creatorSales.length}</div>
+                            </div>
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Commission Rate</div>
+                              <div className="text-xl font-bold text-brand-primary">{creator.commissionRate || 10}%</div>
+                            </div>
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Unique Buyers</div>
+                              <div className="text-xl font-bold text-white">{uniqueBuyers}</div>
+                            </div>
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Avg Order Value</div>
+                              <div className="text-xl font-bold text-white">
+                                ₹{creatorSales.length > 0 ? (creatorSales.reduce((s, x) => s + x.productPrice, 0) / creatorSales.length).toFixed(0) : '0'}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Recent Transactions */}
+                          {creatorSales.length > 0 && (
+                            <div className="border-t border-white/5 pt-6">
+                              <h5 className="text-[10px] font-bold uppercase tracking-wider text-white/30 mb-4 flex items-center gap-2">
+                                <Receipt size={12} /> Recent Transactions
+                              </h5>
+                              <div className="space-y-2">
+                                {creatorSales.slice(0, 10).map((sale) => (
+                                  <div
+                                    key={sale.id}
+                                    className="flex items-center justify-between bg-white/[0.02] rounded-xl px-4 py-3 border border-white/5 text-xs"
+                                  >
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      <div className="w-6 h-6 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary shrink-0">
+                                        <TrendingUp size={11} />
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="font-bold text-white truncate">{sale.productTitle || sale.productId}</p>
+                                        <p className="text-[10px] text-white/30">
+                                          Commission: ₹{sale.commission} at {sale.commissionRate}%
+                                          {sale.discountApplied > 0 && ` • Discount: ₹${sale.discountApplied}`}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="text-right shrink-0 ml-4">
+                                      <p className="font-bold text-brand-primary">₹{sale.productPrice}</p>
+                                      <p className="text-[10px] text-white/30">{sale.currency?.toUpperCase() || 'INR'}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Full Sales Log */}
+                {creatorSalesLog.length > 0 && (
+                  <div className="bg-white/5 rounded-[2.5rem] border border-white/10 p-8">
+                    <h4 className="text-md font-bold text-white mb-1 flex items-center gap-2">
+                      <Receipt size={16} className="text-brand-primary" /> Full Sales Ledger
+                    </h4>
+                    <p className="text-white/40 text-xs mb-6">All creator-driven transactions ordered by date.</p>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="border-b border-white/5 text-white/40 text-[9px] font-bold uppercase tracking-wider">
+                            <th className="text-left py-3 pr-4">Creator</th>
+                            <th className="text-left py-3 pr-4">Product</th>
+                            <th className="text-left py-3 pr-4">Price</th>
+                            <th className="text-left py-3 pr-4">Discount</th>
+                            <th className="text-left py-3 pr-4">Commission</th>
+                            <th className="text-left py-3 pr-4">Rate</th>
+                            <th className="text-left py-3">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {creatorSalesLog.map((sale) => (
+                            <tr key={sale.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors">
+                              <td className="py-3 pr-4">
+                                <span className="font-bold text-white">{sale.creatorName || sale.creatorCode}</span>
+                              </td>
+                              <td className="py-3 pr-4 text-white/70 truncate max-w-[150px]">
+                                {sale.productTitle || sale.productId}
+                              </td>
+                              <td className="py-3 pr-4 font-bold text-white">₹{sale.productPrice}</td>
+                              <td className="py-3 pr-4 text-white/50">{sale.discountApplied > 0 ? `₹${sale.discountApplied}` : '—'}</td>
+                              <td className="py-3 pr-4 font-bold text-brand-primary">₹{sale.commission}</td>
+                              <td className="py-3 pr-4 text-white/50">{sale.commissionRate}%</td>
+                              <td className="py-3 text-white/40 text-[10px]">
+                                {sale.timestamp?.toDate?.()?.toLocaleDateString() || '—'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Schema-driven management */}
+                {currentSchema && (
+                  <div className="pt-4">
+                    <SchemaDrivenList
+                      schema={currentSchema}
+                      items={getCollectionData(currentSchemaName)}
+                      onEdit={handleEditRecord}
+                      onDelete={handleDelete}
+                      onCreateNew={() => {
+                        setCurrentRecord(null);
+                        setIsEditing(true);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Custom Messages Inbox (not a typical CRUD schema) */}
             {activeTab === "messages" && (
               <div className="space-y-6">
@@ -529,8 +782,112 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               </div>
             )}
 
+            {/* Coupon Management */}
+            {activeTab === "coupons" && (
+              <CouponManagementPanel
+                coupons={coupons}
+                onRefresh={refreshSecondary}
+                addToast={addToast}
+              />
+            )}
+
+            {/* Purchase Analytics Dashboard */}
+            {activeTab === "analytics" && (
+              <PurchaseAnalyticsDashboard
+                purchases={purchases}
+                creatorCodes={creatorCodes}
+              />
+            )}
+
+            {/* Scheduled Emails Queue */}
+            {activeTab === "scheduled_emails" && (
+              <div className="space-y-8">
+                <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+                      <CalendarClock size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Email Queue</h3>
+                      <p className="text-white/40 text-xs">Scheduled automated emails pending processing.</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white/5 rounded-xl p-5 border border-white/5">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Total Scheduled</div>
+                      <div className="text-2xl font-bold text-white">{scheduledEmails.length}</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-5 border border-white/5">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Pending</div>
+                      <div className="text-2xl font-bold text-white">{scheduledEmails.filter(e => e.status === 'pending').length}</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-5 border border-white/5">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Sent</div>
+                      <div className="text-2xl font-bold text-white">{scheduledEmails.filter(e => e.status === 'sent').length}</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-5 border border-white/5">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Failed</div>
+                      <div className="text-2xl font-bold text-white">{scheduledEmails.filter(e => e.status === 'failed').length}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {scheduledEmails.length === 0 ? (
+                  <div className="bg-white/5 rounded-[2.5rem] border border-white/10 p-16 text-center">
+                    <CalendarClock className="mx-auto mb-4 text-white/20" size={48} />
+                    <h4 className="text-lg font-bold text-white mb-1">Queue Empty</h4>
+                    <p className="text-white/40 text-xs">No scheduled emails yet. They will appear here when growth loop triggers fire.</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-white/5 text-white/40 text-[9px] font-bold uppercase tracking-wider">
+                          <th className="text-left py-3 pr-4">Type</th>
+                          <th className="text-left py-3 pr-4">User</th>
+                          <th className="text-left py-3 pr-4">Scheduled At</th>
+                          <th className="text-left py-3 pr-4">Sent At</th>
+                          <th className="text-left py-3">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scheduledEmails.map((email) => (
+                          <tr key={email.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors">
+                            <td className="py-3 pr-4">
+                              <span className="font-bold text-white capitalize">{email.type?.replace(/_/g, ' ')}</span>
+                            </td>
+                            <td className="py-3 pr-4 text-white/70 truncate max-w-[150px]">
+                              {email.userName || email.userEmail || email.userId?.slice(0, 12)}
+                            </td>
+                            <td className="py-3 pr-4 text-white/50 text-[10px]">
+                              {email.sendAt?.toDate?.()?.toLocaleString() || '—'}
+                            </td>
+                            <td className="py-3 pr-4 text-white/50 text-[10px]">
+                              {email.sentAt?.toDate?.()?.toLocaleString() || '—'}
+                            </td>
+                            <td className="py-3">
+                              <span className={cn(
+                                "px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider",
+                                email.status === 'sent' ? "bg-green-500/10 text-green-400 border border-green-500/20" :
+                                email.status === 'failed' ? "bg-red-500/10 text-red-400 border border-red-500/20" :
+                                email.status === 'cancelled' ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" :
+                                "bg-white/5 text-white/50 border border-white/10"
+                              )}>
+                                {email.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Dynamic CMS Listing views for other collections */}
-            {currentSchema && (
+            {currentSchema && activeTab !== "creators" && activeTab !== "coupons" && activeTab !== "analytics" && activeTab !== "scheduled_emails" && (
               <SchemaDrivenList
                 schema={currentSchema}
                 items={getCollectionData(currentSchemaName)}

@@ -16,105 +16,6 @@ const trackEvent = (eventName: string, payload?: Record<string, any>) => {
   console.log(`[Analytics Event] ${eventName}`, payload);
 };
 
-const DEFAULT_SYSTEM_PROPS = {
-  thumbnail: '',
-  basePrice: 0,
-  salePrice: 0,
-  discountPercentage: 0,
-  inventoryCount: null,
-  downloadFileURL: null,
-  previewImages: [],
-  features: [],
-  comparisonFree: [],
-  comparisonPremium: [],
-  updatedAt: new Date().toISOString(),
-  isFeatured: false,
-  purchaseCount: 0,
-  downloadCount: 0,
-  viewCount: 0,
-  rating: 5,
-  author: {
-    name: 'Ayush Paul',
-    role: 'Creator',
-    avatar: ''
-  }
-};
-
-const DEMO_PRODUCTS: Product[] = [
-  {
-    id: 'demo-cursor-ai',
-    title: 'Cursor AI Execution Pack',
-    slug: 'cursor-ai-execution-pack',
-    description: 'A pre-configured package of custom system rules, .cursorrules prompts, and configurations designed to speed up product design and TypeScript builds.',
-    category: 'Prompts',
-    tags: ['Prompts', 'Config', 'Rules', 'Advanced'],
-    type: 'free',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  },
-  {
-    id: 'demo-saas-blueprint',
-    title: 'Next.js SaaS Launch Blueprint',
-    slug: 'nextjs-saas-launch-blueprint',
-    description: 'A premium boilerplate for building personal websites and web applications. Includes authentication, dynamic database sync, Stripe payments, and a dynamic tailwind grid.',
-    category: 'Templates',
-    tags: ['Components', 'Auth', 'Stripe', 'Intermediate'],
-    type: 'paid',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  },
-  {
-    id: 'demo-authority-seo',
-    title: 'Technical Authority SEO Engine',
-    slug: 'technical-authority-seo-engine',
-    description: 'A structured workflow and checklist designed to audit architecture, optimize crawls, build high-converting schemas, and establish sustainable organic growth.',
-    category: 'Workflows',
-    tags: ['Audit', 'Schema', 'Core Web', 'Intermediate'],
-    type: 'free',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  },
-  {
-    id: 'demo-workflow-automation',
-    title: 'Make.com Automation Playbook',
-    slug: 'make-automation-playbook',
-    description: 'Connect databases, waitlists, notifications, and analytics into zero-maintenance execution workflows using pre-built Make scenarios.',
-    category: 'Automations',
-    tags: ['Scenarios', 'Triggers', 'Modules', 'Beginner'],
-    type: 'paid',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  },
-  {
-    id: 'demo-brand-site',
-    title: 'Personal Brand Website System',
-    slug: 'personal-brand-website-system',
-    description: 'A clean, high-performance website blueprint for creators and developers looking to publish their portfolio, case studies, and services.',
-    category: 'Templates',
-    tags: ['Templates', 'Tailwind', 'Portfolio', 'Beginner'],
-    type: 'free',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  },
-  {
-    id: 'demo-ai-researcher',
-    title: 'AI Research & Content Process',
-    slug: 'ai-research-content-process',
-    description: 'Automate content research, academic summaries, case studies, and outlining using fine-tuned prompt structures and LLM pipelines.',
-    category: 'Workflows',
-    tags: ['Research', 'Academic', 'Content', 'Intermediate'],
-    type: 'free',
-    isPublished: true,
-    createdAt: new Date().toISOString(),
-    ...DEFAULT_SYSTEM_PROPS,
-  }
-];
-
 export const BlueprintsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,14 +27,11 @@ export const BlueprintsPage = () => {
       setLoading(true);
       setError(false);
       const data = await getPublishedProducts();
-      if (data && data.length > 0) {
-        setProducts(data);
-      } else {
-        setProducts(DEMO_PRODUCTS);
-      }
+      setProducts(data || []);
     } catch (err) {
       console.error("Failed to load blueprints:", err);
-      setProducts(DEMO_PRODUCTS);
+      setProducts([]);
+      setError(true);
       trackEvent('Connection Failed', { error: String(err) });
     } finally {
       setLoading(false);

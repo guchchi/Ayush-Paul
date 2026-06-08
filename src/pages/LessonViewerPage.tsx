@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { BookOpen, CheckCircle, Play, ChevronRight, Lock, ArrowLeft, ExternalLink, Menu, X } from "lucide-react";
+import { BookOpen, CheckCircle, Play, ChevronRight, Lock, ArrowLeft, ExternalLink, Menu, X, Clock, Sparkles } from "lucide-react";
 import { auth, db, doc, getDoc, getDocs, collection, query, where, updateDoc, serverTimestamp } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
 import { getCanonicalUrl } from "../lib/domain";
@@ -25,7 +25,7 @@ export const LessonViewerPage = () => {
         // 1. Load course details
         const courseDoc = await getDoc(doc(db, "courses", courseId));
         if (!courseDoc.exists()) {
-          navigate("/academy");
+          navigate("/mastery");
           return;
         }
         setCourse({ id: courseDoc.id, ...courseDoc.data() });
@@ -51,7 +51,7 @@ export const LessonViewerPage = () => {
         // 4. Find current lesson
         const lesson = lessonsList.find((l) => l.id === lessonId) as any;
         if (!lesson) {
-          navigate(`/academy/courses/${courseId}`);
+          navigate(`/mastery/courses/${courseId}`);
           return;
         }
         setCurrentLesson(lesson);
@@ -69,12 +69,12 @@ export const LessonViewerPage = () => {
             setEnrollment({ id: enrollSnap.docs[0].id, ...enrollSnap.docs[0].data() });
           } else if (!lesson.isFree) {
             // Not enrolled and not free: reject
-            navigate(`/academy/courses/${courseId}`);
+            navigate(`/mastery/courses/${courseId}`);
             return;
           }
         } else if (!lesson.isFree) {
           // Not authenticated and not free: reject
-          navigate(`/academy/courses/${courseId}`);
+          navigate(`/mastery/courses/${courseId}`);
           return;
         }
       } catch (err) {
@@ -90,7 +90,7 @@ export const LessonViewerPage = () => {
   useSEO({
     title: currentLesson && course ? `${currentLesson.title} | ${course.title}` : "Lesson Player | Academy",
     description: currentLesson ? currentLesson.description : "Academy interactive lesson workspace.",
-    url: getCanonicalUrl(`/academy/courses/${courseId}/lessons/${lessonId}`),
+    url: getCanonicalUrl(`/mastery/courses/${courseId}/lessons/${lessonId}`),
   });
 
   const handleToggleComplete = async () => {
@@ -154,6 +154,57 @@ export const LessonViewerPage = () => {
 
   const isCompleted = enrollment?.progress?.includes(currentLesson.id);
   const videoEmbed = getEmbedUrl(currentLesson.videoUrl);
+  const isEmptyLesson = !currentLesson.videoUrl && (!currentLesson.content || currentLesson.content.trim() === '') && (!currentLesson.resources || currentLesson.resources.length === 0);
+
+  if (isEmptyLesson) {
+    return (
+      <div className="w-full min-h-screen bg-[#FAFAFA] text-[#000000] pt-20 flex flex-col selection:bg-[#0058be]/35 selection:text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,88,190,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,88,190,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-100 -z-10" />
+
+        <div className="border-b border-gray-200 bg-white px-6 py-4 flex items-center justify-between sticky top-20 z-40">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(`/mastery/courses/${courseId}`)}
+              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 hover:text-[#000000] transition-colors cursor-pointer bg-transparent border-none outline-none"
+            >
+              <ArrowLeft size={14} className="text-[#0058be]" /> Syllabus
+            </button>
+            <div className="w-px h-4 bg-gray-200" />
+            <h2 className="text-xs font-bold text-[#000000] line-clamp-1 uppercase tracking-wider">{course?.title}</h2>
+          </div>
+        </div>
+
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="max-w-lg w-full text-center">
+            <div className="w-20 h-20 rounded-2xl bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center mx-auto mb-6">
+              <Clock size={36} className="text-[#f57f17]" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-[#000000] tracking-tight mb-3">{currentLesson.title}</h1>
+            <p className="text-[#424754] text-sm font-medium mb-6">{currentLesson.description || 'This lesson is being prepared.'}</p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-xs font-bold uppercase tracking-wider mb-8">
+              <Sparkles size={14} />
+              Coming Soon — Content in Production
+            </div>
+            <div className="p-5 bg-white border border-[#c2c6d6]/20 rounded-2xl text-left text-sm text-[#424754] leading-relaxed shadow-sm">
+              <p className="font-semibold">
+                This lesson is currently in production. The video recording, documentation, and downloadable resources are being prepared. You'll be able to access the full content once it's published.
+              </p>
+            </div>
+            {enrollment && (
+              <button
+                onClick={handleToggleComplete}
+                disabled
+                className="mt-8 px-5 py-3 rounded-xl font-bold text-[10px] uppercase tracking-wider bg-gray-100 text-[#424754]/40 border border-gray-200 cursor-not-allowed"
+              >
+                <CheckCircle size={14} className="inline mr-1.5" />
+                Progress Locked
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-[#FAFAFA] text-[#000000] pt-20 flex flex-col selection:bg-[#0058be]/35 selection:text-white relative overflow-hidden">
@@ -165,7 +216,7 @@ export const LessonViewerPage = () => {
       <div className="border-b border-gray-200 bg-white px-6 py-4 flex items-center justify-between sticky top-20 z-40">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(`/academy/courses/${courseId}`)}
+            onClick={() => navigate(`/mastery/courses/${courseId}`)}
             className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 hover:text-[#000000] transition-colors cursor-pointer bg-transparent border-none outline-none"
           >
             <ArrowLeft size={14} className="text-[#0058be]" /> Syllabus
@@ -287,7 +338,7 @@ export const LessonViewerPage = () => {
                           key={les.id}
                           onClick={() => {
                             if (isAccessible) {
-                              navigate(`/academy/courses/${courseId}/lessons/${les.id}`);
+                              navigate(`/mastery/courses/${courseId}/lessons/${les.id}`);
                               setSidebarOpen(false);
                             }
                           }}

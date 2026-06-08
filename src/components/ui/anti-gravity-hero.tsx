@@ -357,7 +357,7 @@ const HeroContent: React.FC = () => {
           
           {/* Secondary CTA */}
           <a 
-            href="/academy"
+            href="/mastery"
             className="group inline-flex items-center justify-center gap-2.5 w-full lg:w-auto px-8 py-3.5 bg-transparent border border-white/20 text-white rounded-lg font-bold text-xs uppercase tracking-wider hover:bg-white/5 hover:border-white transition-all"
           >
             Academy Courses

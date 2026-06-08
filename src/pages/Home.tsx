@@ -654,7 +654,7 @@ export const HomePage = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
                     Flagship Tier
                   </span>
-                  <Link to="/blueprints/ai-website-blueprint" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
+                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
                     OPEN BLUEPRINT <ArrowRight size={10} />
                   </Link>
                 </div>
@@ -686,7 +686,7 @@ export const HomePage = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
                     Growth Tier
                   </span>
-                  <Link to="/blueprints/seo-growth-system" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
+                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
                     OPEN BLUEPRINT <ArrowRight size={10} />
                   </Link>
                 </div>
@@ -718,7 +718,7 @@ export const HomePage = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
                     Asset Bundle
                   </span>
-                  <Link to="/blueprints/personal-brand-framework" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
+                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
                     OPEN BLUEPRINT <ArrowRight size={10} />
                   </Link>
                 </div>

@@ -82,7 +82,7 @@ export const enrichDigitalSystem = (system: any): Product => {
   return enriched;
 };
 
-// Fetch all published products with Multi-Tier Cache (Memory -> LocalStorage -> Firestore)
+// Fetch all visible products (published + coming-soon) with Multi-Tier Cache
 export const getPublishedProducts = async (): Promise<Product[]> => {
   const now = Date.now();
 
@@ -111,13 +111,38 @@ export const getPublishedProducts = async (): Promise<Product[]> => {
   // 3. Fallback to Firestore (Network)
   console.log("[Cache] Product List: Network Fetch (Firestore)");
   try {
-    const q = query(
+    // Fetch published products
+    const pubQ = query(
       collection(db, "products"),
       where("isPublished", "==", true),
       orderBy("createdAt", "desc")
     );
-    const snapshot = await getDocs(q);
-    const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+    const pubSnap = await getDocs(pubQ);
+    const published = pubSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+
+    // Also fetch COMING_SOON products
+    let comingSoon: Product[] = [];
+    try {
+      const csQ = query(
+        collection(db, "products"),
+        where("status", "==", "COMING_SOON")
+      );
+      const csSnap = await getDocs(csQ);
+      comingSoon = csSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+    } catch (e) {
+      // COMING_SOON query may fail if index doesn't exist yet; that's fine
+      console.warn("COMING_SOON query failed (index may not exist yet):", e);
+    }
+
+    // Merge: published first, then coming-soon (deduplicate by ID)
+    const seen = new Set(published.map(p => p.id));
+    const products = [...published];
+    for (const p of comingSoon) {
+      if (!seen.has(p.id)) {
+        products.push(p);
+        seen.add(p.id);
+      }
+    }
 
     // Update caches
     memoryCache = products;
@@ -145,19 +170,36 @@ export const getProductBySlug = async (slug: string): Promise<Product | null> =>
     return enrichDigitalSystem(cachedProduct);
   }
 
-  // If not found in cache (e.g. unpublished but directly linked, or cache stale), fetch directly
+  // If not found in cache, try fetching directly
   console.log(`[Cache] Product '${slug}': Network Fetch (Firestore)`);
   try {
+    // First try with isPublished filter
     const q = query(
       collection(db, "products"),
       where("slug", "==", slug),
       where("isPublished", "==", true),
       limit(1)
     );
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return null;
-    const product = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
-    return enrichDigitalSystem(product);
+    let snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const product = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
+      return enrichDigitalSystem(product);
+    }
+
+    // Fallback: try finding a COMING_SOON product
+    const csQ = query(
+      collection(db, "products"),
+      where("slug", "==", slug),
+      where("status", "==", "COMING_SOON"),
+      limit(1)
+    );
+    snapshot = await getDocs(csQ);
+    if (!snapshot.empty) {
+      const product = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
+      return enrichDigitalSystem(product);
+    }
+
+    return null;
   } catch (error) {
     handleFirestoreError(error, OperationType.GET, `products/${slug}`);
     return null;

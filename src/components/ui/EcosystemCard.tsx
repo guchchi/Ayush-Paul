@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Download, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Product } from '../../types';
 import { cn } from '../../lib/utils';
+import { PricingBadge } from './PricingBadge';
 
 interface EcosystemCardProps {
   project: Product;
@@ -34,20 +35,9 @@ export const EcosystemCard = ({ project, light = true }: EcosystemCardProps) => 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-transparent" />
           
-          {/* Top-Right Price/Type Pill */}
+          {/* Top-Right Tier Badge */}
           <div className="absolute top-4 right-4 z-10">
-            <span className="px-3 py-1 rounded-full bg-white/95 backdrop-blur-sm border border-[#c2c6d6]/25 text-[9px] font-bold text-[#0b1c30] tracking-wider shadow-sm flex items-center">
-              {isFree ? (
-                <span className="font-bold text-[#d1f34d]">FREE</span>
-              ) : (
-                <span className="flex items-center gap-1">
-                  {hasDiscount && (
-                    <span className="text-[#424754]/40 line-through text-[8px] font-semibold">${basePrice}</span>
-                  )}
-                  <span>${salePrice || basePrice}</span>
-                </span>
-              )}
-            </span>
+            <PricingBadge product={project} size="sm" showPrice />
           </div>
 
           {/* Bottom-Left Downloads Overlay */}

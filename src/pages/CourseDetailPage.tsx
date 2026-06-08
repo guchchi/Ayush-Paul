@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { BookOpen, Award, CheckCircle, Play, ChevronRight, Lock, ArrowLeft, ShieldCheck } from "lucide-react";
+import { BookOpen, Award, CheckCircle, Play, ChevronRight, Lock, ArrowLeft, ShieldCheck, Clock, Sparkles } from "lucide-react";
 import { auth, db, doc, getDoc, getDocs, collection, query, where, orderBy, addDoc, serverTimestamp } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
 import { getCanonicalUrl } from "../lib/domain";
@@ -28,7 +28,7 @@ export const CourseDetailPage = () => {
         // 1. Fetch course details
         const courseDoc = await getDoc(doc(db, "courses", courseId));
         if (!courseDoc.exists()) {
-          navigate("/academy");
+          navigate("/mastery");
           return;
         }
         setCourse({ id: courseDoc.id, ...courseDoc.data() });
@@ -102,7 +102,7 @@ export const CourseDetailPage = () => {
   useSEO({
     title: course ? `${course.title} | Ayush Paul Academy` : "Course Details | Academy",
     description: course ? course.description : "Academy course syllabus and progress tracker.",
-    url: getCanonicalUrl(`/academy/courses/${courseId}`),
+    url: getCanonicalUrl(`/mastery/courses/${courseId}`),
   });
 
   const handleEnroll = async () => {
@@ -159,7 +159,7 @@ export const CourseDetailPage = () => {
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Back Button */}
         <div className="mb-8">
-          <BackButton to="/academy" label="Back to Courses" />
+          <BackButton to="/mastery" label="Back to Courses" />
         </div>
 
         {/* Course Header */}
@@ -227,18 +227,40 @@ export const CourseDetailPage = () => {
                   </div>
 
                   <div className="space-y-3 pl-2">
-                    {moduleLessons.length > 0 ? (
+                    {moduleLessons.filter(l => l.title && !l.title.startsWith('[Coming Soon]')).length > 0 ? (
                       moduleLessons.map((les) => {
                         const isEnrolled = !!enrollment;
                         const isCompleted = enrollment?.progress?.includes(les.id);
                         const isAccessible = isEnrolled || les.isFree;
+                        const isEmptyLesson = !les.videoUrl && (!les.content || les.content.trim() === '') && (!les.resources || les.resources.length === 0);
+
+                        if (isEmptyLesson) {
+                          return (
+                            <div
+                              key={les.id}
+                              className="flex justify-between items-center p-5 bg-white border border-[#c2c6d6]/10 rounded-2xl opacity-60"
+                            >
+                              <div className="flex items-center gap-4">
+                                <div className="w-8 h-8 rounded-xl bg-[#fff8e1] flex items-center justify-center text-[#f57f17] shrink-0 border border-[#ffe082]">
+                                  <Clock size={12} />
+                                </div>
+                                <div className="text-left">
+                                  <h4 className="text-sm font-extrabold text-[#0b1c30] tracking-tight">{les.title}</h4>
+                                  <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-bold uppercase tracking-wider text-[#f57f17]">
+                                    <Sparkles size={9} /> Coming Soon
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
 
                         return (
                           <div
                             key={les.id}
                             onClick={() => {
                               if (isAccessible) {
-                                navigate(`/academy/courses/${courseId}/lessons/${les.id}`);
+                                navigate(`/mastery/courses/${courseId}/lessons/${les.id}`);
                               } else {
                                 alert("Please enroll in the course to unlock this lesson.");
                               }
@@ -279,15 +301,29 @@ export const CourseDetailPage = () => {
                         );
                       })
                     ) : (
-                      <p className="text-[#424754]/40 text-[11px] italic pl-10 font-semibold">No lessons deployed in this module.</p>
+                      <div className="p-6 bg-white border border-dashed border-[#ffe082] rounded-2xl flex items-center gap-4 shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-[#fff8e1] flex items-center justify-center text-[#f57f17] shrink-0 border border-[#ffe082]">
+                          <Sparkles size={16} />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="text-sm font-extrabold text-[#0b1c30] tracking-tight">Lessons Coming Soon</h4>
+                          <p className="text-[#424754] text-[11px] font-medium mt-0.5">
+                            This module is in production. Lessons are being recorded and will appear here once published.
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="text-center py-12 border border-[#c2c6d6]/30 rounded-2xl bg-white text-[#424754]/50 text-xs shadow-sm font-semibold">
-              The syllabus is currently being compiled by the instructor. Check back soon.
+            <div className="text-center py-12 border border-dashed border-[#ffe082] rounded-2xl bg-white text-[#424754]/70 text-xs shadow-sm font-semibold flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#fff8e1] flex items-center justify-center border border-[#ffe082]">
+                <Sparkles size={16} className="text-[#f57f17]" />
+              </div>
+              <span className="font-extrabold text-sm text-[#0b1c30]">Curriculum in Production</span>
+              <span className="text-[#424754]/60">Modules and lessons are being structured. Check back soon.</span>
             </div>
           )}
         </div>

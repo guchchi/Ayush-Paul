@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import { Product } from '../types';
@@ -11,6 +11,8 @@ import { AuthModal } from '../components/ui/AuthModal';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { BackButton } from '../components/ui/back-button';
+import { PricingBadge } from '../components/ui/PricingBadge';
+import { CouponInput } from '../components/ui/CouponInput';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
@@ -23,6 +25,7 @@ export const BlueprintDetailPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [telemetrySim, setTelemetrySim] = useState({
     freq: 16.0,
     temp: 42.4,
@@ -129,10 +132,13 @@ export const BlueprintDetailPage = () => {
     trackEvent('checkout_start', { product_id: product.id, product_name: product.title });
 
     try {
+      const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
+      if (appliedCoupon) body.couponCode = appliedCoupon;
+
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId: product.id, userId: user.uid, email: user.email }),
+        body: JSON.stringify(body),
       });
 
       const data = await response.json();
@@ -175,6 +181,72 @@ export const BlueprintDetailPage = () => {
   const isFree = product.type === 'free';
   const hasDiscount = product.salePrice > 0 && product.salePrice < product.basePrice;
   const isOwned = profile?.ownedProducts?.[product.id] === 'premium' || (isFree && profile?.ownedProducts?.[product.id] === 'free');
+  const isComingSoon = product.status === 'COMING_SOON';
+
+  if (isComingSoon) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="w-full min-h-screen bg-bg-primary text-[#0b1c30] pt-24 pb-32"
+      >
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="mb-10 text-left">
+            <BackButton to="/blueprints" label="Back to Blueprints" />
+          </div>
+
+          <div className="bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden shadow-sm">
+            <div className="h-2 w-full" style={{ backgroundColor: '#0b1c30' }} />
+            <div className="p-8 md:p-12 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-2xl bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center mb-6">
+                <Lock size={28} className="text-[#f57f17]" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter mb-4 text-[#0b1c30]">
+                {product.title}
+              </h1>
+              <p className="text-[#424754] text-sm leading-relaxed max-w-lg mb-8 font-medium">
+                {product.description}
+              </p>
+
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-xs font-bold uppercase tracking-wider mb-8">
+                <Lock size={12} />
+                Coming Soon — Unlock Preview
+              </div>
+
+              <div className="max-w-md w-full p-6 bg-gray-50/50 border border-[#c2c6d6]/20 rounded-2xl text-left">
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">What's Inside</h3>
+                <ul className="space-y-3">
+                  {(product.comparisonPremium?.length > 0 ? product.comparisonPremium : ['Ready-to-use implementation', 'Production-grade configuration', 'Step-by-step setup guide', 'Best practices & patterns']).slice(0, 4).map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-xs text-[#424754]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#d1f34d] mt-1.5 shrink-0" />
+                      <span className="font-semibold">{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8 p-4 bg-[#eff4ff] border border-[#dce9ff] rounded-2xl text-left max-w-md w-full">
+                <p className="text-[11px] text-[#0058be] font-semibold leading-relaxed">
+                  This blueprint is currently in production. Preview the structure and scope above. You'll be notified as soon as it's ready for download.
+                </p>
+              </div>
+
+              <div className="mt-10 flex items-center gap-3">
+                {product.author && (
+                  <div className="flex items-center gap-2">
+                    <img src={product.author.avatar || `https://ui-avatars.com/api/?name=${product.author.name}`} alt={product.author.name} className="w-7 h-7 rounded-full border border-[#c2c6d6]/30" />
+                    <span className="text-[10px] font-bold text-[#0b1c30]">{product.author.name}</span>
+                  </div>
+                )}
+                <span className="text-[9px] text-[#424754]/50 font-mono">// BUILDING PHASE</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -199,6 +271,7 @@ export const BlueprintDetailPage = () => {
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#0058be] px-3 py-1.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
                 {product.category}
               </span>
+              <PricingBadge product={product} size="sm" showPrice />
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 flex items-center gap-1.5 font-semibold">
                 <ShieldCheck size={12} className="text-[#0058be]" /> Production Verified
               </span>
@@ -465,6 +538,13 @@ export const BlueprintDetailPage = () => {
                     </>
                   );
                 })()}
+
+                <CouponInput
+                  onValidated={(coupon) => setAppliedCoupon(coupon?.code || null)}
+                  disabled={isCheckingOut}
+                />
+
+                <div style={{ height: 12 }} />
 
                 <MagneticButton className="w-full">
                   <button 

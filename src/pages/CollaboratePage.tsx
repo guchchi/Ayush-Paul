@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useSEO } from '../hooks/useSEO';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 
 // Import modular sections
@@ -11,14 +12,12 @@ import { CollaborateProcess } from '../components/sections/CollaborateProcess';
 import { CollaborateProjects } from '../components/sections/CollaborateProjects';
 import { CollaborateFAQ } from '../components/sections/CollaborateFAQ';
 import { CollaborateFinalCTA } from '../components/sections/CollaborateFinalCTA';
-
-// Simple centralized analytics tracking console helper
-const trackEvent = (eventName: string, payload?: Record<string, any>) => {
-  console.log(`[Analytics Event] ${eventName}`, payload);
-  // Ready to connect to Google Analytics/Mixpanel later
-};
+import { CollaborationForm } from '../components/sections/CollaborationForm';
 
 export const CollaboratePage = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { trackEvent } = useAnalytics();
+
   useSEO({
     title: "Studio | Ayush Paul",
     description: "Direct collaboration, implementation support, technical mentorship, and project development with Ayush Paul.",
@@ -35,7 +34,7 @@ export const CollaboratePage = () => {
 
   const handleStartConversation = () => {
     trackEvent('CTA Clicked', { location: 'Studio Page', label: 'Start A Project' });
-    window.location.href = "mailto:hello@ayushpaul.in?subject=Studio%20Inquiry";
+    setIsFormOpen(true);
   };
 
   const handleExploreWork = () => {
@@ -84,6 +83,7 @@ export const CollaboratePage = () => {
         onStartClick={handleStartConversation}
       />
 
+      <CollaborationForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     </motion.div>
   );
 };

@@ -28,14 +28,21 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
 
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+    <!-- Google Analytics (GA4) — loads only if VITE_GA_ID is set -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      // IMPORTANT: Replace G-PLACEHOLDER with your actual GA4 Measurement ID
-      gtag('config', 'G-PLACEHOLDER');
+      (function() {
+        var gaId = '%VITE_GA_ID%';
+        if (gaId && gaId !== '%VITE_GA_ID%' && gaId.startsWith('G-')) {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(script);
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        }
+      })();
     </script>
 
     <!-- JSON-LD Schema Markup -->

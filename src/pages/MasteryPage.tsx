@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { auth, db, collection, getDocs, query, where, orderBy, addDoc, serverTimestamp } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
+import { useAnalytics } from "../hooks/useAnalytics";
 import { getCanonicalUrl } from "../lib/domain";
 import { AuthModal } from "../components/ui/AuthModal";
 
@@ -17,21 +18,17 @@ import { MasteryWhy } from "../components/sections/MasteryWhy";
 import { MasteryFAQ } from "../components/sections/MasteryFAQ";
 import { MasteryFinalCTA } from "../components/sections/MasteryFinalCTA";
 
-const PRESET_CATEGORIES = [
-  { id: 'ai', name: 'AI & Automation' },
-  { id: 'robotics', name: 'Robotics' },
-  { id: 'websites', name: 'Web Development' },
-  { id: 'design', name: 'UI/UX Design' },
-  { id: 'typography', name: 'Typography' },
-  { id: 'color', name: 'Color Theory' },
-  { id: 'seo', name: 'SEO' },
-  { id: 'branding', name: 'Personal Branding' },
-  { id: 'products', name: 'Digital Products' },
-  { id: 'entrepreneurship', name: 'Entrepreneurship' }
-];
-
-const trackEvent = (eventName: string, payload?: Record<string, any>) => {
-  console.log(`[Mastery Event] ${eventName}`, payload);
+const CATEGORY_NAMES: Record<string, string> = {
+  ai: 'AI & Automation',
+  robotics: 'Robotics',
+  websites: 'Web Development',
+  design: 'UI/UX Design',
+  typography: 'Typography',
+  color: 'Color Theory',
+  seo: 'SEO',
+  branding: 'Personal Branding',
+  products: 'Digital Products',
+  entrepreneurship: 'Entrepreneurship',
 };
 
 export const MasteryPage = () => {
@@ -40,19 +37,43 @@ export const MasteryPage = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [userEnrollments, setUserEnrollments] = useState<Record<string, boolean>>({});
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { trackEvent } = useAnalytics();
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       setLoading(true);
       // Load courses from Firestore database
-      const q = query(
+      const pubQ = query(
         collection(db, "courses"),
         where("isPublished", "==", true),
         orderBy("createdAt", "desc")
       );
-      const snap = await getDocs(q);
-      const coursesList = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const pubSnap = await getDocs(pubQ);
+      const publishedCourses = pubSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      // Also load COMING_SOON courses
+      let comingSoonCourses: any[] = [];
+      try {
+        const csQ = query(
+          collection(db, "courses"),
+          where("status", "==", "COMING_SOON")
+        );
+        const csSnap = await getDocs(csQ);
+        comingSoonCourses = csSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      } catch (e) {
+        console.warn("COMING_SOON courses query failed:", e);
+      }
+
+      // Merge: published first, then coming-soon (deduplicate)
+      const seen = new Set(publishedCourses.map(c => c.id));
+      const coursesList = [...publishedCourses];
+      for (const c of comingSoonCourses) {
+        if (!seen.has(c.id)) {
+          coursesList.push(c);
+          seen.add(c.id);
+        }
+      }
       setCourses(coursesList);
 
       // Load current user's enrollments
@@ -153,6 +174,15 @@ export const MasteryPage = () => {
           updatedAt: serverTimestamp(),
         });
         trackEvent("Enrolled Success", { courseId, userId: auth.currentUser.uid });
+
+        // Trigger enrollment email (fire-and-forget)
+        try {
+          fetch('/api/trigger-enrollment-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: auth.currentUser.uid, courseId }),
+          }).catch(() => {});
+        } catch (_) {}
       }
       
       // Update local state immediately
@@ -193,15 +223,14 @@ export const MasteryPage = () => {
     }, 100);
   };
 
-  // Aggregate skill categories and count course occurrences dynamically
-  const categoriesWithCounts = PRESET_CATEGORIES.map(cat => {
-    const count = courses.filter(c => c.category && c.category.toLowerCase() === cat.id).length;
-    return {
-      id: cat.id,
-      name: cat.name,
-      count
-    };
-  });
+  // Derive skill categories dynamically from Firestore course data
+  const categoriesWithCounts = Array.from(
+    new Set(courses.map(c => c.category?.toLowerCase()).filter(Boolean))
+  ).map(catId => ({
+    id: catId,
+    name: CATEGORY_NAMES[catId] || catId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    count: courses.filter(c => c.category?.toLowerCase() === catId).length,
+  }));
 
   return (
     <motion.div

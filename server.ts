@@ -53,7 +53,7 @@ async function startServer() {
   // API Route: Create Checkout Session (Product & Support)
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const { productId, userId, email, amount, tierName } = req.body;
+      const { productId, userId, email, amount, tierName, creatorCode } = req.body;
 
       // Handle donation tier purchase (legacy support)
       if (amount && tierName) {
@@ -146,7 +146,9 @@ async function startServer() {
         cancel_url: `${appUrl}/products/${product.slug || product.productId || productId || "unknown"}?payment=cancelled`,
         metadata: {
           productId,
-          userId
+          userId,
+          productTitle: product?.title || '',
+          ...(creatorCode ? { creatorCode: creatorCode.trim().toUpperCase() } : {}),
         },
         customer_email: email || undefined,
       });
