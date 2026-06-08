@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { formatCurrency } from '../lib/format';
+import { formatCurrency, computeSavings } from '../lib/format';
 import { motion } from 'motion/react';
 import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
@@ -13,7 +13,7 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { BackButton } from '../components/ui/back-button';
 import { PricingBadge } from '../components/ui/PricingBadge';
-import { CouponInput } from '../components/ui/CouponInput';
+import { CouponInput, type CouponResult } from '../components/ui/CouponInput';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
@@ -26,7 +26,7 @@ export const BlueprintDetailPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponResult | null>(null);
   const [telemetrySim, setTelemetrySim] = useState({
     freq: 16.0,
     temp: 42.4,
@@ -134,7 +134,7 @@ export const BlueprintDetailPage = () => {
 
     try {
       const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
-      if (appliedCoupon) body.couponCode = appliedCoupon;
+      if (appliedCoupon?.code) body.couponCode = appliedCoupon.code;
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -500,11 +500,15 @@ export const BlueprintDetailPage = () => {
                 
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-[9px] font-bold text-[#0b1c30] uppercase font-mono tracking-wider">[Full Blueprint & Assets Bundle]</h3>
-                  {hasDiscount && (
-                    <span className="px-2.5 py-1 bg-red-50 border border-red-200 text-red-650 text-[8px] font-bold uppercase tracking-wider rounded font-mono shadow-sm">
-                      Sale -{product.discountPercentage}%
-                    </span>
-                  )}
+                  {(() => {
+                    const s = computeSavings(product.basePrice, product.salePrice);
+                    if (!s) return null;
+                    return (
+                      <span className="px-2.5 py-1 bg-red-50 border border-red-200 text-red-650 text-[8px] font-bold uppercase tracking-wider rounded font-mono shadow-sm">
+                        Save {formatCurrency(s.amount)} ({s.percent}%)
+                      </span>
+                    );
+                  })()}
                 </div>
                 
                 <div className="flex items-center gap-3 mb-6">
@@ -541,9 +545,43 @@ export const BlueprintDetailPage = () => {
                 })()}
 
                 <CouponInput
-                  onValidated={(coupon) => setAppliedCoupon(coupon?.code || null)}
+                  onValidated={(coupon) => setAppliedCoupon(coupon)}
                   disabled={isCheckingOut}
                 />
+
+                {/* Price breakdown with coupon */}
+                {(() => {
+                  if (!appliedCoupon) return null;
+                  const basePrice = product.salePrice || product.basePrice;
+                  const discountAmount = appliedCoupon.discountType === 'percentage'
+                    ? Math.round(basePrice * (appliedCoupon.value || 0) / 100)
+                    : (appliedCoupon.value || 0);
+                  const finalPrice = Math.max(0, basePrice - discountAmount);
+
+                  return (
+                    <div className="mt-3 p-3.5 bg-[#f0faf0] border border-[#bbf7d0] rounded-xl space-y-2">
+                      <div className="flex justify-between text-xs text-[#424754]">
+                        <span>Original price</span>
+                        <span className="line-through">{formatCurrency(basePrice)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-emerald-700 font-semibold">
+                        <span>Discount ({appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.value}%` : formatCurrency(discountAmount)})</span>
+                        <span>-{formatCurrency(discountAmount)}</span>
+                      </div>
+                      <div className="border-t border-[#bbf7d0] pt-2 flex justify-between text-sm font-bold text-[#0b1c30]">
+                        <span>Final price</span>
+                        <span>{formatCurrency(finalPrice)}</span>
+                      </div>
+                      {discountAmount > 0 && (
+                        <div className="pt-1.5">
+                          <span className="inline-block px-2.5 py-0.5 bg-emerald-600 text-white text-[9px] font-bold uppercase tracking-wider rounded-full">
+                            You save {formatCurrency(discountAmount)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 <div style={{ height: 12 }} />
 

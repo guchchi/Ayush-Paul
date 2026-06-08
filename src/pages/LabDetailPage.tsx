@@ -7,7 +7,7 @@ import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 import { getProductBySlug } from '../lib/product-utils';
-import { formatCurrency } from '../lib/format';
+import { formatCurrency, computeSavings } from '../lib/format';
 import { auth, onAuthStateChanged, db, doc, setDoc, getDoc, serverTimestamp } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
@@ -758,11 +758,15 @@ export const LabDetailPage = () => {
                 
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-sm font-bold text-brand-primary uppercase font-mono tracking-widest">[Master CAD & Schematics]</h3>
-                  {hasDiscount && (
-                    <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-[#00C2FF] text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
-                      Node Sale -{product.discountPercentage}%
-                    </span>
-                  )}
+                  {(() => {
+                    const s = computeSavings(product.basePrice, product.salePrice);
+                    if (!s) return null;
+                    return (
+                      <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-[#00C2FF] text-[8px] font-bold uppercase tracking-widest rounded-full font-mono">
+                        Save {formatCurrency(s.amount)} ({s.percent}%)
+                      </span>
+                    );
+                  })()}
                 </div>
                 
                 <div className="flex items-center gap-3 mb-8">

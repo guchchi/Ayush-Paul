@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Download, Zap, ShieldCheck, Cpu, Terminal } from 'lucide-react';
+import { Download, Zap, ShieldCheck, Cpu, Terminal, Tag } from 'lucide-react';
 import { Product } from '../../types';
-import { formatCurrency } from '../../lib/format';
+import { formatCurrency, computeSavings } from '../../lib/format';
 
 interface LabCardProps {
   product: Product;
@@ -55,6 +55,16 @@ export const LabCard = ({ product }: LabCardProps) => {
                   <span className="text-white/40 line-through text-[8px]">{formatCurrency(basePrice)}</span>
                 )}
                 <span className="text-white">{formatCurrency(salePrice || basePrice)}</span>
+                {(() => {
+                  const s = computeSavings(basePrice, salePrice);
+                  if (!s) return null;
+                  return (
+                    <span className="text-[8px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1 py-0.5 rounded-full flex items-center gap-0.5 ml-0.5">
+                      <Tag size={7} />
+                      {s.percent}%
+                    </span>
+                  );
+                })()}
               </div>
             )}
           </div>

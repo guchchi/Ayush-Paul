@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
+import { formatCurrency } from '../../lib/format';
 
-interface CouponResult {
+export interface CouponResult {
   valid: boolean;
   code?: string;
   discountType?: string;
@@ -16,14 +18,14 @@ interface CouponInputProps {
 
 export function CouponInput({ onValidated, disabled }: CouponInputProps) {
   const [code, setCode] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'valid' | 'invalid'>('idle');
+  const [status, setStatus] = useState<'idle' | 'validating' | 'valid' | 'invalid'>('idle');
   const [message, setMessage] = useState('');
+  const [validatedData, setValidatedData] = useState<CouponResult | null>(null);
 
   const validate = async () => {
     const trimmed = code.trim();
     if (!trimmed) return;
-
-    setStatus('loading');
+    setStatus('validating');
     setMessage('');
 
     try {
@@ -32,22 +34,26 @@ export function CouponInput({ onValidated, disabled }: CouponInputProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: trimmed }),
       });
-
-      const data = await res.json();
+      const data: CouponResult = await res.json();
 
       if (data.valid) {
         setStatus('valid');
-        const label = data.discountType === 'percentage' ? `${data.value}% off` : `₹${data.value} off`;
+        setValidatedData(data);
+        const label = data.discountType === 'percentage'
+          ? `${data.value}% OFF`
+          : `${formatCurrency(data.value || 0)} OFF`;
         setMessage(`${data.code} — ${label}`);
         onValidated(data);
       } else {
         setStatus('invalid');
-        setMessage(data.error || 'Invalid code');
+        setValidatedData(null);
+        setMessage(data.error || 'Invalid coupon code');
         onValidated(null);
       }
     } catch {
       setStatus('invalid');
-      setMessage('Failed to validate');
+      setValidatedData(null);
+      setMessage('Failed to validate. Check your connection.');
       onValidated(null);
     }
   };
@@ -56,77 +62,87 @@ export function CouponInput({ onValidated, disabled }: CouponInputProps) {
     setCode('');
     setStatus('idle');
     setMessage('');
+    setValidatedData(null);
     onValidated(null);
   };
 
+  const isDisabled = disabled || status === 'validating';
+
+  const borderColor = status === 'valid'
+    ? 'border-emerald-500'
+    : status === 'invalid'
+      ? 'border-red-500'
+      : 'border-white/10';
+
+  const textColor = status === 'valid'
+    ? 'text-emerald-400'
+    : 'text-white/80';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+    <div className="space-y-3">
+      <div className="flex gap-2 items-stretch">
         <input
           type="text"
           value={code}
-          onChange={(e) => { setCode(e.target.value.toUpperCase()); setStatus('idle'); setMessage(''); }}
-          placeholder="Enter coupon code"
-          disabled={disabled}
-          style={{
-            flex: 1,
-            padding: '10px 14px',
-            background: '#1a1a2e',
-            border: status === 'valid' ? '1px solid #4ade80' : status === 'invalid' ? '1px solid #f87171' : '1px solid #2a2a4a',
-            borderRadius: '8px',
-            color: '#e0e0e0',
-            fontSize: '14px',
-            textTransform: 'uppercase',
-            outline: 'none',
+          onChange={(e) => {
+            setCode(e.target.value.toUpperCase());
+            setStatus('idle');
+            setMessage('');
+            setValidatedData(null);
           }}
+          placeholder="Enter coupon code"
+          disabled={isDisabled}
+          className={`flex-1 px-3.5 py-2.5 bg-[#1a1a2e] ${borderColor} ${textColor} text-sm uppercase rounded-lg outline-none transition-colors placeholder:text-white/20 disabled:opacity-50`}
         />
-        {status === 'idle' || status === 'invalid' ? (
-          <button
-            onClick={validate}
-            disabled={disabled || !code.trim()}
-            style={{
-              padding: '10px 16px',
-              background: '#d1f34d',
-              color: '#0a0a1a',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: disabled || !code.trim() ? 'not-allowed' : 'pointer',
-              opacity: disabled || !code.trim() ? 0.5 : 1,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Apply
-          </button>
-        ) : status === 'loading' ? (
-          <span style={{ color: '#888', fontSize: '14px', padding: '0 8px' }}>...</span>
-        ) : (
+
+        {status === 'valid' ? (
           <button
             onClick={handleClear}
-            style={{
-              padding: '10px 16px',
-              background: 'transparent',
-              color: '#888',
-              border: '1px solid #333',
-              borderRadius: '8px',
-              fontSize: '14px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-            }}
+            className="px-4 py-2.5 bg-white/5 text-white/50 border border-white/10 rounded-lg text-sm hover:bg-white/10 hover:text-white/70 transition-colors flex items-center gap-1.5"
+            type="button"
           >
+            <X size={14} />
             Remove
+          </button>
+        ) : (
+          <button
+            onClick={validate}
+            disabled={isDisabled || !code.trim()}
+            className="px-4 py-2.5 bg-[#d1f34d] text-[#0a0a1a] rounded-lg text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            type="button"
+          >
+            {status === 'validating' ? (
+              <><Loader2 size={14} className="animate-spin" /> Validating</>
+            ) : (
+              'Apply'
+            )}
           </button>
         )}
       </div>
-      {message && (
-        <p style={{
-          margin: 0,
-          fontSize: '13px',
-          color: status === 'valid' ? '#4ade80' : '#f87171',
-        }}>
-          {message}
-        </p>
+
+      {status === 'valid' && validatedData && (
+        <div className="p-3 bg-emerald-950/60 border border-emerald-500/50 rounded-xl flex items-start gap-2.5">
+          <CheckCircle2 size={18} className="text-emerald-400 shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <div className="text-emerald-400 font-semibold text-sm">
+              Coupon {validatedData.code} applied
+            </div>
+            <div className="text-emerald-300/80 text-xs mt-0.5">
+              {validatedData.discountType === 'percentage'
+                ? `${validatedData.value}% discount`
+                : `${formatCurrency(validatedData.value || 0)} discount`
+              }
+              {validatedData.description ? ` — ${validatedData.description}` : ''}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {status === 'invalid' && message && (
+        <div className="p-3 bg-red-950/60 border border-red-500/50 rounded-xl flex items-start gap-2.5">
+          <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+          <span className="text-red-300 text-sm font-medium">{message}</span>
+        </div>
       )}
     </div>
   );

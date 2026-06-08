@@ -10,3 +10,15 @@ export function formatDiscount(basePrice: number, salePrice: number): string | n
   }
   return null;
 }
+
+export function computeSavings(basePrice: number, salePrice: number): { amount: number; percent: number } | null {
+  const bp = Number(basePrice) || 0;
+  const sp = Number(salePrice) || 0;
+  if (bp > 0 && sp > 0 && sp < bp) {
+    return {
+      amount: bp - sp,
+      percent: Math.round(((bp - sp) / bp) * 100),
+    };
+  }
+  return null;
+}

@@ -239,6 +239,9 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         // Edit record
         console.log("PAYLOAD (edit):", payload);
         await updateDoc(doc(db, collectionName, currentRecord.id), payload);
+        if (collectionName === "products") {
+          try { localStorage.removeItem("products_cache"); } catch {}
+        }
         addToast("Item updated successfully.", "success");
       } else {
         // Create new record

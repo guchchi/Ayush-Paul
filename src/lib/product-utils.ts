@@ -5,7 +5,7 @@ import { handleFirestoreError } from "./firebase-utils";
 import { OperationType } from "../types";
 
 const CACHE_KEY = "products_cache";
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
 
 interface CacheData {
   timestamp: number;
@@ -41,6 +41,15 @@ export const enrichDigitalSystem = (system: any): Product => {
         fileSize: "1.8 MB"
       }
     ];
+  }
+
+  // Compute discount percentage from basePrice and salePrice
+  const bp = Number(enriched.basePrice) || 0;
+  const sp = Number(enriched.salePrice) || 0;
+  if (bp > 0 && sp > 0 && sp < bp) {
+    enriched.discountPercentage = Math.round((1 - sp / bp) * 100);
+  } else {
+    enriched.discountPercentage = 0;
   }
 
   // 2. Changelog fallback

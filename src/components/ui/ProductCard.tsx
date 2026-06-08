@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Download, Zap, Heart, ShieldCheck, Clock } from 'lucide-react';
+import { Download, Zap, Heart, ShieldCheck, Clock, Tag } from 'lucide-react';
 import { Product } from '../../types';
-import { formatCurrency } from '../../lib/format';
+import { formatCurrency, computeSavings } from '../../lib/format';
 import { cn } from '../../lib/utils';
 
 interface ProductCardProps {
@@ -36,7 +36,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
           
-          <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 flex items-center gap-2 shadow-xl">
+              <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 flex items-center gap-2 shadow-xl">
             {isFree ? (
               <span className="text-brand-primary font-bold text-sm tracking-wide">FREE</span>
             ) : (
@@ -45,6 +45,16 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                   <span className="text-white/40 line-through text-xs">{formatCurrency(product.basePrice)}</span>
                 )}
                 <span className="text-white font-bold text-sm tracking-wide">{formatCurrency(product.salePrice || product.basePrice)}</span>
+                {(() => {
+                  const s = computeSavings(product.basePrice, product.salePrice);
+                  if (!s) return null;
+                  return (
+                    <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 ml-1">
+                      <Tag size={8} />
+                      {s.percent}%
+                    </span>
+                  );
+                })()}
               </div>
             )}
           </div>
