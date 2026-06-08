@@ -69,6 +69,22 @@ export const VaultPage = () => {
           const allProducts = await getPublishedProducts();
           console.log('[VaultPage] Published products:', { count: allProducts.length });
 
+          // Fallback: also query purchases collection for any product IDs not in ownedProducts
+          try {
+            const purchaseSnap = await getDocs(
+              query(collection(db, "purchases"), where("userId", "==", currentUser.uid))
+            );
+            const purchasedIds = purchaseSnap.docs.map(d => d.data().productId).filter(Boolean);
+            if (purchasedIds.length > 0) {
+              console.log('[VaultPage] Purchases collection IDs:', { count: purchasedIds.length, ids: purchasedIds });
+              for (const pid of purchasedIds) {
+                if (!ownedIds.includes(pid)) ownedIds.push(pid);
+              }
+            }
+          } catch (purchaseErr) {
+            console.warn('[VaultPage] Purchases collection query failed:', purchaseErr);
+          }
+
           const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
           setOwnedProducts(filteredOwned);
           

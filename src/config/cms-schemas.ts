@@ -302,6 +302,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "code", label: "Creator Code", type: "string", required: true, placeholder: "CREATOR2024" },
       { name: "creatorName", label: "Creator Name", type: "string", required: true, placeholder: "John Doe" },
       { name: "userId", label: "Firebase User ID (optional)", type: "string", placeholder: "uid..." },
+      { name: "email", label: "Email", type: "string", placeholder: "creator@example.com" },
       { name: "creatorCommissionPercent", label: "Creator Commission (%)", type: "number", defaultValue: 10 },
       { name: "totalSales", label: "Total Sales Count", type: "number", readOnly: true, defaultValue: 0 },
       { name: "totalRevenue", label: "Total Revenue Generated (₹)", type: "number", readOnly: true, defaultValue: 0 },

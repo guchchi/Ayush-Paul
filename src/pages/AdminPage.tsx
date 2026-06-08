@@ -388,6 +388,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     subscribers: "subscribers",
     projects: "projects",
     updates: "updates",
+    creators: "creator_codes",
   };
   const currentSchemaName = schemaMap[activeTab];
   const currentSchema = currentSchemaName ? CMS_SCHEMAS[currentSchemaName] : null;
@@ -536,14 +537,26 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               <div className="space-y-8">
                 {/* Hero Summary */}
                 <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
-                      <UserCheck size={24} />
+                  <div className="flex items-start justify-between gap-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+                        <UserCheck size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">Creator Affiliate Analytics</h3>
+                        <p className="text-white/40 text-xs">Track, log, calculate, and summarize all creator-driven sales automatically.</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">Creator Affiliate Analytics</h3>
-                      <p className="text-white/40 text-xs">Track, log, calculate, and summarize all creator-driven sales automatically.</p>
-                    </div>
+                    <button
+                      onClick={() => {
+                        setCurrentRecord(null);
+                        setIsEditing(true);
+                        setActiveTab("creators");
+                      }}
+                      className="shrink-0 px-5 py-3 rounded-xl bg-brand-primary hover:bg-white text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-brand-primary/20"
+                    >
+                      <UserCheck size={14} /> Create Creator
+                    </button>
                   </div>
 
                   {/* Summary Stats */}

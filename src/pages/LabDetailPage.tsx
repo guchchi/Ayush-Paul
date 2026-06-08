@@ -735,21 +735,26 @@ export const LabDetailPage = () => {
                   );
                 })()}
 
-                <button 
-                  onClick={handleFreeDownload}
-                  disabled={isDownloading || profile?.ownedProducts?.[product.id] === 'free' || profile?.ownedProducts?.[product.id] === 'premium'}
-                  className="w-full py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
-                >
-                  {isDownloading ? (
-                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    profile?.ownedProducts?.[product.id] ? (
-                      <><ShieldCheck size={14} className="text-brand-primary" /> Core Node Configured</>
+                {profile?.ownedProducts?.[product.id] ? (
+                  <Link
+                    to="/vault"
+                    className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black border border-brand-primary/30 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                  >
+                    <ShieldCheck size={14} /> In Vault <ArrowRight size={14} />
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleFreeDownload}
+                    disabled={isDownloading}
+                    className="w-full py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                  >
+                    {isDownloading ? (
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                     ) : (
                       <><Download size={14} /> Deploy Starter Node</>
-                    )
-                  )}
-                </button>
+                    )}
+                  </button>
+                )}
               </div>
             ) : (
               /* Premium Tier */
@@ -803,23 +808,28 @@ export const LabDetailPage = () => {
                   );
                 })()}
 
-                <button 
-                  onClick={handlePremiumUpgrade}
-                  disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
-                  className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
-                >
-                  {isCheckingOut ? (
-                    <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    profile?.ownedProducts?.[product.id] === 'premium' ? (
-                      <><ShieldCheck size={14} /> System Fully Unlocked</>
+                {profile?.ownedProducts?.[product.id] === 'premium' ? (
+                  <Link
+                    to="/vault"
+                    className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+                  >
+                    <ShieldCheck size={14} /> Purchased — Open in Vault <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handlePremiumUpgrade}
+                    disabled={isCheckingOut}
+                    className="w-full py-4 rounded-2xl bg-brand-primary hover:bg-white text-black transition-all font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-brand-primary/20 group"
+                  >
+                    {isCheckingOut ? (
+                      <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                     ) : (
-                      profile?.ownedProducts?.[product.id] === 'free' ? 
+                      profile?.ownedProducts?.[product.id] === 'free' ?
                       <>Upgrade to Complete CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></> :
                       <>Deploy Master CAD <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
-                    )
-                  )}
-                </button>
+                    )}
+                  </button>
+                )}
                 <p className="text-center text-[8px] font-bold uppercase tracking-widest text-white/30 mt-4 flex items-center justify-center gap-1 font-mono">
                   <ShieldCheck size={12} className="text-brand-primary" /> SECURE END_TO_END STRIPE TUNNEL
                 </p>

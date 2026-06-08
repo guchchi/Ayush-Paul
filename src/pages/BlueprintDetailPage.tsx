@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { formatCurrency, computeSavings } from '../lib/format';
 import { motion } from 'motion/react';
 import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock } from 'lucide-react';
@@ -487,23 +487,30 @@ export const BlueprintDetailPage = () => {
                   );
                 })()}
 
-                <MagneticButton className="w-full">
-                  <button 
-                    onClick={handleFreeDownload}
-                    disabled={isDownloading || profile?.ownedProducts?.[product.id]}
-                    className="w-full py-3.5 rounded-full bg-[#f8f9ff] hover:bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                  >
-                    {isDownloading ? (
-                      <div className="w-4 h-4 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin" />
-                    ) : (
-                      profile?.ownedProducts?.[product.id] ? (
-                        <><ShieldCheck size={14} className="text-[#0058be]" /> Blueprint Acquired</>
+                {profile?.ownedProducts?.[product.id] ? (
+                  <MagneticButton className="w-full">
+                    <Link
+                      to="/vault"
+                      className="w-full py-3.5 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-black transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                    >
+                      <ShieldCheck size={14} /> In Vault <ArrowRight size={14} />
+                    </Link>
+                  </MagneticButton>
+                ) : (
+                  <MagneticButton className="w-full">
+                    <button
+                      onClick={handleFreeDownload}
+                      disabled={isDownloading}
+                      className="w-full py-3.5 rounded-full bg-[#f8f9ff] hover:bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                    >
+                      {isDownloading ? (
+                        <div className="w-4 h-4 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin" />
                       ) : (
                         <><Download size={14} /> Download Free Sample</>
-                      )
-                    )}
-                  </button>
-                </MagneticButton>
+                      )}
+                    </button>
+                  </MagneticButton>
+                )}
               </div>
             ) : (
               /* Premium Tier Card */
@@ -602,23 +609,30 @@ export const BlueprintDetailPage = () => {
 
                 <div style={{ height: 12 }} />
 
-                <MagneticButton className="w-full">
-                  <button 
-                    onClick={handlePremiumUpgrade}
-                    disabled={isCheckingOut || profile?.ownedProducts?.[product.id] === 'premium'}
-                    className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 group shadow-sm cursor-pointer h-12"
-                  >
-                    {isCheckingOut ? (
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      profile?.ownedProducts?.[product.id] === 'premium' ? (
-                        <><ShieldCheck size={14} /> Full Blueprint Unlocked</>
+                {profile?.ownedProducts?.[product.id] === 'premium' ? (
+                  <MagneticButton className="w-full">
+                    <Link
+                      to="/vault"
+                      className="w-full py-3.5 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-black transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 group shadow-sm cursor-pointer h-12"
+                    >
+                      <ShieldCheck size={14} /> Purchased — Open in Vault <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </MagneticButton>
+                ) : (
+                  <MagneticButton className="w-full">
+                    <button
+                      onClick={handlePremiumUpgrade}
+                      disabled={isCheckingOut}
+                      className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 group shadow-sm cursor-pointer h-12"
+                    >
+                      {isCheckingOut ? (
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                       ) : (
                         <>Get Full Blueprint Bundle <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
-                      )
-                    )}
-                  </button>
-                </MagneticButton>
+                      )}
+                    </button>
+                  </MagneticButton>
+                )}
               </div>
             )}
           </div>
