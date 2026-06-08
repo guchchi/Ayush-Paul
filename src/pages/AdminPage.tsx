@@ -190,6 +190,18 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     const collectionName = schemaMap[activeTab];
     if (!collectionName) return;
 
+    const RULES_ADMIN_UID = "80OJfcmVXCRNmSZuthVU68K6vJq2";
+    const RULES_ADMIN_EMAIL = "ap877@cornell.edu";
+    const uid = auth.currentUser?.uid;
+    const email = auth.currentUser?.email;
+    console.log("COLLECTION:", collectionName);
+    console.log("USER UID:", uid);
+    console.log("USER EMAIL:", email);
+    console.log("MATCHES firestore.rules isAdmin():");
+    console.log("  uid check (request.auth.uid == RULES_ADMIN_UID):", uid === RULES_ADMIN_UID);
+    console.log("  email check (request.auth.token.email == RULES_ADMIN_EMAIL):", email === RULES_ADMIN_EMAIL);
+    console.log("  would isAdmin() pass on server?:", (uid === RULES_ADMIN_UID) || (email === RULES_ADMIN_EMAIL));
+
     try {
       const payload = {
         ...formData,
@@ -225,6 +237,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
 
       if (currentRecord?.id) {
         // Edit record
+        console.log("PAYLOAD (edit):", payload);
         await updateDoc(doc(db, collectionName, currentRecord.id), payload);
         addToast("Item updated successfully.", "success");
       } else {
@@ -233,12 +246,25 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         if (collectionName === "blogPosts") {
           payload.views = 0;
         }
-        await addDoc(collection(db, collectionName), payload);
+        console.log("PAYLOAD (create):", payload);
+        try {
+          const docRef = await addDoc(collection(db, collectionName), payload);
+          console.log("SUCCESS: docRef.id =", docRef.id);
+        } catch (error: any) {
+          console.error("FIRESTORE WRITE FAILED");
+          console.error("ERROR:", error);
+          console.error("ERROR CODE:", error.code);
+          console.error("ERROR MESSAGE:", error.message);
+          throw error;
+        }
         addToast("Item created successfully.", "success");
       }
       setIsEditing(false);
       setCurrentRecord(null);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("CATCH ALL - error:", error);
+      console.error("CATCH ALL - code:", error.code);
+      console.error("CATCH ALL - message:", error.message);
       handleFirestoreError(error, OperationType.WRITE, collectionName);
       addToast("Failed to write to database.", "error");
     }
