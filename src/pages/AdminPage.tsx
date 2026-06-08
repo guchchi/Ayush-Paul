@@ -565,7 +565,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                     />
                     <AdminStatCard
                       label="Avg Commission Rate"
-                      value={`${creatorCodes.length > 0 ? Math.round(creatorCodes.reduce((sum, c) => sum + (c.commissionRate || 0), 0) / creatorCodes.length) : 0}%`}
+                      value={`${creatorCodes.length > 0 ? Math.round(creatorCodes.reduce((sum, c) => sum + (c.creatorCommissionPercent || c.commissionRate || 0), 0) / creatorCodes.length) : 0}%`}
                       icon={<Percent size={18} />}
                     />
                   </div>
@@ -626,8 +626,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                               <div className="text-xl font-bold text-white">{creator.totalSales ?? creatorSales.length}</div>
                             </div>
                             <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Commission Rate</div>
-                              <div className="text-xl font-bold text-brand-primary">{creator.commissionRate || 10}%</div>
+                              <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Commission (on original)</div>
+                              <div className="text-xl font-bold text-brand-primary">{creator.creatorCommissionPercent || creator.commissionRate || 10}%</div>
                             </div>
                             <div className="bg-white/5 rounded-xl p-4 border border-white/5">
                               <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Unique Buyers</div>
@@ -636,7 +636,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                             <div className="bg-white/5 rounded-xl p-4 border border-white/5">
                               <div className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1">Avg Order Value</div>
                               <div className="text-xl font-bold text-white">
-                                ₹{creatorSales.length > 0 ? (creatorSales.reduce((s, x) => s + x.productPrice, 0) / creatorSales.length).toFixed(0) : '0'}
+                                ₹{creatorSales.length > 0 ? (creatorSales.reduce((s, x) => s + (x.originalPrice || x.productPrice || x.paidAmount || 0), 0) / creatorSales.length).toFixed(0) : '0'}
                               </div>
                             </div>
                           </div>
@@ -660,13 +660,13 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                                       <div className="min-w-0">
                                         <p className="font-bold text-white truncate">{sale.productTitle || sale.productId}</p>
                                         <p className="text-[10px] text-white/30">
-                                          Commission: ₹{sale.commission} at {sale.commissionRate}%
+                                          Commission: ₹{sale.commission} at {sale.commissionPercent || sale.commissionRate}%
                                           {sale.discountApplied > 0 && ` • Discount: ₹${sale.discountApplied}`}
                                         </p>
                                       </div>
                                     </div>
                                     <div className="text-right shrink-0 ml-4">
-                                      <p className="font-bold text-brand-primary">₹{sale.productPrice}</p>
+                                      <p className="font-bold text-brand-primary">₹{sale.originalPrice || sale.productPrice || sale.paidAmount || 0}</p>
                                       <p className="text-[10px] text-white/30">{sale.currency?.toUpperCase() || 'INR'}</p>
                                     </div>
                                   </div>
@@ -694,7 +694,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                           <tr className="border-b border-white/5 text-white/40 text-[9px] font-bold uppercase tracking-wider">
                             <th className="text-left py-3 pr-4">Creator</th>
                             <th className="text-left py-3 pr-4">Product</th>
-                            <th className="text-left py-3 pr-4">Price</th>
+                            <th className="text-left py-3 pr-4">Original</th>
+                            <th className="text-left py-3 pr-4">Paid</th>
                             <th className="text-left py-3 pr-4">Discount</th>
                             <th className="text-left py-3 pr-4">Commission</th>
                             <th className="text-left py-3 pr-4">Rate</th>
@@ -710,10 +711,11 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                               <td className="py-3 pr-4 text-white/70 truncate max-w-[150px]">
                                 {sale.productTitle || sale.productId}
                               </td>
-                              <td className="py-3 pr-4 font-bold text-white">₹{sale.productPrice}</td>
+                              <td className="py-3 pr-4 font-bold text-white">₹{sale.originalPrice || sale.productPrice || sale.paidAmount || 0}</td>
+                              <td className="py-3 pr-4 text-white/50">₹{sale.paidAmount || sale.productPrice || 0}</td>
                               <td className="py-3 pr-4 text-white/50">{sale.discountApplied > 0 ? `₹${sale.discountApplied}` : '—'}</td>
                               <td className="py-3 pr-4 font-bold text-brand-primary">₹{sale.commission}</td>
-                              <td className="py-3 pr-4 text-white/50">{sale.commissionRate}%</td>
+                              <td className="py-3 pr-4 text-white/50">{sale.commissionPercent || sale.commissionRate || 0}%</td>
                               <td className="py-3 text-white/40 text-[10px]">
                                 {sale.timestamp?.toDate?.()?.toLocaleDateString() || '—'}
                               </td>

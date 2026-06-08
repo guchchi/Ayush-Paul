@@ -20,6 +20,7 @@ interface Purchase {
   productTitle?: string;
   amountTotal?: number;
   amount?: number;
+  originalPrice?: number;
   currency?: string;
   status?: string;
   createdAt?: any;
@@ -31,8 +32,12 @@ interface CreatorCode {
   id?: string;
   code: string;
   creatorName?: string;
+  creatorCommissionPercent?: number;
   commissionRate?: number;
   totalSales?: number;
+  totalRevenue?: number;
+  totalCommission?: number;
+  totalCustomers?: number;
   totalEarnings?: number;
 }
 
@@ -66,12 +71,14 @@ export const PurchaseAnalyticsDashboard: React.FC<Props> = ({ purchases, creator
       orders: 0,
       commission: 0,
     };
-    const amount = (p.amountTotal || p.amount || 0) / 100;
-    existing.revenue += amount;
+    // Use originalPrice if available (stored at checkout), otherwise fall back to amountTotal
+    const originalPrice = (p.originalPrice || p.amountTotal || p.amount || 0) / 100;
+    existing.revenue += originalPrice;
     existing.orders += 1;
     const creator = creatorCodes.find(c => c.code === p.creatorCode);
-    if (creator?.commissionRate) {
-      existing.commission += amount * (creator.commissionRate / 100);
+    const commissionPct = creator?.creatorCommissionPercent || creator?.commissionRate || 0;
+    if (commissionPct) {
+      existing.commission += originalPrice * (commissionPct / 100);
     }
     creatorMap.set(p.creatorCode, existing);
   });

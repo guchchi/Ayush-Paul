@@ -13,9 +13,13 @@ interface CreatorData {
   code: string;
   creatorName: string;
   userId?: string;
-  commissionRate: number;
+  creatorCommissionPercent?: number;
+  commissionRate?: number;
   totalSales: number;
   totalEarnings: number;
+  totalRevenue?: number;
+  totalCommission?: number;
+  totalCustomers?: number;
   isActive: boolean;
   payoutStatus: string;
   lastPayoutDate?: any;
@@ -30,10 +34,13 @@ interface SaleLog {
   productId: string;
   productTitle?: string;
   userId: string;
-  productPrice: number;
-  discountApplied: number;
+  originalPrice?: number;
+  paidAmount?: number;
+  productPrice?: number;
+  discountApplied?: number;
   commission: number;
-  commissionRate: number;
+  commissionPercent?: number;
+  commissionRate?: number;
   currency: string;
   timestamp: any;
 }
@@ -53,7 +60,7 @@ export const CreatorDetailModal: React.FC<Props> = ({
   const [isUpdatingPayout, setIsUpdatingPayout] = useState(false);
 
   const totalCommission = sales.reduce((sum, s) => sum + (s.commission || 0), 0);
-  const totalRevenue = sales.reduce((sum, s) => sum + (s.productPrice || 0), 0);
+  const totalRevenue = sales.reduce((sum, s) => sum + (s.originalPrice || s.productPrice || s.paidAmount || 0), 0);
   const uniqueBuyers = new Set(sales.map((s) => s.userId)).size;
   const avgOrderValue = sales.length > 0 ? totalRevenue / sales.length : 0;
   const pendingCommission = creator.payoutStatus === 'pending' ? totalCommission : 0;
@@ -212,8 +219,8 @@ export const CreatorDetailModal: React.FC<Props> = ({
                   </h4>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                      <span className="text-xs text-white/40">Commission Rate</span>
-                      <span className="text-sm font-bold text-brand-primary">{creator.commissionRate || 10}%</span>
+                      <span className="text-xs text-white/40">Creator Commission</span>
+                      <span className="text-sm font-bold text-brand-primary">{creator.creatorCommissionPercent || creator.commissionRate || 10}% of original price</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
                       <span className="text-xs text-white/40">Avg Order Value</span>
@@ -229,12 +236,20 @@ export const CreatorDetailModal: React.FC<Props> = ({
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-white/5">
-                      <span className="text-xs text-white/40">Total Sales (counter)</span>
+                      <span className="text-xs text-white/40">Total Sales</span>
                       <span className="text-sm font-bold text-white">{creator.totalSales ?? sales.length}</span>
                     </div>
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <span className="text-xs text-white/40">Total Revenue (original)</span>
+                      <span className="text-sm font-bold text-white">₹{(creator.totalRevenue || totalRevenue || 0).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-white/5">
+                      <span className="text-xs text-white/40">Total Commission</span>
+                      <span className="text-sm font-bold text-brand-primary">₹{(creator.totalCommission || totalCommission || 0).toLocaleString('en-IN')}</span>
+                    </div>
                     <div className="flex justify-between items-center py-2">
-                      <span className="text-xs text-white/40">Total Earnings (counter)</span>
-                      <span className="text-sm font-bold text-brand-primary">₹{(creator.totalEarnings || 0).toLocaleString('en-IN')}</span>
+                      <span className="text-xs text-white/40">Unique Customers</span>
+                      <span className="text-sm font-bold text-white">{creator.totalCustomers || uniqueBuyers || 0}</span>
                     </div>
                   </div>
                 </div>
@@ -335,8 +350,8 @@ export const CreatorDetailModal: React.FC<Props> = ({
                         <tr className="border-b border-white/5 text-white/40 text-[9px] font-bold uppercase tracking-wider">
                           <th className="text-left py-3 pr-4">Product</th>
                           <th className="text-left py-3 pr-4">Buyer</th>
-                          <th className="text-right py-3 pr-4">Price</th>
-                          <th className="text-right py-3 pr-4">Discount</th>
+                          <th className="text-right py-3 pr-4">Original</th>
+                          <th className="text-right py-3 pr-4">Paid</th>
                           <th className="text-right py-3 pr-4">Commission</th>
                           <th className="text-right py-3 pr-4">Rate</th>
                           <th className="text-right py-3">Date</th>
@@ -351,12 +366,10 @@ export const CreatorDetailModal: React.FC<Props> = ({
                             <td className="py-3 pr-4 text-white/50 text-[10px]">
                               {sale.userId?.slice(0, 10)}...
                             </td>
-                            <td className="py-3 pr-4 text-right font-bold text-white">₹{sale.productPrice}</td>
-                            <td className="py-3 pr-4 text-right text-white/50">
-                              {sale.discountApplied > 0 ? `₹${sale.discountApplied}` : '—'}
-                            </td>
+                            <td className="py-3 pr-4 text-right font-bold text-white">₹{sale.originalPrice || sale.productPrice || sale.paidAmount || 0}</td>
+                            <td className="py-3 pr-4 text-right text-white/50">₹{sale.paidAmount || sale.productPrice || 0}</td>
                             <td className="py-3 pr-4 text-right font-bold text-brand-primary">₹{sale.commission}</td>
-                            <td className="py-3 pr-4 text-right text-white/50">{sale.commissionRate}%</td>
+                            <td className="py-3 pr-4 text-right text-white/50">{sale.commissionPercent || sale.commissionRate || 0}%</td>
                             <td className="py-3 text-right text-white/40 text-[10px]">
                               {formatDate(sale.timestamp)}
                             </td>

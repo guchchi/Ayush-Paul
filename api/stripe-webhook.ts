@@ -100,14 +100,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }, { merge: true });
 
       // 2. Record the purchase in a 'purchases' collection for analytics
+      const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
       await db.collection("purchases").add({
         userId,
         productId,
         stripeSessionId: session.id,
         amountTotal: session.amount_total,
+        originalPrice: Math.round(originalPrice * 100),
         currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        status: "completed"
+        status: "completed",
+        ...(session.metadata?.creatorCode ? { creatorCode: session.metadata.creatorCode } : {}),
+        ...(session.metadata?.couponCode ? { couponCode: session.metadata.couponCode } : {}),
       });
 
       // 2a. Track coupon usage if applied
@@ -136,14 +140,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const creatorCode = session.metadata?.creatorCode;
       if (creatorCode) {
         try {
-          const creatorDoc = await db.collection('creator_codes').doc(creatorCode).get();
-          if (creatorDoc.exists) {
+          console.log(`[Creator] Processing creator code: "${creatorCode}"`);
+
+          // Determine the original product price (before any discount)
+          const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
+          const amountPaid = (session.amount_total || 0) / 100;
+          const discountApplied = Math.max(0, originalPrice - amountPaid);
+          const commissionPercent = Number(session.metadata?.commissionPercent) || 10;
+
+          // Commission is calculated on ORIGINAL product price (not discounted)
+          const commission = +(originalPrice * commissionPercent / 100).toFixed(2);
+
+          console.log(`[Creator] original=₹${originalPrice}, paid=₹${amountPaid}, discount=₹${discountApplied}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
+
+          const creatorQuery = await db.collection('creator_codes').where('code', '==', creatorCode).limit(1).get();
+          if (!creatorQuery.empty) {
+            const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
-            const commissionRate = creatorData.commissionRate || 10;
-            const amountPaid = (session.amount_total || 0) / 100;
-            const amountSubtotal = (session.amount_subtotal || 0) / 100;
-            const discountApplied = Math.max(0, amountSubtotal - amountPaid);
-            const commission = +(amountPaid * commissionRate / 100).toFixed(2);
 
             // Log the sale
             await db.collection('creator_sales_log').add({
@@ -153,24 +166,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               productId,
               productTitle: session.metadata?.productTitle || '',
               userId,
-              productPrice: amountPaid,
+              originalPrice,
+              paidAmount: amountPaid,
               discountApplied,
               commission,
-              commissionRate,
+              commissionPercent,
               currency: session.currency || 'inr',
               timestamp: admin.firestore.FieldValue.serverTimestamp(),
             });
 
             // Update creator stats
-            await creatorDoc.ref.update({
+            await db.collection('creator_codes').doc(creatorDoc.id).update({
               totalSales: admin.firestore.FieldValue.increment(1),
-              totalEarnings: admin.firestore.FieldValue.increment(commission),
+              totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+              totalCommission: admin.firestore.FieldValue.increment(commission),
+              totalCustomers: admin.firestore.FieldValue.increment(1),
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
 
-            console.log(`[Creator] Commission logged: ${creatorCode} earned ₹${commission} on ${productId}`);
+            console.log(`[Creator] Commission logged: ${creatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
           } else {
-            console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes`);
+            console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes (queried by code field)`);
+            // Debug: log all existing creator codes
+            const allCreators = await db.collection('creator_codes').limit(10).get();
+            console.log(`[Creator] Existing codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));
           }
         } catch (creatorError) {
           console.error('[Creator] Failed to process creator commission:', creatorError);
