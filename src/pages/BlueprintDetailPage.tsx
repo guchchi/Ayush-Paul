@@ -26,7 +26,10 @@ export const BlueprintDetailPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
-  const [appliedCoupon, setAppliedCoupon] = useState<CouponResult | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponResult | null>(() => {
+    const stored = sessionStorage.getItem('pending_coupon');
+    return stored ? JSON.parse(stored) : null;
+  });
   const [telemetrySim, setTelemetrySim] = useState({
     freq: 16.0,
     temp: 42.4,
@@ -45,6 +48,15 @@ export const BlueprintDetailPage = () => {
     }, 1500);
     return () => clearInterval(timer);
   }, []);
+
+  // Persist coupon to sessionStorage for page refresh resilience
+  useEffect(() => {
+    if (appliedCoupon?.valid) {
+      sessionStorage.setItem('pending_coupon', JSON.stringify(appliedCoupon));
+    } else {
+      sessionStorage.removeItem('pending_coupon');
+    }
+  }, [appliedCoupon]);
 
   const { trackEvent } = useAnalytics();
 

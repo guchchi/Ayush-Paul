@@ -289,6 +289,49 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
           console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
         }
       }
+
+      // Process creator code commission if present (webhook may be blocked by idempotency check)
+      const creatorCode = session.metadata?.creatorCode;
+      if (creatorCode) {
+        try {
+          const creatorDoc = await db.collection('creator_codes').doc(creatorCode).get();
+          if (creatorDoc.exists) {
+            const creatorData = creatorDoc.data()!;
+            const commissionRate = creatorData.commissionRate || 10;
+            const amountPaid = (session.amount_total || 0) / 100;
+            const amountSubtotal = (session.amount_subtotal || 0) / 100;
+            const discountApplied = Math.max(0, amountSubtotal - amountPaid);
+            const commission = +(amountPaid * commissionRate / 100).toFixed(2);
+
+            await db.collection('creator_sales_log').add({
+              creatorCode,
+              creatorName: creatorData.creatorName || 'Creator',
+              orderId: sessionId,
+              productId,
+              productTitle: session.metadata?.productTitle || '',
+              userId,
+              productPrice: amountPaid,
+              discountApplied,
+              commission,
+              commissionRate,
+              currency: session.currency || 'inr',
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+
+            await creatorDoc.ref.update({
+              totalSales: admin.firestore.FieldValue.increment(1),
+              totalEarnings: admin.firestore.FieldValue.increment(commission),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+
+            console.log(`[Creator] Commission logged via verify: ${creatorCode} earned ₹${commission} on ${productId}`);
+          } else {
+            console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes`);
+          }
+        } catch (creatorError) {
+          console.error('[Creator] Failed to process creator commission via verify:', creatorError);
+        }
+      }
     }
 
     return res.status(200).json({ success: true, productId });
