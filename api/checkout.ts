@@ -65,10 +65,11 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
 
     if (couponCode) {
       const normalized = couponCode.trim().toUpperCase();
-      const couponSnap = await db.collection('coupons').doc(normalized).get();
+      const couponQuery = await db.collection('coupons').where('code', '==', normalized).limit(1).get();
+      const couponSnap = couponQuery.empty ? null : couponQuery.docs[0];
 
-      if (couponSnap.exists) {
-        const c = couponSnap.data()!;
+      if (couponSnap) {
+        const c = couponSnap.data();
         if (c.active) {
           const expired = c.expiresAt?.toDate?.() ? new Date() > c.expiresAt.toDate() : false;
           const exhausted = c.usageLimit && (c.usedCount || 0) >= c.usageLimit;
@@ -236,13 +237,13 @@ async function handleValidateCoupon(req: VercelRequest, res: VercelResponse) {
 
   try {
     const normalized = code.trim().toUpperCase();
-    const snap = await db.collection('coupons').doc(normalized).get();
+    const couponQuery = await db.collection('coupons').where('code', '==', normalized).limit(1).get();
 
-    if (!snap.exists) {
+    if (couponQuery.empty) {
       return res.status(404).json({ valid: false, error: 'Coupon not found' });
     }
 
-    const coupon = snap.data()!;
+    const coupon = couponQuery.docs[0].data();
 
     if (!coupon.active) {
       return res.status(400).json({ valid: false, error: 'Coupon is no longer active' });

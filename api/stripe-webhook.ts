@@ -111,14 +111,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // 2a. Track coupon usage if applied
       const couponCode = session.metadata?.couponCode;
       if (couponCode) {
-        await db.collection('coupons').doc(couponCode).update({
-          usedCount: admin.firestore.FieldValue.increment(1),
-          lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
-          lastUsedBy: userId,
-          lastUsedProduct: productId,
-        }).catch(() => {
-          console.warn(`[Coupon] Could not increment usage for ${couponCode}`);
-        });
+        const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
+        if (!couponQuery.empty) {
+          await db.collection('coupons').doc(couponQuery.docs[0].id).update({
+            usedCount: admin.firestore.FieldValue.increment(1),
+            lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+            lastUsedBy: userId,
+            lastUsedProduct: productId,
+          }).catch(() => {
+            console.warn(`[Coupon] Could not increment usage for ${couponCode}`);
+          });
+        }
       }
 
       // 2b. Process creator code commission if present
