@@ -35,7 +35,7 @@ const ebooks = [
     basePrice: 49,
     salePrice: 29,
     discountPercentage: 40,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: true,
     author: {
@@ -78,7 +78,7 @@ const ebooks = [
     basePrice: 99,
     salePrice: 59,
     discountPercentage: 40,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: true,
     author: {
@@ -121,7 +121,7 @@ const ebooks = [
     basePrice: 0,
     salePrice: 0,
     discountPercentage: 0,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: false,
     author: {
@@ -160,7 +160,7 @@ const ebooks = [
     basePrice: 29,
     salePrice: 19,
     discountPercentage: 34,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: true,
     author: {
@@ -203,7 +203,7 @@ const ebooks = [
     basePrice: 25,
     salePrice: 15,
     discountPercentage: 40,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: true,
     author: {
@@ -246,7 +246,7 @@ const ebooks = [
     basePrice: 79,
     salePrice: 49,
     discountPercentage: 38,
-    currency: "usd",
+    currency: "inr",
     isPublished: true,
     isFeatured: true,
     author: {
