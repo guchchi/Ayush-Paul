@@ -26,6 +26,7 @@ import { VaultNextUnlock } from '../components/sections/VaultNextUnlock';
 import { VaultProductCard } from '../components/ui/VaultProductCard';
 
 export const VaultPage = () => {
+  console.log('[VaultPage] Component mounting');
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
@@ -40,6 +41,7 @@ export const VaultPage = () => {
   const [allCourses, setAllCourses] = useState<any[]>([]);
 
   const { trackEvent } = useAnalytics();
+  console.log('[VaultPage] State initialized:', { loading, authChecked, user: !!user });
 
   useSEO({
     title: "My Digital Vault | Ayush Paul",
@@ -47,32 +49,42 @@ export const VaultPage = () => {
   });
 
   useEffect(() => {
+    console.log('[VaultPage] Auth listener mounted');
     trackEvent('lab_visit');
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      console.log('[VaultPage] Auth state changed:', currentUser ? `uid=${currentUser.uid}` : 'null');
       setAuthChecked(true);
       if (currentUser) {
         setUser(currentUser);
-        const profileSnap = await getDoc(doc(db, 'users', currentUser.uid));
-        
-        const allProducts = await getPublishedProducts();
-        const profileData = profileSnap.exists() ? profileSnap.data() : {};
+        try {
+          const profileSnap = await getDoc(doc(db, 'users', currentUser.uid));
+          const profileData = profileSnap.exists() ? profileSnap.data() : {};
+          console.log('[VaultPage] Profile loaded:', { exists: profileSnap.exists(), keys: Object.keys(profileData) });
+          setProfile(profileData);
+          
+          const ownedMap = profileData?.ownedProducts || {};
+          const ownedIds = Object.keys(ownedMap);
+          console.log('[VaultPage] Owned products:', { count: ownedIds.length, ids: ownedIds });
 
-        setProfile(profileData);
-        
-        const ownedMap = profileData?.ownedProducts || {};
-        const ownedIds = Object.keys(ownedMap);
-        
-        const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
-        setOwnedProducts(filteredOwned);
-        
-        const ownedOrClaimed = (p: Product) => ownedIds.includes(p.id) || p.type === 'free';
-        setDiscoverProducts(allProducts.filter(p => !ownedOrClaimed(p)));
+          const allProducts = await getPublishedProducts();
+          console.log('[VaultPage] Published products:', { count: allProducts.length });
+
+          const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
+          setOwnedProducts(filteredOwned);
+          
+          const ownedOrClaimed = (p: Product) => ownedIds.includes(p.id) || p.type === 'free';
+          setDiscoverProducts(allProducts.filter(p => !ownedOrClaimed(p)));
+        } catch (profileErr) {
+          console.error('[VaultPage] Profile/products load FAILED:', profileErr);
+        }
 
         // Fetch Enrolled Courses
         try {
+          console.log('[VaultPage] Fetching enrollments...');
           const enrollSnap = await getDocs(
             query(collection(db, "enrollments"), where("userId", "==", currentUser.uid))
           );
+          console.log('[VaultPage] Enrollments fetched:', { count: enrollSnap.docs.length });
           const enrollMap: Record<string, any> = {};
           enrollSnap.docs.forEach((doc) => {
             const data = doc.data();
@@ -92,16 +104,19 @@ export const VaultPage = () => {
             progressData: enrollMap[c.id]
           }));
           setEnrolledCourses(enrolledList);
+          console.log('[VaultPage] Enrolled courses resolved:', { count: enrolledList.length });
         } catch (courseErr) {
-          console.error("Failed to load enrolled courses inside Vault:", courseErr);
+          console.error('[VaultPage] Enrolled courses FAILED:', courseErr);
         }
 
         // Fetch Registered Workshops
         try {
+          console.log('[VaultPage] Fetching workshop registrations...');
           const workshopSnap = await getDocs(
             query(collection(db, "workshop_registrations"), where("userId", "==", currentUser.uid))
           );
           const registeredIds = workshopSnap.docs.map(doc => doc.data().workshopId);
+          console.log('[VaultPage] Workshop registrations:', { count: registeredIds.length });
 
           const allWorkshopsSnap = await getDocs(
             query(collection(db, "workshops"), where("isPublished", "==", true))
@@ -110,14 +125,19 @@ export const VaultPage = () => {
 
           const filteredWorkshops = workshopsList.filter(w => registeredIds.includes(w.id));
           setRegisteredWorkshops(filteredWorkshops);
+          console.log('[VaultPage] Registered workshops resolved:', { count: filteredWorkshops.length });
         } catch (wErr) {
-          console.error("Failed to load registered workshops inside Vault:", wErr);
+          console.error('[VaultPage] Workshops FAILED:', wErr);
         }
 
       }
       setLoading(false);
+      console.log('[VaultPage] Data loading complete, setting loading=false');
     });
-    return () => unsubscribe();
+    return () => {
+      console.log('[VaultPage] Auth listener unsubscribed');
+      unsubscribe();
+    };
   }, [navigate]);
 
   // Auto-generate referral code if missing
@@ -134,15 +154,6 @@ export const VaultPage = () => {
       navigate('/', { replace: true });
     }
   }, [loading, authChecked, user, navigate]);
-
-  if (loading || !user) {
-    return (
-      <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#d1f34d]/25 border-t-[#d1f34d] rounded-full animate-spin mb-4" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
-      </div>
-    );
-  }
 
   const ownedByTier = useMemo(() => {
     const groups: Record<ProductTier, Product[]> = { free: [], starter: [], pro: [], premium: [] };
@@ -172,6 +183,15 @@ export const VaultPage = () => {
     () => getUpgradePaths(ownedProducts, [...ownedProducts, ...discoverProducts]),
     [ownedProducts, discoverProducts],
   );
+
+  if (loading || !user) {
+    return (
+      <div className="w-full min-h-screen bg-bg-primary flex flex-col items-center justify-center">
+        <div className="w-6 h-6 border-2 border-[#d1f34d]/25 border-t-[#d1f34d] rounded-full animate-spin mb-4" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/40">Verifying Identity</span>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     try {
