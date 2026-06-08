@@ -252,10 +252,12 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         if (collectionName === "blogPosts") {
           payload.views = 0;
         }
-        console.log("PAYLOAD (create):", payload);
+        console.log("PAYLOAD (create):", JSON.stringify(payload, (key, val) => key === 'updatedAt' || key === 'createdAt' ? '<serverTimestamp>' : val, 2));
+        console.log("[DEBUG] Collection:", collectionName, "| Has id?:", !!currentRecord?.id, "| Payload keys:", Object.keys(payload).join(", "));
         try {
           const docRef = await addDoc(collection(db, collectionName), payload);
           console.log("SUCCESS: docRef.id =", docRef.id);
+          console.log("[DEBUG] Post-save: Document written to", collectionName, "/", docRef.id);
         } catch (error: any) {
           console.error("FIRESTORE WRITE FAILED");
           console.error("ERROR:", error);
