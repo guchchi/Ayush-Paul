@@ -144,7 +144,7 @@ async function handleCreateDonationSession(req: VercelRequest, res: VercelRespon
       payment_method_types: ["card", "upi"],
       line_items: [{
         price_data: {
-          currency: "usd",
+          currency: "inr",
           product_data: {
             name: "Donation: Support Open Innovation",
             description: "Thank you for supporting Ayush Paul's engineering research.",

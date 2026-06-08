@@ -176,7 +176,7 @@ async function startServer() {
         line_items: [
           {
             price_data: {
-              currency: "usd", // Donations are typically USD
+              currency: "inr", // Donations use INR
               product_data: {
                 name: "Donation: Support Open Innovation",
                 description: "Thank you for supporting Ayush Paul's engineering research.",

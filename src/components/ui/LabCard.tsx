@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Download, Zap, ShieldCheck, Cpu, Terminal } from 'lucide-react';
 import { Product } from '../../types';
+import { formatCurrency } from '../../lib/format';
 
 interface LabCardProps {
   product: Product;
@@ -51,9 +52,9 @@ export const LabCard = ({ product }: LabCardProps) => {
             ) : (
               <div className="flex items-center gap-1.5">
                 {hasDiscount && (
-                  <span className="text-white/40 line-through text-[8px]">${basePrice}</span>
+                  <span className="text-white/40 line-through text-[8px]">{formatCurrency(basePrice)}</span>
                 )}
-                <span className="text-white">${salePrice || basePrice}</span>
+                <span className="text-white">{formatCurrency(salePrice || basePrice)}</span>
               </div>
             )}
           </div>

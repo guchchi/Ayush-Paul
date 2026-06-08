@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { formatCurrency } from '../lib/format';
 import { motion } from 'motion/react';
 import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
@@ -507,9 +508,9 @@ export const BlueprintDetailPage = () => {
                 </div>
                 
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="text-3xl font-extrabold text-[#0b1c30] font-display">${product.salePrice || product.basePrice}</div>
+                  <div className="text-3xl font-extrabold text-[#0b1c30] font-display">{formatCurrency(product.salePrice || product.basePrice)}</div>
                   {hasDiscount && (
-                    <div className="text-xs text-[#424754]/60 line-through font-mono">(WAS ${product.basePrice})</div>
+                    <div className="text-xs text-[#424754]/60 line-through font-mono">(WAS {formatCurrency(product.basePrice)})</div>
                   )}
                 </div>
                 

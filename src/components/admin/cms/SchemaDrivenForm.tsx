@@ -5,6 +5,7 @@ import { CollectionSchema, CMS_SCHEMAS, FieldDefinition } from "../../../config/
 import { SEOPanel } from "../seo/SEOPanel";
 import { BlogEditorWrapper } from "./BlogEditorWrapper";
 import { AIWritingAssistant } from "../ai/AIWritingAssistant";
+import { formatCurrency, formatDiscount } from "../../../lib/format";
 import {
   db,
   collection,
@@ -566,6 +567,38 @@ export const SchemaDrivenForm = ({
                 </div>
               ))}
           </div>
+
+          {/* Live Price Preview for products */}
+          {schema.collectionName === "products" && (
+            <div className="p-6 bg-white/5 rounded-[2rem] border border-white/10 space-y-4">
+              <h4 className="text-sm font-bold text-white/40">Price Preview</h4>
+              <div className="flex items-center gap-6 flex-wrap">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-white/30 uppercase tracking-wider">Original Price (MRP)</p>
+                  <p className="text-lg font-bold text-white/40 line-through">
+                    {formData.basePrice > 0 ? formatCurrency(formData.basePrice) : 'Not set'}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-white/30 uppercase tracking-wider">Selling Price</p>
+                  <p className="text-2xl font-bold text-brand-primary">
+                    {formData.salePrice > 0 ? formatCurrency(formData.salePrice) : (formData.basePrice > 0 ? formatCurrency(formData.basePrice) : 'Not set')}
+                  </p>
+                </div>
+                {(() => {
+                  const base = Number(formData.basePrice) || 0;
+                  const sale = Number(formData.salePrice) || 0;
+                  const discount = formatDiscount(base, sale);
+                  if (!discount) return null;
+                  return (
+                    <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-xl">
+                      <p className="text-sm font-bold text-green-400">{discount}</p>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
 
           {/* Syllabus builder for courses */}
           {schema.collectionName === "courses" && initialData?.id && (

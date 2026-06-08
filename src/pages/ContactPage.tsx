@@ -194,9 +194,9 @@ const SmartContactForm = () => {
                 className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-5 outline-none focus:border-brand-primary focus:bg-white/[0.05] transition-all text-lg font-medium appearance-none"
               >
                 <option className="bg-[#0A0A0A]">Strategic Partnership</option>
-                <option className="bg-[#0A0A0A]">$5k - $20k</option>
-                <option className="bg-[#0A0A0A]">$20k - $50k</option>
-                <option className="bg-[#0A0A0A]">$50k+</option>
+                <option className="bg-[#0A0A0A]">₹5k - ₹20k</option>
+                <option className="bg-[#0A0A0A]">₹20k - ₹50k</option>
+                <option className="bg-[#0A0A0A]">₹50k+</option>
                 <option className="bg-[#0A0A0A]">Founding Member / Equity</option>
               </select>
             </div>

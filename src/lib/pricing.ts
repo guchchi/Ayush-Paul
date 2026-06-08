@@ -1,4 +1,5 @@
 import type { ProductTier, Product } from '../types';
+import { formatCurrency } from './format';
 
 export interface TierConfig {
   id: ProductTier;
@@ -72,11 +73,7 @@ export function getProductTier(product: Product): TierConfig {
 }
 
 export function formatPrice(price: number, currency = 'inr'): string {
-  if (price <= 0) return 'Free';
-  if (currency === 'inr') {
-    return `₹${price.toLocaleString('en-IN')}`;
-  }
-  return `$${price.toFixed(2)}`;
+  return formatCurrency(price);
 }
 
 export function formatTierRange(tier: ProductTier, currency = 'inr'): string {

@@ -79,7 +79,7 @@ export const SchemaDrivenList = ({
 
     if (fieldName === "amountTotal") {
       const amount = val / 100;
-      const currency = item.currency || "usd";
+      const currency = item.currency || "inr";
       return new Intl.NumberFormat("en-IN", {
         style: "currency",
         currency: currency,

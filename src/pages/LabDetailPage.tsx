@@ -7,6 +7,7 @@ import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getCanonicalUrl } from '../lib/domain';
 import { getProductBySlug } from '../lib/product-utils';
+import { formatCurrency } from '../lib/format';
 import { auth, onAuthStateChanged, db, doc, setDoc, getDoc, serverTimestamp } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
@@ -43,16 +44,6 @@ export const LabDetailPage = () => {
     }, 1500);
     return () => clearInterval(timer);
   }, []);
-  const getCurrencySymbol = (currency?: string) => {
-    if (!currency) return '₹';
-    const c = currency.toLowerCase();
-    if (c === 'usd') return '$';
-    if (c === 'eur') return '€';
-    if (c === 'gbp') return '£';
-    if (c === 'inr') return '₹';
-    return '₹';
-  };
-
   const { trackEvent } = useAnalytics();
 
   useEffect(() => {
@@ -775,9 +766,9 @@ export const LabDetailPage = () => {
                 </div>
                 
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="text-4xl font-extrabold text-white font-display">{getCurrencySymbol(product.currency)}{product.salePrice || product.basePrice}</div>
+                  <div className="text-4xl font-extrabold text-white font-display">{formatCurrency(product.salePrice || product.basePrice)}</div>
                   {hasDiscount && (
-                    <div className="text-sm text-white/40 line-through font-mono">(WAS {getCurrencySymbol(product.currency)}{product.basePrice})</div>
+                    <div className="text-sm text-white/40 line-through font-mono">(WAS {formatCurrency(product.basePrice)})</div>
                   )}
                 </div>
                 

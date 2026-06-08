@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Download, Zap, Heart, ShieldCheck, Clock } from 'lucide-react';
 import { Product } from '../../types';
+import { formatCurrency } from '../../lib/format';
 import { cn } from '../../lib/utils';
 
 interface ProductCardProps {
@@ -41,9 +42,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             ) : (
               <div className="flex items-center gap-2">
                 {hasDiscount && (
-                  <span className="text-white/40 line-through text-xs">${product.basePrice}</span>
+                  <span className="text-white/40 line-through text-xs">{formatCurrency(product.basePrice)}</span>
                 )}
-                <span className="text-white font-bold text-sm tracking-wide">${product.salePrice || product.basePrice}</span>
+                <span className="text-white font-bold text-sm tracking-wide">{formatCurrency(product.salePrice || product.basePrice)}</span>
               </div>
             )}
           </div>
