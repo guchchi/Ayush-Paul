@@ -44,20 +44,31 @@ export const MasteryMentorship = () => {
 
   const buildWhatsAppMessage = () => {
     const lines = [
-      '🚀 New 1:1 Session Request (AyushPaul.in)',
+      '🚀 NEW 1:1 SESSION REQUEST (AyushPaul.in)',
+      '',
+      '────────────────────',
       '',
       `👤 Name: ${name}`,
-      `📱 Contact: ${phone || 'Not provided'}`,
+      `📞 Contact: ${phone || 'Not provided'}`,
       '',
       `🎯 Topic: ${topic}`,
       '',
-      '📝 Problem:',
-      description || 'Not specified',
+      '────────────────────',
+      '',
+      '📝 Problem Statement:',
+      description,
+      '',
+      '────────────────────',
       '',
       `📅 Preferred Date: ${preferredDate}`,
-      `⏰ Preferred Time: ${preferredTime}`,
+      `⏰ Preferred Time: ${preferredTime} (IST)`,
       '',
-      '👉 Please confirm availability & next steps.',
+      '────────────────────',
+      '',
+      '⚡ Action Required:',
+      'Please review and confirm availability + next steps.',
+      '',
+      '— AyushPaul.in System',
     ];
     return lines.join('\n');
   };
