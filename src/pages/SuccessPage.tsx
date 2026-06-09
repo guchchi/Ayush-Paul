@@ -5,6 +5,7 @@ import { CheckCircle, ArrowRight, Download } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { MagneticButton } from '../components/ui/MagneticButton';
+import { secureDownload } from '../lib/download';
 
 export const SuccessPage = () => {
   const navigate = useNavigate();
@@ -106,15 +107,15 @@ export const SuccessPage = () => {
     verifyAccess();
   }, [sessionId, productId, trackEvent]);
 
-  const handleDownload = () => {
-    if (!product?.downloadFileURL) return;
-    const link = document.createElement('a');
-    link.href = product.downloadFileURL;
-    link.target = '_blank';
-    link.download = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    if (!product || !productId) return;
+    try {
+      const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+      await secureDownload(productId, filename);
+    } catch (err: any) {
+      console.error('[Success] Download failed:', err);
+      alert(err.message || 'Download failed. Please try again.');
+    }
   };
 
   return (
@@ -144,7 +145,7 @@ export const SuccessPage = () => {
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        {isOwned && product?.downloadFileURL && (
+        {isOwned && productId && (
           <MagneticButton>
             <button 
               onClick={handleDownload}

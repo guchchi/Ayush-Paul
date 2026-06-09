@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, Users2, Clock, CheckCircle2, Video, Sparkles, AlertCircle, BadgeCheck, MapPin } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
-import { db, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy } from '../../firebase';
+import { auth, db, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy } from '../../firebase';
 
 export interface Workshop {
   id: string;
@@ -175,8 +175,11 @@ export const MasteryWorkshops = () => {
     try {
       setLoading(true);
       setError('');
+      const uid = auth.currentUser?.uid || null;
+      console.log('[Workshops] General waitlist submit:', { email, uid });
       await addDoc(collection(db, 'workshop_registrations'), {
         email,
+        userId: uid,
         source: 'general_workshop_waitlist',
         registeredAt: serverTimestamp(),
         status: 'waitlist'
@@ -202,9 +205,12 @@ export const MasteryWorkshops = () => {
     try {
       setLoading(true);
       setError('');
+      const uid = auth.currentUser?.uid || null;
+      console.log('[Workshops] Seat reservation submit:', { name: regName, email: regEmail, workshopId: selectedWorkshop.id, uid });
       await addDoc(collection(db, 'workshop_registrations'), {
         name: regName,
         email: regEmail,
+        userId: uid,
         workshopId: selectedWorkshop.id,
         workshopName: selectedWorkshop.name,
         source: 'workshop_seat_modal',

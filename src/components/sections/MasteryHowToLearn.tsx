@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, Video, Users, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
-import { db, collection, addDoc, serverTimestamp } from '../../firebase';
+import { auth, db, collection, addDoc, serverTimestamp } from '../../firebase';
 
 interface MasteryHowToLearnProps {
   onExploreCoursesClick: () => void;
@@ -72,8 +72,11 @@ export const MasteryHowToLearn = ({ onExploreCoursesClick, onMentorshipClick }: 
     try {
       setLoading(true);
       setError('');
+      const uid = auth.currentUser?.uid || null;
+      console.log('[HowToLearn] Workshop waitlist submit:', { email, uid });
       await addDoc(collection(db, 'workshop_registrations'), {
         email,
+        userId: uid,
         source: 'how_to_learn_workshop_waitlist',
         registeredAt: serverTimestamp(),
         status: 'waitlist'

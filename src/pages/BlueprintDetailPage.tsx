@@ -14,6 +14,7 @@ import { MagneticButton } from '../components/ui/MagneticButton';
 import { BackButton } from '../components/ui/back-button';
 import { PricingBadge } from '../components/ui/PricingBadge';
 import { CouponInput, type CouponResult } from '../components/ui/CouponInput';
+import { secureDownload } from '../lib/download';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
@@ -97,11 +98,6 @@ export const BlueprintDetailPage = () => {
   const handleFreeDownload = async () => {
     if (!product) return;
 
-    if (!product.downloadFileURL) {
-      alert("This version is not yet configured for download. Please contact the engineering team.");
-      return;
-    }
-
     setIsDownloading(true);
     
     try {
@@ -118,17 +114,12 @@ export const BlueprintDetailPage = () => {
         }, { merge: true });
       }
 
-      const link = document.createElement('a');
-      link.href = product.downloadFileURL;
-      link.target = '_blank';
-      link.download = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+      await secureDownload(product.id, filename);
 
       setTimeout(() => navigate('/thank-you'), 1000);
     } catch (error: any) {
-      alert("Failed to process free download. Please check your connection.");
+      alert(error.message || "Failed to process free download. Please check your connection.");
     } finally {
       setIsDownloading(false);
     }

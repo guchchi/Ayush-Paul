@@ -159,33 +159,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
 
-            // Log the sale
-            await db.collection('creator_sales_log').add({
-              creatorCode: normalizedCreatorCode,
-              creatorName: creatorData.creatorName || 'Creator',
-              orderId: session.id,
-              productId,
-              productTitle: session.metadata?.productTitle || '',
-              userId,
-              originalPrice,
-              paidAmount: amountPaid,
-              discountApplied,
-              commission,
-              commissionPercent,
-              currency: session.currency || 'inr',
-              timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            });
+            // Block commission for inactive creators
+            if (creatorData.isActive === false) {
+              console.warn(`[Creator] Webhook: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
+            } else {
+              // Log the sale
+              await db.collection('creator_sales_log').add({
+                creatorCode: normalizedCreatorCode,
+                creatorName: creatorData.creatorName || 'Creator',
+                orderId: session.id,
+                productId,
+                productTitle: session.metadata?.productTitle || '',
+                userId,
+                originalPrice,
+                paidAmount: amountPaid,
+                discountApplied,
+                commission,
+                commissionPercent,
+                currency: session.currency || 'inr',
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              });
 
-            // Update creator stats
-            await db.collection('creator_codes').doc(creatorDoc.id).update({
-              totalSales: admin.firestore.FieldValue.increment(1),
-              totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
-              totalCommission: admin.firestore.FieldValue.increment(commission),
-              totalCustomers: admin.firestore.FieldValue.increment(1),
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
+              // Update creator stats
+              await db.collection('creator_codes').doc(creatorDoc.id).update({
+                totalSales: admin.firestore.FieldValue.increment(1),
+                totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+                totalCommission: admin.firestore.FieldValue.increment(commission),
+                totalCustomers: admin.firestore.FieldValue.increment(1),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
 
-            console.log(`[Creator] Commission logged: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+              console.log(`[Creator] Commission logged: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+            }
           } else {
             console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes (queried by code field)`);
             // Debug: log all existing creator codes

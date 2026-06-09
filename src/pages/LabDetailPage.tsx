@@ -12,6 +12,7 @@ import { auth, onAuthStateChanged, db, doc, setDoc, getDoc, serverTimestamp } fr
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
 import { CouponInput, CouponResult } from '../components/ui/CouponInput';
+import { secureDownload } from '../lib/download';
 import { getRelatedContent } from '../lib/seo-utils';
 
 export const LabDetailPage = () => {
@@ -153,12 +154,6 @@ export const LabDetailPage = () => {
     console.log("[Lab] Free Download Triggered for:", product?.title);
     if (!product) return;
 
-    if (!product.downloadFileURL) {
-      console.error("[Lab] Missing downloadFileURL for product:", product.id);
-      alert("🔧 This free version is not yet configured for download. Please contact the engineering team.");
-      return;
-    }
-
     setIsDownloading(true);
     
     try {
@@ -180,20 +175,15 @@ export const LabDetailPage = () => {
       }
 
       console.log("[Lab] Triggering file download...");
-      const link = document.createElement('a');
-      link.href = product.downloadFileURL;
-      link.target = '_blank';
-      link.download = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+      await secureDownload(product.id, filename);
 
       setTimeout(() => {
         navigate('/thank-you');
       }, 1000);
     } catch (error: any) {
       console.error("[Lab] Free Download Error:", error);
-      alert("Failed to process free download. Please check your connection.");
+      alert(error.message || "Failed to process free download. Please check your connection.");
     } finally {
       setIsDownloading(false);
     }
@@ -530,15 +520,16 @@ export const LabDetailPage = () => {
                         <div className="shrink-0 pt-1">
                           {hasAccess ? (
                             <button 
-                              onClick={() => {
+                              onClick={async () => {
                                 if (product.type === 'free') {
                                   handleFreeDownload();
                                 } else {
-                                  // Trigger master bundle download
-                                  if (product.downloadFileURL) {
-                                    window.open(product.downloadFileURL, '_blank');
-                                  } else {
-                                    alert("🔧 Direct download not yet configured for this system node. Please contact support.");
+                                  try {
+                                    const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+                                    await secureDownload(product.id, filename);
+                                  } catch (err: any) {
+                                    console.error('[Lab] Resource download failed:', err);
+                                    alert(err.message || "Download not yet configured. Please contact support.");
                                   }
                                 }
                               }}

@@ -13,6 +13,7 @@
     { "source": "/api/verify-checkout-session", "destination": "/api/checkout?action=verify-checkout-session" },
     { "source": "/api/validate-coupon", "destination": "/api/checkout?action=validate-coupon" },
     { "source": "/api/validate-creator-code", "destination": "/api/checkout?action=validate-creator-code" },
+    { "source": "/api/download-product", "destination": "/api/download-product" },
     { "source": "/api/schedule-email", "destination": "/api/email?action=schedule-email" },
     { "source": "/api/process-scheduled-emails", "destination": "/api/email?action=process-scheduled-emails" },
     { "source": "/api/process-email-triggers", "destination": "/api/email?action=process-email-triggers" },

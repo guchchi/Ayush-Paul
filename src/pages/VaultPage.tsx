@@ -17,6 +17,7 @@ import { resolveTier, TIER_ORDER, TIERS } from '../lib/pricing';
 import { cn } from '../lib/utils';
 import { getContinueLearning, getRecommendedUnlocks, getUpgradePaths } from '../lib/recommendations';
 import { ensureReferralCode } from '../lib/referral';
+import { secureDownload } from '../lib/download';
 import { VaultContinueLearning } from '../components/sections/VaultContinueLearning';
 import { VaultRecommendedUnlocks } from '../components/sections/VaultRecommendedUnlocks';
 import { VaultUpgradePath } from '../components/sections/VaultUpgradePath';
@@ -128,11 +129,43 @@ export const VaultPage = () => {
         // Fetch Registered Workshops
         try {
           console.log('[VaultPage] Fetching workshop registrations...');
-          const workshopSnap = await getDocs(
-            query(collection(db, "workshop_registrations"), where("userId", "==", currentUser.uid))
+
+          // Query by userId (new records with userId stored)
+          const userIdQuery = query(
+            collection(db, "workshop_registrations"),
+            where("userId", "==", currentUser.uid)
           );
-          const registeredIds = workshopSnap.docs.map(doc => doc.data().workshopId);
-          console.log('[VaultPage] Workshop registrations:', { count: registeredIds.length });
+          const [userIdSnap, emailSnap] = await Promise.all([
+            getDocs(userIdQuery),
+            // Backfill: also query by email for legacy records without userId
+            currentUser.email
+              ? getDocs(
+                  query(
+                    collection(db, "workshop_registrations"),
+                    where("email", "==", currentUser.email)
+                  )
+                )
+              : Promise.resolve({ docs: [] }),
+          ]);
+
+          // Merge results, deduplicate by document ID
+          const regMap = new Map<string, any>();
+          userIdSnap.docs.forEach(doc => regMap.set(doc.id, doc.data()));
+          emailSnap.docs.forEach(doc => {
+            if (!regMap.has(doc.id)) regMap.set(doc.id, doc.data());
+          });
+
+          const registeredDocs = Array.from(regMap.values());
+          const registeredIds = registeredDocs
+            .map(d => d.workshopId)
+            .filter(Boolean);
+
+          console.log('[VaultPage] Workshop registrations:', {
+            byUserId: userIdSnap.docs.length,
+            byEmail: emailSnap.docs.length,
+            merged: registeredDocs.length,
+            registeredIds,
+          });
 
           const allWorkshopsSnap = await getDocs(
             query(collection(db, "workshops"), where("isPublished", "==", true))
@@ -219,14 +252,18 @@ export const VaultPage = () => {
   };
 
   const handleDownload = async (product: Product) => {
-    if (!product.downloadFileURL) return;
-    
     trackEvent('file_download', {
       product_id: product.id,
       product_name: product.title
     });
 
-    window.open(product.downloadFileURL, '_blank');
+    try {
+      const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
+      await secureDownload(product.id, filename);
+    } catch (err: any) {
+      console.error('[Vault] Download failed:', err);
+      alert(err.message || 'Download failed. Please try again.');
+    }
   };
 
   const isNewPurchase = new URLSearchParams(window.location.search).get('product_id');

@@ -320,6 +320,11 @@ async function startServer() {
             if (!creatorQuery.empty) {
               const creatorDoc = creatorQuery.docs[0];
               const creatorData = creatorDoc.data()!;
+
+              // Block commission for inactive creators
+              if (creatorData.isActive === false) {
+                console.warn(`[Creator] Server: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
+              } else {
               await db.collection('creator_sales_log').add({
                 creatorCode: normalizedCreatorCode,
                 creatorName: creatorData.creatorName || 'Creator',

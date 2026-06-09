@@ -64,11 +64,12 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
     }
 
     let appliedCoupon: { code: string; discountType: string; value: number; assignedToCreator?: string } | null = null;
+    let couponSnap: any = null;
 
     if (couponCode) {
       const normalized = couponCode.trim().toUpperCase();
       const couponQuery = await db.collection('coupons').where('code', '==', normalized).limit(1).get();
-      const couponSnap = couponQuery.empty ? null : couponQuery.docs[0];
+      couponSnap = couponQuery.empty ? null : couponQuery.docs[0];
 
       if (couponSnap) {
         const c = couponSnap.data();
@@ -92,6 +93,19 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
     const stripePrice = await stripe.prices.retrieve(product.stripePriceId);
     const mode = stripePrice.type === 'recurring' ? 'subscription' : 'payment';
     const effectivePrice = Number(product.salePrice) || Number(product.basePrice) || (stripePrice.unit_amount ? stripePrice.unit_amount / 100 : 0);
+
+    // Enforce minPurchaseAmount during checkout creation
+    if (couponSnap) {
+      const c = couponSnap.data();
+      const minAmount = c.minPurchaseAmount || 0;
+      if (minAmount > 0 && effectivePrice < minAmount) {
+        console.warn(`[Coupon] Rejected: product ₹${effectivePrice} below minPurchaseAmount ₹${minAmount} for coupon ${appliedCoupon?.code}`);
+        return res.status(400).json({
+          error: `This coupon requires a minimum purchase of ₹${minAmount}. The product price is ₹${effectivePrice}.`,
+          details: { minPurchaseAmount: minAmount, productPrice: effectivePrice },
+        });
+      }
+    }
 
     let discounts: any[] = [];
     let finalMetadata: Record<string, string> = { productId, userId, productTitle: product.title || '' };
@@ -352,31 +366,36 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
 
-            await db.collection('creator_sales_log').add({
-              creatorCode: normalizedCreatorCode,
-              creatorName: creatorData.creatorName || 'Creator',
-              orderId: sessionId,
-              productId,
-              productTitle: session.metadata?.productTitle || '',
-              userId,
-              originalPrice,
-              paidAmount: amountPaid,
-              discountApplied,
-              commission,
-              commissionPercent,
-              currency: session.currency || 'inr',
-              timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            });
+            // Block commission for inactive creators
+            if (creatorData.isActive === false) {
+              console.warn(`[Creator] Verify: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
+            } else {
+              await db.collection('creator_sales_log').add({
+                creatorCode: normalizedCreatorCode,
+                creatorName: creatorData.creatorName || 'Creator',
+                orderId: sessionId,
+                productId,
+                productTitle: session.metadata?.productTitle || '',
+                userId,
+                originalPrice,
+                paidAmount: amountPaid,
+                discountApplied,
+                commission,
+                commissionPercent,
+                currency: session.currency || 'inr',
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              });
 
-            await db.collection('creator_codes').doc(creatorDoc.id).update({
-              totalSales: admin.firestore.FieldValue.increment(1),
-              totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
-              totalCommission: admin.firestore.FieldValue.increment(commission),
-              totalCustomers: admin.firestore.FieldValue.increment(1),
-              updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-            });
+              await db.collection('creator_codes').doc(creatorDoc.id).update({
+                totalSales: admin.firestore.FieldValue.increment(1),
+                totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+                totalCommission: admin.firestore.FieldValue.increment(commission),
+                totalCustomers: admin.firestore.FieldValue.increment(1),
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
 
-            console.log(`[Creator] Commission logged via verify: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+              console.log(`[Creator] Commission logged via verify: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+            }
           } else {
             console.warn(`[Creator] Verify: Code "${normalizedCreatorCode}" not found in creator_codes`);
             const allCreators = await db.collection('creator_codes').limit(10).get();
@@ -396,7 +415,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 }
 
 async function handleValidateCoupon(req: VercelRequest, res: VercelResponse) {
-  const { code } = req.body;
+  const { code, productPrice } = req.body;
 
   if (!code || typeof code !== 'string') {
     return res.status(400).json({ error: 'Missing coupon code' });
@@ -428,10 +447,24 @@ async function handleValidateCoupon(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ valid: false, error: 'Coupon usage limit reached' });
     }
 
+    const minPurchaseAmount = coupon.minPurchaseAmount || 0;
+
+    // Validate minPurchaseAmount if productPrice is provided
+    if (minPurchaseAmount > 0 && typeof productPrice === 'number') {
+      if (productPrice < minPurchaseAmount) {
+        return res.status(400).json({
+          valid: false,
+          error: `This coupon requires a minimum purchase of ₹${minPurchaseAmount}. Current product price is ₹${productPrice}.`,
+          minPurchaseAmount,
+        });
+      }
+    }
+
     return res.status(200).json({
       valid: true, code: normalized,
       discountType: coupon.discountType, value: coupon.value,
       description: coupon.description || '',
+      minPurchaseAmount,
       assignedToCreator: coupon.assignedToCreator || undefined,
     });
   } catch (err: any) {
