@@ -33,6 +33,7 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
     workshopRegistrations.filter((r) => r.workshopId === workshopId);
 
   const handleSendEmail = async (workshopId: string, action: string, label: string, extra: Record<string, string> = {}) => {
+    console.log("[WORKSHOP EMAIL]", action, workshopId);
     setSendingWorkshop(workshopId);
     setSendingAction(action);
     try {

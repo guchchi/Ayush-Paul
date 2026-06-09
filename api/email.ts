@@ -440,23 +440,27 @@ async function handleSendConfirmation(req: VercelRequest, res: VercelResponse) {
 }
 
 async function handleSendConfirmationAll(req: VercelRequest, res: VercelResponse) {
+  const traceId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   try {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json(stepError("validate", "Missing workshopId", 400));
-    console.log("[handleSendConfirmationAll] workshopId:", workshopId);
-    console.log("[handleSendConfirmationAll] FIRESTORE_DB_ID env:", process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(unset)");
+    console.log("[send-confirmation-all:", traceId, "] workshopId:", workshopId);
 
     let workshop;
     try { const d = await getDb().collection("workshops").doc(workshopId).get(); if (!d.exists) return res.status(404).json(stepError("workshop_lookup", "Not found", 404)); workshop = d.data()!; } catch (e: any) { return res.status(500).json(stepError("workshop_lookup", e.message)); }
 
+    console.log("[send-confirmation-all:", traceId, "] workshop found:", workshop?.title);
+
     let snap;
+    console.log("[QUERY:", traceId, "] collection=workshop_registrations where workshopId==", workshopId);
     try { snap = await getDb().collection("workshop_registrations").where("workshopId", "==", workshopId).get(); } catch (e: any) { return res.status(500).json(stepError("registrations_query", e.message)); }
-    console.log("[handleSendConfirmationAll] matched registrations:", snap.size, "empty:", snap.empty);
+    console.log("[QUERY RESULT:", traceId, "] size=", snap.size, "empty=", snap.empty);
     if (snap.empty) {
       const probe = await getDb().collection("workshop_registrations").limit(5).get();
-      console.log("[handleSendConfirmationAll] probe sample (first 5 regs):", probe.docs.map(d => ({ id: d.id, workshopId: d.data().workshopId, email: d.data().email })));
-      return res.json({ success: true, notified: 0 });
+      console.log("[QUERY PROBE:", traceId, "] all workshopIds in collection:", probe.docs.map(d => ({ id: d.id, workshopId: d.data().workshopId, email: d.data().email })));
+      return res.json({ success: true, notified: 0, workshopIdReceived: workshopId, registrationsFound: 0, probeWorkshopIds: probe.docs.map(d => d.data().workshopId) });
     }
+    console.log("[FIRST DOC:", traceId, "]", JSON.stringify(snap.docs[0].data()));
 
     let notified = 0; const errors: string[] = [];
     for (const doc of snap.docs) {
@@ -467,7 +471,7 @@ async function handleSendConfirmationAll(req: VercelRequest, res: VercelResponse
         if (result.success) { notified++; await doc.ref.update({ confirmationSentAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
     }
-    return res.json({ success: true, notified, total: snap.docs.length, errors: errors.length > 0 ? errors : undefined });
+    return res.json({ success: true, notified, total: snap.docs.length, workshopIdReceived: workshopId, registrationsFound: snap.docs.length, registrationEmails: snap.docs.map(d => d.data().email), errors: errors.length > 0 ? errors : undefined });
   } catch (err: any) {
     return res.status(500).json(stepError("send_confirmation_all", err.message));
   }
@@ -722,13 +726,14 @@ const HANDLERS: Record<string, (req: VercelRequest, res: VercelResponse) => Prom
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Content-Type", "application/json");
-  console.log("[email] handler entry method=", req.method, "action=", req.body?.action || req.query?.action);
+  const action = req.body?.action || req.query?.action;
+  const workshopId = req.body?.workshopId || req.query?.workshopId;
+  console.log("[EMAIL REQUEST] action=", action, "workshopId=", workshopId);
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const action = req.body?.action || req.query?.action;
   const handlerFn = HANDLERS[action as string];
 
   if (!handlerFn) {
