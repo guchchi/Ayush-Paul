@@ -2,21 +2,96 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
-import { renderPurchaseConfirmation } from "./emails/PurchaseConfirmation";
-import { sendEmail } from "./lib/email";
 
-// Initialize Firebase Admin
-if (!admin.apps.length) {
+// ── Inlined helpers (no subdirectory imports) ──
+
+const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
+let resend: any = null;
+
+function initResend(): string | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return "RESEND_API_KEY not configured";
   try {
-    admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}')),
-    });
-  } catch (error) {
-    console.error("Firebase admin initialization error:", error);
+    const { Resend } = require("resend");
+    resend = new Resend(apiKey);
+    return null;
+  } catch (e: any) {
+    return `Resend init failed: ${e.message}`;
   }
 }
 
-const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
+async function sendEmail(to: string, subject: string, html: string): Promise<{ success: boolean; error?: string }> {
+  const initErr = initResend();
+  if (initErr) return { success: false, error: initErr };
+  try {
+    const response = await resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
+    console.log(`[stripe-webhook] Sent "${subject}" to ${to}:`, JSON.stringify(response));
+    return { success: true };
+  } catch (err: any) {
+    console.error(`[stripe-webhook] Failed "${subject}" to ${to}:`, err.message);
+    if (err.response) console.error("[stripe-webhook] Resend body:", JSON.stringify(err.response.data || err.response.body));
+    return { success: false, error: err.message };
+  }
+}
+
+function emailLayout(content: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#0A0A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0A0A0A;"><tr><td align="center" style="padding:40px 16px;">
+<table role="presentation" width="100%" style="max-width:560px;background-color:#111111;border-radius:12px;border:1px solid #333333;">
+<tr><td style="padding:28px 24px;background-color:#1a1a1a;border-top-left-radius:12px;border-top-right-radius:12px;border-bottom:1px solid #333333;text-align:center;">
+<h1 style="margin:0;font-size:20px;font-weight:700;color:#d1f34d;letter-spacing:1px;text-transform:uppercase;">AyushPaul.in</h1>
+<p style="margin:4px 0 0;font-size:11px;color:#666666;letter-spacing:2px;text-transform:uppercase;">Innovation Lab</p>
+</td></tr>
+<tr><td style="padding:32px 24px;">${content}</td></tr>
+<tr><td style="padding:20px 24px;border-top:1px solid #222222;text-align:center;">
+<p style="margin:0 0 8px;font-size:12px;color:#555555;">
+<a href="https://ayushpaul.in/vault" style="color:#00C2FF;text-decoration:none;">My Vault</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/blueprints" style="color:#00C2FF;text-decoration:none;">Blueprints</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/mastery" style="color:#00C2FF;text-decoration:none;">Mastery</a>
+</p>
+<p style="margin:0;font-size:11px;color:#444444;">Ayush Paul — Systems Builder &amp; Architect</p>
+</td></tr></table></td></tr></table></body></html>`;
+}
+
+function emailButton(text: string, url: string): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0;"><tr><td align="center">
+<a href="${url}" style="display:inline-block;padding:14px 32px;background-color:#d1f34d;color:#000000;font-size:14px;font-weight:700;text-decoration:none;border-radius:8px;letter-spacing:0.5px;">${text}</a>
+</td></tr></table>`;
+}
+
+function renderPurchaseConfirmation(props: { customerName: string; productName: string; amount: string; vaultUrl: string; downloadUrl?: string }): string {
+  return emailLayout(`
+    <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.customerName},</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your payment of <strong style="color:#ffffff;">${props.amount}</strong> has been successfully processed.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${props.productName}</strong> is now permanently unlocked in your digital vault.</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
+    <p style="margin:0 0 4px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">What you unlocked</p>
+    <p style="margin:0;font-size:18px;font-weight:700;color:#d1f34d;">${props.productName}</p>
+    </td></tr></table>
+    ${emailButton('Open Your Vault', props.vaultUrl)}
+    ${props.downloadUrl ? emailButton('Download Now', props.downloadUrl) : ''}
+    <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
+}
+
+// ── Firestore helper (lazy init, no module-level crash) ──
+
+function getDb() {
+  if (!admin.apps.length) {
+    try {
+      const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
+      if (!sa) throw new Error("FIREBASE_SERVICE_ACCOUNT env var not set");
+      admin.initializeApp({ credential: admin.credential.cert(JSON.parse(sa)) });
+      console.log("[stripe-webhook] Firebase admin initialized");
+    } catch (error: any) {
+      console.error("[stripe-webhook] Firebase init error:", error.message);
+    }
+  }
+  if (!admin.apps.length) throw new Error("Firebase app not available");
+  return getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
+}
 
 // Disable Vercel's default body parser so we can read the raw body for signature verification
 export const config = {
@@ -82,14 +157,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
       // 0. Idempotency Check: Verify if this session has already been processed
-      const purchaseQuery = await db.collection("purchases").where("stripeSessionId", "==", session.id).get();
+      const purchaseQuery = await getDb().collection("purchases").where("stripeSessionId", "==", session.id).get();
       if (!purchaseQuery.empty) {
         console.log(`[Idempotency] Webhook already processed for session: ${session.id}. Skipping.`);
         return res.status(200).json({ received: true, status: "already_processed" });
       }
 
       // 1. Grant product access — use field-path update to deep-merge ownedProducts map
-      const userRef = db.collection("users").doc(userId);
+      const userRef = getDb().collection("users").doc(userId);
       const existingSnap = await userRef.get();
       const currentOwned = existingSnap.exists ? (existingSnap.data()?.ownedProducts || {}) : {};
       currentOwned[productId] = "premium";
@@ -101,7 +176,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // 2. Record the purchase in a 'purchases' collection for analytics
       const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
-      await db.collection("purchases").add({
+      await getDb().collection("purchases").add({
         userId,
         productId,
         stripeSessionId: session.id,
@@ -118,11 +193,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const couponCode = session.metadata?.couponCode;
       console.log(`[Coupon] Processing coupon: ${couponCode || 'none'}`);
       if (couponCode) {
-        const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
+        const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
         if (!couponQuery.empty) {
           const couponDoc = couponQuery.docs[0];
           const before = couponDoc.data().usedCount || 0;
-          await db.collection('coupons').doc(couponDoc.id).update({
+          await getDb().collection('coupons').doc(couponDoc.id).update({
             usedCount: admin.firestore.FieldValue.increment(1),
             lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
             lastUsedBy: userId,
@@ -154,7 +229,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
           console.log(`[Creator] original=₹${originalPrice}, paid=₹${amountPaid}, discount=₹${discountApplied}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
 
-          const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+          const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
           if (!creatorQuery.empty) {
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
@@ -164,7 +239,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               console.warn(`[Creator] Webhook: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
             } else {
               // Log the sale
-              await db.collection('creator_sales_log').add({
+              await getDb().collection('creator_sales_log').add({
                 creatorCode: normalizedCreatorCode,
                 creatorName: creatorData.creatorName || 'Creator',
                 orderId: session.id,
@@ -181,7 +256,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               });
 
               // Update creator stats
-              await db.collection('creator_codes').doc(creatorDoc.id).update({
+              await getDb().collection('creator_codes').doc(creatorDoc.id).update({
                 totalSales: admin.firestore.FieldValue.increment(1),
                 totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
                 totalCommission: admin.firestore.FieldValue.increment(commission),
@@ -194,7 +269,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           } else {
             console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes (queried by code field)`);
             // Debug: log all existing creator codes
-            const allCreators = await db.collection('creator_codes').limit(10).get();
+            const allCreators = await getDb().collection('creator_codes').limit(10).get();
             console.log(`[Creator] Existing codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));
           }
         } catch (creatorError) {
@@ -203,7 +278,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // 2c. Record the public proof for the SocialProofTicker (safe, non-sensitive)
-      await db.collection("public_purchases").add({
+      await getDb().collection("public_purchases").add({
         productId,
         productTitle: session.metadata?.productTitle || '',
         currency: session.currency,
@@ -217,7 +292,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const customerEmail = session.customer_details?.email || userData?.email;
         const customerName = session.customer_details?.name || userData?.displayName || 'Innovator';
 
-        const productSnap = await db.collection("products").doc(productId).get();
+        const productSnap = await getDb().collection("products").doc(productId).get();
         const productData = productSnap.data();
 
         if (customerEmail && productData) {
@@ -233,11 +308,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             vaultUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/vault`,
           });
 
-          await sendEmail({
-            to: customerEmail,
-            subject: `Unlocked: ${productData.title}`,
-            html,
-          });
+          await sendEmail(customerEmail, `Unlocked: ${productData.title}`, html);
         }
       } catch (emailError) {
         console.error("Failed to send receipt email:", emailError);
