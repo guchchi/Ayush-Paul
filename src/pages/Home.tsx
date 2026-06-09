@@ -33,6 +33,94 @@ import { cn } from "../lib/utils";
 
 // --- Floating Product Cards Removed ---
 
+const HERO_VIDEO_SRC = '';
+
+const HeroVideo = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  const handlePlay = () => {
+    if (!HERO_VIDEO_SRC) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.play();
+    setPlaying(true);
+  };
+
+  const handlePause = () => {
+    setPlaying(false);
+  };
+
+  const handleVideoClick = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      handlePlay();
+    } else {
+      v.pause();
+    }
+  };
+
+  return (
+    <div className="relative w-full max-w-5xl mx-auto mb-16 aspect-video bg-black/20 rounded-3xl overflow-hidden shadow-2xl border border-white/20 group cursor-pointer">
+      {HERO_VIDEO_SRC ? (
+        <>
+          <video
+            ref={videoRef}
+            onPause={handlePause}
+            onEnded={handlePause}
+            onClick={handleVideoClick}
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover"
+          >
+            <source src={HERO_VIDEO_SRC} type="video/mp4" />
+          </video>
+          {!playing && (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+              <div onClick={handlePlay} className="absolute inset-0 flex items-center justify-center">
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-[#d1f34d] rounded-full flex items-center justify-center shadow-lg transform transition-all duration-300 hover:scale-110">
+                  <Play size={28} className="text-black ml-1 fill-current" />
+                </div>
+              </div>
+            </>
+          )}
+          {!playing && (
+            <div className="absolute bottom-6 left-8 text-white items-start flex flex-col text-left pointer-events-none">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#d1f34d] mb-1">WATCH OVERVIEW</p>
+              <h3 className="text-lg md:text-xl font-bold">See How The Ecosystem Works.</h3>
+            </div>
+          )}
+          {!playing && (
+            <div className="absolute bottom-6 right-8 text-white pointer-events-none">
+              <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                Tap to play
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0b1c30]/40 to-black/40">
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <Play size={24} className="text-white/30 ml-0.5" />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30">Video preview</p>
+            </div>
+          </div>
+          <div className="absolute bottom-6 left-8 text-white items-start flex flex-col text-left pointer-events-none">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#d1f34d] mb-1">WATCH OVERVIEW</p>
+            <h3 className="text-lg md:text-xl font-bold">See How The Ecosystem Works.</h3>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export const HomePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -459,33 +547,9 @@ export const HomePage = () => {
           </div>
 
           {/* Video Preview Container */}
-          <div className="relative w-full max-w-5xl mx-auto mb-16 aspect-video bg-black/20 rounded-3xl overflow-hidden shadow-2xl border border-white/20 group cursor-pointer">
-            {/* Video Thumbnail */}
-            <img 
-              alt="Tech Strategy Video" 
-              className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZbIUoIl6fYYGNCHnJKXylajrVUcft3cYg2kEi4bJUK3Y48pjCRVTmEIqcq9AlkDHmXMwLQwTnkeaFbApRGzdMh7FPolx9X_ShdlPysz6aCQTFzoMHCi5CahatnA-0AtxvUFsmbd3tW2UGgEQpqfZ7CVsdeChoIP_83n4QoVrPPq-um7qiXihWVo1uhqZmw_Q5MOFtCQbBl981uzV3zsg0tXtMOYDEM9Jn9qEGYGz_fQyQpyKBjjtDhpIu6PkomPHaMnlSZ9Vq114" 
-            />
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            {/* Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-[#d1f34d] rounded-full flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-110">
-                <Play size={28} className="text-black ml-1 fill-current" />
-              </div>
-            </div>
-            {/* Video Title/Duration Info (UI Decor) */}
-            <div className="absolute bottom-6 left-8 text-white items-start flex flex-col text-left">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#d1f34d] mb-1">WATCH OVERVIEW</p>
-              <h3 className="text-lg md:text-xl font-bold">See How The Ecosystem Works.</h3>
-            </div>
-            <div className="absolute bottom-6 right-8 text-white">
-              <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                02:45
-              </div>
-            </div>
-          </div>
+          <HeroVideo />
+
+          <div className="flex flex-col items-center gap-2.5 mt-auto relative z-20">
    
           <div className="flex flex-col items-center gap-2.5 mt-auto relative z-20">
             <p className="hero-footer-text text-xs md:text-sm font-semibold tracking-wider text-center max-w-2xl">

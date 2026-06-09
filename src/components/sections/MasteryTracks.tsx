@@ -96,11 +96,12 @@ export const MasteryTracks = ({
     try {
       await addDoc(collection(db, "course_waitlist"), {
         email: email.toLowerCase().trim(),
-        name: name.trim(),
+        name: name.trim() || '',
+        course: selectedCourse?.title || '',
         courseId: selectedCourse?.id,
-        courseTitle: selectedCourse?.title,
+        status: 'waitlist',
         createdAt: serverTimestamp(),
-        source: 'course_waitlist',
+        source: 'courses_section',
       });
       setWaitlistStatus('success');
       setEmail('');
@@ -213,11 +214,11 @@ export const MasteryTracks = ({
                     </span>
                   </div>
 
-                  {/* Waitlist Open Badge */}
-                  {course.status === 'COMING_SOON' && (
+                  {/* Coming Soon Badge */}
+                  {!isEnrolled && (
                     <div className="absolute top-4 right-4">
-                      <span className="px-2 py-0.5 rounded-full bg-[#e8f5e9] border border-[#a5d6a7] text-[#2e7d32] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                        <span className="w-1.5 h-1.5 bg-[#2e7d32] rounded-full" /> Waitlist Open
+                      <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                        <Sparkles size={9} /> Coming Soon
                       </span>
                     </div>
                   )}
@@ -245,7 +246,7 @@ export const MasteryTracks = ({
                     {course.description}
                   </p>
 
-                  {course.status === 'COMING_SOON' && (
+                  {!isEnrolled && (
                     <div className="my-3 flex items-center gap-1.5 text-[10px] font-semibold text-[#2e7d32]">
                       <span className="w-1 h-1 rounded-full bg-[#2e7d32]" />
                       <span>Priority early access — be first to enroll when this drops</span>
@@ -267,9 +268,9 @@ export const MasteryTracks = ({
                   {/* Footer Action Profile */}
                   <div className="mt-6 pt-4 border-t border-[#c2c6d6]/15 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[11px] font-extrabold text-[#0b1c30]">
-                      {course.status === 'COMING_SOON' ? (
-                        <span className="text-[#2e7d32] flex items-center gap-1">
-                          <Clock size={10} /> Early Access
+                      {!isEnrolled ? (
+                        <span className="text-[#f57f17] flex items-center gap-1">
+                          <Clock size={10} /> Coming Soon
                         </span>
                       ) : course.price && course.price > 0 ? (
                         <span>₹{course.price.toLocaleString('en-IN')}</span>
@@ -278,14 +279,7 @@ export const MasteryTracks = ({
                       )}
                     </div>
 
-                    {course.status === 'COMING_SOON' ? (
-                      <button
-                        onClick={() => handleWaitlistOpen(course)}
-                        className="inline-flex items-center gap-1 bg-[#2e7d32] text-white hover:bg-[#1b5e20] font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
-                      >
-                        <Mail size={11} /> Join Waitlist
-                      </button>
-                    ) : isEnrolled ? (
+                    {isEnrolled ? (
                       <button
                         onClick={() => onNavigateToCourse(course.id)}
                         className="inline-flex items-center gap-1 bg-[#0b1c30] text-white hover:bg-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
@@ -294,10 +288,10 @@ export const MasteryTracks = ({
                       </button>
                     ) : (
                       <button
-                        onClick={() => onEnroll(course.id)}
-                        className="bg-[#0b1c30] text-[#d1f34d] hover:bg-[#d1f34d] hover:text-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                        onClick={() => handleWaitlistOpen(course)}
+                        className="inline-flex items-center gap-1 bg-[#2e7d32] text-white hover:bg-[#1b5e20] font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
                       >
-                        Enroll Now
+                        <Mail size={11} /> Join Waitlist
                       </button>
                     )}
                   </div>
@@ -351,42 +345,42 @@ export const MasteryTracks = ({
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
                   <Mail size={18} className="text-[#d1f34d]" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Join Waitlist</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Early Access</span>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight mb-1">{selectedCourse.title}</h3>
+                  <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight mb-1">Get Early Access</h3>
                   <p className="text-xs text-[#424754] font-semibold leading-relaxed">
-                    {selectedCourse.description}
+                    Be the first to know when this course launches.
                   </p>
                 </div>
 
                 {waitlistStatus === 'success' ? (
-                  <div className="p-5 bg-[#e8f5e9] border border-[#a5d6a7] text-[#2e7d32] rounded-2xl space-y-2 animate-fadeIn">
+                  <div className="p-5 bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] rounded-2xl space-y-2 animate-fadeIn">
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 size={18} />
-                      <span className="font-extrabold text-sm">You're on the list!</span>
+                      <Sparkles size={18} />
+                      <span className="font-extrabold text-sm">You're on the waitlist 🎉</span>
                     </div>
-                    <p className="font-semibold text-[#2e7d32]/80 text-[11px] leading-relaxed">
-                      We will notify you at <strong>{email}</strong> when this course launches. Early access and exclusive pricing will be available to waitlist members first.
+                    <p className="font-semibold text-[#f57f17]/80 text-[11px] leading-relaxed">
+                      We'll notify you when this course launches.
                     </p>
                     <button
                       onClick={() => setSelectedCourse(null)}
-                      className="mt-3 w-full py-2.5 bg-[#2e7d32] hover:bg-[#1b5e20] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer border-none"
+                      className="mt-3 w-full py-2.5 bg-[#f57f17] hover:bg-[#e65100] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer border-none"
                     >
                       Got it
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleWaitlistSubmit} className="space-y-4">
-                    <div className="p-4 bg-[#f1f8e9] border border-[#dcedc8] rounded-2xl">
+                    <div className="p-4 bg-[#fff8e1] border border-[#ffe082] rounded-2xl">
                       <p className="text-[10px] text-[#424754] font-medium">
-                        Enter your details to join the priority waitlist. You will be among the first to know when this course launches.
+                        Enter your email to get early access updates for this course.
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name</label>
+                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Name <span className="text-[#424754]/40">(optional)</span></label>
                       <input
                         type="text"
                         placeholder="John Doe"
@@ -398,7 +392,7 @@ export const MasteryTracks = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email Address</label>
+                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email Address <span className="text-red-400">*</span></label>
                       <input
                         type="email"
                         placeholder="john@example.com"
@@ -428,7 +422,7 @@ export const MasteryTracks = ({
                       <button
                         type="submit"
                         disabled={waitlistStatus === 'loading'}
-                        className="flex-1 py-3 bg-[#2e7d32] hover:bg-[#1b5e20] text-white rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                        className="flex-1 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                       >
                         {waitlistStatus === 'loading' ? (
                           <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
