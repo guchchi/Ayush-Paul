@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { MessageSquare, Sparkles, CheckCircle2, Phone, Calendar, Clock, ArrowRight } from 'lucide-react';
 
-const ADMIN_WHATSAPP = '919999999999';
+const ADMIN_WHATSAPP = '7678688826';
 
 const TOPICS = [
   'AI & Automation',
