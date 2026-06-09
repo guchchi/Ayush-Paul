@@ -325,28 +325,29 @@ async function startServer() {
               if (creatorData.isActive === false) {
                 console.warn(`[Creator] Server: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
               } else {
-              await db.collection('creator_sales_log').add({
-                creatorCode: normalizedCreatorCode,
-                creatorName: creatorData.creatorName || 'Creator',
-                orderId: sessionId,
-                productId,
-                productTitle: session.metadata?.productTitle || '',
-                userId,
-                originalPrice,
-                paidAmount: amountPaid,
-                discountApplied,
-                commission,
-                commissionPercent,
-                currency: session.currency || 'inr',
-                timestamp: admin.firestore.FieldValue.serverTimestamp(),
-              });
-              await db.collection('creator_codes').doc(creatorDoc.id).update({
-                totalSales: admin.firestore.FieldValue.increment(1),
-                totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
-                totalCommission: admin.firestore.FieldValue.increment(commission),
-                totalCustomers: admin.firestore.FieldValue.increment(1),
-                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-              });
+                await db.collection('creator_sales_log').add({
+                  creatorCode: normalizedCreatorCode,
+                  creatorName: creatorData.creatorName || 'Creator',
+                  orderId: sessionId,
+                  productId,
+                  productTitle: session.metadata?.productTitle || '',
+                  userId,
+                  originalPrice,
+                  paidAmount: amountPaid,
+                  discountApplied,
+                  commission,
+                  commissionPercent,
+                  currency: session.currency || 'inr',
+                  timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                });
+                await db.collection('creator_codes').doc(creatorDoc.id).update({
+                  totalSales: admin.firestore.FieldValue.increment(1),
+                  totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+                  totalCommission: admin.firestore.FieldValue.increment(commission),
+                  totalCustomers: admin.firestore.FieldValue.increment(1),
+                  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                });
+              }
             } else {
               console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes`);
             }

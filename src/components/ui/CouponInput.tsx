@@ -10,15 +10,17 @@ export interface CouponResult {
   description?: string;
   error?: string;
   assignedToCreator?: string;
+  minPurchaseAmount?: number;
 }
 
 interface CouponInputProps {
   onValidated: (coupon: CouponResult | null) => void;
   disabled?: boolean;
   initialCoupon?: CouponResult | null;
+  productPrice?: number;
 }
 
-export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInputProps) {
+export function CouponInput({ onValidated, disabled, initialCoupon, productPrice }: CouponInputProps) {
   const [code, setCode] = useState(initialCoupon?.code || '');
   const [status, setStatus] = useState<'idle' | 'validating' | 'valid' | 'invalid'>(
     initialCoupon?.valid ? 'valid' : 'idle'
@@ -66,7 +68,7 @@ export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInpu
       const res = await fetch('/api/validate-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: trimmed }),
+        body: JSON.stringify({ code: trimmed, productPrice }),
       });
       const data: CouponResult = await res.json();
 

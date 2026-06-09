@@ -562,6 +562,7 @@ export const BlueprintDetailPage = () => {
                   onValidated={(coupon) => setAppliedCoupon(coupon)}
                   disabled={isCheckingOut}
                   initialCoupon={appliedCoupon}
+                  productPrice={product.salePrice || product.basePrice}
                 />
 
                 {/* Price breakdown with coupon */}

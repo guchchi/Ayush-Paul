@@ -804,7 +804,7 @@ export const LabDetailPage = () => {
                 {/* Coupon Input */}
                 {!profile?.ownedProducts?.[product.id] && (
                   <div className="mb-6">
-                    <CouponInput onValidated={setAppliedCoupon} disabled={isCheckingOut} initialCoupon={appliedCoupon} />
+                    <CouponInput onValidated={setAppliedCoupon} disabled={isCheckingOut} initialCoupon={appliedCoupon} productPrice={product.salePrice || product.basePrice} />
                   </div>
                 )}
 
