@@ -35,6 +35,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   const [streakMilestones, setStreakMilestones] = useState<any[]>([]);
   const [workshops, setWorkshops] = useState<any[]>([]);
   const [workshopRegistrations, setWorkshopRegistrations] = useState<any[]>([]);
+  const [mentorshipApplications, setMentorshipApplications] = useState<any[]>([]);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
     isQuotaExceeded: false,
     lastError: null,
@@ -280,6 +281,14 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       (error) => { handleFirestoreError(error, OperationType.GET, 'workshop_registrations'); }
     );
 
+    // Mentorship Applications listener
+    const qMentorshipApplications = query(collection(db, 'mentorship_applications'), orderBy('requestedAt', 'desc'));
+    const unsubscribeMentorshipApplications = onSnapshot(
+      qMentorshipApplications,
+      (snapshot) => { setMentorshipApplications(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'mentorship_applications'); }
+    );
+
     // Creator Affiliate listeners
     const qCreatorCodes = query(
       collection(db, "creator_codes"),
@@ -329,6 +338,7 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       unsubscribeStreakMilestones();
       unsubscribeWorkshops();
       unsubscribeWorkshopRegistrations();
+      unsubscribeMentorshipApplications();
     };
   }, []);
 
@@ -369,6 +379,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     setWorkshops,
     workshopRegistrations,
     setWorkshopRegistrations,
+    mentorshipApplications,
+    setMentorshipApplications,
     systemStatus,
     setSystemStatus,
     forceRefresh,

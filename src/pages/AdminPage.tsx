@@ -33,10 +33,12 @@ import {
   Percent,
   Tag,
   CalendarClock,
+  ChevronRight,
   Share2,
   Trophy,
   Video,
   ClipboardList,
+  MessageCircle,
 } from "lucide-react";
 import {
   auth,
@@ -89,6 +91,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     | "scheduled_emails"
     | "workshops"
     | "workshop_registrations"
+    | "mentorship"
   >("dashboard");
 
   const [showComposeModal, setShowComposeModal] = useState(false);
@@ -99,6 +102,21 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
   const [currentRecord, setCurrentRecord] = useState<any>(null);
   const [isAuditing, setIsAuditing] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string>('ALL');
+  const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
+
+  const handleMentorshipStatusUpdate = async (id: string, newStatus: string) => {
+    try {
+      await updateDoc(doc(db, 'mentorship_applications', id), {
+        status: newStatus,
+        updatedAt: serverTimestamp(),
+      });
+      addToast(`Request marked as ${newStatus}.`, 'success');
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, 'mentorship_applications');
+      addToast('Failed to update status.', 'error');
+    }
+  };
 
   const addToast = (message: string, type: Toast["type"] = "info", duration = 5000) => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -129,6 +147,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     streakMilestones,
     workshops,
     workshopRegistrations,
+    mentorshipApplications,
     systemStatus,
     setSystemStatus,
     forceRefresh,
@@ -169,6 +188,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         return workshops;
       case "workshop_registrations":
         return workshopRegistrations;
+      case "mentorship_applications":
+        return mentorshipApplications;
       default:
         return [];
     }
@@ -199,6 +220,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
       scheduled_emails: "scheduled_emails",
       workshops: "workshops",
       workshop_registrations: "workshop_registrations",
+      mentorship: "mentorship_applications",
     };
     const collectionName = schemaMap[activeTab];
     if (!collectionName) return;
@@ -415,6 +437,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     creators: "creator_codes",
     workshops: "workshops",
     workshop_registrations: "workshop_registrations",
+    mentorship: "mentorship_applications",
   };
   const currentSchemaName = schemaMap[activeTab];
   const currentSchema = currentSchemaName ? CMS_SCHEMAS[currentSchemaName] : null;
@@ -476,6 +499,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               { id: "scheduled_emails", label: "Email Queue", icon: <CalendarClock size={16} /> },
               { id: "workshops", label: "Workshops", icon: <Video size={16} /> },
               { id: "workshop_registrations", label: "Workshop Regs", icon: <ClipboardList size={16} /> },
+              { id: "mentorship", label: "1-on-1 Sessions", icon: <MessageCircle size={16} /> },
               { id: "users", label: "Users Registry", icon: <Users size={16} /> },
               { id: "purchases", label: "Orders Ledger", icon: <ShoppingCart size={16} /> },
             ].map((tab) => (
@@ -1026,6 +1050,161 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                   onDelete={handleDelete}
                   onCreateNew={undefined}
                 />
+              </div>
+            )}
+
+            {/* Mentorship / 1-on-1 Session Requests tab */}
+            {activeTab === "mentorship" && (
+              <div className="space-y-6">
+                <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+                  <div className="flex items-center justify-between gap-6 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+                        <MessageCircle size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">1-on-1 Session Requests</h3>
+                        <p className="text-white/40 text-xs">{mentorshipApplications.length} total request(s)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status Filter Pills */}
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {["ALL", "PENDING", "APPROVED", "PAID", "CONFIRMED", "REJECTED"].map((s) => {
+                      const count = s === "ALL" ? mentorshipApplications.length : mentorshipApplications.filter((r: any) => r.status === s).length;
+                      return (
+                        <button
+                          key={s}
+                          onClick={() => setStatusFilter(s)}
+                          className={cn(
+                            "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all",
+                            statusFilter === s
+                              ? "bg-white text-black"
+                              : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white"
+                          )}
+                        >
+                          {s === "ALL" ? "All" : s} ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Requests List */}
+                <div className="space-y-4">
+                  {(statusFilter === "ALL"
+                    ? mentorshipApplications
+                    : mentorshipApplications.filter((r: any) => r.status === statusFilter)
+                  ).length === 0 ? (
+                    <div className="bg-white/5 p-12 rounded-[2.5rem] border border-white/10 text-center">
+                      <p className="text-white/30 text-sm">No requests found.</p>
+                    </div>
+                  ) : (
+                    (statusFilter === "ALL"
+                      ? mentorshipApplications
+                      : mentorshipApplications.filter((r: any) => r.status === statusFilter)
+                    ).map((req: any) => {
+                      const statusColors: Record<string, string> = {
+                        PENDING: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+                        APPROVED: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+                        PAID: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+                        CONFIRMED: "bg-green-500/20 text-green-400 border-green-500/30",
+                        REJECTED: "bg-red-500/20 text-red-400 border-red-500/30",
+                      };
+                      const isExpanded = expandedRequestId === req.id;
+                      return (
+                        <div
+                          key={req.id}
+                          className="bg-white/5 rounded-[2rem] border border-white/10 overflow-hidden transition-all"
+                        >
+                          <button
+                            onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
+                            className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors cursor-pointer border-none bg-transparent"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold text-sm">
+                                {req.name?.charAt(0)?.toUpperCase() || '?'}
+                              </div>
+                              <div>
+                                <p className="font-bold text-white text-sm">{req.name}</p>
+                                <p className="text-white/40 text-xs mt-0.5">{req.topic || 'No topic'} — {req.contact}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className={cn("px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border", statusColors[req.status] || "bg-white/5 text-white/40")}>
+                                {req.status || 'PENDING'}
+                              </span>
+                              <ChevronRight size={16} className={cn("text-white/30 transition-transform", isExpanded && "rotate-90")} />
+                            </div>
+                          </button>
+
+                          {isExpanded && (
+                            <div className="px-6 pb-6 pt-2 border-t border-white/5">
+                              <div className="grid grid-cols-2 gap-4 mb-6">
+                                <div>
+                                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Contact</p>
+                                  <p className="text-sm text-white font-medium">{req.contact}</p>
+                                </div>
+                                <div>
+                                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Topic</p>
+                                  <p className="text-sm text-white font-medium">{req.topic || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Preferred Date</p>
+                                  <p className="text-sm text-white font-medium">{req.preferredDate || '—'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Preferred Time</p>
+                                  <p className="text-sm text-white font-medium">{req.preferredTime || '—'} {req.timezone ? `(${req.timezone})` : ''}</p>
+                                </div>
+                              </div>
+
+                              {req.description && (
+                                <div className="mb-6">
+                                  <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1">Problem Description</p>
+                                  <p className="text-sm text-white/70 leading-relaxed bg-white/[0.03] p-4 rounded-2xl border border-white/5">{req.description}</p>
+                                </div>
+                              )}
+
+                              {/* Status action buttons */}
+                              <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+                                {req.status === 'PENDING' && (
+                                  <>
+                                    <button onClick={() => handleMentorshipStatusUpdate(req.id, 'APPROVED')} className="px-5 py-2.5 rounded-xl bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer">
+                                      <CheckCircle2 size={12} className="inline mr-1.5" /> Approve
+                                    </button>
+                                    <button onClick={() => handleMentorshipStatusUpdate(req.id, 'REJECTED')} className="px-5 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer">
+                                      <X size={12} className="inline mr-1.5" /> Reject
+                                    </button>
+                                  </>
+                                )}
+                                {req.status === 'APPROVED' && (
+                                  <button onClick={() => handleMentorshipStatusUpdate(req.id, 'PAID')} className="px-5 py-2.5 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer">
+                                    <DollarSign size={12} className="inline mr-1.5" /> Mark as Paid
+                                  </button>
+                                )}
+                                {req.status === 'PAID' && (
+                                  <button onClick={() => handleMentorshipStatusUpdate(req.id, 'CONFIRMED')} className="px-5 py-2.5 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer">
+                                    <CheckCircle2 size={12} className="inline mr-1.5" /> Confirm Session
+                                  </button>
+                                )}
+                                {(req.status === 'PENDING' || req.status === 'APPROVED' || req.status === 'PAID') && (
+                                  <button onClick={() => handleMentorshipStatusUpdate(req.id, 'REJECTED')} className="px-5 py-2.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer">
+                                    <X size={12} className="inline mr-1.5" /> Reject
+                                  </button>
+                                )}
+                                <button onClick={() => handleDelete(req.id, 'mentorship_applications')} className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:bg-red-500/20 hover:text-red-400 font-bold text-[10px] uppercase tracking-wider transition-all cursor-pointer ml-auto">
+                                  <Trash2 size={12} className="inline mr-1.5" /> Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
             )}
 

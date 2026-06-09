@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, Sparkles, CheckCircle2, ChevronRight, MessageSquare, Send, Clock, Calendar, Globe } from 'lucide-react';
-import { MagneticButton } from '../ui/MagneticButton';
-import { db, collection, addDoc, serverTimestamp } from '../../firebase';
+import { MessageSquare, Sparkles, CheckCircle2, Phone, Calendar, Clock, ArrowRight } from 'lucide-react';
+
+const ADMIN_WHATSAPP = '919999999999';
 
 const TOPICS = [
   'AI & Automation',
@@ -21,106 +21,70 @@ const TOPICS = [
 ];
 
 const TIME_SLOTS = [
-  '9:00 AM — 10:00 AM',
-  '10:00 AM — 11:00 AM',
-  '11:00 AM — 12:00 PM',
-  '12:00 PM — 1:00 PM',
-  '2:00 PM — 3:00 PM',
-  '3:00 PM — 4:00 PM',
-  '4:00 PM — 5:00 PM',
-  '5:00 PM — 6:00 PM',
-  '6:00 PM — 7:00 PM',
-  '7:00 PM — 8:00 PM',
-  '8:00 PM — 9:00 PM',
+  '9:00 AM - 10:00 AM',
+  '10:00 AM - 11:00 AM',
+  '11:00 AM - 12:00 PM',
+  '12:00 PM - 1:00 PM',
+  '2:00 PM - 3:00 PM',
+  '3:00 PM - 4:00 PM',
+  '4:00 PM - 5:00 PM',
+  '5:00 PM - 6:00 PM',
+  '6:00 PM - 7:00 PM',
+  '7:00 PM - 8:00 PM',
+  '8:00 PM - 9:00 PM',
 ];
 
 export const MasteryMentorship = () => {
   const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
-  const [topic, setTopic] = useState('AI & Automation');
+  const [phone, setPhone] = useState('');
+  const [topic, setTopic] = useState(TOPICS[0]);
   const [description, setDescription] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTime, setPreferredTime] = useState(TIME_SLOTS[0]);
-  const [timezone, setTimezone] = useState('IST (UTC+5:30)');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleBookingSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !contact || !preferredDate) {
-      setError('Please fill out all required fields.');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-
-      const docRef = await addDoc(collection(db, 'mentorship_applications'), {
-        name,
-        contact,
-        topic,
-        description,
-        preferredDate,
-        preferredTime,
-        timezone,
-        source: 'one_on_one_session_request',
-        requestedAt: serverTimestamp(),
-        status: 'PENDING',
-        statusHistory: [],
-      });
-
-      // Fire-and-forget admin notification
-      try {
-        await fetch('/api/mentorship-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            contact,
-            topic,
-            description,
-            preferredDate,
-            preferredTime,
-            timezone,
-            requestId: docRef.id,
-          }),
-        });
-      } catch (_) {}
-
-      setSuccess(true);
-      setName('');
-      setContact('');
-      setTopic('AI & Automation');
-      setDescription('');
-      setPreferredDate('');
-      setPreferredTime(TIME_SLOTS[0]);
-      setTimezone('IST (UTC+5:30)');
-    } catch (err) {
-      console.error('Failed to submit session request:', err);
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const buildWhatsAppMessage = () => {
+    const lines = [
+      '🚀 New 1:1 Session Request (AyushPaul.in)',
+      '',
+      `👤 Name: ${name}`,
+      `📱 Contact: ${phone || 'Not provided'}`,
+      '',
+      `🎯 Topic: ${topic}`,
+      '',
+      '📝 Problem:',
+      description || 'Not specified',
+      '',
+      `📅 Preferred Date: ${preferredDate}`,
+      `⏰ Preferred Time: ${preferredTime}`,
+      '',
+      '👉 Please confirm availability & next steps.',
+    ];
+    return lines.join('\n');
   };
 
-  const benefits = [
-    { title: 'Private Classes', desc: '1-on-1 focused live sessions structured entirely around your learning pace and goals.' },
-    { title: 'Live Doubt Solving', desc: 'Address specific system bugs, config issues, and logic errors in real time during sessions.' },
-    { title: 'Custom Curriculum', desc: 'Your course, your pace. Choose any available track and learn through a curriculum designed for you.' },
-    { title: 'Homework Reviews', desc: 'Practical exercises reviewed in detail to strengthen code structures, automation frameworks, and system architectures.' },
-    { title: 'Flexible Scheduling', desc: 'Request sessions at times that suit you — I manually confirm each slot to avoid conflicts.' }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !topic || !description || !preferredDate || !preferredTime) return;
+
+    const message = buildWhatsAppMessage();
+    const encoded = encodeURIComponent(message);
+    const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encoded}`;
+    window.open(url, '_blank');
+  };
+
+  const sessionFeatures = [
+    { icon: <MessageSquare size={16} />, text: 'WhatsApp-based live consultation' },
+    { icon: <Sparkles size={16} />, text: 'Custom roadmap guidance' },
+    { icon: <CheckCircle2 size={16} />, text: 'Fast response within 24 hours' },
   ];
 
   return (
-    <section 
+    <section
       className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20 scroll-mt-24"
       id="learn-directly-with-ayush"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        
-        {/* LEFT COLUMN: 1-on-1 Learning Details */}
+        {/* LEFT COLUMN: Session info + description */}
         <div className="lg:col-span-7 text-left space-y-8">
           <div>
             <motion.div
@@ -152,34 +116,35 @@ export const MasteryMentorship = () => {
               transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-[#424754] text-base leading-relaxed font-medium max-w-xl"
             >
-              Choose any available course and learn it through private 1-on-1 sessions — with custom guidance, assignments, and live doubt solving tailored to your skill level and goals.
+              Personalized 1-on-1 guidance for growth, projects, or career — delivered directly on WhatsApp. Share your context, and we will craft a custom roadmap together.
             </motion.p>
           </div>
 
-          {/* Benefits List */}
-          <div className="space-y-6">
-            {benefits.map((benefit, i) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="flex gap-4 items-start"
-              >
-                <div className="w-6 h-6 rounded-lg bg-[#d1f34d]/10 border border-[#d1f34d]/20 text-[#d1f34d] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                  <Sparkles size={11} />
+          {/* Session Features Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.45, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
+            className="p-6 bg-white border border-[#c2c6d6]/30 rounded-[24px] shadow-sm"
+          >
+            <h3 className="text-base font-extrabold text-[#0b1c30] tracking-tight mb-4">
+              1:1 Mentorship Session
+            </h3>
+            <div className="space-y-3">
+              {sessionFeatures.map((f, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center text-[#d1f34d] shrink-0">
+                    {f.icon}
+                  </div>
+                  <span className="text-xs font-semibold text-[#424754]">{f.text}</span>
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-extrabold text-[#0b1c30] tracking-tight">{benefit.title}</h4>
-                  <p className="text-xs text-[#424754] leading-relaxed font-semibold">{benefit.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
-        {/* RIGHT COLUMN: Booking request card */}
+        {/* RIGHT COLUMN: WhatsApp Request Form */}
         <div className="lg:col-span-5 w-full">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -192,121 +157,95 @@ export const MasteryMentorship = () => {
             <div className="absolute -top-16 -left-16 w-36 h-36 bg-[#d1f34d]/10 rounded-full filter blur-[40px] pointer-events-none" />
 
             <div className="flex items-center gap-2 mb-6">
-              <Users size={16} className="text-[#d1f34d]" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Private Learning</span>
+              <MessageSquare size={16} className="text-[#d1f34d]" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">WhatsApp Session</span>
             </div>
 
             <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight mb-2">
               Request a 1-on-1 Session
             </h3>
             <p className="text-xs text-[#424754] font-semibold leading-relaxed mb-6">
-              Tell me what you want to work on. I review every request personally and confirm your slot manually — no bots, no auto-booking.
+              Fill out the form below and we will open WhatsApp with a pre-filled message. Send it and we will take it from there.
             </p>
 
-            {/* Pricing area */}
-            <div className="p-4 bg-[#d1f34d]/10 border border-[#d1f34d]/20 rounded-2xl mb-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[9px] font-extrabold uppercase tracking-widest text-[#d1f34d] mb-0.5">Starting from</p>
-                  <p className="text-xl font-extrabold text-[#0b1c30] tracking-tight">₹2,499<span className="text-xs font-bold text-[#424754]/60 ml-1">/session</span></p>
-                </div>
-                <div className="px-2.5 py-1 rounded-full bg-white border border-[#d1f34d]/20 text-[10px] font-extrabold text-[#d1f34d]">
-                  Manual Confirmation
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name <span className="text-red-400">*</span></label>
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold transition-colors"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">WhatsApp Number <span className="text-[#424754]/40">(optional)</span></label>
+                <div className="relative">
+                  <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#424754]/30" />
+                  <input
+                    type="tel"
+                    placeholder="+91 9XXXXXXXXX"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold transition-colors"
+                  />
                 </div>
               </div>
-              <p className="text-[9px] text-[#424754] font-semibold mt-2 leading-relaxed">
-                Payment is collected only after I confirm availability — no upfront charges.
-              </p>
-            </div>
 
-            {success ? (
-              <div className="p-5 bg-[#d1f34d]/10 border border-[#d1f34d]/20 text-[#d1f34d] rounded-2xl space-y-3 text-xs font-bold animate-fadeIn">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={16} />
-                  <span>Request Submitted Successfully!</span>
-                </div>
-                <p className="font-semibold text-[#d1f34d]/80 text-[11px] leading-relaxed">
-                  Thanks for your interest in private 1-on-1 sessions. I will review your request and confirm your slot manually via email/WhatsApp within 24 hours.
-                </p>
-                <p className="font-semibold text-[#d1f34d]/60 text-[10px] leading-relaxed pt-1 border-t border-[#d1f34d]/10">
-                  No automatic booking — every request is personally reviewed to ensure the best fit for your goals.
-                </p>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Topic <span className="text-red-400">*</span></label>
+                <select
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  required
+                  className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold transition-colors"
+                >
+                  {TOPICS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
               </div>
-            ) : (
-              <form onSubmit={handleBookingSubmit} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name <span className="text-red-400">*</span></label>
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
-                  />
-                </div>
 
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email or WhatsApp <span className="text-red-400">*</span></label>
-                  <input
-                    type="text"
-                    placeholder="you@domain.com or +91 9XXXXXXXXX"
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
-                  />
-                </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Problem Description <span className="text-red-400">*</span></label>
+                <textarea
+                  placeholder="What specific problem or goal would you like help with?"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={3}
+                  className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-2xl focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold resize-none transition-colors"
+                />
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Topic of Session <span className="text-red-400">*</span></label>
-                  <select
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    disabled={loading}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
-                  >
-                    {TOPICS.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Short Problem Description</label>
-                  <textarea
-                    placeholder="What specific problem or goal would you like help with during the session?"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    disabled={loading}
-                    rows={2}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-2xl focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold resize-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Date <span className="text-red-400">*</span></label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Date <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <Calendar size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#424754]/30 pointer-events-none" />
                     <input
                       type="date"
                       value={preferredDate}
                       onChange={(e) => setPreferredDate(e.target.value)}
                       required
-                      disabled={loading}
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                      className="w-full pl-9 pr-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold transition-colors"
                     />
                   </div>
+                </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Time <span className="text-red-400">*</span></label>
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Time <span className="text-red-400">*</span></label>
+                  <div className="relative">
+                    <Clock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#424754]/30 pointer-events-none z-10" />
                     <select
                       value={preferredTime}
                       onChange={(e) => setPreferredTime(e.target.value)}
-                      disabled={loading}
-                      className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                      required
+                      className="w-full pl-9 pr-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold transition-colors"
                     >
                       {TIME_SLOTS.map((t) => (
                         <option key={t} value={t}>{t}</option>
@@ -314,46 +253,37 @@ export const MasteryMentorship = () => {
                     </select>
                   </div>
                 </div>
+              </div>
 
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Time Zone</label>
-                  <select
-                    value={timezone}
-                    onChange={(e) => setTimezone(e.target.value)}
-                    disabled={loading}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
-                  >
-                    <option value="IST (UTC+5:30)">IST (UTC+5:30)</option>
-                    <option value="EST (UTC-5:00)">EST (UTC-5:00)</option>
-                    <option value="PST (UTC-8:00)">PST (UTC-8:00)</option>
-                    <option value="GMT (UTC+0:00)">GMT (UTC+0:00)</option>
-                    <option value="CET (UTC+1:00)">CET (UTC+1:00)</option>
-                    <option value="GST (UTC+4:00)">GST (UTC+4:00)</option>
-                    <option value="SGT (UTC+8:00)">SGT (UTC+8:00)</option>
-                    <option value="AEDT (UTC+11:00)">AEDT (UTC+11:00)</option>
-                    <option value="Other">Other</option>
-                  </select>
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  className="w-full py-3.5 bg-[#075e54] hover:bg-[#064a43] text-white rounded-full font-bold text-[11px] uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-md hover:shadow-lg hover:shadow-[#075e54]/20 hover:-translate-y-0.5 border-none"
+                >
+                  <MessageSquare size={15} />
+                  Request Session on WhatsApp
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              {/* Trust microcopy */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center gap-2 text-[10px] font-semibold text-[#424754]/60">
+                  <CheckCircle2 size={11} className="text-[#2e7d32]" />
+                  <span>We respond within 24 hours</span>
                 </div>
-
-                {error && <p className="text-[9px] font-bold text-red-600">{error}</p>}
-
-                <div className="pt-2">
-                  <MagneticButton>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-3.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md border-none"
-                    >
-                      {loading ? 'Submitting...' : 'Request Session'}
-                      <Send size={11} />
-                    </button>
-                  </MagneticButton>
+                <div className="flex items-center gap-2 text-[10px] font-semibold text-[#424754]/60">
+                  <CheckCircle2 size={11} className="text-[#2e7d32]" />
+                  <span>Limited weekly slots available</span>
                 </div>
-              </form>
-            )}
+                <div className="flex items-center gap-2 text-[10px] font-semibold text-[#424754]/60">
+                  <CheckCircle2 size={11} className="text-[#2e7d32]" />
+                  <span>Session confirmed after discussion</span>
+                </div>
+              </div>
+            </form>
           </motion.div>
         </div>
-
       </div>
     </section>
   );
