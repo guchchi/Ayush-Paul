@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { BookOpen, ShieldCheck, PlayCircle, Clock, BookOpenCheck, DollarSign, Lock, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { BookOpen, ShieldCheck, PlayCircle, Clock, BookOpenCheck, DollarSign, Lock, Sparkles, Mail, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
+import { db, collection, addDoc, serverTimestamp } from '../../firebase';
 import { cn } from '../../lib/utils';
 
 export interface Course {
@@ -69,6 +70,47 @@ export const MasteryTracks = ({
   loading,
   activeCategory,
 }: MasteryTracksProps) => {
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [waitlistError, setWaitlistError] = useState('');
+
+  const handleWaitlistOpen = (course: Course) => {
+    setSelectedCourse(course);
+    setEmail('');
+    setName('');
+    setWaitlistStatus('idle');
+    setWaitlistError('');
+  };
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      setWaitlistStatus('error');
+      setWaitlistError('Please enter a valid email.');
+      return;
+    }
+    setWaitlistStatus('loading');
+    setWaitlistError('');
+    try {
+      await addDoc(collection(db, "course_waitlist"), {
+        email: email.toLowerCase().trim(),
+        name: name.trim(),
+        courseId: selectedCourse?.id,
+        courseTitle: selectedCourse?.title,
+        createdAt: serverTimestamp(),
+        source: 'course_waitlist',
+      });
+      setWaitlistStatus('success');
+      setEmail('');
+      setName('');
+    } catch (err: any) {
+      setWaitlistStatus('error');
+      setWaitlistError(err.message || 'Something went wrong. Please try again.');
+    }
+  };
+
   // Filter courses by selected category pill
   const filteredList = courses.filter(c => {
     if (!activeCategory || activeCategory === 'all') return true;
@@ -171,11 +213,11 @@ export const MasteryTracks = ({
                     </span>
                   </div>
 
-                  {/* Coming Soon Badge */}
+                  {/* Waitlist Open Badge */}
                   {course.status === 'COMING_SOON' && (
                     <div className="absolute top-4 right-4">
-                      <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                        <Sparkles size={9} /> Coming Soon
+                      <span className="px-2 py-0.5 rounded-full bg-[#e8f5e9] border border-[#a5d6a7] text-[#2e7d32] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                        <span className="w-1.5 h-1.5 bg-[#2e7d32] rounded-full" /> Waitlist Open
                       </span>
                     </div>
                   )}
@@ -199,9 +241,16 @@ export const MasteryTracks = ({
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-[#424754] leading-relaxed font-semibold mb-6 line-clamp-3">
+                  <p className="text-xs text-[#424754] leading-relaxed font-semibold line-clamp-3">
                     {course.description}
                   </p>
+
+                  {course.status === 'COMING_SOON' && (
+                    <div className="my-3 flex items-center gap-1.5 text-[10px] font-semibold text-[#2e7d32]">
+                      <span className="w-1 h-1 rounded-full bg-[#2e7d32]" />
+                      <span>Priority early access — be first to enroll when this drops</span>
+                    </div>
+                  )}
 
                   {/* Meta stats row */}
                   <div className="grid grid-cols-2 gap-4 border-t border-[#c2c6d6]/10 pt-4 mt-auto">
@@ -219,8 +268,8 @@ export const MasteryTracks = ({
                   <div className="mt-6 pt-4 border-t border-[#c2c6d6]/15 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[11px] font-extrabold text-[#0b1c30]">
                       {course.status === 'COMING_SOON' ? (
-                        <span className="text-[#f57f17] flex items-center gap-1">
-                          <Lock size={10} /> Unlock Soon
+                        <span className="text-[#2e7d32] flex items-center gap-1">
+                          <Clock size={10} /> Early Access
                         </span>
                       ) : course.price && course.price > 0 ? (
                         <span>₹{course.price.toLocaleString('en-IN')}</span>
@@ -231,10 +280,10 @@ export const MasteryTracks = ({
 
                     {course.status === 'COMING_SOON' ? (
                       <button
-                        onClick={() => onNavigateToCourse(course.id)}
-                        className="inline-flex items-center gap-1 bg-[#0b1c30]/60 text-white font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                        onClick={() => handleWaitlistOpen(course)}
+                        className="inline-flex items-center gap-1 bg-[#2e7d32] text-white hover:bg-[#1b5e20] font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
                       >
-                        <Sparkles size={11} /> Preview
+                        <Mail size={11} /> Join Waitlist
                       </button>
                     ) : isEnrolled ? (
                       <button
@@ -270,16 +319,131 @@ export const MasteryTracks = ({
             <div className="w-16 h-16 rounded-2xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center text-[#d1f34d] mb-6">
               <BookOpen size={28} />
             </div>
-            <h3 className="text-2xl font-extrabold text-[#0b1c30] tracking-tight mb-2">Courses in Production</h3>
+            <h3 className="text-2xl font-extrabold text-[#0b1c30] tracking-tight mb-2">Waitlist Open — Courses Loading</h3>
             <p className="text-sm text-[#424754] font-medium leading-relaxed mb-8 max-w-sm">
-              Self-paced courses are being built and tested. They will cover AI workflows, robotics fundamentals, design systems, SEO architecture, and more. Join the waitlist to be notified when the first track launches.
+              Self-paced courses are being built and tested. They will cover AI workflows, robotics fundamentals, design systems, SEO architecture, and more. Join the waitlist to be the first to know when tracks launch.
             </p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/40">
-              First courses launching soon
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#2e7d32]">
+              Early access available now
             </p>
           </div>
         </motion.div>
       )}
+
+      {/* Waitlist Modal */}
+      <AnimatePresence>
+        {selectedCourse && (
+          <div className="fixed inset-0 bg-[#0b1c30]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25 }}
+              className="bg-white border border-[#c2c6d6]/35 rounded-[32px] p-8 max-w-md w-full relative shadow-xl text-left"
+            >
+              <button
+                onClick={() => setSelectedCourse(null)}
+                className="absolute top-6 right-6 text-[#424754]/60 hover:text-black cursor-pointer border-none bg-transparent font-extrabold text-sm"
+              >
+                ✕
+              </button>
+
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <Mail size={18} className="text-[#d1f34d]" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/70">Join Waitlist</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight mb-1">{selectedCourse.title}</h3>
+                  <p className="text-xs text-[#424754] font-semibold leading-relaxed">
+                    {selectedCourse.description}
+                  </p>
+                </div>
+
+                {waitlistStatus === 'success' ? (
+                  <div className="p-5 bg-[#e8f5e9] border border-[#a5d6a7] text-[#2e7d32] rounded-2xl space-y-2 animate-fadeIn">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={18} />
+                      <span className="font-extrabold text-sm">You're on the list!</span>
+                    </div>
+                    <p className="font-semibold text-[#2e7d32]/80 text-[11px] leading-relaxed">
+                      We will notify you at <strong>{email}</strong> when this course launches. Early access and exclusive pricing will be available to waitlist members first.
+                    </p>
+                    <button
+                      onClick={() => setSelectedCourse(null)}
+                      className="mt-3 w-full py-2.5 bg-[#2e7d32] hover:bg-[#1b5e20] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer border-none"
+                    >
+                      Got it
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleWaitlistSubmit} className="space-y-4">
+                    <div className="p-4 bg-[#f1f8e9] border border-[#dcedc8] rounded-2xl">
+                      <p className="text-[10px] text-[#424754] font-medium">
+                        Enter your details to join the priority waitlist. You will be among the first to know when this course launches.
+                      </p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        disabled={waitlistStatus === 'loading'}
+                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email Address</label>
+                      <input
+                        type="email"
+                        placeholder="john@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={waitlistStatus === 'loading'}
+                        className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                      />
+                    </div>
+
+                    {waitlistStatus === 'error' && (
+                      <div className="flex items-center gap-2 text-[10px] text-red-600 font-bold uppercase tracking-widest">
+                        <AlertCircle size={12} />
+                        {waitlistError}
+                      </div>
+                    )}
+
+                    <div className="pt-2 flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCourse(null)}
+                        className="flex-1 py-3 border border-[#c2c6d6]/30 text-[#424754] hover:bg-gray-50 rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={waitlistStatus === 'loading'}
+                        className="flex-1 py-3 bg-[#2e7d32] hover:bg-[#1b5e20] text-white rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md flex items-center justify-center gap-1.5"
+                      >
+                        {waitlistStatus === 'loading' ? (
+                          <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <><Mail size={12} /> Join Waitlist</>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

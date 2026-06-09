@@ -1,23 +1,55 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, Sparkles, CheckCircle2, ChevronRight, MessageSquare, Send } from 'lucide-react';
+import { Users, Sparkles, CheckCircle2, ChevronRight, MessageSquare, Send, Clock, Calendar, Globe } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
 import { db, collection, addDoc, serverTimestamp } from '../../firebase';
 
+const TOPICS = [
+  'AI & Automation',
+  'Robotics',
+  'Web Development',
+  'UI/UX Design',
+  'Typography',
+  'Color Theory',
+  'SEO',
+  'Personal Branding',
+  'Entrepreneurship',
+  'Digital Products',
+  'System Architecture',
+  'Career Strategy',
+  'Other',
+];
+
+const TIME_SLOTS = [
+  '9:00 AM — 10:00 AM',
+  '10:00 AM — 11:00 AM',
+  '11:00 AM — 12:00 PM',
+  '12:00 PM — 1:00 PM',
+  '2:00 PM — 3:00 PM',
+  '3:00 PM — 4:00 PM',
+  '4:00 PM — 5:00 PM',
+  '5:00 PM — 6:00 PM',
+  '6:00 PM — 7:00 PM',
+  '7:00 PM — 8:00 PM',
+  '8:00 PM — 9:00 PM',
+];
+
 export const MasteryMentorship = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [skillFocus, setSkillFocus] = useState('AI & Automation');
-  const [currentLevel, setCurrentLevel] = useState('Beginner');
-  const [goals, setGoals] = useState('');
+  const [contact, setContact] = useState('');
+  const [topic, setTopic] = useState('AI & Automation');
+  const [description, setDescription] = useState('');
+  const [preferredDate, setPreferredDate] = useState('');
+  const [preferredTime, setPreferredTime] = useState(TIME_SLOTS[0]);
+  const [timezone, setTimezone] = useState('IST (UTC+5:30)');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) {
-      setError('Please fill out all fields.');
+    if (!name || !contact || !preferredDate) {
+      setError('Please fill out all required fields.');
       return;
     }
 
@@ -25,24 +57,48 @@ export const MasteryMentorship = () => {
       setLoading(true);
       setError('');
 
-      await addDoc(collection(db, 'mentorship_applications'), {
+      const docRef = await addDoc(collection(db, 'mentorship_applications'), {
         name,
-        email,
-        skillFocus,
-        currentLevel,
-        goals,
-        source: 'one_on_one_learning_form',
+        contact,
+        topic,
+        description,
+        preferredDate,
+        preferredTime,
+        timezone,
+        source: 'one_on_one_session_request',
         requestedAt: serverTimestamp(),
-        status: 'pending'
+        status: 'PENDING',
+        statusHistory: [],
       });
+
+      // Fire-and-forget admin notification
+      try {
+        await fetch('/api/mentorship-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            contact,
+            topic,
+            description,
+            preferredDate,
+            preferredTime,
+            timezone,
+            requestId: docRef.id,
+          }),
+        });
+      } catch (_) {}
 
       setSuccess(true);
       setName('');
-      setEmail('');
-      setCurrentLevel('Beginner');
-      setGoals('');
+      setContact('');
+      setTopic('AI & Automation');
+      setDescription('');
+      setPreferredDate('');
+      setPreferredTime(TIME_SLOTS[0]);
+      setTimezone('IST (UTC+5:30)');
     } catch (err) {
-      console.error('Failed to submit booking request:', err);
+      console.error('Failed to submit session request:', err);
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -54,7 +110,7 @@ export const MasteryMentorship = () => {
     { title: 'Live Doubt Solving', desc: 'Address specific system bugs, config issues, and logic errors in real time during sessions.' },
     { title: 'Custom Curriculum', desc: 'Your course, your pace. Choose any available track and learn through a curriculum designed for you.' },
     { title: 'Homework Reviews', desc: 'Practical exercises reviewed in detail to strengthen code structures, automation frameworks, and system architectures.' },
-    { title: 'Flexible Scheduling', desc: 'Book sessions at times that suit you, and reschedule easily if plans change.' }
+    { title: 'Flexible Scheduling', desc: 'Request sessions at times that suit you — I manually confirm each slot to avoid conflicts.' }
   ];
 
   return (
@@ -141,10 +197,10 @@ export const MasteryMentorship = () => {
             </div>
 
             <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight mb-2">
-              Book Private 1-on-1 Learning
+              Request a 1-on-1 Session
             </h3>
             <p className="text-xs text-[#424754] font-semibold leading-relaxed mb-6">
-              Choose any available course and learn it through private sessions, custom guidance, assignments, and live doubt solving.
+              Tell me what you want to work on. I review every request personally and confirm your slot manually — no bots, no auto-booking.
             </p>
 
             {/* Pricing area */}
@@ -155,25 +211,31 @@ export const MasteryMentorship = () => {
                   <p className="text-xl font-extrabold text-[#0b1c30] tracking-tight">₹2,499<span className="text-xs font-bold text-[#424754]/60 ml-1">/session</span></p>
                 </div>
                 <div className="px-2.5 py-1 rounded-full bg-white border border-[#d1f34d]/20 text-[10px] font-extrabold text-[#d1f34d]">
-                  Flexible Hours
+                  Manual Confirmation
                 </div>
               </div>
+              <p className="text-[9px] text-[#424754] font-semibold mt-2 leading-relaxed">
+                Payment is collected only after I confirm availability — no upfront charges.
+              </p>
             </div>
 
             {success ? (
-              <div className="p-4 bg-[#d1f34d]/10 border border-[#d1f34d]/20 text-[#d1f34d] rounded-2xl space-y-2 text-xs font-bold animate-fadeIn">
+              <div className="p-5 bg-[#d1f34d]/10 border border-[#d1f34d]/20 text-[#d1f34d] rounded-2xl space-y-3 text-xs font-bold animate-fadeIn">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={16} />
-                  <span>Application Sent Successfully!</span>
+                  <span>Request Submitted Successfully!</span>
                 </div>
                 <p className="font-semibold text-[#d1f34d]/80 text-[11px] leading-relaxed">
-                  Thanks for your interest in private 1-on-1 learning! I will review your application and email you within 24 hours to schedule our first session.
+                  Thanks for your interest in private 1-on-1 sessions. I will review your request and confirm your slot manually via email/WhatsApp within 24 hours.
+                </p>
+                <p className="font-semibold text-[#d1f34d]/60 text-[10px] leading-relaxed pt-1 border-t border-[#d1f34d]/10">
+                  No automatic booking — every request is personally reviewed to ensure the best fit for your goals.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleBookingSubmit} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Name</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name <span className="text-red-400">*</span></label>
                   <input
                     type="text"
                     placeholder="Enter your name"
@@ -186,12 +248,12 @@ export const MasteryMentorship = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Email or WhatsApp <span className="text-red-400">*</span></label>
                   <input
-                    type="email"
-                    placeholder="you@domain.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    placeholder="you@domain.com or +91 9XXXXXXXXX"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
                     required
                     disabled={loading}
                     className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
@@ -199,50 +261,78 @@ export const MasteryMentorship = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Skill Interested In</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Topic of Session <span className="text-red-400">*</span></label>
                   <select
-                    value={skillFocus}
-                    onChange={(e) => setSkillFocus(e.target.value)}
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
                     disabled={loading}
                     className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
                   >
-                    <option value="AI & Automation">AI & Automation</option>
-                    <option value="Robotics">Robotics</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                    <option value="Typography">Typography</option>
-                    <option value="Color Theory">Color Theory</option>
-                    <option value="SEO">SEO</option>
-                    <option value="Personal Branding">Personal Branding</option>
-                    <option value="Entrepreneurship">Entrepreneurship</option>
-                    <option value="Digital Products">Digital Products</option>
+                    {TOPICS.map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Current Level</label>
-                  <select
-                    value={currentLevel}
-                    onChange={(e) => setCurrentLevel(e.target.value)}
-                    disabled={loading}
-                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
-                  >
-                    <option value="Beginner">Beginner — New to this skill</option>
-                    <option value="Intermediate">Intermediate — Some experience</option>
-                    <option value="Advanced">Advanced — Ready to go deeper</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">What do you want to achieve?</label>
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Short Problem Description</label>
                   <textarea
-                    placeholder="Tell me about your goals, the projects you want to build, or what you want to learn..."
-                    value={goals}
-                    onChange={(e) => setGoals(e.target.value)}
+                    placeholder="What specific problem or goal would you like help with during the session?"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     disabled={loading}
-                    rows={3}
+                    rows={2}
                     className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-2xl focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold resize-none"
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Date <span className="text-red-400">*</span></label>
+                    <input
+                      type="date"
+                      value={preferredDate}
+                      onChange={(e) => setPreferredDate(e.target.value)}
+                      required
+                      disabled={loading}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Preferred Time <span className="text-red-400">*</span></label>
+                    <select
+                      value={preferredTime}
+                      onChange={(e) => setPreferredTime(e.target.value)}
+                      disabled={loading}
+                      className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                    >
+                      {TIME_SLOTS.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Time Zone</label>
+                  <select
+                    value={timezone}
+                    onChange={(e) => setTimezone(e.target.value)}
+                    disabled={loading}
+                    className="w-full px-4 py-2.5 text-xs bg-bg-secondary border border-[#c2c6d6]/40 rounded-full focus:outline-none focus:border-[#0b1c30] text-[#0b1c30] font-semibold"
+                  >
+                    <option value="IST (UTC+5:30)">IST (UTC+5:30)</option>
+                    <option value="EST (UTC-5:00)">EST (UTC-5:00)</option>
+                    <option value="PST (UTC-8:00)">PST (UTC-8:00)</option>
+                    <option value="GMT (UTC+0:00)">GMT (UTC+0:00)</option>
+                    <option value="CET (UTC+1:00)">CET (UTC+1:00)</option>
+                    <option value="GST (UTC+4:00)">GST (UTC+4:00)</option>
+                    <option value="SGT (UTC+8:00)">SGT (UTC+8:00)</option>
+                    <option value="AEDT (UTC+11:00)">AEDT (UTC+11:00)</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 {error && <p className="text-[9px] font-bold text-red-600">{error}</p>}
@@ -254,7 +344,7 @@ export const MasteryMentorship = () => {
                       disabled={loading}
                       className="w-full py-3.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md border-none"
                     >
-                      {loading ? 'Submitting...' : 'Book Session'}
+                      {loading ? 'Submitting...' : 'Request Session'}
                       <Send size={11} />
                     </button>
                   </MagneticButton>
