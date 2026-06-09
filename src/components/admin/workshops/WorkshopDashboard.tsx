@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Video, Users, Clock, CheckCircle2, XCircle, Bell, Send, Mail, AlertTriangle, Copy } from 'lucide-react';
 import { auth } from '../../../firebase';
-import { cn } from '../../../lib/utils';
+import { cn, parseResponse } from '../../../lib/utils';
 
 interface WorkshopDashboardProps {
   workshops: any[];
@@ -48,20 +48,12 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
         },
         body: JSON.stringify({ action, workshopId, ...extra }),
       });
-      let data: any;
-      try {
-        data = await res.json();
-      } catch {
-        const text = await res.text();
-        console.error('[WorkshopDashboard] Non-JSON response:', text);
-        addToast(`Server error: ${text.slice(0, 120)}`, "error");
-        return;
-      }
+      const data = await parseResponse(res);
       if (data.success) {
         addToast(`${label}: ${data.notified} registrant(s) notified.`, "success");
         onRefresh();
       } else {
-        addToast(data.error || `Failed to send ${label}.`, "error");
+        addToast(data.error ? `Server error: ${String(data.error).slice(0, 120)}` : `Failed to send ${label}.`, "error");
       }
     } catch (err: any) {
       addToast(`Failed to send: ${err.message}`, "error");

@@ -49,7 +49,7 @@ import {
   serverTimestamp,
 } from "../firebase";
 import { getFirebaseStatus } from "../config/firebase-config";
-import { cn } from "../lib/utils";
+import { cn, parseResponse } from "../lib/utils";
 import { handleFirestoreError } from "../lib/firebase-utils";
 import { OperationType } from "../types";
 import { FirebaseConfigWarning } from "../components/FirebaseConfigWarning";
@@ -988,15 +988,7 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ action: "send-live-notification", workshopId: item.id }),
                         });
-                        let data: any;
-                        try {
-                          data = await res.json();
-                        } catch {
-                          const text = await res.text();
-                          console.error('[AdminPage] Non-JSON response:', text);
-                          addToast(`Server error: ${text.slice(0, 120)}`, "error");
-                          return;
-                        }
+                        const data = await parseResponse(res);
                         if (data.success) {
                           addToast(`Notified ${data.notified} registrant(s) about "${item.title}".`, "success");
                         } else {
