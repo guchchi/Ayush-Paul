@@ -3,17 +3,27 @@ import Stripe from "stripe";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
 
-if (!admin.apps.length) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}')),
-    });
-  } catch (error) {
-    console.error("Firebase admin initialization error:", error);
-  }
-}
+let _db: FirebaseFirestore.Firestore | null = null;
 
-const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
+function getDb() {
+  if (_db) return _db;
+  if (!admin.apps.length) {
+    try {
+      const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
+      if (!sa) throw new Error("FIREBASE_SERVICE_ACCOUNT env var not set");
+      const parsed = JSON.parse(sa);
+      admin.initializeApp({ credential: admin.credential.cert(parsed) });
+      console.log("[checkout] Firebase admin initialized, project:", parsed.project_id);
+    } catch (error: any) {
+      console.error("[checkout] Firebase init error:", error.message);
+    }
+  }
+  if (!admin.apps.length) throw new Error("Firebase app not available");
+  const dbId = process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a";
+  console.log("[checkout] Connecting to Firestore database:", dbId);
+  _db = getFirestore(admin.app(), dbId);
+  return _db;
+}
 
 async function handleCreateCheckoutSession(req: VercelRequest, res: VercelResponse) {
   const { productId, userId, amount, isDonation, couponCode, creatorCode } = req.body;
@@ -36,7 +46,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
   const appUrl = process.env.APP_URL || `${protocol}://${host}`;
 
   try {
-    const productDoc = await db.collection("products").doc(productId).get();
+    const productDoc = await getDb().collection("products").doc(productId).get();
     if (!productDoc.exists) {
       return res.status(404).json({ error: "Product not found" });
     }
@@ -54,7 +64,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       return res.status(400).json({ error: "Product not configured for checkout" });
     }
 
-    const userDoc = await db.collection("users").doc(userId).get();
+    const userDoc = await getDb().collection("users").doc(userId).get();
     if (userDoc.exists) {
       const userData = userDoc.data();
       const ownedProducts = userData?.ownedProducts || {};
@@ -68,19 +78,30 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
 
     if (couponCode) {
       const normalized = couponCode.trim().toUpperCase();
-      const couponQuery = await db.collection('coupons').where('code', '==', normalized).limit(1).get();
+      const couponQuery = await getDb().collection('coupons').where('code', '==', normalized).limit(1).get();
       couponSnap = couponQuery.empty ? null : couponQuery.docs[0];
 
-      if (couponSnap) {
-        const c = couponSnap.data();
-        if (c.active) {
-          const expired = c.expiresAt?.toDate?.() ? new Date() > c.expiresAt.toDate() : false;
-          const exhausted = c.usageLimit && (c.usedCount || 0) >= c.usageLimit;
-          if (!expired && !exhausted) {
-            appliedCoupon = { code: normalized, discountType: c.discountType, value: c.value, assignedToCreator: c.assignedToCreator || undefined };
-          }
-        }
+      if (!couponSnap) {
+        return res.status(400).json({ error: `Coupon "${couponCode}" not found.` });
       }
+
+      const c = couponSnap.data();
+
+      if (!c.active) {
+        return res.status(400).json({ error: `Coupon "${normalized}" is no longer active.` });
+      }
+
+      const expired = c.expiresAt?.toDate?.() ? new Date() > c.expiresAt.toDate() : false;
+      if (expired) {
+        return res.status(400).json({ error: `Coupon "${normalized}" has expired.` });
+      }
+
+      const exhausted = c.usageLimit && (c.usedCount || 0) >= c.usageLimit;
+      if (exhausted) {
+        return res.status(400).json({ error: `Coupon "${normalized}" has reached its usage limit.` });
+      }
+
+      appliedCoupon = { code: normalized, discountType: c.discountType, value: c.value, assignedToCreator: c.assignedToCreator || undefined };
     }
 
     // Auto-detect creator code from coupon if not explicitly provided
@@ -118,7 +139,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       const normalizedCreator = resolvedCreatorCode.trim().toUpperCase();
       finalMetadata.creatorCode = normalizedCreator;
       try {
-        const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
+        const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
         if (!creatorQuery.empty) {
           const creatorData = creatorQuery.docs[0].data();
           const commissionPct = creatorData.creatorCommissionPercent || creatorData.commissionRate || 10;
@@ -292,7 +313,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       return res.status(403).json({ error: "Unauthorized: User ID mismatch" });
     }
 
-    const userRef = db.collection("users").doc(userId);
+    const userRef = getDb().collection("users").doc(userId);
     const existingSnap = await userRef.get();
     const currentOwned = existingSnap.exists ? (existingSnap.data()?.ownedProducts || {}) : {};
     currentOwned[productId] = "premium";
@@ -302,10 +323,10 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
-    const purchaseQuery = await db.collection("purchases").where("stripeSessionId", "==", sessionId).get();
+    const purchaseQuery = await getDb().collection("purchases").where("stripeSessionId", "==", sessionId).get();
     if (purchaseQuery.empty) {
       const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
-      await db.collection("purchases").add({
+      await getDb().collection("purchases").add({
         userId, productId, stripeSessionId: sessionId,
         amountTotal: session.amount_total,
         originalPrice: Math.round(originalPrice * 100),
@@ -315,7 +336,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
         ...(session.metadata?.couponCode ? { couponCode: session.metadata.couponCode } : {}),
       });
 
-      await db.collection("public_purchases").add({
+      await getDb().collection("public_purchases").add({
         productId, productTitle: session.metadata?.productTitle || '',
         currency: session.currency,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -325,11 +346,11 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       const couponCode = session.metadata?.couponCode;
       console.log(`[Verify] Session metadata: couponCode=${couponCode || 'none'}, creatorCode=${session.metadata?.creatorCode || 'none'}, productId=${productId}`);
       if (couponCode) {
-        const couponQuery = await db.collection('coupons').where('code', '==', couponCode).limit(1).get();
+        const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
         if (!couponQuery.empty) {
           const couponDoc = couponQuery.docs[0];
           const before = couponDoc.data().usedCount || 0;
-          await db.collection('coupons').doc(couponDoc.id).update({
+          await getDb().collection('coupons').doc(couponDoc.id).update({
             usedCount: admin.firestore.FieldValue.increment(1),
             lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
             lastUsedBy: userId,
@@ -361,7 +382,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
           console.log(`[Creator] Verify: original=₹${originalPrice}, paid=₹${amountPaid}, discount=₹${discountApplied}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
 
-          const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+          const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
           if (!creatorQuery.empty) {
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
@@ -370,7 +391,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
             if (creatorData.isActive === false) {
               console.warn(`[Creator] Verify: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
             } else {
-              await db.collection('creator_sales_log').add({
+              await getDb().collection('creator_sales_log').add({
                 creatorCode: normalizedCreatorCode,
                 creatorName: creatorData.creatorName || 'Creator',
                 orderId: sessionId,
@@ -386,7 +407,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
               });
 
-              await db.collection('creator_codes').doc(creatorDoc.id).update({
+              await getDb().collection('creator_codes').doc(creatorDoc.id).update({
                 totalSales: admin.firestore.FieldValue.increment(1),
                 totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
                 totalCommission: admin.firestore.FieldValue.increment(commission),
@@ -398,7 +419,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
             }
           } else {
             console.warn(`[Creator] Verify: Code "${normalizedCreatorCode}" not found in creator_codes`);
-            const allCreators = await db.collection('creator_codes').limit(10).get();
+            const allCreators = await getDb().collection('creator_codes').limit(10).get();
             console.log(`[Creator] Existing codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));
           }
         } catch (creatorError) {
@@ -423,7 +444,7 @@ async function handleValidateCoupon(req: VercelRequest, res: VercelResponse) {
 
   try {
     const normalized = code.trim().toUpperCase();
-    const couponQuery = await db.collection('coupons').where('code', '==', normalized).limit(1).get();
+    const couponQuery = await getDb().collection('coupons').where('code', '==', normalized).limit(1).get();
 
     if (couponQuery.empty) {
       return res.status(404).json({ valid: false, error: 'Coupon not found' });
@@ -482,7 +503,7 @@ async function handleValidateCreatorCode(req: VercelRequest, res: VercelResponse
 
   try {
     const normalized = code.trim().toUpperCase();
-    const creatorQuery = await db.collection('creator_codes').where('code', '==', normalized).limit(1).get();
+    const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalized).limit(1).get();
 
     if (creatorQuery.empty) {
       return res.status(200).json({ valid: false, error: "Code not found" });
