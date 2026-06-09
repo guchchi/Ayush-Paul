@@ -196,6 +196,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
       creators: "creator_codes",
       coupons: "coupons",
       scheduled_emails: "scheduled_emails",
+      workshops: "workshops",
+      workshop_registrations: "workshop_registrations",
     };
     const collectionName = schemaMap[activeTab];
     if (!collectionName) return;
@@ -410,6 +412,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     projects: "projects",
     updates: "updates",
     creators: "creator_codes",
+    workshops: "workshops",
+    workshop_registrations: "workshop_registrations",
   };
   const currentSchemaName = schemaMap[activeTab];
   const currentSchema = currentSchemaName ? CMS_SCHEMAS[currentSchemaName] : null;
