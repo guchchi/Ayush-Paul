@@ -30,6 +30,8 @@ import { WaitlistForm } from "../components/ui/WaitlistForm";
 import { AuthModal } from "../components/ui/AuthModal";
 import { BlueprintsFAQ } from "../components/sections/BlueprintsFAQ";
 import { cn } from "../lib/utils";
+import { getFeaturedBlueprints } from "../data/blueprints";
+import { COLLABORATION_AREAS } from "../data/studio";
 
 // --- Floating Product Cards Removed ---
 
@@ -308,6 +310,8 @@ export const HomePage = () => {
     return () => unsubscribe();
   }, []);
 
+  const featuredBlueprints = getFeaturedBlueprints(products);
+
   return (
     <div className="w-full bg-bg-primary text-text-primary min-h-screen pt-4 md:pt-6">
       
@@ -550,8 +554,6 @@ export const HomePage = () => {
           <HeroVideo />
 
           <div className="flex flex-col items-center gap-2.5 mt-auto relative z-20">
-   
-          <div className="flex flex-col items-center gap-2.5 mt-auto relative z-20">
             <p className="hero-footer-text text-xs md:text-sm font-semibold tracking-wider text-center max-w-2xl">
               Builders, creators, students, and founders use these systems to move from idea to execution.
             </p>
@@ -693,101 +695,59 @@ export const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full items-stretch max-w-6xl mx-auto text-left">
-            {/* Card 1: AI Website Blueprint */}
-            <div className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-md hover:border-[#d1f34d] transition-all duration-300 hover:scale-[1.01] flex flex-col h-full">
-              <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
-                <img 
-                  src="/assets/ai_website_blueprint.png" 
-                  alt="AI Website Blueprint" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
-                    Websites &amp; Products
-                  </span>
+            {loadingProducts ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm flex flex-col h-full animate-pulse">
+                  <div className="aspect-[16/10] bg-gray-200 relative overflow-hidden border-b border-[#c2c6d6]/10" />
+                  <div className="p-8 flex flex-col flex-grow gap-3">
+                    <div className="h-5 bg-gray-200 rounded w-3/4" />
+                    <div className="h-3 bg-gray-200 rounded w-full" />
+                    <div className="h-3 bg-gray-200 rounded w-2/3" />
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
+                      <div className="h-4 bg-gray-200 rounded w-20" />
+                      <div className="h-4 bg-gray-200 rounded w-24" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
-                  AI Website Blueprint
-                </h3>
-                <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
-                  Launch optimized Next.js frameworks pre-configured with SEO layouts, copywriting blueprints, and automated webhook triggers.
-                </p>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
-                    Flagship Tier
-                  </span>
-                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
-                    OPEN BLUEPRINT <ArrowRight size={10} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: SEO Growth System */}
-            <div className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-md hover:border-[#d1f34d] transition-all duration-300 hover:scale-[1.01] flex flex-col h-full">
-              <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
-                <img 
-                  src="/assets/seo_growth_system.png" 
-                  alt="SEO Growth System" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
-                    SEO &amp; Growth
-                  </span>
-                </div>
-              </div>
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
-                  SEO Growth System
-                </h3>
-                <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
-                  Deploy high-authority structural checklist configurations, keyword map sheets, and dynamic sitemaps designed to maximize visibility.
-                </p>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
-                    Growth Tier
-                  </span>
-                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
-                    OPEN BLUEPRINT <ArrowRight size={10} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Personal Brand Framework */}
-            <div className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-md hover:border-[#d1f34d] transition-all duration-300 hover:scale-[1.01] flex flex-col h-full">
-              <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
-                <img 
-                  src="/assets/personal_brand_framework.png" 
-                  alt="Personal Brand Framework" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
-                    Systems &amp; Automation
-                  </span>
-                </div>
-              </div>
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
-                  Personal Brand Framework
-                </h3>
-                <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
-                  Establish structured operational playbooks, daily prompt directories, and modular asset folders to scale digital presence.
-                </p>
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
-                    Asset Bundle
-                  </span>
-                  <Link to="/blueprints" className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
-                    OPEN BLUEPRINT <ArrowRight size={10} />
-                  </Link>
-                </div>
-              </div>
-            </div>
+              ))
+            ) : featuredBlueprints.length > 0 ? (
+              featuredBlueprints.map((item) => (
+                <Link
+                  key={item.id}
+                  to={item.ctaLink}
+                  className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-md hover:border-[#d1f34d] transition-all duration-300 hover:scale-[1.01] flex flex-col h-full"
+                >
+                  <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
+                    <img 
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
+                        {item.categoryLabel}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-8 flex flex-col flex-grow">
+                    <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
+                      {item.title}
+                    </h3>
+                    <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
+                      {item.description}
+                    </p>
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
+                        {item.tier}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] hover:text-[#d1f34d] transition-colors flex items-center gap-1">
+                        OPEN BLUEPRINT <ArrowRight size={10} />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : null}
           </div>
         </div>
       </section>
@@ -921,7 +881,7 @@ export const HomePage = () => {
                     courses.map((course) => (
                       <Link 
                         key={course.id}
-                        to={`/mastery`}
+                        to={`/mastery/courses/${course.id}`}
                         onClick={() => handlePathwayClick(`Course: ${course.title}`)}
                         className="group bg-white border border-[#c2c6d6]/20 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm hover:border-[#d1f34d] transition-all hover:-translate-y-0.5 duration-300"
                       >
@@ -1144,14 +1104,7 @@ export const HomePage = () => {
 
               {/* Collaboration Areas Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[650px] mb-8">
-                {[
-                  { title: "Website Development", description: "Build high-performance, conversion-optimized Next.js web applications tailored to your product pipeline." },
-                  { title: "AI Agent Integration", description: "Integrate autonomous LLM agent systems, custom prompts, and intelligent interfaces directly into your code." },
-                  { title: "API Automation", description: "Connect software layers, configure webhook triggers, and automate Make.com scenarios that run without downtime." },
-                  { title: "Digital Systems", description: "Deploy secure database schemas, operational checklists, and custom business pipelines." },
-                  { title: "Content Platforms", description: "Launch modular markdown chronicle logs, SEO blogs, and searchable documentation repositories." },
-                  { title: "Technical Projects", description: "Establish technical roadmaps, audit codebase health, and refine workspace prompt rules." }
-                ].map((card, index) => (
+                {COLLABORATION_AREAS.map((card, index) => (
                   <div 
                     key={index} 
                     onClick={() => handleCardClick(card.title, index + 1)}
