@@ -2,18 +2,20 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Stripe from "stripe";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
+import { Resend } from "resend";
 
 // ── Inlined helpers (no subdirectory imports) ──
 
 const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
-let resend: any = null;
+let _resend: Resend | null = null;
 
 function initResend(): string | null {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return "RESEND_API_KEY not configured";
   try {
-    const { Resend } = require("resend");
-    resend = new Resend(apiKey);
+    console.log("[RESEND INIT] starting");
+    _resend = new Resend(apiKey);
+    console.log("[RESEND INIT] success");
     return null;
   } catch (e: any) {
     return `Resend init failed: ${e.message}`;
@@ -24,7 +26,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<{ s
   const initErr = initResend();
   if (initErr) return { success: false, error: initErr };
   try {
-    const response = await resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
+    const response = await _resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
     console.log(`[stripe-webhook] Sent "${subject}" to ${to}:`, JSON.stringify(response));
     return { success: true };
   } catch (err: any) {

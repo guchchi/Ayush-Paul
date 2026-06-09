@@ -1,20 +1,22 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
+import { Resend } from "resend";
 
 // ============================================================
 // EMAIL HELPERS (inlined — no subdirectory imports)
 // ============================================================
 
 const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
-let resend: any = null;
+let _resend: Resend | null = null;
 
 function initResend(): string | null {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return "RESEND_API_KEY not configured";
   try {
-    const { Resend } = require("resend");
-    resend = new Resend(apiKey);
+    console.log("[RESEND INIT] starting");
+    _resend = new Resend(apiKey);
+    console.log("[RESEND INIT] success");
     return null;
   } catch (e: any) {
     return `Resend init failed: ${e.message}`;
@@ -29,7 +31,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<{ s
     return { success: false, error: initErr };
   }
   try {
-    const response = await resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
+    const response = await _resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
     console.log("[EMAIL SEND RAW RESPONSE]", JSON.stringify(response));
     if (response?.error) {
       console.error("[EMAIL SEND FAILED] API error:", JSON.stringify(response.error));
@@ -630,7 +632,7 @@ async function handleNewsletterSend(req: VercelRequest, res: VercelResponse) {
 
     const results = await Promise.all(batch.map(async (sub: any) => {
       try {
-        const { data, error } = await resend.emails.send({
+        const { data, error } = await _resend.emails.send({
           from: fromAddress, to: sub.email, subject, html: `
             <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#ffffff;color:#1a1a1a;padding:40px;border-radius:12px;border:1px solid #eeeeee;">
             <div style="margin-bottom:30px;"><span style="font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:12px;color:#00C2FF;">Innovation Lab</span></div>
