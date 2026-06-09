@@ -19,7 +19,10 @@
     { "source": "/api/process-email-triggers", "destination": "/api/email?action=process-email-triggers" },
     { "source": "/api/trigger-abandoned-check", "destination": "/api/email?action=trigger-abandoned-check" },
     { "source": "/api/trigger-enrollment-email", "destination": "/api/email?action=trigger-enrollment-email" },
+    { "source": "/api/workshop-email", "destination": "/api/workshop-email" },
     { "source": "/api/notify-workshop", "destination": "/api/notify-workshop" },
+    { "source": "/api/test-email-import", "destination": "/api/test-email-import" },
+    { "source": "/api/debug-email", "destination": "/api/debug-email" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
