@@ -47,6 +47,11 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     await fetchSecondaryData();
   };
 
+  const refreshSecondary = async () => {
+    console.log("🔄 [SYNC] Secondary refresh triggered...");
+    await fetchSecondaryData();
+  };
+
   const fetchSecondaryData = async () => {
     try {
       console.log("📊 [SYNC] Fetching secondary metrics...");

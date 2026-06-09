@@ -147,6 +147,7 @@ export const MasteryWorkshops = () => {
   const [regSuccess, setRegSuccess] = useState(false);
   const [error, setError] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [registeredWorkshopIds, setRegisteredWorkshopIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -155,6 +156,32 @@ export const MasteryWorkshops = () => {
     });
     return unsub;
   }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setRegisteredWorkshopIds(new Set());
+      return;
+    }
+    const fetchRegistrations = async () => {
+      try {
+        const q = query(
+          collection(db, 'workshop_registrations'),
+          where('userId', '==', currentUser.uid)
+        );
+        const snap = await getDocs(q);
+        const ids = new Set<string>();
+        snap.docs.forEach(doc => {
+          const data = doc.data();
+          if (data.workshopId) ids.add(data.workshopId);
+        });
+        setRegisteredWorkshopIds(ids);
+        console.log('[Workshops] Registered workshop IDs:', [...ids]);
+      } catch (e) {
+        console.warn('Failed to fetch registrations:', e);
+      }
+    };
+    fetchRegistrations();
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchWorkshops = async () => {
@@ -223,6 +250,32 @@ export const MasteryWorkshops = () => {
       formName: regName,
       formEmail: regEmail,
     });
+
+    try {
+      const dupQuery = query(
+        collection(db, 'workshop_registrations'),
+        where('workshopId', '==', selectedWorkshop.id)
+      );
+      const dupSnap = await getDocs(dupQuery);
+      const alreadyRegistered = dupSnap.docs.some(doc => {
+        const data = doc.data();
+        if (isLoggedIn) {
+          return data.userId === currentUser.uid;
+        }
+        return data.email === regEmail;
+      });
+
+      if (alreadyRegistered) {
+        setError(isLoggedIn
+          ? 'You already have a reservation for this workshop.'
+          : 'This email is already on the waitlist for this workshop.'
+        );
+        setLoading(false);
+        return;
+      }
+    } catch (dupErr) {
+      console.warn('[Workshops] Duplicate check failed, proceeding:', dupErr);
+    }
 
     if (isLoggedIn) {
       // FLOW 2: Logged-in user — registered type with userId
@@ -439,9 +492,14 @@ export const MasteryWorkshops = () => {
                     setRegSuccess(false);
                     setError('');
                   }}
-                  className="px-6 py-2.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm"
+                  disabled={currentUser && registeredWorkshopIds.has(workshop.id)}
+                  className={`px-6 py-2.5 rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm ${
+                    currentUser && registeredWorkshopIds.has(workshop.id)
+                      ? 'bg-[#e1f7d2] text-[#33691e] border border-[#c0e8a7] cursor-default'
+                      : 'bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d]'
+                  }`}
                 >
-                  {currentUser ? 'Reserve Seat' : 'Join Waitlist'}
+                  {currentUser && registeredWorkshopIds.has(workshop.id) ? 'Reserved' : currentUser ? 'Reserve Seat' : 'Join Waitlist'}
                 </button>
               </MagneticButton>
             </div>
@@ -545,7 +603,7 @@ export const MasteryWorkshops = () => {
                   </div>
                 </div>
 
-                {regSuccess ? (
+                {regSuccess || (currentUser && selectedWorkshop && registeredWorkshopIds.has(selectedWorkshop.id)) ? (
                   <div className="p-4 bg-[#e1f7d2] border border-[#c0e8a7] text-[#33691e] rounded-2xl space-y-2 text-xs font-bold animate-fadeIn">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 size={16} />
@@ -557,10 +615,13 @@ export const MasteryWorkshops = () => {
                         : 'You have been added to the waitlist. We will notify you at the provided email address when the workshop goes live.'}
                     </p>
                     <button
-                      onClick={() => setSelectedWorkshop(null)}
+                      onClick={() => {
+                        setSelectedWorkshop(null);
+                        setRegSuccess(false);
+                      }}
                       className="mt-2 w-full py-2 bg-[#33691e] hover:bg-[#2e5c1b] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer border-none"
                     >
-                      Close
+                      {currentUser ? 'Open in Vault' : 'Close'}
                     </button>
                   </div>
                 ) : currentUser ? (
