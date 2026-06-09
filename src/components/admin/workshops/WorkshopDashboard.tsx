@@ -32,7 +32,7 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
   const getRegistrationsForWorkshop = (workshopId: string) =>
     workshopRegistrations.filter((r) => r.workshopId === workshopId);
 
-  const handleSendEmail = async (workshopId: string, action: string, label: string) => {
+  const handleSendEmail = async (workshopId: string, action: string, label: string, extra: Record<string, string> = {}) => {
     setSendingWorkshop(workshopId);
     setSendingAction(action);
     try {
@@ -46,7 +46,7 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ action, workshopId }),
+        body: JSON.stringify({ action, workshopId, ...extra }),
       });
       const data = await res.json();
       if (data.success) {
@@ -63,30 +63,11 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
     }
   };
 
-  const handleDuplicate = async (workshop: any) => {
-    const userInstance = auth.currentUser;
-    if (!userInstance) return;
-    try {
-      const token = await userInstance.getIdToken();
-      const res = await fetch("/api/workshop-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ action: "duplicate-workshop", workshop }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        addToast(`Workshop duplicated as "${data.newTitle}".`, "success");
-        onRefresh();
-      } else {
-        addToast(data.error || "Failed to duplicate.", "error");
-      }
-    } catch (err: any) {
-      addToast(`Failed to duplicate: ${err.message}`, "error");
-    }
-  };
+  const reminderTypes: { label: string; type: string }[] = [
+    { label: 'Send 24h Reminder', type: '24h' },
+    { label: 'Send 1h Reminder', type: '1h' },
+    { label: 'Send 5m Reminder', type: '5m' },
+  ];
 
   const statusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -253,26 +234,17 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
 
               {/* Email Action Buttons */}
               <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
-                {isUpcoming && (
+                {isUpcoming && reminderTypes.map((rt) => (
                   <button
-                    onClick={() => handleSendEmail(workshop.id, 'send-reminder', '24h Reminder')}
+                    key={rt.type}
+                    onClick={() => handleSendEmail(workshop.id, 'send-reminder', rt.label, { reminderType: rt.type })}
                     disabled={busy}
                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50"
                   >
                     {busy && sendingAction === 'send-reminder' ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Bell size={12} />}
-                    Send 24h Reminder
+                    {rt.label}
                   </button>
-                )}
-                {isUpcoming && (
-                  <button
-                    onClick={() => handleSendEmail(workshop.id, 'send-reminder', '1h Reminder')}
-                    disabled={busy}
-                    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50"
-                  >
-                    {busy && sendingAction === 'send-reminder' ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Bell size={12} />}
-                    Send 1h Reminder
-                  </button>
-                )}
+                ))}
                 {(isLive || isUpcoming) && hasMeetingLink && (
                   <button
                     onClick={() => handleSendEmail(workshop.id, 'send-live-notification', 'Live Notification')}
@@ -305,11 +277,11 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
                 )}
                 {(isUpcoming || isLive) && (
                   <button
-                    onClick={() => handleSendEmail(workshop.id, 'send-confirmation', 'Confirmation Email')}
+                    onClick={() => handleSendEmail(workshop.id, 'send-confirmation-all', 'Confirmation Email')}
                     disabled={busy}
                     className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 disabled:opacity-50"
                   >
-                    {busy && sendingAction === 'send-confirmation' ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Mail size={12} />}
+                    {busy && sendingAction === 'send-confirmation-all' ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Mail size={12} />}
                     Send Confirmation
                   </button>
                 )}

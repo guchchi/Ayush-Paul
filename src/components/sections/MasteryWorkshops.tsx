@@ -302,6 +302,7 @@ export const MasteryWorkshops = () => {
         setRegSuccess(true);
         setRegName('');
         setRegEmail('');
+        setRegisteredWorkshopIds(prev => new Set(prev).add(selectedWorkshop.id));
         // Trigger confirmation email
         fetch('/api/workshop-email', {
           method: 'POST',
@@ -421,13 +422,21 @@ export const MasteryWorkshops = () => {
             <div>
               {/* Top Meta info */}
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                {workshop.status === 'UPCOMING' ? (
+                {workshop.status === 'DRAFT' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-gray-400 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200">
+                    Draft
+                  </span>
+                ) : workshop.status === 'UPCOMING' ? (
                   <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-[#f57f17] px-2.5 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082]">
                     <Sparkles size={11} /> Upcoming
                   </span>
                 ) : workshop.status === 'LIVE' ? (
                   <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-green-700 px-2.5 py-0.5 rounded-full bg-green-50 border border-green-200">
                     <BadgeCheck size={11} className="animate-pulse" /> Live Now
+                  </span>
+                ) : workshop.status === 'CANCELLED' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-red-600 px-2.5 py-0.5 rounded-full bg-red-50 border border-red-200">
+                    Cancelled
                   </span>
                 ) : (
                   <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#424754]/50 px-2.5 py-0.5 rounded-full bg-gray-50 border border-gray-200">
@@ -446,6 +455,20 @@ export const MasteryWorkshops = () => {
                   {workshop.duration}
                 </span>
               </div>
+
+              {/* Thumbnail */}
+              {workshop.thumbnail && (
+                <div className="aspect-[16/9] w-full rounded-2xl overflow-hidden mb-4 bg-gray-50 border border-[#c2c6d6]/10">
+                  <img
+                    src={workshop.thumbnail}
+                    alt={workshop.name || workshop.title || ''}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Title & Topic */}
               <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight leading-snug mb-2">

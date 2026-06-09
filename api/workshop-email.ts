@@ -61,6 +61,68 @@ async function sendConfirmation(req: VercelRequest, res: VercelResponse) {
   return res.json({ success: result.success, error: result.error });
 }
 
+async function sendConfirmationAll(req: VercelRequest, res: VercelResponse) {
+  const { workshopId } = req.body;
+  if (!workshopId) return res.status(400).json({ error: "Missing workshopId" });
+
+  const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+  if (!workshopDoc.exists) return res.status(404).json({ error: "Workshop not found" });
+  const workshop = workshopDoc.data()!;
+
+  const registrationsSnap = await db
+    .collection("workshop_registrations")
+    .where("workshopId", "==", workshopId)
+    .get();
+
+  if (registrationsSnap.empty) {
+    return res.json({ success: true, notified: 0, message: "No registrations found." });
+  }
+
+  let notified = 0;
+  const errors: string[] = [];
+
+  for (const regDoc of registrationsSnap.docs) {
+    const reg = regDoc.data();
+    if (!reg.email) continue;
+
+    try {
+      const html = renderWorkshopRegistrationConfirmation({
+        registrantName: reg.name || reg.email?.split("@")[0] || "Innovator",
+        workshopTitle: workshop.title || "Workshop",
+        workshopTopic: workshop.topic,
+        date: workshop.date || "TBD",
+        time: workshop.time,
+        workshopStartTime: workshop.workshopStartTime,
+        vaultUrl: `${APP_URL}/vault`,
+      });
+
+      const result = await sendEmail({
+        to: reg.email,
+        subject: `✅ Confirmed: ${workshop.title || "Workshop"} — Your Spot is Reserved!`,
+        html,
+      });
+
+      if (result.success) {
+        notified++;
+        await regDoc.ref.update({
+          confirmationSentAt: admin.firestore.FieldValue.serverTimestamp(),
+        }).catch(() => {});
+      } else {
+        errors.push(`${reg.email}: ${result.error}`);
+      }
+    } catch (err: any) {
+      errors.push(`${reg.email}: ${err.message}`);
+    }
+  }
+
+  return res.json({
+    success: true,
+    notified,
+    total: registrationsSnap.docs.length,
+    errors: errors.length > 0 ? errors : undefined,
+  });
+}
+
 async function sendReminder(req: VercelRequest, res: VercelResponse) {
   const { workshopId, reminderType } = req.body;
   if (!workshopId || !reminderType) {
@@ -329,6 +391,7 @@ async function sendCancellationNotice(req: VercelRequest, res: VercelResponse) {
 
 const HANDLERS: Record<string, (req: VercelRequest, res: VercelResponse) => Promise<any>> = {
   "send-confirmation": sendConfirmation,
+  "send-confirmation-all": sendConfirmationAll,
   "send-reminder": sendReminder,
   "send-live-notification": sendLiveNotification,
   "send-recording": sendRecordingAvailable,
