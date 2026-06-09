@@ -8,17 +8,24 @@ import { renderWorkshopLiveNotification } from "./emails/WorkshopLiveNotificatio
 import { renderWorkshopRecordingAvailable } from "./emails/WorkshopRecordingAvailable";
 import { renderWorkshopCancellationNotice } from "./emails/WorkshopCancellationNotice";
 
-if (!admin.apps.length) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}')),
-    });
-  } catch (error) {
-    console.error("Firebase admin initialization error:", error);
+function getDb() {
+  if (!admin.apps.length) {
+    try {
+      const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
+      if (!sa) throw new Error("FIREBASE_SERVICE_ACCOUNT env var not set");
+      admin.initializeApp({
+        credential: admin.credential.cert(JSON.parse(sa)),
+      });
+      console.log("[workshop-email] Firebase admin initialized successfully");
+    } catch (error) {
+      console.error("[workshop-email] Firebase admin initialization error:", error);
+    }
   }
+  if (!admin.apps.length) {
+    throw new Error("Firebase app not available — cannot connect to Firestore");
+  }
+  return getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
 }
-
-const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
 
 const APP_URL = process.env.APP_URL || "https://ayushpaul.vercel.app";
 
@@ -29,11 +36,11 @@ async function sendConfirmation(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: "Missing workshopId or registrationId" });
     }
 
-    const regDoc = await db.collection("workshop_registrations").doc(registrationId).get();
+    const regDoc = await getDb().collection("workshop_registrations").doc(registrationId).get();
     if (!regDoc.exists) return res.status(404).json({ success: false, error: "Registration not found" });
     const reg = regDoc.data()!;
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
@@ -74,12 +81,11 @@ async function sendConfirmationAll(req: VercelRequest, res: VercelResponse) {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json({ success: false, error: "Missing workshopId" });
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
-    const registrationsSnap = await db
-      .collection("workshop_registrations")
+    const registrationsSnap = await getDb().collection("workshop_registrations")
       .where("workshopId", "==", workshopId)
       .get();
 
@@ -149,7 +155,7 @@ async function sendReminder(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: "Invalid reminderType. Use: 24h, 1h, or 5m" });
     }
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
@@ -157,8 +163,7 @@ async function sendReminder(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: "Workshop has no meeting link." });
     }
 
-    const registrationsSnap = await db
-      .collection("workshop_registrations")
+    const registrationsSnap = await getDb().collection("workshop_registrations")
       .where("workshopId", "==", workshopId)
       .get();
 
@@ -227,7 +232,7 @@ async function sendLiveNotification(req: VercelRequest, res: VercelResponse) {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json({ success: false, error: "Missing workshopId" });
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
@@ -235,8 +240,7 @@ async function sendLiveNotification(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ success: false, error: "Workshop has no meeting link." });
     }
 
-    const registrationsSnap = await db
-      .collection("workshop_registrations")
+    const registrationsSnap = await getDb().collection("workshop_registrations")
       .where("workshopId", "==", workshopId)
       .get();
 
@@ -300,12 +304,11 @@ async function sendRecordingAvailable(req: VercelRequest, res: VercelResponse) {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json({ success: false, error: "Missing workshopId" });
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
-    const registrationsSnap = await db
-      .collection("workshop_registrations")
+    const registrationsSnap = await getDb().collection("workshop_registrations")
       .where("workshopId", "==", workshopId)
       .get();
 
@@ -365,12 +368,11 @@ async function sendCancellationNotice(req: VercelRequest, res: VercelResponse) {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json({ success: false, error: "Missing workshopId" });
 
-    const workshopDoc = await db.collection("workshops").doc(workshopId).get();
+    const workshopDoc = await getDb().collection("workshops").doc(workshopId).get();
     if (!workshopDoc.exists) return res.status(404).json({ success: false, error: "Workshop not found" });
     const workshop = workshopDoc.data()!;
 
-    const registrationsSnap = await db
-      .collection("workshop_registrations")
+    const registrationsSnap = await getDb().collection("workshop_registrations")
       .where("workshopId", "==", workshopId)
       .get();
 
