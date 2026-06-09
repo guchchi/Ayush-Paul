@@ -22,15 +22,24 @@ function initResend(): string | null {
 }
 
 async function sendEmail(to: string, subject: string, html: string): Promise<{ success: boolean; error?: string }> {
+  console.log("[EMAIL SEND START]", to, "subject:", subject);
   const initErr = initResend();
-  if (initErr) return { success: false, error: initErr };
+  if (initErr) {
+    console.error("[EMAIL SEND FAILED] initResend error:", initErr);
+    return { success: false, error: initErr };
+  }
   try {
     const response = await resend.emails.send({ from: DEFAULT_FROM, to, subject, html });
-    console.log(`[email] Sent "${subject}" to ${to}:`, JSON.stringify(response));
+    console.log("[EMAIL SEND RAW RESPONSE]", JSON.stringify(response));
+    if (response?.error) {
+      console.error("[EMAIL SEND FAILED] API error:", JSON.stringify(response.error));
+      return { success: false, error: response.error.message || JSON.stringify(response.error) };
+    }
+    console.log("[EMAIL SEND SUCCESS]", to);
     return { success: true };
   } catch (err: any) {
-    console.error(`[email] Failed "${subject}" to ${to}:`, err.message);
-    if (err.response) console.error("[email] Resend body:", JSON.stringify(err.response.data || err.response.body));
+    console.error("[EMAIL SEND FAILED] exception:", err.message, "stack:", err.stack?.split("\n")[0]);
+    if (err.response) console.error("[EMAIL SEND] response body:", JSON.stringify(err.response.data || err.response.body));
     return { success: false, error: err.message };
   }
 }
@@ -445,6 +454,7 @@ async function handleSendConfirmationAll(req: VercelRequest, res: VercelResponse
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json(stepError("validate", "Missing workshopId", 400));
     console.log("[send-confirmation-all:", traceId, "] workshopId:", workshopId);
+    console.log("[send-confirmation-all:", traceId, "] RESEND_API_KEY:", process.env.RESEND_API_KEY ? "SET" : "MISSING", "DEFAULT_FROM:", DEFAULT_FROM);
 
     let workshop;
     try { const d = await getDb().collection("workshops").doc(workshopId).get(); if (!d.exists) return res.status(404).json(stepError("workshop_lookup", "Not found", 404)); workshop = d.data()!; } catch (e: any) { return res.status(500).json(stepError("workshop_lookup", e.message)); }
