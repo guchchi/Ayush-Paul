@@ -2,6 +2,16 @@ import { Resend } from 'resend';
 
 const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
 
+// Startup diagnostics
+(function diag() {
+  const key = process.env.RESEND_API_KEY || '';
+  const prefix = key.length > 12 ? key.slice(0, 8) + '...' + key.slice(-4) : '(not set)';
+  console.log(`[Email] Resend API key prefix: ${prefix}, length: ${key.length}`);
+  console.log(`[Email] Default sender: ${DEFAULT_FROM}`);
+  console.log(`[Email] Node env: ${process.env.NODE_ENV || 'not set'}`);
+  console.log(`[Email] Vercel env: ${process.env.VERCEL_ENV || 'not set'}`);
+})();
+
 export interface EmailPayload {
   to: string;
   subject: string;
@@ -18,16 +28,20 @@ export async function sendEmail(payload: EmailPayload): Promise<{ success: boole
 
   try {
     const resend = new Resend(apiKey);
-    await resend.emails.send({
+    const response = await resend.emails.send({
       from: payload.from || DEFAULT_FROM,
       to: payload.to,
       subject: payload.subject,
       html: payload.html,
     });
     console.log(`[Email] Sent "${payload.subject}" to ${payload.to}`);
+    console.log(`[Email] Resend response:`, JSON.stringify(response));
     return { success: true };
   } catch (err: any) {
     console.error(`[Email] Failed to send "${payload.subject}" to ${payload.to}:`, err.message);
+    if (err.response) {
+      console.error(`[Email] Resend response body:`, JSON.stringify(err.response.data || err.response.body));
+    }
     return { success: false, error: err.message };
   }
 }

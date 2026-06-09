@@ -312,6 +312,11 @@ export const MasteryWorkshops = () => {
             workshopId: selectedWorkshop.id,
             registrationId: regRef.id,
           }),
+        }).then(async (r) => {
+          if (!r.ok) {
+            const text = await r.text();
+            console.warn('[Workshops] Confirmation email failed:', text.slice(0, 200));
+          }
         }).catch((e) => console.warn('[Workshops] Confirmation email trigger failed:', e));
       } catch (err) {
         console.error(err);
@@ -353,6 +358,11 @@ export const MasteryWorkshops = () => {
             workshopId: selectedWorkshop.id,
             registrationId: guestRegRef.id,
           }),
+        }).then(async (r) => {
+          if (!r.ok) {
+            const text = await r.text();
+            console.warn('[Workshops] Confirmation email failed:', text.slice(0, 200));
+          }
         }).catch((e) => console.warn('[Workshops] Confirmation email trigger failed:', e));
       } catch (err) {
         console.error(err);

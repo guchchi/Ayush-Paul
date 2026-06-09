@@ -988,7 +988,15 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ action: "send-live-notification", workshopId: item.id }),
                         });
-                        const data = await res.json();
+                        let data: any;
+                        try {
+                          data = await res.json();
+                        } catch {
+                          const text = await res.text();
+                          console.error('[AdminPage] Non-JSON response:', text);
+                          addToast(`Server error: ${text.slice(0, 120)}`, "error");
+                          return;
+                        }
                         if (data.success) {
                           addToast(`Notified ${data.notified} registrant(s) about "${item.title}".`, "success");
                         } else {

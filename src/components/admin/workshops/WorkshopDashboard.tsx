@@ -48,7 +48,15 @@ export const WorkshopDashboard: React.FC<WorkshopDashboardProps> = ({
         },
         body: JSON.stringify({ action, workshopId, ...extra }),
       });
-      const data = await res.json();
+      let data: any;
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text();
+        console.error('[WorkshopDashboard] Non-JSON response:', text);
+        addToast(`Server error: ${text.slice(0, 120)}`, "error");
+        return;
+      }
       if (data.success) {
         addToast(`${label}: ${data.notified} registrant(s) notified.`, "success");
         onRefresh();
