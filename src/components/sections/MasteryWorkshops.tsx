@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, Users2, Clock, CheckCircle2, Video, Sparkles, AlertCircle, BadgeCheck, MapPin } from 'lucide-react';
 import { MagneticButton } from '../ui/MagneticButton';
-import { auth, db, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy } from '../../firebase';
+import { auth, onAuthStateChanged, db, collection, addDoc, serverTimestamp, getDocs, query, where, orderBy } from '../../firebase';
 
 export interface Workshop {
   id: string;
@@ -122,10 +122,12 @@ const mapFirestoreWorkshop = (doc: any): Workshop => {
     duration: data.duration || '2 hours',
     totalSeats: data.maxParticipants || data.totalSeats || 50,
     seatsLeft: data.seatsLeft ?? data.maxParticipants ?? 50,
-    status: data.status || 'UPCOMING',
+    status: data.workshopStatus || data.status || 'UPCOMING',
+    workshopStatus: data.workshopStatus || data.status || 'UPCOMING',
     category: data.category || 'General',
     instructor: data.instructor || 'Ayush Paul',
-    meetingLink: data.meetingLink || '',
+    meetingLink: data.meetingLink || data.zoomLink || '',
+    meetingPassword: data.meetingPassword || '',
     price: data.price ?? 0,
     isFree: data.isFree ?? true,
     tags: data.tags || [],
@@ -144,6 +146,15 @@ export const MasteryWorkshops = () => {
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      console.log('[Workshops] Auth state changed:', { isLoggedIn: !!user, uid: user?.uid, email: user?.email });
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     const fetchWorkshops = async () => {
@@ -167,7 +178,7 @@ export const MasteryWorkshops = () => {
     fetchWorkshops();
   }, []);
 
-  // General waitlist submission
+  // General waitlist submission (guests only — always waitlist type)
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) {
@@ -178,11 +189,11 @@ export const MasteryWorkshops = () => {
     try {
       setLoading(true);
       setError('');
-      const uid = auth.currentUser?.uid || null;
-      console.log('[Workshops] General waitlist submit:', { email, uid });
+      console.log('[Workshops] General waitlist submit:', { email, userId: null, registrationType: 'waitlist' });
       await addDoc(collection(db, 'workshop_registrations'), {
         email,
-        userId: uid,
+        userId: null,
+        registrationType: 'waitlist',
         source: 'general_workshop_waitlist',
         registeredAt: serverTimestamp(),
         status: 'waitlist'
@@ -197,37 +208,84 @@ export const MasteryWorkshops = () => {
     }
   };
 
-  // Workshop-specific seat registration submission
+  // Workshop-specific registration
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regName || !regEmail || !regEmail.includes('@') || !selectedWorkshop) {
-      setError('Please provide valid registration details.');
-      return;
-    }
+    if (!selectedWorkshop) return;
 
-    try {
-      setLoading(true);
-      setError('');
-      const uid = auth.currentUser?.uid || null;
-      console.log('[Workshops] Seat reservation submit:', { name: regName, email: regEmail, workshopId: selectedWorkshop.id, uid });
-      await addDoc(collection(db, 'workshop_registrations'), {
-        name: regName,
-        email: regEmail,
-        userId: uid,
-        workshopId: selectedWorkshop.id,
-        workshopName: selectedWorkshop.name,
-        source: 'workshop_seat_modal',
-        registeredAt: serverTimestamp(),
-        status: 'seat_requested'
-      });
-      setRegSuccess(true);
-      setRegName('');
-      setRegEmail('');
-    } catch (err) {
-      console.error(err);
-      setError('Failed to book. Please try again.');
-    } finally {
-      setLoading(false);
+    const isLoggedIn = !!currentUser;
+    console.log('[Workshops] Registration payload:', {
+      workshopId: selectedWorkshop.id,
+      workshopName: selectedWorkshop.name,
+      isLoggedIn,
+      authUid: currentUser?.uid,
+      authEmail: currentUser?.email,
+      formName: regName,
+      formEmail: regEmail,
+    });
+
+    if (isLoggedIn) {
+      // FLOW 2: Logged-in user — registered type with userId
+      if (!currentUser?.email) {
+        setError('No email found on your account. Please update your profile.');
+        return;
+      }
+      try {
+        setLoading(true);
+        setError('');
+        const payload = {
+          name: currentUser.displayName || regName || 'Workshop Participant',
+          email: currentUser.email,
+          userId: currentUser.uid,
+          workshopId: selectedWorkshop.id,
+          workshopName: selectedWorkshop.name,
+          registrationType: 'registered' as const,
+          source: 'workshop_seat_modal',
+          registeredAt: serverTimestamp(),
+          status: 'registered',
+        };
+        console.log('[Workshops] Registered user booking:', payload);
+        await addDoc(collection(db, 'workshop_registrations'), payload);
+        setRegSuccess(true);
+        setRegName('');
+        setRegEmail('');
+      } catch (err) {
+        console.error(err);
+        setError('Failed to register. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // FLOW 1: Guest user — waitlist type, no userId
+      if (!regName || !regEmail || !regEmail.includes('@')) {
+        setError('Please provide valid registration details.');
+        return;
+      }
+      try {
+        setLoading(true);
+        setError('');
+        const payload = {
+          name: regName,
+          email: regEmail,
+          userId: null,
+          workshopId: selectedWorkshop.id,
+          workshopName: selectedWorkshop.name,
+          registrationType: 'waitlist' as const,
+          source: 'workshop_seat_modal',
+          registeredAt: serverTimestamp(),
+          status: 'waitlist',
+        };
+        console.log('[Workshops] Guest waitlist booking:', payload);
+        await addDoc(collection(db, 'workshop_registrations'), payload);
+        setRegSuccess(true);
+        setRegName('');
+        setRegEmail('');
+      } catch (err) {
+        console.error(err);
+        setError('Failed to join waitlist. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -383,7 +441,7 @@ export const MasteryWorkshops = () => {
                   }}
                   className="px-6 py-2.5 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer shadow-sm"
                 >
-                  {workshop.status === 'UPCOMING' ? 'Join Waitlist' : 'Reserve Seat'}
+                  {currentUser ? 'Reserve Seat' : 'Join Waitlist'}
                 </button>
               </MagneticButton>
             </div>
@@ -491,20 +549,59 @@ export const MasteryWorkshops = () => {
                   <div className="p-4 bg-[#e1f7d2] border border-[#c0e8a7] text-[#33691e] rounded-2xl space-y-2 text-xs font-bold animate-fadeIn">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 size={16} />
-                      <span>Seat Reservation Requested!</span>
+                      <span>{currentUser ? 'Seat Reserved!' : 'Waitlist Joined!'}</span>
                     </div>
                     <p className="font-semibold text-[#33691e]/80 text-[11px] leading-relaxed">
-                      We have received your registration details. A confirmation email with Stripe payment link has been sent to secure your seat.
+                      {currentUser
+                        ? 'Your seat has been reserved. The workshop will appear in your Vault when it goes live.'
+                        : 'You have been added to the waitlist. We will notify you at the provided email address when the workshop goes live.'}
                     </p>
                     <button
                       onClick={() => setSelectedWorkshop(null)}
                       className="mt-2 w-full py-2 bg-[#33691e] hover:bg-[#2e5c1b] text-white rounded-full font-bold text-[9px] uppercase tracking-widest transition-colors cursor-pointer border-none"
                     >
-                      Close Window
+                      Close
                     </button>
                   </div>
+                ) : currentUser ? (
+                  <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#0b1c30]">
+                        <BadgeCheck size={14} className="text-[#0058be]" />
+                        <span>Registering as {currentUser.displayName || currentUser.email}</span>
+                      </div>
+                      <p className="text-[10px] text-[#424754] font-medium">
+                        Your seat will be linked to your account and appear in your Vault.
+                      </p>
+                    </div>
+
+                    {error && <p className="text-[9px] font-bold text-red-600">{error}</p>}
+
+                    <div className="pt-2 flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedWorkshop(null)}
+                        className="flex-1 py-3 border border-[#c2c6d6]/30 text-[#424754] hover:bg-gray-50 rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md"
+                      >
+                        {loading ? 'Processing...' : 'Confirm Reservation'}
+                      </button>
+                    </div>
+                  </form>
                 ) : (
                   <form onSubmit={handleRegisterSubmit} className="space-y-4">
+                    <div className="p-4 bg-gray-50 border border-gray-100 rounded-2xl">
+                      <p className="text-[10px] text-[#424754] font-medium">
+                        Enter your details to join the waitlist. You will receive workshop access via email.
+                      </p>
+                    </div>
+
                     <div className="space-y-1">
                       <label className="text-[9px] font-bold uppercase tracking-widest text-[#424754] block">Full Name</label>
                       <input
@@ -546,7 +643,7 @@ export const MasteryWorkshops = () => {
                         disabled={loading}
                         className="flex-1 py-3 bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] rounded-full font-bold text-[10px] uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer shadow-md"
                       >
-                        {loading ? 'Processing...' : 'Reserve Seat'}
+                        {loading ? 'Processing...' : 'Join Waitlist'}
                       </button>
                     </div>
                   </form>

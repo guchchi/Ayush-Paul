@@ -239,6 +239,8 @@ export interface Workshop {
   duration?: string;
   instructor?: string;
   meetingLink?: string;
+  zoomLink?: string;
+  meetingId?: string;
   meetingPassword?: string;
   workshopStartTime?: string;
   workshopStatus: WorkshopStatus;
@@ -261,6 +263,7 @@ export interface WorkshopRegistration {
   name?: string;
   workshopId: string;
   workshopName: string;
+  registrationType: 'waitlist' | 'registered';
   source: string;
   status: string;
   registeredAt: any;

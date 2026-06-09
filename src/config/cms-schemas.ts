@@ -485,6 +485,8 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "duration", label: "Duration", type: "string", placeholder: "2 hours" },
       { name: "instructor", label: "Instructor", type: "string", defaultValue: "Ayush Paul" },
       { name: "meetingLink", label: "Meeting Link (Zoom/Meet)", type: "string", placeholder: "https://zoom.us/j/..." },
+      { name: "zoomLink", label: "Zoom Direct Link", type: "string", placeholder: "https://zoom.us/j/..." },
+      { name: "meetingId", label: "Meeting ID", type: "string", placeholder: "123 456 7890" },
       { name: "meetingPassword", label: "Meeting Password", type: "string", placeholder: "Passcode if required" },
       { name: "workshopStatus", label: "Workshop Status", type: "select", required: true, defaultValue: "UPCOMING", options: [
         { label: "Upcoming", value: "UPCOMING" },
@@ -520,6 +522,10 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "workshopId", label: "Workshop ID", type: "string", required: true },
       { name: "workshopName", label: "Workshop Name", type: "string", required: true },
       { name: "source", label: "Registration Source", type: "string" },
+      { name: "registrationType", label: "Registration Type", type: "select", defaultValue: "waitlist", options: [
+        { label: "Waitlist (email only)", value: "waitlist" },
+        { label: "Registered (Vault access)", value: "registered" },
+      ]},
       { name: "status", label: "Status", type: "string", defaultValue: "registered" },
       { name: "registeredAt", label: "Registration Date", type: "date", readOnly: true },
       { name: "notifiedAt", label: "Last Notified", type: "date", readOnly: true },

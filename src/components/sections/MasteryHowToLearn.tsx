@@ -72,11 +72,11 @@ export const MasteryHowToLearn = ({ onExploreCoursesClick, onMentorshipClick }: 
     try {
       setLoading(true);
       setError('');
-      const uid = auth.currentUser?.uid || null;
-      console.log('[HowToLearn] Workshop waitlist submit:', { email, uid });
+      console.log('[HowToLearn] Workshop waitlist submit:', { email, userId: null, registrationType: 'waitlist' });
       await addDoc(collection(db, 'workshop_registrations'), {
         email,
-        userId: uid,
+        userId: null,
+        registrationType: 'waitlist',
         source: 'how_to_learn_workshop_waitlist',
         registeredAt: serverTimestamp(),
         status: 'waitlist'

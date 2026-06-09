@@ -126,55 +126,38 @@ export const VaultPage = () => {
           console.error('[VaultPage] Enrolled courses FAILED:', courseErr);
         }
 
-        // Fetch Registered Workshops
+        // Fetch Registered Workshops — only by userId (no email backfill)
         try {
-          console.log('[VaultPage] Fetching workshop registrations...');
-
-          // Query by userId (new records with userId stored)
+          console.log('[VaultPage] Fetching workshop registrations for user:', { uid: currentUser.uid, email: currentUser.email });
           const userIdQuery = query(
             collection(db, "workshop_registrations"),
             where("userId", "==", currentUser.uid)
           );
-          const [userIdSnap, emailSnap] = await Promise.all([
-            getDocs(userIdQuery),
-            // Backfill: also query by email for legacy records without userId
-            currentUser.email
-              ? getDocs(
-                  query(
-                    collection(db, "workshop_registrations"),
-                    where("email", "==", currentUser.email)
-                  )
-                )
-              : Promise.resolve({ docs: [] }),
-          ]);
-
-          // Merge results, deduplicate by document ID
-          const regMap = new Map<string, any>();
-          userIdSnap.docs.forEach(doc => regMap.set(doc.id, doc.data()));
-          emailSnap.docs.forEach(doc => {
-            if (!regMap.has(doc.id)) regMap.set(doc.id, doc.data());
+          const userIdSnap = await getDocs(userIdQuery);
+          console.log('[VaultPage] Registration query result:', {
+            userId: currentUser.uid,
+            docsFound: userIdSnap.docs.length,
+            docs: userIdSnap.docs.map(d => ({ id: d.id, ...d.data() })),
           });
 
-          const registeredDocs = Array.from(regMap.values());
-          const registeredIds = registeredDocs
-            .map(d => d.workshopId)
+          const registeredIds = userIdSnap.docs
+            .map(d => d.data().workshopId)
             .filter(Boolean);
 
-          console.log('[VaultPage] Workshop registrations:', {
-            byUserId: userIdSnap.docs.length,
-            byEmail: emailSnap.docs.length,
-            merged: registeredDocs.length,
-            registeredIds,
-          });
+          console.log('[VaultPage] Extracted workshopIds:', registeredIds);
 
           const allWorkshopsSnap = await getDocs(
             query(collection(db, "workshops"), where("isPublished", "==", true))
           );
-          const workshopsList = allWorkshopsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const allWorkshopsList = allWorkshopsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }) as any);
+          console.log('[VaultPage] Published workshops available:', { count: allWorkshopsList.length, ids: allWorkshopsList.map((w: any) => w.id) });
 
-          const filteredWorkshops = workshopsList.filter(w => registeredIds.includes(w.id));
+          const filteredWorkshops = allWorkshopsList.filter((w: any) => registeredIds.includes(w.id));
+          console.log('[VaultPage] Resolved registered workshops:', {
+            count: filteredWorkshops.length,
+            workshops: (filteredWorkshops as any[]).map(w => ({ id: w.id, title: w.title, workshopStatus: w.workshopStatus })),
+          });
           setRegisteredWorkshops(filteredWorkshops);
-          console.log('[VaultPage] Registered workshops resolved:', { count: filteredWorkshops.length });
         } catch (wErr) {
           console.error('[VaultPage] Workshops FAILED:', wErr);
         }
@@ -616,11 +599,11 @@ export const VaultPage = () => {
                               </MagneticButton>
                             ) : isUpcoming ? (
                               <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
-                                Waiting for Workshop to Start
+                                Reserved Seat
                               </div>
                             ) : (
                               <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
-                                {workshop.workshopStatus === 'CANCELLED' ? 'Session Cancelled' : 'Session Ended'}
+                                {workshop.workshopStatus === 'CANCELLED' ? 'Session Cancelled' : 'Workshop Recording'}
                               </div>
                             )}
                           </div>
