@@ -67,19 +67,26 @@ function emailButton(text: string, url: string): string {
 // FIRESTORE HELPER (lazy init, no module-level crash)
 // ============================================================
 
+let _db: FirebaseFirestore.Firestore | null = null;
+
 function getDb() {
+  if (_db) return _db;
   if (!admin.apps.length) {
     try {
       const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
       if (!sa) throw new Error("FIREBASE_SERVICE_ACCOUNT env var not set");
-      admin.initializeApp({ credential: admin.credential.cert(JSON.parse(sa)) });
-      console.log("[email] Firebase admin initialized");
+      const parsed = JSON.parse(sa);
+      admin.initializeApp({ credential: admin.credential.cert(parsed) });
+      console.log("[email] Firebase admin initialized, project:", parsed.project_id);
     } catch (error: any) {
       console.error("[email] Firebase init error:", error.message);
     }
   }
   if (!admin.apps.length) throw new Error("Firebase app not available");
-  return getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a");
+  const dbId = process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a";
+  console.log("[email] Connecting to Firestore database:", dbId);
+  _db = getFirestore(admin.app(), dbId);
+  return _db;
 }
 
 const APP_URL = process.env.APP_URL || "https://ayushpaul.vercel.app";
@@ -436,13 +443,20 @@ async function handleSendConfirmationAll(req: VercelRequest, res: VercelResponse
   try {
     const { workshopId } = req.body;
     if (!workshopId) return res.status(400).json(stepError("validate", "Missing workshopId", 400));
+    console.log("[handleSendConfirmationAll] workshopId:", workshopId);
+    console.log("[handleSendConfirmationAll] FIRESTORE_DB_ID env:", process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "(unset)");
 
     let workshop;
     try { const d = await getDb().collection("workshops").doc(workshopId).get(); if (!d.exists) return res.status(404).json(stepError("workshop_lookup", "Not found", 404)); workshop = d.data()!; } catch (e: any) { return res.status(500).json(stepError("workshop_lookup", e.message)); }
 
     let snap;
     try { snap = await getDb().collection("workshop_registrations").where("workshopId", "==", workshopId).get(); } catch (e: any) { return res.status(500).json(stepError("registrations_query", e.message)); }
-    if (snap.empty) return res.json({ success: true, notified: 0 });
+    console.log("[handleSendConfirmationAll] matched registrations:", snap.size, "empty:", snap.empty);
+    if (snap.empty) {
+      const probe = await getDb().collection("workshop_registrations").limit(5).get();
+      console.log("[handleSendConfirmationAll] probe sample (first 5 regs):", probe.docs.map(d => ({ id: d.id, workshopId: d.data().workshopId, email: d.data().email })));
+      return res.json({ success: true, notified: 0 });
+    }
 
     let notified = 0; const errors: string[] = [];
     for (const doc of snap.docs) {
