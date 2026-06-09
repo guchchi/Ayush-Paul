@@ -69,6 +69,7 @@ import { SchemaDrivenList } from "../components/admin/cms/SchemaDrivenList";
 import { SchemaDrivenForm } from "../components/admin/cms/SchemaDrivenForm";
 import { CouponManagementPanel } from "../components/admin/coupons/CouponManagementPanel";
 import { PurchaseAnalyticsDashboard } from "../components/admin/analytics/PurchaseAnalyticsDashboard";
+import { WorkshopDashboard } from "../components/admin/workshops/WorkshopDashboard";
 
 const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void }) => {
   const [activeTab, setActiveTab] = useState<
@@ -963,6 +964,12 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
             {/* Workshops tab with per-row live notification action */}
             {activeTab === "workshops" && currentSchema && (
               <div className="space-y-6">
+                <WorkshopDashboard
+                  workshops={workshops}
+                  workshopRegistrations={workshopRegistrations}
+                  addToast={addToast}
+                  onRefresh={refreshSecondary}
+                />
                 <SchemaDrivenList
                   schema={currentSchema}
                   items={getCollectionData(currentSchemaName)}
@@ -970,13 +977,13 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
                   onDelete={handleDelete}
                   onCreateNew={() => { setCurrentRecord(null); setIsEditing(true); }}
                   onRowAction={{
-                    label: "Notify Registrants",
+                    label: "Send Live Notification",
                     icon: "Bell",
-                    condition: (item) => item.workshopStatus === "LIVE",
+                    condition: (item) => item.workshopStatus === "LIVE" && !!item.meetingLink,
                     handler: async (item) => {
                       if (!item?.id) return;
                       try {
-                        const res = await fetch("/api/notify-workshop", {
+                        const res = await fetch("/api/workshop-email", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ action: "send-live-notification", workshopId: item.id }),

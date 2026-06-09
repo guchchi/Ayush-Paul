@@ -477,6 +477,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
     allowDelete: true,
     fields: [
       { name: "title", label: "Workshop Title", type: "string", required: true, placeholder: "AI Agent Bootcamp" },
+      { name: "slug", label: "Slug", type: "string", placeholder: "ai-agent-bootcamp" },
       { name: "description", label: "Description", type: "text", required: true, placeholder: "Full workshop description..." },
       { name: "topic", label: "Topic / Tagline", type: "string", placeholder: "Building agents with LangChain" },
       { name: "date", label: "Display Date", type: "string", required: true, placeholder: "Coming Soon — Q3 2026" },
@@ -484,11 +485,26 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "workshopStartTime", label: "Workshop Start Time (ISO)", type: "string", placeholder: "2026-07-15T18:30:00+05:30" },
       { name: "duration", label: "Duration", type: "string", placeholder: "2 hours" },
       { name: "instructor", label: "Instructor", type: "string", defaultValue: "Ayush Paul" },
+      { name: "meetingPlatform", label: "Meeting Platform", type: "select", defaultValue: "zoom", options: [
+        { label: "Zoom", value: "zoom" },
+        { label: "Google Meet", value: "google-meet" },
+        { label: "Microsoft Teams", value: "teams" },
+        { label: "Other", value: "other" },
+      ]},
       { name: "meetingLink", label: "Meeting Link (Zoom/Meet)", type: "string", placeholder: "https://zoom.us/j/..." },
       { name: "zoomLink", label: "Zoom Direct Link", type: "string", placeholder: "https://zoom.us/j/..." },
       { name: "meetingId", label: "Meeting ID", type: "string", placeholder: "123 456 7890" },
       { name: "meetingPassword", label: "Meeting Password", type: "string", placeholder: "Passcode if required" },
-      { name: "workshopStatus", label: "Workshop Status", type: "select", required: true, defaultValue: "UPCOMING", options: [
+      { name: "reminderSchedule", label: "Reminder Schedule", type: "select", defaultValue: "24h,1h,5m", options: [
+        { label: "24h + 1h + 5min", value: "24h,1h,5m" },
+        { label: "24h + 1h", value: "24h,1h" },
+        { label: "24h only", value: "24h" },
+        { label: "1h only", value: "1h" },
+        { label: "No reminders", value: "none" },
+      ]},
+      { name: "recordingUrl", label: "Recording URL (Vimeo/YouTube)", type: "string", placeholder: "https://vimeo.com/..." },
+      { name: "workshopStatus", label: "Workshop Status", type: "select", required: true, defaultValue: "DRAFT", options: [
+        { label: "Draft", value: "DRAFT" },
         { label: "Upcoming", value: "UPCOMING" },
         { label: "Live Now", value: "LIVE" },
         { label: "Completed", value: "COMPLETED" },
@@ -502,6 +518,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "tags", label: "Tags (comma-separated)", type: "string", placeholder: "AI Agents, LangChain, Python" },
       { name: "thumbnail", label: "Thumbnail URL", type: "string", placeholder: "https://..." },
       { name: "isPublished", label: "Is Published", type: "boolean", defaultValue: true },
+      { name: "lastNotifiedAt", label: "Last Email Sent", type: "date", readOnly: true },
     ],
   },
   workshop_registrations: {
@@ -529,6 +546,8 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "status", label: "Status", type: "string", defaultValue: "registered" },
       { name: "registeredAt", label: "Registration Date", type: "date", readOnly: true },
       { name: "notifiedAt", label: "Last Notified", type: "date", readOnly: true },
+      { name: "confirmationSentAt", label: "Confirmation Sent", type: "date", readOnly: true },
+      { name: "remindersSent", label: "Reminders Sent", type: "string", readOnly: true },
     ],
   },
 };

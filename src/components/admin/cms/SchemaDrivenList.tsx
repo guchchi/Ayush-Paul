@@ -63,6 +63,12 @@ export const SchemaDrivenList = ({
   });
 
   // Helper formatter for list view
+  const isImageField = (name: string) =>
+    /thumbnail|image|photo|logo|thumb|img|cover|picture/i.test(name) && !name.includes('Count') && !name.includes('Url');
+
+  const isImageUrl = (val: any) =>
+    typeof val === 'string' && (val.startsWith('http') || val.startsWith('https')) && /\.(jpg|jpeg|png|gif|webp|svg|avif|bmp)(\?.*)?$/i.test(val);
+
   const formatListValue = (item: any, fieldName: string, fieldType: string) => {
     const val = item[fieldName];
     if (val === undefined || val === null) return "";
@@ -91,6 +97,22 @@ export const SchemaDrivenList = ({
         style: "currency",
         currency: currency,
       }).format(amount);
+    }
+
+    if (isImageField(fieldName) && isImageUrl(val)) {
+      return (
+        <div className="relative w-10 h-7 rounded-lg overflow-hidden bg-white/5 border border-white/10 group/img">
+          <img
+            src={val}
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+              (e.target as HTMLImageElement).parentElement!.classList.add('bg-red-500/10');
+            }}
+          />
+        </div>
+      );
     }
 
     if (Array.isArray(val)) {

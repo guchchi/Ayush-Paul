@@ -227,11 +227,12 @@ export interface CreatorCode {
 
 // --- Workshop System ---
 
-export type WorkshopStatus = 'UPCOMING' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
+export type WorkshopStatus = 'DRAFT' | 'UPCOMING' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
 
 export interface Workshop {
   id: string;
   title: string;
+  slug?: string;
   description: string;
   topic?: string;
   date: string;
@@ -242,6 +243,7 @@ export interface Workshop {
   zoomLink?: string;
   meetingId?: string;
   meetingPassword?: string;
+  meetingPlatform?: string;
   workshopStartTime?: string;
   workshopStatus: WorkshopStatus;
   isPublished: boolean;
@@ -252,8 +254,26 @@ export interface Workshop {
   category?: string;
   tags?: string[];
   thumbnail?: string;
+  recordingUrl?: string;
+  reminderSchedule?: string;
+  lastNotifiedAt?: any;
   createdAt: any;
   updatedAt: any;
+}
+
+export interface WorkshopRegistration {
+  id?: string;
+  userId?: string;
+  email: string;
+  name?: string;
+  workshopId: string;
+  workshopName: string;
+  registrationType: 'waitlist' | 'registered';
+  source: string;
+  status: string;
+  registeredAt: any;
+  notifiedAt?: any;
+  confirmationSentAt?: any;
 }
 
 export interface WorkshopRegistration {

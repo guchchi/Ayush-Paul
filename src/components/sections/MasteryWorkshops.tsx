@@ -298,10 +298,20 @@ export const MasteryWorkshops = () => {
           status: 'registered',
         };
         console.log('[Workshops] Registered user booking:', payload);
-        await addDoc(collection(db, 'workshop_registrations'), payload);
+        const regRef = await addDoc(collection(db, 'workshop_registrations'), payload);
         setRegSuccess(true);
         setRegName('');
         setRegEmail('');
+        // Trigger confirmation email
+        fetch('/api/workshop-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'send-confirmation',
+            workshopId: selectedWorkshop.id,
+            registrationId: regRef.id,
+          }),
+        }).catch((e) => console.warn('[Workshops] Confirmation email trigger failed:', e));
       } catch (err) {
         console.error(err);
         setError('Failed to register. Please try again.');
@@ -329,10 +339,20 @@ export const MasteryWorkshops = () => {
           status: 'waitlist',
         };
         console.log('[Workshops] Guest waitlist booking:', payload);
-        await addDoc(collection(db, 'workshop_registrations'), payload);
+        const guestRegRef = await addDoc(collection(db, 'workshop_registrations'), payload);
         setRegSuccess(true);
         setRegName('');
         setRegEmail('');
+        // Trigger confirmation email
+        fetch('/api/workshop-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'send-confirmation',
+            workshopId: selectedWorkshop.id,
+            registrationId: guestRegRef.id,
+          }),
+        }).catch((e) => console.warn('[Workshops] Confirmation email trigger failed:', e));
       } catch (err) {
         console.error(err);
         setError('Failed to join waitlist. Please try again.');

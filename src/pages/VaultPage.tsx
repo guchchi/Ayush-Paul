@@ -590,22 +590,30 @@ export const VaultPage = () => {
                               )}
                             </div>
                             {showJoin ? (
-                              <MagneticButton className="w-full mt-6">
-                                <a href={workshop.meetingLink} target="_blank" rel="noopener noreferrer"
-                                  className="w-full py-3.5 rounded-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
-                                >
-                                  <Play size={12} className="fill-current" /> Join Live Workshop <ArrowUpRight size={14} />
-                                </a>
-                              </MagneticButton>
-                            ) : isUpcoming ? (
-                              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
-                                Reserved Seat
-                              </div>
-                            ) : (
-                              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
-                                {workshop.workshopStatus === 'CANCELLED' ? 'Session Cancelled' : 'Workshop Recording'}
-                              </div>
-                            )}
+              <MagneticButton className="w-full mt-6">
+                <a href={workshop.meetingLink} target="_blank" rel="noopener noreferrer"
+                  className="w-full py-3.5 rounded-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                >
+                  <Play size={12} className="fill-current" /> Join Live Workshop <ArrowUpRight size={14} />
+                </a>
+              </MagneticButton>
+            ) : isUpcoming ? (
+              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
+                Reserved Seat
+              </div>
+            ) : workshop.workshopStatus === 'COMPLETED' && workshop.recordingUrl ? (
+              <MagneticButton className="w-full mt-6">
+                <a href={workshop.recordingUrl} target="_blank" rel="noopener noreferrer"
+                  className="w-full py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                >
+                  <Play size={12} className="fill-current" /> Watch Recording <ArrowUpRight size={14} />
+                </a>
+              </MagneticButton>
+            ) : (
+              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
+                {workshop.workshopStatus === 'CANCELLED' ? 'Session Cancelled' : 'Recording Coming Soon'}
+              </div>
+            )}
                           </div>
                         );
                         return el;
