@@ -11,6 +11,7 @@ import { formatCurrency, computeSavings } from '../lib/format';
 import { auth, onAuthStateChanged, db, doc, setDoc, getDoc, serverTimestamp } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { ProductBadge } from '../components/ui/ProductBadge';
+import { CouponInput, CouponResult } from '../components/ui/CouponInput';
 import { getRelatedContent } from '../lib/seo-utils';
 
 export const LabDetailPage = () => {
@@ -25,6 +26,7 @@ export const LabDetailPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState<'free' | 'premium'>('premium');
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponResult | null>(null);
   const [activeTab, setActiveTab] = useState<'architecture' | 'milestones' | 'telemetry'>('architecture');
   const [telemetrySim, setTelemetrySim] = useState({
     freq: 16.0,
@@ -217,14 +219,14 @@ export const LabDetailPage = () => {
     });
 
     try {
+      const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
+      if (appliedCoupon?.code) body.couponCode = appliedCoupon.code;
+      if (appliedCoupon?.assignedToCreator) body.creatorCode = appliedCoupon.assignedToCreator;
+
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          productId: product.id, 
-          userId: user.uid,
-          email: user.email
-        }),
+        body: JSON.stringify(body),
       });
 
       const data = await response.json();
@@ -805,6 +807,47 @@ export const LabDetailPage = () => {
                         </li>
                       ))}
                     </ul>
+                  );
+                })()}
+
+                {/* Coupon Input */}
+                {!profile?.ownedProducts?.[product.id] && (
+                  <div className="mb-6">
+                    <CouponInput onValidated={setAppliedCoupon} disabled={isCheckingOut} initialCoupon={appliedCoupon} />
+                  </div>
+                )}
+
+                {/* Price breakdown with coupon */}
+                {(() => {
+                  if (!appliedCoupon) return null;
+                  const basePrice = product.salePrice || product.basePrice;
+                  const discountAmount = appliedCoupon.discountType === 'percentage'
+                    ? Math.round(basePrice * (appliedCoupon.value || 0) / 100)
+                    : (appliedCoupon.value || 0);
+                  const finalPrice = Math.max(0, basePrice - discountAmount);
+
+                  return (
+                    <div className="mb-6 p-3.5 bg-emerald-950/30 border border-emerald-500/20 rounded-xl space-y-2">
+                      <div className="flex justify-between text-xs text-white/50">
+                        <span>Original price</span>
+                        <span className="line-through">{formatCurrency(basePrice)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-emerald-400 font-semibold">
+                        <span>Discount ({appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.value}%` : formatCurrency(discountAmount)})</span>
+                        <span>-{formatCurrency(discountAmount)}</span>
+                      </div>
+                      <div className="border-t border-emerald-500/20 pt-2 flex justify-between text-sm font-bold text-white">
+                        <span>Final price</span>
+                        <span>{formatCurrency(finalPrice)}</span>
+                      </div>
+                      {discountAmount > 0 && (
+                        <div className="pt-1">
+                          <span className="inline-block px-2.5 py-0.5 bg-emerald-600 text-white text-[9px] font-bold uppercase tracking-wider rounded-full">
+                            You save {formatCurrency(discountAmount)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   );
                 })()}
 

@@ -238,6 +238,15 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         }
       }
 
+      if (collectionName === "creator_codes") {
+        if (payload.code) payload.code = payload.code.trim().toUpperCase();
+      }
+
+      if (collectionName === "coupons") {
+        if (payload.code) payload.code = payload.code.trim().toUpperCase();
+        if (payload.assignedToCreator) payload.assignedToCreator = payload.assignedToCreator.trim().toUpperCase();
+      }
+
       if (currentRecord?.id) {
         // Edit record
         console.log("PAYLOAD (edit):", payload);

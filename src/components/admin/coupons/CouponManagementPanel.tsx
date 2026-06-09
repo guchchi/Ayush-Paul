@@ -112,7 +112,7 @@ export const CouponManagementPanel: React.FC<Props> = ({ coupons, onRefresh, add
         discountType: form.discountType,
         value: Number(form.value),
         active: form.active,
-        assignedToCreator: form.assignedToCreator.trim() || '',
+        assignedToCreator: form.assignedToCreator.trim().toUpperCase() || '',
         usageLimit: Number(form.usageLimit),
         usedCount: 0,
         minPurchaseAmount: Number(form.minPurchaseAmount),

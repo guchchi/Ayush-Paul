@@ -307,7 +307,8 @@ async function startServer() {
 
         // Process creator commission
         const creatorCode = session.metadata?.creatorCode;
-        if (creatorCode) {
+        const normalizedCreatorCode = creatorCode?.trim().toUpperCase();
+        if (normalizedCreatorCode) {
           try {
             const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
             const amountPaid = (session.amount_total || 0) / 100;
@@ -315,12 +316,12 @@ async function startServer() {
             const commissionPercent = Number(session.metadata?.commissionPercent) || 10;
             const commission = +(originalPrice * commissionPercent / 100).toFixed(2);
 
-            const creatorQuery = await db.collection('creator_codes').where('code', '==', creatorCode).limit(1).get();
+            const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
             if (!creatorQuery.empty) {
               const creatorDoc = creatorQuery.docs[0];
               const creatorData = creatorDoc.data()!;
               await db.collection('creator_sales_log').add({
-                creatorCode,
+                creatorCode: normalizedCreatorCode,
                 creatorName: creatorData.creatorName || 'Creator',
                 orderId: sessionId,
                 productId,
@@ -342,7 +343,7 @@ async function startServer() {
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
               });
             } else {
-              console.warn(`[Creator] Code "${creatorCode}" not found in creator_codes`);
+              console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes`);
             }
           } catch (creatorError) {
             console.error('[Creator] Failed to process commission:', creatorError);

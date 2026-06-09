@@ -63,7 +63,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       }
     }
 
-    let appliedCoupon: { code: string; discountType: string; value: number } | null = null;
+    let appliedCoupon: { code: string; discountType: string; value: number; assignedToCreator?: string } | null = null;
 
     if (couponCode) {
       const normalized = couponCode.trim().toUpperCase();
@@ -76,10 +76,17 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
           const expired = c.expiresAt?.toDate?.() ? new Date() > c.expiresAt.toDate() : false;
           const exhausted = c.usageLimit && (c.usedCount || 0) >= c.usageLimit;
           if (!expired && !exhausted) {
-            appliedCoupon = { code: normalized, discountType: c.discountType, value: c.value };
+            appliedCoupon = { code: normalized, discountType: c.discountType, value: c.value, assignedToCreator: c.assignedToCreator || undefined };
           }
         }
       }
+    }
+
+    // Auto-detect creator code from coupon if not explicitly provided
+    let resolvedCreatorCode = creatorCode || null;
+    if (appliedCoupon?.assignedToCreator && !resolvedCreatorCode) {
+      resolvedCreatorCode = appliedCoupon.assignedToCreator;
+      console.log(`[Coupon] Auto-detected creator code "${resolvedCreatorCode}" from coupon "${appliedCoupon.code}"`);
     }
 
     const stripePrice = await stripe.prices.retrieve(product.stripePriceId);
@@ -93,8 +100,8 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
     finalMetadata.originalPrice = String(effectivePrice);
 
     // Look up creator and store commission percent in metadata
-    if (creatorCode) {
-      const normalizedCreator = creatorCode.trim().toUpperCase();
+    if (resolvedCreatorCode) {
+      const normalizedCreator = resolvedCreatorCode.trim().toUpperCase();
       finalMetadata.creatorCode = normalizedCreator;
       try {
         const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
@@ -324,9 +331,10 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
       // Process creator code commission if present (webhook may be blocked by idempotency check)
       const creatorCode = session.metadata?.creatorCode;
-      if (creatorCode) {
+      const normalizedCreatorCode = creatorCode?.trim().toUpperCase();
+      if (normalizedCreatorCode) {
         try {
-          console.log(`[Creator] Verify: Processing creator code "${creatorCode}"`);
+          console.log(`[Creator] Verify: Processing creator code "${normalizedCreatorCode}"`);
 
           // Determine the original product price (before any discount)
           const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
@@ -339,13 +347,13 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
           console.log(`[Creator] Verify: original=₹${originalPrice}, paid=₹${amountPaid}, discount=₹${discountApplied}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
 
-          const creatorQuery = await db.collection('creator_codes').where('code', '==', creatorCode).limit(1).get();
+          const creatorQuery = await db.collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
           if (!creatorQuery.empty) {
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
 
             await db.collection('creator_sales_log').add({
-              creatorCode,
+              creatorCode: normalizedCreatorCode,
               creatorName: creatorData.creatorName || 'Creator',
               orderId: sessionId,
               productId,
@@ -368,9 +376,9 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
               updatedAt: admin.firestore.FieldValue.serverTimestamp(),
             });
 
-            console.log(`[Creator] Commission logged via verify: ${creatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+            console.log(`[Creator] Commission logged via verify: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
           } else {
-            console.warn(`[Creator] Verify: Code "${creatorCode}" not found in creator_codes`);
+            console.warn(`[Creator] Verify: Code "${normalizedCreatorCode}" not found in creator_codes`);
             const allCreators = await db.collection('creator_codes').limit(10).get();
             console.log(`[Creator] Existing codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));
           }

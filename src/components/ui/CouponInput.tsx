@@ -112,6 +112,39 @@ export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInpu
     ? 'text-emerald-400'
     : 'text-white/80';
 
+  if (status === 'valid' && validatedData) {
+    return (
+      <div className="bg-emerald-950/50 border border-emerald-500/40 rounded-xl p-3.5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0">
+            <CheckCircle2 size={16} className="text-emerald-400" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-emerald-300 text-sm font-semibold truncate">
+              {validatedData.code}
+            </div>
+            <div className="text-emerald-400/70 text-xs">
+              {validatedData.discountType === 'percentage'
+                ? `${validatedData.value}% OFF`
+                : `${formatCurrency(validatedData.value || 0)} OFF`
+              }
+              {validatedData.description ? ` — ${validatedData.description}` : ''}
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={handleClear}
+          disabled={disabled}
+          className="p-2 hover:bg-emerald-500/15 rounded-lg transition-colors text-emerald-400/60 hover:text-emerald-300 disabled:opacity-50 shrink-0"
+          type="button"
+          title="Remove coupon"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex gap-2 items-stretch">
@@ -130,29 +163,18 @@ export function CouponInput({ onValidated, disabled, initialCoupon }: CouponInpu
           className={`flex-1 px-3.5 py-2.5 bg-[#1a1a2e] ${borderColor} ${textColor} text-sm uppercase rounded-lg outline-none transition-colors placeholder:text-white/20 disabled:opacity-50`}
         />
 
-        {status === 'valid' ? (
-          <button
-            onClick={handleClear}
-            className="px-4 py-2.5 bg-white/5 text-white/50 border border-white/10 rounded-lg text-sm hover:bg-white/10 hover:text-white/70 transition-colors flex items-center gap-1.5"
-            type="button"
-          >
-            <X size={14} />
-            Remove
-          </button>
-        ) : (
-          <button
-            onClick={validate}
-            disabled={isDisabled || !code.trim()}
-            className="px-4 py-2.5 bg-[#d1f34d] text-[#0a0a1a] rounded-lg text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-            type="button"
-          >
-            {status === 'validating' ? (
-              <><Loader2 size={14} className="animate-spin" /> Validating</>
-            ) : (
-              'Apply'
-            )}
-          </button>
-        )}
+        <button
+          onClick={validate}
+          disabled={isDisabled || !code.trim()}
+          className="px-4 py-2.5 bg-[#d1f34d] text-[#0a0a1a] rounded-lg text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+          type="button"
+        >
+          {status === 'validating' ? (
+            <><Loader2 size={14} className="animate-spin" /> Validating</>
+          ) : (
+            'Apply'
+          )}
+        </button>
       </div>
 
       {status === 'valid' && validatedData && (
