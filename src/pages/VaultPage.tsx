@@ -548,43 +548,86 @@ export const VaultPage = () => {
               >
                 {registeredWorkshops.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {registeredWorkshops.map(workshop => (
-                      <div key={workshop.id} className="p-8 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col justify-between group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
-                        <div className="space-y-4 text-left">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2.5 py-0.5 rounded-full bg-red-50 text-red-650 border border-red-200 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
-                              <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> Live Session
-                            </span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/50">
-                              Workshop
-                            </span>
-                          </div>
-                          <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight">{workshop.title}</h3>
-                          <p className="text-xs text-[#424754] leading-relaxed font-semibold">{workshop.description}</p>
-                          
-                          <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-[#c2c6d6]/10 text-xs font-bold text-[#424754]/75">
-                            <div className="flex items-center gap-1.5">
-                              <Clock size={14} className="text-[#d1f34d]" />
-                              <span>{workshop.date || 'TBD'}</span>
+                    {(() => {
+                      const upcomingList = registeredWorkshops.filter(w =>
+                        w.workshopStatus === 'UPCOMING' || w.workshopStatus === 'LIVE'
+                      );
+                      const pastList = registeredWorkshops.filter(w =>
+                        w.workshopStatus === 'COMPLETED' || w.workshopStatus === 'CANCELLED'
+                      );
+                      const hasStatus = upcomingList.length > 0 || pastList.length > 0;
+                      const displayList = hasStatus ? [...upcomingList, ...pastList] : registeredWorkshops;
+                      return displayList.flatMap(workshop => {
+                        const isLive = workshop.workshopStatus === 'LIVE';
+                        const isUpcoming = workshop.workshopStatus === 'UPCOMING';
+                        const showJoin = isLive && workshop.meetingLink;
+                        const el = (
+                          <div key={workshop.id} className="p-8 rounded-[32px] bg-white border border-[#c2c6d6]/30 flex flex-col justify-between group hover:border-[#d1f34d] hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 shadow-sm">
+                            <div className="space-y-4 text-left">
+                              <div className="flex items-center gap-2">
+                                {isLive ? (
+                                  <span className="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                    <span className="w-1 h-1 rounded-full bg-green-500 animate-pulse" /> Live Now
+                                  </span>
+                                ) : isUpcoming ? (
+                                  <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                    <Sparkles size={11} /> Upcoming
+                                  </span>
+                                ) : (
+                                  <span className="px-2.5 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-200 text-[9px] font-bold uppercase tracking-wider">
+                                    {workshop.workshopStatus === 'CANCELLED' ? 'Cancelled' : 'Completed'}
+                                  </span>
+                                )}
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-[#424754]/50">
+                                  Workshop
+                                </span>
+                              </div>
+                              <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight">{workshop.title}</h3>
+                              <p className="text-xs text-[#424754] leading-relaxed font-semibold">{workshop.description}</p>
+                              <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-[#c2c6d6]/10 text-xs font-bold text-[#424754]/75">
+                                <div className="flex items-center gap-1.5">
+                                  <Clock size={14} className="text-[#d1f34d]" />
+                                  <span>{workshop.date || 'TBD'}{workshop.time ? ` • ${workshop.time}` : ''}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 justify-end">
+                                  <span>Instructor: {workshop.instructor || 'Ayush Paul'}</span>
+                                </div>
+                              </div>
+                              {showJoin && workshop.meetingPassword && (
+                                <div className="text-xs font-bold text-[#424754]/80 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 flex items-center gap-2">
+                                  <Lock size={12} className="text-[#d1f34d]" />
+                                  <span>Password: <span className="font-mono text-[#0b1c30]">{workshop.meetingPassword}</span></span>
+                                </div>
+                              )}
+                              {workshop.workshopStartTime && (
+                                <div className="text-[10px] font-semibold text-[#424754]/60 flex items-center gap-1.5">
+                                  <Clock size={11} className="text-[#d1f34d]" />
+                                  <span>Scheduled: {workshop.workshopStartTime}</span>
+                                </div>
+                              )}
                             </div>
-                            <div className="flex items-center gap-1.5 justify-end">
-                              <span>Instructor: {workshop.instructor || 'Ayush Paul'}</span>
-                            </div>
+                            {showJoin ? (
+                              <MagneticButton className="w-full mt-6">
+                                <a href={workshop.meetingLink} target="_blank" rel="noopener noreferrer"
+                                  className="w-full py-3.5 rounded-full bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
+                                >
+                                  <Play size={12} className="fill-current" /> Join Live Workshop <ArrowUpRight size={14} />
+                                </a>
+                              </MagneticButton>
+                            ) : isUpcoming ? (
+                              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
+                                Waiting for Workshop to Start
+                              </div>
+                            ) : (
+                              <div className="w-full mt-6 py-3.5 rounded-full bg-gray-100 text-[#424754]/50 font-bold text-xs uppercase tracking-wider text-center cursor-default">
+                                {workshop.workshopStatus === 'CANCELLED' ? 'Session Cancelled' : 'Session Ended'}
+                              </div>
+                            )}
                           </div>
-                        </div>
-
-                        <MagneticButton className="w-full mt-6">
-                          <a 
-                            href={workshop.meetingLink || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer h-11"
-                          >
-                            Join Live Workspace <ArrowUpRight size={14} />
-                          </a>
-                        </MagneticButton>
-                      </div>
-                    ))}
+                        );
+                        return el;
+                      });
+                    })()}
                   </div>
                 ) : (
                   <div className="w-full p-12 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col items-center justify-center text-center shadow-sm">

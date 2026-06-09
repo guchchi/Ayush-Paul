@@ -21,6 +21,9 @@ export interface Workshop {
   category?: string;
   instructor?: string;
   meetingLink?: string;
+  meetingPassword?: string;
+  workshopStartTime?: string;
+  workshopStatus?: string;
   description?: string;
   maxParticipants?: number;
   tags?: string[];

@@ -225,6 +225,48 @@ export interface CreatorCode {
   updatedAt: any;
 }
 
+// --- Workshop System ---
+
+export type WorkshopStatus = 'UPCOMING' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
+
+export interface Workshop {
+  id: string;
+  title: string;
+  description: string;
+  topic?: string;
+  date: string;
+  time?: string;
+  duration?: string;
+  instructor?: string;
+  meetingLink?: string;
+  meetingPassword?: string;
+  workshopStartTime?: string;
+  workshopStatus: WorkshopStatus;
+  isPublished: boolean;
+  isFree: boolean;
+  price?: number;
+  totalSeats?: number;
+  seatsLeft?: number;
+  category?: string;
+  tags?: string[];
+  thumbnail?: string;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface WorkshopRegistration {
+  id?: string;
+  userId?: string;
+  email: string;
+  name?: string;
+  workshopId: string;
+  workshopName: string;
+  source: string;
+  status: string;
+  registeredAt: any;
+  notifiedAt?: any;
+}
+
 export interface CreatorSaleLog {
   id?: string;
   creatorCode: string;

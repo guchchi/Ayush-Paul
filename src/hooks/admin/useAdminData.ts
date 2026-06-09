@@ -33,6 +33,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
   const [scheduledEmails, setScheduledEmails] = useState<any[]>([]);
   const [shareEvents, setShareEvents] = useState<any[]>([]);
   const [streakMilestones, setStreakMilestones] = useState<any[]>([]);
+  const [workshops, setWorkshops] = useState<any[]>([]);
+  const [workshopRegistrations, setWorkshopRegistrations] = useState<any[]>([]);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>({
     isQuotaExceeded: false,
     lastError: null,
@@ -257,6 +259,22 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       (error) => { handleFirestoreError(error, OperationType.GET, 'streak_milestones'); }
     );
 
+    // Workshops listener
+    const qWorkshops = query(collection(db, 'workshops'), orderBy('createdAt', 'desc'));
+    const unsubscribeWorkshops = onSnapshot(
+      qWorkshops,
+      (snapshot) => { setWorkshops(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'workshops'); }
+    );
+
+    // Workshop Registrations listener
+    const qWorkshopRegistrations = query(collection(db, 'workshop_registrations'), orderBy('registeredAt', 'desc'));
+    const unsubscribeWorkshopRegistrations = onSnapshot(
+      qWorkshopRegistrations,
+      (snapshot) => { setWorkshopRegistrations(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))); },
+      (error) => { handleFirestoreError(error, OperationType.GET, 'workshop_registrations'); }
+    );
+
     // Creator Affiliate listeners
     const qCreatorCodes = query(
       collection(db, "creator_codes"),
@@ -304,6 +322,8 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
       unsubscribeScheduledEmails();
       unsubscribeShareEvents();
       unsubscribeStreakMilestones();
+      unsubscribeWorkshops();
+      unsubscribeWorkshopRegistrations();
     };
   }, []);
 
@@ -340,9 +360,13 @@ export const useAdminData = (addToast: (message: string, type?: "info" | "succes
     setShareEvents,
     streakMilestones,
     setStreakMilestones,
+    workshops,
+    setWorkshops,
+    workshopRegistrations,
+    setWorkshopRegistrations,
     systemStatus,
     setSystemStatus,
     forceRefresh,
-    refreshSecondary: fetchSecondaryData,
+    refreshSecondary,
   };
 };

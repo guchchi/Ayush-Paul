@@ -35,6 +35,8 @@ import {
   CalendarClock,
   Share2,
   Trophy,
+  Video,
+  ClipboardList,
 } from "lucide-react";
 import {
   auth,
@@ -84,6 +86,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     | "coupons"
     | "analytics"
     | "scheduled_emails"
+    | "workshops"
+    | "workshop_registrations"
   >("dashboard");
 
   const [showComposeModal, setShowComposeModal] = useState(false);
@@ -122,6 +126,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     scheduledEmails,
     shareEvents,
     streakMilestones,
+    workshops,
+    workshopRegistrations,
     systemStatus,
     setSystemStatus,
     forceRefresh,
@@ -158,6 +164,10 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
         return shareEvents;
       case "streak_milestones":
         return streakMilestones;
+      case "workshops":
+        return workshops;
+      case "workshop_registrations":
+        return workshopRegistrations;
       default:
         return [];
     }
@@ -459,6 +469,8 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               { id: "coupons", label: "Coupons", icon: <Tag size={16} /> },
               { id: "analytics", label: "Revenue Analytics", icon: <BarChart3 size={16} /> },
               { id: "scheduled_emails", label: "Email Queue", icon: <CalendarClock size={16} /> },
+              { id: "workshops", label: "Workshops", icon: <Video size={16} /> },
+              { id: "workshop_registrations", label: "Workshop Regs", icon: <ClipboardList size={16} /> },
               { id: "users", label: "Users Registry", icon: <Users size={16} /> },
               { id: "purchases", label: "Orders Ledger", icon: <ShoppingCart size={16} /> },
             ].map((tab) => (
@@ -944,8 +956,70 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
               </div>
             )}
 
+            {/* Workshops tab with per-row live notification action */}
+            {activeTab === "workshops" && currentSchema && (
+              <div className="space-y-6">
+                <SchemaDrivenList
+                  schema={currentSchema}
+                  items={getCollectionData(currentSchemaName)}
+                  onEdit={handleEditRecord}
+                  onDelete={handleDelete}
+                  onCreateNew={() => { setCurrentRecord(null); setIsEditing(true); }}
+                  onRowAction={{
+                    label: "Notify Registrants",
+                    icon: "Bell",
+                    condition: (item) => item.workshopStatus === "LIVE",
+                    handler: async (item) => {
+                      if (!item?.id) return;
+                      try {
+                        const res = await fetch("/api/notify-workshop", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ action: "send-live-notification", workshopId: item.id }),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          addToast(`Notified ${data.notified} registrant(s) about "${item.title}".`, "success");
+                        } else {
+                          addToast(data.error || "Failed to send notifications.", "error");
+                        }
+                      } catch (err: any) {
+                        addToast("Failed to send notifications.", "error");
+                      }
+                    },
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Workshop Registrations tab */}
+            {activeTab === "workshop_registrations" && currentSchema && (
+              <div className="space-y-6">
+                <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+                      <ClipboardList size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Workshop Registrations</h3>
+                      <p className="text-white/40 text-xs">
+                        {workshopRegistrations.length} total registration(s)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <SchemaDrivenList
+                  schema={currentSchema}
+                  items={getCollectionData(currentSchemaName)}
+                  onEdit={handleEditRecord}
+                  onDelete={handleDelete}
+                  onCreateNew={undefined}
+                />
+              </div>
+            )}
+
             {/* Dynamic CMS Listing views for other collections */}
-            {currentSchema && activeTab !== "creators" && activeTab !== "coupons" && activeTab !== "analytics" && activeTab !== "scheduled_emails" && (
+            {currentSchema && activeTab !== "creators" && activeTab !== "coupons" && activeTab !== "analytics" && activeTab !== "scheduled_emails" && activeTab !== "workshops" && activeTab !== "workshop_registrations" && (
               <SchemaDrivenList
                 schema={currentSchema}
                 items={getCollectionData(currentSchemaName)}

@@ -12,7 +12,13 @@ interface SchemaDrivenListProps {
   onSpecialAction?: {
     label: string;
     icon: string;
-    handler: () => void;
+    handler: (item?: any) => void;
+  };
+  onRowAction?: {
+    label: string;
+    icon: string;
+    handler: (item: any) => void;
+    condition?: (item: any) => boolean;
   };
 }
 
@@ -29,6 +35,7 @@ export const SchemaDrivenList = ({
   onDelete,
   onCreateNew,
   onSpecialAction,
+  onRowAction,
 }: SchemaDrivenListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -208,6 +215,15 @@ export const SchemaDrivenList = ({
 
                   {/* Actions */}
                   <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {onRowAction && (!onRowAction.condition || onRowAction.condition(item)) && (
+                      <button
+                        onClick={() => onRowAction.handler(item)}
+                        className="p-2 rounded-lg bg-white/5 hover:bg-green-500/10 hover:text-green-500 text-white/40 transition-colors"
+                        title={onRowAction.label}
+                      >
+                        <LucideIcon name={onRowAction.icon} size={14} />
+                      </button>
+                    )}
                     {schema.allowEdit && (
                       <button
                         onClick={() => onEdit(item)}
