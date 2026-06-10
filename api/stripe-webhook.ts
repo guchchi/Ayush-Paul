@@ -158,9 +158,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
-      // 0. Idempotency Check: Verify if this session has already been processed
-      const purchaseQuery = await getDb().collection("purchases").where("stripeSessionId", "==", session.id).get();
-      if (!purchaseQuery.empty) {
+      // 0. Idempotency Check: use session ID as doc key for strong consistency
+      const purchaseRef = getDb().collection("purchases").doc(session.id);
+      const purchaseSnap = await purchaseRef.get();
+      if (purchaseSnap.exists) {
         console.log(`[Idempotency] Webhook already processed for session: ${session.id}. Skipping.`);
         return res.status(200).json({ received: true, status: "already_processed" });
       }
@@ -176,12 +177,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       }, { merge: true });
 
-      // 2. Record the purchase in a 'purchases' collection for analytics
+      // 2. Record the purchase — use session ID as doc key for idempotency
       const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
-      await getDb().collection("purchases").add({
+      await purchaseRef.set({
         userId,
         productId,
-        stripeSessionId: session.id,
         amountTotal: session.amount_total,
         originalPrice: Math.round(originalPrice * 100),
         currency: session.currency,

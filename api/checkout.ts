@@ -323,11 +323,13 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
-    const purchaseQuery = await getDb().collection("purchases").where("stripeSessionId", "==", sessionId).get();
-    if (purchaseQuery.empty) {
+    // Use sessionId as doc ID for strong consistency (eventual-consistency queries miss recent writes)
+    const purchaseRef = getDb().collection("purchases").doc(sessionId);
+    const purchaseSnap = await purchaseRef.get();
+    if (!purchaseSnap.exists) {
       const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
-      await getDb().collection("purchases").add({
-        userId, productId, stripeSessionId: sessionId,
+      await purchaseRef.set({
+        userId, productId,
         amountTotal: session.amount_total,
         originalPrice: Math.round(originalPrice * 100),
         currency: session.currency,
