@@ -157,6 +157,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "includedResources", label: "What's Included (Resources)", type: "array", placeholder: "PDF Blueprint, Templates..." },
       { name: "requirements", label: "Requirements / Prerequisites", type: "array", placeholder: "Basic internet, Laptop..." },
       { name: "faq", label: "FAQ (JSON array of {q, a} objects)", type: "text", placeholder: '[{"q": "Question?", "a": "Answer."}]' },
+      { name: "modules", label: "Blueprint Modules (JSON)", type: "text", placeholder: '[{"id":"m1","title":"Module 1","objective":"...","deliverables":["..."],"templatesIncluded":["..."],"estimatedTime":"30 mins","outcome":"..."}]' },
       { name: "features", label: "Blueprint Features (comma-separated string)", type: "string", placeholder: "Feature 1, Feature 2..." },
       { name: "isPublished", label: "Is Published", type: "boolean", defaultValue: true },
       { name: "isFeatured", label: "Featured in Catalog", type: "boolean", defaultValue: false },

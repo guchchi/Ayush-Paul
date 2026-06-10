@@ -165,11 +165,22 @@ export interface DigitalSystem {
   blueprintType?: string | null;
   estimatedImplementationTime?: string | null;
   faq?: { q: string; a: string }[] | null;
+  modules?: BlueprintModule[] | null;
   
   // New Digital System Architecture fields
   resources?: ResourceItem[];
   changelog?: ChangelogEntry[];
   architectureDiagramURL?: string;
+}
+
+export interface BlueprintModule {
+  id: string;
+  title: string;
+  objective: string;
+  deliverables: string[];
+  templatesIncluded: string[];
+  estimatedTime: string;
+  outcome: string;
 }
 
 export type Product = DigitalSystem;
