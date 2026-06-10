@@ -257,16 +257,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
               });
 
+              // Unique customer check: only increment totalCustomers if this userId is new for this creator
+              const existingCustomerQuery = await getDb().collection('creator_sales_log')
+                .where('creatorCode', '==', normalizedCreatorCode)
+                .where('userId', '==', userId)
+                .limit(1)
+                .get();
+              const isNewCustomer = existingCustomerQuery.empty;
+
+              console.log('[CREATOR UPDATE DEBUG]', {
+                creatorCode: normalizedCreatorCode,
+                userId,
+                originalPrice,
+                commission,
+                isNewCustomer,
+              });
+
               // Update creator stats
-              await getDb().collection('creator_codes').doc(creatorDoc.id).update({
+              const updatePayload: Record<string, any> = {
                 totalSales: admin.firestore.FieldValue.increment(1),
                 totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
                 totalCommission: admin.firestore.FieldValue.increment(commission),
-                totalCustomers: admin.firestore.FieldValue.increment(1),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-              });
+              };
+              if (isNewCustomer) {
+                updatePayload.totalCustomers = admin.firestore.FieldValue.increment(1);
+              }
 
-              console.log(`[Creator] Commission logged: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}`);
+              await getDb().collection('creator_codes').doc(creatorDoc.id).update(updatePayload);
+
+              console.log(`[Creator] Commission logged: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}, newCustomer=${isNewCustomer}`);
             }
           } else {
             console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes (queried by code field)`);
