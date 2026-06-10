@@ -1,13 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Image } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
-  images: string[];
+  images?: string[] | null;
   title: string;
 }
 
-export const BlueprintPreviewCarousel = ({ images, title }: Props) => {
+export const BlueprintPreviewCarousel = ({ images = [], title }: Props) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [loaded, setLoaded] = useState<Record<number, boolean>>({});
 
@@ -15,7 +15,7 @@ export const BlueprintPreviewCarousel = ({ images, title }: Props) => {
     setCurrentIdx(Math.max(0, Math.min(idx, images.length - 1)));
   }, [images.length]);
 
-  if (!images || images.length === 0) return null;
+  if (images.length === 0) return null;
 
   return (
     <section>
