@@ -342,7 +342,138 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      // Coupon usage + creator commission are handled exclusively by stripe-webhook.ts (single source of truth)
+      // ── Track coupon usage (idempotent: check lastUsedSessionId) ──
+      const couponCode = session.metadata?.couponCode;
+      console.log(`[Verify] Session metadata: couponCode=${couponCode || 'none'}, creatorCode=${session.metadata?.creatorCode || 'none'}, productId=${productId}`);
+      if (couponCode) {
+        try {
+          const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
+          if (!couponQuery.empty) {
+            const couponDoc = couponQuery.docs[0];
+            const couponData = couponDoc.data();
+            if (couponData.lastUsedSessionId === sessionId) {
+              console.log(`[Verify] Coupon dedup: session ${sessionId} already counted for ${couponCode}, skipping`);
+            } else {
+              const before = couponData.usedCount || 0;
+              await getDb().collection('coupons').doc(couponDoc.id).update({
+                usedCount: admin.firestore.FieldValue.increment(1),
+                lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+                lastUsedBy: userId,
+                lastUsedProduct: productId,
+                lastUsedSessionId: sessionId,
+              }).catch((err: any) => {
+                console.warn(`[Verify] Coupon increment failed for ${couponCode}: ${err.message}`);
+              });
+              console.log(`[Verify] Coupon incremented ${couponCode}: ${before} → ${before + 1}`);
+            }
+          }
+        } catch (e) {
+          console.error('[Verify] Coupon lookup failed:', e);
+        }
+      }
+
+      // ── Track creator commission (idempotent: check existing orderId in sales log) ──
+      let creatorCode = session.metadata?.creatorCode;
+      let normalizedCreatorCode = creatorCode?.trim().toUpperCase();
+
+      // Fallback: detect creator from coupon if not in metadata
+      if (!normalizedCreatorCode && couponCode) {
+        try {
+          const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
+          if (!couponQuery.empty) {
+            const couponData = couponQuery.docs[0].data();
+            if (couponData.assignedToCreator) {
+              normalizedCreatorCode = couponData.assignedToCreator.trim().toUpperCase();
+              console.log(`[Verify] Detected creator "${normalizedCreatorCode}" from coupon "${couponCode}".assignedToCreator`);
+            }
+          }
+        } catch (e) {
+          console.error('[Verify] Failed to look up coupon for creator fallback:', e);
+        }
+      }
+
+      if (normalizedCreatorCode) {
+        try {
+          // Dedup: check if this orderId already logged
+          const existingLog = await getDb().collection('creator_sales_log')
+            .where('orderId', '==', sessionId)
+            .limit(1)
+            .get();
+          if (!existingLog.empty) {
+            console.log(`[Verify] Creator dedup: session ${sessionId} already logged for ${normalizedCreatorCode}, skipping`);
+          } else {
+            const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
+            const amountPaid = (session.amount_total || 0) / 100;
+            const discountApplied = Math.max(0, originalPrice - amountPaid);
+            const commissionPercent = Number(session.metadata?.commissionPercent) || 10;
+            const commission = +(originalPrice * commissionPercent / 100).toFixed(2);
+
+            console.log(`[Verify] Creator: original=₹${originalPrice}, paid=₹${amountPaid}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
+
+            const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+            if (!creatorQuery.empty) {
+              const creatorDoc = creatorQuery.docs[0];
+              const creatorData = creatorDoc.data()!;
+
+              if (creatorData.isActive === false) {
+                console.warn(`[Verify] Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
+              } else {
+                // Write sales log
+                await getDb().collection('creator_sales_log').add({
+                  creatorCode: normalizedCreatorCode,
+                  creatorName: creatorData.creatorName || 'Creator',
+                  orderId: sessionId,
+                  productId,
+                  productTitle: session.metadata?.productTitle || '',
+                  userId,
+                  originalPrice,
+                  paidAmount: amountPaid,
+                  discountApplied,
+                  commission,
+                  commissionPercent,
+                  currency: session.currency || 'inr',
+                  timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                });
+
+                // Unique customer check
+                const existingCustomerQuery = await getDb().collection('creator_sales_log')
+                  .where('creatorCode', '==', normalizedCreatorCode)
+                  .where('userId', '==', userId)
+                  .limit(1)
+                  .get();
+                const isNewCustomer = existingCustomerQuery.empty;
+
+                console.log('[VERIFY CREATOR UPDATE DEBUG]', {
+                  creatorCode: normalizedCreatorCode,
+                  userId,
+                  originalPrice,
+                  commission,
+                  isNewCustomer,
+                });
+
+                // Update creator stats
+                const updatePayload: Record<string, any> = {
+                  totalSales: admin.firestore.FieldValue.increment(1),
+                  totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
+                  totalCommission: admin.firestore.FieldValue.increment(commission),
+                  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                };
+                if (isNewCustomer) {
+                  updatePayload.totalCustomers = admin.firestore.FieldValue.increment(1);
+                }
+
+                await getDb().collection('creator_codes').doc(creatorDoc.id).update(updatePayload);
+
+                console.log(`[Verify] Commission logged: ${normalizedCreatorCode} earned ₹${commission} on ${productId}, newCustomer=${isNewCustomer}`);
+              }
+            } else {
+              console.warn(`[Verify] Code "${normalizedCreatorCode}" not found in creator_codes`);
+            }
+          }
+        } catch (creatorError) {
+          console.error('[Verify] Failed to process creator commission:', creatorError);
+        }
+      }
     }
 
     return res.status(200).json({ success: true, productId });
