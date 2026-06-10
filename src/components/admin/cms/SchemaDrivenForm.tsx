@@ -20,6 +20,21 @@ import {
 } from "../../../firebase";
 import { LucideIcon } from "./SchemaDrivenList";
 
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
 interface SchemaDrivenFormProps {
   schema: CollectionSchema;
   initialData?: any;
@@ -112,6 +127,10 @@ export const SchemaDrivenForm = ({
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)/g, "");
+      }
+      // Auto-extract YouTube video ID from URL
+      if (fieldName === "youtubeVideoUrl" && schema.collectionName === "products") {
+        updated.youtubeVideoId = extractYouTubeId(value) || "";
       }
       return updated;
     });
@@ -599,6 +618,26 @@ export const SchemaDrivenForm = ({
               </div>
             </div>
           )}
+
+          {/* YouTube Preview for Products */}
+          {schema.collectionName === "products" && formData.youtubeVideoUrl && (() => {
+            const videoId = extractYouTubeId(formData.youtubeVideoUrl);
+            if (!videoId) return null;
+            return (
+              <div className="p-6 bg-white/5 rounded-[2rem] border border-white/10 space-y-4">
+                <h4 className="text-sm font-bold text-white/40">YouTube Video Preview</h4>
+                <div className="aspect-video rounded-xl overflow-hidden bg-black/50">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    title="YouTube preview"
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Syllabus builder for courses */}
           {schema.collectionName === "courses" && initialData?.id && (

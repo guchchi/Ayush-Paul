@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { formatCurrency, computeSavings } from '../lib/format';
 import { motion } from 'motion/react';
-import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ShieldCheck, Code, ArrowRight, Download, Check, X, Zap, Cpu, Activity, Layers, Terminal, Lock, Play, Users, BookOpen, Clock, BarChart3, Globe, Calendar, Tag, Timer } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import { Product } from '../types';
@@ -307,13 +307,105 @@ export const BlueprintDetailPage = () => {
               </div>
             )}
             
-            {/* Author */}
-            {product.author && (
-              <div className="flex items-center gap-3 mt-2 text-left">
-                <img src={product.author.avatar || `https://ui-avatars.com/api/?name=${product.author.name}`} alt={product.author.name} className="w-8 h-8 rounded-full border border-[#c2c6d6]/30" />
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-[#0b1c30] leading-none">{product.author.name}</span>
-                  <span className="text-[10px] text-[#424754]/60 uppercase tracking-wider font-bold mt-1">{product.author.role}</span>
+            {/* Author (supports flat fields + legacy author object) */}
+            {(() => {
+              const authName = product.authorName || product.author?.name;
+              const authRole = product.authorRole || product.author?.role;
+              const authPhoto = product.authorPhoto || product.author?.avatar;
+              if (!authName) return null;
+              return (
+                <div className="flex items-center gap-3 mt-2 text-left">
+                  <img src={authPhoto || `https://ui-avatars.com/api/?name=${authName}`} alt={authName} className="w-10 h-10 rounded-full border border-[#c2c6d6]/30" />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-extrabold text-[#0b1c30] leading-none">{authName}</span>
+                    {authRole && <span className="text-[10px] text-[#424754]/60 uppercase tracking-wider font-bold mt-1">{authRole}</span>}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Blueprint Facts */}
+            {[product.pageCount, product.readingTime, product.difficultyLevel, product.language, product.lastUpdated, product.version, product.estimatedImplementationTime].some(Boolean) && (
+              <div className="mt-8">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 block mb-4">Blueprint Facts</span>
+                <div className="grid grid-cols-2 gap-3">
+                  {product.pageCount && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                        <BookOpen size={14} className="text-[#0058be]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Pages</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">{product.pageCount}</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.readingTime && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
+                        <Clock size={14} className="text-[#f57f17]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Reading Time</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">{product.readingTime} mins</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.difficultyLevel && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                        <BarChart3 size={14} className="text-[#6b35ff]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Difficulty</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30] capitalize">{product.difficultyLevel}</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.language && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                        <Globe size={14} className="text-[#558b2f]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Language</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">{product.language}</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.lastUpdated && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#fce4ec] border border-[#f8bbd0] flex items-center justify-center shrink-0">
+                        <Calendar size={14} className="text-[#c62828]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Last Updated</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">{product.lastUpdated}</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.version && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#e0f7fa] border border-[#b2ebf2] flex items-center justify-center shrink-0">
+                        <Tag size={14} className="text-[#00838f]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Version</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">v{product.version}</p>
+                      </div>
+                    </div>
+                  )}
+                  {product.estimatedImplementationTime && (
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                      <div className="w-8 h-8 rounded-xl bg-[#e8f5e9] border border-[#c8e6c9] flex items-center justify-center shrink-0">
+                        <Timer size={14} className="text-[#2e7d32]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Implementation</p>
+                        <p className="text-xs font-extrabold text-[#0b1c30]">{product.estimatedImplementationTime}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -375,6 +467,214 @@ export const BlueprintDetailPage = () => {
               className="w-full h-full object-cover opacity-90"
             />
           </div>
+        </div>
+
+        {/* Watch Before You Download Section */}
+        {product.youtubeVideoId && (
+          <div className="max-w-4xl mx-auto mb-24">
+            <div className="text-center mb-10">
+              <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4 flex items-center justify-center gap-2">
+                <Play size={12} className="text-[#0058be]" /> Video Introduction
+              </h2>
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Watch Before You Download</h3>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+              <div className="lg:col-span-2 rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
+                <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover" />
+              </div>
+              <div className="lg:col-span-3">
+                <div className="rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
+                  <div className="aspect-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${product.youtubeVideoId}`}
+                      title={`${product.title} introduction`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 max-w-3xl mx-auto">
+              <h4 className="text-sm font-extrabold tracking-tight text-[#0b1c30] text-center mb-6">What you'll learn in this blueprint</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                    <Zap size={14} className="text-[#0058be]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-extrabold text-[#0b1c30]">What it solves</p>
+                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.description}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                    <Users size={14} className="text-[#558b2f]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-extrabold text-[#0b1c30]">Who it's for</p>
+                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.tags?.slice(0, 3).join(', ') || 'Developers & technical founders'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
+                    <Activity size={14} className="text-[#f57f17]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-extrabold text-[#0b1c30]">Expected outcome</p>
+                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">Ready-to-use implementation with production-grade configuration</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                    <Code size={14} className="text-[#6b35ff]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-extrabold text-[#0b1c30]">Why it was created</p>
+                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">To accelerate your development with battle-tested patterns</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Sales & Trust Sections ── */}
+        <div className="max-w-4xl mx-auto mb-24 space-y-24">
+          {/* 1. Problem This Blueprint Solves */}
+          {product.problemSolved && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">The Problem</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What This Blueprint Solves</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-8 rounded-[32px] bg-white border border-red-200 shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-red-400" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center">
+                      <X size={18} className="text-red-500" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">Before</span>
+                  </div>
+                  <p className="text-base font-semibold text-[#424754] leading-relaxed">{product.problemSolved}</p>
+                </div>
+                <div className="p-8 rounded-[32px] bg-white border border-green-200 shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-green-400" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center">
+                      <Check size={18} className="text-green-600" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-green-600">After</span>
+                  </div>
+                  <p className="text-base font-extrabold text-[#0b1c30] leading-relaxed">Full implementation deployed and running.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Who This Is For */}
+          {product.idealFor && product.idealFor.length > 0 && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Ideal Audience</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is For</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {product.idealFor.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-green-200 hover:bg-green-50/30 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                      <Check size={18} className="text-[#558b2f]" />
+                    </div>
+                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 3. Who This Is NOT For */}
+          {product.notFor && product.notFor.length > 0 && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Not Recommended For</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is NOT For</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {product.notFor.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-red-100 shadow-sm hover:border-red-200 hover:bg-red-50/30 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center shrink-0">
+                      <X size={18} className="text-red-500" />
+                    </div>
+                    <span className="text-sm font-bold text-[#424754]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 4. What You'll Get */}
+          {product.includedResources && product.includedResources.length > 0 && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Deliverables</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What You'll Get</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {product.includedResources.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#0058be]/20 hover:bg-[#eff4ff]/50 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                      <Layers size={18} className="text-[#0058be]" />
+                    </div>
+                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Expected Outcomes */}
+          {product.outcomes && product.outcomes.length > 0 && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Results</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Expected Outcomes</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {product.outcomes.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#d1f34d]/40 hover:bg-[#d1f34d]/5 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center shrink-0">
+                      <Zap size={18} className="text-[#0b1c30]" />
+                    </div>
+                    <span className="text-sm font-extrabold text-[#0b1c30]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 6. Requirements */}
+          {product.requirements && product.requirements.length > 0 && (
+            <div>
+              <div className="text-center mb-12">
+                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Prerequisites</h2>
+                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Requirements</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {product.requirements.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#6b35ff]/20 hover:bg-[#f3efff]/50 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                      <ShieldCheck size={18} className="text-[#6b35ff]" />
+                    </div>
+                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Feature breakdown Section */}

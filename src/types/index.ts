@@ -120,6 +120,8 @@ export interface DigitalSystem {
   downloadFileURL: string | null; // For free products (direct access)
   freeFileUrl?: string | null;    // Free resource file (public, no purchase required)
   paidFileUrl?: string | null;    // Paid resource file (only after purchase, in Vault)
+  youtubeVideoUrl?: string | null; // YouTube introduction video URL
+  youtubeVideoId?: string | null;  // Extracted YouTube video ID
   previewImages: string[];
   features: ProductFeature[];
   comparisonFree: string[];
@@ -141,6 +143,27 @@ export interface DigitalSystem {
     role: string;
     avatar: string;
   };
+
+  // Sales & Trust sections
+  problemSolved?: string | null;
+  idealFor?: string[];
+  notFor?: string[];
+  outcomes?: string[];
+  includedResources?: string[];
+  requirements?: string[];
+
+  // Blueprint Metadata (flat fields override author object when set)
+  authorName?: string | null;
+  authorRole?: string | null;
+  authorPhoto?: string | null;
+  pageCount?: number | null;
+  readingTime?: number | null;
+  difficultyLevel?: string | null;
+  lastUpdated?: string | null;
+  version?: string | null;
+  language?: string | null;
+  blueprintType?: string | null;
+  estimatedImplementationTime?: string | null;
   
   // New Digital System Architecture fields
   resources?: ResourceItem[];
