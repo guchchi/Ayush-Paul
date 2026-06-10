@@ -164,6 +164,7 @@ export interface DigitalSystem {
   language?: string | null;
   blueprintType?: string | null;
   estimatedImplementationTime?: string | null;
+  faq?: { q: string; a: string }[] | null;
   
   // New Digital System Architecture fields
   resources?: ResourceItem[];

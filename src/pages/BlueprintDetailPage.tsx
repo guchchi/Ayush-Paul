@@ -15,6 +15,14 @@ import { BackButton } from '../components/ui/back-button';
 import { PricingBadge } from '../components/ui/PricingBadge';
 import { CouponInput, type CouponResult } from '../components/ui/CouponInput';
 import { secureDownload } from '../lib/download';
+import { BlueprintTrustBar } from '../components/sections/BlueprintTrustBar';
+import { BlueprintStickyPanel } from '../components/sections/BlueprintStickyPanel';
+import { BlueprintPreviewCarousel } from '../components/sections/BlueprintPreviewCarousel';
+import { BlueprintTimeline } from '../components/sections/BlueprintTimeline';
+import { BlueprintFAQ } from '../components/sections/BlueprintFAQ';
+import { BlueprintAuthorSection } from '../components/sections/BlueprintAuthorSection';
+import { BlueprintSocialProof } from '../components/sections/BlueprintSocialProof';
+import { BlueprintRelated } from '../components/sections/BlueprintRelated';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
@@ -31,24 +39,6 @@ export const BlueprintDetailPage = () => {
     const stored = sessionStorage.getItem('pending_coupon');
     return stored ? JSON.parse(stored) : null;
   });
-  const [telemetrySim, setTelemetrySim] = useState({
-    freq: 16.0,
-    temp: 42.4,
-    voltage: 11.8,
-    ping: 35
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTelemetrySim(prev => ({
-        freq: +(prev.freq + (Math.random() - 0.5) * 0.1).toFixed(2),
-        temp: +(prev.temp + (Math.random() - 0.5) * 0.2).toFixed(1),
-        voltage: +(prev.voltage + (Math.random() - 0.5) * 0.05).toFixed(2),
-        ping: Math.floor(prev.ping + (Math.random() - 0.5) * 4)
-      }));
-    }, 1500);
-    return () => clearInterval(timer);
-  }, []);
 
   // Persist coupon to sessionStorage for page refresh resilience
   useEffect(() => {
@@ -263,19 +253,19 @@ export const BlueprintDetailPage = () => {
       exit={{ opacity: 0 }}
       className="w-full min-h-screen bg-bg-primary text-[#0b1c30] pt-24 pb-32"
     >
-      <div className="max-w-6xl mx-auto px-6">
-        
+      <div className="max-w-[1400px] mx-auto px-6">
+
         {/* Navigation */}
         <div className="mb-10 text-left">
           <BackButton to="/blueprints" label="Back to Blueprints" />
         </div>
 
-        {/* Hero Conversion Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
-          
-          {/* Left: Product Info & CTAs */}
+        {/* ── Hero Section ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-16">
+
+          {/* Left: Product Info */}
           <div className="flex flex-col text-left">
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 flex-wrap">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#0058be] px-3 py-1.5 rounded-full bg-[#eff4ff] border border-[#dce9ff]">
                 {product.category}
               </span>
@@ -285,123 +275,238 @@ export const BlueprintDetailPage = () => {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter mb-6 leading-none text-[#0b1c30]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter mb-6 leading-none text-[#0b1c30]">
               {product.title}
             </h1>
 
-            <p className="text-base md:text-lg text-[#424754] leading-relaxed mb-10 max-w-xl font-medium">
+            <p className="text-base md:text-lg text-[#424754] leading-relaxed mb-8 max-w-xl font-medium">
               {product.description}
             </p>
 
-            {/* Quick Tech Specs */}
+            {/* Tags */}
             {product.tags && product.tags.length > 0 && (
-              <div className="flex flex-col gap-3 mb-10 text-left">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60">Engineered With</span>
-                <div className="flex flex-wrap gap-2">
-                  {product.tags.map((t, idx) => (
-                    <span key={idx} className="px-3 py-1 bg-white border border-[#c2c6d6]/30 rounded-full text-[10px] font-bold text-[#424754] uppercase tracking-wider shadow-sm">
-                      {t}
-                    </span>
-                  ))}
+              <div className="flex flex-wrap gap-2 mb-8">
+                {product.tags.map((t, idx) => (
+                  <span key={idx} className="px-3 py-1 bg-white border border-[#c2c6d6]/30 rounded-full text-[10px] font-bold text-[#424754] uppercase tracking-wider shadow-sm">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Author + Quick Stats inline */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              {(() => {
+                const authName = product.authorName || product.author?.name;
+                const authRole = product.authorRole || product.author?.role;
+                const authPhoto = product.authorPhoto || product.author?.avatar;
+                if (!authName) return null;
+                return (
+                  <div className="flex items-center gap-3">
+                    <img src={authPhoto || `https://ui-avatars.com/api/?name=${authName}`} alt={authName} className="w-9 h-9 rounded-full border border-[#c2c6d6]/30" />
+                    <div>
+                      <span className="text-sm font-extrabold text-[#0b1c30] leading-none">{authName}</span>
+                      {authRole && <span className="text-[9px] text-[#424754]/60 uppercase tracking-wider font-bold block mt-0.5">{authRole}</span>}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {(product.difficultyLevel || product.readingTime) && (
+                <>
+                  <div className="hidden sm:block w-px h-8 bg-[#c2c6d6]/20" />
+                  <div className="flex items-center gap-4">
+                    {product.difficultyLevel && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#424754]/70">
+                        <BarChart3 size={13} className="text-[#6b35ff]" />
+                        <span className="capitalize">{product.difficultyLevel}</span>
+                      </div>
+                    )}
+                    {product.readingTime && (
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#424754]/70">
+                        <Clock size={13} className="text-[#f57f17]" />
+                        {product.readingTime} min read
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Right: Video or Image */}
+          <div className="relative">
+            {product.youtubeVideoId ? (
+              <div className="rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
+                <div className="aspect-video">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${product.youtubeVideoId}`}
+                    title={`${product.title} introduction`}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
+                <img
+                  src={product.thumbnail}
+                  alt={product.title}
+                  className="w-full aspect-[4/3] object-cover"
+                />
+              </div>
+            )}
+
+            {/* Floating badge */}
+            <div className="absolute -bottom-3 -right-3 hidden sm:block">
+              <div className="px-4 py-2 rounded-full bg-[#0b1c30] text-white text-[9px] font-bold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+                <ShieldCheck size={11} /> Premium Blueprint
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Trust Bar ── */}
+        <BlueprintTrustBar product={product} />
+
+        {/* ── Main Content + Sticky Sidebar ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 xl:gap-16 mt-24">
+
+          {/* Left: Content Sections */}
+          <div className="lg:col-span-2 space-y-24">
+
+            {/* 1. What's Inside (summary cards from video section) */}
+            {product.youtubeVideoId && (
+              <div>
+                <div className="text-center mb-12">
+                  <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">
+                    <Play size={12} className="inline mr-1.5 text-[#0058be]" /> Overview
+                  </h2>
+                  <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What This Blueprint Covers</h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                    <div className="w-9 h-9 rounded-full bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                      <Zap size={14} className="text-[#0058be]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-extrabold text-[#0b1c30]">What it solves</p>
+                      <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                    <div className="w-9 h-9 rounded-full bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                      <Users size={14} className="text-[#558b2f]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-extrabold text-[#0b1c30]">Who it's for</p>
+                      <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.tags?.slice(0, 3).join(', ') || 'Developers & technical founders'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                    <div className="w-9 h-9 rounded-full bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
+                      <Activity size={14} className="text-[#f57f17]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-extrabold text-[#0b1c30]">Expected outcome</p>
+                      <p className="text-[11px] text-[#424754] font-semibold mt-0.5">Ready-to-use implementation with production-grade configuration</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                    <div className="w-9 h-9 rounded-full bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                      <Code size={14} className="text-[#6b35ff]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-extrabold text-[#0b1c30]">Why it was created</p>
+                      <p className="text-[11px] text-[#424754] font-semibold mt-0.5">To accelerate your development with battle-tested patterns</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
-            
-            {/* Author (supports flat fields + legacy author object) */}
-            {(() => {
-              const authName = product.authorName || product.author?.name;
-              const authRole = product.authorRole || product.author?.role;
-              const authPhoto = product.authorPhoto || product.author?.avatar;
-              if (!authName) return null;
-              return (
-                <div className="flex items-center gap-3 mt-2 text-left">
-                  <img src={authPhoto || `https://ui-avatars.com/api/?name=${authName}`} alt={authName} className="w-10 h-10 rounded-full border border-[#c2c6d6]/30" />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-extrabold text-[#0b1c30] leading-none">{authName}</span>
-                    {authRole && <span className="text-[10px] text-[#424754]/60 uppercase tracking-wider font-bold mt-1">{authRole}</span>}
-                  </div>
-                </div>
-              );
-            })()}
 
-            {/* Blueprint Facts */}
+            {/* 2. Blueprint Facts */}
             {[product.pageCount, product.readingTime, product.difficultyLevel, product.language, product.lastUpdated, product.version, product.estimatedImplementationTime].some(Boolean) && (
-              <div className="mt-8">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 block mb-4">Blueprint Facts</span>
-                <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="text-center mb-12">
+                  <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Specifications</h2>
+                  <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Blueprint Facts</h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {product.pageCount && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
                         <BookOpen size={14} className="text-[#0058be]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Pages</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Pages</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">{product.pageCount}</p>
                       </div>
                     </div>
                   )}
                   {product.readingTime && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
                         <Clock size={14} className="text-[#f57f17]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Reading Time</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Reading</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">{product.readingTime} mins</p>
                       </div>
                     </div>
                   )}
                   {product.difficultyLevel && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
                         <BarChart3 size={14} className="text-[#6b35ff]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Difficulty</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Difficulty</p>
                         <p className="text-xs font-extrabold text-[#0b1c30] capitalize">{product.difficultyLevel}</p>
                       </div>
                     </div>
                   )}
                   {product.language && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
                         <Globe size={14} className="text-[#558b2f]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Language</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Language</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">{product.language}</p>
                       </div>
                     </div>
                   )}
                   {product.lastUpdated && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#fce4ec] border border-[#f8bbd0] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#fce4ec] border border-[#f8bbd0] flex items-center justify-center shrink-0">
                         <Calendar size={14} className="text-[#c62828]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Last Updated</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Updated</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">{product.lastUpdated}</p>
                       </div>
                     </div>
                   )}
                   {product.version && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#e0f7fa] border border-[#b2ebf2] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#e0f7fa] border border-[#b2ebf2] flex items-center justify-center shrink-0">
                         <Tag size={14} className="text-[#00838f]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Version</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Version</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">v{product.version}</p>
                       </div>
                     </div>
                   )}
                   {product.estimatedImplementationTime && (
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                      <div className="w-8 h-8 rounded-xl bg-[#e8f5e9] border border-[#c8e6c9] flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm text-left">
+                      <div className="w-9 h-9 rounded-xl bg-[#e8f5e9] border border-[#c8e6c9] flex items-center justify-center shrink-0">
                         <Timer size={14} className="text-[#2e7d32]" />
                       </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-[#424754]/60 uppercase tracking-wider">Implementation</p>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold text-[#424754]/60 uppercase tracking-wider">Implementation</p>
                         <p className="text-xs font-extrabold text-[#0b1c30]">{product.estimatedImplementationTime}</p>
                       </div>
                     </div>
@@ -409,547 +514,217 @@ export const BlueprintDetailPage = () => {
                 </div>
               </div>
             )}
+
+            {/* 3. Sales & Trust Sections */}
+            <div className="space-y-24">
+
+              {/* Problem This Blueprint Solves */}
+              {product.problemSolved && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">The Problem</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What This Blueprint Solves</h3>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-8 rounded-[32px] bg-white border border-red-200 shadow-sm relative overflow-hidden text-left">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-red-400" />
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center">
+                          <X size={18} className="text-red-500" />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">Before</span>
+                      </div>
+                      <p className="text-base font-semibold text-[#424754] leading-relaxed">{product.problemSolved}</p>
+                    </div>
+                    <div className="p-8 rounded-[32px] bg-white border border-green-200 shadow-sm relative overflow-hidden text-left">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-green-400" />
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center">
+                          <Check size={18} className="text-green-600" />
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-green-600">After</span>
+                      </div>
+                      <p className="text-base font-extrabold text-[#0b1c30] leading-relaxed">Full implementation deployed and running.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Who This Is For */}
+              {product.idealFor && product.idealFor.length > 0 && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Ideal Audience</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is For</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.idealFor.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-green-200 hover:bg-green-50/30 transition-all text-left">
+                        <div className="w-10 h-10 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
+                          <Check size={18} className="text-[#558b2f]" />
+                        </div>
+                        <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Who This Is NOT For */}
+              {product.notFor && product.notFor.length > 0 && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Not Recommended For</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is NOT For</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.notFor.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-red-100 shadow-sm hover:border-red-200 hover:bg-red-50/30 transition-all text-left">
+                        <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center shrink-0">
+                          <X size={18} className="text-red-500" />
+                        </div>
+                        <span className="text-sm font-bold text-[#424754]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* What You'll Get */}
+              {product.includedResources && product.includedResources.length > 0 && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Deliverables</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What You'll Get</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {product.includedResources.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#0058be]/20 hover:bg-[#eff4ff]/50 transition-all text-left">
+                        <div className="w-10 h-10 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
+                          <Layers size={18} className="text-[#0058be]" />
+                        </div>
+                        <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Expected Outcomes */}
+              {product.outcomes && product.outcomes.length > 0 && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Results</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Expected Outcomes</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {product.outcomes.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#d1f34d]/40 hover:bg-[#d1f34d]/5 transition-all text-left">
+                        <div className="w-10 h-10 rounded-xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center shrink-0">
+                          <Zap size={18} className="text-[#0b1c30]" />
+                        </div>
+                        <span className="text-sm font-extrabold text-[#0b1c30]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Requirements */}
+              {product.requirements && product.requirements.length > 0 && (
+                <div>
+                  <div className="text-center mb-12">
+                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Prerequisites</h2>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Requirements</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.requirements.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#6b35ff]/20 hover:bg-[#f3efff]/50 transition-all text-left">
+                        <div className="w-10 h-10 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
+                          <ShieldCheck size={18} className="text-[#6b35ff]" />
+                        </div>
+                        <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Feature breakdown */}
+            {product.features && product.features.length > 0 && (
+              <div>
+                <div className="text-center mb-12">
+                  <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Inside the Blueprint</h2>
+                  <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Key Features & Asset Deliverables</h3>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {product.features.map((feat, idx) => {
+                    const featureName = typeof feat === 'string' ? feat : (feat?.name ?? '');
+                    const [title, desc] = featureName.includes(": ") 
+                      ? featureName.split(": ") 
+                      : [featureName, ""];
+                    
+                    let IconComponent = Code;
+                    if (idx % 4 === 0) IconComponent = Cpu;
+                    else if (idx % 4 === 1) IconComponent = Zap;
+                    else if (idx % 4 === 2) IconComponent = Layers;
+                    else if (idx % 4 === 3) IconComponent = Terminal;
+
+                    return (
+                      <div key={idx} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 flex flex-col space-y-4 text-left group shadow-sm">
+                        <div className="w-10 h-10 rounded-2xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center text-[#0b1c30] group-hover:bg-[#d1f34d] group-hover:border-[#d1f34d] group-hover:text-black transition-all duration-300">
+                          <IconComponent size={16} />
+                        </div>
+                        <h4 className="text-base font-extrabold tracking-tight text-[#0b1c30]">{title}</h4>
+                        {desc && <p className="text-xs text-[#424754] leading-relaxed font-semibold">{desc}</p>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 5. Preview Carousel */}
+            <BlueprintPreviewCarousel images={product.previewImages} title={product.title} />
+
+            {/* 6. Implementation Timeline */}
+            <BlueprintTimeline product={product} />
+
+            {/* 7. FAQ */}
+            <BlueprintFAQ product={product} />
+
+            {/* 8. Author Section */}
+            <BlueprintAuthorSection product={product} />
+
+            {/* 9. Social Proof */}
+            <BlueprintSocialProof product={product} />
+
           </div>
 
-          {/* Right: Visual Schematics */}
-          <div className="relative aspect-square md:aspect-[4/3] rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm group h-full cursor-crosshair">
-            {/* Corner Industrial Schematic Marks */}
-            <div className="absolute top-0 left-4 w-6 h-[1px] bg-[#c2c6d6]/40 z-20" />
-            <div className="absolute top-4 left-0 w-[1px] h-6 bg-[#c2c6d6]/40 z-20" />
-            <div className="absolute bottom-0 right-4 w-6 h-[1px] bg-[#c2c6d6]/40 z-20" />
-            <div className="absolute bottom-4 right-0 w-[1px] h-6 bg-[#c2c6d6]/40 z-20" />
-            
-            {/* Schematic Overlay Indicators */}
-            <div className="absolute bottom-4 left-4 font-mono text-[7px] text-[#424754]/40 select-none pointer-events-none z-20 flex flex-col gap-0.5">
-              <span>COORD_REF: 42.194 // -88.08</span>
-              <span>AZIMUTH: 184.26 // PITCH: -12.44</span>
-            </div>
-            
-            <div className="absolute top-4 right-4 font-mono text-[8px] text-[#424754]/60 select-none pointer-events-none z-20 border border-[#c2c6d6]/30 px-2 py-0.5 rounded-full bg-bg-secondary">
-              [SYS_NODE_PRV]
-            </div>
-
-            {/* Live Interactive Telemetry HUD (Visible on Hover) */}
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-15 flex flex-col justify-between p-6 sm:p-8 font-mono text-[9px] text-[#424754] select-none pointer-events-none text-left">
-              <div className="flex justify-between items-center border-b border-[#c2c6d6]/20 pb-2">
-                <span className="font-bold flex items-center gap-1.5 uppercase text-[#0b1c30]"><Activity size={10} className="animate-pulse text-[#0058be]" /> Live Telemetry Deck</span>
-                <span className="bg-[#eff4ff] border border-[#dce9ff] px-2 py-0.5 rounded text-[8px] font-bold text-[#0058be]">MONITORING</span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 my-auto">
-                <div className="flex flex-col bg-bg-secondary border border-[#c2c6d6]/20 p-3 rounded-2xl">
-                  <span className="text-[#424754]/60 mb-1 text-[8px] uppercase tracking-wider font-bold">NODE_FREQ</span>
-                  <span className="text-xs sm:text-sm font-black text-[#0b1c30]">{telemetrySim.freq} MHz</span>
-                </div>
-                <div className="flex flex-col bg-bg-secondary border border-[#c2c6d6]/20 p-3 rounded-2xl">
-                  <span className="text-[#424754]/60 mb-1 text-[8px] uppercase tracking-wider font-bold">CORE_TEMP</span>
-                  <span className="text-xs sm:text-sm font-black text-[#0b1c30]">{telemetrySim.temp} °C</span>
-                </div>
-                <div className="flex flex-col bg-bg-secondary border border-[#c2c6d6]/20 p-3 rounded-2xl">
-                  <span className="text-[#424754]/60 mb-1 text-[8px] uppercase tracking-wider font-bold">BUS_VOLTAGE</span>
-                  <span className="text-xs sm:text-sm font-black text-[#0b1c30]">{telemetrySim.voltage}V</span>
-                </div>
-                <div className="flex flex-col bg-bg-secondary border border-[#c2c6d6]/20 p-3 rounded-2xl">
-                  <span className="text-[#424754]/60 mb-1 text-[8px] uppercase tracking-wider font-bold">NODE_LATENCY</span>
-                  <span className="text-xs sm:text-sm font-black text-[#0b1c30]">{telemetrySim.ping} ms</span>
-                </div>
-              </div>
-
-              <div className="border-t border-[#c2c6d6]/20 pt-2 flex justify-between text-[#424754]/40 text-[8px]">
-                <span>REF_LOCK: ESTABLISHED</span>
-                <span className="animate-pulse flex items-center gap-1 text-[#0058be] font-bold">● SIGNAL STRONG</span>
-              </div>
-            </div>
-
-            <img 
-              src={product.thumbnail} 
-              alt={product.title} 
-              className="w-full h-full object-cover opacity-90"
+          {/* Right: Sticky Purchase Panel */}
+          <div className="lg:col-span-1">
+            <BlueprintStickyPanel
+              product={product}
+              selectedLicense={selectedLicense}
+              onLicenseChange={setSelectedLicense}
+              appliedCoupon={appliedCoupon}
+              onCouponValidated={setAppliedCoupon}
+              isCheckingOut={isCheckingOut}
+              isDownloading={isDownloading}
+              isOwned={isOwned}
+              hasDiscount={hasDiscount}
+              profile={profile}
+              onFreeDownload={handleFreeDownload}
+              onPremiumUpgrade={handlePremiumUpgrade}
             />
           </div>
         </div>
 
-        {/* Watch Before You Download Section */}
-        {product.youtubeVideoId && (
-          <div className="max-w-4xl mx-auto mb-24">
-            <div className="text-center mb-10">
-              <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4 flex items-center justify-center gap-2">
-                <Play size={12} className="text-[#0058be]" /> Video Introduction
-              </h2>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Watch Before You Download</h3>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
-              <div className="lg:col-span-2 rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
-                <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover" />
-              </div>
-              <div className="lg:col-span-3">
-                <div className="rounded-[32px] overflow-hidden bg-white border border-[#c2c6d6]/30 shadow-sm">
-                  <div className="aspect-video">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${product.youtubeVideoId}`}
-                      title={`${product.title} introduction`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 max-w-3xl mx-auto">
-              <h4 className="text-sm font-extrabold tracking-tight text-[#0b1c30] text-center mb-6">What you'll learn in this blueprint</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
-                    <Zap size={14} className="text-[#0058be]" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-extrabold text-[#0b1c30]">What it solves</p>
-                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.description}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
-                    <Users size={14} className="text-[#558b2f]" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-extrabold text-[#0b1c30]">Who it's for</p>
-                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">{product.tags?.slice(0, 3).join(', ') || 'Developers & technical founders'}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-[#fff8e1] border border-[#ffe082] flex items-center justify-center shrink-0">
-                    <Activity size={14} className="text-[#f57f17]" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-extrabold text-[#0b1c30]">Expected outcome</p>
-                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">Ready-to-use implementation with production-grade configuration</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
-                    <Code size={14} className="text-[#6b35ff]" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-extrabold text-[#0b1c30]">Why it was created</p>
-                    <p className="text-[11px] text-[#424754] font-semibold mt-0.5">To accelerate your development with battle-tested patterns</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Sales & Trust Sections ── */}
-        <div className="max-w-4xl mx-auto mb-24 space-y-24">
-          {/* 1. Problem This Blueprint Solves */}
-          {product.problemSolved && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">The Problem</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What This Blueprint Solves</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-8 rounded-[32px] bg-white border border-red-200 shadow-sm relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-red-400" />
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center">
-                      <X size={18} className="text-red-500" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">Before</span>
-                  </div>
-                  <p className="text-base font-semibold text-[#424754] leading-relaxed">{product.problemSolved}</p>
-                </div>
-                <div className="p-8 rounded-[32px] bg-white border border-green-200 shadow-sm relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-green-400" />
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center">
-                      <Check size={18} className="text-green-600" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-green-600">After</span>
-                  </div>
-                  <p className="text-base font-extrabold text-[#0b1c30] leading-relaxed">Full implementation deployed and running.</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 2. Who This Is For */}
-          {product.idealFor && product.idealFor.length > 0 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Ideal Audience</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is For</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {product.idealFor.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-green-200 hover:bg-green-50/30 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#f0fbe8] border border-[#bbf7d0] flex items-center justify-center shrink-0">
-                      <Check size={18} className="text-[#558b2f]" />
-                    </div>
-                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 3. Who This Is NOT For */}
-          {product.notFor && product.notFor.length > 0 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Not Recommended For</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Who This Is NOT For</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {product.notFor.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-red-100 shadow-sm hover:border-red-200 hover:bg-red-50/30 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center shrink-0">
-                      <X size={18} className="text-red-500" />
-                    </div>
-                    <span className="text-sm font-bold text-[#424754]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 4. What You'll Get */}
-          {product.includedResources && product.includedResources.length > 0 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Deliverables</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">What You'll Get</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {product.includedResources.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#0058be]/20 hover:bg-[#eff4ff]/50 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center shrink-0">
-                      <Layers size={18} className="text-[#0058be]" />
-                    </div>
-                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 5. Expected Outcomes */}
-          {product.outcomes && product.outcomes.length > 0 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Results</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Expected Outcomes</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {product.outcomes.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#d1f34d]/40 hover:bg-[#d1f34d]/5 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#d1f34d]/10 border border-[#d1f34d]/20 flex items-center justify-center shrink-0">
-                      <Zap size={18} className="text-[#0b1c30]" />
-                    </div>
-                    <span className="text-sm font-extrabold text-[#0b1c30]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 6. Requirements */}
-          {product.requirements && product.requirements.length > 0 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Prerequisites</h2>
-                <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Requirements</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {product.requirements.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white border border-[#c2c6d6]/30 shadow-sm hover:border-[#6b35ff]/20 hover:bg-[#f3efff]/50 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-[#f3efff] border border-[#ebe5ff] flex items-center justify-center shrink-0">
-                      <ShieldCheck size={18} className="text-[#6b35ff]" />
-                    </div>
-                    <span className="text-sm font-bold text-[#0b1c30]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Feature breakdown Section */}
-        {product.features && product.features.length > 0 && (
-          <div className="max-w-4xl mx-auto border-t border-[#c2c6d6]/20 pt-24 mb-24">
-            <div className="text-center mb-16">
-              <h2 className="text-[10px] font-bold uppercase tracking-wider text-[#424754]/60 mb-4">Inside the Blueprint</h2>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#0b1c30]">Key Features & Asset Deliverables</h3>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {product.features.map((feat, idx) => {
-                const featureName = typeof feat === 'string' ? feat : (feat?.name ?? '');
-                const [title, desc] = featureName.includes(": ") 
-                  ? featureName.split(": ") 
-                  : [featureName, ""];
-                
-                let IconComponent = Code;
-                if (idx % 4 === 0) IconComponent = Cpu;
-                else if (idx % 4 === 1) IconComponent = Zap;
-                else if (idx % 4 === 2) IconComponent = Layers;
-                else if (idx % 4 === 3) IconComponent = Terminal;
-
-                return (
-                  <div key={idx} className="p-6 rounded-[32px] bg-white border border-[#c2c6d6]/30 hover:border-[#0058be]/20 hover:shadow-ambient hover:scale-[1.01] transition-all duration-300 flex flex-col space-y-4 text-left group shadow-sm">
-                    <div className="w-10 h-10 rounded-2xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-center text-[#0b1c30] group-hover:bg-[#d1f34d] group-hover:border-[#d1f34d] group-hover:text-black transition-all duration-300">
-                      <IconComponent size={16} />
-                    </div>
-                    <h4 className="text-base font-extrabold tracking-tight text-[#0b1c30]">{title}</h4>
-                    {desc && <p className="text-xs text-[#424754] leading-relaxed font-semibold">{desc}</p>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Deployment / License Section */}
-        <div className="max-w-4xl mx-auto border-t border-[#c2c6d6]/20 pt-24 relative z-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-extrabold tracking-tight mb-4 text-[#0b1c30]">Blueprint Access Options</h2>
-            <p className="text-[#424754]/80 text-xs font-semibold">Select your download tier for this blueprint</p>
-          </div>
-
-          {/* Segmented Pricing Toggle Switcher */}
-          <div className="flex justify-center mb-12">
-            <div className="inline-flex p-1.5 bg-bg-secondary border border-[#c2c6d6]/30 rounded-full relative shadow-sm">
-              <button
-                onClick={() => setSelectedLicense('free')}
-                className={`px-6 py-2 rounded-full font-mono text-[9px] font-bold uppercase tracking-wider transition-all z-10 cursor-pointer ${
-                  selectedLicense === 'free' ? 'text-[#0b1c30] bg-white shadow-sm' : 'text-[#424754]/60 hover:text-[#0b1c30]'
-                }`}
-              >
-                Free
-              </button>
-              <button
-                onClick={() => setSelectedLicense('premium')}
-                className={`px-6 py-2 rounded-full font-mono text-[9px] font-bold uppercase tracking-wider transition-all z-10 cursor-pointer ${
-                  selectedLicense === 'premium' ? 'text-[#0b1c30] bg-white shadow-sm' : 'text-[#424754]/60 hover:text-[#0b1c30]'
-                }`}
-              >
-                Premium
-              </button>
-            </div>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            {selectedLicense === 'free' ? (
-              /* Free Tier Card */
-              <div className="p-8 rounded-[32px] border border-[#c2c6d6]/30 bg-white flex flex-col relative overflow-hidden text-left shadow-sm">
-                {/* Schematic Notches */}
-                <div className="absolute top-0 left-4 w-4 h-[1px] bg-[#c2c6d6]/40" />
-                <div className="absolute top-4 left-0 w-[1px] h-4 bg-[#c2c6d6]/40" />
-
-                <h3 className="text-[9px] font-bold text-[#424754]/60 mb-2 uppercase font-mono tracking-wider">[Free Starter Sample]</h3>
-                <div className="text-3xl font-extrabold text-[#0b1c30] mb-6 font-display">Free Sample</div>
-                
-                {(() => {
-                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
-                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
-                    .filter(f => !uniqueFree.includes(f));
-
-                  return (
-                    <>
-                      <div className="text-[9px] font-mono text-[#424754]/60 mb-6">{uniqueFree.length} features included</div>
-                      <ul className="space-y-4 mb-8 flex-1">
-                        {uniqueFree.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2.5 text-xs text-[#424754] leading-6">
-                            <Check size={14} className="text-[#0058be] shrink-0 mt-1" />
-                            <span className="font-semibold">{feature}</span>
-                          </li>
-                        ))}
-                        {uniquePrem.slice(0, 2).map((feature, idx) => (
-                          <li key={`missing-${idx}`} className="flex items-start gap-2.5 text-xs text-[#424754]/30 leading-6">
-                            <X size={14} className="shrink-0 mt-1 text-[#424754]/30" />
-                            <span className="line-through font-semibold text-[#424754]/40">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  );
-                })()}
-
-                {product.freeFileUrl && (
-                  <MagneticButton className="w-full">
-                    <a
-                      href={product.freeFileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-3.5 rounded-full bg-[#f0fbe8] hover:bg-[#e1f7d2] border border-[#bbf7d0] text-[#558b2f] transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                    >
-                      <Download size={14} /> Download Free Resource
-                    </a>
-                  </MagneticButton>
-                )}
-                {profile?.ownedProducts?.[product.id] ? (
-                  <MagneticButton className="w-full">
-                    <Link
-                      to="/vault"
-                      className="w-full py-3.5 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-black transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                    >
-                      <ShieldCheck size={14} /> In Vault <ArrowRight size={14} />
-                    </Link>
-                  </MagneticButton>
-                ) : (
-                  <MagneticButton className="w-full">
-                    <button
-                      onClick={handleFreeDownload}
-                      disabled={isDownloading}
-                      className="w-full py-3.5 rounded-full bg-[#f8f9ff] hover:bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                    >
-                      {isDownloading ? (
-                        <div className="w-4 h-4 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin" />
-                      ) : (
-                        <><Download size={14} /> Download Free Sample</>
-                      )}
-                    </button>
-                  </MagneticButton>
-                )}
-              </div>
-            ) : (
-              /* Premium Tier Card */
-              <div className="p-8 rounded-[32px] border border-[#adc6ff] bg-white flex flex-col relative overflow-hidden text-left shadow-md">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-[#d1f34d]" />
-                
-                {/* Corner marks */}
-                <div className="absolute top-0 right-4 w-4 h-[1px] bg-[#c2c6d6]/40" />
-                <div className="absolute top-4 right-0 w-[1px] h-4 bg-[#c2c6d6]/40" />
-                
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-[9px] font-bold text-[#0b1c30] uppercase font-mono tracking-wider">[Full Blueprint & Assets Bundle]</h3>
-                  {(() => {
-                    const s = computeSavings(product.basePrice, product.salePrice);
-                    if (!s) return null;
-                    return (
-                      <span className="px-2.5 py-1 bg-red-50 border border-red-200 text-red-650 text-[8px] font-bold uppercase tracking-wider rounded font-mono shadow-sm">
-                        Save {formatCurrency(s.amount)} ({s.percent}%)
-                      </span>
-                    );
-                  })()}
-                </div>
-                
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="text-3xl font-extrabold text-[#0b1c30] font-display">{formatCurrency(product.salePrice || product.basePrice)}</div>
-                  {hasDiscount && (
-                    <div className="text-xs text-[#424754]/60 line-through font-mono">(WAS {formatCurrency(product.basePrice)})</div>
-                  )}
-                </div>
-                
-                {(() => {
-                  const uniqueFree = Array.from(new Set(product.comparisonFree || []));
-                  const uniquePrem = Array.from(new Set(product.comparisonPremium || []))
-                    .filter(f => !uniqueFree.includes(f));
-
-                  return (
-                    <>
-                      <div className="text-[9px] font-mono text-[#424754]/60 mb-6">{uniqueFree.length + uniquePrem.length} features included</div>
-                      <ul className="space-y-4 mb-8 flex-1">
-                        {uniqueFree.map((feature, idx) => (
-                          <li key={`inc-${idx}`} className="flex items-start gap-2.5 text-xs text-[#424754] leading-6">
-                            <Check size={14} className="text-[#0058be] shrink-0 mt-1" />
-                            <span className="font-semibold">{feature}</span>
-                          </li>
-                        ))}
-                        {uniquePrem.map((feature, idx) => (
-                          <li key={`prem-${idx}`} className="flex items-start gap-2.5 text-xs text-[#0b1c30] font-extrabold leading-6">
-                            <Zap size={14} className="text-black fill-[#d1f34d] shrink-0 mt-1" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  );
-                })()}
-
-                <CouponInput
-                  onValidated={(coupon) => setAppliedCoupon(coupon)}
-                  disabled={isCheckingOut}
-                  initialCoupon={appliedCoupon}
-                  productPrice={product.salePrice || product.basePrice}
-                />
-
-                {/* Price breakdown with coupon */}
-                {(() => {
-                  if (!appliedCoupon) return null;
-                  const basePrice = product.salePrice || product.basePrice;
-                  const discountAmount = appliedCoupon.discountType === 'percentage'
-                    ? Math.round(basePrice * (appliedCoupon.value || 0) / 100)
-                    : (appliedCoupon.value || 0);
-                  const finalPrice = Math.max(0, basePrice - discountAmount);
-
-                  return (
-                    <div className="mt-3 p-3.5 bg-[#f0faf0] border border-[#bbf7d0] rounded-xl space-y-2">
-                      <div className="flex justify-between text-xs text-[#424754]">
-                        <span>Original price</span>
-                        <span className="line-through">{formatCurrency(basePrice)}</span>
-                      </div>
-                      <div className="flex justify-between text-xs text-emerald-700 font-semibold">
-                        <span>Discount ({appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.value}%` : formatCurrency(discountAmount)})</span>
-                        <span>-{formatCurrency(discountAmount)}</span>
-                      </div>
-                      <div className="border-t border-[#bbf7d0] pt-2 flex justify-between text-sm font-bold text-[#0b1c30]">
-                        <span>Final price</span>
-                        <span>{formatCurrency(finalPrice)}</span>
-                      </div>
-                      {discountAmount > 0 && (
-                        <div className="pt-1.5">
-                          <span className="inline-block px-2.5 py-0.5 bg-emerald-600 text-white text-[9px] font-bold uppercase tracking-wider rounded-full">
-                            You save {formatCurrency(discountAmount)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                <div style={{ height: 12 }} />
-
-                {profile?.ownedProducts?.[product.id] === 'premium' ? (
-                  <MagneticButton className="w-full">
-                    <Link
-                      to="/vault"
-                      className="w-full py-3.5 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-black transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 group shadow-sm cursor-pointer h-12"
-                    >
-                      <ShieldCheck size={14} /> Purchased — Open in Vault <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
-                  </MagneticButton>
-                ) : (
-                  <MagneticButton className="w-full">
-                    <button
-                      onClick={handlePremiumUpgrade}
-                      disabled={isCheckingOut}
-                      className="w-full py-3.5 rounded-full bg-[#0b1c30] hover:bg-[#0058be] text-white transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 group shadow-sm cursor-pointer h-12"
-                    >
-                      {isCheckingOut ? (
-                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        <>Get Full Blueprint Bundle <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></>
-                      )}
-                    </button>
-                  </MagneticButton>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Choosing guide */}
-        <div className="max-w-2xl mx-auto mt-8 flex flex-col sm:flex-row gap-3 text-[10px] font-bold uppercase tracking-wider text-[#424754]/80 text-center">
-          <div className="flex-1 px-4 py-3 rounded-2xl bg-white border border-[#c2c6d6]/30 text-[#424754]/60 shadow-sm font-semibold">
-            <span className="font-bold text-[#0b1c30]">Free</span> — great for learning, prototyping, or exploring.
-          </div>
-          <div className="flex-1 px-4 py-3 rounded-2xl bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] shadow-sm font-semibold">
-            <span className="font-bold text-[#0b1c30]">Premium</span> — full CAD schematics, firmware, and production-ready source.
-          </div>
+        {/* ── Related Blueprints ── */}
+        <div className="border-t border-[#c2c6d6]/20 mt-24 pt-24">
+          <BlueprintRelated currentProduct={product} />
         </div>
 
       </div>
