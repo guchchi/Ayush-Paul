@@ -182,6 +182,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await purchaseRef.set({
         userId,
         productId,
+        stripeSessionId: session.id,
         amountTotal: session.amount_total,
         originalPrice: Math.round(originalPrice * 100),
         currency: session.currency,
@@ -191,32 +192,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ...(session.metadata?.couponCode ? { couponCode: session.metadata.couponCode } : {}),
       });
 
-      // 2a. Track coupon usage if applied — single source of truth (no verify path)
+      // 2a. Track coupon usage if applied — atomic transaction for strong consistency
       const couponCode = session.metadata?.couponCode;
       console.log(`[Coupon] Processing coupon: ${couponCode || 'none'}`);
       if (couponCode) {
-        const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
-        if (!couponQuery.empty) {
-          const couponDoc = couponQuery.docs[0];
-          const couponData = couponDoc.data();
-          // Dedup: skip if this session was already counted
-          if (couponData.lastUsedSessionId === session.id) {
-            console.log(`[Coupon] Dedup: session ${session.id} already counted for ${couponCode}, skipping`);
-          } else {
-            const before = couponData.usedCount || 0;
-            await getDb().collection('coupons').doc(couponDoc.id).update({
-              usedCount: admin.firestore.FieldValue.increment(1),
-              lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
-              lastUsedBy: userId,
-              lastUsedProduct: productId,
-              lastUsedSessionId: session.id,
-            }).catch((err: any) => {
-              console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
+        try {
+          const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
+          if (!couponQuery.empty) {
+            const couponDocRef = couponQuery.docs[0].ref;
+            await getDb().runTransaction(async (transaction) => {
+              const snap = await transaction.get(couponDocRef);
+              if (!snap.exists) return;
+              const data = snap.data()!;
+              if (data.lastUsedSessionId === session.id) {
+                console.log(`[Coupon] Dedup: session ${session.id} already counted, skipping`);
+                return;
+              }
+              const before = data.usedCount || 0;
+              transaction.update(couponDocRef, {
+                usedCount: before + 1,
+                lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+                lastUsedBy: userId,
+                lastUsedProduct: productId,
+                lastUsedSessionId: session.id,
+              });
+              console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
             });
-            console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
+          } else {
+            console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
           }
-        } else {
-          console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
+        } catch (e) {
+          console.error('[Coupon] Increment failed:', e);
         }
       }
 
@@ -254,18 +260,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
           console.log(`[Creator] original=₹${originalPrice}, paid=₹${amountPaid}, discount=₹${discountApplied}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
 
-          const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+          // Look up creator — exact match first, then prefix fallback (e.g. "AYUSH" → "AYUSH10")
+          let creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+          if (creatorQuery.empty) {
+            console.warn(`[Creator] Exact code "${normalizedCreatorCode}" not found, trying prefix fallback`);
+            creatorQuery = await getDb().collection('creator_codes')
+              .where('code', '>=', normalizedCreatorCode)
+              .where('code', '<', normalizedCreatorCode + '\uf8ff')
+              .limit(1)
+              .get();
+            if (!creatorQuery.empty) {
+              const matchedCode = creatorQuery.docs[0].data().code;
+              console.log(`[Creator] Prefix fallback matched "${matchedCode}" for "${normalizedCreatorCode}"`);
+            }
+          }
+
           if (!creatorQuery.empty) {
             const creatorDoc = creatorQuery.docs[0];
             const creatorData = creatorDoc.data()!;
+
+            // Re-read commission from actual creator doc (metadata may have stale default)
+            const actualCommissionPercent = creatorData.creatorCommissionPercent || creatorData.commissionRate || 10;
+            const actualCommission = +(originalPrice * actualCommissionPercent / 100).toFixed(2);
 
             // Block commission for inactive creators
             if (creatorData.isActive === false) {
               console.warn(`[Creator] Webhook: Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
             } else {
               // Log the sale
+              const effectiveCreatorCode = creatorData.code || normalizedCreatorCode;
               await getDb().collection('creator_sales_log').add({
-                creatorCode: normalizedCreatorCode,
+                creatorCode: effectiveCreatorCode,
                 creatorName: creatorData.creatorName || 'Creator',
                 orderId: session.id,
                 productId,
@@ -274,25 +299,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 originalPrice,
                 paidAmount: amountPaid,
                 discountApplied,
-                commission,
-                commissionPercent,
+                commission: actualCommission,
+                commissionPercent: actualCommissionPercent,
                 currency: session.currency || 'inr',
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
               });
 
               // Unique customer check: only increment totalCustomers if this userId is new for this creator
               const existingCustomerQuery = await getDb().collection('creator_sales_log')
-                .where('creatorCode', '==', normalizedCreatorCode)
+                .where('creatorCode', '==', effectiveCreatorCode)
                 .where('userId', '==', userId)
                 .limit(1)
                 .get();
               const isNewCustomer = existingCustomerQuery.empty;
 
               console.log('[CREATOR UPDATE DEBUG]', {
-                creatorCode: normalizedCreatorCode,
+                creatorCode: effectiveCreatorCode,
                 userId,
                 originalPrice,
-                commission,
+                commission: actualCommission,
+                commissionPct: actualCommissionPercent,
                 isNewCustomer,
               });
 
@@ -300,7 +326,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               const updatePayload: Record<string, any> = {
                 totalSales: admin.firestore.FieldValue.increment(1),
                 totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
-                totalCommission: admin.firestore.FieldValue.increment(commission),
+                totalCommission: admin.firestore.FieldValue.increment(actualCommission),
                 updatedAt: admin.firestore.FieldValue.serverTimestamp(),
               };
               if (isNewCustomer) {
@@ -309,10 +335,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
               await getDb().collection('creator_codes').doc(creatorDoc.id).update(updatePayload);
 
-              console.log(`[Creator] Commission logged: ${normalizedCreatorCode} earned ₹${commission} (${commissionPercent}% of ₹${originalPrice}) on ${productId}, newCustomer=${isNewCustomer}`);
+              console.log(`[Creator] Commission logged: ${effectiveCreatorCode} earned ₹${actualCommission} (${actualCommissionPercent}% of ₹${originalPrice}) on ${productId}, newCustomer=${isNewCustomer}`);
             }
           } else {
-            console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes (queried by code field)`);
+            console.warn(`[Creator] Code "${normalizedCreatorCode}" not found in creator_codes (exact or prefix)`);
             // Debug: log all existing creator codes
             const allCreators = await getDb().collection('creator_codes').limit(10).get();
             console.log(`[Creator] Existing codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));

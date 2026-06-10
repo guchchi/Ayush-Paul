@@ -139,15 +139,28 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
       const normalizedCreator = resolvedCreatorCode.trim().toUpperCase();
       finalMetadata.creatorCode = normalizedCreator;
       try {
-        const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
+        let creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreator).limit(1).get();
+        if (creatorQuery.empty) {
+          console.warn(`[Creator] Exact code "${normalizedCreator}" not found, trying prefix fallback`);
+          creatorQuery = await getDb().collection('creator_codes')
+            .where('code', '>=', normalizedCreator)
+            .where('code', '<', normalizedCreator + '\uf8ff')
+            .limit(1)
+            .get();
+          if (!creatorQuery.empty) {
+            const matchedCode = creatorQuery.docs[0].data().code;
+            console.log(`[Creator] Prefix fallback matched "${matchedCode}" for "${normalizedCreator}"`);
+            finalMetadata.creatorCode = matchedCode;
+          }
+        }
         if (!creatorQuery.empty) {
           const creatorData = creatorQuery.docs[0].data();
           const commissionPct = creatorData.creatorCommissionPercent || creatorData.commissionRate || 10;
           finalMetadata.commissionPercent = String(commissionPct);
           finalMetadata.creatorId = creatorData.userId || '';
-          console.log(`[Creator] Found creator "${normalizedCreator}", commission=${commissionPct}%`);
+          console.log(`[Creator] Found creator "${finalMetadata.creatorCode}", commission=${commissionPct}%`);
         } else {
-          console.warn(`[Creator] Code "${normalizedCreator}" not found, using default 10%`);
+          console.warn(`[Creator] Code "${normalizedCreator}" not found in creator_codes (exact or prefix), using default 10%`);
           finalMetadata.commissionPercent = '10';
         }
       } catch (creatorErr) {
@@ -330,6 +343,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
       const originalPrice = Number(session.metadata?.originalPrice) || (session.amount_subtotal || 0) / 100 || (session.amount_total || 0) / 100;
       await purchaseRef.set({
         userId, productId,
+        stripeSessionId: sessionId,
         amountTotal: session.amount_total,
         originalPrice: Math.round(originalPrice * 100),
         currency: session.currency,
@@ -344,33 +358,35 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      // ── Track coupon usage (idempotent: check lastUsedSessionId) ──
+      // ── Track coupon usage (atomic transaction for strong consistency) ──
       const couponCode = session.metadata?.couponCode;
       console.log(`[Verify] Session metadata: couponCode=${couponCode || 'none'}, creatorCode=${session.metadata?.creatorCode || 'none'}, productId=${productId}`);
       if (couponCode) {
         try {
           const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
           if (!couponQuery.empty) {
-            const couponDoc = couponQuery.docs[0];
-            const couponData = couponDoc.data();
-            if (couponData.lastUsedSessionId === sessionId) {
-              console.log(`[Verify] Coupon dedup: session ${sessionId} already counted for ${couponCode}, skipping`);
-            } else {
-              const before = couponData.usedCount || 0;
-              await getDb().collection('coupons').doc(couponDoc.id).update({
-                usedCount: admin.firestore.FieldValue.increment(1),
+            const couponDocRef = couponQuery.docs[0].ref;
+            await getDb().runTransaction(async (transaction) => {
+              const snap = await transaction.get(couponDocRef);
+              if (!snap.exists) return;
+              const data = snap.data()!;
+              if (data.lastUsedSessionId === sessionId) {
+                console.log(`[Verify] Coupon dedup: session ${sessionId} already counted, skipping`);
+                return;
+              }
+              const before = data.usedCount || 0;
+              transaction.update(couponDocRef, {
+                usedCount: before + 1,
                 lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
                 lastUsedBy: userId,
                 lastUsedProduct: productId,
                 lastUsedSessionId: sessionId,
-              }).catch((err: any) => {
-                console.warn(`[Verify] Coupon increment failed for ${couponCode}: ${err.message}`);
               });
               console.log(`[Verify] Coupon incremented ${couponCode}: ${before} → ${before + 1}`);
-            }
+            });
           }
         } catch (e) {
-          console.error('[Verify] Coupon lookup failed:', e);
+          console.error('[Verify] Coupon increment failed:', e);
         }
       }
 
@@ -412,10 +428,28 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
             console.log(`[Verify] Creator: original=₹${originalPrice}, paid=₹${amountPaid}, commissionPct=${commissionPercent}%, commission=₹${commission}`);
 
-            const creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+            // Look up creator — exact match first, then prefix fallback (e.g. "AYUSH" → "AYUSH10")
+            let creatorQuery = await getDb().collection('creator_codes').where('code', '==', normalizedCreatorCode).limit(1).get();
+            if (creatorQuery.empty) {
+              console.warn(`[Verify] Exact code "${normalizedCreatorCode}" not found, trying prefix fallback`);
+              creatorQuery = await getDb().collection('creator_codes')
+                .where('code', '>=', normalizedCreatorCode)
+                .where('code', '<', normalizedCreatorCode + '\uf8ff')
+                .limit(1)
+                .get();
+              if (!creatorQuery.empty) {
+                const matchedCode = creatorQuery.docs[0].data().code;
+                console.log(`[Verify] Prefix fallback matched "${matchedCode}" for "${normalizedCreatorCode}"`);
+              }
+            }
+
             if (!creatorQuery.empty) {
               const creatorDoc = creatorQuery.docs[0];
               const creatorData = creatorDoc.data()!;
+
+              // Re-read commission from actual creator doc (metadata may have stale default)
+              const actualCommissionPercent = creatorData.creatorCommissionPercent || creatorData.commissionRate || 10;
+              const actualCommission = +(originalPrice * actualCommissionPercent / 100).toFixed(2);
 
               if (creatorData.isActive === false) {
                 console.warn(`[Verify] Creator "${normalizedCreatorCode}" is inactive — skipping commission`);
@@ -431,8 +465,8 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
                   originalPrice,
                   paidAmount: amountPaid,
                   discountApplied,
-                  commission,
-                  commissionPercent,
+                  commission: actualCommission,
+                  commissionPercent: actualCommissionPercent,
                   currency: session.currency || 'inr',
                   timestamp: admin.firestore.FieldValue.serverTimestamp(),
                 });
@@ -445,11 +479,13 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
                   .get();
                 const isNewCustomer = existingCustomerQuery.empty;
 
+                const effectiveCreatorCode = creatorData.code || normalizedCreatorCode;
                 console.log('[VERIFY CREATOR UPDATE DEBUG]', {
-                  creatorCode: normalizedCreatorCode,
+                  creatorCode: effectiveCreatorCode,
                   userId,
                   originalPrice,
-                  commission,
+                  commission: actualCommission,
+                  commissionPct: actualCommissionPercent,
                   isNewCustomer,
                 });
 
@@ -457,7 +493,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
                 const updatePayload: Record<string, any> = {
                   totalSales: admin.firestore.FieldValue.increment(1),
                   totalRevenue: admin.firestore.FieldValue.increment(originalPrice),
-                  totalCommission: admin.firestore.FieldValue.increment(commission),
+                  totalCommission: admin.firestore.FieldValue.increment(actualCommission),
                   updatedAt: admin.firestore.FieldValue.serverTimestamp(),
                 };
                 if (isNewCustomer) {
@@ -466,10 +502,12 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
                 await getDb().collection('creator_codes').doc(creatorDoc.id).update(updatePayload);
 
-                console.log(`[Verify] Commission logged: ${normalizedCreatorCode} earned ₹${commission} on ${productId}, newCustomer=${isNewCustomer}`);
+                console.log(`[Verify] Commission logged: ${effectiveCreatorCode} earned ₹${actualCommission} (${actualCommissionPercent}% of ₹${originalPrice}) on ${productId}, newCustomer=${isNewCustomer}`);
               }
             } else {
-              console.warn(`[Verify] Code "${normalizedCreatorCode}" not found in creator_codes`);
+              console.warn(`[Verify] Code "${normalizedCreatorCode}" not found in creator_codes (exact or prefix)`);
+              const allCreators = await getDb().collection('creator_codes').limit(10).get();
+              console.log(`[Verify] Existing creator codes:`, allCreators.docs.map(d => ({ id: d.id, code: d.data().code })));
             }
           }
         } catch (creatorError) {
