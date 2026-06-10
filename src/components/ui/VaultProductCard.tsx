@@ -35,7 +35,7 @@ export const VaultProductCard = ({ product, profile, onDownload }: VaultProductC
               : 'bg-[#0b1c30] hover:bg-[#d1f34d] hover:text-black text-[#d1f34d]'
           }`}
         >
-          <Download size={14} /> {isFree ? 'Download Free' : 'Access Files'}
+          <Download size={14} /> {isFree ? 'Download Free' : product.paidFileUrl ? 'Download Blueprint' : 'Access Files'}
         </button>
       </MagneticButton>
     </div>

@@ -478,6 +478,18 @@ export const BlueprintDetailPage = () => {
                   );
                 })()}
 
+                {product.freeFileUrl && (
+                  <MagneticButton className="w-full">
+                    <a
+                      href={product.freeFileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 rounded-full bg-[#f0fbe8] hover:bg-[#e1f7d2] border border-[#bbf7d0] text-[#558b2f] transition-all font-mono font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                    >
+                      <Download size={14} /> Download Free Resource
+                    </a>
+                  </MagneticButton>
+                )}
                 {profile?.ownedProducts?.[product.id] ? (
                   <MagneticButton className="w-full">
                     <Link

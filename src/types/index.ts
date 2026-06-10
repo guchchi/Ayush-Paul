@@ -118,6 +118,8 @@ export interface DigitalSystem {
   discountPercentage: number;
   inventoryCount: number | null; // null means unlimited
   downloadFileURL: string | null; // For free products (direct access)
+  freeFileUrl?: string | null;    // Free resource file (public, no purchase required)
+  paidFileUrl?: string | null;    // Paid resource file (only after purchase, in Vault)
   previewImages: string[];
   features: ProductFeature[];
   comparisonFree: string[];

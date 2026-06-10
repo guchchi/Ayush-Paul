@@ -144,6 +144,16 @@ const BlueprintLibraryCard = ({ product, index }: { product: Product; index: num
                 Coming Soon
               </span>
             )}
+            {product.freeFileUrl && (
+              <span className="px-2 py-0.5 rounded-full bg-[#f0fbe8] border border-[#bbf7d0] text-[#558b2f] text-[8px] font-bold uppercase tracking-wider">
+                + Free Resource
+              </span>
+            )}
+            {product.paidFileUrl && (
+              <span className="px-2 py-0.5 rounded-full bg-[#eff4ff] border border-[#dce9ff] text-[#0058be] text-[8px] font-bold uppercase tracking-wider">
+                + Premium Download
+              </span>
+            )}
           </div>
 
           <h3 className="text-lg font-extrabold text-[#0b1c30] tracking-tight leading-snug mb-3

@@ -240,6 +240,11 @@ export const VaultPage = () => {
       product_name: product.title
     });
 
+    if (product.paidFileUrl) {
+      window.open(product.paidFileUrl, '_blank');
+      return;
+    }
+
     try {
       const filename = product.title.replace(/\s+/g, '-').toLowerCase() + '.zip';
       await secureDownload(product.id, filename);
