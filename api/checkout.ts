@@ -342,29 +342,7 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      // Track coupon usage if applied
-      const couponCode = session.metadata?.couponCode;
-      console.log(`[Verify] Session metadata: couponCode=${couponCode || 'none'}, creatorCode=${session.metadata?.creatorCode || 'none'}, productId=${productId}`);
-      if (couponCode) {
-        const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
-        if (!couponQuery.empty) {
-          const couponDoc = couponQuery.docs[0];
-          const before = couponDoc.data().usedCount || 0;
-          await getDb().collection('coupons').doc(couponDoc.id).update({
-            usedCount: admin.firestore.FieldValue.increment(1),
-            lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
-            lastUsedBy: userId,
-            lastUsedProduct: productId,
-          }).catch((err: any) => {
-            console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
-          });
-          console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
-        } else {
-          console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
-        }
-      }
-
-      // Creator commission is handled exclusively by stripe-webhook.ts (single source of truth)
+      // Coupon usage + creator commission are handled exclusively by stripe-webhook.ts (single source of truth)
     }
 
     return res.status(200).json({ success: true, productId });

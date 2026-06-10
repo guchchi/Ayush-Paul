@@ -191,31 +191,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ...(session.metadata?.couponCode ? { couponCode: session.metadata.couponCode } : {}),
       });
 
-      // 2a. Track coupon usage if applied
+      // 2a. Track coupon usage if applied — single source of truth (no verify path)
       const couponCode = session.metadata?.couponCode;
       console.log(`[Coupon] Processing coupon: ${couponCode || 'none'}`);
       if (couponCode) {
         const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
         if (!couponQuery.empty) {
           const couponDoc = couponQuery.docs[0];
-          const before = couponDoc.data().usedCount || 0;
-          await getDb().collection('coupons').doc(couponDoc.id).update({
-            usedCount: admin.firestore.FieldValue.increment(1),
-            lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
-            lastUsedBy: userId,
-            lastUsedProduct: productId,
-          }).catch((err: any) => {
-            console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
-          });
-          console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
+          const couponData = couponDoc.data();
+          // Dedup: skip if this session was already counted
+          if (couponData.lastUsedSessionId === session.id) {
+            console.log(`[Coupon] Dedup: session ${session.id} already counted for ${couponCode}, skipping`);
+          } else {
+            const before = couponData.usedCount || 0;
+            await getDb().collection('coupons').doc(couponDoc.id).update({
+              usedCount: admin.firestore.FieldValue.increment(1),
+              lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
+              lastUsedBy: userId,
+              lastUsedProduct: productId,
+              lastUsedSessionId: session.id,
+            }).catch((err: any) => {
+              console.warn(`[Coupon] Could not increment usage for ${couponCode}: ${err.message}`);
+            });
+            console.log(`[Coupon] Incremented ${couponCode}: ${before} → ${before + 1}`);
+          }
         } else {
           console.warn(`[Coupon] Coupon code "${couponCode}" not found in Firestore`);
         }
       }
 
-      // 2b. Process creator code commission if present
-      const creatorCode = session.metadata?.creatorCode;
-      const normalizedCreatorCode = creatorCode?.trim().toUpperCase();
+      // 2b. Resolve creator code: from metadata, or fall back to coupon's assignedToCreator
+      let creatorCode = session.metadata?.creatorCode;
+      let normalizedCreatorCode = creatorCode?.trim().toUpperCase();
+
+      // Fallback: if no creatorCode in metadata but coupon exists, look up coupon's assignedToCreator
+      if (!normalizedCreatorCode && couponCode) {
+        try {
+          const couponQuery = await getDb().collection('coupons').where('code', '==', couponCode).limit(1).get();
+          if (!couponQuery.empty) {
+            const couponData = couponQuery.docs[0].data();
+            if (couponData.assignedToCreator) {
+              normalizedCreatorCode = couponData.assignedToCreator.trim().toUpperCase();
+              console.log(`[Creator] Detected creator "${normalizedCreatorCode}" from coupon "${couponCode}".assignedToCreator`);
+            }
+          }
+        } catch (e) {
+          console.error('[Creator] Failed to look up coupon for creator fallback:', e);
+        }
+      }
       if (normalizedCreatorCode) {
         try {
           console.log(`[Creator] Processing creator code: "${normalizedCreatorCode}"`);
