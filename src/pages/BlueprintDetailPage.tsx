@@ -22,6 +22,7 @@ import { BlueprintModulesSection } from '../components/sections/BlueprintModules
 import { BlueprintWhyICreated } from '../components/sections/BlueprintWhyICreated';
 import { BlueprintRoadmap } from '../components/sections/BlueprintRoadmap';
 import { BlueprintResults } from '../components/sections/BlueprintResults';
+import { BlueprintFreeVsPro } from '../components/sections/BlueprintFreeVsPro';
 import { BlueprintPurchaseSidebar } from '../components/sections/BlueprintPurchaseSidebar';
 import { BlueprintSidebarFAQ } from '../components/sections/BlueprintSidebarFAQ';
 import { BlueprintRelatedContent } from '../components/sections/BlueprintRelatedContent';
@@ -184,6 +185,18 @@ export const BlueprintDetailPage = () => {
         {/* Hero — Full Width */}
         <div className="mb-20">
           <BlueprintHeroSection product={product} />
+        </div>
+
+        {/* Free vs Pro — Full Width */}
+        <div className="mb-20">
+          <BlueprintFreeVsPro
+            product={product}
+            isOwned={isOwned}
+            isCheckingOut={isCheckingOut}
+            isDownloading={isDownloading}
+            onFreeDownload={handleFreeDownload}
+            onPremiumUpgrade={handlePremiumUpgrade}
+          />
         </div>
 
         {/* Video — Full Width (if no video in hero) */}

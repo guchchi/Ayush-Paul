@@ -1,0 +1,652 @@
+{
+  "blueprint": "Client Acquisition System",
+  "category": "Execution Blueprint",
+  "audience": "Video Editors, Designers, Developers",
+  "promise": "Help freelancers build a professional client acquisition and delivery system",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Opportunity Mapping",
+      "missionBrief": {
+        "title": "Map Your Opportunity",
+        "achievement": "Know exactly what service you offer, who needs it, and where you fit",
+        "whyItMatters": "Without positioning, you compete on price. With positioning, you compete on value.",
+        "whatYoullBuild": "Opportunity Profile — your service, market, niche, and positioning in one document",
+        "expectedOutcome": "A clear, written understanding of what you do and who you do it for"
+      },
+      "finalOutput": "Opportunity Profile",
+      "video": "Why Most Freelancers Never Get Clients",
+      "problem": "Most freelancers try to sell everything to everyone. They pick a vague category like 'video editing' or 'web development' and wonder why nobody hires them. The market doesn't reward generalists. It rewards specialists.",
+      "strategy": "Lock in one specific service, one market, and one niche. Define your positioning so clearly that a prospect knows immediately if you're right for them.",
+      "system": "1. Pick your track\n2. Define your service\n3. Identify your market\n4. Select your niche\n5. Write your positioning statement",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Pick Your Track",
+          "description": "Choose your primary skill category",
+          "details": "Select one track: Video Editor, Designer, or Developer. This is your foundation. Everything else builds on this decision. If you work across multiple tracks, pick the one you want to focus on first."
+        },
+        {
+          "step": 2,
+          "title": "Define Your Service",
+          "description": "Get specific about exactly what you deliver",
+          "details": "Within your track, name one specific service. Not 'video editing' — 'Instagram Reel editing for creators.' Not 'web development' — 'Landing page development for SaaS startups.' Specificity is the difference between invisible and in-demand."
+        },
+        {
+          "step": 3,
+          "title": "Identify Your Market",
+          "description": "Determine the broader market your service operates in",
+          "details": "Who is the general category of client that needs your service? For an editor specializing in Reels, the market is content creators. For a developer building landing pages, the market is early-stage startups. Name the market in one sentence."
+        },
+        {
+          "step": 4,
+          "title": "Select Your Niche",
+          "description": "Narrow to a specific segment within your market",
+          "details": "Within your market, pick a niche — a specific type of client with a specific type of problem. Example: 'Health coaches who post daily Reels but don't have time to edit.' The narrower the niche, the easier it is to attract and convert."
+        },
+        {
+          "step": 5,
+          "title": "Write Your Positioning Statement",
+          "description": "One sentence that captures who you serve and what you deliver",
+          "details": "Combine your service, market, and niche into a single positioning statement. Format: 'I help [niche] in [market] achieve [outcome] by [service].' This becomes your headline everywhere — profile, portfolio, pitch."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "serviceIdeas": "Instagram Reel editing, YouTube long-form editing, talking head cleanup, podcast video editing",
+          "marketExamples": "Content creators, fitness influencers, course creators, podcasters",
+          "nicheExamples": "Health coaches posting daily Reels, YouTubers who hate editing, podcasters needing short-form clips"
+        },
+        "developer": {
+          "serviceIdeas": "Landing page development, web app builds, API integrations, website redesigns",
+          "marketExamples": "Early-stage startups, local businesses, SaaS companies, e-commerce brands",
+          "nicheExamples": "SaaS founders launching a product, local restaurants needing a menu site, startups needing a waitlist page"
+        },
+        "designer": {
+          "serviceIdeas": "Brand identity design, social media graphics, presentation decks, UI mockups",
+          "marketExamples": "New businesses, coaches and consultants, small brands, creators",
+          "nicheExamples": "Coaches launching a brand, small businesses needing consistent social graphics, creators rebranding"
+        }
+      },
+      "templates": [
+        "Opportunity Profile Canvas"
+      ],
+      "prompts": [
+        "Opportunity Mapping Prompt",
+        "Positioning Statement Generator",
+        "Niche Selector Prompt"
+      ],
+      "resources": [
+        "Track-Specific Platform Guides"
+      ],
+      "checklist": [
+        "Selected your primary track",
+        "Defined your specific service",
+        "Identified your market",
+        "Selected your niche",
+        "Written your positioning statement",
+        "Completed your Opportunity Profile"
+      ],
+      "completionReport": {
+        "assetsCreated": "Opportunity Profile",
+        "systemsBuilt": "Positioning System — you now know exactly what you do and who you serve",
+        "nextStep": "Phase 2: Offer Engineering System — turn your positioning into an irresistible offer"
+      }
+    },
+    {
+      "phase": 2,
+      "name": "Offer Engineering System",
+      "missionBrief": {
+        "title": "Engineer Your Offer",
+        "achievement": "Package your service into an offer that prospects find irresistible",
+        "whyItMatters": "Your offer is the single highest-leverage element in your business. A great offer with average marketing beats an average offer with great marketing.",
+        "whatYoullBuild": "Professional Offer Sheet — your offer, packaging, pricing, and differentiation in one document",
+        "expectedOutcome": "A clear, outcome-driven offer statement with pricing and risk reversal"
+      },
+      "finalOutput": "Professional Offer Sheet",
+      "video": "Skills vs. Outcomes — Why Clients Pay for Results",
+      "problem": "Most freelancers sell skills. 'I edit videos.' 'I build websites.' Clients don't buy skills — they buy outcomes. A skill-based pitch gets ignored. An outcome-based offer gets attention.",
+      "strategy": "Package your skill as an outcome-driven offer. Name the result, not the task. Add differentiation and a risk reversal to remove hesitation.",
+      "system": "1. Identify the outcome your service produces\n2. Write your offer statement\n3. Add differentiation\n4. Set your pricing\n5. Add a risk reversal",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Identify the Outcome",
+          "description": "Name the specific result your client gets",
+          "details": "What changes for the client after you deliver? More engagement? More leads? More time? A professional look? Name the outcome in measurable terms. 'Scroll-stopping Reels' is a feature. '2x more engagement' is an outcome."
+        },
+        {
+          "step": 2,
+          "title": "Write Your Offer Statement",
+          "description": "One line that makes prospects want to buy",
+          "details": "Format: 'I [service] for [client] so they can [outcome] in [timeframe].' Example: 'I edit raw footage into scroll-stopping social clips so creators get 2x more engagement in 48 hours.' This goes in your bio, portfolio, and outreach messages."
+        },
+        {
+          "step": 3,
+          "title": "Add Differentiation",
+          "description": "Explain why you're different from every other freelancer",
+          "details": "Differentiation is not 'I work hard' or 'I'm reliable.' It's a specific, provable difference. Faster turnaround. Specialized in one niche. A unique process. A guarantee no one else offers. Name one thing that makes you the clear choice."
+        },
+        {
+          "step": 4,
+          "title": "Set Your Pricing",
+          "description": "Choose a price that reflects value, not time",
+          "details": "Price based on the outcome, not the hours. Research what comparable services charge. Start with a single offer at one price. You can always add tiers later. Your first price should feel slightly uncomfortable to say and fair to the client."
+        },
+        {
+          "step": 5,
+          "title": "Add a Risk Reversal",
+          "description": "Remove the fear of making a wrong decision",
+          "details": "A risk reversal is anything that makes it safe for the client to say yes. Free revisions. Satisfaction guarantee. Money-back if not delivered on time. Partial payment upfront. The less risk the client carries, the easier the decision."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "offerExample": "I edit raw footage into scroll-stopping social clips so creators get 2x more engagement in 48 hours.",
+          "differentiationIdeas": "48-hour turnaround, unlimited revisions, Instagram-native formatting expertise",
+          "priceRange": "$50–$150 per video or $500–$1,500 monthly retainer"
+        },
+        "developer": {
+          "offerExample": "I build landing pages that convert visitors into leads in 5 business days.",
+          "differentiationIdeas": "Conversion-focused design, 5-day delivery, includes A/B test setup",
+          "priceRange": "$500–$2,500 per project"
+        },
+        "designer": {
+          "offerExample": "I design brand kits that make new businesses look established in 3 days.",
+          "differentiationIdeas": "3-day delivery, includes social media kit, brand guideline document included",
+          "priceRange": "$200–$800 per project"
+        }
+      },
+      "templates": [
+        "Offer Statement Generator",
+        "Pricing Framework",
+        "Risk Reversal Templates"
+      ],
+      "prompts": [
+        "Offer Engineering Prompt",
+        "Pricing Strategy Prompt",
+        "Differentiation Discovery Prompt"
+      ],
+      "resources": [
+        "Value-Based Pricing Guide",
+        "Offer Examples by Track"
+      ],
+      "checklist": [
+        "Identified the client outcome",
+        "Written your offer statement",
+        "Defined your differentiation",
+        "Set your starting price",
+        "Added a risk reversal",
+        "Completed your Professional Offer Sheet"
+      ],
+      "completionReport": {
+        "assetsCreated": "Professional Offer Sheet",
+        "systemsBuilt": "Offer System — you can now present a compelling, priced offer to any prospect",
+        "nextStep": "Phase 3: Authority System — build proof that backs up your offer"
+      }
+    },
+    {
+      "phase": 3,
+      "name": "Authority System",
+      "missionBrief": {
+        "title": "Build Your Authority",
+        "achievement": "Create a professional presence that makes prospects trust you before you speak",
+        "whyItMatters": "Trust is the currency of freelancing. Without authority assets, you're a stranger asking for money. With them, you're a professional they already respect.",
+        "whatYoullBuild": "Portfolio, authority assets, and a professional profile",
+        "expectedOutcome": "A shareable profile with 3 pieces of proof that make prospects confident to hire you"
+      },
+      "finalOutput": "Portfolio + Authority Assets + Professional Profile",
+      "video": "You Don't Need Years of Experience — You Need 3 Right Samples",
+      "problem": "Freelancers think they need years of experience or a massive portfolio. Prospects just need to see 3 relevant examples that prove you can deliver. Without them, you're invisible.",
+      "strategy": "Create 3 strategic authority assets. Spec work, before/afters, testimonials, case studies. Each piece should directly support your offer and target a specific client need.",
+      "system": "1. Choose your 3 authority asset types\n2. Create each asset\n3. Build your professional profile\n4. Connect everything with a clear call-to-action",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Choose Your Authority Assets",
+          "description": "Pick 3 formats that best prove your capabilities",
+          "details": "For each track, certain formats work best. Editors benefit from before/after reels and sample edits. Developers from live project links and GitHub repos. Designers from Behance/Dribbble portfolios and process breakdowns. Pick 3 that directly support your specific offer."
+        },
+        {
+          "step": 2,
+          "title": "Create Each Asset",
+          "description": "Build or gather your 3 proof pieces",
+          "details": "Don't overthink this. Spec work is acceptable — recreate work you'd like to do. Offer a free sample to a friend. Document a personal project. The goal is 3 pieces that show exactly the kind of work you want to be hired for."
+        },
+        {
+          "step": 3,
+          "title": "Build Your Professional Profile",
+          "description": "Set up your presence on the right platform for your track",
+          "details": "Editors: Instagram profile + portfolio page. Developers: GitHub + personal site. Designers: Behance/Dribbble + Instagram. Your profile must include: who you help, what you deliver, your offer statement, and a clear call-to-action."
+        },
+        {
+          "step": 4,
+          "title": "Connect Everything",
+          "description": "Link your assets and profile with a clear path to hire you",
+          "details": "Your LinkedIn, portfolio, and social profiles should all point to one place where a prospect can take the next step. A contact form. A DM prompt. A Calendly link. Remove friction. Make it obvious how to hire you."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "assetIdeas": "Before/after reel, 3 short sample edits, testimonial video from a collaborator",
+          "profilePlatform": "Instagram + Portfolio Page (Carrd, Notion, or Portfolio site)",
+          "callToAction": "DM me 'edit' for a free sample edit of your content"
+        },
+        "developer": {
+          "assetIdeas": "3 live project links, GitHub repo with good README, screencast walkthrough",
+          "profilePlatform": "GitHub + Personal Website (Vercel, Netlify)",
+          "callToAction": "View my work at [site] — DM me to discuss your project"
+        },
+        "designer": {
+          "assetIdeas": "3 Behance projects with process breakdowns, Instagram portfolio highlights",
+          "profilePlatform": "Behance + Dribbble + Instagram",
+          "callToAction": "See my portfolio at [link] — DM me for a free brand audit"
+        }
+      },
+      "templates": [
+        "Portfolio Setup Guide",
+        "Profile Optimization Checklist",
+        "Authority Asset Planner"
+      ],
+      "prompts": [
+        "Authority Asset Builder Prompt",
+        "Profile Optimization Prompt",
+        "Portfolio Description Writer"
+      ],
+      "resources": [
+        "Platform-Specific Portfolio Guides",
+        "Example Portfolios by Track"
+      ],
+      "checklist": [
+        "Chosen 3 authority asset formats",
+        "Created or collected all 3 assets",
+        "Set up your professional profile",
+        "Added your offer statement to your profile",
+        "Linked all assets with a clear call-to-action",
+        "Completed your authority system"
+      ],
+      "completionReport": {
+        "assetsCreated": "Portfolio, 3 authority assets, professional profile",
+        "systemsBuilt": "Authority System — prospects can now verify your capabilities independently",
+        "nextStep": "Phase 4: Client Pipeline System — find people who need what you offer"
+      }
+    },
+    {
+      "phase": 4,
+      "name": "Client Pipeline System",
+      "missionBrief": {
+        "title": "Build Your Pipeline",
+        "achievement": "Know exactly where your clients are and how to find them",
+        "whyItMatters": "Most freelancers wait for clients to come to them. Professional freelancers build a pipeline. A pipeline means predictable, repeatable client flow.",
+        "whatYoullBuild": "Lead tracker, pipeline dashboard, and prospecting workflow",
+        "expectedOutcome": "A ranked list of 20 qualified prospects and a system to keep the pipeline full"
+      },
+      "finalOutput": "Lead Tracker + Pipeline Dashboard + Prospecting Workflow",
+      "video": "Where Your First Clients Are Hiding",
+      "problem": "Freelancers blast messages to random people and wonder why nobody responds. The secret is building a pipeline of people who already need what you offer. Without a system, prospecting is random and inconsistent.",
+      "strategy": "Build a prospecting workflow that continuously feeds your pipeline. Identify platforms where your target clients show need signals. Track every prospect through a structured pipeline from lead to close.",
+      "system": "1. Set up your lead tracker\n2. Identify prospect sources\n3. Search for need signals\n4. Add and qualify 20 prospects\n5. Build your pipeline dashboard",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Set Up Your Lead Tracker",
+          "description": "Create a system for tracking every prospect",
+          "details": "Use a spreadsheet or Notion database with columns: Name, URL, Platform, Need Identified, Contact Method, Outreach Sent, Reply Received, Status (New/Contacted/Conversation/Closed/Lost). This is your pipeline. Every prospect lives here until they convert or are removed."
+        },
+        {
+          "step": 2,
+          "title": "Identify Prospect Sources",
+          "description": "Pick 2-3 platforms where your target clients are active",
+          "details": "Each track has natural prospect sources. Editors find clients on Instagram and YouTube. Developers find them on LinkedIn and through startup communities. Designers find them on Instagram, Behance, and LinkedIn. Pick 2-3 sources and focus exclusively on them."
+        },
+        {
+          "step": 3,
+          "title": "Search for Need Signals",
+          "description": "Find people actively showing they need your service",
+          "details": "Need signals are anything that indicates someone is ready to buy or at least open to help: inconsistent posting, complaints about quality, job posts, requests for recommendations, hiring freelancers. Search for these signals daily."
+        },
+        {
+          "step": 4,
+          "title": "Add and Qualify 20 Prospects",
+          "description": "Build your initial pipeline with qualified leads",
+          "details": "For each prospect, note: who they are, what signal they showed, how to contact them, and why they're a good fit. Rank prospects by likelihood to convert. Don't overfilter — add anyone who shows a real need signal."
+        },
+        {
+          "step": 5,
+          "title": "Build Your Pipeline Dashboard",
+          "description": "Visualize your pipeline to track progress",
+          "details": "Create a simple view that shows: total prospects, outreach sent, replies received, conversations active, and closed. Review this daily. The goal is to always have prospects moving through the pipeline."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "prospectSources": "Instagram (creators with inconsistent content), YouTube (channels with low-quality edits), Fiverr (buyers with repeat orders)",
+          "needSignals": "Irregular posting schedule, low engagement on recent posts, asking for editing recommendations",
+          "outreachPlatform": "Instagram DM, YouTube comments, Fiverr"
+        },
+        "developer": {
+          "prospectSources": "LinkedIn (founders with outdated sites), Product Hunt (new launches needing landing pages), Upwork (project posts)",
+          "needSignals": "Outdated website, slow load times, startup announcement without a site, hiring posts for devs",
+          "outreachPlatform": "LinkedIn DM, Twitter DM, Upwork proposals"
+        },
+        "designer": {
+          "prospectSources": "Instagram (brands with inconsistent visuals), LinkedIn (new businesses without logos), Behance (job requests)",
+          "needSignals": "New business launch, inconsistent branding, asking for design recommendations, no logo",
+          "outreachPlatform": "Instagram DM, LinkedIn DM, Behance"
+        }
+      },
+      "templates": [
+        "Lead Tracker Template",
+        "Prospect Qualification Framework",
+        "Pipeline Dashboard Template"
+      ],
+      "prompts": [
+        "Prospect Research Prompt",
+        "Need Signal Detector Prompt",
+        "Pipeline Review Prompt"
+      ],
+      "resources": [
+        "Prospecting Tools Guide",
+        "Platform-Specific Search Techniques"
+      ],
+      "checklist": [
+        "Set up your lead tracker",
+        "Identified 2-3 prospect sources",
+        "Searched for need signals on each source",
+        "Added 20 qualified prospects to your tracker",
+        "Built your pipeline dashboard view",
+        "Ranked prospects by priority"
+      ],
+      "completionReport": {
+        "assetsCreated": "Lead tracker, pipeline dashboard, prospecting workflow",
+        "systemsBuilt": "Pipeline System — you now have a repeatable method for finding prospects",
+        "nextStep": "Phase 5: Outreach Engine — start conversations with your pipeline"
+      }
+    },
+    {
+      "phase": 5,
+      "name": "Outreach Engine",
+      "missionBrief": {
+        "title": "Start Conversations",
+        "achievement": "Send messages that prospects actually reply to",
+        "whyItMatters": "A pipeline of prospects is worthless if you never reach out. Most freelancers fear rejection. Professionals see outreach as a numbers game — every 'no' is one step closer to a 'yes.'",
+        "whatYoullBuild": "Outreach system, message library, and follow-up engine",
+        "expectedOutcome": "5+ active conversations from your prospect list"
+      },
+      "finalOutput": "Outreach System + Message Library + Follow-Up Engine",
+      "video": "The Outreach Message That Gets Replies",
+      "problem": "Most outreach sounds like spam. 'Hi, I'm a freelance [X]. Can I help you?' Generic messages get ignored. The problem is leading with your need instead of their problem.",
+      "strategy": "Send personalized, value-first messages. Reference something specific. Offer an insight, not a service. Start a conversation, not a pitch. The goal is a reply, not a sale.",
+      "system": "1. Build your message library\n2. Personalize for each prospect\n3. Send outreach daily\n4. Track and follow up\n5. Move replies to conversations",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Build Your Message Library",
+          "description": "Create templates for different outreach scenarios",
+          "details": "Write templates for: observation-based outreach (highest reply rate), compliment + question, and value-first message. Each template should be 3 sentences max. The library gives you a starting point that you personalize for each prospect."
+        },
+        {
+          "step": 2,
+          "title": "Personalize for Each Prospect",
+          "description": "Customize every message with specific research",
+          "details": "For each prospect, find one specific thing to reference: a recent post, a project they shared, a comment they made. Reference it in the first sentence. This proves you researched them and aren't sending a blast. Personalization is the difference between a reply and delete."
+        },
+        {
+          "step": 3,
+          "title": "Send Outreach Daily",
+          "description": "Make outreach a daily habit",
+          "details": "Send 5 personalized messages per day. Use your ranked prospect list. Start with the highest-priority prospects. Consistency matters more than volume. 5 messages per day = 35 per week = 140 per month. That's enough for your first 3 clients."
+        },
+        {
+          "step": 4,
+          "title": "Track and Follow Up",
+          "description": "Systematically follow up with non-responders",
+          "details": "Follow up 3 days after the first message. Keep it short: 'Circling back — no worries if timing isn't right.' Follow up a second time 7 days later with something new. After that, move them to a nurture list. Most sales happen on follow-up."
+        },
+        {
+          "step": 5,
+          "title": "Move Replies to Conversations",
+          "description": "Transition from message to real dialogue",
+          "details": "When someone replies, respond within 24 hours. Keep the conversation helpful. Ask questions about their situation. Offer a specific insight or suggestion. When they're engaged, propose a call or a brief to explore working together."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "messageApproach": "Reference their content quality, offer a specific editing suggestion",
+          "bestPlatform": "Instagram DM — reference a specific Reel or post",
+          "followUpStyle": "Share a quick before/after example of similar content"
+        },
+        "developer": {
+          "messageApproach": "Reference their website or product, offer a technical observation",
+          "bestPlatform": "LinkedIn DM — reference their profile or company page",
+          "followUpStyle": "Share a relevant case study or performance metric"
+        },
+        "designer": {
+          "messageApproach": "Reference their brand or visuals, offer a design observation",
+          "bestPlatform": "Instagram DM — reference specific graphics or posts",
+          "followUpStyle": "Share a quick mockup or visual idea"
+        }
+      },
+      "templates": [
+        "Outreach Message Library",
+        "Follow-Up Sequence Template",
+        "Conversation Transition Script"
+      ],
+      "prompts": [
+        "Outreach Message Generator",
+        "Personalization Assistant",
+        "Follow-Up Writer"
+      ],
+      "resources": [
+        "Outreach Platform Best Practices",
+        "Reply Rate Optimization Guide"
+      ],
+      "checklist": [
+        "Built your message library (3 templates)",
+        "Personalized messages for first 5 prospects",
+        "Sent outreach to 5 prospects",
+        "Tracked all outreach in your pipeline",
+        "Sent follow-ups to non-responders",
+        "Moved 5+ replies into active conversations"
+      ],
+      "completionReport": {
+        "assetsCreated": "Message library, follow-up sequence, outreach tracking system",
+        "systemsBuilt": "Outreach Engine — you can now start conversations on demand",
+        "nextStep": "Phase 6: Client Conversion System — turn conversations into paid clients"
+      }
+    },
+    {
+      "phase": 6,
+      "name": "Client Conversion System",
+      "missionBrief": {
+        "title": "Convert Conversations Into Clients",
+        "achievement": "Close your first paying client",
+        "whyItMatters": "Conversations don't automatically become clients. Without a conversion system, you'll have endless chats and zero payments. A structured close process turns interest into income.",
+        "whatYoullBuild": "Proposal, pricing system, and onboarding system",
+        "expectedOutcome": "One signed client with payment received and scope agreed"
+      },
+      "finalOutput": "Proposal + Pricing System + Onboarding System",
+      "video": "Turning Conversations Into Payments",
+      "problem": "Conversations stall because freelancers don't know how to transition from helpful chat to paid engagement. They wait for the prospect to bring up money. The prospect waits for them. Nothing happens.",
+      "strategy": "Lead the conversation toward a clear close. After providing value, propose a specific scope. Define the price. Handle objections. Send the agreement. Ask for payment. Don't wait — lead.",
+      "system": "1. Transition to proposal\n2. Present scope and price\n3. Handle objections\n4. Send agreement\n5. Collect payment and onboard",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Transition to Proposal",
+          "description": "Move from conversation to offering a specific solution",
+          "details": "After you've provided value and the prospect is engaged, transition: 'Based on what you've shared, here's what I'd recommend...' or 'Would it be helpful if I put together a scope for this?' The transition is a question, not a demand."
+        },
+        {
+          "step": 2,
+          "title": "Present Scope and Price",
+          "description": "Lay out exactly what you'll deliver and what it costs",
+          "details": "Be specific about deliverables: what, when, how many revisions, what's included, what's not included. Present the price confidently. Don't apologize or over-explain. The price is the price. Your confidence signals quality."
+        },
+        {
+          "step": 3,
+          "title": "Handle Objections",
+          "description": "Respond to concerns without discounting",
+          "details": "Common objections: 'I need to think about it,' 'That's more than I expected,' 'Can you do it for less?' Have responses ready for each. Don't discount immediately. Instead, restate the value, offer a smaller scope, or suggest starting with a trial."
+        },
+        {
+          "step": 4,
+          "title": "Send Agreement",
+          "description": "Make it easy to say yes",
+          "details": "Use a simple one-page agreement that covers: scope, timeline, price, payment terms, and deliverables. Send it with a clear next step: 'Review this and reply with 'I agree' to get started.' Reduce friction."
+        },
+        {
+          "step": 5,
+          "title": "Collect Payment and Onboard",
+          "description": "Get paid before starting work",
+          "details": "Request 50% upfront for projects or first month for retainers. Send an invoice immediately after agreement. Once payment is received, send a welcome message with next steps, timelines, and what the client needs to provide. Then start delivering."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "scopeExample": "3 Reels per week, 2 revision rounds, 48-hour turnaround, includes captions",
+          "pricingModel": "Per video ($50–$150) or monthly retainer (4-12 videos, $500–$1,500)",
+          "paymentTerms": "50% upfront, 50% on delivery"
+        },
+        "developer": {
+          "scopeExample": "1 landing page, 5 sections, mobile responsive, contact form, 2 revision rounds",
+          "pricingModel": "Project flat fee ($500–$2,500) with milestone payments",
+          "paymentTerms": "50% at kickoff, 25% at milestone, 25% on launch"
+        },
+        "designer": {
+          "scopeExample": "Logo, color palette, typography, social media kit (3 platforms), brand guide PDF",
+          "pricingModel": "Project fee ($200–$800)",
+          "paymentTerms": "50% upfront, 50% on delivery"
+        }
+      },
+      "templates": [
+        "Proposal Template",
+        "Simple Service Agreement",
+        "Invoice Template",
+        "Objection Response Cheatsheet",
+        "Client Onboarding Checklist"
+      ],
+      "prompts": [
+        "Proposal Writer Prompt",
+        "Objection Handler Prompt",
+        "Onboarding Sequence Prompt"
+      ],
+      "resources": [
+        "Freelance Contract Guide",
+        "Payment Platform Comparison"
+      ],
+      "checklist": [
+        "Transitioned conversation to proposal",
+        "Presented scope and price clearly",
+        "Handled all objections",
+        "Sent agreement for signature",
+        "Received signed agreement",
+        "Sent invoice and received payment",
+        "Sent onboarding materials and kicked off project"
+      ],
+      "completionReport": {
+        "assetsCreated": "Proposal template, agreement template, onboarding system",
+        "systemsBuilt": "Conversion System — you can now reliably turn prospects into paying clients",
+        "nextStep": "Phase 7: Delivery & Growth System — deliver professionally and generate repeat business"
+      }
+    },
+    {
+      "phase": 7,
+      "name": "Delivery & Growth System",
+      "missionBrief": {
+        "title": "Deliver and Grow",
+        "achievement": "Deliver exceptional work and turn it into repeat business",
+        "whyItMatters": "Your first client is your most valuable asset. Not just for the money — for the referrals, testimonials, case studies, and social proof they can provide. One done client is worth 100 cold pitches.",
+        "whatYoullBuild": "Delivery SOP, testimonial system, and referral system",
+        "expectedOutcome": "Client 1 delivered successfully, testimonials collected, clients 2 & 3 inbound"
+      },
+      "finalOutput": "Delivery SOP + Testimonial System + Referral System",
+      "video": "One Done Client Is Worth 100 Cold Pitches",
+      "problem": "Most freelancers finish the work and disappear. They never ask for referrals, testimonials, or repeat business. Every past client is a goldmine they ignore. This is the single biggest missed opportunity in freelancing.",
+      "strategy": "Deliver exceptional work, then systematically extract maximum value from the relationship: testimonials, referrals, case studies, and repeat engagement. Your first client should generate your next two.",
+      "system": "1. Deliver with clear communication\n2. Send a results recap\n3. Collect testimonial and recommendation\n4. Ask for referrals\n5. Follow up on referrals\n6. Repeat the process",
+      "execution": [
+        {
+          "step": 1,
+          "title": "Deliver With Clear Communication",
+          "description": "Keep the client informed throughout the project",
+          "details": "Set expectations upfront: how you'll communicate, when they'll hear from you, what you need from them. Send progress updates. Never go silent. Deliver on or before the deadline. Over-communicate. Your professionalism during delivery is what earns referrals."
+        },
+        {
+          "step": 2,
+          "title": "Send a Results Recap",
+          "description": "Summarize what was delivered and the impact",
+          "details": "After delivery, send a one-page recap: what was delivered, the timeline, the results (metrics if available), and what the client should do next. This makes your work feel complete and professional. It also sets up the ask for testimonial and referral."
+        },
+        {
+          "step": 3,
+          "title": "Collect Testimonial and Recommendation",
+          "description": "Ask for social proof while the project is fresh",
+          "details": "Send a testimonial request: 'Would you be open to sharing 1-2 sentences about working together? Here's a template if helpful.' Also ask for a LinkedIn recommendation. These are your most powerful marketing assets."
+        },
+        {
+          "step": 4,
+          "title": "Ask for Referrals",
+          "description": "Get introductions to your next clients",
+          "details": "Ask specifically: 'Do you know anyone who needs [your service]? I'm looking for 2-3 more clients.' Be specific about who you're looking for. 'Know any founders launching a website?' is better than 'Know anyone who needs help?'"
+        },
+        {
+          "step": 5,
+          "title": "Repeat the System",
+          "description": "Cycle through the full system for clients 2 and 3",
+          "details": "Take the referrals from client 1 and run them through your Outreach Engine and Conversion System. Warm referrals close at a much higher rate than cold outreach. Your goal is client 2 and client 3 to come from referrals rather than cold outreach."
+        }
+      ],
+      "trackVariations": {
+        "editor": {
+          "deliveryFormat": "Export final video files + a revision round. Share on Google Drive or Dropbox.",
+          "recapMetrics": "Total videos delivered, average turnaround time, engagement metrics if available",
+          "referralAsk": "Know any creators who are struggling to keep up with their content schedule?"
+        },
+        "developer": {
+          "deliveryFormat": "Live URL + handoff document with login details and maintenance notes.",
+          "recapMetrics": "Pages built, features implemented, performance improvements, timeline vs estimate",
+          "referralAsk": "Know any founders who are launching a product soon and need a site?"
+        },
+        "designer": {
+          "deliveryFormat": "Final files (PNG, SVG, PDF) + brand guide document.",
+          "recapMetrics": "Assets delivered, brand consistency score, platforms covered",
+          "referralAsk": "Know any businesses that are rebranding or launching soon?"
+        }
+      },
+      "templates": [
+        "Delivery SOP Template",
+        "Results Recap Template",
+        "Testimonial Request Template",
+        "Referral Request Script",
+        "Case Study Template"
+      ],
+      "prompts": [
+        "Delivery Checklist Generator",
+        "Testimonial Request Writer",
+        "Referral Ask Prompt",
+        "Case Study Writer Prompt"
+      ],
+      "resources": [
+        "Client Communication Guide",
+        "Referral System Setup Guide"
+      ],
+      "checklist": [
+        "Delivered work on or before deadline",
+        "Communicated proactively throughout the project",
+        "Sent a results recap to client",
+        "Collected a testimonial",
+        "Collected a LinkedIn recommendation",
+        "Asked for 3 specific referrals",
+        "Followed up on referrals with warm context",
+        "Repeated the system for client 2 and client 3",
+        "Updated client counter to 3/3"
+      ],
+      "completionReport": {
+        "assetsCreated": "Delivery SOP, testimonial collection, referral system",
+        "systemsBuilt": "Complete Client Acquisition System — you now have a repeatable system for acquiring, closing, and serving clients",
+        "nextStep": "You've completed the Client Acquisition System. Your business is now a professional operation."
+      }
+    }
+  ]
+}

@@ -1,0 +1,589 @@
+{
+  "id": "growth-os",
+  "title": "Growth OS",
+  "description": "A complete operating system for building and scaling your online audience through systematic content creation and distribution.",
+  "outcome": "Build a repeatable audience growth system in 7 modules",
+  "estimatedTime": "~4 hours total",
+  "difficulty": "Intermediate",
+  "version": "1.0",
+  "lastUpdated": "2026-06-10",
+  "category": "audience-building",
+  "tags": ["audience building", "content marketing", "growth system", "personal branding", "content strategy"],
+  "modules": [
+    {
+      "id": "foundation",
+      "title": "Foundation",
+      "description": "Establish the core infrastructure and strategic direction for your growth system.",
+      "outcome": [
+        "Define your target audience with precision",
+        "Create a compelling core offer",
+        "Validate market demand before building"
+      ],
+      "workflow": [
+        { "label": "Audience", "description": "Who you serve" },
+        { "label": "Offer", "description": "What you provide" },
+        { "label": "Validation", "description": "Proof of demand" },
+        { "label": "Execution", "description": "Your plan" }
+      ],
+      "steps": [
+        {
+          "id": "foundation-1",
+          "title": "Define Your Audience",
+          "description": "Identify exactly who you want to reach and serve with your content and offers.",
+          "details": "Start by getting specific about who you help. Think about demographics, psychographics, and the specific problems they face. The more specific you are, the easier it will be to create content and offers that resonate. Document their biggest frustrations, their desired outcomes, and where they currently hang out online."
+        },
+        {
+          "id": "foundation-2",
+          "title": "Create Your Core Offer",
+          "description": "Design a simple, high-value offer that solves a specific problem.",
+          "details": "Your core offer should be something you can deliver quickly with high value. It could be a template, a framework, a short guide, or a tool. The key is that it directly addresses a pain point your audience has. Keep it focused and avoid feature creep."
+        },
+        {
+          "id": "foundation-3",
+          "title": "Validate Demand",
+          "description": "Confirm that people actually want what you are building before going all in.",
+          "details": "Talk to potential customers, run a small waitlist, or create a landing page to gauge interest. Use social media polls or direct outreach. The goal is to get signal before investing significant time and resources into building something nobody wants."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "foundation-prompt-1",
+          "title": "Audience Definition Prompt",
+          "text": "I want you to act as a market research expert. Help me define my ideal audience by asking targeted questions about who they are, what they struggle with, and what outcomes they desire. Start by asking me to describe the general niche or industry I operate in, then probe deeper to narrow down to a specific, addressable audience segment."
+        },
+        {
+          "id": "foundation-prompt-2",
+          "title": "Offer Ideation Prompt",
+          "text": "Act as a product strategist. Based on the audience I describe, help me brainstorm 3-5 potential offers that would provide immediate value. For each offer, outline: (1) the specific problem it solves, (2) the format it could take, (3) why it would be easy to deliver quickly, and (4) how it could lead to a larger offer later."
+        }
+      ],
+      "templates": [
+        {
+          "id": "foundation-template-1",
+          "title": "Audience Profile Canvas",
+          "description": "A structured template to document your ideal audience demographics, psychographics, and pain points.",
+          "url": "#"
+        },
+        {
+          "id": "foundation-template-2",
+          "title": "Offer Validation Scorecard",
+          "description": "Evaluate and score potential offers based on demand, differentiation, and deliverability.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "foundation-c1", "label": "Define target audience profile" },
+        { "id": "foundation-c2", "label": "Document audience pain points" },
+        { "id": "foundation-c3", "label": "Create core offer concept" },
+        { "id": "foundation-c4", "label": "Research competitor offers" },
+        { "id": "foundation-c5", "label": "Validate demand with real people" }
+      ],
+      "resources": [
+        {
+          "id": "foundation-r1",
+          "title": "Audience Research Toolkit",
+          "description": "A curated list of tools for finding and analyzing your target audience online.",
+          "url": "#",
+          "type": "tool"
+        },
+        {
+          "id": "foundation-r2",
+          "title": "The Mom Test by Rob Fitzpatrick",
+          "description": "Essential reading on how to validate ideas by talking to customers without biased feedback.",
+          "url": "#",
+          "type": "article"
+        }
+      ]
+    },
+    {
+      "id": "offer-design",
+      "title": "Offer Design",
+      "description": "Design a compelling offer that converts visitors into paying customers.",
+      "outcome": [
+        "Structure a high-converting offer",
+        "Price your offer strategically",
+        "Write persuasive offer copy"
+      ],
+      "workflow": [
+        { "label": "Structure", "description": "Offer architecture" },
+        { "label": "Price", "description": "Pricing strategy" },
+        { "label": "Copy", "description": "Persuasive messaging" },
+        { "label": "Launch", "description": "Go-to-market" }
+      ],
+      "steps": [
+        {
+          "id": "offer-1",
+          "title": "Structure Your Offer",
+          "description": "Package your solution into a clear, compelling offer structure.",
+          "details": "Break your offer into components: the core deliverable, any bonuses, and the guarantee. Make sure each component adds perceived value. Use the value stack approach where the total perceived value significantly exceeds the price point."
+        },
+        {
+          "id": "offer-2",
+          "title": "Set Your Pricing",
+          "description": "Determine a price that reflects value while remaining accessible to your audience.",
+          "details": "Consider value-based pricing rather than cost-plus. Research what comparable offers sell for in your market. Test different price points if possible. Remember that pricing signals quality and commitment."
+        },
+        {
+          "id": "offer-3",
+          "title": "Write Persuasive Copy",
+          "description": "Craft messaging that communicates value and drives action.",
+          "details": "Focus on benefits over features. Address objections head-on. Use social proof where available. Write in a conversational tone that speaks directly to your ideal audience. Include a clear call to action."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "offer-prompt-1",
+          "title": "Offer Structure Prompt",
+          "text": "Act as a direct-response copywriter. Help me structure a high-converting offer by walking through the following: (1) Core promise what is the single most important outcome, (2) Value stack list 5-7 components that build perceived value, (3) Risk reversal what guarantee removes the most friction, (4) Scarcity what makes this offer time-sensitive or limited."
+        },
+        {
+          "id": "offer-prompt-2",
+          "title": "Pricing Strategy Prompt",
+          "text": "Act as a pricing strategist. Help me determine the optimal price for my offer. Consider: the depth of transformation provided, comparable offers in the market, the audience ability to pay, and the perceived value of the outcomes. Suggest 3 price tiers and explain the psychological positioning of each."
+        }
+      ],
+      "templates": [
+        {
+          "id": "offer-template-1",
+          "title": "Offer Architecture Blueprint",
+          "description": "A framework for structuring your core offer, bonuses, and guarantees.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "offer-c1", "label": "Define core deliverable" },
+        { "id": "offer-c2", "label": "Identify 3 strategic bonuses" },
+        { "id": "offer-c3", "label": "Set pricing strategy" },
+        { "id": "offer-c4", "label": "Write offer headline" },
+        { "id": "offer-c5", "label": "Write bullet points" },
+        { "id": "offer-c6", "label": "Draft guarantee" }
+      ],
+      "resources": [
+        {
+          "id": "offer-r1",
+          "title": "Value-Based Pricing Guide",
+          "description": "Learn how to price based on the value you deliver rather than time or cost.",
+          "url": "#",
+          "type": "article"
+        },
+        {
+          "id": "offer-r2",
+          "title": "Copywriting Formulas Library",
+          "description": "A collection of proven copywriting frameworks (PAS, AIDA, FAB, etc.).",
+          "url": "#",
+          "type": "reference"
+        }
+      ]
+    },
+    {
+      "id": "content-engine",
+      "title": "Content Engine",
+      "description": "Build a systematic content creation machine that consistently produces high-quality material.",
+      "outcome": [
+        "Develop a content strategy that aligns with your offer",
+        "Create a repeatable content production workflow",
+        "Establish a content calendar you can sustain"
+      ],
+      "workflow": [
+        { "label": "Strategy", "description": "Content pillars" },
+        { "label": "Production", "description": "Creation workflow" },
+        { "label": "Calendar", "description": "Scheduling system" },
+        { "label": "Optimize", "description": "Performance tuning" }
+      ],
+      "steps": [
+        {
+          "id": "content-1",
+          "title": "Define Content Pillars",
+          "description": "Identify 3-5 content themes that support your offer and resonate with your audience.",
+          "details": "Content pillars are broad topics that you will consistently create content around. Each pillar should connect back to your core offer while providing standalone value. Aim for a mix of educational, inspirational, and promotional content across your pillars."
+        },
+        {
+          "id": "content-2",
+          "title": "Build a Production Workflow",
+          "description": "Create a repeatable process for turning ideas into published content.",
+          "details": "Map out each stage of content creation from ideation to publication. Define specifically what happens at each stage. Use templates and checklists to eliminate decision fatigue. Batch similar tasks together to stay in flow state longer."
+        },
+        {
+          "id": "content-3",
+          "title": "Set Your Content Calendar",
+          "description": "Plan your content schedule to ensure consistent output without burnout.",
+          "details": "Decide on your publishing frequency realistically. Create a content calendar template that maps out what gets published when. Include buffer time for unexpected delays. Start with a sustainable cadence and scale up gradually."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "content-prompt-1",
+          "title": "Content Pillar Generator",
+          "text": "Act as a content strategist. Based on my offer and audience, help me define 5 content pillars. For each pillar, provide: (1) the pillar name and description, (2) 5-10 specific content ideas within that pillar, (3) how it connects to my core offer, and (4) which format works best (video, written, audio)."
+        },
+        {
+          "id": "content-prompt-2",
+          "title": "Content Repurposing Prompt",
+          "text": "Act as a content operations expert. Given a single piece of long-form content I create, outline a systematic repurposing workflow that transforms it into: social media posts, email newsletter content, short-form video scripts, images, and discussion questions. Show me the exact step-by-step process."
+        }
+      ],
+      "templates": [
+        {
+          "id": "content-template-1",
+          "title": "Content Calendar Template",
+          "description": "A structured calendar for planning and tracking all your content across platforms.",
+          "url": "#"
+        },
+        {
+          "id": "content-template-2",
+          "title": "Content Brief Template",
+          "description": "A brief that ensures every piece of content serves a strategic purpose and stays on brand.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "content-c1", "label": "Define 3-5 content pillars" },
+        { "id": "content-c2", "label": "Create content brief template" },
+        { "id": "content-c3", "label": "Set up content calendar" },
+        { "id": "content-c4", "label": "Establish production workflow" },
+        { "id": "content-c5", "label": "Plan repurposing process" },
+        { "id": "content-c6", "label": "Create content templates" }
+      ],
+      "resources": [
+        {
+          "id": "content-r1",
+          "title": "Hemingway App",
+          "description": "A tool to make your writing bold and clear by highlighting complex sentences.",
+          "url": "#",
+          "type": "tool"
+        },
+        {
+          "id": "content-r2",
+          "title": "Repurposing Workflow Guide",
+          "description": "A step-by-step guide to repurposing one piece of content into 10+ formats.",
+          "url": "#",
+          "type": "article"
+        }
+      ]
+    },
+    {
+      "id": "seo-engine",
+      "title": "SEO Engine",
+      "description": "Optimize your content to be discovered organically through search engines.",
+      "outcome": [
+        "Conduct keyword research that drives traffic",
+        "Optimize content for search engines",
+        "Build a sustainable organic growth channel"
+      ],
+      "workflow": [
+        { "label": "Research", "description": "Keyword discovery" },
+        { "label": "Optimize", "description": "On-page SEO" },
+        { "label": "Build", "description": "Authority signals" },
+        { "label": "Monitor", "description": "Performance tracking" }
+      ],
+      "steps": [
+        {
+          "id": "seo-1",
+          "title": "Conduct Keyword Research",
+          "description": "Find the right keywords that your audience is searching for.",
+          "details": "Start with seed keywords related to your topic. Use keyword research tools to find related terms, long-tail variations, and questions people ask. Prioritize keywords based on search volume, relevance, and competition level. Build a keyword map that connects each piece of content to specific search intents."
+        },
+        {
+          "id": "seo-2",
+          "title": "Optimize Your Content",
+          "description": "Apply on-page SEO best practices to every piece of content you publish.",
+          "details": "Focus on title tags, meta descriptions, heading structure, URL structure, and internal linking. Ensure your content comprehensively answers the search query. Use related keywords naturally throughout. Optimize images with descriptive alt text and proper file names."
+        },
+        {
+          "id": "seo-3",
+          "title": "Build Authority Signals",
+          "description": "Establish credibility through strategic linking and relationship building.",
+          "details": "Develop a link building strategy that focuses on quality over quantity. Create linkable assets like original research, comprehensive guides, and data visualizations. Engage in strategic partnerships and guest content opportunities that drive relevant referral traffic."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "seo-prompt-1",
+          "title": "Keyword Research Prompt",
+          "text": "Act as an SEO strategist. Given my niche and audience, help me build a keyword strategy. Generate: (1) 20 seed keywords, (2) 50 long-tail variations, (3) 20 question-based keywords people ask, and (4) a keyword map organized by search intent (informational, navigational, transactional)."
+        },
+        {
+          "id": "seo-prompt-2",
+          "title": "On-Page SEO Audit Prompt",
+          "text": "Act as an SEO auditor. Review my content and provide specific recommendations for: title tag optimization, meta description improvements, heading structure fixes, internal linking opportunities, content gaps, and technical SEO issues. Provide actionable before/after examples."
+        }
+      ],
+      "templates": [
+        {
+          "id": "seo-template-1",
+          "title": "Keyword Research Tracker",
+          "description": "A spreadsheet template for tracking keywords by volume, difficulty, and content assigned.",
+          "url": "#"
+        },
+        {
+          "id": "seo-template-2",
+          "title": "SEO Content Brief Template",
+          "description": "An SEO-optimized content brief that ensures every article targets the right keywords.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "seo-c1", "label": "Build keyword list (50+ terms)" },
+        { "id": "seo-c2", "label": "Map keywords to content pieces" },
+        { "id": "seo-c3", "label": "Optimize title tags and meta descriptions" },
+        { "id": "seo-c4", "label": "Structure content with proper headings" },
+        { "id": "seo-c5", "label": "Add internal links to related content" },
+        { "id": "seo-c6", "label": "Optimize images with alt text" },
+        { "id": "seo-c7", "label": "Set up search console and analytics" }
+      ],
+      "resources": [
+        {
+          "id": "seo-r1",
+          "title": "Google Search Console",
+          "description": "Monitor your search performance and identify optimization opportunities.",
+          "url": "#",
+          "type": "tool"
+        },
+        {
+          "id": "seo-r2",
+          "title": "Ahrefs Webmaster Tools",
+          "description": "Free SEO tools for keyword research, backlink analysis, and site audits.",
+          "url": "#",
+          "type": "tool"
+        }
+      ]
+    },
+    {
+      "id": "distribution",
+      "title": "Distribution",
+      "description": "Systematically distribute your content across the right channels to maximize reach.",
+      "outcome": [
+        "Build a multi-channel distribution system",
+        "Automate content syndication",
+        "Track and optimize channel performance"
+      ],
+      "workflow": [
+        { "label": "Channels", "description": "Platform selection" },
+        { "label": "Syndicate", "description": "Cross-posting" },
+        { "label": "Automate", "description": "Workflow setup" },
+        { "label": "Analyze", "description": "Performance data" }
+      ],
+      "steps": [
+        {
+          "id": "dist-1",
+          "title": "Select Your Channels",
+          "description": "Choose the platforms where your audience spends their time.",
+          "details": "Don't try to be everywhere at once. Pick 2-3 primary channels where your target audience is most active. Consider the content format that works best on each platform. Focus on depth on fewer channels rather than surface-level presence everywhere."
+        },
+        {
+          "id": "dist-2",
+          "title": "Set Up Syndication",
+          "description": "Create a system for republishing content across your chosen channels.",
+          "details": "For each piece of content, identify the primary platform and secondary syndication targets. Adapt the format for each platform while maintaining the core message. Use tools and workflows to automate cross-posting where appropriate."
+        },
+        {
+          "id": "dist-3",
+          "title": "Track Performance",
+          "description": "Measure what matters and double down on what works.",
+          "details": "Set up tracking for each distribution channel. Define the key metrics that matter for each platform. Review performance weekly and adjust your strategy based on data. Kill underperforming channels and invest more in what works."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "dist-prompt-1",
+          "title": "Distribution Strategy Prompt",
+          "text": "Act as a distribution strategist. Based on my audience profile and content type, recommend: (1) the top 3 platforms I should focus on, (2) the optimal posting frequency for each, (3) the content format that performs best on each platform, and (4) a cross-posting strategy that maximizes reach without duplication penalties."
+        }
+      ],
+      "templates": [
+        {
+          "id": "dist-template-1",
+          "title": "Distribution Calendar",
+          "description": "A calendar template for scheduling cross-platform content distribution.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "dist-c1", "label": "Identify top 3 distribution channels" },
+        { "id": "dist-c2", "label": "Create platform-specific profiles" },
+        { "id": "dist-c3", "label": "Set up cross-posting workflow" },
+        { "id": "dist-c4", "label": "Install tracking for each channel" },
+        { "id": "dist-c5", "label": "Create distribution calendar" },
+        { "id": "dist-c6", "label": "Schedule first week of posts" }
+      ],
+      "resources": [
+        {
+          "id": "dist-r1",
+          "title": "Buffer",
+          "description": "Schedule and publish content across social media platforms from one dashboard.",
+          "url": "#",
+          "type": "tool"
+        },
+        {
+          "id": "dist-r2",
+          "title": "Distribution Channel Guide",
+          "description": "A comparison of major content distribution platforms and their best use cases.",
+          "url": "#",
+          "type": "reference"
+        }
+      ]
+    },
+    {
+      "id": "conversion",
+      "title": "Conversion",
+      "description": "Turn your audience into customers with a frictionless conversion system.",
+      "outcome": [
+        "Design a conversion funnel that guides visitors to purchase",
+        "Create email sequences that nurture and convert",
+        "Optimize conversion rates through testing"
+      ],
+      "workflow": [
+        { "label": "Funnel", "description": "Conversion path" },
+        { "label": "Email", "description": "Nurture sequences" },
+        { "label": "Optimize", "description": "Conversion rate" },
+        { "label": "Scale", "description": "Growth systems" }
+      ],
+      "steps": [
+        {
+          "id": "conv-1",
+          "title": "Design Your Conversion Funnel",
+          "description": "Map the journey from first touch to purchase.",
+          "details": "Every piece of content should lead somewhere. Design clear next steps at each stage of the customer journey. Remove friction points where people drop off. Create logical progressions from free content to low-commitment offers to core products."
+        },
+        {
+          "id": "conv-2",
+          "title": "Build Email Sequences",
+          "description": "Create automated email flows that nurture subscribers into customers.",
+          "details": "Map out the key sequences: welcome sequence, content nurture sequence, offer sequence, and re-engagement sequence. Each email should have a clear purpose and single call to action. Write conversationally, provide value first, and promote strategically."
+        },
+        {
+          "id": "conv-3",
+          "title": "Optimize Conversion Rate",
+          "description": "Systematically test and improve each step of your conversion process.",
+          "details": "Identify the key conversion points in your funnel. Set up A/B tests for headlines, calls to action, pricing presentation, and page layouts. Focus on one variable at a time. Let tests run long enough to reach statistical significance."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "conv-prompt-1",
+          "title": "Email Sequence Generator",
+          "text": "Act as an email marketing strategist. Help me create a 5-email welcome sequence that: (1) delivers immediate value, (2) establishes authority, (3) shares my story and mission, (4) introduces my core offer naturally, and (5) includes a clear call to action. For each email, provide subject line options and the main body structure."
+        },
+        {
+          "id": "conv-prompt-2",
+          "title": "Conversion Audit Prompt",
+          "text": "Act as a conversion rate optimization specialist. Audit my current conversion process and identify: (1) the top 3 friction points causing drop-off, (2) 5 specific changes I can make to improve conversion, (3) the highest-impact test I should run first, and (4) an ideal conversion flow redesign recommendation."
+        }
+      ],
+      "templates": [
+        {
+          "id": "conv-template-1",
+          "title": "Email Sequence Blueprint",
+          "description": "A framework for planning and structuring automated email sequences.",
+          "url": "#"
+        },
+        {
+          "id": "conv-template-2",
+          "title": "Conversion Funnel Map",
+          "description": "Visual template for mapping your full conversion funnel from awareness to purchase.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "conv-c1", "label": "Map current conversion funnel" },
+        { "id": "conv-c2", "label": "Identify top 3 drop-off points" },
+        { "id": "conv-c3", "label": "Design welcome email sequence" },
+        { "id": "conv-c4", "label": "Create nurture email sequence" },
+        { "id": "conv-c5", "label": "Build offer email sequence" },
+        { "id": "conv-c6", "label": "Set up conversion tracking" },
+        { "id": "conv-c7", "label": "Plan first A/B test" }
+      ],
+      "resources": [
+        {
+          "id": "conv-r1",
+          "title": "Email Marketing Platforms Comparison",
+          "description": "A comparison of popular email marketing platforms with pricing and feature analysis.",
+          "url": "#",
+          "type": "reference"
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "title": "Resources",
+      "description": "Access the full toolkit of templates, prompts, and references to support your growth system.",
+      "outcome": [
+        "Access all system templates and frameworks",
+        "Download ready-to-use prompts for AI tools",
+        "Build a personal resource library for ongoing execution"
+      ],
+      "workflow": [
+        { "label": "Templates", "description": "Ready frameworks" },
+        { "label": "Prompts", "description": "AI assistants" },
+        { "label": "Tools", "description": "Software stack" },
+        { "label": "Library", "description": "Reference collection" }
+      ],
+      "steps": [
+        {
+          "id": "res-1",
+          "title": "Organize Your Resources",
+          "description": "Set up your personal system for accessing and organizing these resources.",
+          "details": "Create a folder structure or digital workspace where you can easily access all templates, prompts, and tools. Organize by module for quick reference. Set up bookmarks and shortcuts to your most-used resources."
+        },
+        {
+          "id": "res-2",
+          "title": "Customize Templates",
+          "description": "Adapt each template to fit your specific brand and workflow.",
+          "details": "Go through each template and customize it with your brand colors, logo, and voice. Adjust the structure to match your specific workflow. The templates are starting points, not final products. Make them yours."
+        },
+        {
+          "id": "res-3",
+          "title": "Build Your Stack",
+          "description": "Select and configure the tools that will power your growth system.",
+          "details": "Review the recommended tools and choose the ones that fit your workflow and budget. Set up integrations between tools to automate repetitive tasks. Create a simple dashboard where you can monitor your key metrics at a glance."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "res-prompt-1",
+          "title": "Tool Stack Evaluation Prompt",
+          "text": "Act as a tech stack consultant. Based on my growth system requirements, help me evaluate and select the right tools. Consider: content creation, scheduling, analytics, email marketing, and community management. For each category, recommend a free/affordable option and a pro option, explaining the tradeoffs."
+        }
+      ],
+      "templates": [
+        {
+          "id": "res-template-1",
+          "title": "System Setup Checklist",
+          "description": "A comprehensive checklist for setting up all the tools and systems in this blueprint.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "res-c1", "label": "Organize resources by module" },
+        { "id": "res-c2", "label": "Customize all templates" },
+        { "id": "res-c3", "label": "Select and configure tools" },
+        { "id": "res-c4", "label": "Set up integrations" },
+        { "id": "res-c5", "label": "Create metrics dashboard" },
+        { "id": "res-c6", "label": "Backup all systems" }
+      ],
+      "resources": [
+        {
+          "id": "res-r1",
+          "title": "Notion Template Gallery",
+          "description": "Free workspace templates for creators and solopreneurs.",
+          "url": "#",
+          "type": "tool"
+        },
+        {
+          "id": "res-r2",
+          "title": "Recommended Reading List",
+          "description": "Curated books and articles on audience building and content strategy.",
+          "url": "#",
+          "type": "reference"
+        },
+        {
+          "id": "res-r3",
+          "title": "Community Directory",
+          "description": "A list of communities where you can share your work and get feedback.",
+          "url": "#",
+          "type": "reference"
+        }
+      ]
+    }
+  ]
+}

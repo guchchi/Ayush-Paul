@@ -1,0 +1,82 @@
+{
+  "tracks": [
+    {
+      "id": "editor",
+      "name": "Video Editor",
+      "icon": "🎬",
+      "description": "Edit raw footage into polished videos for creators, businesses, and brands",
+      "platforms": ["Instagram", "YouTube", "LinkedIn", "Fiverr", "Upwork"],
+      "primaryPlatform": "Instagram",
+      "portfolioPlatform": "Instagram / YouTube",
+      "outreachPlatform": "Instagram DM / LinkedIn",
+      "commonServices": [
+        "Short-form social clip editing",
+        "Talking head video editing",
+        "Podcast video editing",
+        "YouTube long-form editing",
+        "Event recap videos"
+      ],
+      "avgStartingPrice": "$50–$150 per video",
+      "clientSignals": [
+        "Inconsistent posting schedule",
+        "Low-quality or inconsistent edits",
+        "Creator asking for editing recommendations",
+        "Recent hire posts for video editors",
+        "Low engagement despite good content"
+      ],
+      "tools": ["DaVinci Resolve", "Premiere Pro", "CapCut", "Final Cut Pro"]
+    },
+    {
+      "id": "developer",
+      "name": "Developer",
+      "icon": "💻",
+      "description": "Build websites, web apps, and automation systems for businesses and founders",
+      "platforms": ["GitHub", "LinkedIn", "Portfolio Website", "Upwork"],
+      "primaryPlatform": "LinkedIn",
+      "portfolioPlatform": "GitHub + Personal Site",
+      "outreachPlatform": "LinkedIn",
+      "commonServices": [
+        "Landing page development",
+        "Website redesign and optimization",
+        "API integration and automation",
+        "Custom web application builds",
+        "Performance optimization"
+      ],
+      "avgStartingPrice": "$500–$2,500 per project",
+      "clientSignals": [
+        "Outdated or broken website",
+        "Slow page load speeds",
+        "Startup with no web presence",
+        "Job posts for developers",
+        "Complaints about current tech stack"
+      ],
+      "tools": ["React", "Next.js", "Node.js", "Python", "Git"]
+    },
+    {
+      "id": "designer",
+      "name": "Designer",
+      "icon": "🎨",
+      "description": "Create visual identities, graphics, and brand systems for businesses and creators",
+      "platforms": ["Behance", "Dribbble", "Instagram", "LinkedIn"],
+      "primaryPlatform": "Instagram",
+      "portfolioPlatform": "Behance / Dribbble",
+      "outreachPlatform": "Instagram DM / LinkedIn",
+      "commonServices": [
+        "Logo and brand identity design",
+        "Social media graphics",
+        "Presentation deck design",
+        "Brand guideline creation",
+        "Website UI mockups"
+      ],
+      "avgStartingPrice": "$200–$800 per project",
+      "clientSignals": [
+        "New business launch announcements",
+        "Inconsistent or amateur branding",
+        "Asking for design recommendations",
+        "No logo or outdated branding",
+        "Poor social media visuals"
+      ],
+      "tools": ["Figma", "Adobe Illustrator", "Photoshop", "Canva"]
+    }
+  ]
+}

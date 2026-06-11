@@ -18,6 +18,7 @@ import { cn } from '../lib/utils';
 import { getContinueLearning, getRecommendedUnlocks, getUpgradePaths } from '../lib/recommendations';
 import { ensureReferralCode } from '../lib/referral';
 import { secureDownload } from '../lib/download';
+import { hasEngineContent } from '../data/blueprint-engine-content';
 import { VaultContinueLearning } from '../components/sections/VaultContinueLearning';
 import { VaultRecommendedUnlocks } from '../components/sections/VaultRecommendedUnlocks';
 import { VaultUpgradePath } from '../components/sections/VaultUpgradePath';
@@ -38,6 +39,7 @@ export const VaultPage = () => {
   const [discoverProducts, setDiscoverProducts] = useState<Product[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [registeredWorkshops, setRegisteredWorkshops] = useState<any[]>([]);
+  const [blueprintProgress, setBlueprintProgress] = useState<Record<string, number>>({});
   const [authChecked, setAuthChecked] = useState(false);
   const [allCourses, setAllCourses] = useState<any[]>([]);
 
@@ -88,6 +90,21 @@ export const VaultPage = () => {
 
           const filteredOwned = allProducts.filter(p => ownedIds.includes(p.id));
           setOwnedProducts(filteredOwned);
+
+          const engineProducts = filteredOwned.filter(p => p.slug && hasEngineContent(p.slug));
+          if (engineProducts.length > 0) {
+            const progressMap: Record<string, number> = {};
+            await Promise.all(engineProducts.map(async (p) => {
+              try {
+                const snap = await getDoc(doc(db, 'blueprint_progress', `${currentUser.uid}_${p.id}`));
+                if (snap.exists()) {
+                  const pd = snap.data();
+                  progressMap[p.id] = pd.overallProgress ?? 0;
+                }
+              } catch { }
+            }));
+            setBlueprintProgress(progressMap);
+          }
           
           const ownedOrClaimed = (p: Product) => ownedIds.includes(p.id) || p.type === 'free';
           setDiscoverProducts(allProducts.filter(p => !ownedOrClaimed(p)));
@@ -400,7 +417,7 @@ export const VaultPage = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                           {ownedByTier.free.map(product => (
-                            <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} />
+                            <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} engineProgress={blueprintProgress[product.id]} />
                           ))}
                         </div>
                       </div>
@@ -426,7 +443,7 @@ export const VaultPage = () => {
                               </div>
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {tierProducts.map(product => (
-                                  <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} />
+                                  <VaultProductCard key={product.id} product={product} profile={profile} onDownload={handleDownload} engineProgress={blueprintProgress[product.id]} />
                                 ))}
                               </div>
                             </div>

@@ -21,6 +21,7 @@ const CookiePage = lazy(() => import("./pages/CookiePage").then(m => ({ default:
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 const BlueprintsPage = lazy(() => import("./pages/BlueprintsPage").then(m => ({ default: m.BlueprintsPage })));
 const BlueprintDetailPage = lazy(() => import("./pages/BlueprintDetailPage").then(m => ({ default: m.BlueprintDetailPage })));
+const BlueprintEnginePage = lazy(() => import("./pages/BlueprintEnginePage").then(m => ({ default: m.BlueprintEnginePage })));
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const VaultPage = lazy(() => import("./pages/VaultPage").then(m => ({ default: m.VaultPage })));
 const BuildingPage = lazy(() => import("./pages/BuildingPage").then(m => ({ default: m.BuildingPage })));
@@ -28,6 +29,7 @@ const MasteryPage = lazy(() => import("./pages/MasteryPage").then(m => ({ defaul
 const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m => ({ default: m.CourseDetailPage })));
 const LessonViewerPage = lazy(() => import("./pages/LessonViewerPage").then(m => ({ default: m.LessonViewerPage })));
 const DesignSystemTestPage = lazy(() => import("./pages/DesignSystemTest").then(m => ({ default: m.DesignSystemTest })));
+const AcquisitionWorkspacePage = lazy(() => import("./pages/AcquisitionWorkspace").then(m => ({ default: m.AcquisitionWorkspace })));
 
 
 // --- Loading Fallback ---
@@ -131,6 +133,7 @@ export default function App() {
               <Route path="/systems/:slug" element={<RedirectWithSlug />} />
               <Route path="/blueprints" element={wrapInLayout(<BlueprintsPage />)} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
+              <Route path="/blueprints/:slug/engine" element={<BlueprintEnginePage />} />
               <Route path="/academy" element={<Navigate to="/mastery" replace />} />
               <Route path="/academy/courses/:courseId" element={<Navigate to="/mastery/courses/:courseId" replace />} />
               <Route path="/academy/courses/:courseId/lessons/:lessonId" element={<Navigate to="/mastery/courses/:courseId/lessons/:lessonId" replace />} />
@@ -149,6 +152,7 @@ export default function App() {
               <Route path="/milestones" element={<Navigate to="/building" replace />} />
               <Route path="/momentum" element={<Navigate to="/building" replace />} />
               <Route path="/design-system" element={wrapInLayout(<DesignSystemTestPage />)} />
+              <Route path="/workspace/client-acquisition" element={<AcquisitionWorkspacePage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
