@@ -1,9 +1,11 @@
 import type { BlueprintEngineData } from '../../types/blueprint-engine';
+import getYourFirst3Clients from './get-your-first-3-clients.json';
+import growthOs from './growth-os.json';
 
-const blueprintModules = import.meta.glob<BlueprintEngineData>('./*.json', {
-  eager: false,
-  import: 'default',
-});
+const blueprintModules: Record<string, () => Promise<BlueprintEngineData>> = {
+  './get-your-first-3-clients.json': () => Promise.resolve(getYourFirst3Clients as BlueprintEngineData),
+  './growth-os.json': () => Promise.resolve(growthOs as BlueprintEngineData),
+};
 
 export const blueprintEngineSlugs: string[] = Object.keys(blueprintModules).map((path) =>
   path.replace('./', '').replace('.json', ''),
@@ -30,3 +32,4 @@ export async function getAllBlueprints(): Promise<BlueprintEngineData[]> {
   );
   return results.filter((b): b is BlueprintEngineData => b !== undefined);
 }
+
