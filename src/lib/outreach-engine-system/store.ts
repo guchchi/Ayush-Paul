@@ -564,6 +564,10 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
       },
 
       seedDevSampleContext(optionIndex) {
+        if (optionIndex < 1 || optionIndex > 4) {
+          return;
+        }
+
         let service = '';
         let serviceLabel = '';
         let niche = '';
@@ -620,8 +624,6 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
           visibleProblem = 'Posts long-form gameplay videos but has inconsistent Shorts/Reels/TikTok clips.';
           reasonToContact = 'Their existing videos contain moments that could become short-form clips.';
           leadScore = 24;
-        } else {
-          return;
         }
 
         set({
@@ -1028,7 +1030,9 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
         if (!state.outreachReport) return;
         try {
           await navigator.clipboard.writeText(state.outreachReport.markdown);
-        } catch { }
+        } catch {
+          // ignore
+        }
       },
 
       downloadOutreachReportMarkdown() {

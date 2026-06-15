@@ -105,7 +105,9 @@ export const VaultPage = () => {
                   const pd = snap.data();
                   progressMap[p.id] = pd.overallProgress ?? 0;
                 }
-              } catch { }
+              } catch {
+                // ignore
+              }
             }));
             setBlueprintProgress(progressMap);
           }

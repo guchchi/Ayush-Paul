@@ -74,7 +74,9 @@ export function BlueprintEnginePage() {
               setProgress(saved);
             }
           }
-        } catch { }
+        } catch {
+          // ignore
+        }
       }
 
       setLoading(false);
@@ -119,7 +121,9 @@ export function BlueprintEnginePage() {
           ...updated,
           updatedAt: serverTimestamp(),
         }, { merge: true });
-      } catch { }
+      } catch {
+        // ignore
+      }
     }
   }, [user, data]);
 

@@ -35,7 +35,7 @@ export function OutreachEngineShell({ children }: { children: React.ReactNode })
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    try { localStorage.setItem('m6-theme', next); } catch { }
+    try { localStorage.setItem('m6-theme', next); } catch { /* ignore */ }
   };
 
   const currentIdx = OUTREACH_ENGINE_STEPS.indexOf(currentStep);

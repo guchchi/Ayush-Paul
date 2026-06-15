@@ -36,7 +36,7 @@ export function ClientPipelineShell({ children }: { children: React.ReactNode })
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    try { localStorage.setItem('m5-theme', next); } catch { }
+    try { localStorage.setItem('m5-theme', next); } catch { /* ignore */ }
   };
 
   const currentIdx = CLIENT_PIPELINE_STEPS.indexOf(currentStep);

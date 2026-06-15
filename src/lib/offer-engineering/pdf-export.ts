@@ -544,7 +544,7 @@ export async function exportBlueprintPDF(
   y = sectionCard(doc, y, '09', 'Why This Works', [wrap(doc, bp.whyThisWorks, CW - 36)]);
 
   // ── 10 Next Step CTA ──
-  y = ctaBand(doc, y, bp);
+  ctaBand(doc, y, bp);
 
   // ── Footer + continuation header on every page ──
   const totalPages = doc.getNumberOfPages();

@@ -244,7 +244,7 @@ export function AcquisitionWorkspace() {
       const variant = getStatementVariant(trackId, marketId, nicheId, 0);
       if (variant) setStatement(variant);
     }
-  }, [trackId, marketId, nicheId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [trackId, marketId, nicheId]);
 
   /* ─── Navigation helpers ─── */
   const canNavigateTo = useCallback((id: string) => {
@@ -393,7 +393,9 @@ export function AcquisitionWorkspace() {
       setSummaryCopied(true);
       setTimeout(() => setSummaryCopied(false), 2000);
       trackEvent('module1_summary_copied');
-    } catch {}
+    } catch {
+      // ignore
+    }
   };
 
   const handleStartModule = () => {

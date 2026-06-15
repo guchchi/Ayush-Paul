@@ -27,7 +27,7 @@ export default function ObjectionSafeRepliesStep() {
       await navigator.clipboard.writeText(text);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch { }
+    } catch { /* ignore */ }
   }, []);
 
   function handleGenerate() {

@@ -40,7 +40,7 @@ export default function MessageBuilderStep() {
       await navigator.clipboard.writeText(text);
       setCopiedId(draftId);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch { }
+    } catch { /* ignore */ }
   }, []);
 
   function handleGenerate() {
