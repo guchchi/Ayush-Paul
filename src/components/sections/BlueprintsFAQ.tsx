@@ -39,7 +39,8 @@ export const BlueprintsFAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
+    <section className="bg-white py-24 px-6 md:px-12 lg:px-24 text-left relative z-10 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-14 text-left">
         <div>
           <motion.div
@@ -47,10 +48,9 @@ export const BlueprintsFAQ = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bg-secondary border border-[#c2c6d6]/20 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
+            className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-sm w-fit inline-block mb-6"
           >
-            <span className="w-1.5 h-1.5 bg-[#424754] rounded-full" />
-            <span className="tracking-[0.22em]">FAQ</span>
+            FAQ
           </motion.div>
 
           <motion.h2
@@ -58,7 +58,7 @@ export const BlueprintsFAQ = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
+            className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
           >
             Questions Worth<br />
             Asking
@@ -133,6 +133,7 @@ export const BlueprintsFAQ = () => {
             </motion.div>
           );
         })}
+      </div>
       </div>
     </section>
   );

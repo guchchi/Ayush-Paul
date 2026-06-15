@@ -24,9 +24,9 @@ export const BlogPostPage = () => {
 
   useSEO({
     title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
-    description: post?.seo?.description || post?.description || post?.excerpt,
-    keywords: post?.seo?.keywords,
-    image: post?.seo?.ogImage || post?.coverImage,
+    description: post?.seo?.description || post?.description || post?.excerpt || "Read insights on AI development, system architecture, and building in public.",
+    keywords: post?.seo?.keywords || post?.tags?.join(", ") || "Ayush Paul blog, AI development, systems thinking, engineering",
+    image: post?.seo?.ogImage || post?.coverImage || "/og-image.png",
     url: `/blog/${slug}`,
     schema: post ? {
       "@context": "https://schema.org",

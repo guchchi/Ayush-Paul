@@ -16,14 +16,13 @@ interface SidebarProps {
 }
 
 const SECTION_NUMBERS: Record<string, string> = {
-  'mission-brief': '01',
+  'career-track': '01',
   'skill-inventory': '02',
-  'opportunity-matrix': '03',
-  'market-selection': '04',
-  'niche-mapping': '05',
-  'positioning-engine': '06',
-  'opportunity-simulator': '07',
-  'opportunity-report': '08',
+  'market-selection': '03',
+  'niche-mapping': '04',
+  'positioning-engine': '05',
+  'opportunity-simulator': '06',
+  'opportunity-report': '07',
 };
 
 export function Sidebar({ phaseName, items, activeSection, onSectionChange }: SidebarProps) {

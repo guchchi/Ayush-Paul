@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 import { motion } from 'motion/react';
 import { 
   ArrowRight, 
@@ -235,9 +236,11 @@ const CTASection = () => {
 
 export const AboutPage = () => {
   useSEO({
-    title: "About Ayush Paul | Developer & Systems Builder",
-    description: "Learn more about Ayush Paul's story, principles, tech stack, and digital systems architecture workflows.",
-    keywords: "Ayush Paul, Ayush Paul Bio, Ayush Paul Experience, Web Developer India, AI Automation"
+    title: "About Ayush Paul | Developer, Architect & Systems Builder",
+    description: "Building venture-scale digital products, AI automation systems, and implementation blueprints. Learn about the stack, principles, and engineering workflow.",
+    keywords: "Ayush Paul, about Ayush Paul, systems builder, AI developer, full stack engineer, digital products, tech stack",
+    url: getCanonicalUrl("/about"),
+    image: "/og-image.png",
   });
 
   return (

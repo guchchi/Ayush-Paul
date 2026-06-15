@@ -41,13 +41,11 @@ service cloud.firestore {
     // ============================================================
 
     match /blogPosts/{docId} {
-      allow read: if true;
+      allow read: if resource.data.published == true || isAdmin();
       allow write: if isAdmin()
                    && request.resource.data.keys().hasAll(['title', 'slug', 'content', 'published'])
                    && request.resource.data.title is string
-                   && request.resource.data.content is string
-                   && !(request.resource.data.title.lower().matches('.*test.*'))
-                   && !(request.resource.data.content.lower().matches('.*test.*'));
+                   && request.resource.data.content is string;
     }
 
     match /projects/{docId} {
@@ -64,7 +62,7 @@ service cloud.firestore {
     }
 
     match /products/{docId} {
-      allow read: if true;
+      allow read: if resource.data.isPublished == true || isAdmin();
       allow write: if isAdmin();
     }
 
@@ -73,7 +71,7 @@ service cloud.firestore {
     }
 
     match /courses/{docId} {
-      allow read: if true;
+      allow read: if resource.data.isPublished == true || isAdmin();
       allow write: if isAdmin();
     }
 
@@ -88,7 +86,7 @@ service cloud.firestore {
     }
 
     match /workshops/{docId} {
-      allow read: if true;
+      allow read: if resource.data.isPublished == true || isAdmin();
       allow write: if isAdmin();
     }
 
@@ -146,7 +144,15 @@ service cloud.firestore {
     // ============================================================
 
     match /users/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isAdmin() || (
+        isOwner(userId) &&
+        // Allow create without role check; on update prevent role escalation
+        (resource == null || request.resource.data.role == resource.data.role) &&
+        // Prevent self-granting premium ownedProducts
+        (!(request.resource.data.keys().hasAny(['ownedProducts'])) ||
+         request.resource.data.ownedProducts.values().hasOnly(['free']))
+      );
     }
 
     match /enrollments/{docId} {
@@ -229,6 +235,25 @@ service cloud.firestore {
 
     match /test_connection/{docId} {
       allow read, write: if isAdmin();
+    }
+
+    // ============================================================
+    // PUBLIC CREATE, ADMIN READ — Course Waitlist
+    // Visitors can submit interest, admin manages entries.
+    // ============================================================
+
+    match /course_waitlist/{docId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ============================================================
+    // PRIVATE PER USER — Blueprint Progress
+    // Each user's progress document is scoped to their UID.
+    // ============================================================
+
+    match /blueprint_progress/{docId} {
+      allow read, write: if isAuthenticated() && docId.startsWith(request.auth.uid);
     }
   }
 }

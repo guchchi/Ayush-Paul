@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, ExternalLink, Calendar, Layers, Activity, Star } from 'lucide-react';
 import { db, collection, query, where, getDocs } from '../firebase';
+import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 import { Section } from '../components/ui/Section';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { VARIANTS, EASING } from '../lib/motion-presets';
@@ -13,6 +15,14 @@ export const ExperimentDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useSEO({
+    title: project ? `${project.title} | R&D Project by Ayush Paul` : "Loading Project...",
+    description: project?.description || "Explore research and development projects, experiments, and prototypes built by Ayush Paul.",
+    keywords: project?.tags?.join(", ") || "Ayush Paul, R&D, experiment, prototype, project",
+    url: slug ? getCanonicalUrl(`/experiments/${slug}`) : getCanonicalUrl("/experiments"),
+    image: project?.thumbnail || "/og-image.png",
+  });
 
   useEffect(() => {
     const fetchProject = async () => {

@@ -1,0 +1,119 @@
+{
+  "id": "get-your-first-3-clients",
+  "title": "Get Your First 3 Clients",
+  "description": "Choose your service direction, define your market, create your first positioning statement, and prepare the foundation for getting your first clients.",
+  "outcome": "A clear direction statement and actionable plan to start acquiring clients",
+  "estimatedTime": "30\u201360 min total",
+  "difficulty": "Beginner",
+  "version": "1.0",
+  "lastUpdated": "2026-06-14",
+  "category": "client-acquisition",
+  "tags": [
+    "client acquisition",
+    "freelancing",
+    "offer building",
+    "beginner friendly",
+    "direction"
+  ],
+  "modules": [
+    {
+      "id": "direction",
+      "title": "Choose Your Direction",
+      "description": "Select your skill track, define your market and niche, and craft a clear positioning statement that guides everything else.",
+      "outcome": [
+        "A chosen skill track aligned with your strengths",
+        "A defined market and niche to focus on",
+        "A clear, written direction statement",
+        "Confidence in who you serve and how"
+      ],
+      "workflow": [
+        { "label": "Track", "description": "Your primary skill" },
+        { "label": "Market", "description": "Who you serve" },
+        { "label": "Niche", "description": "Your specific audience" },
+        { "label": "Statement", "description": "Your positioning" },
+        { "label": "Review", "description": "Lock it in" }
+      ],
+      "steps": [
+        {
+          "id": "direction-1",
+          "title": "Choose Your Skill Track",
+          "description": "Select the primary skill you will use to build your freelance business.",
+          "details": "Your skill track is the foundation of everything. Choose the one that best aligns with your strengths, experience, and market demand. Video editing, WordPress development, and UI/UX design are proven tracks with strong demand for freelancers."
+        },
+        {
+          "id": "direction-2",
+          "title": "Choose Your Market",
+          "description": "Define who you want to serve with your skills.",
+          "details": "Your market is the industry or group of people who need your skills. Rather than trying to serve everyone, pick a specific group. This makes your marketing more effective and your offers more compelling."
+        },
+        {
+          "id": "direction-3",
+          "title": "Choose Your Niche",
+          "description": "Narrow your focus to a specific audience within your market.",
+          "details": "A niche is a specific segment of your market. The more specific you are, the easier it is to stand out and charge premium rates. Instead of 'businesses,' choose 'restaurants needing better websites.' Instead of 'creators,' choose 'YouTubers who want higher retention.'"
+        },
+        {
+          "id": "direction-4",
+          "title": "Write Your Direction Statement",
+          "description": "Craft a clear one-sentence positioning statement.",
+          "details": "Your direction statement follows the formula: 'I help [audience] get [result] using [method].' This single sentence becomes the foundation for your offers, your outreach messages, and your brand."
+        },
+        {
+          "id": "direction-5",
+          "title": "Review and Save",
+          "description": "Review your choices and lock in your direction.",
+          "details": "Before moving forward, review your track, market, niche, and statement. Make sure they feel aligned and specific enough to act on. You can refine later, but this gives you a clear starting point."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "direction-prompt-1",
+          "title": "Audience Clarity Prompt",
+          "text": "Act as a business strategist. Help me get crystal clear on who I serve. Ask me questions about my skills, past work, and the type of client I enjoy working with. Then help me write a specific audience description in one sentence."
+        },
+        {
+          "id": "direction-prompt-2",
+          "title": "Direction Statement Refinement",
+          "text": "Act as a copywriter. I have a rough direction statement. Help me refine it to be clearer, more compelling, and more specific. Ask me about my audience's main problem, the transformation they want, and why my method is unique."
+        }
+      ],
+      "templates": [
+        {
+          "id": "direction-template-1",
+          "title": "Direction Statement Canvas",
+          "description": "A structured worksheet to define your audience, result, and method.",
+          "url": "#"
+        },
+        {
+          "id": "direction-template-2",
+          "title": "Niche Validation Scorecard",
+          "description": "Evaluate your niche based on demand, competition, and your ability to serve it.",
+          "url": "#"
+        }
+      ],
+      "checklist": [
+        { "id": "direction-c1", "label": "Choose your primary skill track" },
+        { "id": "direction-c2", "label": "Define your target market" },
+        { "id": "direction-c3", "label": "Select a specific niche" },
+        { "id": "direction-c4", "label": "Write your direction statement" },
+        { "id": "direction-c5", "label": "Review and confirm your direction" }
+      ],
+      "resources": [
+        {
+          "id": "direction-res-1",
+          "title": "Freelance Niche Selection Guide",
+          "description": "A step-by-step guide to picking a profitable freelance niche.",
+          "url": "#",
+          "type": "article"
+        },
+        {
+          "id": "direction-res-2",
+          "title": "Positioning Statement Examples",
+          "description": "Real examples of effective positioning statements from successful freelancers.",
+          "url": "#",
+          "type": "reference"
+        }
+      ]
+    }
+  ]
+}

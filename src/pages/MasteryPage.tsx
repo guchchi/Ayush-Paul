@@ -31,6 +31,64 @@ const CATEGORY_NAMES: Record<string, string> = {
   entrepreneurship: 'Entrepreneurship',
 };
 
+const COMING_SOON_COURSES = [
+  {
+    id: "ai-execution-systems",
+    title: "AI Execution Systems",
+    category: "ai",
+    description: "Build end-to-end AI agents that research, plan, and execute autonomously using LLM orchestration, tool calling, and memory management.",
+    difficulty: "Advanced",
+    duration: "6-8 Hours",
+    lessonsCount: 12,
+    isPublished: false,
+    status: "COMING_SOON",
+  },
+  {
+    id: "cursor-ai-mastery-advanced",
+    title: "Cursor AI Mastery (Advanced)",
+    category: "ai",
+    description: "Go beyond vanilla Cursor workflows. Build custom rules, MCP servers, and advanced agentic patterns for production-grade codebases.",
+    difficulty: "Advanced",
+    duration: "4-6 Hours",
+    lessonsCount: 10,
+    isPublished: false,
+    status: "COMING_SOON",
+  },
+  {
+    id: "seo-execution-blueprint",
+    title: "SEO Execution Blueprint",
+    category: "seo",
+    description: "A tactical system for ranking in 2026 and beyond. Learn technical SEO, content architecture, entity optimization, and AI-era search strategies.",
+    difficulty: "Intermediate",
+    duration: "3-5 Hours",
+    lessonsCount: 8,
+    isPublished: false,
+    status: "COMING_SOON",
+  },
+  {
+    id: "freelance-client-acquisition",
+    title: "Freelance Client Acquisition",
+    category: "entrepreneurship",
+    description: "A repeatable outreach-to-close system for freelancers. Build authority, craft proposals that convert, and command premium rates.",
+    difficulty: "Intermediate",
+    duration: "4-6 Hours",
+    lessonsCount: 10,
+    isPublished: false,
+    status: "COMING_SOON",
+  },
+  {
+    id: "personal-brand-content-system",
+    title: "Personal Brand Content System",
+    category: "branding",
+    description: "A structured content engine for busy builders. Plan, produce, and distribute consistently without burning out across Twitter, LinkedIn, and newsletters.",
+    difficulty: "Beginner",
+    duration: "3-5 Hours",
+    lessonsCount: 8,
+    isPublished: false,
+    status: "COMING_SOON",
+  },
+];
+
 export const MasteryPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +127,13 @@ export const MasteryPage = () => {
       const seen = new Set(publishedCourses.map(c => c.id));
       const coursesList = [...publishedCourses];
       for (const c of comingSoonCourses) {
+        if (!seen.has(c.id)) {
+          coursesList.push(c);
+          seen.add(c.id);
+        }
+      }
+      // Append local coming-soon courses not yet in Firestore
+      for (const c of COMING_SOON_COURSES) {
         if (!seen.has(c.id)) {
           coursesList.push(c);
           seen.add(c.id);
@@ -129,10 +194,11 @@ export const MasteryPage = () => {
   }, []);
 
   useSEO({
-    title: "Mastery — Skill Acquisition Ecosystem for Builders | AyushPaul.in",
-    description: "Learn skills, build systems, and ship faster. Self-paced courses, live workshops, and private 1-on-1 learning.",
-    keywords: "Ayush Paul Mastery, skill acquisition, AI courses, robotics workshops, web development courses, 1-on-1 learning, design systems, entrepreneurship",
+    title: "Mastery — Skill Acquisition Ecosystem for Builders | Ayush Paul",
+    description: "Learn skills, build systems, and ship faster. Self-paced courses, live workshops, and private 1-on-1 learning with Ayush Paul.",
+    keywords: "Ayush Paul mastery, skill acquisition, AI courses, robotics workshops, web development courses, 1-on-1 learning, design systems",
     url: getCanonicalUrl("/mastery"),
+    image: "/og-image.png",
     schema: {
       "@context": "https://schema.org",
       "@type": "EducationEvent",

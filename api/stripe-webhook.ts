@@ -67,8 +67,8 @@ function emailButton(text: string, url: string): string {
 function renderPurchaseConfirmation(props: { customerName: string; productName: string; amount: string; vaultUrl: string; downloadUrl?: string }): string {
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.customerName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your payment of <strong style="color:#ffffff;">${props.amount}</strong> has been successfully processed.</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${props.productName}</strong> is now permanently unlocked in your digital vault.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your payment of <strong style="color:#ffffff;">${props.amount}</strong> was successful.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${props.productName}</strong> is now permanently unlocked in your Vault.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
     <p style="margin:0 0 4px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">What you unlocked</p>
     <p style="margin:0;font-size:18px;font-weight:700;color:#d1f34d;">${props.productName}</p>
@@ -379,7 +379,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             vaultUrl: `${process.env.APP_URL || 'https://ayushpaul.vercel.app'}/vault`,
           });
 
-          await sendEmail(customerEmail, `Unlocked: ${productData.title}`, html);
+          await sendEmail(customerEmail, `You unlocked ${productData.title} — access it in your Vault`, html);
         }
       } catch (emailError) {
         console.error("Failed to send receipt email:", emailError);

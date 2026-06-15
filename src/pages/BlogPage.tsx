@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ArrowRight, ChevronDown, Check } from "lucide-react";
 import { useSEO } from "../hooks/useSEO";
+import { getCanonicalUrl } from "../lib/domain";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
@@ -10,8 +11,10 @@ import { SystemEmptyState } from "../components/ui/SystemEmptyState";
 
 export const BlogPage = () => {
   useSEO({
-    title: "Ayush Paul Blog | Ideas, AI & Engineering",
-    description: "Ayush Paul's Blog discussing AI, Development, learning journey and featured projects."
+    title: "Blog | Ayush Paul — Ideas, Engineering & Systems Thinking",
+    description: "Essays on AI development, system architecture, automation workflows, and building in public. Practical insights from the lab.",
+    url: getCanonicalUrl("/blog"),
+    image: "/og-image.png",
   });
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);

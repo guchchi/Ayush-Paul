@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   FileText, MessageSquare, Eye, CheckSquare, Play,
-  ChevronRight, Sparkles,
+  ChevronRight, Sparkles, HelpCircle, AlertCircle, TrendingUp,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING } from '../../lib/motion-presets';
@@ -22,6 +22,7 @@ interface AssetCategory {
 
 interface AssetsPanelProps {
   categories: AssetCategory[];
+  activeSection?: string;
 }
 
 const CATEGORY_ICONS: Record<string, typeof FileText> = {
@@ -32,7 +33,7 @@ const CATEGORY_ICONS: Record<string, typeof FileText> = {
   videos: Play,
 };
 
-export function AssetsPanel({ categories }: AssetsPanelProps) {
+export function AssetsPanel({ categories, activeSection }: AssetsPanelProps) {
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(
     categories.length > 0 ? [categories[0].id] : [],
   ));
@@ -61,6 +62,62 @@ export function AssetsPanel({ categories }: AssetsPanelProps) {
         <Sparkles size={12} className="text-brand-primary" />
         <span className="text-[9px] font-bold text-white/40 uppercase tracking-[0.15em]">Intelligence</span>
       </div>
+
+      {activeSection === 'career-track' && (
+        <div className="space-y-3 mb-5">
+          {/* How to choose */}
+          <div className="p-3.5 rounded-xl bg-brand-primary/5 border border-brand-primary/10">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded-md bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+                <HelpCircle size={11} />
+              </div>
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-primary">How to choose</h4>
+            </div>
+            <ul className="space-y-1.5 text-[10px] text-white/50 leading-relaxed list-disc pl-3.5">
+              <li>Pick the track closest to the service you can actually deliver.</li>
+              <li>Choose based on skills, proof potential, and client demand.</li>
+              <li>Do not choose only because it sounds trendy.</li>
+            </ul>
+          </div>
+
+          {/* Common mistake */}
+          <div className="p-3.5 rounded-xl bg-red-400/5 border border-red-400/10">
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="w-5 h-5 rounded-md bg-red-400/10 flex items-center justify-center text-red-400">
+                <AlertCircle size={11} />
+              </div>
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.1em] text-red-400">Common mistake</h4>
+            </div>
+            <p className="text-[10px] text-white/50 leading-relaxed pl-1">
+              Choosing a broad identity without knowing what service you will sell.
+            </p>
+          </div>
+
+          {/* Example path */}
+          <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.06]">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded-md bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/40">
+                <TrendingUp size={11} />
+              </div>
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/40">Example path</h4>
+            </div>
+            <div className="space-y-2.5 text-[10px] leading-relaxed text-white/50 pl-1">
+              <div className="pb-2 border-b border-white/[0.04] last:border-0 last:pb-0">
+                <span className="font-semibold text-white/80 block mb-0.5">🎬 Video Editor</span>
+                <span className="text-[9px] text-white/40 block leading-normal">Short-form clips &rarr; Gaming creators &rarr; Monthly clip retainer</span>
+              </div>
+              <div className="pb-2 border-b border-white/[0.04] last:border-0 last:pb-0">
+                <span className="font-semibold text-white/80 block mb-0.5">💻 Developer</span>
+                <span className="text-[9px] text-white/40 block leading-normal">Plugin integration &rarr; Marketing agencies &rarr; Campaign setup support</span>
+              </div>
+              <div>
+                <span className="font-semibold text-white/80 block mb-0.5">🎨 Designer</span>
+                <span className="text-[9px] text-white/40 block leading-normal">Product UI &rarr; SaaS teams &rarr; Dashboard redesign offer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {categories.map((cat) => {
         const Icon = CATEGORY_ICONS[cat.icon] || FileText;

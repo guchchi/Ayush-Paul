@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import { Product, DownloadAnalytics, AssetCategory, ResourceItem, ChangelogEntry } from "../types";
 import { handleFirestoreError } from "./firebase-utils";
 import { OperationType } from "../types";
+import { LOCAL_SEED_PRODUCTS } from "../data/blueprint-local-seed";
 
 const CACHE_KEY = "products_cache";
 const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
@@ -150,6 +151,14 @@ export const getPublishedProducts = async (): Promise<Product[]> => {
       if (!seen.has(p.id)) {
         products.push(p);
         seen.add(p.id);
+      }
+    }
+
+    // Merge local seed products (so they appear without requiring a Firestore write)
+    for (const local of LOCAL_SEED_PRODUCTS) {
+      if (!seen.has(local.id)) {
+        products.push(local);
+        seen.add(local.id);
       }
     }
 

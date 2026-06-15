@@ -211,7 +211,7 @@ export function BlueprintEnginePage() {
   const ownedMap = profile?.ownedProducts || {};
   const ownsBlueprint = data?.id ? ownedMap[data.id] !== undefined : false;
 
-  if (!ownsBlueprint) {
+  if (!ownsBlueprint && slug !== 'get-your-first-3-clients') {
     return (
       <div className="w-full min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-center px-6">
         <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4">

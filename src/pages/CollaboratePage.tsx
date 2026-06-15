@@ -19,10 +19,11 @@ export const CollaboratePage = () => {
   const { trackEvent } = useAnalytics();
 
   useSEO({
-    title: "Studio | Ayush Paul",
-    description: "Direct collaboration, implementation support, technical mentorship, and project development with Ayush Paul.",
-    keywords: "Ayush Paul, Studio, Build, MVP, Systems, Strategy",
+    title: "Studio — Work With Ayush Paul | Collaboration & Development",
+    description: "Direct collaboration, implementation support, technical mentorship, and project development with Ayush Paul. Build MVPs, systems, and production-grade solutions together.",
+    keywords: "Ayush Paul, studio, collaboration, MVP development, technical mentorship, implementation support, systems architecture",
     url: getCanonicalUrl("/collaborate"),
+    image: "/og-image.png",
     schema: {
       "@context": "https://schema.org",
       "@type": "WebPage",

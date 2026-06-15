@@ -123,7 +123,7 @@ export function WorkspaceShell({
         {showAssets && (
           <div className="shrink-0 border-l border-white/[0.06]" style={{ width: ASSETS_WIDTH }}>
             <div className="h-full overflow-y-auto custom-scrollbar bg-[var(--glass-bg)]">
-              <AssetsPanel categories={assetCategories} />
+              <AssetsPanel categories={assetCategories} activeSection={activeSection} />
             </div>
           </div>
         )}
@@ -209,7 +209,7 @@ export function WorkspaceShell({
                 </button>
               </div>
               <div className="h-[calc(100%-80px)] overflow-y-auto custom-scrollbar">
-                <AssetsPanel categories={assetCategories} />
+                <AssetsPanel categories={assetCategories} activeSection={activeSection} />
               </div>
             </motion.div>
           )}

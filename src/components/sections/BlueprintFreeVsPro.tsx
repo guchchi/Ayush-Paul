@@ -45,6 +45,7 @@ export const BlueprintFreeVsPro = ({
   onFreeDownload, onPremiumUpgrade,
 }: Props) => {
   const hasFree = product.type === 'free' || product.freeFileUrl;
+  const isTargetBlueprint = product.slug === 'get-your-first-3-clients';
 
   if (!hasFree) return null;
 
@@ -89,7 +90,7 @@ export const BlueprintFreeVsPro = ({
             {isDownloading ? (
               <div className="w-4 h-4 border-2 border-[#0058be]/25 border-t-[#0058be] rounded-full animate-spin" />
             ) : (
-              <>Get Free Blueprint <Download size={13} /></>
+              <>{isTargetBlueprint ? 'Launch Blueprint' : 'Get Free Blueprint'} {isTargetBlueprint ? <ArrowRight size={13} /> : <Download size={13} />}</>
             )}
           </button>
         </div>
@@ -134,7 +135,7 @@ export const BlueprintFreeVsPro = ({
               {isCheckingOut ? (
                 <div className="w-4 h-4 border-2 border-white/25 border-t-white rounded-full animate-spin" />
               ) : (
-                <>Unlock Pro <ArrowRight size={13} /></>
+                <>{isTargetBlueprint ? 'Launch Blueprint' : 'Unlock Pro'} <ArrowRight size={13} /></>
               )}
             </button>
           )}

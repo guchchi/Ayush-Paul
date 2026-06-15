@@ -1201,4 +1201,162 @@
   background-color: rgba(9, 9, 11, 0.08) !important;
 }
 
+/* ============================================================
+   OFFER ENGINEERING — LIGHT MODE OVERRIDES
+   ============================================================ */
+
+/* Additional bg opacities */
+:root.light .bg-white\/\[0\.03\],
+:root.light .bg-white\/\[0\.04\] {
+  background-color: var(--glass-bg-primary) !important;
+}
+:root.light .bg-white\/\[0\.06\] {
+  background-color: var(--glass-bg-hover) !important;
+}
+:root.light .bg-white\/10 {
+  background-color: rgba(11, 28, 48, 0.06) !important;
+}
+:root.light .bg-white\/15 {
+  background-color: rgba(11, 28, 48, 0.10) !important;
+}
+:root.light .bg-white\/30 {
+  background-color: rgba(11, 28, 48, 0.15) !important;
+}
+:root.light .bg-white\/70 {
+  background-color: var(--bg-elevated) !important;
+}
+
+/* Text opacities and zinc colors */
+:root.light .text-white\/95 {
+  color: var(--text-primary) !important;
+}
+:root.light .text-zinc-400 {
+  color: var(--text-secondary) !important;
+}
+:root.light .text-zinc-500 {
+  color: var(--text-muted) !important;
+}
+:root.light .text-zinc-600 {
+  color: rgba(11, 28, 48, 0.30) !important;
+}
+:root.light .text-zinc-300 {
+  color: rgba(11, 28, 48, 0.65) !important;
+}
+:root.light .hover\:text-zinc-300:hover {
+  color: rgba(11, 28, 48, 0.65) !important;
+}
+:root.light .group:hover .group-hover\:text-zinc-400 {
+  color: var(--text-secondary) !important;
+}
+
+/* Placeholder text */
+:root.light .placeholder\:text-zinc-500::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Emerald/success overrides */
+:root.light .bg-emerald-500\/10 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+:root.light .bg-emerald-500\/15 {
+  background-color: rgba(16, 185, 129, 0.10) !important;
+}
+:root.light .bg-emerald-500\/20 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+:root.light .text-emerald-400 {
+  color: #059669 !important;
+}
+:root.light .border-emerald-500\/20 {
+  border-color: rgba(16, 185, 129, 0.20) !important;
+}
+:root.light .border-emerald-500\/40 {
+  border-color: rgba(16, 185, 129, 0.30) !important;
+}
+
+/* Amber/warning overrides */
+:root.light .bg-amber-400\/5 {
+  background-color: rgba(251, 191, 36, 0.06) !important;
+}
+:root.light .border-amber-400\/15 {
+  border-color: rgba(251, 191, 36, 0.15) !important;
+}
+:root.light .text-amber-500 {
+  color: #d97706 !important;
+}
+:root.light .text-amber-400\/60 {
+  color: rgba(217, 119, 6, 0.60) !important;
+}
+
+/* Brand primary overrides (light bg tones) */
+:root.light .bg-brand-primary\/5 {
+  background-color: rgba(0, 88, 190, 0.05) !important;
+}
+:root.light .bg-brand-primary\/30 {
+  background-color: rgba(0, 88, 190, 0.12) !important;
+}
+:root.light .border-brand-primary\/60 {
+  border-color: rgba(0, 88, 190, 0.25) !important;
+}
+:root.light .ring-brand-primary\/20 {
+  --tw-ring-color: rgba(0, 88, 190, 0.15) !important;
+}
+
+/* Border opacities */
+:root.light .border-white\/20 {
+  border-color: rgba(11, 28, 48, 0.12) !important;
+}
+
+/* Shadow overrides for light mode */
+:root.light .shadow-\[0_0_30px_-12px_rgba\(255\,255\,255\,0\.04\)\],
+:root.light .shadow-\[0_0_30px_-12px_rgba\(255\,255\,255\,0\.06\)\] {
+  box-shadow: 0 0 30px -12px rgba(11, 28, 48, 0.04) !important;
+}
+:root.light .shadow-\[0_0_30px_-12px_rgba\(255\,255\,255\,0\.15\)\] {
+  box-shadow: 0 0 30px -12px rgba(11, 28, 48, 0.06) !important;
+}
+:root.light .focus\:shadow-\[0_0_30px_-12px_rgba\(255\,255\,255\,0\.04\)\]:focus {
+  box-shadow: 0 0 30px -12px rgba(11, 28, 48, 0.04) !important;
+}
+
+/* Header / overlay bg overrides */
+:root.light .bg-black\/80 {
+  background-color: rgba(248, 249, 255, 0.85) !important;
+}
+:root.light .bg-black\/60 {
+  background-color: rgba(11, 28, 48, 0.20) !important;
+}
+
+/* Hover state overrides */
+:root.light .hover\:bg-white\/5:hover {
+  background-color: var(--glass-bg-hover) !important;
+}
+:root.light .hover\:bg-white\/10:hover {
+  background-color: rgba(11, 28, 48, 0.08) !important;
+}
+:root.light .hover\:bg-white\/90:hover {
+  background-color: var(--bg-elevated) !important;
+}
+:root.light .hover\:bg-white\/\[0\.03\]:hover {
+  background-color: var(--glass-bg-hover) !important;
+}
+:root.light .focus\:bg-white\/\[0\.03\]:focus {
+  background-color: var(--glass-bg-hover) !important;
+}
+
+/* Focus border */
+:root.light .focus\:border-white\/20:focus {
+  border-color: var(--brand-primary) !important;
+}
+
+/* Hover border */
+:root.light .hover\:border-white\/10:hover {
+  border-color: var(--border-color) !important;
+}
+
+/* Selection override */
+:root.light .selection\:bg-white\/10::selection {
+  background-color: rgba(0, 88, 190, 0.15) !important;
+}
+
 

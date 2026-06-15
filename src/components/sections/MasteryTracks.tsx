@@ -98,10 +98,12 @@ export const MasteryTracks = ({
         email: email.toLowerCase().trim(),
         name: name.trim() || '',
         course: selectedCourse?.title || '',
+        courseTitle: selectedCourse?.title || '',
         courseId: selectedCourse?.id,
+        courseSlug: selectedCourse?.id || '',
         status: 'waitlist',
         createdAt: serverTimestamp(),
-        source: 'courses_section',
+        source: selectedCourse?.status === "COMING_SOON" ? 'mastery-coming-soon' : 'courses_section',
       });
       setWaitlistStatus('success');
       setEmail('');
@@ -177,8 +179,9 @@ export const MasteryTracks = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredList.map((course, idx) => {
             const isEnrolled = userEnrollments[course.id];
+            const isComingSoon = course.status === "COMING_SOON" && !isEnrolled;
             const catStyles = getCategoryColor(course.category);
-            const thumbGradient = getThumbnailGradient(course.category);
+            const thumbGradient = isComingSoon ? "from-[#d1f34d]/20 to-[#d1f34d]/5" : getThumbnailGradient(course.category);
 
             return (
               <motion.div
@@ -187,7 +190,7 @@ export const MasteryTracks = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="group bg-white border border-[#c2c6d6]/30 rounded-[32px] overflow-hidden shadow-sm hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 flex flex-col text-left hover:border-[#d1f34d]"
+                className={cn("group bg-white border rounded-[32px] overflow-hidden shadow-sm hover:shadow-ambient hover:scale-[1.01] hover:-translate-y-1 transition-all duration-300 flex flex-col text-left", isComingSoon ? "border-[#d1f34d]/40 hover:border-[#d1f34d] shadow-[0_0_0_1px_rgba(209,243,77,0.12)]" : "border-[#c2c6d6]/30 hover:border-[#d1f34d]")}
               >
                 {/* Visual Thumbnail */}
                 <div className={cn("w-full h-40 bg-gradient-to-br flex flex-col items-center justify-center relative p-6 border-b border-[#c2c6d6]/20", thumbGradient)}>
@@ -217,9 +220,15 @@ export const MasteryTracks = ({
                   {/* Coming Soon Badge */}
                   {!isEnrolled && (
                     <div className="absolute top-4 right-4">
-                      <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                        <Sparkles size={9} /> Coming Soon
-                      </span>
+                      {isComingSoon ? (
+                        <span className="px-2.5 py-1 rounded-full bg-[#d1f34d]/15 border border-[#d1f34d]/40 text-[#0b1c30] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                          <Sparkles size={9} /> Coming Soon
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full bg-[#fff8e1] border border-[#ffe082] text-[#f57f17] text-[8px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                          <Sparkles size={9} /> Coming Soon
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -247,9 +256,18 @@ export const MasteryTracks = ({
                   </p>
 
                   {!isEnrolled && (
-                    <div className="my-3 flex items-center gap-1.5 text-[10px] font-semibold text-[#2e7d32]">
-                      <span className="w-1 h-1 rounded-full bg-[#2e7d32]" />
-                      <span>Priority early access — be first to enroll when this drops</span>
+                    <div className="my-3 flex items-center gap-1.5 text-[10px] font-semibold">
+                      {isComingSoon ? (
+                        <span className="text-[#0b1c30]/60 flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-[#d1f34d]" />
+                          Get notified when this track drops
+                        </span>
+                      ) : (
+                        <span className="text-[#2e7d32] flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-[#2e7d32]" />
+                          Priority early access — be first to enroll when this drops
+                        </span>
+                      )}
                     </div>
                   )}
 
@@ -269,9 +287,15 @@ export const MasteryTracks = ({
                   <div className="mt-6 pt-4 border-t border-[#c2c6d6]/15 flex items-center justify-between">
                     <div className="flex items-center gap-1 text-[11px] font-extrabold text-[#0b1c30]">
                       {!isEnrolled ? (
-                        <span className="text-[#f57f17] flex items-center gap-1">
-                          <Clock size={10} /> Coming Soon
-                        </span>
+                        isComingSoon ? (
+                          <span className="text-[#0b1c30] flex items-center gap-1">
+                            <Sparkles size={10} /> Coming Soon
+                          </span>
+                        ) : (
+                          <span className="text-[#f57f17] flex items-center gap-1">
+                            <Clock size={10} /> Coming Soon
+                          </span>
+                        )
                       ) : course.price && course.price > 0 ? (
                         <span>₹{course.price.toLocaleString('en-IN')}</span>
                       ) : (
@@ -285,6 +309,13 @@ export const MasteryTracks = ({
                         className="inline-flex items-center gap-1 bg-[#0b1c30] text-white hover:bg-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
                       >
                         <PlayCircle size={11} className="text-[#d1f34d]" /> Resume
+                      </button>
+                    ) : isComingSoon ? (
+                      <button
+                        onClick={() => handleWaitlistOpen(course)}
+                        className="inline-flex items-center gap-1 bg-[#0b1c30] text-[#d1f34d] hover:bg-black font-bold text-[9px] uppercase tracking-widest px-4.5 py-2.5 rounded-full shadow-sm transition-all duration-300 hover:scale-[1.03] cursor-pointer"
+                      >
+                        <Sparkles size={11} /> Join Waitlist
                       </button>
                     ) : (
                       <button

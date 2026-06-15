@@ -1,0 +1,16 @@
+export {
+  MODULE1_ADAPTER_MAP,
+  MARKET_ADAPTER_MAP,
+  getAdapterEntry,
+  getMarketEntry,
+  getAdapterPayload,
+  getStatementVariant,
+  getVariantCount,
+  validateAdapterMappings,
+  type MappingType,
+  type AdapterEntry,
+  type MarketAdapterEntry,
+  type AdapterPayload,
+  type AdapterError,
+  type AdapterResult,
+} from './opportunityMapAdapter';

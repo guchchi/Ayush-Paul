@@ -16,6 +16,8 @@ import {
   Sparkles,
   ChevronRight
 } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 import { Section } from '../components/ui/Section';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { VARIANTS, EASING } from '../lib/motion-presets';
@@ -323,6 +325,12 @@ const FounderStatement = () => (
 // --- Main Page ---
 
 export const ContactPage = () => {
+  useSEO({
+    title: "Contact Ayush Paul | Let's Build Together",
+    description: "Reach out for collaboration, project inquiries, technical mentorship, or general questions. Direct messaging and studio contact.",
+    url: getCanonicalUrl("/contact"),
+    image: "/og-image.png",
+  });
   return (
     <div className="bg-[#0A0A0A] text-white min-h-screen">
       <Hero />

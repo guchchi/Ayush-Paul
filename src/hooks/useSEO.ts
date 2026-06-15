@@ -85,7 +85,7 @@ export const useSEO = ({
       "name": "Ayush Paul",
       "jobTitle": "AI Developer & Full Stack Engineer",
       "url": getCanonicalUrl(),
-      "image": getCanonicalUrl("/profile-photo.jpg"), // Link to a profile photo if available
+      "image": getCanonicalUrl("/founder.png"),
       "sameAs": [
         "https://github.com/guchchi",
         "https://www.linkedin.com/in/paulayush/",

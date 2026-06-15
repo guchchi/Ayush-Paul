@@ -1,0 +1,92 @@
+import { motion } from 'motion/react';
+import { Check, ArrowLeft } from 'lucide-react';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { cn } from '../../lib/utils';
+import { EASING, DURATION } from '../../lib/motion-presets';
+
+export function NicheSelection() {
+  const tracks = useOpportunityMapStore((s) => s.tracks);
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId = useOpportunityMapStore((s) => s.nicheId);
+  const setSelection = useOpportunityMapStore((s) => s.setSelection);
+  const nextStep = useOpportunityMapStore((s) => s.nextStep);
+  const previousStep = useOpportunityMapStore((s) => s.previousStep);
+
+  const selectedTrack = tracks.find((t) => t.id === careerTrackId);
+  const selectedService = selectedTrack?.services.find((s) => s.id === serviceId);
+  const selectedMarket = selectedService?.markets.find((m) => m.id === marketId);
+  const niches = selectedMarket?.niches ?? [];
+
+  const handleSelect = (id: string) => {
+    setSelection('niche', id);
+    nextStep();
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={previousStep}
+            className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-white/5 transition-all duration-200 cursor-pointer"
+          >
+            <ArrowLeft size={14} className="text-zinc-400" />
+          </button>
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">Step 4 of 7</span>
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight text-white/95">Define Your Niche</h2>
+        <p className="text-sm text-zinc-400 max-w-lg">
+          Narrow your focus to a specific niche within <span className="text-white/70">{selectedMarket?.label}</span>.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {niches.map((niche, i) => {
+          const isSelected = nicheId === niche.id;
+          return (
+            <motion.button
+              key={niche.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: i * 0.05 }}
+              onClick={() => handleSelect(niche.id)}
+              className={cn(
+                'relative flex flex-col gap-3 w-full p-5 rounded-xl text-left transition-all duration-300 cursor-pointer group',
+                'bg-white/[0.03] border border-white/5',
+                'hover:bg-white/5 hover:border-white/10 hover:scale-[1.01]',
+                isSelected && 'bg-white/[0.06] border-white/20 shadow-[0_0_30px_-12px_rgba(255,255,255,0.06)]',
+              )}
+            >
+              {isSelected && (
+                <span className="absolute top-3 right-3 flex items-center justify-center w-5 h-5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20">
+                  <Check size={10} className="text-white" strokeWidth={3} />
+                </span>
+              )}
+
+              <div className="space-y-1.5">
+                <span className={cn(
+                  'block text-sm font-semibold transition-colors',
+                  isSelected ? 'text-white/95' : 'text-white/90 group-hover:text-white/95',
+                )}>
+                  {niche.label}
+                </span>
+                <span className="block text-xs text-zinc-400 leading-relaxed line-clamp-2">
+                  {niche.description}
+                </span>
+              </div>
+
+              <span className={cn(
+                'text-[10px] font-bold uppercase tracking-[0.1em] transition-colors',
+                isSelected ? 'text-white/60' : 'text-zinc-500 group-hover:text-zinc-400',
+              )}>
+                {niche.offers.length} offers
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

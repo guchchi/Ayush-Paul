@@ -30,6 +30,11 @@ const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage").then(m =>
 const LessonViewerPage = lazy(() => import("./pages/LessonViewerPage").then(m => ({ default: m.LessonViewerPage })));
 const DesignSystemTestPage = lazy(() => import("./pages/DesignSystemTest").then(m => ({ default: m.DesignSystemTest })));
 const AcquisitionWorkspacePage = lazy(() => import("./pages/AcquisitionWorkspace").then(m => ({ default: m.AcquisitionWorkspace })));
+const OfferEngineeringPage = lazy(() => import("./pages/OfferEngineering").then(m => ({ default: m.OfferEngineering })));
+const AuthoritySystemPage = lazy(() => import("./pages/AuthoritySystem").then(m => ({ default: m.AuthoritySystem })));
+const PortfolioSystemPage = lazy(() => import("./pages/PortfolioSystem").then(m => ({ default: m.PortfolioSystemPage })));
+const ClientPipelineSystemPage = lazy(() => import("./pages/ClientPipelineSystem").then(m => ({ default: m.ClientPipelineSystemPage })));
+const OutreachEnginePage = lazy(() => import("./pages/OutreachEngine").then(m => ({ default: m.OutreachEnginePage })));
 
 
 // --- Loading Fallback ---
@@ -44,6 +49,7 @@ const PageLoading = () => (
 
 // --- Components ---
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { DevTestTools } from "./dev/DevTestTools";
 import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
 import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
@@ -153,12 +159,18 @@ export default function App() {
               <Route path="/momentum" element={<Navigate to="/building" replace />} />
               <Route path="/design-system" element={wrapInLayout(<DesignSystemTestPage />)} />
               <Route path="/workspace/client-acquisition" element={<AcquisitionWorkspacePage />} />
+              <Route path="/workspace/offer-engineering" element={<OfferEngineeringPage />} />
+              <Route path="/workspace/authority-system" element={<AuthoritySystemPage />} />
+              <Route path="/workspace/portfolio-system" element={<PortfolioSystemPage />} />
+              <Route path="/workspace/client-pipeline" element={<ClientPipelineSystemPage />} />
+              <Route path="/workspace/outreach-engine" element={<OutreachEnginePage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
 
           <ScrollToTopButton />
           <CookieConsent />
+          {import.meta.env.DEV && <DevTestTools />}
         </div>
       </Router>
     </ErrorBoundary>

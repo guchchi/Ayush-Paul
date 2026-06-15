@@ -1,0 +1,22 @@
+[
+  {
+    "trackId": "",
+    "subtrackId": "",
+    "marketId": "",
+    "marketLabel": "",
+    "marketDescription": "",
+    "marketWhyItWorks": "",
+    "niches": [
+      {
+        "id": "",
+        "label": "",
+        "description": "",
+        "painPoints": [],
+        "desiredResults": [],
+        "methodExamples": [],
+        "opportunity": "High",
+        "isActive": true
+      }
+    ]
+  }
+]

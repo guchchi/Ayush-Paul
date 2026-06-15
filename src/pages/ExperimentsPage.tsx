@@ -23,6 +23,8 @@ import {
   Activity
 } from 'lucide-react';
 import { Section } from '../components/ui/Section';
+import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { VARIANTS, EASING } from '../lib/motion-presets';
 import { cn } from '../lib/utils';
@@ -270,6 +272,12 @@ const InnovationMetrics = () => {
 };
 
 export const ExperimentsPage = () => {
+  useSEO({
+    title: "Experiments & Projects | Ayush Paul — Building in Public",
+    description: "Live experiments, R&D projects, and venture prototypes. Explore AI systems, automation tools, and infrastructure being built in public.",
+    url: getCanonicalUrl("/experiments"),
+    image: "/og-image.png",
+  });
   const [products, setProducts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 

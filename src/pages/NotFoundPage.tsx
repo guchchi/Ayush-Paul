@@ -2,9 +2,15 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { Home, ArrowLeft, Ghost } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 import { MagneticButton } from '../components/ui/MagneticButton';
 
 export const NotFoundPage = () => {
+  useSEO({
+    title: "404 — Page Not Found | Ayush Paul",
+    description: "The page you are looking for does not exist or has been moved. Return to the homepage to explore.",
+    noindex: true,
+  });
   return (
     <div className="min-h-screen bg-bg-primary flex items-center justify-center p-6 overflow-hidden relative text-[#0b1c30]">
       {/* Background Decor */}

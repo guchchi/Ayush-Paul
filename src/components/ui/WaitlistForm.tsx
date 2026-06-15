@@ -68,7 +68,7 @@ export const WaitlistForm = ({
             className="flex items-center gap-3 p-5 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary font-bold text-sm shadow-[0_0_30px_rgba(0,194,255,0.1)]"
           >
             <CheckCircle2 size={18} />
-            <span>✅ You are on the Innovation Lab waitlist.</span>
+            <span>You are on the Innovation Lab waitlist. We will keep you updated.</span>
           </motion.div>
         ) : (
           <motion.form 

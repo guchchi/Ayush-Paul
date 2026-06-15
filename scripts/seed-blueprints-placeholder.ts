@@ -27,7 +27,28 @@ const TIER_99 = { basePrice: 99, salePrice: 99, currency: "inr", productTier: "s
 const TIER_199 = { basePrice: 199, salePrice: 149, currency: "inr", productTier: "pro" as const };
 const TIER_499 = { basePrice: 499, salePrice: 399, currency: "inr", productTier: "pro" as const };
 
+const FREE_TIER = { basePrice: 0, salePrice: 0, currency: "usd", productTier: "free" as const };
+
 const placeholders = [
+  {
+    id: "get-your-first-3-clients",
+    title: "Get Your First 3 Clients",
+    slug: "get-your-first-3-clients",
+    category: "Client Acquisition",
+    type: "free" as const,
+    ...FREE_TIER,
+    description: "Choose your service direction, define your market, create your first positioning statement, and prepare the foundation for getting your first clients.",
+    thumbnail: "https://images.unsplash.com/photo-1553729459-afe8f2e1a10d?q=80&w=1200",
+    downloadFileURL: "",
+    stripePriceId: "",
+    isPublished: true,
+    isFeatured: true,
+    status: "PUBLISHED",
+    tags: ["Client Acquisition", "Freelancing", "Offer Building", "Beginner Friendly"],
+    features: [],
+    comparisonFree: [],
+    comparisonPremium: [],
+  },
   {
     id: "cursor-rules-pack",
     title: "Production .cursorrules Pack — 10x Dev Speed",

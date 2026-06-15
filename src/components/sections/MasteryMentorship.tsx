@@ -44,13 +44,16 @@ export const MasteryMentorship = () => {
 
   const buildWhatsAppMessage = () => {
     const lines = [
-      `Name    : ${name}`,
-      `Contact : ${phone || 'Not provided'}`,
-      `Topic   : ${topic}`,
-      '',
-      `Date    : ${preferredDate}`,
-      `Time    : ${preferredTime} (IST)`,
-      '',
+      `*New 1-on-1 Session Request*`,
+      ``,
+      `Name     : ${name}`,
+      `Contact  : ${phone || 'Not provided'}`,
+      `Topic    : ${topic}`,
+      ``,
+      `Date     : ${preferredDate}`,
+      `Time     : ${preferredTime} (IST)`,
+      ``,
+      `*Description*`,
       description,
     ];
     return lines.join('\n');

@@ -114,11 +114,11 @@ function renderEnrollmentWelcome(props: { userName: string; courseName: string; 
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.userName},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Welcome to <strong style="color:#d1f34d;">${props.courseName}</strong>.</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">You're now enrolled and ready to start learning. This course includes <strong style="color:#ffffff;">${props.modulesCount} modules</strong> and <strong style="color:#ffffff;">${props.lessonsCount} lessons</strong>.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">You are now enrolled with access to <strong style="color:#ffffff;">${props.modulesCount} modules</strong> and <strong style="color:#ffffff;">${props.lessonsCount} lessons</strong>. Your learning path is ready whenever you are.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
-    <p style="margin:0 0 12px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">Course Roadmap</p>
-    <p style="margin:0 0 4px;font-size:13px;color:#cccccc;line-height:1.6;">${props.modulesCount} Modules · ${props.lessonsCount} Lessons</p>
-    <p style="margin:0;font-size:12px;color:#888888;">${props.isFree ? 'This is a free course — no payment needed.' : 'Premium course — yours forever once enrolled.'}</p>
+    <p style="margin:0 0 12px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">Course Overview</p>
+    <p style="margin:0 0 4px;font-size:13px;color:#cccccc;line-height:1.6;">${props.modulesCount} modules · ${props.lessonsCount} lessons</p>
+    <p style="margin:0;font-size:12px;color:#888888;">${props.isFree ? 'This is a free course — no payment needed.' : 'Premium course — yours to keep once enrolled.'}</p>
     </td></tr></table>
     ${emailButton('Start Learning', props.courseUrl)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
@@ -128,7 +128,7 @@ function renderConfirmationEmail(props: { registrantName: string; workshopTitle:
   const hasLink = !!props.meetingLink;
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.registrantName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You have successfully reserved your seat for <strong style="color:#d1f34d;">${props.workshopTitle}</strong>!</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your seat for <strong style="color:#d1f34d;">${props.workshopTitle}</strong> is confirmed.</p>
     ${props.workshopDescription ? `<p style="margin:0 0 24px;font-size:14px;line-height:22px;color:#999999;">${props.workshopDescription}</p>` : ''}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
     <p style="margin:0 0 12px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">Workshop Details</p>
@@ -139,18 +139,18 @@ function renderConfirmationEmail(props: { registrantName: string; workshopTitle:
     ${props.workshopStartTime ? `<p style="margin:4px 0;font-size:12px;color:#888888;">Starts: ${props.workshopStartTime}</p>` : ''}
     </td></tr></table>
     ${hasLink ? emailButton('Join Workshop', props.meetingLink!) : '<p style="margin:0 0 8px;font-size:14px;line-height:22px;color:#888888;">The workshop joining link will be shared before the session begins.</p>'}
-    <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">See you there!<br/>— Ayush Paul</p>`);
+    <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">We look forward to having you.<br/>— Ayush Paul</p>`);
 }
 
 type ReminderType = '24h' | '1h' | '5m';
 
 function renderReminderEmail(props: { registrantName: string; workshopTitle: string; workshopTopic?: string; meetingLink: string; meetingPassword?: string; meetingId?: string; date: string; time?: string; workshopStartTime?: string; vaultUrl: string; reminderType: ReminderType }): string {
   const labels: Record<ReminderType, string> = { '24h': '24 hours', '1h': '1 hour', '5m': '5 minutes' };
-  const msgs: Record<ReminderType, string> = { '24h': 'Your workshop is tomorrow! Here are the access details.', '1h': 'Your workshop starts in 1 hour. Get ready to join!', '5m': 'Your workshop is starting in 5 minutes! Join now.' };
+  const msgs: Record<ReminderType, string> = { '24h': 'Your workshop is tomorrow.', '1h': 'Your workshop starts in 1 hour.', '5m': 'Your workshop is starting in 5 minutes.' };
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.registrantName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${labels[props.reminderType]} reminder!</strong></p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">${msgs[props.reminderType]}</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${labels[props.reminderType]} reminder</strong></p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">${msgs[props.reminderType]} Here are the access details to join.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
     <p style="margin:0 0 12px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">Access Details</p>
     <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#d1f34d;">${props.workshopTitle}</p>
@@ -168,8 +168,8 @@ function renderReminderEmail(props: { registrantName: string; workshopTitle: str
 function renderLiveNotification(props: { registrantName: string; workshopTitle: string; workshopTopic?: string; meetingLink: string; meetingPassword?: string; workshopStartTime?: string; date: string; time?: string; vaultUrl: string }): string {
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.registrantName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Great news — <strong style="color:#d1f34d;">${props.workshopTitle}</strong> is now <strong style="color:#d1f34d;">LIVE</strong>!</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Your reserved spot is ready. Use the details below to join.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${props.workshopTitle}</strong> is now live.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Your reserved spot is ready. Use the details below to join the session.</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;background-color:#1a1a1a;border-radius:8px;padding:20px;"><tr><td style="text-align:center;">
     <p style="margin:0 0 12px;font-size:11px;color:#666666;letter-spacing:1px;text-transform:uppercase;">Workshop Access</p>
     <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#d1f34d;">${props.workshopTitle}</p>
@@ -179,24 +179,26 @@ function renderLiveNotification(props: { registrantName: string; workshopTitle: 
     <p style="margin:12px 0 4px;font-size:14px;color:#cccccc;"><strong style="color:#ffffff;">Link:</strong> <a href="${props.meetingLink}" style="color:#00C2FF;text-decoration:underline;">${props.meetingLink}</a></p>
     ${props.meetingPassword ? `<p style="margin:4px 0;font-size:14px;color:#cccccc;"><strong style="color:#ffffff;">Password:</strong> ${props.meetingPassword}</p>` : ''}
     </td></tr></table>
-    ${emailButton('Join Workshop Now', props.meetingLink)}
+    ${emailButton('Join Now', props.meetingLink)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
 }
 
 function renderRecordingEmail(props: { registrantName: string; workshopTitle: string; workshopTopic?: string; recordingUrl?: string; vaultUrl: string }): string {
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.registrantName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">The recording for <strong style="color:#d1f34d;">${props.workshopTitle}</strong> is now available!</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">The recording for <strong style="color:#d1f34d;">${props.workshopTitle}</strong> is now available.</p>
     ${props.workshopTopic ? `<p style="margin:0 0 24px;font-size:14px;line-height:22px;color:#999999;">${props.workshopTopic}</p>` : ''}
-    ${props.recordingUrl ? emailButton('Watch Recording', props.recordingUrl) : '<p style="margin:16px 0;font-size:14px;line-height:22px;color:#888888;">Recording is being processed. Check your Vault later.</p>'}
+    ${props.recordingUrl ? emailButton('Watch the Recording', props.recordingUrl) : '<p style="margin:16px 0;font-size:14px;line-height:22px;color:#888888;">The recording is being processed. Check your Vault later.</p>'}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
 }
 
 function renderCancellationEmail(props: { registrantName: string; workshopTitle: string; workshopTopic?: string; date: string; vaultUrl: string }): string {
   return emailLayout(`
     <p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${props.registrantName},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Unfortunately, <strong style="color:#d1f34d;">${props.workshopTitle}</strong> scheduled for ${props.date} has been <strong style="color:#ff4444;">cancelled</strong>.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${props.workshopTitle}</strong> scheduled for ${props.date} has been cancelled.</p>
     ${props.workshopTopic ? `<p style="margin:0 0 24px;font-size:14px;line-height:22px;color:#999999;">${props.workshopTopic}</p>` : ''}
+    <p style="margin:0 0 24px;font-size:14px;line-height:22px;color:#888888;">We apologise for the inconvenience. You can explore other workshops and courses in your Vault.</p>
+    ${emailButton('Visit Your Vault', props.vaultUrl)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
 }
 
@@ -228,52 +230,52 @@ async function handleScheduleEmail(req: VercelRequest, res: VercelResponse) {
 
 const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: string }> = {
   abandoned: (data) => ({
-    subject: `Come back to ${data.courseTitle || 'your course'} — it's waiting`,
+    subject: `Continue your progress in ${data.courseTitle || 'your course'}`,
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You started <strong style="color:#d1f34d;">${data.courseTitle || 'a course'}</strong> but haven't been back.</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Your progress is saved. One session is all it takes to move forward.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You started <strong style="color:#d1f34d;">${data.courseTitle || 'a course'}</strong> and your progress is saved.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">One session is all it takes to move forward again.</p>
     ${emailButton('Resume Learning', `https://ayushpaul.in/mastery/courses/${data.courseId || ''}`)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   streak_broken: (data) => ({
-    subject: "Your streak was broken — but it's not over",
+    subject: "Your streak was broken — start fresh today",
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${data.streakDays || 'learning'}</strong>-day streak was broken yesterday.</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">The best time to start a new streak is today.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${data.streakDays || 'learning'}</strong>-day streak ended yesterday.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">The best time to start a new streak is today. One session can restart the momentum.</p>
     ${emailButton('Start a New Streak', 'https://ayushpaul.in/vault')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   upsell: (data) => ({
-    subject: `Unlock ${data.productTitle || 'Premium'} — exclusive for you`,
+    subject: `${data.productTitle || 'A Blueprint'} worth exploring`,
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Based on your interest, here's something that might help you level up.</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Based on your interests, this might help you build faster:</p>
     <p style="margin:0 0 8px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${data.productTitle || 'Premium Blueprint'}</strong></p>
-    ${emailButton('View Blueprint', `https://ayushpaul.in/blueprints/${data.productId || ''}`)}
+    ${emailButton('Explore Blueprint', `https://ayushpaul.in/blueprints/${data.productId || ''}`)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   purchase_followup: (data) => ({
-    subject: `You now own ${data.productTitle || 'a Blueprint'} — here's your next step`,
+    subject: `You now own ${data.productTitle || 'a Blueprint'} — access it in your Vault`,
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Thank you for purchasing <strong style="color:#d1f34d;">${data.productTitle || 'your Blueprint'}</strong>.</p>
-    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It's now available in your Vault.</p>
+    <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It is now available in your Vault and ready to use.</p>
     ${emailButton('Open in Vault', 'https://ayushpaul.in/vault')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   creator_promo: (data) => ({
-    subject: `${data.creatorName || 'A creator'} promoted — see how it performed`,
-    html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Team,</p>
-    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${data.creatorName || 'A creator'}</strong> just completed a promo cycle.</p>
+    subject: `${data.creatorName || 'A creator'} promoted — performance summary`,
+    html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Admin Team,</p>
+    <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${data.creatorName || 'A creator'}</strong> completed a promo cycle.</p>
     <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:24px;color:#cccccc;">
-    <li>Code: ${data.creatorCode || 'N/A'}</li><li>Sales: ${data.salesCount || 0}</li><li>Commission: ₹${data.totalCommission || 0}</li></ul>
+    <li>Code: ${data.creatorCode || 'N/A'}</li><li>Sales: ${data.salesCount || 0}</li><li>Commission: INR ${data.totalCommission || 0}</li></ul>
     ${emailButton('View Dashboard', 'https://ayushpaul.in/admin')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— AyushPaul.in System</p>`),
   }),
 };
 
 const DEFAULT_TEMPLATE: (data: any) => { subject: string; html: string } = (data) => ({
-  subject: `Update from AyushPaul.in`,
+  subject: `Update from Ayush Paul`,
   html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'there'},</p>
-  <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Here's an update you requested.</p>
+  <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Here is an update you requested from the Innovation Lab.</p>
   ${emailButton('Visit Dashboard', 'https://ayushpaul.in/vault')}
   <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
 });
@@ -319,18 +321,18 @@ async function handleProcessEmailTriggers(req: VercelRequest, res: VercelRespons
     let subject = '', html = '';
     switch (trigger) {
       case 'streak_broken':
-        subject = 'Your streak was broken — start again today';
+        subject = 'Your streak was broken — start fresh today';
         html = emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userName},</p>
-        <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${metadata?.streakDays || 'your'}</strong>-day streak was broken.</p>
+        <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${metadata?.streakDays || 'learning'}</strong>-day streak ended yesterday.</p>
         <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Every streak starts with day one. Jump back in today.</p>
         ${emailButton('Restart Your Streak', 'https://ayushpaul.in/vault')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
         break;
       case 'purchase_followup':
-        subject = `You now own ${metadata?.productTitle || 'your Blueprint'} — start building`;
+        subject = `You now own ${metadata?.productTitle || 'your Blueprint'} — access it in your Vault`;
         html = emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userName},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Thank you for purchasing <strong style="color:#d1f34d;">${metadata?.productTitle || 'your Blueprint'}</strong>.</p>
-        <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It's now in your Vault. Go explore your new Blueprint.</p>
+        <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It is now in your Vault and ready to use.</p>
         ${emailButton('Open in Vault', 'https://ayushpaul.in/vault')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
         break;
@@ -339,7 +341,7 @@ async function handleProcessEmailTriggers(req: VercelRequest, res: VercelRespons
         html = emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Admin Team,</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${metadata?.creatorName || 'A creator'}</strong> completed a promo cycle.</p>
         <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:24px;color:#cccccc;">
-        <li>Code: ${metadata?.creatorCode || 'N/A'}</li><li>Sales: ${metadata?.salesCount || 0}</li><li>Commission: ₹${metadata?.totalCommission || 0}</li></ul>
+        <li>Code: ${metadata?.creatorCode || 'N/A'}</li><li>Sales: ${metadata?.salesCount || 0}</li><li>Commission: INR ${metadata?.totalCommission || 0}</li></ul>
         ${emailButton('View Dashboard', 'https://ayushpaul.in/admin')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— AyushPaul.in System</p>`);
         break;
@@ -372,10 +374,10 @@ async function handleTriggerAbandonedCheck(req: VercelRequest, res: VercelRespon
       const courseData = courseSnap.data()!;
       const email = userData.email;
       if (!email) continue;
-      const result = await sendEmail(email, `Continue where you left off — ${courseData.title || 'your course'}`,
+      const result = await sendEmail(email, `Continue your progress in ${courseData.title || 'your course'}`,
         emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userData.displayName || email.split('@')[0] || 'Innovator'},</p>
-        <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">We noticed you haven't continued <strong style="color:#d1f34d;">${courseData.title || 'your course'}</strong> recently.</p>
-        <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Your progress is saved and waiting for you.</p>
+        <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You have not continued <strong style="color:#d1f34d;">${courseData.title || 'your course'}</strong> recently, and your progress is still saved.</p>
+        <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">One session is all it takes to move forward again.</p>
         ${emailButton('Resume Learning', `https://ayushpaul.in/mastery/courses/${courseId}`)}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`));
       if (result.success) sent++;
@@ -442,7 +444,7 @@ async function handleSendConfirmation(req: VercelRequest, res: VercelResponse) {
       date: workshop.date || "TBD", time: workshop.time, workshopStartTime: workshop.workshopStartTime,
       meetingLink: workshop.meetingLink || "", vaultUrl: `${APP_URL}/vault`,
     });
-    const result = await sendEmail(reg.email, `✅ Confirmed: ${workshop.title || "Workshop"} — Your Spot is Reserved!`, html);
+    const result = await sendEmail(reg.email, `Confirmed: ${workshop.title || "Workshop"} — Your Spot is Reserved`, html);
     if (result.success) await regDoc.ref.update({ confirmationSentAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {});
     return res.json({ success: result.success, error: result.error });
   } catch (err: any) {
@@ -479,7 +481,7 @@ async function handleSendConfirmationAll(req: VercelRequest, res: VercelResponse
       const r = doc.data(); if (!r.email) continue;
       try {
         const html = renderConfirmationEmail({ registrantName: r.name || r.email?.split("@")[0] || "Innovator", workshopTitle: workshop.title || "Workshop", workshopDescription: workshop.description || "", host: workshop.host || "Ayush Paul", duration: workshop.duration || "60 min", date: workshop.date || "TBD", time: workshop.time, workshopStartTime: workshop.workshopStartTime, meetingLink: workshop.meetingLink || "", vaultUrl: `${APP_URL}/vault` });
-        const result = await sendEmail(r.email, `✅ Confirmed: ${workshop.title || "Workshop"} — Your Spot is Reserved!`, html);
+        const result = await sendEmail(r.email, `Confirmed: ${workshop.title || "Workshop"} — Your Spot is Reserved`, html);
         if (result.success) { notified++; await doc.ref.update({ confirmationSentAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
     }
@@ -507,7 +509,7 @@ async function handleSendReminder(req: VercelRequest, res: VercelResponse) {
       const r = d.data(); if (!r.email) continue;
       try {
         const html = renderReminderEmail({ registrantName: r.name || r.email?.split("@")[0] || "Innovator", workshopTitle: workshop.title || "Workshop", workshopTopic: workshop.topic, meetingLink: workshop.meetingLink, meetingPassword: workshop.meetingPassword, meetingId: workshop.meetingId, date: workshop.date || "TBD", time: workshop.time, workshopStartTime: workshop.workshopStartTime, vaultUrl: `${APP_URL}/vault`, reminderType: reminderType as ReminderType });
-        const subject = `⏰ ${reminderType === '5m' ? 'Starting Soon' : reminderType === '1h' ? '1 Hour to Go' : 'Tomorrow'}: ${workshop.title || "Workshop"}`;
+        const subject = `${reminderType === '5m' ? 'Starting Soon' : reminderType === '1h' ? '1 Hour to Go' : 'Tomorrow'}: ${workshop.title || "Workshop"}`;
         const result = await sendEmail(r.email, subject, html);
         if (result.success) { notified++; await d.ref.update({ notifiedAt: admin.firestore.FieldValue.serverTimestamp(), remindersSent: (r.remindersSent || '') ? `${r.remindersSent || ''},${reminderType}` : reminderType }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
@@ -532,7 +534,7 @@ async function handleSendLive(req: VercelRequest, res: VercelResponse) {
       const r = d.data(); if (!r.email) continue;
       try {
         const html = renderLiveNotification({ registrantName: r.name || r.email?.split("@")[0] || "Innovator", workshopTitle: workshop.title || "Workshop", workshopTopic: workshop.topic, meetingLink: workshop.meetingLink, meetingPassword: workshop.meetingPassword, workshopStartTime: workshop.workshopStartTime, date: workshop.date || "TBD", time: workshop.time, vaultUrl: `${APP_URL}/vault` });
-        const result = await sendEmail(r.email, `🎥 LIVE Now: ${workshop.title || "Workshop"} — Join Us!`, html);
+        const result = await sendEmail(r.email, `Live Now: ${workshop.title || "Workshop"} — Join the Session`, html);
         if (result.success) { notified++; await d.ref.update({ notifiedAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
     }
@@ -555,7 +557,7 @@ async function handleSendRecording(req: VercelRequest, res: VercelResponse) {
       const r = d.data(); if (!r.email) continue;
       try {
         const html = renderRecordingEmail({ registrantName: r.name || r.email?.split("@")[0] || "Innovator", workshopTitle: workshop.title || "Workshop", workshopTopic: workshop.topic, recordingUrl: workshop.recordingUrl, vaultUrl: `${APP_URL}/vault` });
-        const result = await sendEmail(r.email, `📹 Recording Available: ${workshop.title || "Workshop"} — Watch the Replay`, html);
+        const result = await sendEmail(r.email, `Recording Available: ${workshop.title || "Workshop"} — Watch the Replay`, html);
         if (result.success) { notified++; await d.ref.update({ notifiedAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
     }
@@ -578,7 +580,7 @@ async function handleSendCancellation(req: VercelRequest, res: VercelResponse) {
       const r = d.data(); if (!r.email) continue;
       try {
         const html = renderCancellationEmail({ registrantName: r.name || r.email?.split("@")[0] || "Innovator", workshopTitle: workshop.title || "Workshop", workshopTopic: workshop.topic, date: workshop.date || "TBD", vaultUrl: `${APP_URL}/vault` });
-        const result = await sendEmail(r.email, `❌ Cancelled: ${workshop.title || "Workshop"} — Session Update`, html);
+        const result = await sendEmail(r.email, `Cancelled: ${workshop.title || "Workshop"}`, html);
         if (result.success) { notified++; await d.ref.update({ notifiedAt: admin.firestore.FieldValue.serverTimestamp() }).catch(() => {}); } else { errors.push(`${r.email}: ${result.error}`); }
       } catch (e: any) { errors.push(`${r.email}: ${e.message}`); }
     }
@@ -634,13 +636,15 @@ async function handleNewsletterSend(req: VercelRequest, res: VercelResponse) {
       try {
         const { data, error } = await _resend.emails.send({
           from: fromAddress, to: sub.email, subject, html: `
-            <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#ffffff;color:#1a1a1a;padding:40px;border-radius:12px;border:1px solid #eeeeee;">
-            <div style="margin-bottom:30px;"><span style="font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:12px;color:#00C2FF;">Innovation Lab</span></div>
-            <h1 style="font-size:24px;font-weight:800;margin-bottom:20px;line-height:1.2;color:#000000;">${subject}</h1>
-            <div style="font-size:16px;line-height:1.6;color:#444444;margin-bottom:40px;">${content.replace(/\n/g, '<br/>')}</div>
-            <div style="border-top:1px solid #eeeeee;padding-top:20px;font-size:12px;color:#999999;text-align:center;">
-            <p>© ${new Date().getFullYear()} Ayush Paul Innovation Lab</p>
-            <p>You received this because you subscribed. <a href="${APP_URL}/api/newsletter/unsubscribe?id=${sub.id}" style="color:#00C2FF;text-decoration:none;font-weight:bold;">Unsubscribe</a></p></div></div>`
+            <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;color:#1a1a1a;padding:40px 32px;border-radius:12px;border:1px solid #eeeeee;">
+            <div style="margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid #f0f0f0;">
+              <span style="font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:11px;color:#00C2FF;">Innovation Lab</span>
+            </div>
+            <h1 style="font-size:22px;font-weight:800;margin:0 0 24px;line-height:1.3;color:#000000;">${subject}</h1>
+            <div style="font-size:16px;line-height:1.7;color:#333333;margin-bottom:40px;">${content.replace(/\n/g, '<br/>')}</div>
+            <div style="border-top:1px solid #f0f0f0;padding-top:20px;font-size:12px;color:#999999;text-align:center;line-height:1.8;">
+            <p style="margin:0 0 4px;">Ayush Paul Innovation Lab</p>
+            <p style="margin:0;">You received this because you subscribed. <a href="${APP_URL}/api/newsletter/unsubscribe?id=${sub.id}" style="color:#00C2FF;text-decoration:underline;font-weight:600;">Unsubscribe</a></p></div></div>`
         });
         if (error) throw error;
         return { email: sub.email, success: true };
@@ -693,7 +697,11 @@ async function handleNewsletterUnsubscribe(req: VercelRequest, res: VercelRespon
   if (req.method !== "GET" && req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
   const { email, id } = req.query;
   if (!email && !id) {
-    return res.status(400).setHeader('Content-Type', 'text/html').send(`<html><body style="font-family:sans-serif;background:#0A0A0A;color:white;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;"><div><h1 style="color:#FF4B4B;">Invalid Request</h1><p style="opacity:0.6;">Missing subscriber identifier.</p></div></body></html>`);
+    return res.status(400).setHeader('Content-Type', 'text/html').send(`<html><head><title>Invalid Request | Innovation Lab</title>
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#080808;color:white;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;}
+    .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);padding:2.5rem;border-radius:1.5rem;max-width:380px;}
+    .brand{color:#00C2FF;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;font-size:0.7rem;}</style></head>
+    <body><div class="card"><p class="brand">Innovation Lab</p><h1 style="font-size:1.4rem;margin-bottom:0.75rem;">Invalid Request</h1><p style="color:#999999;font-size:0.9rem;margin:0;">Missing subscriber identifier. Unable to process your request.</p></div></body></html>`);
   }
   try {
     const subscribersRef = getDb().collection("subscribers");
@@ -707,10 +715,11 @@ async function handleNewsletterUnsubscribe(req: VercelRequest, res: VercelRespon
     }
     return res.status(200).setHeader('Content-Type', 'text/html').send(`<html><head><title>Unsubscribed | Innovation Lab</title>
     <style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#080808;color:white;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;}
-    .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);padding:3rem;border-radius:2rem;max-width:400px;}
-    h1{font-size:1.5rem;margin-bottom:1rem;}.brand{color:#00C2FF;font-weight:bold;letter-spacing:0.1em;text-transform:uppercase;font-size:0.7rem;}
-    .btn{display:inline-block;margin-top:2rem;padding:0.8rem 1.5rem;background:#00C2FF;color:black;text-decoration:none;border-radius:0.8rem;font-weight:bold;font-size:0.8rem;}
-    </style></head><body><div class="card"><span class="brand">Innovation Lab</span><h1>You have been unsubscribed</h1><p>You will no longer receive our newsletters.</p><a href="/" class="btn">Back to Lab</a></div></body></html>`);
+    .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);padding:2.5rem;border-radius:1.5rem;max-width:380px;}
+    h1{font-size:1.4rem;margin:0.75rem 0;}.brand{color:#00C2FF;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;font-size:0.7rem;}
+    .btn{display:inline-block;margin-top:1.5rem;padding:0.7rem 1.5rem;background:#00C2FF;color:#000000;text-decoration:none;border-radius:0.7rem;font-weight:700;font-size:0.8rem;}
+    p{color:#999999;font-size:0.9rem;margin:0;}</style></head>
+    <body><div class="card"><p class="brand">Innovation Lab</p><h1>You have been unsubscribed</h1><p>You will no longer receive newsletters from Ayush Paul Innovation Lab.</p><a href="${APP_URL}" class="btn">Back to Home</a></div></body></html>`);
   } catch (error: any) {
     return res.status(500).json({ error: "Internal Server Error" });
   }

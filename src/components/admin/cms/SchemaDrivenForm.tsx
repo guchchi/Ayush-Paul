@@ -53,6 +53,9 @@ export const SchemaDrivenForm = ({
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showDraftWarning, setShowDraftWarning] = useState(false);
+  const [publishBlockedMessage, setPublishBlockedMessage] = useState<string | null>(null);
 
   // States for dynamic course modules & lessons syllabus (only if courses schema)
   const [courseModules, setCourseModules] = useState<any[]>([]);
@@ -118,7 +121,67 @@ export const SchemaDrivenForm = ({
     }
   };
 
+  const PUBLISH_BLOCKING_REQUIRED: Record<string, string[]> = {
+    blogPosts: ["title", "slug", "description", "category"],
+    products: ["title", "slug", "description", "category"],
+    courses: ["title", "slug", "description", "difficulty"],
+    workshops: ["title", "description", "date"],
+  };
+
+  const validateForm = (): Record<string, string> => {
+    const errs: Record<string, string> = {};
+    const collectionName = schema.collectionName;
+
+    schema.fields.forEach((field) => {
+      if (!field.required) return;
+      const val = formData[field.name];
+      if (field.type === "blocks") {
+        const blocks = Array.isArray(val) ? val : [];
+        const hasContent = blocks.some((b: any) => b.content && b.content.trim().length > 0);
+        if (!hasContent) errs[field.name] = `${field.label} is required — add at least one content block.`;
+      } else if (field.type === "seo") {
+        if (!val || !val.title) errs[field.name] = `SEO title is required.`;
+      } else if (val === undefined || val === null || val === "" || (Array.isArray(val) && val.length === 0)) {
+        errs[field.name] = `${field.label} is required.`;
+      }
+    });
+
+    const publishBlocking = PUBLISH_BLOCKING_REQUIRED[collectionName] || [];
+    publishBlocking.forEach((fieldName) => {
+      const fieldDef = schema.fields.find((f) => f.name === fieldName);
+      if (fieldDef?.required) return;
+      const val = formData[fieldName];
+      if (val === undefined || val === null || val === "") {
+        errs[fieldName] = `${fieldDef?.label || fieldName} is required for publishing.`;
+      }
+    });
+
+    if (collectionName === "blogPosts") {
+      const seo = formData.seo;
+      if (!seo || !seo.title) errs["seo"] = "SEO title is required.";
+      if (!seo?.description) errs["seo"] = errs["seo"] ? `${errs["seo"]} SEO description is required.` : "SEO description is required.";
+    }
+
+    if (collectionName === "products") {
+      if (!formData.thumbnail) errs.thumbnail = "Thumbnail URL is required for catalog display.";
+      if (formData.type === "paid") {
+        if (!formData.stripePriceId) errs.stripePriceId = "Stripe Price ID is required for paid blueprints.";
+        if (!formData.salePrice || Number(formData.salePrice) <= 0) errs.salePrice = "Selling price must be greater than 0 for paid blueprints.";
+        if (!formData.paidFileUrl) errs.paidFileUrl = "Paid resource file URL is required for paid blueprints.";
+      }
+    }
+
+    if (collectionName === "courses") {
+      if (!formData.thumbnail) errs.thumbnail = "Thumbnail URL is required for course display.";
+    }
+
+    return errs;
+  };
+
   const handleInputChange = (fieldName: string, value: any) => {
+    if (publishBlockedMessage) setPublishBlockedMessage(null);
+    if (showDraftWarning) setShowDraftWarning(false);
+    if (errors[fieldName]) setErrors((prev) => { const next = { ...prev }; delete next[fieldName]; return next; });
     setFormData((prev) => {
       const updated = { ...prev, [fieldName]: value };
       // Auto-slugify titles for blogs and products
@@ -166,6 +229,23 @@ export const SchemaDrivenForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+    setPublishBlockedMessage(null);
+
+    const isPublishing = formData.published === true || formData.isPublished === true;
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      if (isPublishing) {
+        setPublishBlockedMessage("Cannot publish this item. Fix the errors below before publishing.");
+        setIsSaving(false);
+        return;
+      }
+      setShowDraftWarning(true);
+    } else {
+      setShowDraftWarning(false);
+    }
+
     try {
       await onSave(formData);
     } catch (err) {
@@ -527,6 +607,32 @@ export const SchemaDrivenForm = ({
         </button>
       </div>
 
+      {/* Validation Warning Box */}
+      {publishBlockedMessage && (
+        <div className="p-5 bg-red-500/10 border border-red-500/30 rounded-[2rem] flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0">
+            <Icons.AlertCircle size={20} className="text-red-400" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-red-400">{publishBlockedMessage}</p>
+            <p className="text-xs text-red-400/70 mt-1">Fix all highlighted fields below, then save again.</p>
+          </div>
+        </div>
+      )}
+      {showDraftWarning && Object.keys(errors).length > 0 && (
+        <div className="p-5 bg-yellow-500/10 border border-yellow-500/30 rounded-[2rem] flex items-start gap-4">
+          <div className="w-10 h-10 rounded-xl bg-yellow-500/20 flex items-center justify-center shrink-0">
+            <Icons.AlertTriangle size={20} className="text-yellow-400" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-yellow-400">Draft saved with missing fields</p>
+            <p className="text-xs text-yellow-400/70 mt-1">
+              Some required fields are incomplete. The item is saved as a draft but cannot be published until all errors below are fixed.
+            </p>
+          </div>
+        </div>
+      )}
+
       {isBlogPost ? (
         /* Split Layout for Blogs (Editor + AI Assist + SEO) */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -539,6 +645,11 @@ export const SchemaDrivenForm = ({
                   <div key={field.name} className="space-y-2">
                     <label className="text-sm font-bold text-white/40 ml-1">{field.label}</label>
                     {renderFieldInput(field)}
+                    {errors[field.name] && (
+                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                        <Icons.AlertCircle size={12} /> {errors[field.name]}
+                      </p>
+                    )}
                   </div>
                 ))}
             </div>
@@ -550,6 +661,11 @@ export const SchemaDrivenForm = ({
                 <div key={field.name} className="space-y-3 pt-6">
                   <h4 className="text-sm font-bold text-white/40 ml-1">{field.label}</h4>
                   {renderFieldInput(field)}
+                  {errors[field.name] && (
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <Icons.AlertCircle size={12} /> {errors[field.name]}
+                    </p>
+                  )}
                 </div>
               ))}
           </div>
@@ -565,7 +681,14 @@ export const SchemaDrivenForm = ({
               {schema.fields
                 .filter((f) => f.type === "seo")
                 .map((field) => (
-                  <div key={field.name}>{renderFieldInput(field)}</div>
+                  <div key={field.name}>
+                    {renderFieldInput(field)}
+                    {errors[field.name] && (
+                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                        <Icons.AlertCircle size={12} /> {errors[field.name]}
+                      </p>
+                    )}
+                  </div>
                 ))}
             </div>
           </div>
@@ -583,6 +706,11 @@ export const SchemaDrivenForm = ({
                 >
                   <label className="text-sm font-bold text-white/40 ml-1">{field.label}</label>
                   {renderFieldInput(field)}
+                  {errors[field.name] && (
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <Icons.AlertCircle size={12} /> {errors[field.name]}
+                    </p>
+                  )}
                 </div>
               ))}
           </div>

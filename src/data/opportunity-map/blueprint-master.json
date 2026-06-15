@@ -1,0 +1,2106 @@
+{
+  "careerTracks": [
+    {
+      "id": "editor",
+      "label": "Editor",
+      "description": "Craft compelling visual stories through cutting, effects, and motion design for digital platforms.",
+      "services": [
+        {
+          "id": "short_form_editing",
+          "label": "Short Form Editing",
+          "description": "Fast-paced vertical and square video editing optimized for social media algorithms and retention.",
+          "markets": [
+            {
+              "id": "social_media_creators",
+              "label": "Social Media Creators",
+              "description": "Independent creators building audiences on TikTok, Instagram, and YouTube Shorts.",
+              "niches": [
+                {
+                  "id": "youtube_shorts_channels",
+                  "label": "YouTube Shorts-first channels",
+                  "description": "Channels that publish 3-5 Shorts daily and need consistent hook-driven editing with trending audio sync.",
+                  "offers": [
+                    {
+                      "id": "daily_shorts_batch_20",
+                      "label": "Daily Shorts Batch (20 videos/week)",
+                      "description": "20 finished Shorts delivered weekly with hook optimization, captions, trending audio sync, and end-screen CTAs.",
+                      "priceRange": "$600/week",
+                      "deliveryFormat": "5 batches of 4 shorts delivered each weekday morning",
+                      "simulator_weights": { "demand": 9, "competition": 8, "execution_speed": 9 },
+                      "clientSources": [
+                        {
+                          "id": "shorts_analytics_scrape",
+                          "label": "YouTube Shorts analytics scrape + cold DM",
+                          "description": "Identify channels posting Shorts with <50K views average; send a hook-score analysis of their last 5 videos with one free re-edit.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "shorts_transformation_package",
+                      "label": "Shorts Transformation Package",
+                      "description": "Complete channel audit, hook strategy document, and 10 edited Shorts with A/B thumbnail testing for the first month.",
+                      "priceRange": "$1,200/month",
+                      "deliveryFormat": "Month-long engagement with weekly strategy calls",
+                      "simulator_weights": { "demand": 8, "competition": 7, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "creator_discord_referrals",
+                          "label": "Creator Discord/Skool community referrals",
+                          "description": "Join 3-5 active creator communities and offer a free Shorts audit for the first 10 members.",
+                          "channel": "community",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "tiktok_shop_creators",
+                  "label": "TikTok Shop creators",
+                  "description": "Affiliate creators on TikTok Shop who film product showcases and need fast, conversion-focused edits with call-to-action overlays.",
+                  "offers": [
+                    {
+                      "id": "tiktok_shop_batch_10",
+                      "label": "TikTok Shop Product Batch (10 videos)",
+                      "description": "10 product showcase edits with price pop-ups, affiliate link overlays, and trending audio that matches the product category.",
+                      "priceRange": "$350/batch",
+                      "deliveryFormat": "48-hour turnaround, source files included",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "tiktok_shop_directory",
+                          "label": "TikTok Shop affiliate directory outreach",
+                          "description": "Browse the TikTok Shop Affiliate marketplace for creators with low video quality scores; pitch a sample edit of their top-selling product.",
+                          "channel": "platform",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_brands_shortform",
+              "label": "E-commerce Brands",
+              "description": "Direct-to-consumer brands using short-form video as their primary customer acquisition channel.",
+              "niches": [
+                {
+                  "id": "dtc_instagram_tiktok",
+                  "label": "DTC brands on Instagram and TikTok",
+                  "description": "Consumer brands spending $10K+/month on Meta/TikTok ads who need a steady pipeline of UGC-style ad edits.",
+                  "offers": [
+                    {
+                      "id": "ugc_ad_monthly_15",
+                      "label": "UGC Ad Edit Retainer (15 ads/month)",
+                      "description": "15 user-generated-content-style ad edits with hook variants, retention editing, and platform-specific aspect ratios.",
+                      "priceRange": "$2,000/month",
+                      "deliveryFormat": "Weekly delivery of 4 ads, monthly strategy review call",
+                      "simulator_weights": { "demand": 9, "competition": 7, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "facebook_ad_library_analysis",
+                          "label": "Facebook Ad Library competitor analysis",
+                          "description": "Analyze Facebook Ad Library for DTC brands running video ads with low engagement; present a sample re-edit with improved retention hooks.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "amazon_sellers_ugc",
+                  "label": "Amazon sellers needing UGC-style ads",
+                  "description": "Third-party Amazon sellers creating off-platform content to drive external traffic to their listings.",
+                  "offers": [
+                    {
+                      "id": "amazon_ugc_pack_5",
+                      "label": "Amazon Brand UGC Pack (5 ads)",
+                      "description": "5 unboxing/demo-style ad edits optimized for Amazon Posts, TikTok, and Meta with Amazon Store link overlays.",
+                      "priceRange": "$750/pack",
+                      "deliveryFormat": "5 finished ads within 5 business days",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "amazon_brand_registry_outreach",
+                          "label": "Amazon Brand Registry seller cold email",
+                          "description": "Target Amazon sellers with registered brands but thin social media presence; pitch a cross-platform video strategy.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "personal_brand_founders",
+              "label": "Personal Brand Founders",
+              "description": "Startup founders and executives building personal brands through daily short-form thought leadership.",
+              "niches": [
+                {
+                  "id": "solo_founders_daily_content",
+                  "label": "Solo founders posting daily content",
+                  "description": "Bootstrapped and VC-backed founders who film 3-7 minute raw monologues and need them cut into daily clips.",
+                  "offers": [
+                    {
+                      "id": "founder_clip_pipeline",
+                      "label": "Founder Clip Pipeline (7 clips/week)",
+                      "description": "One long-form raw recording edited into 7 platform-optimized clips with captions, hook text overlays, and trending music.",
+                      "priceRange": "$500/week",
+                      "deliveryFormat": "Monday raw upload → Tuesday-Friday daily clip delivery",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "linkedin_founder_outreach",
+                          "label": "LinkedIn founder video engagement outreach",
+                          "description": "Identify founders posting raw/long videos weekly; comment with value and DM offering a free clip edit of their best recent video.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "linkedin_thought_leaders_shortform",
+                  "label": "Thought leaders on LinkedIn",
+                  "description": "Industry experts and consultants who post 3-5x/week on LinkedIn and need consistent branded short-form edits.",
+                  "offers": [
+                    {
+                      "id": "linkedin_personal_brand_edit",
+                      "label": "LinkedIn Personal Brand Edit (5 clips)",
+                      "description": "5 talking-head clips with LinkedIn-native formatting, subtitle track, hook slide, and engagement CTA.",
+                      "priceRange": "$400/week",
+                      "deliveryFormat": "Weekly batch of 5 clips, Sunday delivery",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 9 },
+                      "clientSources": [
+                        {
+                          "id": "linkedin_creator_program",
+                          "label": "LinkedIn Creator Program participant outreach",
+                          "description": "Target LinkedIn Creator Accelerator program participants and alumni who post consistently but have unpolished video quality.",
+                          "channel": "platform",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "long_form_editing",
+          "label": "Long Form Editing",
+          "description": "Full post-production for YouTube, documentary, and educational content ranging 10-90 minutes.",
+          "markets": [
+            {
+              "id": "documentary_filmmakers",
+              "label": "Documentary Filmmakers",
+              "description": "Independent and boutique production companies producing short and feature-length documentaries for streaming and festivals.",
+              "niches": [
+                {
+                  "id": "nature_outdoor_docuseries",
+                  "label": "Nature and outdoor docu-series",
+                  "description": "Cinematic nature and adventure documentary series needing color grading, ambient sound design, and drone footage integration.",
+                  "offers": [
+                    {
+                      "id": "nature_doc_episode_edit",
+                      "label": "Nature Doc Episode Edit (22 min)",
+                      "description": "Full episode edit including multi-cam sync, ambient sound layering, color grading, title sequence integration, and mix preparation.",
+                      "priceRange": "$3,500/episode",
+                      "deliveryFormat": "2-week turnaround per episode, source files delivered via Frame.io",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "film_festival_network",
+                          "label": "Documentary film festival circuit networking",
+                          "description": "Attend 2-3 documentary film festivals annually and offer post-production demo reels to emerging filmmaker cohorts.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "historical_documentary_channels",
+                  "label": "Historical documentary channels",
+                  "description": "YouTube-native documentary channels producing researched historical content 20-60 minutes in length.",
+                  "offers": [
+                    {
+                      "id": "historical_doc_full_edit",
+                      "label": "Historical Documentary Full Edit (30 min)",
+                      "description": "Archive footage integration, motion graphics for maps/timelines, narration sync, music scoring, and chapter markers.",
+                      "priceRange": "$2,500/video",
+                      "deliveryFormat": "10-day delivery, 2 revision rounds",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "youtube_doc_community",
+                          "label": "YouTube documentary creator community outreach",
+                          "description": "Identify channels in the 'history' and 'documentary' category with <500K subs but high engagement; offer a free 5-min sample edit.",
+                          "channel": "platform",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "educational_platforms_longform",
+              "label": "Educational Platforms",
+              "description": "Online learning platforms and corporate training departments producing structured course content.",
+              "niches": [
+                {
+                  "id": "online_university_course_producers",
+                  "label": "Online university course producers",
+                  "description": "University media teams producing MOOC-style courses with lecture recordings, slide sync, and assessment integration.",
+                  "offers": [
+                    {
+                      "id": "mooc_lecture_post_production",
+                      "label": "MOOC Lecture Post-Production (10 videos)",
+                      "description": "10 lecture edits with intro/outro templates, slide picture-in-picture sync, chapter markers, closed caption generation, and LMS-ready export.",
+                      "priceRange": "$4,500/course",
+                      "deliveryFormat": "3-week delivery for 10 videos, bulk discount for 20+ video courses",
+                      "simulator_weights": { "demand": 6, "competition": 4, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "edx_coursera_partner_outreach",
+                          "label": "edX/Coursera partner institution outreach",
+                          "description": "Contact media production departments at universities with active edX or Coursera course catalogs; pitch a post-production retainer.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "corporate_training_content_teams",
+                  "label": "Corporate training content teams",
+                  "description": "L&D departments producing internal training videos, compliance courses, and onboarding materials.",
+                  "offers": [
+                    {
+                      "id": "corporate_training_edit_retainer",
+                      "label": "Corporate Training Edit Retainer (8 videos/month)",
+                      "description": "Monthly retainer covering 8 training video edits with screen capture clean-up, animated lower thirds, quiz overlay integration, and SCORM packaging.",
+                      "priceRange": "$3,000/month",
+                      "deliveryFormat": "8 videos per month, 5 business day turnaround per video",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "linkedin_ld_decision_makers",
+                          "label": "LinkedIn L&D decision-maker cold outreach",
+                          "description": "Target 'Director of Learning' and 'L&D Manager' titles on LinkedIn at mid-to-large companies; send a corporate training sample reel.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "podcast_networks_longform",
+              "label": "Podcast Networks",
+              "description": "Multi-show podcast networks producing video-first episodes for YouTube and social distribution.",
+              "niches": [
+                {
+                  "id": "interview_podcasts_multicam",
+                  "label": "Interview-style podcasts with multi-cam",
+                  "description": "Hosted interview shows with 3+ camera angles needing color matching, audio sweetening, and dynamic cutaway editing.",
+                  "offers": [
+                    {
+                      "id": "multicam_podcast_full_edit",
+                      "label": "Multi-Cam Podcast Full Episode Edit",
+                      "description": "Full episode edit with camera switching, audio levelling, intro/outro stingers, lower thirds, chapters, and social clip extraction.",
+                      "priceRange": "$350/episode",
+                      "deliveryFormat": "24-hour turnaround on episodes under 90 minutes",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "spotify_podcast_discovery_outreach",
+                          "label": "Spotify podcast chart analyser outreach",
+                          "description": "Monitor Spotify 'New & Trending' podcast charts for interview-format shows with basic editing; pitch a production upgrade package.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "narrative_storytelling_podcasts",
+                  "label": "Narrative and storytelling podcasts",
+                  "description": "Scripted, produced podcasts with sound design, archival audio, and cinematic production value.",
+                  "offers": [
+                    {
+                      "id": "narrative_podcast_sound_design",
+                      "label": "Narrative Podcast Sound Design Edit",
+                      "description": "Script-driven edit with ambience beds, music scoring, archival audio integration, vocal clean-up, and episode trailer creation.",
+                      "priceRange": "$650/episode",
+                      "deliveryFormat": "5-day turnaround per 30-min episode, includes 2 revision rounds",
+                      "simulator_weights": { "demand": 5, "competition": 3, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "audible_original_creator_outreach",
+                          "label": "Audible original / fiction podcast creator outreach",
+                          "description": "Identify fiction podcast creators on Reddit and podcasting forums looking for sound designers; offer a free 5-minute sample edit.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "thumbnail_design",
+          "label": "Thumbnail Design",
+          "description": "High-click-through-rate thumbnail creation for YouTube, streaming platforms, and digital media publishers.",
+          "markets": [
+            {
+              "id": "youtube_creators_thumbnails",
+              "label": "YouTube Creators",
+              "description": "Independent YouTube creators who need consistent, high-CTR thumbnails to compete in algorithm-driven discovery.",
+              "niches": [
+                {
+                  "id": "gaming_yt_channels",
+                  "label": "Gaming YouTube channels",
+                  "description": "Minecraft, Fortnite, Valorant, and variety gaming channels needing expressive, clickable thumbnails with consistent face cam integration.",
+                  "offers": [
+                    {
+                      "id": "gaming_thumbnail_retainer_20",
+                      "label": "Gaming Thumbnail Retainer (20/month)",
+                      "description": "20 custom thumbnails per month with face cam extraction, text hierarchy, color theory optimization, and A/B test variants for the first 5.",
+                      "priceRange": "$600/month",
+                      "deliveryFormat": "Weekly batch of 5 thumbnails, 24-hour rush option available",
+                      "simulator_weights": { "demand": 8, "competition": 8, "execution_speed": 9 },
+                      "clientSources": [
+                        {
+                          "id": "yt_guilded_gg_outreach",
+                          "label": "Gaming creator Discord server outreach",
+                          "description": "Join gaming creator Discords and offer a free CTR audit of their last 10 thumbnails with replacement mockups.",
+                          "channel": "community",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "tech_review_yt_channels",
+                  "label": "Tech review YouTube channels",
+                  "description": "Product reviewers and tech commentary channels needing clean, minimal thumbnails with product isolation and spec callouts.",
+                  "offers": [
+                    {
+                      "id": "tech_thumbnail_pack_10",
+                      "label": "Tech Review Thumbnail Pack (10/month)",
+                      "description": "10 product-review thumbnails with product cutouts, spec text overlays, color grading, and device mockup integration.",
+                      "priceRange": "$400/month",
+                      "deliveryFormat": "Bi-weekly delivery of 5, editable PSD/Figma files included",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "yt_tech_comment_outreach",
+                          "label": "YouTube tech video comment section outreach",
+                          "description": "Identify tech channels with <500K subs but good content; comment genuine feedback and DM a free thumbnail redesign of their latest video.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "streaming_services",
+              "label": "Streaming Services",
+              "description": "Live streamers and episodic content creators on Twitch, Kick, and emerging streaming platforms.",
+              "niches": [
+                {
+                  "id": "twitch_streamers_offline_branding",
+                  "label": "Twitch streamers needing offline banners",
+                  "description": "Mid-size Twitch streamers (100-1000 avg viewers) needing branded offline screens, stream starting soon panels, and video thumbnails.",
+                  "offers": [
+                    {
+                      "id": "streamer_thumbnail_banner_bundle",
+                      "label": "Streamer Branding Bundle (10 assets)",
+                      "description": "10 assets: 3 offline banners, 2 BRB screens, 3 stream highlight thumbnails, 1 schedule graphic, 1 panel set with animated variants.",
+                      "priceRange": "$500/bundle",
+                      "deliveryFormat": "5-day delivery with stream-deck integration guide",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "twitch_creator_camp_outreach",
+                          "label": "Twitch Creator Camp participant outreach",
+                          "description": "Target Twitch affiliates in the Creator Camp directory who have unoptimized channel pages; offer a free channel audit.",
+                          "channel": "platform",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "creator_episodic_series_thumbnails",
+                  "label": "Creator episodic series thumbnails",
+                  "description": "Story-driven creator series on YouTube needing consistent thumbnail design language across episodes.",
+                  "offers": [
+                    {
+                      "id": "series_thumbnail_system",
+                      "label": "Series Thumbnail Design System",
+                      "description": "Custom thumbnail template system with episode-specific variants, consistent typography hierarchy, color-coded by season, and YouTube analytics tracking integration.",
+                      "priceRange": "$800/setup + $150/episode",
+                      "deliveryFormat": "Template system delivered in 5 days, episodes within 24 hours of raw footage review",
+                      "simulator_weights": { "demand": 6, "competition": 4, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "yt_series_discovery",
+                          "label": "YouTube series discovery + DM pitch",
+                          "description": "Discover new series launches via YouTube's 'New' tab and pitch thumbnail consistency as a growth lever before they scale.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "media_publishers_thumbnails",
+              "label": "Media Publishers",
+              "description": "Digital media companies and newsletter brands needing shareable thumbnail art for articles and social distribution.",
+              "niches": [
+                {
+                  "id": "news_outlet_article_thumbnails",
+                  "label": "News outlets needing article thumbnails",
+                  "description": "Online news and analysis publications needing consistent, editorial-style thumbnails for every article across multiple verticals.",
+                  "offers": [
+                    {
+                      "id": "news_thumbnail_retainer_daily",
+                      "label": "Daily News Thumbnail Retainer (30/month)",
+                      "description": "30 editorial thumbnails per month with brand-compliant typography, photo selection, color coding by section, and Open Graph optimization.",
+                      "priceRange": "$1,500/month",
+                      "deliveryFormat": "Daily delivery of thumbnails matching the editorial calendar",
+                      "simulator_weights": { "demand": 6, "competition": 4, "execution_speed": 9 },
+                      "clientSources": [
+                        {
+                          "id": "media_kit_publication_outreach",
+                          "label": "Media kit analysis cold outreach",
+                          "description": "Analyze public media kits of digital publications with inconsistent thumbnail branding; pitch a style guide and retainer package.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "newsletter_social_share_images",
+                  "label": "Newsletter brands needing social share images",
+                  "description": "Growing newsletter operations (5K-100K subscribers) needing branded social share images for every edition.",
+                  "offers": [
+                    {
+                      "id": "newsletter_share_image_template",
+                      "label": "Newsletter Share Image System",
+                      "description": "Template system for LinkedIn, Twitter, and Instagram share images per newsletter edition, with data-driven design variations tested for CTR.",
+                      "priceRange": "$300/setup + $50/edition",
+                      "deliveryFormat": "Template system in 3 days, edition graphics within 2 hours of newsletter draft",
+                      "simulator_weights": { "demand": 5, "competition": 3, "execution_speed": 9 },
+                      "clientSources": [
+                        {
+                          "id": "substack_discovery_outreach",
+                          "label": "Substack discovery outreach to growing newsletters",
+                          "description": "Browse Substack 'Recommended' section for newsletters with 1K-10K subscribers and no branded share images; send a mockup of their next edition.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "motion_graphics",
+          "label": "Motion Graphics",
+          "description": "Animated visual content including explainer videos, title sequences, kinetic typography, and branded motion systems.",
+          "markets": [
+            {
+              "id": "tech_companies_motion",
+              "label": "Tech Companies",
+              "description": "B2B and B2C technology companies needing animated product content for sales, onboarding, and marketing.",
+              "niches": [
+                {
+                  "id": "product_launch_explainers",
+                  "label": "Product launch explainer videos",
+                  "description": "SaaS and hardware companies launching new products who need 60-90 second animated explainer videos for landing pages and sales decks.",
+                  "offers": [
+                    {
+                      "id": "saas_explainer_60s",
+                      "label": "SaaS Explainer Video (60 seconds)",
+                      "description": "60-second animated explainer with custom illustrations, kinetic typography, voiceover sync, background music, and landing page embed optimization.",
+                      "priceRange": "$4,500/video",
+                      "deliveryFormat": "3-week delivery with script development, storyboard, and 2 revision rounds",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "product_hunt_launch_outreach_mg",
+                          "label": "Product Hunt upcoming launch outreach",
+                          "description": "Monitor Product Hunt 'Upcoming' products without explainer videos on their landing pages; pitch a 30-second sample animation.",
+                          "channel": "platform",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "saas_onboarding_animations",
+                  "label": "SaaS onboarding animation systems",
+                  "description": "SaaS products needing micro-animations for user onboarding flows, tooltips, progress indicators, and empty states.",
+                  "offers": [
+                    {
+                      "id": "onboarding_motion_system",
+                      "label": "Onboarding Motion System (20 micro-animations)",
+                      "description": "20 Lottie/Rive micro-animations for onboarding flows including loading states, transitions, celebratory animations, and empty state illustrations.",
+                      "priceRange": "$3,000/system",
+                      "deliveryFormat": "2-week delivery with Lottie JSON files, implementation guide, and developer handoff Figma file",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "saas_product_hunt_outreach",
+                          "label": "Crunchbase-series-A SaaS outreach",
+                          "description": "Identify Series A SaaS companies with recently redesigned products; audit their onboarding flow and offer a free micro-animation sample.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "event_producers",
+              "label": "Event Producers",
+              "description": "Conference organizers, award shows, and live event production companies needing broadcast-quality motion packages.",
+              "niches": [
+                {
+                  "id": "virtual_conference_openers",
+                  "label": "Virtual conference opener sequences",
+                  "description": "Conference organizers needing cinematic 30-60 second opener sequences, speaker intro animations, and transition stings for multi-day virtual events.",
+                  "offers": [
+                    {
+                      "id": "conference_motion_package",
+                      "label": "Conference Motion Package (5 assets)",
+                      "description": "5 broadcast-quality assets: main title sequence, speaker intro template, transition stinger, lower-third template, and closing credits roll.",
+                      "priceRange": "$4,000/package",
+                      "deliveryFormat": "2-week delivery with broadcast-spec exports and live-stream integration guide",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "tech_conference_cfp_outreach",
+                          "label": "Tech conference CFP announcement outreach",
+                          "description": "Monitor conference CFP (Call for Proposals) announcements and contact organizers 4-5 months before the event date with a motion reel.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "award_show_title_sequences",
+                  "label": "Award show title sequences",
+                  "description": "Industry award ceremonies needing cinematic nominee intro packages, category transitions, and winner announcement animations.",
+                  "offers": [
+                    {
+                      "id": "award_show_nominee_package",
+                      "label": "Award Show Nominee Package (10 intros)",
+                      "description": "10 nominee intro sequences with consistent motion language, photo animation, typography lockup, category color coding, and winner reveal animation.",
+                      "priceRange": "$6,000/package",
+                      "deliveryFormat": "4-week delivery, includes pre-visualisation and 3 revision rounds",
+                      "simulator_weights": { "demand": 4, "competition": 3, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "award_submission_tracking",
+                          "label": "Award submission calendar cold outreach",
+                          "description": "Track industry award submission deadlines via award calendar sites; contact organizers 3 months before the ceremony with a motion design reel.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "advertising_agencies_motion",
+              "label": "Advertising Agencies",
+              "description": "Creative and media agencies producing motion content for broadcast television, digital ads, and branded content campaigns.",
+              "niches": [
+                {
+                  "id": "broadcast_commercial_packages",
+                  "label": "Broadcast commercial motion packages",
+                  "description": "Advertising agencies producing 15-30 second TV spots requiring motion graphics integration, kinetic typography, and product animation.",
+                  "offers": [
+                    {
+                      "id": "broadcast_motion_package_3spots",
+                      "label": "Broadcast Commercial Motion Package (3 spots)",
+                      "description": "Full motion production for 3 TV spots including product animation, kinetic typography, logo reveal, and broadcast-spec master export.",
+                      "priceRange": "$8,000/package",
+                      "deliveryFormat": "4-week delivery with storyboard approval gates and broadcast specification compliance",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "agency_production_outreach",
+                          "label": "Mid-size ad agency production department outreach",
+                          "description": "Target agencies with 20-100 employees that outsource motion work; send a showreel and case studies of broadcast-compliant work.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "social_media_ad_animations",
+                  "label": "Social media ad animations",
+                  "description": "Performance marketing agencies needing animated ad variants for Meta, TikTok, and programmatic display campaigns.",
+                  "offers": [
+                    {
+                      "id": "social_ad_animation_monthly",
+                      "label": "Social Ad Animation Retainer (10 ads/month)",
+                      "description": "10 animated ad variants per month with hook variations, aspect ratio adaptations (9:16, 1:1, 16:9), and performance analytics review.",
+                      "priceRange": "$2,500/month",
+                      "deliveryFormat": "Weekly delivery of 2-3 ads, monthly performance review call",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "agency_performance_outreach",
+                          "label": "Performance marketing agency partnership",
+                          "description": "Partner with 3-5 performance marketing agencies as their white-label motion production vendor with a referral commission structure.",
+                          "channel": "partnership",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "developer",
+      "label": "Developer",
+      "description": "Build and deploy digital products across CMS platforms, no-code tools, and full-stack architectures.",
+      "services": [
+        {
+          "id": "wordpress_development",
+          "label": "WordPress Development",
+          "description": "Custom WordPress theme and plugin development, migration, and optimisation for businesses of all sizes.",
+          "markets": [
+            {
+              "id": "local_service_businesses_wp",
+              "label": "Local Service Businesses",
+              "description": "Trade professionals and local service providers needing a modern, lead-generating web presence.",
+              "niches": [
+                {
+                  "id": "dental_medical_practice_sites",
+                  "label": "Dental and medical practice sites",
+                  "description": "Dentists, orthodontists, and medical clinics needing appointment booking, patient portal integration, HIPAA-compliant contact forms, and multi-location management.",
+                  "offers": [
+                    {
+                      "id": "medical_practice_wp_site",
+                      "label": "Medical Practice WordPress Site + Booking",
+                      "description": "Custom WordPress theme with online booking (Acuity/Calendly integration), patient portal links, multi-location support, and HIPAA-compliant forms.",
+                      "priceRange": "$2,500",
+                      "deliveryFormat": "2-week build + 1 week content population with practice staff",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "google_maps_dental_scrape",
+                          "label": "Google Maps dental clinic website audit",
+                          "description": "Extract dental clinics in a 50-mile radius with <3.5 star websites or no site; send a free mobile-responsiveness audit report.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "hvac_contractor_service_sites",
+                  "label": "HVAC and contractor service sites",
+                  "description": "Heating, cooling, plumbing, and electrical contractors needing service-area-based landing pages and emergency-contact visibility.",
+                  "offers": [
+                    {
+                      "id": "contractor_wp_service_site",
+                      "label": "Contractor Service Site + Local SEO",
+                      "description": "Custom WordPress site with service-area pages, Google Local Services Ads integration, emergency call button, review widget, and estimator tool.",
+                      "priceRange": "$2,000",
+                      "deliveryFormat": "10-day build with local SEO keyword research included",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "homeadvisor_contractor_outreach",
+                          "label": "HomeAdvisor/Angi contractor list cold outreach",
+                          "description": "Target contractors with low-star ratings or incomplete profiles on HomeAdvisor; pitch a professional website as a trust signal to win more bids.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "non_profit_organizations_wp",
+              "label": "Non-Profit Organizations",
+              "description": "Charities, foundations, and advocacy groups needing donation-driven websites with impact storytelling.",
+              "niches": [
+                {
+                  "id": "donation_charity_sites",
+                  "label": "Donation-driven charity sites",
+                  "description": "Non-profits that rely on online donations and need GiveWP integration, donor management, and impact metric dashboards.",
+                  "offers": [
+                    {
+                      "id": "charity_wp_donation_site",
+                      "label": "Charity WordPress Site + GiveWP Integration",
+                      "description": "Custom WordPress theme with GiveWP donation forms, recurring giving, donor wall, impact dashboard, Stripe integration, and receipt automation.",
+                      "priceRange": "$3,000",
+                      "deliveryFormat": "3-week build including donor management training session",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "guidestar_nonprofit_outreach",
+                          "label": "GuideStar/Candid non-profit listing outreach",
+                          "description": "Analyze GuideStar data for mid-size non-profits with outdated websites and a development director listed; pitch a digital transformation package.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "advocacy_group_membership_sites",
+                  "label": "Advocacy group membership sites",
+                  "description": "Political and social advocacy organizations needing membership management, action alerts, and petition tools.",
+                  "offers": [
+                    {
+                      "id": "advocacy_wp_membership",
+                      "label": "Advocacy WordPress + MemberPress Site",
+                      "description": "Custom site with MemberPress membership tiers, action-alert email automation, petition tool integration, and advocacy campaign tracking dashboard.",
+                      "priceRange": "$3,500",
+                      "deliveryFormat": "4-week build with advocacy tool training and campaign launch support",
+                      "simulator_weights": { "demand": 4, "competition": 3, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "advocacy_conference_networking",
+                          "label": "Non-profit technology conference networking",
+                          "description": "Attend 1-2 non-profit technology conferences annually and offer a discounted site build for 501(c)(3) organizations.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "real_estate_professionals_wp",
+              "label": "Real Estate Professionals",
+              "description": "Real estate agencies and individual agents needing property listing websites with IDX integration.",
+              "niches": [
+                {
+                  "id": "property_listing_agency_sites",
+                  "label": "Property listing sites for agencies",
+                  "description": "Real estate agencies with 5-50 agents needing MLS-integrated property search, agent profile management, and neighborhood landing pages.",
+                  "offers": [
+                    {
+                      "id": "agency_wp_idx_site",
+                      "label": "Real Estate Agency WordPress + IDX Integration",
+                      "description": "Custom WordPress theme with MLS/IDX property search, saved search alerts, agent directory, neighborhood pages, and CRM integration (Follow Up Boss, Sierra Interactive).",
+                      "priceRange": "$4,000",
+                      "deliveryFormat": "4-week build with IDX data syncing and staff training",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "realtor_association_outreach",
+                          "label": "Local realtor association partnership",
+                          "description": "Partner with 2-3 local realtor associations to offer a member-only discounted website package with IDX integration.",
+                          "channel": "partnership",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "idx_integrated_realtor_sites",
+                  "label": "IDX-integrated individual realtor sites",
+                  "description": "Solo agents and small teams needing a branded property search experience without paying ongoing IDX subscription fees.",
+                  "offers": [
+                    {
+                      "id": "realtor_idx_single_site",
+                      "label": "Individual Realtor WordPress + IDX",
+                      "description": "Single-agent WordPress site with IDX property search, lead capture forms, listing presentation page, and automated email drip campaign integration.",
+                      "priceRange": "$1,200",
+                      "deliveryFormat": "7-day build with IDX setup and listing import",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "zillow_realtor_outreach",
+                          "label": "Zillow agent profile cold outreach",
+                          "description": "Target Zillow Premier Agents with no personal website link on their profile; pitch a $99/month site package to capture direct leads.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "webflow_development",
+          "label": "Webflow Development",
+          "description": "Design-driven Webflow builds including CMS architecture, interactions, and hosting for modern businesses.",
+          "markets": [
+            {
+              "id": "startup_marketing_sites",
+              "label": "Startup Marketing Sites",
+              "description": "Early and growth-stage startups needing fast, visually polished marketing websites with CMS-driven content.",
+              "niches": [
+                {
+                  "id": "pre_seed_landing_pages",
+                  "label": "Pre-seed landing pages for product launches",
+                  "description": "Pre-seed and seed-stage startups needing a single high-converting landing page for beta signups, investor interest, or Product Hunt launches.",
+                  "offers": [
+                    {
+                      "id": "pre_seed_webflow_landing",
+                      "label": "Pre-Seed Webflow Landing Page + Waitlist",
+                      "description": "Single-page Webflow build with hero animation, feature section, email waitlist integration (Mailchimp/ConvertKit), social proof bar, and custom domain setup.",
+                      "priceRange": "$1,800",
+                      "deliveryFormat": "5-day build with Webflow CMS handoff documentation",
+                      "simulator_weights": { "demand": 9, "competition": 7, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "product_hunt_prelaunch_outreach",
+                          "label": "Product Hunt pre-launch outreach",
+                          "description": "Monitor Product Hunt 'Upcoming' for pre-seed products without a proper landing page; offer a free Webflow audit and waitlist template.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "saas_marketing_cms_sites",
+                  "label": "SaaS marketing sites with CMS",
+                  "description": "B2B and B2C SaaS companies needing multi-page marketing sites with blog CMS, case study templates, and localization-ready architecture.",
+                  "offers": [
+                    {
+                      "id": "saas_webflow_cms_site",
+                      "label": "SaaS Webflow CMS Marketing Site (8 pages)",
+                      "description": "8-page Webflow site with CMS-driven blog, case study collection, dynamic filtering, localization setup (Webflow localization), and blog writer training.",
+                      "priceRange": "$4,500",
+                      "deliveryFormat": "3-week build with CMS content population guide",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "webflow_expert_outreach",
+                          "label": "Webflow Expert directory client referrals",
+                          "description": "Optimize profile on Webflow Expert directory; inbound leads from SaaS companies searching for 'Webflow CMS' experts.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "creative_agencies_webflow",
+              "label": "Creative Agencies",
+              "description": "Design and branding agencies needing portfolio showcase sites and interactive brand experience microsites.",
+              "niches": [
+                {
+                  "id": "agency_portfolio_showcase_sites",
+                  "label": "Agency portfolio showcase sites",
+                  "description": "Creative, design, and digital agencies needing a visually rich portfolio site that demonstrates their own capabilities as a lead generation tool.",
+                  "offers": [
+                    {
+                      "id": "agency_webflow_portfolio",
+                      "label": "Agency Webflow Portfolio (6 pages)",
+                      "description": "6-page Webflow portfolio with CMS-driven project showcase, animated case study templates, filtering by service/category, and integrated contact form.",
+                      "priceRange": "$3,500",
+                      "deliveryFormat": "2-week build with Lottie micro-animations and CMS training",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "clutch_agency_outreach",
+                          "label": "Clutch.co agency listing cold outreach",
+                          "description": "Target agencies on Clutch.co with outdated or slow websites; offer a free PageSpeed audit and Webflow migration estimate.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "brand_experience_microsites",
+                  "label": "Brand experience microsites",
+                  "description": "Campaign-specific interactive microsites for brand launches, product drops, and experiential marketing campaigns.",
+                  "offers": [
+                    {
+                      "id": "brand_microsite_webflow",
+                      "label": "Brand Experience Microsite (1 page interactive)",
+                      "description": "Single-page interactive Webflow microsite with parallax scrolling, scroll-triggered animations, video integration, and social sharing mechanics.",
+                      "priceRange": "$2,500",
+                      "deliveryFormat": "10-day build with animation storyboard approval",
+                      "simulator_weights": { "demand": 6, "competition": 4, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "adweek_creative_tracker",
+                          "label": "Adweek creative campaign tracker cold outreach",
+                          "description": "Monitor Adweek for brand campaign launches that lack a dedicated microsite; pitch an interactive microsite as a campaign centerpiece.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "personal_brand_webflow",
+              "label": "Personal Brand Web",
+              "description": "Consultants, speakers, and authors needing professional booking and content websites on Webflow.",
+              "niches": [
+                {
+                  "id": "consultant_speaker_booking_sites",
+                  "label": "Consultant and speaker booking sites",
+                  "description": "Executive consultants and keynote speakers needing a professional booking site with calendar integration, media kit, and client logos.",
+                  "offers": [
+                    {
+                      "id": "speaker_webflow_site",
+                      "label": "Speaker/Consultant Webflow Booking Site",
+                      "description": "4-page Webflow site with booking calendar (Calendly/Acuity), video reel integration, speaking topics CMS, media kit download, and testimonial carousel.",
+                      "priceRange": "$2,200",
+                      "deliveryFormat": "10-day build with SEO optimization and domain setup",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 7 },
+                      "clientSources": [
+                        {
+                          "id": "speaker_agency_outreach",
+                          "label": "Speaker agency roster cold outreach",
+                          "description": "Target speakers listed on agency rosters (e.g., Washington Speakers Bureau) without personal websites; pitch a professional booking site.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "author_book_launch_sites",
+                  "label": "Author book launch sites",
+                  "description": "Published and self-published authors needing a dedicated book sales page with pre-order mechanics, reviews, and press kit.",
+                  "offers": [
+                    {
+                      "id": "author_webflow_book_site",
+                      "label": "Author Book Launch Webflow Site",
+                      "description": "Single-page book launch site with pre-order button (Shopify/Bookshop.org integration), review carousel, press kit download, chapter excerpt, and email capture.",
+                      "priceRange": "$1,500",
+                      "deliveryFormat": "7-day build timed to book pre-order date",
+                      "simulator_weights": { "demand": 4, "competition": 3, "execution_speed": 8 },
+                      "clientSources": [
+                        {
+                          "id": "goodreads_author_outreach",
+                          "label": "Goodreads author listing cold outreach",
+                          "description": "Identify self-published authors on Goodreads with upcoming books but no author website; offer a discounted pre-launch site package.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "custom_full_stack",
+          "label": "Custom Full-Stack",
+          "description": "End-to-end web application development from database architecture to deployment for complex business needs.",
+          "markets": [
+            {
+              "id": "logistics_operations",
+              "label": "Logistics & Operations",
+              "description": "Transportation, warehousing, and supply chain companies needing operational software to manage fleets, inventory, and workflows.",
+              "niches": [
+                {
+                  "id": "fleet_management_dashboards",
+                  "label": "Fleet management dashboards",
+                  "description": "Logistics companies with 10-200 vehicles needing real-time tracking dashboards, route optimization, driver scheduling, and fuel consumption analytics.",
+                  "offers": [
+                    {
+                      "id": "fleet_dashboard_fullstack",
+                      "label": "Fleet Management Dashboard (React + Node)",
+                      "description": "Full-stack application with real-time GPS tracking (Mapbox/Google Maps), driver scheduling module, maintenance alerts, fuel analytics, and PDF report generation.",
+                      "priceRange": "$15,000",
+                      "deliveryFormat": "6-week MVP with 2-week testing, includes deployment and 30-day support",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "tms_forum_outreach",
+                          "label": "Transportation management forums cold outreach",
+                          "description": "Engage in logistics technology forums and LinkedIn groups; identify companies asking for 'spreadsheet replacement' recommendations.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "inventory_tracking_systems",
+                  "label": "Inventory tracking systems",
+                  "description": "Warehouses and retail operations needing barcode/RFID-based inventory management with multi-warehouse support.",
+                  "offers": [
+                    {
+                      "id": "inventory_system_fullstack",
+                      "label": "Multi-Warehouse Inventory Tracking System",
+                      "description": "Full-stack inventory system with barcode scanning API integration, real-time stock levels, purchase order management, supplier portal, and low-stock alert automation.",
+                      "priceRange": "$18,000",
+                      "deliveryFormat": "8-week build with barcode hardware testing and staff training",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "warehouse_software_outreach",
+                          "label": "Warehouse technology conference attendee outreach",
+                          "description": "Attend 1-2 warehousing/ logistics tech expos and demo the inventory tracking system to mid-size warehouse operators.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "healthcare_tech_fullstack",
+              "label": "Healthcare Tech",
+              "description": "Digital health companies and medical practices needing HIPAA-compliant patient-facing and administrative applications.",
+              "niches": [
+                {
+                  "id": "telemedicine_patient_portals",
+                  "label": "Telemedicine patient portals",
+                  "description": "Telehealth startups and established practices needing video consultation portals with scheduling, payment, and EHR integration.",
+                  "offers": [
+                    {
+                      "id": "telemedicine_portal_fullstack",
+                      "label": "Telemedicine Portal (React + WebRTC + Node)",
+                      "description": "Full-stack telemedicine application with WebRTC video consultations, HIPAA-compliant messaging, appointment scheduling, Stripe billing, and Epic EHR API integration.",
+                      "priceRange": "$25,000",
+                      "deliveryFormat": "10-week development with HIPAA compliance audit and deployment",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 3 },
+                      "clientSources": [
+                        {
+                          "id": "healthtech_conference_outreach",
+                          "label": "HLTH conference startup outreach",
+                          "description": "Identify early-stage telemedicine startups exhibiting at HLTH or HIMSS conferences; offer a technical feasibility assessment.",
+                          "channel": "community",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "clinic_scheduling_records",
+                  "label": "Clinic scheduling and records systems",
+                  "description": "Independent and group medical practices needing modern scheduling, patient records, and billing management.",
+                  "offers": [
+                    {
+                      "id": "clinic_management_fullstack",
+                      "label": "Clinic Management System (React + Python)",
+                      "description": "Full-stack clinic management app with appointment scheduling, patient intake forms, digital charting, billing codes, and insurance claim submission.",
+                      "priceRange": "$20,000",
+                      "deliveryFormat": "8-week build with patient data migration from legacy systems",
+                      "simulator_weights": { "demand": 7, "competition": 5, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "medical_practice_directory_outreach",
+                          "label": "Independent medical practice directory cold outreach",
+                          "description": "Target independent practices listed in medical directories that use paper-based or outdated scheduling; offer a free digital transformation assessment.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "financial_services_fullstack",
+              "label": "Financial Services",
+              "description": "Fintech companies and financial institutions needing compliance-ready dashboards, portfolio tools, and data visualization platforms.",
+              "niches": [
+                {
+                  "id": "fintech_compliance_dashboards",
+                  "label": "Fintech compliance dashboards",
+                  "description": "Fintech startups needing KYC/AML compliance tracking, transaction monitoring dashboards, and regulatory reporting automation.",
+                  "offers": [
+                    {
+                      "id": "compliance_dashboard_fullstack",
+                      "label": "Fintech Compliance Dashboard (React + Node + PostgreSQL)",
+                      "description": "Full-stack compliance dashboard with KYC verification flow, transaction monitoring rules engine, AML flagging, audit trail, and regulatory report generation.",
+                      "priceRange": "$22,000",
+                      "deliveryFormat": "8-week build with SOC2 compliance documentation support",
+                      "simulator_weights": { "demand": 8, "competition": 6, "execution_speed": 3 },
+                      "clientSources": [
+                        {
+                          "id": "fintech_slack_outreach",
+                          "label": "Fintech founder Slack/Discord community outreach",
+                          "description": "Join fintech founder communities and offer a free compliance workflow audit to early-stage companies preparing for regulatory reviews.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "investment_portfolio_trackers",
+                  "label": "Investment portfolio trackers",
+                  "description": "Wealth management firms and independent advisors needing custom portfolio tracking, rebalancing, and client reporting tools.",
+                  "offers": [
+                    {
+                      "id": "portfolio_tracker_fullstack",
+                      "label": "Investment Portfolio Tracker (React + Python + AWS)",
+                      "description": "Full-stack portfolio management app with real-time market data integration, rebalancing algorithms, tax-loss harvesting reports, and client-facing performance dashboards.",
+                      "priceRange": "$18,000",
+                      "deliveryFormat": "10-week build with financial data provider API integration",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "ria_directory_outreach",
+                          "label": "Registered investment advisor directory cold outreach",
+                          "description": "Target RIAs with <$500M AUM that use Excel for portfolio tracking; pitch a demo of a custom web-based portfolio management system.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "saas_mvps",
+          "label": "SaaS MVPs",
+          "description": "Rapid development of minimum viable products for founders validating SaaS ideas before full-scale investment.",
+          "markets": [
+            {
+              "id": "ai_nlp_startups",
+              "label": "AI/NLP Startups",
+              "description": "Founders building AI-powered tools and agents needing functional prototypes with LLM integration and basic UX.",
+              "niches": [
+                {
+                  "id": "gpt_wrapper_saas_tools",
+                  "label": "GPT-wrapper SaaS tools",
+                  "description": "Non-technical founders building AI tools on top of GPT/Claude APIs who need a functional web app with authentication, billing, and prompt management.",
+                  "offers": [
+                    {
+                      "id": "ai_wrapper_mvp_fullstack",
+                      "label": "AI Wrapper SaaS MVP (React + API + Stripe)",
+                      "description": "Full MVP build with user authentication, LLM API integration (OpenAI/Anthropic), prompt management interface, usage tracking, Stripe subscription billing, and basic admin dashboard.",
+                      "priceRange": "$12,000",
+                      "deliveryFormat": "4-week MVP with user acceptance testing and deployment",
+                      "simulator_weights": { "demand": 9, "competition": 8, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "ai_saas_indiehackers",
+                          "label": "Indie Hackers AI SaaS project outreach",
+                          "description": "Monitor Indie Hackers 'Building' section for AI tool announcements; offer a free technical architecture review and timeline estimate.",
+                          "channel": "community",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "ai_content_generation_tools",
+                  "label": "AI content generation tools",
+                  "description": "Founders building niche content generation platforms for specific industries (legal, medical, marketing) needing domain-specific fine-tuning interfaces.",
+                  "offers": [
+                    {
+                      "id": "content_gen_ai_mvp",
+                      "label": "Niche AI Content Generator MVP",
+                      "description": "Domain-specific content generation MVP with fine-tuned model integration (RAG pipeline), content template library, user feedback loop, brand voice configuration, and bulk generation dashboard.",
+                      "priceRange": "$15,000",
+                      "deliveryFormat": "5-week build with domain dataset preparation and model evaluation",
+                      "simulator_weights": { "demand": 8, "competition": 7, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "content_marketing_outreach",
+                          "label": "Content marketing agency founder outreach",
+                          "description": "Identify content marketing agency founders on LinkedIn exploring AI tool development; pitch a shared-equity or discounted MVP build.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "marketplace_platforms_mvp",
+              "label": "Marketplace Platforms",
+              "description": "Founders building two-sided marketplaces needing matching algorithms, transaction flows, and trust-building features.",
+              "niches": [
+                {
+                  "id": "peer_to_peer_service_marketplaces",
+                  "label": "Peer-to-peer service marketplaces",
+                  "description": "Founders connecting local service providers with customers (tutoring, pet care, home services) needing booking, payment escrow, and review systems.",
+                  "offers": [
+                    {
+                      "id": "p2p_marketplace_mvp",
+                      "label": "P2P Service Marketplace MVP",
+                      "description": "Full MVP with provider registration and verification, service listing management, geolocation search, booking calendar, Stripe Connect escrow payments, and dual-sided review system.",
+                      "priceRange": "$18,000",
+                      "deliveryFormat": "6-week MVP with provider onboarding flow testing",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "marketplace_conference_outreach",
+                          "label": "Marketplace conference attendee outreach",
+                          "description": "Attend marketplace-focused startup events and offer free technical feasibility assessments for pre-launch marketplace ideas.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "rental_subscription_marketplaces",
+                  "label": "Rental and subscription marketplaces",
+                  "description": "Founders building rental platforms for equipment, fashion, or subscription boxes needing inventory management and recurring billing.",
+                  "offers": [
+                    {
+                      "id": "rental_marketplace_mvp",
+                      "label": "Rental Marketplace MVP (Subscription + Booking)",
+                      "description": "Full MVP with inventory management, availability calendar, subscription tiers, rental booking flow, Stripe recurring billing, automated reminder emails, and condition reporting.",
+                      "priceRange": "$16,000",
+                      "deliveryFormat": "6-week build with inventory management workflow testing",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "rental_startup_outreach",
+                          "label": "Rental startup founder Twitter/X outreach",
+                          "description": "Monitor startup Twitter/X for founders asking about 'rental platform development' or 'subscription marketplace'; offer a free architecture consultation.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b2b_automation_mvp",
+              "label": "B2B Automation",
+              "description": "Founders building workflow automation and CRM enhancement tools for small and medium businesses.",
+              "niches": [
+                {
+                  "id": "workflow_automation_smb",
+                  "label": "Workflow automation for SMBs",
+                  "description": "B2B SaaS founders building no-code workflow automation tools targeting SMBs needing simplified versions of Zapier/Make for specific industries.",
+                  "offers": [
+                    {
+                      "id": "workflow_automation_mvp",
+                      "label": "SMB Workflow Automation MVP",
+                      "description": "Full MVP with visual workflow builder (drag-and-drop), 10 pre-built integrations (Gmail, Slack, Notion, Shopify, QuickBooks), trigger-action engine, and usage-based billing.",
+                      "priceRange": "$20,000",
+                      "deliveryFormat": "8-week MVP with 3 beta testers and integration documentation",
+                      "simulator_weights": { "demand": 8, "competition": 7, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "smb_forum_outreach",
+                          "label": "SMB owner forum/community need discovery",
+                          "description": "Engage in SMB owner communities (r/smallbusiness, LinkedIn SMB groups) and identify repetitive workflow pain points to validate automation ideas.",
+                          "channel": "community",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "crm_enhancement_tools",
+                  "label": "CRM enhancement tools",
+                  "description": "Founders building lightweight CRM add-ons or alternatives for micro-businesses that find Salesforce/HubSpot too complex or expensive.",
+                  "offers": [
+                    {
+                      "id": "crm_enhancer_mvp",
+                      "label": "CRM Enhancement MVP (Pipeline + Analytics)",
+                      "description": "Full MVP with pipeline management, deal tracking, email sync (Gmail/Outlook API), basic analytics dashboard, team collaboration, and CSV import/export.",
+                      "priceRange": "$14,000",
+                      "deliveryFormat": "5-week MVP with email sync integration and data migration support",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "crm_frustration_outreach",
+                          "label": "CRM review analysis + cold outreach",
+                          "description": "Analyze G2/Capterra reviews of popular CRMs for complaints about 'too complex' or 'too expensive'; pitch a simpler alternative MVP.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "designer",
+      "label": "Designer",
+      "description": "Create visual identities, product interfaces, and persuasive presentations for brands at every stage.",
+      "services": [
+        {
+          "id": "ui_ux_design",
+          "label": "UI/UX Design",
+          "description": "User interface and experience design for web and mobile applications with research-backed interaction patterns.",
+          "markets": [
+            {
+              "id": "fintech_apps_uiux",
+              "label": "Fintech Apps",
+              "description": "Financial technology applications needing trust-building interfaces, compliance-aware UX, and complex data visualization.",
+              "niches": [
+                {
+                  "id": "neobank_mobile_interfaces",
+                  "label": "Neobank mobile app interfaces",
+                  "description": "Digital banking startups and challenger banks needing intuitive mobile interfaces for account management, transfers, budgeting, and savings goals.",
+                  "offers": [
+                    {
+                      "id": "neobank_app_ui_kit",
+                      "label": "Neobank Mobile UI Kit (30 screens)",
+                      "description": "30 high-fidelity Figma screens covering onboarding, account dashboard, transfers, bill pay, budgeting, savings goals, card management, and support with a complete component library and design tokens.",
+                      "priceRange": "$6,000",
+                      "deliveryFormat": "Figma file with auto-layout components, design token documentation, and developer handoff within 4 weeks",
+                      "simulator_weights": { "demand": 8, "competition": 7, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "fintech_incubator_outreach",
+                          "label": "Fintech incubator/accelerator cohort outreach",
+                          "description": "Identify fintech startups in accelerators (Fintech Innovation Lab, Plug and Play) that have not yet hired a designer; offer a discounted first project.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "crypto_wallet_ux",
+                  "label": "Cryptocurrency wallet UX",
+                  "description": "Web3 and cryptocurrency wallet applications needing accessible self-custody interfaces with transaction clarity and security transparency.",
+                  "offers": [
+                    {
+                      "id": "crypto_wallet_ux_redesign",
+                      "label": "Crypto Wallet UX Redesign (20 screens)",
+                      "description": "20-screen Figma redesign covering wallet dashboard, send/receive flows, transaction history, DApp browser, portfolio tracking, security settings, and recovery phrase onboarding with usability testing report.",
+                      "priceRange": "$8,000",
+                      "deliveryFormat": "5-week engagement including moderated usability testing with 5 participants",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "defi_discord_outreach",
+                          "label": "DeFi project Discord community outreach",
+                          "description": "Join Discord servers of emerging DeFi projects and audit their wallet/app UX; share a public UX audit thread with constructive recommendations.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "health_wellness_apps_uiux",
+              "label": "Health & Wellness Apps",
+              "description": "Digital health and wellness applications needing calming, accessible interfaces with behavior design patterns.",
+              "niches": [
+                {
+                  "id": "meditation_mindfulness_apps",
+                  "label": "Meditation and mindfulness app design",
+                  "description": "Wellness startups building meditation, breathwork, and mental health apps needing serene, minimal interfaces with dark mode and accessibility compliance.",
+                  "offers": [
+                    {
+                      "id": "meditation_app_ui_design",
+                      "label": "Meditation App UI Design (25 screens)",
+                      "description": "25-screen Figma design covering onboarding (preference quiz), home dashboard, session player, progress tracking, library browsing, and notification preferences with accessibility-first component library.",
+                      "priceRange": "$5,500",
+                      "deliveryFormat": "3-week design sprint with Figma prototype and WCAG compliance report",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "wellness_startup_outreach",
+                          "label": "Wellness app Product Hunt launch outreach",
+                          "description": "Monitor Product Hunt for wellness app launches with poor UI reviews; provide constructive feedback and offer a free UX audit.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "telehealth_platform_interfaces",
+                  "label": "Telehealth platform interfaces",
+                  "description": "Video-based healthcare platforms needing clear, calm interfaces for appointment booking, pre-visit forms, and post-visit follow-ups.",
+                  "offers": [
+                    {
+                      "id": "telehealth_ui_redesign",
+                      "label": "Telehealth Platform UI Redesign (15 screens)",
+                      "description": "15-screen Figma redesign covering provider search, appointment booking, pre-visit questionnaire, video call interface, prescription refill, and post-visit summary with accessibility audit.",
+                      "priceRange": "$4,500",
+                      "deliveryFormat": "3-week engagement with usability heuristic evaluation report",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "telehealth_directory_outreach",
+                          "label": "Telehealth company directory cold outreach",
+                          "description": "Target Series A-B telehealth companies listed on Crunchbase with outdated or complex UIs; offer a free UX audit with conversion recommendations.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "saas_productivity_uiux",
+              "label": "SaaS Productivity Tools",
+              "description": "Business productivity and collaboration tools needing efficient, power-user-friendly interfaces with advanced data visualization.",
+              "niches": [
+                {
+                  "id": "project_management_software_ui",
+                  "label": "Project management software UI",
+                  "description": "Task and project management tools needing intuitive board, list, calendar, and timeline views with team collaboration features.",
+                  "offers": [
+                    {
+                      "id": "pm_tool_ui_kit",
+                      "label": "Project Management App UI Kit (40 screens)",
+                      "description": "40-screen Figma kit covering board/ list/ calendar/ timeline/ Gantt views, task detail panel, team collaboration, file sharing, time tracking, reporting dashboard, and notification system with a comprehensive design system.",
+                      "priceRange": "$7,000",
+                      "deliveryFormat": "Figma design system with all components, variants, and auto-layout within 4 weeks",
+                      "simulator_weights": { "demand": 7, "competition": 7, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "productivity_app_outreach",
+                          "label": "Productivity app alternative positioning outreach",
+                          "description": "Identify users on Reddit/Twitter complaining about existing PM tools (Asana, Monday); survey their pain points and pitch a UI concept for a better alternative.",
+                          "channel": "platform",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "team_collaboration_app_redesign",
+                  "label": "Team collaboration app redesign",
+                  "description": "Internal communication and collaboration tools needing channel organization, search improvements, and integration surfaces.",
+                  "offers": [
+                    {
+                      "id": "collaboration_app_ui_audit",
+                      "label": "Collaboration App UI Audit + Redesign (20 screens)",
+                      "description": "Heuristic UX audit followed by 20 redesigned screens covering channel organization, search experience, thread management, file preview, and integration management.",
+                      "priceRange": "$5,000",
+                      "deliveryFormat": "3-week engagement with audit report, annotated screens, and component library",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "saas_review_outreach",
+                          "label": "G2/Capterra negative review analysis outreach",
+                          "description": "Analyze negative G2 reviews of collaboration tools for recurring UX complaints; pitch a UI redesign addressing those specific pain points.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "brand_identity",
+          "label": "Brand Identity",
+          "description": "Complete visual identity systems including logo, color, typography, and multi-platform brand guidelines.",
+          "markets": [
+            {
+              "id": "food_beverage_branding",
+              "label": "Food & Beverage",
+              "description": "Artisan food and beverage brands needing packaging-centric identity systems for retail and e-commerce shelf presence.",
+              "niches": [
+                {
+                  "id": "craft_brewery_branding",
+                  "label": "Craft brewery branding",
+                  "description": "Independent breweries and brewpubs needing label design, can artwork, taproom signage, merchandise, and seasonal release identity systems.",
+                  "offers": [
+                    {
+                      "id": "brewery_full_brand_identity",
+                      "label": "Craft Brewery Full Brand Identity",
+                      "description": "Complete brand system including primary logo, beer-naming typography system, can label template (4 variants), tap handle design, merchandise artwork, taproom signage suite, and brand guidelines PDF.",
+                      "priceRange": "$4,500",
+                      "deliveryFormat": "Print-ready files + Figma brand kit within 4 weeks",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "brewery_opening_tracker",
+                          "label": "New brewery opening announcement cold outreach",
+                          "description": "Track new brewery opening announcements on industry sites (Brewbound, Craft Beer & Brewing); contact founders before their launch date with a branding portfolio.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "artisan_coffee_roaster_identity",
+                  "label": "Artisan coffee roaster identity",
+                  "description": "Specialty coffee roasters needing bag label design, cafe collateral, brew guide cards, and wholesale pitch materials.",
+                  "offers": [
+                    {
+                      "id": "coffee_roaster_brand_system",
+                      "label": "Coffee Roaster Brand System",
+                      "description": "Logo suite, bag label template system (single-origin, blend, decaf), cafe menu board design, brew guide cards, wholesale one-pager, and social media kit with coffee photography direction guide.",
+                      "priceRange": "$3,800",
+                      "deliveryFormat": "Print-ready label files + digital brand kit within 3 weeks",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "coffee_festival_networking",
+                          "label": "Specialty coffee festival networking",
+                          "description": "Attend 1-2 specialty coffee festivals (SCA Expo, Coffee Fest) and offer on-site brand consultations for emerging roasters.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "fashion_apparel_branding",
+              "label": "Fashion & Apparel",
+              "description": "Clothing and accessories brands needing trend-aware visual identities for DTC e-commerce and retail distribution.",
+              "niches": [
+                {
+                  "id": "streetwear_brand_visual_systems",
+                  "label": "Streetwear brand visual systems",
+                  "description": "Emerging streetwear and urban fashion labels needing logo systems, drop-based campaign visuals, lookbook templates, and collection-specific identity extensions.",
+                  "offers": [
+                    {
+                      "id": "streetwear_brand_identity",
+                      "label": "Streetwear Brand Visual Identity System",
+                      "description": "Core brand identity with primary logo, monogram pattern, drop campaign template system, lookbook layout template, hang tag design, social media campaign kit, and brand guidelines.",
+                      "priceRange": "$5,000",
+                      "deliveryFormat": "Figma brand system + print-ready files within 4 weeks, includes 2 seasonal extensions",
+                      "simulator_weights": { "demand": 7, "competition": 6, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "fashion_incubator_outreach",
+                          "label": "Fashion incubator/accelerator outreach",
+                          "description": "Target emerging designers in fashion incubators (CFDA, Fashion Incubator SF) who lack cohesive branding; offer a discounted brand audit.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "sustainable_fashion_labels",
+                  "label": "Sustainable fashion labels",
+                  "description": "Eco-conscious clothing brands needing nature-inspired identities with transparent supply chain storytelling and certification badge integration.",
+                  "offers": [
+                    {
+                      "id": "sustainable_fashion_identity",
+                      "label": "Sustainable Fashion Brand Identity + Packaging",
+                      "description": "Logo system, eco-packaging design (boxes, tissue, labels), hang tag with material sourcing story, care label design, website brand elements, and certification badge system (GOTS, Fair Trade, B-Corp alignment).",
+                      "priceRange": "$4,200",
+                      "deliveryFormat": "Sustainable materials sourcing guide + brand files within 3 weeks",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "sustainable_fashion_forum",
+                          "label": "Sustainable fashion community cold outreach",
+                          "description": "Engage in sustainable fashion forums/communities and offer a free packaging sustainability audit for emerging eco-labels.",
+                          "channel": "community",
+                          "difficulty": "easy"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "hospitality_branding",
+              "label": "Hospitality",
+              "description": "Hotels, restaurants, and experiential hospitality brands needing atmospheric visual identities that translate physical experience to digital touchpoints.",
+              "niches": [
+                {
+                  "id": "boutique_hotel_branding",
+                  "label": "Boutique hotel branding",
+                  "description": "Independent boutique hotels and small luxury properties needing identity systems that work across booking platforms, in-room collateral, and social media.",
+                  "offers": [
+                    {
+                      "id": "hotel_brand_identity",
+                      "label": "Boutique Hotel Brand Identity Suite",
+                      "description": "Logo system, color palette with PMS matches, typography suite, key card design, in-room directory template, website brand elements, OTAs image templates (Booking.com, Expedia), and amenity kit packaging.",
+                      "priceRange": "$6,000",
+                      "deliveryFormat": "Print-ready files + digital brand toolkit within 5 weeks",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "hotel_opening_news_outreach",
+                          "label": "Boutique hotel opening press release outreach",
+                          "description": "Monitor hospitality industry press releases for boutique hotel openings 3-6 months before launch; contact with a hospitality branding portfolio.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "fine_dining_visual_identity",
+                  "label": "Fine dining restaurant visual identity",
+                  "description": "Fine dining and Michelin-track restaurants needing sophisticated identity systems for menus, wine lists, and reservation platforms.",
+                  "offers": [
+                    {
+                      "id": "fine_dining_brand_identity",
+                      "label": "Fine Dining Brand Identity + Menu System",
+                      "description": "Logo and monogram, menu system (main, tasting, wine, cocktail, dessert), reservation card design, staff uniform badges, takeaway packaging, and Resy/OpenTable profile optimization.",
+                      "priceRange": "$4,800",
+                      "deliveryFormat": "Print-ready menu files + digital guidelines within 4 weeks, includes menu copy layout consultation",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "restaurant_opening_announcements",
+                          "label": "Restaurant opening announcement cold outreach",
+                          "description": "Track new restaurant opening announcements on Eater and local food publications; contact owners 2-3 months before opening.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pitch_decks",
+          "label": "Pitch Decks",
+          "description": "Investor-ready presentation design for fundraising rounds, board presentations, and partnership proposals.",
+          "markets": [
+            {
+              "id": "deep_tech_startups",
+              "label": "Deep Tech Startups",
+              "description": "Hard science and engineering-heavy startups needing complex concept visualization for non-technical investor audiences.",
+              "niches": [
+                {
+                  "id": "biotech_investor_decks",
+                  "label": "Biotech investor decks",
+                  "description": "Biotech and life sciences companies raising Seed to Series B needing clear visualization of drug development pipelines, mechanism of action, and regulatory pathways.",
+                  "offers": [
+                    {
+                      "id": "biotech_pitch_deck_full",
+                      "label": "Biotech Investor Deck (12-15 slides)",
+                      "description": "Full investor deck with scientific illustration integration, MOA diagram creation, pipeline visualization, clinical trial timeline infographics, TAM/SAM/SOM data viz, and regulatory pathway overview.",
+                      "priceRange": "$3,500",
+                      "deliveryFormat": "Keynote + PDF + PPTX files within 2 weeks, includes 2 rounds of scientific accuracy review",
+                      "simulator_weights": { "demand": 7, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "biotech_conference_outreach",
+                          "label": "Biotech conference startup track outreach",
+                          "description": "Identify presenting startups at biotech conferences (BIO, J.P. Morgan Healthcare); offer a free slide critique with before/after redesign sample.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "hardware_robotics_funding_decks",
+                  "label": "Hardware and robotics funding decks",
+                  "description": "Hardware, robotics, and deep engineering startups needing product demos, engineering roadmaps, and manufacturing timeline visualization.",
+                  "offers": [
+                    {
+                      "id": "hardware_pitch_deck_full",
+                      "label": "Hardware/Robotics Investor Deck (15-18 slides)",
+                      "description": "Full deck with product CAD render integration, engineering timeline Gantt chart, BOM/cost analysis visualization, manufacturing partnership diagrams, IP portfolio summary, and team credibility slides.",
+                      "priceRange": "$4,000",
+                      "deliveryFormat": "Keynote + PDF within 3 weeks, includes 2 rounds of engineering review",
+                      "simulator_weights": { "demand": 6, "competition": 4, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "hardware_accelerator_outreach",
+                          "label": "Hardware accelerator program participant outreach",
+                          "description": "Target startups in hardware accelerators (HAX, Bolt, Highway1) preparing for demo day; offer a discounted 'demo day deck' package.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "creative_industries_decks",
+              "label": "Creative Industries",
+              "description": "Film, music, and media companies needing visually compelling investment and partnership presentations.",
+              "niches": [
+                {
+                  "id": "film_production_financing_decks",
+                  "label": "Film production financing decks",
+                  "description": "Independent film producers and studios seeking production financing with script breakdowns, talent attachments, distribution projections, and recoupment schedules.",
+                  "offers": [
+                    {
+                      "id": "film_financing_deck_full",
+                      "label": "Film Financing Pitch Deck (12 slides)",
+                      "description": "Investment deck with script synopsis visualization, talent mood boards, comparable box office analysis, production budget breakdown, distribution strategy, and investor return waterfall model.",
+                      "priceRange": "$2,800",
+                      "deliveryFormat": "Keynote + PDF within 10 days, includes film poster concept design",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "film_market_outreach",
+                          "label": "Film market/ festival producer outreach",
+                          "description": "Attend film markets (AFM, Cannes Marché) and offer deck critique services to independent producers with promising packages but weak presentation materials.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "music_label_investor_presentations",
+                  "label": "Music label investor presentations",
+                  "description": "Independent music labels, publishing companies, and artist management firms seeking growth capital or catalog acquisition financing.",
+                  "offers": [
+                    {
+                      "id": "music_label_funding_deck",
+                      "label": "Music Label Funding Deck (10-12 slides)",
+                      "description": "Investment deck with catalog performance analytics, streaming growth visualization, A&R strategy overview, sync licensing revenue breakdown, roster development pipeline, and market positioning against majors.",
+                      "priceRange": "$2,500",
+                      "deliveryFormat": "Keynote + PDF within 10 days, includes streaming data visualization templates",
+                      "simulator_weights": { "demand": 4, "competition": 3, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "music_industry_outreach",
+                          "label": "Music industry conference cold outreach",
+                          "description": "Identify independent label founders at music industry conferences (A2IM Indie Week, SXSW); offer a free deck structure consultation.",
+                          "channel": "community",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "social_impact_decks",
+              "label": "Social Impact",
+              "description": "Non-profits and impact-focused organizations needing compelling funding proposals for grants, foundations, and impact investors.",
+              "niches": [
+                {
+                  "id": "non_profit_funding_proposals",
+                  "label": "Non-profit funding proposals",
+                  "description": "Non-profit organizations seeking foundation grants and major donor funding with program impact visualization and budget transparency.",
+                  "offers": [
+                    {
+                      "id": "nonprofit_funding_deck",
+                      "label": "Non-Profit Funding Deck (10-12 slides)",
+                      "description": "Impact-focused deck with theory-of-change diagram, program outcomes visualization, beneficiary story integration, budget allocation breakdown, measurement framework, and donor recognition tiers.",
+                      "priceRange": "$2,200",
+                      "deliveryFormat": "PowerPoint + PDF within 10 days, includes impact metric infographic templates",
+                      "simulator_weights": { "demand": 5, "competition": 3, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "foundation_directory_outreach",
+                          "label": "Foundation grantee list analysis cold outreach",
+                          "description": "Research foundation grantees via Candid/Foundation Directory and identify organizations with compelling programs but weak fundraising materials.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "climate_tech_investor_decks",
+                  "label": "Climate tech investor decks",
+                  "description": "Climate technology and sustainability startups needing impact measurement visualization alongside unit economics for climate-focused VCs.",
+                  "offers": [
+                    {
+                      "id": "climate_tech_deck_full",
+                      "label": "Climate Tech Investor Deck (14-16 slides)",
+                      "description": "Full investor deck with carbon impact visualization, climate tech market landscape, technology readiness level timeline, regulatory tailwinds overview, and blended finance structure diagrams.",
+                      "priceRange": "$3,200",
+                      "deliveryFormat": "Keynote + PDF within 2 weeks, includes carbon offset equivalency infographics",
+                      "simulator_weights": { "demand": 8, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "climate_vc_outreach",
+                          "label": "Climate tech VC portfolio company outreach",
+                          "description": "Analyze climate tech VC portfolio companies (Climate Insiders, Climate Tech Capital) and identify those with weak fundraising materials; offer a free slide audit.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "web_design",
+          "label": "Web Design",
+          "description": "Full website design services from landing pages to multi-page brand experiences for premium and professional service markets.",
+          "markets": [
+            {
+              "id": "luxury_brands_web",
+              "label": "Luxury Brands",
+              "description": "Premium and ultra-luxury brands needing sophisticated, high-fidelity web experiences that convey exclusivity and craftsmanship.",
+              "niches": [
+                {
+                  "id": "high_end_real_estate_development",
+                  "label": "High-end real estate development sites",
+                  "description": "Luxury real estate developers and architectural firms needing cinematic, immersive websites for pre-construction sales and brand positioning.",
+                  "offers": [
+                    {
+                      "id": "luxury_real_estate_website",
+                      "label": "Luxury Real Estate Development Website (Figma + Webflow)",
+                      "description": "Figma-designed, Webflow-built multi-page site with full-screen photography, parallax storytelling, floor plan interactive viewer, neighborhood guide, brochure download, and CRM-integrated inquiry form.",
+                      "priceRange": "$8,000",
+                      "deliveryFormat": "Figma design in 3 weeks, Webflow build in 2 weeks",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "luxury_real_estate_outreach",
+                          "label": "Luxury real estate developer cold outreach",
+                          "description": "Identify upcoming luxury developments via construction permit filings and real estate news; contact marketing directors with a hospitality-web design portfolio.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "luxury_automotive_brand_sites",
+                  "label": "Luxury automotive brand sites",
+                  "description": "Premium automotive brands, dealerships, and aftermarket luxury services needing high-performance, visually rich websites with configurator-style interactions.",
+                  "offers": [
+                    {
+                      "id": "automotive_brand_website",
+                      "label": "Luxury Automotive Brand Website (Figma + Webflow)",
+                      "description": "Interactive brand site with vehicle configurator UI, 360-degree viewer integration, dealership locator, service booking, and owner portal access with performance-optimized Webflow hosting.",
+                      "priceRange": "$10,000",
+                      "deliveryFormat": "Figma design in 4 weeks, Webflow build in 3 weeks with CMS training",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 4 },
+                      "clientSources": [
+                        {
+                          "id": "automotive_pr_outreach",
+                          "label": "Automotive PR/marketing agency partnership",
+                          "description": "Partner with automotive marketing agencies that handle premium brands but lack in-house web design; offer a white-label web design service.",
+                          "channel": "partnership",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "professional_services_web",
+              "label": "Professional Services",
+              "description": "Law firms, consultancies, and architecture practices needing authoritative, trust-building websites that convert visitors into clients.",
+              "niches": [
+                {
+                  "id": "law_firm_website_redesign",
+                  "label": "Law firm website redesign",
+                  "description": "Mid-to-large law firms needing modern website redesigns with attorney profile management, practice area landing pages, thought leadership blogs, and client intake portals.",
+                  "offers": [
+                    {
+                      "id": "law_firm_web_redesign",
+                      "label": "Law Firm Website Redesign (Figma + WordPress)",
+                      "description": "Full redesign with attorney directory, practice area pages with SEO content architecture, thought leadership CMS, client intake form, settlement results dashboard, and firm culture section with video integration.",
+                      "priceRange": "$7,000",
+                      "deliveryFormat": "Figma design in 3 weeks, WordPress build in 3 weeks, includes attorney photo direction guide",
+                      "simulator_weights": { "demand": 6, "competition": 5, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "law_firm_directory_outreach",
+                          "label": "AmLaw 200 secondary firm cold outreach",
+                          "description": "Target AmLaw 201-500 firms with outdated websites; analyze their current site and send a personalized UX audit with competitor comparison.",
+                          "channel": "cold_outreach",
+                          "difficulty": "hard"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "architecture_firm_portfolio_sites",
+                  "label": "Architecture firm portfolio sites",
+                  "description": "Architecture and design firms needing visually stunning portfolio websites that showcase project photography and process.",
+                  "offers": [
+                    {
+                      "id": "architecture_portfolio_website",
+                      "label": "Architecture Firm Portfolio Website (Figma + Webflow)",
+                      "description": "Project-centered Webflow site with full-screen photography galleries, project filter system, process documentation, awards timeline, press mentions, and integrated BIM/Revit viewer.",
+                      "priceRange": "$6,500",
+                      "deliveryFormat": "Figma design in 3 weeks, Webflow build in 2 weeks with CMS training",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "architectural_record_outreach",
+                          "label": "Architectural Record featured firm outreach",
+                          "description": "Identify firms featured in architectural publications with outdated or underwhelming websites; offer a competitive web presence analysis.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "arts_culture_web",
+              "label": "Arts & Culture",
+              "description": "Museums, galleries, festivals, and cultural institutions needing immersive digital experiences for exhibitions and events.",
+              "niches": [
+                {
+                  "id": "museum_gallery_exhibition_sites",
+                  "label": "Museum and gallery exhibition sites",
+                  "description": "Art museums, galleries, and cultural institutions needing exhibition microsites with virtual tour integration, artwork detail views, and ticketing.",
+                  "offers": [
+                    {
+                      "id": "exhibition_microsite_design",
+                      "label": "Exhibition Microsite (Figma + Webflow)",
+                      "description": "Exhibition-specific microsite with virtual gallery tour integration (Matterport/CloudPano), artwork high-res viewer with zoom, curator audio guide embed, exhibition catalog download, and ticketing API integration.",
+                      "priceRange": "$5,500",
+                      "deliveryFormat": "Figma design in 2 weeks, Webflow build in 2 weeks, timed to exhibition opening date",
+                      "simulator_weights": { "demand": 4, "competition": 3, "execution_speed": 6 },
+                      "clientSources": [
+                        {
+                          "id": "museum_exhibition_calendar",
+                          "label": "Museum exhibition calendar cold outreach",
+                          "description": "Monitor museum exhibition calendars for upcoming shows 3-4 months in advance; contact marketing departments with a exhibition microsite proposal.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "music_festival_landing_pages",
+                  "label": "Music festival landing pages",
+                  "description": "Music festivals and live event organizers needing high-energy, information-rich websites with lineup announcements, ticket sales, and schedule management.",
+                  "offers": [
+                    {
+                      "id": "festival_website_full",
+                      "label": "Music Festival Website (Figma + Webflow)",
+                      "description": "Full festival site with lineup announcement system, artist pages with music embed, interactive schedule builder, ticket tier sales page, venue map, camping/ travel info, and newsletter capture.",
+                      "priceRange": "$6,000",
+                      "deliveryFormat": "Figma design in 3 weeks, Webflow build in 3 weeks, includes ticket on-sale countdown integration",
+                      "simulator_weights": { "demand": 5, "competition": 4, "execution_speed": 5 },
+                      "clientSources": [
+                        {
+                          "id": "festival_announcement_outreach",
+                          "label": "New festival announcement cold outreach",
+                          "description": "Track new music festival announcements via Pollstar and music industry news; contact organizers 6 months before the event date.",
+                          "channel": "cold_outreach",
+                          "difficulty": "moderate"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

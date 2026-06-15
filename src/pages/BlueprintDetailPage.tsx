@@ -28,6 +28,8 @@ import { BlueprintSidebarFAQ } from '../components/sections/BlueprintSidebarFAQ'
 import { BlueprintRelatedContent } from '../components/sections/BlueprintRelatedContent';
 import { BlueprintStickyMobileBar } from '../components/sections/BlueprintStickyMobileBar';
 
+const TARGET_ENGINE_SLUG = 'get-your-first-3-clients';
+
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -73,14 +75,21 @@ export const BlueprintDetailPage = () => {
 
   useSEO({
     title: product ? `${product.title} | Implementation Blueprint by Ayush Paul` : "Loading Blueprint...",
-    description: product?.description || "",
-    keywords: product?.tags?.join(", ") || "",
+    description: product?.description || "Browse implementation blueprints, AI prompt packs, and automation workflows.",
+    keywords: product?.tags?.join(", ") || "implementation blueprint, Ayush Paul, automation workflow, AI prompt template",
     url: getCanonicalUrl(`/blueprints/${slug}`),
-    image: product?.thumbnail
+    image: product?.thumbnail || "/og-image.png",
   });
 
   const handleFreeDownload = async () => {
     if (!product) return;
+
+    // Target blueprint: route directly to engine instead of download
+    if (slug === TARGET_ENGINE_SLUG) {
+      navigate(`/blueprints/${slug}/engine`);
+      return;
+    }
+
     setIsDownloading(true);
     try {
       trackEvent('free_download', { product_id: product.id, product_name: product.title });
@@ -103,6 +112,13 @@ export const BlueprintDetailPage = () => {
 
   const handlePremiumUpgrade = async () => {
     if (!product) return;
+
+    // Target blueprint: route directly to engine instead of checkout
+    if (slug === TARGET_ENGINE_SLUG) {
+      navigate(`/blueprints/${slug}/engine`);
+      return;
+    }
+
     trackEvent('premium_intent', { product_id: product.id, product_name: product.title });
     if (!user) { setIsAuthModalOpen(true); return; }
     setIsCheckingOut(true);

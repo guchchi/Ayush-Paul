@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { auth, onAuthStateChanged, signOut, db, doc, getDoc, getDocs, collection, query, where } from '../firebase';
 import { useSEO } from '../hooks/useSEO';
+import { getCanonicalUrl } from '../lib/domain';
 import { EcosystemCard } from '../components/ui/EcosystemCard';
 
 import { Product, ProductTier } from '../types';
@@ -48,7 +49,10 @@ export const VaultPage = () => {
 
   useSEO({
     title: "My Digital Vault | Ayush Paul",
-    description: "Your private authenticated vault for downloaded blueprints, courses, and registered workshops.",
+    description: "Your private vault for downloaded blueprints, enrolled courses, and registered workshops. Sign in to access your library.",
+    url: getCanonicalUrl("/vault"),
+    image: "/og-image.png",
+    noindex: true,
   });
 
   useEffect(() => {
