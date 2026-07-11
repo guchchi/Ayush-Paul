@@ -1,8 +1,12 @@
 import type {
   OfferEngineeringPathContent,
+  PathContentBlueprintAngle,
+  PathContentDeliverable,
+  PathContentMechanism,
   PathContentPricingGuidance,
   PathContentProposalAngle,
-  PathContentBlueprintAngle,
+  PathContentScopeDefaults,
+  PathContentValueAmplifier,
 } from './path-content-types';
 import type { OfferType } from '../../types/offer-engineering';
 
@@ -14,6 +18,11 @@ export interface MarketOverrides {
   pricingGuidance: PathContentPricingGuidance;
   proposalAngle: PathContentProposalAngle;
   blueprintAngle: PathContentBlueprintAngle;
+
+  deliverables?: PathContentDeliverable[];
+  uniqueMechanisms?: PathContentMechanism[];
+  scopeDefaults?: PathContentScopeDefaults;
+  valueAmplifiers?: PathContentValueAmplifier[];
 }
 
 export function derivePathContent(
@@ -29,6 +38,10 @@ export function derivePathContent(
     pricingGuidance: overrides.pricingGuidance,
     proposalAngle: overrides.proposalAngle,
     blueprintAngle: overrides.blueprintAngle,
+    ...(overrides.deliverables && { deliverables: overrides.deliverables }),
+    ...(overrides.uniqueMechanisms && { uniqueMechanisms: overrides.uniqueMechanisms }),
+    ...(overrides.scopeDefaults && { scopeDefaults: overrides.scopeDefaults }),
+    ...(overrides.valueAmplifiers && { valueAmplifiers: overrides.valueAmplifiers }),
   };
 }
 
