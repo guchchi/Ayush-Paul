@@ -22,8 +22,10 @@ import {
   FRONTEND_DEV_MECHANISMS,
   LANDING_PAGE_DEV_MECHANISMS,
   LANDING_PAGE_DESIGN_MECHANISMS,
+  SHORT_FORM_EDITOR_MECHANISMS,
   UIUX_MECHANISMS,
   VIDEO_EDITOR_MECHANISMS,
+  YOUTUBE_EDITOR_MECHANISMS,
 } from './mechanism-packs';
 
 function key(s: string): PathContentKey {
@@ -2131,6 +2133,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Local businesses posting location-specific content get 3-5x more local engagement and foot traffic than those posting generic content, because local viewers choose businesses they feel connected to.',
       nextStepCTA: 'Share this blueprint with local business owners posting social media content that is not translating to customers. Offer a free sample local spotlight clip.',
     },
+    deliverables: [
+      {
+        label: 'Local Spotlight Clip Series',
+        description: 'Quick 15--30 second videos showcasing the business location, team members, atmosphere, and unique service experience -- filmed on-site with authentic customer interaction moments and location cues',
+        whyItMatters: 'Local customers choose businesses they recognise and trust. Location-specific clips build familiarity that drives foot traffic and phone calls more effectively than any trending content.',
+      },
+      {
+        label: 'Location-Tagged Content Package',
+        description: 'Geo-targeted short-form posts with local landmarks, neighbourhood references, location tags, and local-specific captions that signal to the algorithm and viewers that this content is relevant to their area',
+        whyItMatters: 'Short-form content without location context generates views from outside the service area. Locally-tagged content ensures impressions come from potential customers within driving distance.',
+      },
+      {
+        label: 'Service Promotion Reel Set',
+        description: 'Individual 15--30 second reels for each main service or product offering, demonstrating the service experience, highlighting what makes this business\'s version better, and including a direct call to action',
+        whyItMatters: 'Local businesses offer multiple services but customers only know about the ones they see promoted. A service-specific reel set makes customers aware of the full range of offerings, increasing average order value.',
+      },
+      {
+        label: 'Local Event Coverage Content',
+        description: 'Event-specific short-form content for grand openings, seasonal sales, special promotions, or community events -- with location tags, time-sensitive language, and call-to-action overlays',
+        whyItMatters: 'Local events create urgency and community connection. Short-form coverage amplifies the event\'s reach beyond flyers and word-of-mouth, driving attendance from customers who might otherwise miss it.',
+      },
+      {
+        label: 'Customer Experience Highlight Reel',
+        description: 'Behind-the-scenes clips showing the service experience, customer interactions, product quality, and team personality -- capturing authentic moments that differentiate the business from competitors',
+        whyItMatters: 'Short-form content that shows the real customer experience builds trust and reduces the perceived risk of trying a new local business. Authentic highlights convert viewers into first-time customers.',
+      },
+    ],
+    uniqueMechanisms: SHORT_FORM_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Geo-Targeted Hashtag Strategy',
+        description: 'Location-specific hashtag research and implementation for each post, combining local neighbourhood tags, city tags, and niche-local tags to maximise reach within the service radius',
+        whyItWorks: 'Local short-form content with geo-targeted hashtags reaches 3x more local viewers than posts using generic broad hashtags, because the algorithm uses hashtags as a primary location-signal for content distribution.',
+      },
+      {
+        label: 'Click-to-Call CTA Optimisation',
+        description: 'Every post includes a clear, frictionless call to action with click-to-call button, direction link, or booking link overlaid in the video and repeated in the caption',
+        whyItWorks: 'Half of local short-form viewers who take action never leave the app to complete it. In-app call and direction CTAs convert viewers to customers within the moment of interest, before the impulse fades.',
+      },
+      {
+        label: 'Local Trend Adaptation Service',
+        description: 'Weekly identification of viral audio clips, formats, and trends that the local business can adapt to their context, with a feasibility score and production timeline for each',
+        whyItWorks: 'Local businesses cannot create new trends but can ride existing ones. Local trend adaptation captures algorithm-favoured reach while keeping the content grounded in the business\'s specific location and offering.',
+      },
+    ],
   }),
   [key('short_form_editor_personal_brands')]: derivePathContent(SHORT_FORM_EDITOR_COACHES, {
     pathTitle: 'Short-Form Video for Personal Brands',
@@ -2157,6 +2204,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Personal brands posting daily short-form content grow 5-10x faster than weekly posters, because the algorithm rewards consistency.',
       nextStepCTA: 'Share this with professionals who have expertise but zero content output. Offer a free sample clip.',
     },
+    deliverables: [
+      {
+        label: 'Daily Hook Clip Production',
+        description: 'A daily 15--30 second clip extracted from the personal brand\'s content or created from scratch, with a compelling hook designed to stop the scroll and communicate one key value point',
+        whyItMatters: 'Personal brands grow through daily visibility. A consistent daily clip pipeline ensures the brand stays top-of-mind with followers, feeding the algorithm\'s preference for frequent posting with high-quality content.',
+      },
+      {
+        label: 'Authority Tip Series',
+        description: 'Quick expertise snippets that deliver a specific, actionable insight in under 60 seconds -- building authority one bite-sized lesson at a time while making viewers want to learn more from this person',
+        whyItMatters: 'Authority is built through demonstrated expertise, not claimed expertise. Each tip video proves the brand knows their subject, making followers more likely to trust and invest in their premium offerings.',
+      },
+      {
+        label: 'Personal Story Reel Set',
+        description: 'Behind-the-scenes and personal narrative clips showing the person behind the brand -- their workspace, routines, challenges, and personality moments that create emotional connection with viewers',
+        whyItMatters: 'Personal brand followers stay for the person, not just the content. Story reels that reveal the human behind the expertise create the emotional investment that transforms casual viewers into loyal followers.',
+      },
+      {
+        label: 'Educational Mini-Series',
+        description: 'Multi-part short-form content teaching a specific skill or concept over several posts, with each part ending on a cliffhanger or preview that encourages viewers to follow and watch the next installment',
+        whyItMatters: 'Series content drives repeat viewership and follower growth. A mini-series that teaches something valuable across multiple posts gives viewers a reason to follow and return, building audience momentum.',
+      },
+      {
+        label: 'Long-Form Repurposing Package',
+        description: 'Existing long-form content (podcasts, webinars, presentations, interviews) mined for short-form clip opportunities and edited into 5--10 platform-optimised clips per long-form asset',
+        whyItMatters: 'Most personal brands already have valuable long-form content that generates a fraction of its potential reach. Repurposed clips extend that content\'s lifespan and reach dramatically, turning one production into weeks of daily posts.',
+      },
+    ],
+    uniqueMechanisms: SHORT_FORM_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Caption and Hashtag Strategy',
+        description: 'Every clip is delivered with platform-optimised captions following proven engagement patterns, relevant hashtag sets, and CTA text that drives comments, saves, and profile visits',
+        whyItWorks: 'Short-form success depends as much on the caption as the video. Optimised captions with strategic CTAs convert passive viewers into active followers by giving them a reason to engage beyond watching.',
+      },
+      {
+        label: 'Profile Optimization Guide',
+        description: 'Biography, link-in-bio, and profile branding recommendations that align with the short-form content strategy, ensuring viewers who visit the profile from a clip find a cohesive brand experience',
+        whyItWorks: 'A compelling clip that leads to a confusing profile loses the viewer immediately. Profile optimization ensures the content-to-profile transition is seamless, converting clip viewers into followers at higher rates.',
+      },
+      {
+        label: 'Monthly Format Performance Analysis',
+        description: 'Monthly review of which content formats, hooks, and topics drive the most follower growth, engagement, and profile visits, with specific format recommendations for the next month\'s content calendar',
+        whyItWorks: 'Personal brand growth accelerates when content decisions are data-driven. Regular format analysis reveals the specific content patterns that resonate with the target audience, enabling the brand to double down on effective approaches.',
+      },
+    ],
   }),
   [key('youtube_editor_podcasters')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
     pathTitle: 'YouTube Editing for Video Podcasters',
@@ -2183,6 +2275,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Podcasts adding visual variety every 15-30 seconds see 40-60% higher average view duration.',
       nextStepCTA: 'Share this with podcasters who have good content but poor retention. Offer a free 5-minute sample.',
     },
+    deliverables: [
+      {
+        label: 'Visual Engagement Edit',
+        description: 'Multi-cam switching, dynamic graphics, transcript-driven b-roll, and visual variety inserted throughout the episode -- every 15--30 seconds of static frame gets a visual change to maintain viewer attention',
+        whyItMatters: 'Podcast episodes lasting 30--90 minutes lose viewers to visual boredom, not poor content. Visual engagement editing keeps the viewer watching through long conversations by providing constant visual stimulation that supports the audio.',
+      },
+      {
+        label: 'Retention Curve Optimisation',
+        description: 'The episode is edited with the retention graph as a reference: pattern interrupts every 90 seconds, pacing acceleration at known drop-off points, and content restructuring where the graph shows audience loss',
+        whyItMatters: 'YouTube\'s algorithm rewards videos that retain viewers. A retention-optimised edit keeps more viewers watching longer, which signals quality to the algorithm and increases the episode\'s reach to new audiences.',
+      },
+      {
+        label: 'Podcast Clip Highlight Package',
+        description: 'The top 3--5 moments from each episode (hot takes, guest stories, controversial opinions, quotable insights) cut into 30--90 second promotional clips for YouTube Shorts, Instagram, and TikTok',
+        whyItMatters: 'Long-form podcast episodes generate most of their views from clips shared on other platforms. A systematic clip package turns every episode into a week of promotional content that drives new viewers to the full episode.',
+      },
+      {
+        label: 'Chapter Marker and Timestamp System',
+        description: 'Structured chapter markers with descriptive titles, visual chapter cards, and pinned comment timestamps that let viewers navigate directly to the topics they care about',
+        whyItMatters: 'Podcast viewers often skip to specific segments rather than watching the full episode. Detailed chapter navigation improves the viewing experience for topic-seekers while keeping them in the video ecosystem.',
+      },
+      {
+        label: 'Audio Quality and Mix Pass',
+        description: 'Audio cleaned, balanced across multiple speakers, volume levelled, background noise removed, and compression applied to ensure consistent audio quality throughout regardless of recording environment differences',
+        whyItMatters: 'Podcast viewers will tolerate average video but will not tolerate poor audio. Clean, balanced audio is the foundation of a watchable podcast episode, directly impacting how long viewers stay engaged.',
+      },
+    ],
+    uniqueMechanisms: YOUTUBE_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Thumbnail and Title Testing',
+        description: 'Custom thumbnail design and click-optimised title creation for each episode, with A/B testing across platforms to identify the highest-CTR combination',
+        whyItWorks: 'Podcast episodes compete for clicks against every other YouTube video published that day. A compelling thumbnail and title can double CTR, giving a well-edited episode the initial audience it needs to gain algorithmic traction.',
+      },
+      {
+        label: 'Show Notes and SEO Description',
+        description: 'SEO-optimised video descriptions with episode summary, key quotes, guest bio, timestamps, relevant keyword tags, and links to full resources -- formatted for maximum search visibility',
+        whyItWorks: 'Podcast episodes continue generating views from search months after publication. SEO-optimised descriptions ensure the episode ranks for relevant queries, creating a long tail of ongoing discovery beyond the initial publish date.',
+      },
+      {
+        label: 'Short-Form Repurposing Pipeline',
+        description: 'A weekly system that mines each new episode and the back catalogue for clip opportunities, producing platform-optimised shorts that drive viewers to the full episode',
+        whyItWorks: 'Short-form clips are the primary discovery engine for long-form podcast content. A consistent repurposing pipeline ensures the podcast always has promotional content in market, driving cross-platform audience growth.',
+      },
+    ],
   }),
   [key('youtube_editor_educators')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
     pathTitle: 'YouTube Editing for Educational Content',
@@ -2209,6 +2346,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Educational videos edited for clarity see 50-80% higher completion rates.',
       nextStepCTA: 'Share with course creators whose completion rates are below 40%. Offer a free sample.',
     },
+    deliverables: [
+      {
+        label: 'Instructional Pacing Edit',
+        description: 'Tightened pacing with conversational pauses removed, explanations condensed to essential points, and tangents cut or moved to pinned comments -- every second serves the learning objective',
+        whyItMatters: 'Educational viewers watch to learn something specific, not to be entertained. Every unnecessary pause or tangent costs viewers who arrived with a learning goal and limited patience for fluff.',
+      },
+      {
+        label: 'Visual Aid Integration',
+        description: 'Relevant graphics, diagrams, screen annotations, charts, and visual explanations inserted at key teaching moments -- designed to clarify concepts that are harder to explain with words alone',
+        whyItMatters: 'Educational retention drops at points where the instructor explains something that would be easier to show. Well-timed visual aids reduce cognitive load and help viewers understand faster, keeping them engaged through harder concepts.',
+      },
+      {
+        label: 'Structure and Chapter System',
+        description: 'Clear section markers with verbal previews at the start of each section, visual chapter cards, on-screen section titles, and a closing recap -- turning the video into a structured learning experience',
+        whyItMatters: 'Educational viewers often skip ahead to specific topics or revisit sections for review. Clear structure and chapter navigation make the video useful as a reference resource, increasing total watch time and return views.',
+      },
+      {
+        label: 'Attention Retention Edit',
+        description: '90-second pattern interrupts with visual or topic changes, question prompts inserted at known attention decay points, and pacing varied between dense teaching and relaxed explanation',
+        whyItMatters: 'Educational content demands more cognitive effort than entertainment, causing faster attention fatigue. Strategic pattern interrupts reset attention and keep viewers engaged through complex material.',
+      },
+      {
+        label: 'CTA and Resource Integration',
+        description: 'Clickable end screens, info cards with related lessons, pinned comments with resource links, and download links for companion materials -- integrated where they feel helpful rather than promotional',
+        whyItMatters: 'Educational viewers who complete a lesson are primed for the next one. Well-placed CTAs and resource links extend the viewer\'s learning journey across multiple videos, increasing channel watch time and subscriber conversion.',
+      },
+    ],
+    uniqueMechanisms: YOUTUBE_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Chapter Optimization for Search',
+        description: 'Chapter titles crafted to include high-intent search keywords, with timestamps formatted for Google search snippet visibility and pinned as the top comment for immediate navigation',
+        whyItWorks: 'YouTube chapters appear in Google search results for relevant queries. Optimised chapter titles turn each video section into a potential search entry point, driving discovery from learners searching for specific topics.',
+      },
+      {
+        label: 'Learning Resource Companion',
+        description: 'Downloadable worksheets, cheatsheets, or companion guides created from the video content -- delivered as a link in the description or pinned comment for viewers who want to apply what they learned',
+        whyItWorks: 'Educational viewers who download companion resources are 3x more likely to watch the next video in the series, because the resource creates a connection that extends beyond the video and primes the viewer for more content.',
+      },
+      {
+        label: 'Engagement Prompt Integration',
+        description: 'Built-in verbal and on-screen prompts at strategic moments asking viewers to comment with their progress, ask questions, or share their experience -- timed to when engagement naturally peaks',
+        whyItWorks: 'Comments and engagement signals are major YouTube ranking factors for educational content. Strategic prompts at the right moment generate more discussion, signaling topic relevance to the algorithm and increasing reach.',
+      },
+    ],
   }),
   [key('youtube_editor_personal_brands')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
     pathTitle: 'YouTube Editing for Personal Brand Authority',
@@ -2843,6 +3025,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Local businesses with technically optimised service pages (schema markup, sub-2s mobile load, working click-to-call) generate 3-5x more phone calls and form submissions than those with standard pages, because each technical element directly removes a conversion barrier.',
       nextStepCTA: 'Share this with local business owners who have a website but are not getting calls from it. Offer a free technical audit of their current page speed, schema markup, and form delivery reliability.',
     },
+    deliverables: [
+      {
+        label: 'Local Service Landing Page Build',
+        description: 'A single service landing page with local business schema markup, mobile-first performance (sub-2s load), click-to-call button, form-to-email delivery confirmation, and Google Maps integration with directions link',
+        whyItMatters: 'Local businesses need their service pages to rank in local search and convert visitors into calls. A technically optimised service page directly addresses the two things that matter most to local lead generation: visibility and conversion.',
+      },
+      {
+        label: 'Multi-Page Local Site Build',
+        description: 'A full local business website with 5+ service pages, each with individual schema markup, location-specific meta tags, and conversion-optimised layouts -- built as a connected system that funnels visitors toward contact',
+        whyItMatters: 'Local businesses with multiple services need individual pages for each to rank in local search. A multi-page build establishes comprehensive local SEO coverage, capturing search traffic across every service offering.',
+      },
+      {
+        label: 'Contact and Booking Integration',
+        description: 'Working contact forms with email delivery confirmation, click-to-call button tested across carriers, Google Maps directions embed, and third-party booking widget integration with reliable data delivery',
+        whyItMatters: 'Every technical failure in the contact flow costs the local business a potential customer. Reliable, tested contact integrations ensure every visitor who wants to reach the business can do so without friction.',
+      },
+      {
+        label: 'Review and Social Proof Integration',
+        description: 'Dynamic review aggregation pulling Google Business Profile and other review platform ratings into the page, with schema markup for review-rich snippets in search results and visual trust badges',
+        whyItMatters: 'Reviews are the #1 trust signal for local purchase decisions. A dynamic review display that feeds verified ratings into the site and search results builds credibility with visitors before they ever contact the business.',
+      },
+      {
+        label: 'Local SEO Technical Audit and Implementation',
+        description: 'Comprehensive local SEO audit covering schema markup audit, Google Business Profile alignment, local keyword gap analysis, Core Web Vitals check, and structured data implementation with verification',
+        whyItMatters: 'Most local business pages fail to rank because of technical SEO gaps the owner does not know exist. An audit and implementation package fixes the invisible issues that prevent pages from appearing in local search results.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Performance Optimisation Package',
+        description: 'Lighthouse 90+ scores enforced on mobile and desktop, Core Web Vitals passing, image optimisation, lazy loading, and CDN integration -- with automated monthly performance check reports',
+        whyItWorks: 'Google uses page speed as a local ranking factor. A performance-optimised local page ranks higher in local search and converts better, because mobile users abandon pages that take more than 3 seconds to load.',
+      },
+      {
+        label: 'UTM Tracking and Analytics Setup',
+        description: 'Source-attributed analytics with UTM tracking on every contact CTA, form submission tracking, call tracking number integration, and a dashboard that shows which channels drive the most leads',
+        whyItWorks: 'Local business owners waste ad budget on channels that do not produce calls. UTM-attributed analytics reveals exactly which marketing channel drives each lead, enabling data-driven budget allocation.',
+      },
+      {
+        label: 'Post-Launch Maintenance Plan',
+        description: 'Monthly performance monitoring, schema markup updates, content update support, plugin security patches, and quarterly SEO re-audit to keep the site performing and ranking over time',
+        whyItWorks: 'Local business websites degrade over time without maintenance: plugins break, schema goes stale, performance regresses. A maintenance plan prevents the gradual decline that turns a well-built site back into an underperformer.',
+      },
+    ],
   }),
     [key('landing_page_developer_agencies')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
     pathTitle: 'White-Label Landing Page Builds for Agencies -- Reliable Page Delivery Without Hiring Developers',
@@ -2869,6 +3096,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Agencies using dedicated white-label page build partners increase landing page service revenue by 40-60% within 3 months because they can take on more clients without adding headcount, and consistent delivery quality leads to higher client retention and referrals.',
       nextStepCTA: 'Share this with agency owners who are turning down landing page work or struggling with build quality. Offer a free trial page build from one of their client briefs to demonstrate process and quality.',
     },
+    deliverables: [
+      {
+        label: 'White-Label Landing Page Build',
+        description: 'Brief or Figma design to production-ready, tracked, tested landing page delivered under the agency\'s brand -- with analytics events firing, form data delivering, and page speed targets met on every build',
+        whyItMatters: 'Agencies win and retain clients on delivery reliability. White-label builds with consistent technical quality let the agency scale landing page services without investing in in-house development capacity or managing freelancers.',
+      },
+      {
+        label: 'Multi-Client Technical Adaptation',
+        description: 'Adapt to each agency client\'s tech stack, CRM system, analytics platform, and tracking requirements -- with per-client integration checklists and configuration templates that prevent setup errors',
+        whyItMatters: 'Agency clients use different CRMs, analytics tools, and form platforms. The ability to handle diverse technical requirements without errors is what separates a production partner from a single-stack freelancer.',
+      },
+      {
+        label: 'Landing Page Technical Audit Package',
+        description: 'Comprehensive audit of existing agency client pages covering page speed, analytics event coverage, form delivery reliability, schema markup correctness, and A/B testing readiness',
+        whyItMatters: 'Agencies can upsell audit services to existing clients and use findings to justify rebuild projects. A structured audit package creates a natural sales pipeline for ongoing page build work.',
+      },
+      {
+        label: 'Integration Pipeline Setup',
+        description: 'Pre-built connector architecture for CRM, analytics, A/B testing tools, email marketing, and payment platforms -- installed and configured with event tracking so each page feeds the agency client\'s business systems from launch day',
+        whyItMatters: 'A landing page that does not feed data into the client\'s business systems is a lead black hole. Integration pipeline setup ensures every page actively contributes to the client\'s sales and marketing infrastructure.',
+      },
+      {
+        label: 'Sprint-Based Page Capacity',
+        description: 'Reserved monthly page build capacity with a defined sprint velocity, allowing the agency to plan and quote client projects with predictable delivery timelines and no scheduling conflicts',
+        whyItMatters: 'Agencies need certainty when selling page build services. Reserved capacity eliminates the risk of schedule conflicts, enabling the agency to confidently commit to delivery dates with their clients.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Brand QA Checklist',
+        description: 'A standardised quality assurance checklist applied to every page build, covering code quality, tracking verification, form testing, performance benchmarks, and handoff documentation completeness',
+        whyItWorks: 'Agency brand reputation depends on consistent quality across every client deliverable. A QA checklist enforces standards that protect the agency\'s brand, even as the volume of page builds scales.',
+      },
+      {
+        label: 'Handoff Documentation Package',
+        description: 'Complete build documentation including architecture notes, integration configuration details, analytics event reference, deployment instructions, and maintenance guidelines delivered with every page build',
+        whyItWorks: 'Agencies need to maintain client pages long after the initial build. Comprehensive handoff documentation ensures the agency\'s team can confidently manage the page without relying on the original developer.',
+      },
+      {
+        label: 'Rush Turnaround Service',
+        description: '24--48 hour express page build for time-sensitive agency projects, with prioritised queue handling and expedited review cycles for urgent client deliverables',
+        whyItWorks: 'Agency client timelines shift constantly. A rush service ensures the agency never has to turn down an urgent project or miss a critical client deadline, strengthening their reputation for reliability.',
+      },
+    ],
   }),
   [key('no_code_developer_startups')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
     pathTitle: 'No-Code for Startups',
@@ -3103,6 +3375,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Course creators whose landing pages follow a buyer-decision visual hierarchy see 30-60% higher enrolment rates from the same traffic, because the page answers each question the prospect has exactly when they need it, rather than making them hunt for information.',
       nextStepCTA: 'Share this with course creators whose launch pages get lots of traffic but low conversion. Offer a free visual hierarchy audit that identifies the 3 biggest information ordering problems on their current page.',
     },
+    deliverables: [
+      {
+        label: 'Course Launch Page Design',
+        description: 'A full launch page design with buyer-decision visual hierarchy: transformation promise hero, curriculum proof section, social proof with student results, objection handling FAQ, and urgency-driven offer presentation',
+        whyItMatters: 'Course launches happen in compressed windows where every page view either converts or is lost. A buyer-decision visual hierarchy ensures the prospect gets the right information at the right time to make an enrolment decision.',
+      },
+      {
+        label: 'Curriculum Presentation Design',
+        description: 'Visual design for the course curriculum section that makes module progression, learning outcomes, and skill level clear at a glance -- using visual hierarchy instead of text lists to communicate course value',
+        whyItMatters: 'Prospects enrol based on what they will learn, not what the course contains. A well-designed curriculum presentation communicates the transformation journey visually, making the learning path feel achievable and exciting.',
+      },
+      {
+        label: 'Social Proof Integration Design',
+        description: 'Testimonial, case study, and student result showcase design with before-and-after visuals, student photo integration, result statistics, and social proof placement timed to the decision journey',
+        whyItMatters: 'Course enrolment requires overcoming the prospect\'s fear of wasting money on content that does not deliver. Visible social proof at the moment of evaluation provides the confidence needed to commit to purchase.',
+      },
+      {
+        label: 'Objection Handling Section Design',
+        description: 'FAQ, guarantee badge, refund policy, time commitment clarification, and prerequisite information section design -- presented in a hierarchy that addresses the most common enrolment objections before the prospect reaches the pricing section',
+        whyItMatters: 'Most course prospects have specific objections that prevent purchase: not enough time, not the right level, risk of buyer\'s remorse. A well-designed objection section answers these concerns before they become deal-breakers.',
+      },
+      {
+        label: 'Urgency and Offer Presentation Design',
+        description: 'Launch timer, bonus stack visual, pricing tier comparison, payment plan options, and scarcity indicators designed to create appropriate urgency without feeling manipulative',
+        whyItMatters: 'Course launches rely on urgency to drive enrolment during the launch window. A visually clear offer presentation that communicates the deal structure and deadline helps prospects make a timely decision.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Launch Day Countdown System',
+        description: 'Dynamic countdown timer, cart-close timer, bonus expiry indicators, and rolling scarcity elements designed to create genuine urgency throughout the launch window without aggressive pressure',
+        whyItWorks: 'Launch day urgency is the primary conversion driver for course creators. Dynamic countdown systems that communicate real deadlines increase enrolment rates by creating a clear reason to act now rather than later.',
+      },
+      {
+        label: 'Email Sequence Graphic Package',
+        description: 'Email header graphics, social proof cards, teaser images, and CTA button designs that match the launch page visual language and maintain brand consistency across the full email launch sequence',
+        whyItWorks: 'Course launches depend on email sequences to drive traffic to the page. Matching email graphics create a seamless visual experience from inbox to landing page, reducing cognitive friction and improving click-through rates.',
+      },
+      {
+        label: 'Post-Launch Optimisation Report',
+        description: 'Heatmap analysis, click tracking data, section-level engagement metrics, and A/B testing recommendations based on actual launch performance data from the live page',
+        whyItWorks: 'No launch page design is perfect on the first iteration. Post-launch data reveals exactly which sections performed and which underperformed, enabling data-driven improvements that compound across future launches.',
+      },
+    ],
   }),
     [key('landing_page_designer_saas_startups')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
     pathTitle: 'Landing Page Design for SaaS Startups -- Trial Pages That Make Product Value Obvious in Seconds',
@@ -3200,6 +3517,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Local businesses with professionally designed service pages that prominently feature trust signals (photos, reviews, certifications) generate 2-3x more contact form submissions and phone calls than those with generic template designs, because visual trust is the primary decision factor for local service buyers.',
       nextStepCTA: 'Share this with local business owners whose website design does not reflect the quality of their service. Offer a free visual trust audit that identifies the 3 biggest trust gaps in their current page design.',
     },
+    deliverables: [
+      {
+        label: 'Service Page Trust Design',
+        description: 'A credibility-first page design with prominent team photography, service showcase images, review highlights, certification badges, and trust signal hierarchy -- making the business look professional and reliable from the first scroll',
+        whyItMatters: 'Local customers judge a business\'s quality by its website design. A credibility-first design communicates professionalism and trustworthiness instantly, directly influencing whether a visitor contacts the business or moves to a competitor.',
+      },
+      {
+        label: 'Contact CTA Visual Design',
+        description: 'Persistent, visually dominant call-to-action buttons for call, book, get directions, and contact form -- designed to be thumb-friendly on mobile and always visible regardless of scroll position',
+        whyItMatters: 'The primary goal of a local business page is to generate customer action. A persistent, well-designed CTA ensures the visitor can always see how to take the next step, reducing the likelihood they leave without acting.',
+      },
+      {
+        label: 'Local SEO Visual Integration',
+        description: 'Design elements that enhance local search visibility: structured data-friendly review display markup, location-specific imagery, Google Maps embed design, and local keyword-optimised heading hierarchy',
+        whyItMatters: 'Local search visibility depends on how well the page communicates location relevance. Visual design that reinforces local context signals relevance to both users and search engines, improving ranking for local queries.',
+      },
+      {
+        label: 'Multi-Service Menu Design',
+        description: 'Visual service selection interface that presents each service offering with clear differentiation, pricing context, service description, and an individual CTA per service -- designed for easy scanning and comparison',
+        whyItMatters: 'Local businesses with multiple services lose customers when the service menu is unclear or overwhelming. A well-designed service selection interface helps customers find what they need quickly and confidently.',
+      },
+      {
+        label: 'Mobile-First Conversion Layout',
+        description: 'Mobile-first page layout where contact CTAs are thumb-reachable, content is single-column and optimised for vertical scrolling, images are compressed for instant loading, and forms have mobile-optimised input fields',
+        whyItMatters: 'Over 70% of local business website traffic comes from mobile devices. A mobile-first layout ensures the page converts effectively on the device where most local customers will view it.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Photo and Video Integration Design',
+        description: 'Visual templates and layout specifications for integrating professional local photography and video content into the page design, ensuring media assets match the brand and conversion goals',
+        whyItWorks: 'Pages with professional photography convert 40% better than those without, because visual quality signals business quality. Designated photo integration ensures the business\'s visual assets are deployed for maximum conversion impact.',
+      },
+      {
+        label: 'Review Widget Design System',
+        description: 'Custom-designed review display widgets that pull Google Business Profile ratings and reviews into the page design, with filter options, highlight extraction, and schema markup for search result visibility',
+        whyItWorks: 'Google reviews are the most trusted source of social proof for local purchase decisions. A review widget that seamlessly integrates verified ratings into the page design builds credibility without requiring manual review updates.',
+      },
+      {
+        label: 'Local Analytics Dashboard Design',
+        description: 'Visual dashboard design for tracking page performance, lead sources, conversion rates, and customer actions -- designed for the business owner to understand at a glance without technical interpretation',
+        whyItWorks: 'Local business owners do not have analytics teams. A simple visual dashboard makes performance data accessible, enabling the owner to make informed decisions about their online presence without needing a data analyst.',
+      },
+    ],
   }),
     [key('landing_page_designer_agencies')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
     pathTitle: 'White-Label Landing Page Design for Agencies -- Reliable Design Delivery on Client Deadlines',
@@ -3226,6 +3588,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Agencies using dedicated white-label design partners reduce design delivery time by 40-60% and increase page design capacity by 2-3x, because the partner works within the agency\'s conventions and delivers production-ready files without management overhead.',
       nextStepCTA: 'Share this with agency owners whose design delivery is bottlenecked by freelance capacity or inconsistent quality. Offer a free trial page design from one of their current client briefs.',
     },
+    deliverables: [
+      {
+        label: 'White-Label Page Design Package',
+        description: 'Client brief to complete Figma page design delivered under the agency\'s brand, with organised layers, componentised elements, developer-ready specs, and brand guideline adherence across every design',
+        whyItMatters: 'Agencies sell design services on their reputation. White-label delivery with consistent quality preserves the agency\'s brand equity and ensures every client project meets the same high standard without requiring agency designer oversight.',
+      },
+      {
+        label: 'Multi-Client Brand Adaptation',
+        description: 'Maintain distinct page design styles, visual languages, and layout conventions across each agency client\'s brand, with per-client design reference files and style guide annotations',
+        whyItMatters: 'Agencies serve clients with different brand identities. The ability to switch between distinct design styles per client without losing quality differentiates a design partner from a generalist freelancer.',
+      },
+      {
+        label: 'Conversion-Focused Wireframe Set',
+        description: 'Low-fidelity wireframes designed for conversion first and visual polish second -- presented to the client for approval before visual design begins, reducing revision cycles by getting the structure right early',
+        whyItMatters: 'Design revisions are the biggest time cost in agency page design. Wireframe-first delivery ensures the client approves the structure before the agency invests in visual polish, reducing revision cycles by 40-60%.',
+      },
+      {
+        label: 'Developer-Ready Figma Handoff',
+        description: 'Figma files organised with named layers, componentised elements, auto-layout constraints, asset exports, spacing annotations, typography specifications, and interaction notes -- ready for direct developer implementation',
+        whyItMatters: 'Developers waste hours interpreting poorly organised design files. A developer-ready Figma handoff eliminates back-and-forth clarification, speeding up the build phase and reducing the agency\'s overall delivery timeline.',
+      },
+      {
+        label: 'Agency Brand Template System',
+        description: 'Reusable page design templates matching the agency\'s page structure conventions, brand system, and delivery format standards -- enabling faster turnaround on repeat client page types without starting from scratch',
+        whyItMatters: 'Agencies build similar page types repeatedly for different clients. A template system eliminates redundant design work, enabling faster delivery and higher margins on each client design project.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Structured Feedback Integration',
+        description: 'A structured revision request and tracking process with annotation tools, change log documentation, and version comparison -- ensuring every feedback cycle is clear, tracked, and resolved efficiently',
+        whyItWorks: 'Agency client feedback often goes through multiple stakeholders, generating ambiguous revision requests. A structured feedback system eliminates misinterpretation and reduces the revision cycle time by 30-50%.',
+      },
+      {
+        label: 'Performance-Informed Design Updates',
+        description: 'Design revisions based on page performance data (heatmaps, click tracking, conversion analytics) rather than subjective preferences -- ensuring every design change has a measurable rationale tied to conversion improvement',
+        whyItWorks: 'Design decisions based on data outperform subjective preferences every time. Performance-informed updates give the agency a defensible rationale for design changes and demonstrate ROI to their clients.',
+      },
+      {
+        label: 'Shared Agency Component Library',
+        description: 'A shared Figma component library with the agency\'s page design patterns, reusable sections, and consistent styling -- enabling faster iteration and visual consistency across the agency\'s entire client portfolio',
+        whyItWorks: 'Agencies that share design components across clients reduce design time per page by 40% while maintaining visual brand distinction per client, because common patterns are reused rather than redesigned.',
+      },
+    ],
   }),
   [key('brand_designer_coaches_consultants')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
     pathTitle: 'Brand for Coaches & Consultants',
@@ -3995,6 +4402,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Creators who invest in community-focused UX design see 20-40% higher member retention at 6 months compared to those with standard portal UIs, because the feeling of belonging and connection is the primary driver of membership renewal, not content library quality.',
       nextStepCTA: 'Share this with creators whose membership churn is above 10% per month and members stop engaging after the first week. Offer a free retention UX audit that identifies engagement drop-off points and redesign opportunities.',
     },
+    deliverables: [
+      {
+        label: 'Membership Portal UX Design',
+        description: 'A community-focused portal UX design balancing content delivery (courses, resources) with community interaction (discussion threads, member profiles, live events) -- designed to create belonging and repeat visitation',
+        whyItMatters: 'Creator membership retention depends on the feeling of connection, not content library quality. A UX design that prioritises community interaction over content consumption keeps members engaged and renewing.',
+      },
+      {
+        label: 'Onboarding Flow Design',
+        description: 'A new member onboarding UX that progressively reveals features, connects new members with the community, sets expectations for content cadence, and delivers the first value moment within the first session',
+        whyItMatters: 'Members who experience value in their first session are 3x more likely to renew at 60 days. A structured onboarding flow that delivers connection and content early sets the foundation for long-term retention.',
+      },
+      {
+        label: 'Community Interaction Pattern Design',
+        description: 'UX patterns for discussion threads, member-to-member messaging, live event interaction, feedback systems, and community recognition features -- designed to encourage participation and build relationships',
+        whyItMatters: 'Members who interact with other members are 5x more likely to renew than passive content consumers. Interaction pattern design that makes participation feel natural and rewarding directly reduces churn.',
+      },
+      {
+        label: 'Content Discovery Interface',
+        description: 'A personalised content discovery UX that surfaces relevant courses, resources, and community conversations based on member interests, engagement history, and content completion patterns',
+        whyItMatters: 'Members who regularly discover new content relevant to their interests stay engaged longer. A discovery interface that personalises the content experience keeps the membership feeling fresh and valuable over time.',
+      },
+      {
+        label: 'Retention Loop UX Design',
+        description: 'Engagement triggers, milestone celebrations, progress tracking, usage streak rewards, feature adoption nudges, and re-engagement prompts designed into the product UX to extend the member journey beyond the initial value moment',
+        whyItMatters: 'The biggest drop-off in creator memberships happens after the initial content consumption bursts. Retention loop UX creates ongoing reasons to return, transforming one-time purchasers into long-term subscribers.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Mobile App UX Concept',
+        description: 'A mobile app UX concept design for the creator\'s membership community, with native mobile interaction patterns, push notification strategy, and offline content access design',
+        whyItWorks: 'Members who access the community on mobile are 2x more likely to engage daily. A mobile app concept gives the creator a roadmap for the most impactful platform expansion, designed specifically for community engagement.',
+      },
+      {
+        label: 'Member Analytics Dashboard Design',
+        description: 'A visual dashboard UX for the creator to track member engagement, churn signals, content consumption patterns, and community health metrics -- designed for easy interpretation without data analysis expertise',
+        whyItWorks: 'Creators who understand their membership data can make informed content and community decisions. An analytics dashboard makes churn signals visible early, enabling proactive retention interventions.',
+      },
+      {
+        label: 'Content A/B Testing UX Framework',
+        description: 'A UX framework for testing different content presentation patterns, community engagement prompts, and onboarding variations -- designed to help the creator optimise the membership experience based on member behavior data',
+        whyItWorks: 'No membership UX is optimal on the first version. An A/B testing framework enables the creator to systematically improve engagement and retention through data-driven UX iterations.',
+      },
+    ],
   }),
     [key('ui_ux_designer_agencies')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
     pathTitle: 'White-Label Product UX Design for Agencies -- Scalable Design Delivery With Clean Developer Handoff',
@@ -4021,6 +4473,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Agencies using dedicated white-label UX partners reduce product design delivery time by 30-50% and increase project capacity by 2x, because the partner delivers production-ready wireframes and specs that developers can build from without clarification rounds.',
       nextStepCTA: 'Share this with agency owners whose product design services are bottlenecked by UX capacity or developer handoff quality. Offer a free UX audit and wireframe set for one of their current client projects.',
     },
+    deliverables: [
+      {
+        label: 'White-Label UX Research Package',
+        description: 'User research, stakeholder interviews, competitive analysis, and usability findings delivered as a structured report under the agency\'s brand -- with actionable insights that inform product design decisions',
+        whyItMatters: 'Agencies sell product design services based on strategic thinking, not just visual output. A research-backed UX deliverable demonstrates strategic value that justifies premium pricing and strengthens the agency\'s position as a partner rather than a vendor.',
+      },
+      {
+        label: 'User Flow and Wireframe Set',
+        description: 'Complete workflow architecture with user flow diagrams, low-fidelity wireframes for every key screen, and interaction notes -- delivered as a structured package the agency\'s clients can review and approve before visual design begins',
+        whyItMatters: 'Agency project margins erode when clients request major changes after visual design is complete. Wireframe-first delivery ensures structural approval before visual polish, reducing costly late-stage revisions.',
+      },
+      {
+        label: 'Interactive Prototype Delivery',
+        description: 'Clickable high-fidelity prototype with annotated user flows, transition specifications, error state designs, loading state treatments, and edge case handling -- ready for client review and developer handoff',
+        whyItMatters: 'Agencies that present interactive prototypes close design approval faster because clients can experience the product rather than imagining it from static screens. An interactive prototype reduces approval cycles by up to 50%.',
+      },
+      {
+        label: 'Developer Handoff Specification',
+        description: 'Annotated screen designs with interaction specifications, responsive behaviour notes, state variations (loading, empty, error, edge case), spacing measurements, and component documentation organised for direct developer implementation',
+        whyItMatters: 'Developer handoff quality is the biggest bottleneck in agency product delivery. Comprehensive specifications eliminate the back-and-forth between designers and developers, reducing build time and preserving design fidelity.',
+      },
+      {
+        label: 'UX Audit and Improvement Report',
+        description: 'Existing agency client product UX evaluation covering usability issues, information architecture problems, workflow efficiency gaps, accessibility compliance, and prioritised recommendations with estimated effort and impact',
+        whyItMatters: 'UX audits create a natural sales pipeline for agencies. A structured audit report identifies specific improvement opportunities, giving the agency a clear proposal for follow-on design work with measurable expected outcomes.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Usability Testing Package',
+        description: 'Moderated usability testing sessions with 5--8 target users on redesigned workflows, producing a findings report with severity ratings, task completion rates, behavioural observations, and iteration recommendations',
+        whyItWorks: 'Agencies that validate designs with user testing before development reduce post-launch rework by 60%. A testing package gives the agency defensible data to present to clients and reduces the risk of design failures after launch.',
+      },
+      {
+        label: 'Product Design System Creation',
+        description: 'A reusable UI component library, interaction pattern documentation, and screen template set specifically for the product\'s workflow screens -- ensuring consistent UX as the product scales',
+        whyItWorks: 'Agencies that build design systems for their clients create ongoing dependency and recurring revenue. A product design system ensures the client\'s product maintains UX consistency as new features are added, reducing future design costs.',
+      },
+      {
+        label: 'UX Analytics Event Specification',
+        description: 'Defined UX metrics and analytics event taxonomy covering user flows, feature adoption, funnel completion, engagement signals, and retention indicators -- with implementation guidance for the engineering team',
+        whyItWorks: 'Product teams cannot improve what they do not measure. A structured event specification gives the agency\'s client the data infrastructure needed to make informed product decisions, demonstrating the agency\'s strategic value beyond design deliverables.',
+      },
+    ],
   }),
     [key('ui_ux_designer_local_businesses')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
     pathTitle: 'Local Business Service UX -- Booking Flows and Service Workflows That Customers Can Actually Navigate',
@@ -4047,6 +4544,51 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whyThisWorks: 'Local businesses that simplify their booking flow to under 2 minutes on mobile see 30-50% more completed bookings from the same traffic, because each removed field and clarified option reduces the cognitive load that causes abandonment.',
       nextStepCTA: 'Share this with local business owners whose online booking process loses customers. Offer a free booking flow audit that identifies abandonment points and shows a simplified alternative.',
     },
+    deliverables: [
+      {
+        label: 'Booking Flow Simplification',
+        description: 'A streamlined booking flow redesigned to be completable in under 2 minutes on a mobile phone -- removing every unnecessary field, consolidating steps, and using visual choices instead of text inputs wherever possible',
+        whyItMatters: 'Every extra field and step in a booking flow costs a local business customers. A simplified flow that eliminates unnecessary friction directly increases the number of completed bookings from the same traffic.',
+      },
+      {
+        label: 'Service Selection UX Design',
+        description: 'Clear service options presented with visual choices (photos, icons, brief descriptions) instead of dropdown menus -- making it easy for the customer to identify and select the right service without confusion',
+        whyItMatters: 'Customers abandon booking when they are unsure which service to select or what each option includes. Visual service selection reduces decision friction and helps customers complete their booking with confidence.',
+      },
+      {
+        label: 'Mobile-Optimised Booking UX',
+        description: 'A mobile-first booking flow designed specifically for phone screens with thumb-friendly tap targets, single-column layout, minimised scrolling, auto-fill for repeated fields, and mobile keyboard-optimised input types',
+        whyItMatters: 'The majority of local booking attempts happen on mobile devices. A booking UX designed for the phone removes the pinch-zoom, tiny-button, and excessive-scrolling frustrations that cause mobile abandonment.',
+      },
+      {
+        label: 'Confirmation and Reminder UX',
+        description: 'Post-booking flow with clear confirmation screen, calendar attachment, automated email and SMS reminders, rescheduling and cancellation options, and pre-appointment preparation instructions designed into the experience',
+        whyItMatters: 'Local businesses lose 20-30% of bookings to no-shows without proper confirmation and reminder systems. A well-designed post-booking UX dramatically reduces no-shows and ensures customers arrive prepared.',
+      },
+      {
+        label: 'Multi-Service and Multi-Provider Scheduling UX',
+        description: 'Complex scheduling UX for businesses with multiple services, multiple staff members, varying appointment durations, and location-specific availability -- designed to handle complexity without confusing the customer',
+        whyItMatters: 'Service businesses with complex scheduling (salons, clinics, repair services) lose customers to competitors with simpler booking systems. A UX that handles complexity elegantly turns scheduling confusion into a competitive advantage.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Booking Abandonment Analysis',
+        description: 'Flow analysis identifying exactly where customers drop off in the current booking process, with specific UX recommendations for each abandonment point based on user behaviour data',
+        whyItWorks: 'Most local businesses have no idea where their booking flow loses customers. Abandonment analysis reveals the specific steps causing friction, enabling targeted fixes that produce immediate improvements in completion rates.',
+      },
+      {
+        label: 'Customer Intake Form Simplification',
+        description: 'Reduced-field form design that collects only essential information during booking, with optional fields moved to post-confirmation and smart defaults pre-filled based on service type selection',
+        whyItWorks: 'Long intake forms are the #1 cause of booking abandonment for local services. A simplified form that defers non-essential data collection reduces the upfront commitment perception and increases form completion rates.',
+      },
+      {
+        label: 'Automated Reminder UX Design',
+        description: 'SMS and email reminder flow design with timing strategy (48h, 24h, 2h before appointment), cancellation and rescheduling links, preparation instructions, and directions -- all designed into a single cohesive customer experience',
+        whyItWorks: 'Well-designed automated reminders can reduce local business no-show rates from 25% to under 5%. A reminder UX that makes it easy for customers to confirm, reschedule, or cancel reduces last-minute cancellations and fills gaps efficiently.',
+      },
+    ],
   }),
   [key('social_media_designer_coaches')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
     pathTitle: 'Social Media for Coaches',
