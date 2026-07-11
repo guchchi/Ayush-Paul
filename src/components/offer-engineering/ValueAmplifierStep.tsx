@@ -1,24 +1,27 @@
 import { useMemo } from 'react';
 import { Zap, Check } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 
 export function ValueAmplifierStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const valueAmplifier = useOfferEngineeringStore((s) => s.valueAmplifier);
   const setValueAmplifier = useOfferEngineeringStore((s) => s.setValueAmplifier);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData } = useModule2ResolvedContent();
 
-  const amplifiers = useMemo(
-    () => engineeringData?.valueAmplifiers ?? [],
-    [engineeringData],
-  );
+  const pathAmplifiers = pathContent?.content.valueAmplifiers;
+
+  const amplifiers = useMemo(() => {
+    if (pathAmplifiers && pathAmplifiers.length > 0) {
+      return pathAmplifiers.map((a) => ({
+        id: a.label.toLowerCase().replace(/\s+/g, '_'),
+        label: a.label,
+        description: a.description,
+      }));
+    }
+    return engineeringData?.valueAmplifiers ?? [];
+  }, [pathAmplifiers, engineeringData]);
 
   const isEmpty = valueAmplifier.trim().length === 0;
 

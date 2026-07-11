@@ -14,11 +14,33 @@ if (!admin.apps.length) {
 
 const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID || 'ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a');
 
+async function verifyIdToken(req: VercelRequest): Promise<string | null> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+  const token = authHeader.split("Bearer ")[1];
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return decodedToken.uid;
+  } catch (error) {
+    return null;
+  }
+}
+
 async function handleClaimReferral(req: VercelRequest, res: VercelResponse) {
   const { referrerId, newUserId, refCode: incomingRefCode } = req.body;
 
   if (!newUserId) {
     return res.status(400).json({ error: 'Missing newUserId' });
+  }
+
+  const decodedUid = await verifyIdToken(req);
+  if (!decodedUid) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+  if (decodedUid !== newUserId) {
+    return res.status(403).json({ error: "Forbidden: User ID mismatch" });
   }
 
   try {
@@ -95,6 +117,14 @@ async function handleTrackShare(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Missing userId or shareTarget' });
   }
 
+  const decodedUid = await verifyIdToken(req);
+  if (!decodedUid) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+  if (decodedUid !== userId) {
+    return res.status(403).json({ error: "Forbidden: User ID mismatch" });
+  }
+
   const validTargets = ['whatsapp', 'twitter', 'linkedin', 'copy_link', 'other'];
   if (!validTargets.includes(shareTarget)) {
     return res.status(400).json({ error: `Invalid share target. Must be one of: ${validTargets.join(', ')}` });
@@ -169,6 +199,14 @@ async function handleGenerateStreakReport(req: VercelRequest, res: VercelRespons
 
   if (!userId || typeof currentStreakDays !== 'number') {
     return res.status(400).json({ error: 'Missing userId or currentStreakDays' });
+  }
+
+  const decodedUid = await verifyIdToken(req);
+  if (!decodedUid) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+  if (decodedUid !== userId) {
+    return res.status(403).json({ error: "Forbidden: User ID mismatch" });
   }
 
   try {

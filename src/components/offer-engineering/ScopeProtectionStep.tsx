@@ -1,23 +1,25 @@
 import { useMemo } from 'react';
 import { Shield, Clock, Edit3, MessageSquare, Hash, RefreshCw } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent, scopeDefaultsToScopeLimits } from '../../lib/offer-engineering';
 import { getServiceCategory } from '../../lib/blueprint-content';
 import { cn } from '../../lib/utils';
 import type { ScopeLimits } from '../../types/offer-engineering';
 
 export function ScopeProtectionStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const scopeLimits = useOfferEngineeringStore((s) => s.scopeLimits);
   const setScopeLimits = useOfferEngineeringStore((s) => s.setScopeLimits);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
 
-  const defaults = engineeringData?.scopeLimitsDefaults;
+  const pathScopeDefaults = pathContent?.content.scopeDefaults;
+
+  const defaults = useMemo(() => {
+    if (pathScopeDefaults) {
+      return scopeDefaultsToScopeLimits(pathScopeDefaults);
+    }
+    return engineeringData?.scopeLimitsDefaults;
+  }, [pathScopeDefaults, engineeringData]);
 
   const cat = getServiceCategory(serviceId);
   const scopeExplanation = {

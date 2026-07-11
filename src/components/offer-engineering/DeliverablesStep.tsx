@@ -1,16 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, X, Package, Sparkles } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 import type { Transition } from 'motion/react';
 
 const POP_LAYOUT_TRANSITION: Transition = { duration: 0.15 };
 
 export function DeliverablesStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
-  const nicheId = useOpportunityMapStore((s) => s.nicheId);
   const deliverables = useOfferEngineeringStore((s) => s.deliverables);
   const addDeliverable = useOfferEngineeringStore((s) => s.addDeliverable);
   const removeDeliverable = useOfferEngineeringStore((s) => s.removeDeliverable);
@@ -18,16 +15,18 @@ export function DeliverablesStep() {
 
   const [inputValue, setInputValue] = useState('');
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, nicheId } = useModule2ResolvedContent();
+
+  const pathDeliverables = pathContent?.content.deliverables;
 
   const suggested = useMemo(() => {
+    if (pathDeliverables && pathDeliverables.length > 0) {
+      return pathDeliverables.map((d) => d.label);
+    }
     if (!engineeringData) return [];
     const nicheLabels = nicheId ? engineeringData.nicheDeliverables?.[nicheId] : undefined;
     return nicheLabels ?? engineeringData.deliverables.map((d) => d.label);
-  }, [engineeringData, nicheId]);
+  }, [pathDeliverables, engineeringData, nicheId]);
 
   const selectedSet = useMemo(() => new Set(deliverables), [deliverables]);
 

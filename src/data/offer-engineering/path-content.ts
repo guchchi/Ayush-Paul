@@ -8,21 +8,20 @@ import type {
  *  Helper to cast string literals to PathContentKey
  * ─────────────────────────────────────────────── */
 
+import {
+  derivePathContent,
+  video_editor_youtube_creators as VIDEO_EDITOR_YOUTUBE_CREATORS,
+  frontend_developer_saas_startups as FRONTEND_DEVELOPER_SAAS_STARTUPS,
+  ui_ux_designer_coaches as UI_UX_DESIGNER_COACHES,
+  social_media_designer_creators as SOCIAL_MEDIA_DESIGNER_CREATORS,
+  presentation_designer_startups as PRESENTATION_DESIGNER_STARTUPS,
+} from './archetype-anchors';
+
 function key(s: string): PathContentKey {
   return s as PathContentKey;
 }
 
-/* ───────────────────────────────────────────────
- *  Path-specific content entries
- *
- *  Key format: `${subTrackId}_${marketId}`
- *  Match against MARKET_ADAPTER_MAP keys.
- * ─────────────────────────────────────────────── */
-
-export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
-
-  /* ── Short-Form Editor × Coaches ── */
-  [key('short_form_editor_coaches')]: {
+const SHORT_FORM_EDITOR_COACHES: OfferEngineeringPathContent = {
     pathTitle: 'Coach Short-Form Authority System',
     audienceInsight:
       'Coaches sell trust and transformation, not products. Their short-form content needs to demonstrate expertise in 15–60 seconds — a single clip must communicate authority, empathy, and a clear next step. Generic trending edits fail here because coaches compete on credibility, not entertainment.',
@@ -157,10 +156,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Send this blueprint to coaching prospects as a retainer proposal. The best next step is a 15-minute call to review one recent recording and identify your first three clip opportunities.',
     },
-  },
+  };
 
-  /* ── YouTube Editor × YouTube Creators ── */
-  [key('youtube_editor_youtube_creators')]: {
+const YOUTUBE_EDITOR_YOUTUBE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'YouTube Retention Editing System',
     audienceInsight:
       'YouTube creators live and die by audience retention. The difference between a 40% and 60% retention rate can double a video\'s long-term views. These creators need an editor who thinks in retention curves, not timelines — someone who can spot a pacing dip before it happens and restructure a section to keep viewers watching.',
@@ -295,10 +293,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with YouTube creators who track their analytics. The next step is a 15-minute call to review their last 3 retention graphs and identify the single highest-impact editing change for their next video.',
     },
-  },
+  };
 
-  /* ── WordPress Developer × Local Businesses ── */
-  [key('wordpress_developer_local_businesses')]: {
+const WORDPRESS_DEVELOPER_LOCAL_BUSINESSES: OfferEngineeringPathContent = {
     pathTitle: 'Local Business Lead Engine — WordPress',
     audienceInsight:
       'Local business owners are not looking for a beautiful website. They are looking for more phone calls, walk-ins, and bookings. They have been burned by agencies that overcharged for fancy designs that did not bring in a single customer. They need a site that loads fast on a phone, shows up in Google Maps results, and makes it dead simple for a customer to call or book.',
@@ -433,10 +430,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Send this blueprint to local business owners who are unhappy with their current website. Offer a free 15-minute local SEO audit of their current site as a no-pressure starting point.',
     },
-  },
+  };
 
-  /* /--- Short-Form Editor x Creators ---/ */
-  [key('short_form_editor_creators')]: {
+const SHORT_FORM_EDITOR_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Creator Short-Form Content Engine',
     audienceInsight:
       'Creators on Instagram and TikTok compete for scroll-stop in the first 1.5 seconds. Unlike coaches who build authority, general creators win or lose on entertainment value, relatability, and trend alignment. A single well-timed pattern interrupt or trending audio sync can push a video past 100K views, but a flat edit kills reach before the algorithm even measures engagement. These creators need an editor who thinks in hooks per second, not in timeline cuts.',
@@ -571,11 +567,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with creators who post less than 3 times per week and blame "not enough time." Offer a free 15-second clip edit from their best-performing recent video as a risk-free trial.',
     },
-  },
+  };
 
-
-  /* /--- Short-Form Editor x Agencies ---/ */
-  [key('short_form_editor_agencies')]: {
+const SHORT_FORM_EDITOR_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency White-Label Short-Form Department',
     audienceInsight:
       'Digital and social media agencies sell short-form content to their clients but rarely have in-house editing capacity that scales. They either overpay freelancers per clip, burn out their own team, or deliver inconsistent quality that damages client retention. They need a white-label editing partner who can absorb unpredictable volume spikes, match brand style guides across multiple clients, and deliver broadcast-quality clips on agency timelines without the agency ever admitting an outsourced hand touched the timeline.',
@@ -710,11 +704,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who are turning down content work because their team is at capacity. Offer a free sample clip from one of their existing clients as a quality proof point.',
     },
-  },
+  };
 
-
-  /* /--- YouTube Editor x Course Creators ---/ */
-  [key('youtube_editor_course_creators')]: {
+const YOUTUBE_EDITOR_COURSE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Course Creator YouTube Funnel System',
     audienceInsight:
       'Course creators use YouTube as their primary lead generation channel -- free value on YouTube converts to paid course sales. Unlike entertainment creators who optimise for watch time alone, course creators need editing that balances educational depth with retention pacing. A video that teaches effectively but bleeds 60% of viewers by the halfway mark fails as a funnel asset. These creators need an editor who understands curriculum pacing, authority positioning, and the specific cadence of a free-to-paid conversion journey.',
@@ -849,11 +841,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with course creators who have a YouTube presence but are not seeing course sales from their video content. Offer a free 10-minute audit of their best-performing video\'s conversion potential as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Podcast Clip Editor x Podcasters ---/ */
-  [key('podcast_clip_editor_podcasters')]: {
+const PODCAST_CLIP_EDITOR_PODCASTERS: OfferEngineeringPathContent = {
     pathTitle: 'Podcast Clip Distribution Engine',
     audienceInsight:
       'Podcasters produce hours of long-form audio or video every week but capture only a fraction of that content as short-form social clips. The best podcast moments -- hot takes, guest stories, actionable advice -- stay buried inside episodes that most listeners never discover. Podcasters need an editor who can listen with a clip mentality: identifying the 60-second moments that work as standalone social posts, not just cutting out sections of the episode. The difference between a podcast clip that gets 10K views and one that gets 100 views is often entirely in the editing -- the pacing, the subtitle placement, the visual hook on a static podcast face.',
@@ -988,11 +978,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with podcasters who post clips inconsistently or not at all. Offer a free 3-clip sample from their most recent episode as a proof of concept.',
     },
-  },
+  };
 
-
-  /* /--- Podcast Clip Editor x Business Owners ---/ */
-  [key('podcast_clip_editor_business_owners')]: {
+const PODCAST_CLIP_EDITOR_BUSINESS_OWNERS: OfferEngineeringPathContent = {
     pathTitle: 'Thought Leadership Clip System for Business Owners',
     audienceInsight:
       'Business owners, founders, and executives start podcasts to build authority and attract clients, but they do not have time to think about clip strategy. They are not trying to become content creators -- they are trying to position themselves as the go-to expert in their industry. Every clip needs to reinforce a specific authority narrative: "this person is the person to call when you have [specific problem]." Generic "here is a tip" clips dilute their positioning. They need an editor who understands business narrative, not just social media trends.',
@@ -1127,11 +1115,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with business owners who have a podcast but feel like it is not generating the business impact they expected. Offer a free 30-minute authority pillar mapping session as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Ad Creative Editor x Ecommerce Brands ---/ */
-  [key('ad_creative_editor_ecommerce_brands')]: {
+const AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS: OfferEngineeringPathContent = {
     pathTitle: 'DTC Ad Creative System -- Scroll-Stopping Assets That Convert',
     audienceInsight:
       'Ecommerce brands running paid social ads live and die by creative performance. A winning ad creative can sustain a 2-3x ROAS for weeks; a flat creative burns through ad spend in hours. Unlike organic content editors who optimise for engagement, ad creative editors optimise for a single metric: cost per acquisition. Every split-second decision in the edit -- the hook framing, the product reveal timing, the social proof placement, the CTA urgency -- determines whether the pixel sees a conversion or a bounce. These brands need an editor who understands direct response principles, not just visual storytelling.',
@@ -1266,11 +1252,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with DTC brand owners or marketing directors who are frustrated with inconsistent ad creative performance. Offer a free analysis of their last 3 winning ad creatives as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- WordPress Developer x Startups/SaaS ---/ */
-  [key('wordpress_developer_startups_saas')]: {
+const WORDPRESS_DEVELOPER_STARTUPS_SAAS: OfferEngineeringPathContent = {
     pathTitle: 'SaaS Marketing Site -- WordPress for Startups',
     audienceInsight:
       'Early-stage SaaS startups need a marketing website that converts visitors into sign-ups, trials, or demos. Unlike local businesses that optimise for phone calls, SaaS startups optimise for a single metric: free trial or demo request conversion rate. They need a site that communicates value proposition in under 3 seconds, handles A/B testing infrastructure, integrates with analytics and CRM tools, and can be iterated on weekly as the product and messaging evolve. They do not need a beautiful brochure; they need a conversion machine that their growth team can run experiments on.',
@@ -1405,11 +1389,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with SaaS founders or growth leads who are spending money on traffic but not seeing trial sign-up conversion improve. Offer a free 30-point conversion audit of their current site as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Landing Page Developer x Course Creators ---/ */
-  [key('landing_page_developer_course_creators')]: {
+const LANDING_PAGE_DEVELOPER_COURSE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Course Creator Launch Page System',
     audienceInsight:
       'Course creators sell their programs through launch windows -- typically a 5-14 day cart open period where every page visit, email click, and social post needs to drive toward a single conversion goal: course purchase. Unlike general landing page developers who optimise for evergreen lead generation, course creators need pages designed for urgency, scarcity, and launch-time psychology. The page needs to communicate the course value, overcome objections, present testimonials, display the curriculum, and drive purchase decisions -- all within a compressed launch window where every hour of lost conversion opportunity is gone forever.',
@@ -1544,11 +1526,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with course creators who are planning their next launch and want to improve their conversion rate. Offer a free 10-point launch page audit as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- No-Code Developer x Agencies ---/ */
-  [key('no_code_developer_agencies')]: {
+const NO_CODE_DEVELOPER_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency No-Code Delivery Wing',
     audienceInsight:
       'Digital agencies are being asked to build more than websites -- clients want automation tools, internal dashboards, client portals, and custom workflows that differentiate their service. But agencies cannot afford to staff full-time developers for every client request, and traditional software development is too slow and expensive for agency budgets. No-code platforms (Bubble, Airtable, Make, Softr) let agencies deliver software-like solutions at a fraction of the cost and timeline. They need a no-code specialist who can take a client brief and deliver a working tool in days, not months.',
@@ -1683,11 +1663,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who are considering adding software development to their offering. Offer a free solution blueprint for a client project they are currently scoping.',
     },
-  },
+  };
 
-
-  /* /--- Automation Developer x Agencies ---/ */
-  [key('automation_developer_agencies')]: {
+const AUTOMATION_DEVELOPER_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency Automation Backend -- Scale Delivery Without Hiring',
     audienceInsight:
       'Agencies run on processes -- client onboarding, reporting, invoicing, project management, email sequences -- but most of these processes are manual, repetitive, and error-prone. Every manual handoff between tools or team members creates a delay and a potential failure point. Agencies need an automation specialist who can audit their workflows, identify automation opportunities, and build Make/Zapier/Relay integrations that eliminate manual steps. The ROI is measured in hours saved per week, not in aesthetic improvement.',
@@ -1822,11 +1800,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who complain their team is "too busy" but cannot point to what is consuming their time. Offer a free 30-minute workflow audit discovery call as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Landing Page Designer x Coaches ---/ */
-  [key('landing_page_designer_coaches')]: {
+const LANDING_PAGE_DESIGNER_COACHES: OfferEngineeringPathContent = {
     pathTitle: 'Coach Discovery Page System',
     audienceInsight:
       'Coaches sell high-ticket services ($1K-$10K+ programs) through a combination of content marketing, discovery calls, and email nurturing. Their landing page is the bridge between free content and paid conversation -- it needs to convince a prospect who has consumed some free value to book a discovery call. Unlike ecommerce or SaaS landing pages that optimise for a direct purchase, coach landing pages optimise for a single action: booking a call. The page needs to communicate the coach\'s transformation promise, establish authority, overcome "not sure if this is for me" objections, and make booking a call feel like the natural next step rather than a high-pressure sales move.',
@@ -1961,11 +1937,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with coaches who are getting traffic but not calls. Offer a free 15-point landing page audit as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Brand Designer x Creators ---/ */
-  [key('brand_designer_creators')]: {
+const BRAND_DESIGNER_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Creator Brand Identity System',
     audienceInsight:
       'Creators on Instagram, YouTube, and TikTok are waking up to the reality that good content alone is not enough -- they need a recognisable brand that makes followers stop scrolling because they recognise the visual style before they read the caption. But most creators think branding means a logo and a colour palette. They need a brand identity that works across platforms, content formats, merchandise, and potential sponsorship decks. They need a designer who understands that a creator\'s brand is not just how it looks -- it is how it feels across every touchpoint, from an Instagram story to a YouTube thumbnail to a hoodie.',
@@ -2100,8 +2074,1459 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with creators approaching 10K+ followers who are starting to get sponsorship inquiries but have no media kit or brand system. Offer a free brand strategy concept with visual direction samples as a starting point.',
     },
-  },
+  };
 
+export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
+  [key('short_form_editor_coaches')]: SHORT_FORM_EDITOR_COACHES,
+  [key('youtube_editor_youtube_creators')]: YOUTUBE_EDITOR_YOUTUBE_CREATORS,
+  [key('wordpress_developer_local_businesses')]: WORDPRESS_DEVELOPER_LOCAL_BUSINESSES,
+  [key('short_form_editor_creators')]: SHORT_FORM_EDITOR_CREATORS,
+  [key('short_form_editor_agencies')]: SHORT_FORM_EDITOR_AGENCIES,
+  [key('youtube_editor_course_creators')]: YOUTUBE_EDITOR_COURSE_CREATORS,
+  [key('podcast_clip_editor_podcasters')]: PODCAST_CLIP_EDITOR_PODCASTERS,
+  [key('podcast_clip_editor_business_owners')]: PODCAST_CLIP_EDITOR_BUSINESS_OWNERS,
+  [key('ad_creative_editor_ecommerce_brands')]: AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS,
+  [key('wordpress_developer_startups_saas')]: WORDPRESS_DEVELOPER_STARTUPS_SAAS,
+  [key('landing_page_developer_course_creators')]: LANDING_PAGE_DEVELOPER_COURSE_CREATORS,
+  [key('no_code_developer_agencies')]: NO_CODE_DEVELOPER_AGENCIES,
+  [key('automation_developer_agencies')]: AUTOMATION_DEVELOPER_AGENCIES,
+  [key('landing_page_designer_coaches')]: LANDING_PAGE_DESIGNER_COACHES,
+  [key('brand_designer_creators')]: BRAND_DESIGNER_CREATORS,
+  [key('video_editor_youtube_creators')]: VIDEO_EDITOR_YOUTUBE_CREATORS,
+  [key('frontend_developer_saas_startups')]: FRONTEND_DEVELOPER_SAAS_STARTUPS,
+  [key('ui_ux_designer_coaches')]: UI_UX_DESIGNER_COACHES,
+  [key('social_media_designer_creators')]: SOCIAL_MEDIA_DESIGNER_CREATORS,
+  [key('presentation_designer_startups')]: PRESENTATION_DESIGNER_STARTUPS,
+  [key('short_form_editor_local_businesses')]: derivePathContent(SHORT_FORM_EDITOR_COACHES, {
+    pathTitle: 'Short-Form Video for Local Businesses',
+    audienceInsight: 'Local business owners need content that drives foot traffic and phone calls, not viral views. Generic trending content generates likes from people who live nowhere near their business. They need short-form video that shows their specific value -- the quality of their service, the friendliness of their team -- in a way that makes local viewers choose them over competitors down the street.',
+    offerStrategy: 'Position as a local lead generation system, not a content service. Every clip should answer: why should someone in this town choose this business? Focus on location-specific content with local landmarks, local language, and clear calls to action like call now or visit us today.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$800-$1,500/mo',
+      intermediateRange: '$1,500-$3,000/mo',
+      premiumRange: '$3,000-$5,000/mo',
+      pricingLogic: 'Price as a monthly retainer for consistent local content. Frame pricing against traditional advertising costs like Google Ads or print. Value is measured in lead generation, not content volume.',
+    },
+    proposalAngle: {
+      headline: 'Short-Form Content That Gets Local Customers to Walk Through Your Door',
+      problem: 'Your social media content gets views from people who do not live near your business. You need content that reaches your local audience, shows why your business is the best choice, and drives real foot traffic.',
+      solution: 'I create short-form content designed for local reach -- showing your business in its best light, targeting your local audience, and driving real visits and calls, not just likes.',
+      nextStep: 'Send me your business address and what makes you unique. I will produce a sample 30-second local spotlight clip so you can see the approach before committing.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners who know social media is important but are tired of content that gets views from people who will never visit.',
+      problemItSolves: 'Most short-form content for local businesses is generic trending content that does not actually drive local customers. The result is views without visits.',
+      corePromise: 'A short-form content system focused on local reach, real business value, and clear calls to action -- so every clip drives more local customers through your door.',
+      whyThisWorks: 'Local businesses posting location-specific content get 3-5x more local engagement and foot traffic than those posting generic content, because local viewers choose businesses they feel connected to.',
+      nextStepCTA: 'Share this blueprint with local business owners posting social media content that is not translating to customers. Offer a free sample local spotlight clip.',
+    },
+  }),
+  [key('short_form_editor_personal_brands')]: derivePathContent(SHORT_FORM_EDITOR_COACHES, {
+    pathTitle: 'Short-Form Video for Personal Brands',
+    audienceInsight: 'Personal brand builders need short-form content that communicates who they are and why someone should follow them in under 30 seconds. Unlike businesses selling products, personal brands sell connection and expertise. Every clip must communicate value while building trust with the viewer.',
+    offerStrategy: 'Position as a personal brand storytelling system. The goal is authentic content that builds a following. Strategy is personality-first -- amplify the persons natural charisma through pacing and structure, not manufacture a fake persona.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$7,000/mo',
+      pricingLogic: 'Monthly retainer for consistent daily posting. Personal brand content compounds over time. Tier by posting frequency and platform count.',
+    },
+    proposalAngle: {
+      headline: 'Short-Form Content That Turns Your Expertise Into a Following',
+      problem: 'You know you should post short-form content to build your brand, but you lack time to film, edit, and post daily. Without consistent content, nobody knows who you are.',
+      solution: 'I handle the entire short-form process from clip selection to editing to captioning -- so you build a following without sacrificing time from your core work.',
+      nextStep: 'Send me your content links and what you want to be known for. I will produce a sample clip that captures your message.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Professionals and experts who know consistent short-form content builds a personal brand but lack time or editing skills.',
+      problemItSolves: 'Most professionals have expertise but no content strategy. They post inconsistently and fail to build momentum.',
+      corePromise: 'A done-for-you short-form system that captures your expertise, packages it for each platform, and posts consistently.',
+      whyThisWorks: 'Personal brands posting daily short-form content grow 5-10x faster than weekly posters, because the algorithm rewards consistency.',
+      nextStepCTA: 'Share this with professionals who have expertise but zero content output. Offer a free sample clip.',
+    },
+  }),
+  [key('youtube_editor_podcasters')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Video Podcasters',
+    audienceInsight: 'Video podcasters need to keep a static conversation visually interesting for 30-90 minutes. Unlike scripted content, podcasts have dead spots and minimal visual variety. Viewers leave not because the conversation is bad but because watching two people talk in the same frame for an hour is visually boring.',
+    offerStrategy: 'Position as a visual engagement editor. The core problem is keeping static conversations visually dynamic. Every edit decision adds visual variety -- b-roll, split screens, graphics -- that supports the dialogue without distracting from it.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$400-$800/episode',
+      intermediateRange: '$800-$1,500/episode',
+      premiumRange: '$1,500-$3,000/episode',
+      pricingLogic: 'Price per episode based on visual complexity. Standard two-person remote recording at low end; multi-cam in-studio production at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing That Makes Podcasts Visually Engaging',
+      problem: 'Your podcast conversations are valuable but the visual experience puts viewers to sleep. Static shots and repetitive framing cause viewers to click away even when content is great.',
+      solution: 'I edit your episodes with visual variety -- multi-cam switching, dynamic graphics, b-roll -- keeping viewers engaged through the entire conversation.',
+      nextStep: 'Send me an episode that loses viewers mid-way. I will edit a 5-minute sample with visual engagement techniques.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Video podcasters with great conversations who struggle with retention because the visual experience is static.',
+      problemItSolves: 'Podcasts edited for audio only ignore the visual experience. Viewers leave because watching a static two-shot for 60 minutes is boring.',
+      corePromise: 'Visual engagement editing for podcasts that keeps viewers watching through the entire episode.',
+      whyThisWorks: 'Podcasts adding visual variety every 15-30 seconds see 40-60% higher average view duration.',
+      nextStepCTA: 'Share this with podcasters who have good content but poor retention. Offer a free 5-minute sample.',
+    },
+  }),
+  [key('youtube_editor_educators')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Educational Content',
+    audienceInsight: 'Educational creators face a brutal retention challenge: viewers come to learn something specific and leave as soon as they get what they need. Every pause or tangent costs viewers. They need editing that respects the viewers time -- tighter pacing, visual aids at the right moments, and clear structure.',
+    offerStrategy: 'Position as an instructional design editor. The deliverable is a clear learning experience, not a well-cut video. Every edit serves one goal: making the lesson easier to understand and remember.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$300-$600/video',
+      intermediateRange: '$600-$1,200/video',
+      premiumRange: '$1,200-$2,500/video',
+      pricingLogic: 'Price per video based on instructional complexity. Simple talking-head tutorial at low end; multi-section lesson with animations at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing for Educators -- Lessons Students Actually Finish',
+      problem: 'Your educational content is valuable but viewers leave before the key points. Pacing and structure do not match how people learn from video.',
+      solution: 'I edit for instructional clarity -- tightening explanations, adding visuals at confusion points, structuring with chapter markers -- so students learn faster and watch longer.',
+      nextStep: 'Send me your most recent lesson. I will edit a 3-minute section redesigned for learning.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Educational creators with valuable lessons who lose viewers due to poor pacing and structure.',
+      problemItSolves: 'Educational videos edited for entertainment pacing waste viewers time. Pauses that feel natural in conversation feel wasteful in a lesson.',
+      corePromise: 'Instructional editing for educational content that helps students learn faster and watch to the end.',
+      whyThisWorks: 'Educational videos edited for clarity see 50-80% higher completion rates.',
+      nextStepCTA: 'Share with course creators whose completion rates are below 40%. Offer a free sample.',
+    },
+  }),
+  [key('youtube_editor_personal_brands')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Personal Brand Authority',
+    audienceInsight: 'Professionals building YouTube authority need videos that look as polished as their expertise. Unlike entertainment creators, authority builders face higher scrutiny -- a sloppy edit signals sloppy thinking. Their audience includes potential clients who judge competence by production quality.',
+    offerStrategy: 'Position as a professional authority editor. Every video should feel premium and build trust over time. The strategy is invisible editing: the viewer should notice the expertise, not the edit.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$500-$1,000/video',
+      intermediateRange: '$1,000-$2,000/video',
+      premiumRange: '$2,000-$4,000/video',
+      pricingLogic: 'Price per video based on polish level. Standard talking-head at low end; narrative production at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing That Makes Your Expertise Look Premium',
+      problem: 'Your videos are full of expertise but production quality does not match your thinking. You know polished video builds trust faster.',
+      solution: 'I edit your videos to professional standard -- clean audio, polished visuals, professional pacing -- making your expertise the star.',
+      nextStep: 'Send me your latest video. I will produce a 60-second premium edit sample.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Professionals and consultants building YouTube authority whose production quality does not match their expertise.',
+      problemItSolves: 'Poor production quality signals amateurism, causing viewers to question expertise.',
+      corePromise: 'Professional editing that makes every video look like it belongs on a premium channel.',
+      whyThisWorks: 'Professionals with premium production are perceived as 3x more authoritative.',
+      nextStepCTA: 'Share with professionals not seeing results from YouTube. Offer a free 60-second sample.',
+    },
+  }),
+  [key('wordpress_developer_coaches_consultants')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are professionals who need a website that builds trust and books consultations. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+  }),
+  [key('wordpress_developer_agencies')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Agencies',
+    audienceInsight: 'Agencies in the agency space are digital agencies that need to deliver client websites efficiently. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+  }),
+[key('podcast_clip_editor_creators')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+  pathTitle: 'Podcast Clip Editing for Creators -- Turn Episode Gold Into Social Growth',
+  audienceInsight: 'Creators who podcast as part of their content strategy need clips that work as standalone content on every platform. Unlike podcasters who treat clips as episode trailers, creators need clips that attract new followers who have never heard the full episode. Each clip must hook a cold audience, deliver standalone value, and end with a reason to follow.',
+  offerStrategy: 'Position as a creator audience growth system, not a clip extraction service. The strategy is cold-audience-first -- each clip is designed to attract viewers who do not know the creator and convert them into followers. The clips should work as standalone content that builds the creator brand even without context from the full episode.',
+  recommendedOfferType: 'retainer',
+  pricingGuidance: {
+    suggestedModel: 'flat_rate',
+    beginnerRange: '$600-$1,200/mo',
+    intermediateRange: '$1,200-$2,500/mo',
+    premiumRange: '$2,500-$5,000/mo',
+    pricingLogic: 'Price as a monthly retainer for consistent clip output. Creators benefit from volume and consistency. Tier by number of clips per week and platforms distributed to. The value is in audience growth, not clip production.',
+  },
+  proposalAngle: {
+    headline: 'Podcast Clips That Grow Your Following, Not Just Your Episode Listens',
+    problem: 'Your podcast episodes are full of valuable moments, but without strategic clip distribution, only your existing listeners know about them. You need clips that attract new followers who have never heard your show.',
+    solution: 'I extract and edit your podcast moments into standalone clips designed to attract cold audiences -- each clip hooks viewers in the first 3 seconds, delivers standalone value, and ends with a reason to follow you.',
+    nextStep: 'Send me your best recent episode. I will extract and edit one clip designed for cold audience growth so you can see the approach in action.',
+  },
+  blueprintAngle: {
+    whoItIsFor: 'Creators who podcast as part of their content strategy and need clips that attract new followers, not just promote existing episodes.',
+    problemItSolves: 'Most podcast clips are designed for existing listeners -- they assume context and treat the clip as a trailer for the full episode. Creators need clips that work as standalone content for cold audiences.',
+    corePromise: 'A cold-audience-first clip editing system that extracts podcast moments, hooks new viewers in 3 seconds, and converts them into followers -- not just episode listeners.',
+    whyThisWorks: 'Creators who distribute cold-audience-optimized podcast clips grow their following 3-5x faster than those using episode-trailer-style clips, because each clip acts as a standalone entry point to the creator brand.',
+    nextStepCTA: 'Share this blueprint with creators who podcast but see slow follower growth. Offer a free cold-audience clip edit of their best episode moment.',
+  },
+}),
+  [key('wordpress_developer_creators_course_sellers')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Creators & Course Sellers',
+    audienceInsight: 'Creators & Course Sellers in the creator and course space are creators who need a website that sells digital products and grows their audience. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Creators & Course Sellers. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Creators & Course Sellers -- A System Built for Your Success',
+      problem: 'You know Creators & Course Sellers need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Creators & Course Sellers. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators & Course Sellers. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators & Course Sellers and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Creators & Course Sellers solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Creators & Course Sellers -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators & Course Sellers with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators & Course Sellers. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+  }),
+  [key('podcast_clip_editor_coaches')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+    pathTitle: 'Podcast Clip for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who use podcast clips to build authority and attract clients. They need a podcast clip solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised podcast clip solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Podcast Clip for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Podcast Clip services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Podcast Clip can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable podcast clip solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated podcast clip system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored podcast clip solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Podcast Clip can improve their approach.',
+    },
+  }),
+  [key('podcast_clip_editor_agencies')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+    pathTitle: 'Podcast Clip for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies managing multiple client podcasts who need scalable clip production. They need a podcast clip solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised podcast clip solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Podcast Clip for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Podcast Clip services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Podcast Clip can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable podcast clip solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated podcast clip system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored podcast clip solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Podcast Clip can improve their approach.',
+    },
+  }),
+  [key('ad_creative_editor_marketing_agencies')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for Marketing Agencies',
+    audienceInsight: 'Marketing Agencies in the agency space are marketing agencies who need ad creative production at scale for multiple clients. They need a ad creative solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ad creative solution for Marketing Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative for Marketing Agencies -- A System Built for Your Success',
+      problem: 'You know Marketing Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Ad Creative services purpose-built for Marketing Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Marketing Agencies. I will provide a specific recommendation for how Ad Creative can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Marketing Agencies and need a reliable, scalable ad creative solution.',
+      problemItSolves: 'Most Marketing Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ad creative system designed specifically for Marketing Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Marketing Agencies with tailored ad creative solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Marketing Agencies. Offer a free consultation to identify how Ad Creative can improve their approach.',
+    },
+  }),
+  [key('ad_creative_editor_coaches')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches running paid ads who need creative that converts viewers into discovery calls. They need a ad creative solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ad creative solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Ad Creative services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Ad Creative can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable ad creative solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ad creative system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored ad creative solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Ad Creative can improve their approach.',
+    },
+  }),
+  [key('ad_creative_editor_saas_startups')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for SaaS Startups',
+    audienceInsight: 'SaaS Startups in the SaaS space are SaaS companies who need ad creative that drives trial signups and demo requests. They need a ad creative solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ad creative solution for SaaS Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative for SaaS Startups -- A System Built for Your Success',
+      problem: 'You know SaaS Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Ad Creative services purpose-built for SaaS Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving SaaS Startups. I will provide a specific recommendation for how Ad Creative can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with SaaS Startups and need a reliable, scalable ad creative solution.',
+      problemItSolves: 'Most SaaS Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ad creative system designed specifically for SaaS Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in SaaS Startups with tailored ad creative solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with SaaS Startups. Offer a free consultation to identify how Ad Creative can improve their approach.',
+    },
+  }),
+  [key('ad_creative_editor_local_businesses')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses running local ads who need creative that drives phone calls and walk-ins. They need a ad creative solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ad creative solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Ad Creative services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Ad Creative can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable ad creative solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ad creative system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored ad creative solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Ad Creative can improve their approach.',
+    },
+  }),
+  [key('landing_page_developer_coaches')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who need landing pages that book discovery calls. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_developer_saas_startups')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page for SaaS Startups',
+    audienceInsight: 'SaaS Startups in the SaaS space are SaaS startups who need landing pages that drive free trial signups. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for SaaS Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for SaaS Startups -- A System Built for Your Success',
+      problem: 'You know SaaS Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for SaaS Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving SaaS Startups. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with SaaS Startups and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most SaaS Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for SaaS Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in SaaS Startups with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with SaaS Startups. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_developer_local_businesses')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need landing pages that generate phone calls and bookings. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_developer_agencies')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver high-converting landing pages for multiple clients. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('no_code_developer_startups')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Startups',
+    audienceInsight: 'Startups in the startup space are early-stage startups who need MVPs and internal tools built without engineering teams. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Startups -- A System Built for Your Success',
+      problem: 'You know Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Startups. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Startups and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Startups with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Startups. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+  }),
+  [key('no_code_developer_coaches_consultants')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need automated client management and delivery systems. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+  }),
+  [key('no_code_developer_creators')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need automated content delivery and audience management systems. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+  }),
+  [key('no_code_developer_local_businesses')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need automated daily operations and customer management. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+  }),
+  [key('automation_developer_coaches_consultants')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need automated booking, follow-up, and client delivery systems. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+  }),
+  [key('automation_developer_ecommerce_brands')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Ecommerce Brands',
+    audienceInsight: 'Ecommerce Brands in the ecommerce space are ecommerce brands who need automated order processing and customer follow-up. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Ecommerce Brands. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Ecommerce Brands -- A System Built for Your Success',
+      problem: 'You know Ecommerce Brands need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Ecommerce Brands. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Ecommerce Brands. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Ecommerce Brands and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Ecommerce Brands solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Ecommerce Brands -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Ecommerce Brands with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Ecommerce Brands. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+  }),
+  [key('automation_developer_local_businesses')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need automated customer management and operations. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+  }),
+  [key('automation_developer_creators')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need automated audience management and digital product delivery. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+  }),
+  [key('landing_page_designer_course_creators')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page for Course Creators',
+    audienceInsight: 'Course Creators in the course creator space are course creators who need landing pages that sell online courses. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Course Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Course Creators -- A System Built for Your Success',
+      problem: 'You know Course Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Course Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Course Creators. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Course Creators and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Course Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Course Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Course Creators with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Course Creators. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_designer_saas_startups')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page for SaaS Startups',
+    audienceInsight: 'SaaS Startups in the SaaS space are SaaS startups who need landing pages that convert visitors into free trials. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for SaaS Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for SaaS Startups -- A System Built for Your Success',
+      problem: 'You know SaaS Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for SaaS Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving SaaS Startups. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with SaaS Startups and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most SaaS Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for SaaS Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in SaaS Startups with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with SaaS Startups. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_designer_local_businesses')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need landing pages that turn visitors into paying customers. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('landing_page_designer_agencies')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver high-converting landing pages for clients at scale. They need a landing page solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised landing page solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Landing Page services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Landing Page can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable landing page solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated landing page system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored landing page solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Landing Page can improve their approach.',
+    },
+  }),
+  [key('brand_designer_coaches_consultants')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need a professional brand identity that commands premium rates. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+  }),
+  [key('brand_designer_startups')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Startups',
+    audienceInsight: 'Startups in the startup space are startups who need a polished brand that attracts investors and customers. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Startups -- A System Built for Your Success',
+      problem: 'You know Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Startups. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Startups and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Startups with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Startups. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+  }),
+  [key('brand_designer_local_businesses')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need a brand refresh to stand out and attract customers. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+  }),
+  [key('brand_designer_agencies')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver complete brand identity projects for more clients. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+  }),
+  [key('video_editor_coaches')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who need narrative-driven videos that build trust and book calls. They need a video solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised video solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Video for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Video services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Video can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable video solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated video system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored video solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Video can improve their approach.',
+    },
+  }),
+  [key('video_editor_agencies')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need reliable video editing production for multiple clients. They need a video solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised video solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Video for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Video services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Video can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable video solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated video system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored video solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Video can improve their approach.',
+    },
+  }),
+  [key('video_editor_local_businesses')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need professional video content that attracts customers. They need a video solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised video solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Video for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Video services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Video can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable video solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated video system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored video solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Video can improve their approach.',
+    },
+  }),
+  [key('video_editor_personal_brands')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video for Personal Brands',
+    audienceInsight: 'Personal Brands in the personal brand space are personal brand builders who need premium video content that grows their influence. They need a video solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised video solution for Personal Brands. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Video for Personal Brands -- A System Built for Your Success',
+      problem: 'You know Personal Brands need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Video services purpose-built for Personal Brands. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Personal Brands. I will provide a specific recommendation for how Video can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Personal Brands and need a reliable, scalable video solution.',
+      problemItSolves: 'Most Personal Brands solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated video system designed specifically for Personal Brands -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Personal Brands with tailored video solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Personal Brands. Offer a free consultation to identify how Video can improve their approach.',
+    },
+  }),
+  [key('frontend_developer_agencies')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend for Agencies',
+    audienceInsight: 'Agencies in the agency space are digital agencies who need reliable frontend delivery across client projects. They need a frontend solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised frontend solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Frontend for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Frontend services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Frontend can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable frontend solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated frontend system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored frontend solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Frontend can improve their approach.',
+    },
+  }),
+  [key('frontend_developer_startups')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend for Startups',
+    audienceInsight: 'Startups in the startup space are early-stage startups who need a modern responsive website to launch. They need a frontend solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised frontend solution for Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Frontend for Startups -- A System Built for Your Success',
+      problem: 'You know Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Frontend services purpose-built for Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Startups. I will provide a specific recommendation for how Frontend can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Startups and need a reliable, scalable frontend solution.',
+      problemItSolves: 'Most Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated frontend system designed specifically for Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Startups with tailored frontend solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Startups. Offer a free consultation to identify how Frontend can improve their approach.',
+    },
+  }),
+  [key('frontend_developer_creators')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend for Creators',
+    audienceInsight: 'Creators in the creator space are creators and personal brands who need a custom-designed responsive website. They need a frontend solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised frontend solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Frontend for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Frontend services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how Frontend can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable frontend solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated frontend system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored frontend solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how Frontend can improve their approach.',
+    },
+  }),
+  [key('frontend_developer_local_businesses')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need a modernised online presence with a responsive site. They need a frontend solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised frontend solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Frontend for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Frontend services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Frontend can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable frontend solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated frontend system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored frontend solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Frontend can improve their approach.',
+    },
+  }),
+  [key('ui_ux_designer_saas_startups')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'UI/UX for SaaS Startups',
+    audienceInsight: 'SaaS Startups in the SaaS space are SaaS startups who need product UI design that improves user retention. They need a ui/ux solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ui/ux solution for SaaS Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'UI/UX for SaaS Startups -- A System Built for Your Success',
+      problem: 'You know SaaS Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide UI/UX services purpose-built for SaaS Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving SaaS Startups. I will provide a specific recommendation for how UI/UX can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with SaaS Startups and need a reliable, scalable ui/ux solution.',
+      problemItSolves: 'Most SaaS Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ui/ux system designed specifically for SaaS Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in SaaS Startups with tailored ui/ux solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with SaaS Startups. Offer a free consultation to identify how UI/UX can improve their approach.',
+    },
+  }),
+  [key('ui_ux_designer_creators')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'UI/UX for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need a polished brand experience across their digital presence. They need a ui/ux solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ui/ux solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'UI/UX for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide UI/UX services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how UI/UX can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable ui/ux solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ui/ux system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored ui/ux solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how UI/UX can improve their approach.',
+    },
+  }),
+  [key('ui_ux_designer_agencies')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'UI/UX for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to scale design delivery without growing their team. They need a ui/ux solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ui/ux solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'UI/UX for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide UI/UX services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how UI/UX can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable ui/ux solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ui/ux system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored ui/ux solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how UI/UX can improve their approach.',
+    },
+  }),
+  [key('ui_ux_designer_local_businesses')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'UI/UX for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need a modern trustworthy digital presence. They need a ui/ux solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised ui/ux solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'UI/UX for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide UI/UX services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how UI/UX can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable ui/ux solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated ui/ux system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored ui/ux solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how UI/UX can improve their approach.',
+    },
+  }),
+  [key('social_media_designer_coaches')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who need polished social media visuals that build authority. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+  }),
+  [key('social_media_designer_agencies')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver on-brand social graphics at scale. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+  }),
+  [key('social_media_designer_local_businesses')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need professional social presence that attracts local customers. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+  }),
+  [key('social_media_designer_ecommerce_brands')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Ecommerce Brands',
+    audienceInsight: 'Ecommerce Brands in the ecommerce space are ecommerce brands who need compelling social media creatives that drive sales. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Ecommerce Brands. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Ecommerce Brands -- A System Built for Your Success',
+      problem: 'You know Ecommerce Brands need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Ecommerce Brands. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Ecommerce Brands. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Ecommerce Brands and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Ecommerce Brands solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Ecommerce Brands -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Ecommerce Brands with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Ecommerce Brands. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+  }),
+  [key('presentation_designer_coaches_consultants')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need polished sales and workshop presentations that win clients. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+  }),
+  [key('presentation_designer_agencies')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need world-class presentation design to win more pitches. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+  }),
+  [key('presentation_designer_creators')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need engaging webinar and course presentations. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+  }),
+  [key('presentation_designer_business_owners')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Business Owners',
+    audienceInsight: 'Business Owners in the business owner space are business owners who need professional stakeholder presentations. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Business Owners. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Business Owners -- A System Built for Your Success',
+      problem: 'You know Business Owners need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Business Owners. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Business Owners. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Business Owners and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Business Owners solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Business Owners -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Business Owners with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Business Owners. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+  }),
 };
 
 export function getAllPathContentKeys(): PathContentKey[] {
@@ -2111,4 +3536,3 @@ export function getAllPathContentKeys(): PathContentKey[] {
 export function getPathContentEntry(key: PathContentKey): OfferEngineeringPathContent | undefined {
   return OFFER_ENGINEERING_PATH_CONTENT[key];
 }
-

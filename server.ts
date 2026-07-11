@@ -33,6 +33,20 @@ async function startServer() {
   }
   const db = getFirestore(admin.app(), process.env.VITE_FIREBASE_FIRESTORE_DB_ID);
   
+  const verifyIdToken = async (req: express.Request): Promise<string | null> => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return null;
+    }
+    const token = authHeader.split("Bearer ")[1];
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      return decodedToken.uid;
+    } catch (error) {
+      return null;
+    }
+  };
+
   const getDb = () => db;
 
   // Initialize Stripe lazily
@@ -90,6 +104,14 @@ async function startServer() {
       // Handle product purchase flow
       if (!productId || !userId) {
         return res.status(400).json({ error: "Missing required parameters (productId or userId)" });
+      }
+
+      const decodedUid = await verifyIdToken(req);
+      if (!decodedUid) {
+        return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+      }
+      if (decodedUid !== userId) {
+        return res.status(403).json({ error: "Forbidden: User ID mismatch" });
       }
 
       // 1. Fetch Product from Firestore
@@ -238,6 +260,14 @@ async function startServer() {
       const { sessionId, userId } = req.body;
       if (!sessionId || !userId) {
         return res.status(400).json({ error: "Missing required parameters" });
+      }
+
+      const decodedUid = await verifyIdToken(req);
+      if (!decodedUid) {
+        return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+      }
+      if (decodedUid !== userId) {
+        return res.status(403).json({ error: "Forbidden: User ID mismatch" });
       }
 
       const stripeClient = getStripe();

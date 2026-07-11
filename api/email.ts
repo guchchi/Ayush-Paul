@@ -432,7 +432,18 @@ async function handleSendConfirmation(req: VercelRequest, res: VercelResponse) {
     if (!workshopId || !registrationId) return res.status(400).json(stepError("validate_params", "Missing workshopId or registrationId", 400));
 
     let regDoc, reg;
-    try { regDoc = await getDb().collection("workshop_registrations").doc(registrationId).get(); if (!regDoc.exists) return res.status(404).json(stepError("registration_lookup", "Not found", 404)); reg = regDoc.data()!; } catch (e: any) { return res.status(500).json(stepError("registration_lookup", e.message)); }
+    try { 
+      regDoc = await getDb().collection("workshop_registrations").doc(registrationId).get(); 
+      if (!regDoc.exists) return res.status(404).json(stepError("registration_lookup", "Not found", 404)); 
+      reg = regDoc.data()!; 
+    } catch (e: any) { 
+      return res.status(500).json(stepError("registration_lookup", e.message)); 
+    }
+
+    if (reg.confirmationSentAt) {
+      console.log(`[Email] Confirmation email already sent for registration: ${registrationId}. Skipping.`);
+      return res.json({ success: true, message: "Confirmation already sent, skipping." });
+    }
 
     let workshopDoc, workshop;
     try { workshopDoc = await getDb().collection("workshops").doc(workshopId).get(); if (!workshopDoc.exists) return res.status(404).json(stepError("workshop_lookup", "Not found", 404)); workshop = workshopDoc.data()!; } catch (e: any) { return res.status(500).json(stepError("workshop_lookup", e.message)); }
@@ -597,16 +608,48 @@ async function handleSendCancellation(req: VercelRequest, res: VercelResponse) {
 const ADMIN_UIDS = ["80OJfcmVXCRNmSZuthVU68K6vJq2"];
 
 async function handleNewsletterSend(req: VercelRequest, res: VercelResponse) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ error: "Unauthorized" });
+  const serviceKey = req.headers["x-service-key"] || req.headers["x-api-key"] || req.query?.key;
+  const internalSecret = process.env.INTERNAL_API_KEY;
+  const isInternal = internalSecret && serviceKey === internalSecret;
 
-  const token = authHeader.split("Bearer ")[1];
+  let decodedToken: any = null;
+
+  if (isInternal) {
+    decodedToken = { email: "ap877@cornell.edu", uid: "INTERNAL_SERVICE" };
+  } else {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const token = authHeader.split("Bearer ")[1];
+    try {
+      getDb(); // Ensure Firebase initialized
+      decodedToken = await admin.auth().verifyIdToken(token);
+      const ADMIN_EMAILS = ["ap877@cornell.edu"];
+      const isEmailAdmin = decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email);
+      const isHardcodedAdmin = ADMIN_UIDS.includes(decodedToken.uid);
+      const hasAdminClaim = decodedToken.admin === true || decodedToken.role === "admin";
+      
+      const allowlistStr = process.env.ADMIN_EMAIL_ALLOWLIST;
+      let isAllowedByAllowlist = false;
+      if (allowlistStr && decodedToken.email) {
+        const allowedEmails = allowlistStr.split(",").map(e => e.trim().toLowerCase());
+        if (allowedEmails.includes(decodedToken.email.toLowerCase())) {
+          isAllowedByAllowlist = true;
+        }
+      }
+
+      if (!isHardcodedAdmin && !isEmailAdmin && !hasAdminClaim && !isAllowedByAllowlist) {
+        return res.status(403).json({ error: "Access Denied: Admin privileges required" });
+      }
+    } catch (e: any) {
+      console.error("[Newsletter] Token verification failed:", e);
+      return res.status(401).json({ error: "Unauthorized: Invalid token" });
+    }
+  }
+
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const ADMIN_EMAILS = ["ap877@cornell.edu"];
-    const isEmailAdmin = decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email);
-    if (!ADMIN_UIDS.includes(decodedToken.uid) && !isEmailAdmin) return res.status(403).json({ error: "Access Denied" });
-
     if (!process.env.RESEND_API_KEY) return res.status(500).json({ error: "RESEND_API_KEY not configured", code: "MISSING_API_KEY" });
 
     initResend();
@@ -725,9 +768,62 @@ async function handleNewsletterUnsubscribe(req: VercelRequest, res: VercelRespon
   }
 }
 
-// ============================================================
-// ROUTER
-// ============================================================
+async function isAdminOrInternalService(req: VercelRequest): Promise<boolean> {
+  // 1. Check if internal service key matches INTERNAL_API_KEY
+  const serviceKey = req.headers["x-service-key"] || req.headers["x-api-key"] || req.query?.key;
+  const internalSecret = process.env.INTERNAL_API_KEY;
+  if (internalSecret && serviceKey === internalSecret) {
+    return true;
+  }
+
+  // 2. Check if a valid Firebase token is provided
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split("Bearer ")[1];
+    try {
+      getDb(); // Ensure Firebase initialized
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      
+      // Check hardcoded UIDs
+      if (ADMIN_UIDS.includes(decodedToken.uid)) {
+        return true;
+      }
+      
+      // Check custom claims
+      if (decodedToken.admin === true || decodedToken.role === "admin") {
+        return true;
+      }
+
+      // Check email allowlist from environment
+      const allowlistStr = process.env.ADMIN_EMAIL_ALLOWLIST;
+      if (allowlistStr && decodedToken.email) {
+        const allowedEmails = allowlistStr.split(",").map(e => e.trim().toLowerCase());
+        if (allowedEmails.includes(decodedToken.email.toLowerCase())) {
+          return true;
+        }
+      }
+      
+      // Check hardcoded email fallback from existing code (ap877@cornell.edu)
+      const ADMIN_EMAILS = ["ap877@cornell.edu"];
+      if (decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email)) {
+        return true;
+      }
+    } catch (error) {
+      console.error("[Auth] Token verification failed:", error);
+    }
+  }
+
+  return false;
+}
+
+function verifyEmailServiceKey(req: VercelRequest): boolean {
+  const serviceKey = req.headers["x-email-service-key"] || req.headers["x-api-key"] || req.query?.key;
+  const emailServiceSecret = process.env.EMAIL_SERVICE_KEY;
+  if (!emailServiceSecret || !serviceKey || serviceKey !== emailServiceSecret) {
+    return false;
+  }
+  return true;
+}
 
 const HANDLERS: Record<string, (req: VercelRequest, res: VercelResponse) => Promise<any>> = {
   "schedule-email": handleScheduleEmail,
@@ -739,6 +835,7 @@ const HANDLERS: Record<string, (req: VercelRequest, res: VercelResponse) => Prom
   "send-confirmation-all": handleSendConfirmationAll,
   "send-reminder": handleSendReminder,
   "send-live": handleSendLive,
+  "send-live-notification": handleSendLive,
   "send-recording": handleSendRecording,
   "send-cancellation": handleSendCancellation,
   "newsletter-send": handleNewsletterSend,
@@ -751,14 +848,52 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const workshopId = req.body?.workshopId || req.query?.workshopId;
   console.log("[EMAIL REQUEST] action=", action, "workshopId=", workshopId);
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+  // Unsubscribe supports GET and POST, everything else requires POST
+  if (action === "newsletter-unsubscribe") {
+    if (req.method !== "POST" && req.method !== "GET") {
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
+  } else {
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
   }
 
   const handlerFn = HANDLERS[action as string];
 
   if (!handlerFn) {
     return res.status(400).json(stepError("unknown_action", `Unknown: ${action}`));
+  }
+
+  // Security Hardening: Enforce Admin / Internal service key checks
+  const adminActions = [
+    "send-confirmation-all",
+    "send-reminder",
+    "send-live",
+    "send-live-notification",
+    "send-recording",
+    "send-cancellation",
+    "newsletter-send"
+  ];
+
+  const serviceActions = [
+    "schedule-email",
+    "process-scheduled-emails",
+    "process-email-triggers",
+    "trigger-abandoned-check",
+    "trigger-enrollment-email"
+  ];
+
+  if (adminActions.includes(action as string)) {
+    const isAuthorized = await isAdminOrInternalService(req);
+    if (!isAuthorized) {
+      return res.status(403).json({ error: "Forbidden: Admin access required" });
+    }
+  } else if (serviceActions.includes(action as string)) {
+    const isAuthorized = verifyEmailServiceKey(req);
+    if (!isAuthorized) {
+      return res.status(401).json({ error: "Unauthorized: Invalid or missing service key" });
+    }
   }
 
   try {

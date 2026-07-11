@@ -6,7 +6,7 @@ import {
   Package, Lightbulb, Clock, Shield, Zap, DollarSign, TrendingUp, ArrowRight, Copy,
   Edit3, Save, FileDown
 } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
+import { useOfferEngineeringStore, getEngineeringDataForService, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { exportBlueprintPDF, polishedOfferTitle } from '../../lib/offer-engineering/pdf-export';
 import { cn } from '../../lib/utils';
@@ -115,6 +115,9 @@ export function OfferBlueprintStep() {
     setTimeout(() => setToast(null), 2500);
   }, []);
 
+  const { pathContent } = useModule2ResolvedContent();
+  const blueprintAngle = pathContent?.content.blueprintAngle;
+
   const engineeringData = serviceId ? getEngineeringDataForService(serviceId) : undefined;
   const serviceLabel = engineeringData?.label ?? service ?? 'Your Service';
   const audience = getAudienceLabel(niche || '', market || '');
@@ -141,9 +144,9 @@ export function OfferBlueprintStep() {
   const generatedBlueprint = useMemo((): OfferBlueprint => ({
     productizedService: `${serviceLabel} ${offerTypeLabel === 'retainer' ? 'Retainer' : offerTypeLabel === 'one_time_project' ? 'One-Time Project' : 'Milestone Based'}`,
     offerName: `${serviceLabel} ${offerTypeLabel === 'retainer' ? 'Retainer' : offerTypeLabel === 'one_time_project' ? 'One-Time Project' : 'Milestone Based'}`,
-    whoItIsFor: generateWhoItIsFor(cat, audience, deliverables, niche),
-    problemItSolves: generateProblemItSolves(cat, audience, serviceLabel, niche),
-    corePromise: generateCorePromise(cat, serviceLabel, uniqueMechanism, niche),
+    whoItIsFor: blueprintAngle?.whoItIsFor || generateWhoItIsFor(cat, audience, deliverables, niche),
+    problemItSolves: blueprintAngle?.problemItSolves || generateProblemItSolves(cat, audience, serviceLabel, niche),
+    corePromise: blueprintAngle?.corePromise || generateCorePromise(cat, serviceLabel, uniqueMechanism, niche),
     deliverables,
     uniqueMechanism: uniqueMechanism || 'A structured delivery system designed for consistency and quality',
     scopeLimits: { ...scopeLimits },
@@ -154,10 +157,10 @@ export function OfferBlueprintStep() {
     tieredPricing: { ...tieredPricing },
     valueBasedPricing: { ...valueBasedPricing },
     pricingStructure: `${pricingDesc} \u2014 ${modelLabel}`,
-    whyThisWorks: generateWhyThisWorks(cat, audience, deliverables, uniqueMechanism, niche),
-    nextStepCTA: generateNextStepCTA(cat, audience, offerTypeLabel, niche),
+    whyThisWorks: blueprintAngle?.whyThisWorks || generateWhyThisWorks(cat, audience, deliverables, uniqueMechanism, niche),
+    nextStepCTA: blueprintAngle?.nextStepCTA || generateNextStepCTA(cat, audience, offerTypeLabel, niche),
     proposalSummary: { ...proposalSummary, deliverables },
-  }), [serviceLabel, offerTypeLabel, cat, audience, deliverables, uniqueMechanism, scopeLimits, valueAmplifier, pricingModel, finalPrice, tieredPricing, valueBasedPricing, pricingDesc, modelLabel, positioning, proposalSummary, niche]);
+  }), [serviceLabel, offerTypeLabel, cat, audience, deliverables, uniqueMechanism, scopeLimits, valueAmplifier, pricingModel, finalPrice, tieredPricing, valueBasedPricing, pricingDesc, modelLabel, positioning, proposalSummary, niche, blueprintAngle]);
 
   const [editDraft, setEditDraft] = useState<OfferBlueprint | null>(null);
   const draft = editDraft ?? offerBlueprint ?? generatedBlueprint;

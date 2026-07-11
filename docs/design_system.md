@@ -20,7 +20,7 @@ Antigravity is designed around three core visual pillars:
 
 ## 2. Global Design Tokens (Foundations)
 
-Standard CSS tokens are centralized in [src/index.css](file:///c:/Users/ap877/OneDrive/Documents/2026/AYUSH%20PAUL/Ayush-Paul/src/index.css) to ensure absolute structural consistency. Avoid hardcoded values in local stylesheets or inline component definitions.
+Standard CSS tokens are centralized in [src/index.css](../src/index.css) to ensure absolute structural consistency. Avoid hardcoded values in local stylesheets or inline component definitions.
 
 ### A. Layout & Space Scale (8pt Grid System)
 All padding, margin, gaps, and widths must conform to the strict 8pt grid scale:
@@ -134,7 +134,7 @@ Glow filters project standard color codes configured via RGB variables for seaml
 Motion in Antigravity is cinematic and natural. It is governed by a unified system of custom cubic-bezier curves and spring constraints.
 
 ### A. Physics-Engine Specifications
-Standard interactive physics values are centralized inside [src/lib/motion-presets.ts](file:///c:/Users/ap877/OneDrive/Documents/2026/AYUSH%20PAUL/Ayush-Paul/src/lib/motion-presets.ts):
+Standard interactive physics values are centralized inside [src/lib/motion-presets.ts](../src/lib/motion-presets.ts):
 
 *   **`EASING.PREMIUM`** (`[0.16, 1, 0.3, 1]`): This custom cubic-bezier curve provides a highly weighted acceleration profile followed by a long, elegant deceleration tail. Perfect for page transitions, drawer disclosures, and card reveals.
 *   **`EASING.BOUNCE`** (`[0.34, 1.56, 0.64, 1]`): A snappy, organic spring that generates a tiny overshoot on interaction. Perfect for status indicators, active tabs, and badges.

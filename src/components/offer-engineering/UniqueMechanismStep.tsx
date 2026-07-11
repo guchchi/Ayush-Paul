@@ -1,26 +1,26 @@
 import { useMemo, useState } from 'react';
 import { Lightbulb, Check, PencilLine } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 
 export function UniqueMechanismStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
-  const nicheId = useOpportunityMapStore((s) => s.nicheId);
   const uniqueMechanism = useOfferEngineeringStore((s) => s.uniqueMechanism);
   const setUniqueMechanism = useOfferEngineeringStore((s) => s.setUniqueMechanism);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, nicheId } = useModule2ResolvedContent();
 
-  const defaultMechanisms = engineeringData?.uniqueMechanisms ?? [];
-  const nicheSpecific = nicheId ? engineeringData?.nicheMechanisms?.[nicheId] : undefined;
-  const mechanisms = nicheSpecific ?? defaultMechanisms;
+  const pathMechanisms = pathContent?.content.uniqueMechanisms;
+
+  const mechanisms = useMemo(() => {
+    if (pathMechanisms && pathMechanisms.length > 0) {
+      return pathMechanisms.map((m) => m.name);
+    }
+    const nicheSpecific = nicheId ? engineeringData?.nicheMechanisms?.[nicheId] : undefined;
+    return nicheSpecific ?? engineeringData?.uniqueMechanisms ?? [];
+  }, [pathMechanisms, engineeringData, nicheId]);
   const isEmpty = uniqueMechanism.trim().length === 0;
 
   const isSuggestedSelection = mechanisms.includes(uniqueMechanism);
@@ -73,7 +73,7 @@ export function UniqueMechanismStep() {
           <div className="flex items-center gap-1.5 text-neutral-450">
             <Lightbulb size={13} className="text-[#0058be]" />
             <span className="text-[10px] font-bold uppercase tracking-wider">
-              {nicheSpecific ? `Suggested for your niche` : `Suggested Systems`}
+              {!pathMechanisms?.length && nicheId && engineeringData?.nicheMechanisms?.[nicheId] ? `Suggested for your niche` : `Suggested Systems`}
             </span>
           </div>
 

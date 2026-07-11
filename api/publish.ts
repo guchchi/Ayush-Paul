@@ -23,7 +23,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Auth check
   const apiKey = req.headers['x-api-key'];
-  if (!apiKey || apiKey !== process.env.PUBLISH_API_KEY) {
+  const publishSecret = process.env.PUBLISH_API_KEY;
+  if (!publishSecret || !apiKey || apiKey !== publishSecret) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

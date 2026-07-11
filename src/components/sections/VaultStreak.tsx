@@ -51,16 +51,21 @@ export function VaultStreak({ enrollments }: Props) {
       checkedRef.current.add(days);
       const user = auth.currentUser;
       if (!user) return;
-      fetch('/api/generate-streak-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.uid, currentStreakDays: days }),
-      }).then(async (res) => {
-        const data = await res.json();
-        if (data.rewardsAwarded?.length > 0) {
-          setRewards(data.rewardsAwarded.map((r: any) => r.rewardValue));
-        }
-      }).catch((err) => console.error('[Streak] Report error:', err));
+      user.getIdToken().then((token) => {
+        fetch('/api/generate-streak-report', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ userId: user.uid, currentStreakDays: days }),
+        }).then(async (res) => {
+          const data = await res.json();
+          if (data.rewardsAwarded?.length > 0) {
+            setRewards(data.rewardsAwarded.map((r: any) => r.rewardValue));
+          }
+        }).catch((err) => console.error('[Streak] Report error:', err));
+      }).catch((err) => console.error('[Streak] Token retrieval failed:', err));
     }
   }, [days]);
 

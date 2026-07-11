@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const fileContent = fs.readFileSync('c:/Users/ap877/2026/Ayush-Paul/src/App.tsx', 'utf8');
+const fileContent = fs.readFileSync(path.resolve(__dirname, 'App.tsx'), 'utf8');
 const lines = fileContent.split('\n');
 
 function sliceLines(start, end) {
@@ -18,7 +18,7 @@ import { MagneticButton } from '../ui/MagneticButton';
 import { cn } from '@/src/lib/utils';
 `;
 
-fs.mkdirSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections', { recursive: true });
+fs.mkdirSync(path.resolve(__dirname, 'components/sections'), { recursive: true });
 
 // 1. HeroSection.tsx
 const heroContent = sectionImports + 
@@ -29,7 +29,7 @@ const heroContent = sectionImports +
   sliceLines(501, 523) + "\n" +
   sliceLines(523, 686).replace(/const Hero =/, 'export const HeroSection =');
 
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/HeroSection.tsx', heroContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/HeroSection.tsx'), heroContent);
 
 // 2. ProofSection.tsx (StatsDashboard: 361-392, BrandEcosystem: 393-424, AuthoritySignals: 833-948, Testimonials: 3315-3373) // Added SectionReveal here just to be safe
 const proofContent = sectionImports + 
@@ -49,27 +49,27 @@ const proofContent = sectionImports +
   );
 };\n`;
 
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/ProofSection.tsx', proofContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/ProofSection.tsx'), proofContent);
 
 // 3. AboutSection.tsx (About: 686-760)
 const aboutContent = sectionImports + 
   sliceLines(686, 760).replace(/const About =/, 'export const AboutSection =');
 
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/AboutSection.tsx', aboutContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/AboutSection.tsx'), aboutContent);
 
 // 4. SkillsSection.tsx (Skills: 760-833) (PremiumSkills is an external component, we will use it in Home)
 const skillsContent = sectionImports + 
   "import { ChevronRight } from 'lucide-react';\n" +
   sliceLines(760, 833).replace(/const Skills =/, 'export const SkillsSection =');
 
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/SkillsSection.tsx', skillsContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/SkillsSection.tsx'), skillsContent);
 
 // 5. FeaturedProjectsSection.tsx (Projects: 949-1209)
 const projectsContent = sectionImports + 
   "import { Github, ExternalLink, ArrowRight } from 'lucide-react';\n" +
   sliceLines(949, 1209).replace(/const Projects =/, 'export const FeaturedProjectsSection =');
 
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/FeaturedProjectsSection.tsx', projectsContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/FeaturedProjectsSection.tsx'), projectsContent);
 
 // 6. ExperienceSection.tsx (Services: 1209-1279, Courses: 1279-1353)
 const expContent = sectionImports + 
@@ -84,7 +84,7 @@ const expContent = sectionImports +
     </>
   );
 };\n`;
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/ExperienceSection.tsx', expContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/ExperienceSection.tsx'), expContent);
 
 // 7. CTASection.tsx (Hiring: 1353-1397, Contact: 3374-3552, Newsletter: 3552-3668)
 const ctaContent = sectionImports + 
@@ -103,6 +103,6 @@ const ctaContent = sectionImports +
     </div>
   );
 };\n`;
-fs.writeFileSync('c:/Users/ap877/2026/Ayush-Paul/src/components/sections/CTASection.tsx', ctaContent);
+fs.writeFileSync(path.resolve(__dirname, 'components/sections/CTASection.tsx'), ctaContent);
 
 console.log('Successfully wrote section files!');

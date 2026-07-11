@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DollarSign, Check, TrendingUp, Layers, Target } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 import type { PricingModel } from '../../types/offer-engineering';
 
@@ -38,7 +37,6 @@ const PRICING_CONTEXT: Record<string, string> = {
 };
 
 export function PricingStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const pricingModel = useOfferEngineeringStore((s) => s.pricingModel);
   const finalPrice = useOfferEngineeringStore((s) => s.finalPrice);
   const tieredPricing = useOfferEngineeringStore((s) => s.tieredPricing);
@@ -49,15 +47,21 @@ export function PricingStep() {
   const setValueBasedPricing = useOfferEngineeringStore((s) => s.setValueBasedPricing);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
 
-  const availableModels: PricingModel[] = useMemo(
-    () => (engineeringData?.pricingModels ?? Object.keys(PRICING_META)) as PricingModel[],
-    [engineeringData],
-  );
+  const pricingGuidance = pathContent?.content.pricingGuidance;
+
+  const availableModels: PricingModel[] = useMemo(() => {
+    if (pricingGuidance) {
+      const suggested = pricingGuidance.suggestedModel as PricingModel;
+      const base = (engineeringData?.pricingModels ?? Object.keys(PRICING_META)) as PricingModel[];
+      if (!base.includes(suggested)) {
+        return [suggested, ...base];
+      }
+      return base;
+    }
+    return (engineeringData?.pricingModels ?? Object.keys(PRICING_META)) as PricingModel[];
+  }, [engineeringData, pricingGuidance]);
 
   const flatValid = pricingModel === 'flat_rate' && finalPrice !== null && finalPrice > 0;
   const tieredValid = pricingModel === 'tiered' && tieredPricing.starterPrice !== null && tieredPricing.proPrice !== null && tieredPricing.premiumPrice !== null;
@@ -126,13 +130,13 @@ export function PricingStep() {
       </div>
 
       {/* Service-aware pricing context */}
-      {serviceId && PRICING_CONTEXT[serviceId] && (
+      {(pricingGuidance?.pricingLogic || (serviceId && PRICING_CONTEXT[serviceId])) && (
         <div className="flex items-start gap-4 p-5 rounded-2xl border border-[#eff4ff] bg-[#eff4ff]/60">
           <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-white border border-[#eff4ff] text-[#0058be] shrink-0 mt-0.5 shadow-sm">
             <DollarSign size={14} className="text-[#0058be]" />
           </span>
           <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-            {PRICING_CONTEXT[serviceId]}
+            {pricingGuidance?.pricingLogic || PRICING_CONTEXT[serviceId ?? '']}
           </p>
         </div>
       )}
