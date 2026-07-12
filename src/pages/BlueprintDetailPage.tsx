@@ -84,9 +84,9 @@ export const BlueprintDetailPage = () => {
   const handleFreeDownload = async () => {
     if (!product) return;
 
-    // Target blueprint: route directly to engine instead of download
+    // Target blueprint: route directly to Module 1 workspace
     if (slug === TARGET_ENGINE_SLUG) {
-      navigate(`/blueprints/${slug}/engine`);
+      navigate('/workspace/client-acquisition');
       return;
     }
 
@@ -113,9 +113,9 @@ export const BlueprintDetailPage = () => {
   const handlePremiumUpgrade = async () => {
     if (!product) return;
 
-    // Target blueprint: route directly to engine instead of checkout
+    // Target blueprint: route directly to Module 1 workspace
     if (slug === TARGET_ENGINE_SLUG) {
-      navigate(`/blueprints/${slug}/engine`);
+      navigate('/workspace/client-acquisition');
       return;
     }
 
