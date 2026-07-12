@@ -124,12 +124,16 @@ export const BlueprintDetailPage = () => {
     setIsCheckingOut(true);
     trackEvent('checkout_start', { product_id: product.id, product_name: product.title });
     try {
+      const token = await user.getIdToken();
       const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
       if (appliedCoupon?.code) body.couponCode = appliedCoupon.code;
       if (appliedCoupon?.assignedToCreator) body.creatorCode = appliedCoupon.assignedToCreator;
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
       const data = await response.json();

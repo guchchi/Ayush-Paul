@@ -209,13 +209,17 @@ export const LabDetailPage = () => {
     });
 
     try {
+      const token = await user.getIdToken();
       const body: Record<string, any> = { productId: product.id, userId: user.uid, email: user.email };
       if (appliedCoupon?.code) body.couponCode = appliedCoupon.code;
       if (appliedCoupon?.assignedToCreator) body.creatorCode = appliedCoupon.assignedToCreator;
 
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
 

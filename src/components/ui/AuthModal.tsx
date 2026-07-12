@@ -29,9 +29,15 @@ export const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
     const refCode = params.get('ref');
     if (!refCode) return;
     try {
+      const user = auth.currentUser;
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (user) {
+        const token = await user.getIdToken();
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const res = await fetch('/api/claim-referral', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ refCode, newUserId }),
       });
       if (res.ok) {

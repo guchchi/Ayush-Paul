@@ -31,6 +31,18 @@ function getDb() {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Content-Type", "application/json");
 
+  // Disable completely in production
+  if (process.env.NODE_ENV === "production") {
+    return res.status(404).json({ error: "Not Found" });
+  }
+
+  // Require DEBUG_API_KEY in dev
+  const debugKey = process.env.DEBUG_API_KEY;
+  const incomingKey = req.headers["x-api-key"] || req.query?.key;
+  if (!debugKey || incomingKey !== debugKey) {
+    return res.status(403).json({ error: "Access Denied" });
+  }
+
   const saProjectId = getAdminProjectId();
   const resolvedDbId = process.env.VITE_FIREBASE_FIRESTORE_DB_ID || "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a";
   const clientEnvProjectId = process.env.VITE_FIREBASE_PROJECT_ID || "(not set in Vercel)";

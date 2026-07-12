@@ -1,23 +1,25 @@
 import { useMemo } from 'react';
 import { Shield, Clock, Edit3, MessageSquare, Hash, RefreshCw } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent, scopeDefaultsToScopeLimits } from '../../lib/offer-engineering';
 import { getServiceCategory } from '../../lib/blueprint-content';
 import { cn } from '../../lib/utils';
 import type { ScopeLimits } from '../../types/offer-engineering';
 
 export function ScopeProtectionStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const scopeLimits = useOfferEngineeringStore((s) => s.scopeLimits);
   const setScopeLimits = useOfferEngineeringStore((s) => s.setScopeLimits);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
 
-  const defaults = engineeringData?.scopeLimitsDefaults;
+  const pathScopeDefaults = pathContent?.content.scopeDefaults;
+
+  const defaults = useMemo(() => {
+    if (pathScopeDefaults) {
+      return scopeDefaultsToScopeLimits(pathScopeDefaults);
+    }
+    return engineeringData?.scopeLimitsDefaults;
+  }, [pathScopeDefaults, engineeringData]);
 
   const cat = getServiceCategory(serviceId);
   const scopeExplanation = {
@@ -139,8 +141,8 @@ export function ScopeProtectionStep() {
           const Icon = field.icon;
           return (
             <div key={field.key} className="space-y-1.5">
-              <div className="flex items-center gap-1.5 text-neutral-450">
-                <Icon size={12} className="text-neutral-450" />
+              <div className="flex items-center gap-1.5 text-neutral-400">
+                <Icon size={12} className="text-neutral-400" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">{field.label}</span>
               </div>
               <input
@@ -153,7 +155,7 @@ export function ScopeProtectionStep() {
                 placeholder={field.placeholder}
                 className="w-full h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
               />
-              <p className="text-[10px] text-neutral-450 pl-1">{field.hint}</p>
+              <p className="text-[10px] text-neutral-400 pl-1">{field.hint}</p>
             </div>
           );
         })}

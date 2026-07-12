@@ -8,21 +8,38 @@ import type {
  *  Helper to cast string literals to PathContentKey
  * ─────────────────────────────────────────────── */
 
+import {
+  derivePathContent,
+  video_editor_youtube_creators as VIDEO_EDITOR_YOUTUBE_CREATORS,
+  frontend_developer_saas_startups as FRONTEND_DEVELOPER_SAAS_STARTUPS,
+  ui_ux_designer_coaches as UI_UX_DESIGNER_COACHES,
+  social_media_designer_creators as SOCIAL_MEDIA_DESIGNER_CREATORS,
+  presentation_designer_startups as PRESENTATION_DESIGNER_STARTUPS,
+} from './archetype-anchors';
+
+import {
+  AD_CREATIVE_MECHANISMS,
+  AUTOMATION_DEV_MECHANISMS,
+  BRAND_DESIGN_MECHANISMS,
+  FRONTEND_DEV_MECHANISMS,
+  LANDING_PAGE_DEV_MECHANISMS,
+  LANDING_PAGE_DESIGN_MECHANISMS,
+  NO_CODE_DEV_MECHANISMS,
+  PODCAST_CLIP_MECHANISMS,
+  PRESENTATION_DESIGN_MECHANISMS,
+  SHORT_FORM_EDITOR_MECHANISMS,
+  SOCIAL_DESIGN_MECHANISMS,
+  UIUX_MECHANISMS,
+  VIDEO_EDITOR_MECHANISMS,
+  WP_DEV_MECHANISMS,
+  YOUTUBE_EDITOR_MECHANISMS,
+} from './mechanism-packs';
+
 function key(s: string): PathContentKey {
   return s as PathContentKey;
 }
 
-/* ───────────────────────────────────────────────
- *  Path-specific content entries
- *
- *  Key format: `${subTrackId}_${marketId}`
- *  Match against MARKET_ADAPTER_MAP keys.
- * ─────────────────────────────────────────────── */
-
-export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
-
-  /* ── Short-Form Editor × Coaches ── */
-  [key('short_form_editor_coaches')]: {
+const SHORT_FORM_EDITOR_COACHES: OfferEngineeringPathContent = {
     pathTitle: 'Coach Short-Form Authority System',
     audienceInsight:
       'Coaches sell trust and transformation, not products. Their short-form content needs to demonstrate expertise in 15–60 seconds — a single clip must communicate authority, empathy, and a clear next step. Generic trending edits fail here because coaches compete on credibility, not entertainment.',
@@ -157,10 +174,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Send this blueprint to coaching prospects as a retainer proposal. The best next step is a 15-minute call to review one recent recording and identify your first three clip opportunities.',
     },
-  },
+  };
 
-  /* ── YouTube Editor × YouTube Creators ── */
-  [key('youtube_editor_youtube_creators')]: {
+const YOUTUBE_EDITOR_YOUTUBE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'YouTube Retention Editing System',
     audienceInsight:
       'YouTube creators live and die by audience retention. The difference between a 40% and 60% retention rate can double a video\'s long-term views. These creators need an editor who thinks in retention curves, not timelines — someone who can spot a pacing dip before it happens and restructure a section to keep viewers watching.',
@@ -295,10 +311,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with YouTube creators who track their analytics. The next step is a 15-minute call to review their last 3 retention graphs and identify the single highest-impact editing change for their next video.',
     },
-  },
+  };
 
-  /* ── WordPress Developer × Local Businesses ── */
-  [key('wordpress_developer_local_businesses')]: {
+const WORDPRESS_DEVELOPER_LOCAL_BUSINESSES: OfferEngineeringPathContent = {
     pathTitle: 'Local Business Lead Engine — WordPress',
     audienceInsight:
       'Local business owners are not looking for a beautiful website. They are looking for more phone calls, walk-ins, and bookings. They have been burned by agencies that overcharged for fancy designs that did not bring in a single customer. They need a site that loads fast on a phone, shows up in Google Maps results, and makes it dead simple for a customer to call or book.',
@@ -433,10 +448,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Send this blueprint to local business owners who are unhappy with their current website. Offer a free 15-minute local SEO audit of their current site as a no-pressure starting point.',
     },
-  },
+  };
 
-  /* /--- Short-Form Editor x Creators ---/ */
-  [key('short_form_editor_creators')]: {
+const SHORT_FORM_EDITOR_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Creator Short-Form Content Engine',
     audienceInsight:
       'Creators on Instagram and TikTok compete for scroll-stop in the first 1.5 seconds. Unlike coaches who build authority, general creators win or lose on entertainment value, relatability, and trend alignment. A single well-timed pattern interrupt or trending audio sync can push a video past 100K views, but a flat edit kills reach before the algorithm even measures engagement. These creators need an editor who thinks in hooks per second, not in timeline cuts.',
@@ -571,11 +585,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with creators who post less than 3 times per week and blame "not enough time." Offer a free 15-second clip edit from their best-performing recent video as a risk-free trial.',
     },
-  },
+  };
 
-
-  /* /--- Short-Form Editor x Agencies ---/ */
-  [key('short_form_editor_agencies')]: {
+const SHORT_FORM_EDITOR_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency White-Label Short-Form Department',
     audienceInsight:
       'Digital and social media agencies sell short-form content to their clients but rarely have in-house editing capacity that scales. They either overpay freelancers per clip, burn out their own team, or deliver inconsistent quality that damages client retention. They need a white-label editing partner who can absorb unpredictable volume spikes, match brand style guides across multiple clients, and deliver broadcast-quality clips on agency timelines without the agency ever admitting an outsourced hand touched the timeline.',
@@ -710,11 +722,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who are turning down content work because their team is at capacity. Offer a free sample clip from one of their existing clients as a quality proof point.',
     },
-  },
+  };
 
-
-  /* /--- YouTube Editor x Course Creators ---/ */
-  [key('youtube_editor_course_creators')]: {
+const YOUTUBE_EDITOR_COURSE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Course Creator YouTube Funnel System',
     audienceInsight:
       'Course creators use YouTube as their primary lead generation channel -- free value on YouTube converts to paid course sales. Unlike entertainment creators who optimise for watch time alone, course creators need editing that balances educational depth with retention pacing. A video that teaches effectively but bleeds 60% of viewers by the halfway mark fails as a funnel asset. These creators need an editor who understands curriculum pacing, authority positioning, and the specific cadence of a free-to-paid conversion journey.',
@@ -849,11 +859,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with course creators who have a YouTube presence but are not seeing course sales from their video content. Offer a free 10-minute audit of their best-performing video\'s conversion potential as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Podcast Clip Editor x Podcasters ---/ */
-  [key('podcast_clip_editor_podcasters')]: {
+const PODCAST_CLIP_EDITOR_PODCASTERS: OfferEngineeringPathContent = {
     pathTitle: 'Podcast Clip Distribution Engine',
     audienceInsight:
       'Podcasters produce hours of long-form audio or video every week but capture only a fraction of that content as short-form social clips. The best podcast moments -- hot takes, guest stories, actionable advice -- stay buried inside episodes that most listeners never discover. Podcasters need an editor who can listen with a clip mentality: identifying the 60-second moments that work as standalone social posts, not just cutting out sections of the episode. The difference between a podcast clip that gets 10K views and one that gets 100 views is often entirely in the editing -- the pacing, the subtitle placement, the visual hook on a static podcast face.',
@@ -988,11 +996,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with podcasters who post clips inconsistently or not at all. Offer a free 3-clip sample from their most recent episode as a proof of concept.',
     },
-  },
+  };
 
-
-  /* /--- Podcast Clip Editor x Business Owners ---/ */
-  [key('podcast_clip_editor_business_owners')]: {
+const PODCAST_CLIP_EDITOR_BUSINESS_OWNERS: OfferEngineeringPathContent = {
     pathTitle: 'Thought Leadership Clip System for Business Owners',
     audienceInsight:
       'Business owners, founders, and executives start podcasts to build authority and attract clients, but they do not have time to think about clip strategy. They are not trying to become content creators -- they are trying to position themselves as the go-to expert in their industry. Every clip needs to reinforce a specific authority narrative: "this person is the person to call when you have [specific problem]." Generic "here is a tip" clips dilute their positioning. They need an editor who understands business narrative, not just social media trends.',
@@ -1127,11 +1133,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with business owners who have a podcast but feel like it is not generating the business impact they expected. Offer a free 30-minute authority pillar mapping session as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Ad Creative Editor x Ecommerce Brands ---/ */
-  [key('ad_creative_editor_ecommerce_brands')]: {
+const AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS: OfferEngineeringPathContent = {
     pathTitle: 'DTC Ad Creative System -- Scroll-Stopping Assets That Convert',
     audienceInsight:
       'Ecommerce brands running paid social ads live and die by creative performance. A winning ad creative can sustain a 2-3x ROAS for weeks; a flat creative burns through ad spend in hours. Unlike organic content editors who optimise for engagement, ad creative editors optimise for a single metric: cost per acquisition. Every split-second decision in the edit -- the hook framing, the product reveal timing, the social proof placement, the CTA urgency -- determines whether the pixel sees a conversion or a bounce. These brands need an editor who understands direct response principles, not just visual storytelling.',
@@ -1266,11 +1270,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with DTC brand owners or marketing directors who are frustrated with inconsistent ad creative performance. Offer a free analysis of their last 3 winning ad creatives as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- WordPress Developer x Startups/SaaS ---/ */
-  [key('wordpress_developer_startups_saas')]: {
+const WORDPRESS_DEVELOPER_STARTUPS_SAAS: OfferEngineeringPathContent = {
     pathTitle: 'SaaS Marketing Site -- WordPress for Startups',
     audienceInsight:
       'Early-stage SaaS startups need a marketing website that converts visitors into sign-ups, trials, or demos. Unlike local businesses that optimise for phone calls, SaaS startups optimise for a single metric: free trial or demo request conversion rate. They need a site that communicates value proposition in under 3 seconds, handles A/B testing infrastructure, integrates with analytics and CRM tools, and can be iterated on weekly as the product and messaging evolve. They do not need a beautiful brochure; they need a conversion machine that their growth team can run experiments on.',
@@ -1405,11 +1407,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with SaaS founders or growth leads who are spending money on traffic but not seeing trial sign-up conversion improve. Offer a free 30-point conversion audit of their current site as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Landing Page Developer x Course Creators ---/ */
-  [key('landing_page_developer_course_creators')]: {
+const LANDING_PAGE_DEVELOPER_COURSE_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Course Creator Launch Page System',
     audienceInsight:
       'Course creators sell their programs through launch windows -- typically a 5-14 day cart open period where every page visit, email click, and social post needs to drive toward a single conversion goal: course purchase. Unlike general landing page developers who optimise for evergreen lead generation, course creators need pages designed for urgency, scarcity, and launch-time psychology. The page needs to communicate the course value, overcome objections, present testimonials, display the curriculum, and drive purchase decisions -- all within a compressed launch window where every hour of lost conversion opportunity is gone forever.',
@@ -1544,11 +1544,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with course creators who are planning their next launch and want to improve their conversion rate. Offer a free 10-point launch page audit as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- No-Code Developer x Agencies ---/ */
-  [key('no_code_developer_agencies')]: {
+const NO_CODE_DEVELOPER_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency No-Code Delivery Wing',
     audienceInsight:
       'Digital agencies are being asked to build more than websites -- clients want automation tools, internal dashboards, client portals, and custom workflows that differentiate their service. But agencies cannot afford to staff full-time developers for every client request, and traditional software development is too slow and expensive for agency budgets. No-code platforms (Bubble, Airtable, Make, Softr) let agencies deliver software-like solutions at a fraction of the cost and timeline. They need a no-code specialist who can take a client brief and deliver a working tool in days, not months.',
@@ -1683,11 +1681,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who are considering adding software development to their offering. Offer a free solution blueprint for a client project they are currently scoping.',
     },
-  },
+  };
 
-
-  /* /--- Automation Developer x Agencies ---/ */
-  [key('automation_developer_agencies')]: {
+const AUTOMATION_DEVELOPER_AGENCIES: OfferEngineeringPathContent = {
     pathTitle: 'Agency Automation Backend -- Scale Delivery Without Hiring',
     audienceInsight:
       'Agencies run on processes -- client onboarding, reporting, invoicing, project management, email sequences -- but most of these processes are manual, repetitive, and error-prone. Every manual handoff between tools or team members creates a delay and a potential failure point. Agencies need an automation specialist who can audit their workflows, identify automation opportunities, and build Make/Zapier/Relay integrations that eliminate manual steps. The ROI is measured in hours saved per week, not in aesthetic improvement.',
@@ -1822,11 +1818,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with agency owners who complain their team is "too busy" but cannot point to what is consuming their time. Offer a free 30-minute workflow audit discovery call as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Landing Page Designer x Coaches ---/ */
-  [key('landing_page_designer_coaches')]: {
+const LANDING_PAGE_DESIGNER_COACHES: OfferEngineeringPathContent = {
     pathTitle: 'Coach Discovery Page System',
     audienceInsight:
       'Coaches sell high-ticket services ($1K-$10K+ programs) through a combination of content marketing, discovery calls, and email nurturing. Their landing page is the bridge between free content and paid conversation -- it needs to convince a prospect who has consumed some free value to book a discovery call. Unlike ecommerce or SaaS landing pages that optimise for a direct purchase, coach landing pages optimise for a single action: booking a call. The page needs to communicate the coach\'s transformation promise, establish authority, overcome "not sure if this is for me" objections, and make booking a call feel like the natural next step rather than a high-pressure sales move.',
@@ -1961,11 +1955,9 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with coaches who are getting traffic but not calls. Offer a free 15-point landing page audit as a starting point.',
     },
-  },
+  };
 
-
-  /* /--- Brand Designer x Creators ---/ */
-  [key('brand_designer_creators')]: {
+const BRAND_DESIGNER_CREATORS: OfferEngineeringPathContent = {
     pathTitle: 'Creator Brand Identity System',
     audienceInsight:
       'Creators on Instagram, YouTube, and TikTok are waking up to the reality that good content alone is not enough -- they need a recognisable brand that makes followers stop scrolling because they recognise the visual style before they read the caption. But most creators think branding means a logo and a colour palette. They need a brand identity that works across platforms, content formats, merchandise, and potential sponsorship decks. They need a designer who understands that a creator\'s brand is not just how it looks -- it is how it feels across every touchpoint, from an Instagram story to a YouTube thumbnail to a hoodie.',
@@ -2100,8 +2092,3934 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStepCTA:
         'Share this blueprint with creators approaching 10K+ followers who are starting to get sponsorship inquiries but have no media kit or brand system. Offer a free brand strategy concept with visual direction samples as a starting point.',
     },
-  },
+  };
 
+export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
+  [key('short_form_editor_coaches')]: SHORT_FORM_EDITOR_COACHES,
+  [key('youtube_editor_youtube_creators')]: YOUTUBE_EDITOR_YOUTUBE_CREATORS,
+  [key('wordpress_developer_local_businesses')]: WORDPRESS_DEVELOPER_LOCAL_BUSINESSES,
+  [key('short_form_editor_creators')]: SHORT_FORM_EDITOR_CREATORS,
+  [key('short_form_editor_agencies')]: SHORT_FORM_EDITOR_AGENCIES,
+  [key('youtube_editor_course_creators')]: YOUTUBE_EDITOR_COURSE_CREATORS,
+  [key('podcast_clip_editor_podcasters')]: PODCAST_CLIP_EDITOR_PODCASTERS,
+  [key('podcast_clip_editor_business_owners')]: PODCAST_CLIP_EDITOR_BUSINESS_OWNERS,
+  [key('ad_creative_editor_ecommerce_brands')]: AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS,
+  [key('wordpress_developer_startups_saas')]: WORDPRESS_DEVELOPER_STARTUPS_SAAS,
+  [key('landing_page_developer_course_creators')]: LANDING_PAGE_DEVELOPER_COURSE_CREATORS,
+  [key('no_code_developer_agencies')]: NO_CODE_DEVELOPER_AGENCIES,
+  [key('automation_developer_agencies')]: AUTOMATION_DEVELOPER_AGENCIES,
+  [key('landing_page_designer_coaches')]: LANDING_PAGE_DESIGNER_COACHES,
+  [key('brand_designer_creators')]: BRAND_DESIGNER_CREATORS,
+  [key('video_editor_youtube_creators')]: VIDEO_EDITOR_YOUTUBE_CREATORS,
+  [key('frontend_developer_saas_startups')]: FRONTEND_DEVELOPER_SAAS_STARTUPS,
+  [key('ui_ux_designer_coaches')]: UI_UX_DESIGNER_COACHES,
+  [key('social_media_designer_creators')]: SOCIAL_MEDIA_DESIGNER_CREATORS,
+  [key('presentation_designer_startups')]: PRESENTATION_DESIGNER_STARTUPS,
+  [key('short_form_editor_local_businesses')]: derivePathContent(SHORT_FORM_EDITOR_COACHES, {
+    pathTitle: 'Short-Form Video for Local Businesses',
+    audienceInsight: 'Local business owners need content that drives foot traffic and phone calls, not viral views. Generic trending content generates likes from people who live nowhere near their business. They need short-form video that shows their specific value -- the quality of their service, the friendliness of their team -- in a way that makes local viewers choose them over competitors down the street.',
+    offerStrategy: 'Position as a local lead generation system, not a content service. Every clip should answer: why should someone in this town choose this business? Focus on location-specific content with local landmarks, local language, and clear calls to action like call now or visit us today.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$800-$1,500/mo',
+      intermediateRange: '$1,500-$3,000/mo',
+      premiumRange: '$3,000-$5,000/mo',
+      pricingLogic: 'Price as a monthly retainer for consistent local content. Frame pricing against traditional advertising costs like Google Ads or print. Value is measured in lead generation, not content volume.',
+    },
+    proposalAngle: {
+      headline: 'Short-Form Content That Gets Local Customers to Walk Through Your Door',
+      problem: 'Your social media content gets views from people who do not live near your business. You need content that reaches your local audience, shows why your business is the best choice, and drives real foot traffic.',
+      solution: 'I create short-form content designed for local reach -- showing your business in its best light, targeting your local audience, and driving real visits and calls, not just likes.',
+      nextStep: 'Send me your business address and what makes you unique. I will produce a sample 30-second local spotlight clip so you can see the approach before committing.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners who know social media is important but are tired of content that gets views from people who will never visit.',
+      problemItSolves: 'Most short-form content for local businesses is generic trending content that does not actually drive local customers. The result is views without visits.',
+      corePromise: 'A short-form content system focused on local reach, real business value, and clear calls to action -- so every clip drives more local customers through your door.',
+      whyThisWorks: 'Local businesses posting location-specific content get 3-5x more local engagement and foot traffic than those posting generic content, because local viewers choose businesses they feel connected to.',
+      nextStepCTA: 'Share this blueprint with local business owners posting social media content that is not translating to customers. Offer a free sample local spotlight clip.',
+    },
+    deliverables: [
+      {
+        label: 'Local Spotlight Clip Series',
+        description: 'Quick 15--30 second videos showcasing the business location, team members, atmosphere, and unique service experience -- filmed on-site with authentic customer interaction moments and location cues',
+        whyItMatters: 'Local customers choose businesses they recognise and trust. Location-specific clips build familiarity that drives foot traffic and phone calls more effectively than any trending content.',
+      },
+      {
+        label: 'Location-Tagged Content Package',
+        description: 'Geo-targeted short-form posts with local landmarks, neighbourhood references, location tags, and local-specific captions that signal to the algorithm and viewers that this content is relevant to their area',
+        whyItMatters: 'Short-form content without location context generates views from outside the service area. Locally-tagged content ensures impressions come from potential customers within driving distance.',
+      },
+      {
+        label: 'Service Promotion Reel Set',
+        description: 'Individual 15--30 second reels for each main service or product offering, demonstrating the service experience, highlighting what makes this business\'s version better, and including a direct call to action',
+        whyItMatters: 'Local businesses offer multiple services but customers only know about the ones they see promoted. A service-specific reel set makes customers aware of the full range of offerings, increasing average order value.',
+      },
+      {
+        label: 'Local Event Coverage Content',
+        description: 'Event-specific short-form content for grand openings, seasonal sales, special promotions, or community events -- with location tags, time-sensitive language, and call-to-action overlays',
+        whyItMatters: 'Local events create urgency and community connection. Short-form coverage amplifies the event\'s reach beyond flyers and word-of-mouth, driving attendance from customers who might otherwise miss it.',
+      },
+      {
+        label: 'Customer Experience Highlight Reel',
+        description: 'Behind-the-scenes clips showing the service experience, customer interactions, product quality, and team personality -- capturing authentic moments that differentiate the business from competitors',
+        whyItMatters: 'Short-form content that shows the real customer experience builds trust and reduces the perceived risk of trying a new local business. Authentic highlights convert viewers into first-time customers.',
+      },
+    ],
+    uniqueMechanisms: SHORT_FORM_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Geo-Targeted Hashtag Strategy',
+        description: 'Location-specific hashtag research and implementation for each post, combining local neighbourhood tags, city tags, and niche-local tags to maximise reach within the service radius',
+        whyItWorks: 'Local short-form content with geo-targeted hashtags reaches 3x more local viewers than posts using generic broad hashtags, because the algorithm uses hashtags as a primary location-signal for content distribution.',
+      },
+      {
+        label: 'Click-to-Call CTA Optimisation',
+        description: 'Every post includes a clear, frictionless call to action with click-to-call button, direction link, or booking link overlaid in the video and repeated in the caption',
+        whyItWorks: 'Half of local short-form viewers who take action never leave the app to complete it. In-app call and direction CTAs convert viewers to customers within the moment of interest, before the impulse fades.',
+      },
+      {
+        label: 'Local Trend Adaptation Service',
+        description: 'Weekly identification of viral audio clips, formats, and trends that the local business can adapt to their context, with a feasibility score and production timeline for each',
+        whyItWorks: 'Local businesses cannot create new trends but can ride existing ones. Local trend adaptation captures algorithm-favoured reach while keeping the content grounded in the business\'s specific location and offering.',
+      },
+    ],
+  }),
+  [key('short_form_editor_personal_brands')]: derivePathContent(SHORT_FORM_EDITOR_COACHES, {
+    pathTitle: 'Short-Form Video for Personal Brands',
+    audienceInsight: 'Personal brand builders need short-form content that communicates who they are and why someone should follow them in under 30 seconds. Unlike businesses selling products, personal brands sell connection and expertise. Every clip must communicate value while building trust with the viewer.',
+    offerStrategy: 'Position as a personal brand storytelling system. The goal is authentic content that builds a following. Strategy is personality-first -- amplify the persons natural charisma through pacing and structure, not manufacture a fake persona.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$7,000/mo',
+      pricingLogic: 'Monthly retainer for consistent daily posting. Personal brand content compounds over time. Tier by posting frequency and platform count.',
+    },
+    proposalAngle: {
+      headline: 'Short-Form Content That Turns Your Expertise Into a Following',
+      problem: 'You know you should post short-form content to build your brand, but you lack time to film, edit, and post daily. Without consistent content, nobody knows who you are.',
+      solution: 'I handle the entire short-form process from clip selection to editing to captioning -- so you build a following without sacrificing time from your core work.',
+      nextStep: 'Send me your content links and what you want to be known for. I will produce a sample clip that captures your message.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Professionals and experts who know consistent short-form content builds a personal brand but lack time or editing skills.',
+      problemItSolves: 'Most professionals have expertise but no content strategy. They post inconsistently and fail to build momentum.',
+      corePromise: 'A done-for-you short-form system that captures your expertise, packages it for each platform, and posts consistently.',
+      whyThisWorks: 'Personal brands posting daily short-form content grow 5-10x faster than weekly posters, because the algorithm rewards consistency.',
+      nextStepCTA: 'Share this with professionals who have expertise but zero content output. Offer a free sample clip.',
+    },
+    deliverables: [
+      {
+        label: 'Daily Hook Clip Production',
+        description: 'A daily 15--30 second clip extracted from the personal brand\'s content or created from scratch, with a compelling hook designed to stop the scroll and communicate one key value point',
+        whyItMatters: 'Personal brands grow through daily visibility. A consistent daily clip pipeline ensures the brand stays top-of-mind with followers, feeding the algorithm\'s preference for frequent posting with high-quality content.',
+      },
+      {
+        label: 'Authority Tip Series',
+        description: 'Quick expertise snippets that deliver a specific, actionable insight in under 60 seconds -- building authority one bite-sized lesson at a time while making viewers want to learn more from this person',
+        whyItMatters: 'Authority is built through demonstrated expertise, not claimed expertise. Each tip video proves the brand knows their subject, making followers more likely to trust and invest in their premium offerings.',
+      },
+      {
+        label: 'Personal Story Reel Set',
+        description: 'Behind-the-scenes and personal narrative clips showing the person behind the brand -- their workspace, routines, challenges, and personality moments that create emotional connection with viewers',
+        whyItMatters: 'Personal brand followers stay for the person, not just the content. Story reels that reveal the human behind the expertise create the emotional investment that transforms casual viewers into loyal followers.',
+      },
+      {
+        label: 'Educational Mini-Series',
+        description: 'Multi-part short-form content teaching a specific skill or concept over several posts, with each part ending on a cliffhanger or preview that encourages viewers to follow and watch the next installment',
+        whyItMatters: 'Series content drives repeat viewership and follower growth. A mini-series that teaches something valuable across multiple posts gives viewers a reason to follow and return, building audience momentum.',
+      },
+      {
+        label: 'Long-Form Repurposing Package',
+        description: 'Existing long-form content (podcasts, webinars, presentations, interviews) mined for short-form clip opportunities and edited into 5--10 platform-optimised clips per long-form asset',
+        whyItMatters: 'Most personal brands already have valuable long-form content that generates a fraction of its potential reach. Repurposed clips extend that content\'s lifespan and reach dramatically, turning one production into weeks of daily posts.',
+      },
+    ],
+    uniqueMechanisms: SHORT_FORM_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Caption and Hashtag Strategy',
+        description: 'Every clip is delivered with platform-optimised captions following proven engagement patterns, relevant hashtag sets, and CTA text that drives comments, saves, and profile visits',
+        whyItWorks: 'Short-form success depends as much on the caption as the video. Optimised captions with strategic CTAs convert passive viewers into active followers by giving them a reason to engage beyond watching.',
+      },
+      {
+        label: 'Profile Optimization Guide',
+        description: 'Biography, link-in-bio, and profile branding recommendations that align with the short-form content strategy, ensuring viewers who visit the profile from a clip find a cohesive brand experience',
+        whyItWorks: 'A compelling clip that leads to a confusing profile loses the viewer immediately. Profile optimization ensures the content-to-profile transition is seamless, converting clip viewers into followers at higher rates.',
+      },
+      {
+        label: 'Monthly Format Performance Analysis',
+        description: 'Monthly review of which content formats, hooks, and topics drive the most follower growth, engagement, and profile visits, with specific format recommendations for the next month\'s content calendar',
+        whyItWorks: 'Personal brand growth accelerates when content decisions are data-driven. Regular format analysis reveals the specific content patterns that resonate with the target audience, enabling the brand to double down on effective approaches.',
+      },
+    ],
+  }),
+  [key('youtube_editor_podcasters')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Video Podcasters',
+    audienceInsight: 'Video podcasters need to keep a static conversation visually interesting for 30-90 minutes. Unlike scripted content, podcasts have dead spots and minimal visual variety. Viewers leave not because the conversation is bad but because watching two people talk in the same frame for an hour is visually boring.',
+    offerStrategy: 'Position as a visual engagement editor. The core problem is keeping static conversations visually dynamic. Every edit decision adds visual variety -- b-roll, split screens, graphics -- that supports the dialogue without distracting from it.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$400-$800/episode',
+      intermediateRange: '$800-$1,500/episode',
+      premiumRange: '$1,500-$3,000/episode',
+      pricingLogic: 'Price per episode based on visual complexity. Standard two-person remote recording at low end; multi-cam in-studio production at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing That Makes Podcasts Visually Engaging',
+      problem: 'Your podcast conversations are valuable but the visual experience puts viewers to sleep. Static shots and repetitive framing cause viewers to click away even when content is great.',
+      solution: 'I edit your episodes with visual variety -- multi-cam switching, dynamic graphics, b-roll -- keeping viewers engaged through the entire conversation.',
+      nextStep: 'Send me an episode that loses viewers mid-way. I will edit a 5-minute sample with visual engagement techniques.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Video podcasters with great conversations who struggle with retention because the visual experience is static.',
+      problemItSolves: 'Podcasts edited for audio only ignore the visual experience. Viewers leave because watching a static two-shot for 60 minutes is boring.',
+      corePromise: 'Visual engagement editing for podcasts that keeps viewers watching through the entire episode.',
+      whyThisWorks: 'Podcasts adding visual variety every 15-30 seconds see 40-60% higher average view duration.',
+      nextStepCTA: 'Share this with podcasters who have good content but poor retention. Offer a free 5-minute sample.',
+    },
+    deliverables: [
+      {
+        label: 'Visual Engagement Edit',
+        description: 'Multi-cam switching, dynamic graphics, transcript-driven b-roll, and visual variety inserted throughout the episode -- every 15--30 seconds of static frame gets a visual change to maintain viewer attention',
+        whyItMatters: 'Podcast episodes lasting 30--90 minutes lose viewers to visual boredom, not poor content. Visual engagement editing keeps the viewer watching through long conversations by providing constant visual stimulation that supports the audio.',
+      },
+      {
+        label: 'Retention Curve Optimisation',
+        description: 'The episode is edited with the retention graph as a reference: pattern interrupts every 90 seconds, pacing acceleration at known drop-off points, and content restructuring where the graph shows audience loss',
+        whyItMatters: 'YouTube\'s algorithm rewards videos that retain viewers. A retention-optimised edit keeps more viewers watching longer, which signals quality to the algorithm and increases the episode\'s reach to new audiences.',
+      },
+      {
+        label: 'Podcast Clip Highlight Package',
+        description: 'The top 3--5 moments from each episode (hot takes, guest stories, controversial opinions, quotable insights) cut into 30--90 second promotional clips for YouTube Shorts, Instagram, and TikTok',
+        whyItMatters: 'Long-form podcast episodes generate most of their views from clips shared on other platforms. A systematic clip package turns every episode into a week of promotional content that drives new viewers to the full episode.',
+      },
+      {
+        label: 'Chapter Marker and Timestamp System',
+        description: 'Structured chapter markers with descriptive titles, visual chapter cards, and pinned comment timestamps that let viewers navigate directly to the topics they care about',
+        whyItMatters: 'Podcast viewers often skip to specific segments rather than watching the full episode. Detailed chapter navigation improves the viewing experience for topic-seekers while keeping them in the video ecosystem.',
+      },
+      {
+        label: 'Audio Quality and Mix Pass',
+        description: 'Audio cleaned, balanced across multiple speakers, volume levelled, background noise removed, and compression applied to ensure consistent audio quality throughout regardless of recording environment differences',
+        whyItMatters: 'Podcast viewers will tolerate average video but will not tolerate poor audio. Clean, balanced audio is the foundation of a watchable podcast episode, directly impacting how long viewers stay engaged.',
+      },
+    ],
+    uniqueMechanisms: YOUTUBE_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Thumbnail and Title Testing',
+        description: 'Custom thumbnail design and click-optimised title creation for each episode, with A/B testing across platforms to identify the highest-CTR combination',
+        whyItWorks: 'Podcast episodes compete for clicks against every other YouTube video published that day. A compelling thumbnail and title can double CTR, giving a well-edited episode the initial audience it needs to gain algorithmic traction.',
+      },
+      {
+        label: 'Show Notes and SEO Description',
+        description: 'SEO-optimised video descriptions with episode summary, key quotes, guest bio, timestamps, relevant keyword tags, and links to full resources -- formatted for maximum search visibility',
+        whyItWorks: 'Podcast episodes continue generating views from search months after publication. SEO-optimised descriptions ensure the episode ranks for relevant queries, creating a long tail of ongoing discovery beyond the initial publish date.',
+      },
+      {
+        label: 'Short-Form Repurposing Pipeline',
+        description: 'A weekly system that mines each new episode and the back catalogue for clip opportunities, producing platform-optimised shorts that drive viewers to the full episode',
+        whyItWorks: 'Short-form clips are the primary discovery engine for long-form podcast content. A consistent repurposing pipeline ensures the podcast always has promotional content in market, driving cross-platform audience growth.',
+      },
+    ],
+  }),
+  [key('youtube_editor_educators')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Educational Content',
+    audienceInsight: 'Educational creators face a brutal retention challenge: viewers come to learn something specific and leave as soon as they get what they need. Every pause or tangent costs viewers. They need editing that respects the viewers time -- tighter pacing, visual aids at the right moments, and clear structure.',
+    offerStrategy: 'Position as an instructional design editor. The deliverable is a clear learning experience, not a well-cut video. Every edit serves one goal: making the lesson easier to understand and remember.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$300-$600/video',
+      intermediateRange: '$600-$1,200/video',
+      premiumRange: '$1,200-$2,500/video',
+      pricingLogic: 'Price per video based on instructional complexity. Simple talking-head tutorial at low end; multi-section lesson with animations at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing for Educators -- Lessons Students Actually Finish',
+      problem: 'Your educational content is valuable but viewers leave before the key points. Pacing and structure do not match how people learn from video.',
+      solution: 'I edit for instructional clarity -- tightening explanations, adding visuals at confusion points, structuring with chapter markers -- so students learn faster and watch longer.',
+      nextStep: 'Send me your most recent lesson. I will edit a 3-minute section redesigned for learning.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Educational creators with valuable lessons who lose viewers due to poor pacing and structure.',
+      problemItSolves: 'Educational videos edited for entertainment pacing waste viewers time. Pauses that feel natural in conversation feel wasteful in a lesson.',
+      corePromise: 'Instructional editing for educational content that helps students learn faster and watch to the end.',
+      whyThisWorks: 'Educational videos edited for clarity see 50-80% higher completion rates.',
+      nextStepCTA: 'Share with course creators whose completion rates are below 40%. Offer a free sample.',
+    },
+    deliverables: [
+      {
+        label: 'Instructional Pacing Edit',
+        description: 'Tightened pacing with conversational pauses removed, explanations condensed to essential points, and tangents cut or moved to pinned comments -- every second serves the learning objective',
+        whyItMatters: 'Educational viewers watch to learn something specific, not to be entertained. Every unnecessary pause or tangent costs viewers who arrived with a learning goal and limited patience for fluff.',
+      },
+      {
+        label: 'Visual Aid Integration',
+        description: 'Relevant graphics, diagrams, screen annotations, charts, and visual explanations inserted at key teaching moments -- designed to clarify concepts that are harder to explain with words alone',
+        whyItMatters: 'Educational retention drops at points where the instructor explains something that would be easier to show. Well-timed visual aids reduce cognitive load and help viewers understand faster, keeping them engaged through harder concepts.',
+      },
+      {
+        label: 'Structure and Chapter System',
+        description: 'Clear section markers with verbal previews at the start of each section, visual chapter cards, on-screen section titles, and a closing recap -- turning the video into a structured learning experience',
+        whyItMatters: 'Educational viewers often skip ahead to specific topics or revisit sections for review. Clear structure and chapter navigation make the video useful as a reference resource, increasing total watch time and return views.',
+      },
+      {
+        label: 'Attention Retention Edit',
+        description: '90-second pattern interrupts with visual or topic changes, question prompts inserted at known attention decay points, and pacing varied between dense teaching and relaxed explanation',
+        whyItMatters: 'Educational content demands more cognitive effort than entertainment, causing faster attention fatigue. Strategic pattern interrupts reset attention and keep viewers engaged through complex material.',
+      },
+      {
+        label: 'CTA and Resource Integration',
+        description: 'Clickable end screens, info cards with related lessons, pinned comments with resource links, and download links for companion materials -- integrated where they feel helpful rather than promotional',
+        whyItMatters: 'Educational viewers who complete a lesson are primed for the next one. Well-placed CTAs and resource links extend the viewer\'s learning journey across multiple videos, increasing channel watch time and subscriber conversion.',
+      },
+    ],
+    uniqueMechanisms: YOUTUBE_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Chapter Optimization for Search',
+        description: 'Chapter titles crafted to include high-intent search keywords, with timestamps formatted for Google search snippet visibility and pinned as the top comment for immediate navigation',
+        whyItWorks: 'YouTube chapters appear in Google search results for relevant queries. Optimised chapter titles turn each video section into a potential search entry point, driving discovery from learners searching for specific topics.',
+      },
+      {
+        label: 'Learning Resource Companion',
+        description: 'Downloadable worksheets, cheatsheets, or companion guides created from the video content -- delivered as a link in the description or pinned comment for viewers who want to apply what they learned',
+        whyItWorks: 'Educational viewers who download companion resources are 3x more likely to watch the next video in the series, because the resource creates a connection that extends beyond the video and primes the viewer for more content.',
+      },
+      {
+        label: 'Engagement Prompt Integration',
+        description: 'Built-in verbal and on-screen prompts at strategic moments asking viewers to comment with their progress, ask questions, or share their experience -- timed to when engagement naturally peaks',
+        whyItWorks: 'Comments and engagement signals are major YouTube ranking factors for educational content. Strategic prompts at the right moment generate more discussion, signaling topic relevance to the algorithm and increasing reach.',
+      },
+    ],
+  }),
+  [key('youtube_editor_personal_brands')]: derivePathContent(YOUTUBE_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'YouTube Editing for Personal Brand Authority',
+    audienceInsight: 'Professionals building YouTube authority need videos that look as polished as their expertise. Unlike entertainment creators, authority builders face higher scrutiny -- a sloppy edit signals sloppy thinking. Their audience includes potential clients who judge competence by production quality.',
+    offerStrategy: 'Position as a professional authority editor. Every video should feel premium and build trust over time. The strategy is invisible editing: the viewer should notice the expertise, not the edit.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$500-$1,000/video',
+      intermediateRange: '$1,000-$2,000/video',
+      premiumRange: '$2,000-$4,000/video',
+      pricingLogic: 'Price per video based on polish level. Standard talking-head at low end; narrative production at high end.',
+    },
+    proposalAngle: {
+      headline: 'YouTube Editing That Makes Your Expertise Look Premium',
+      problem: 'Your videos are full of expertise but production quality does not match your thinking. You know polished video builds trust faster.',
+      solution: 'I edit your videos to professional standard -- clean audio, polished visuals, professional pacing -- making your expertise the star.',
+      nextStep: 'Send me your latest video. I will produce a 60-second premium edit sample.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Professionals and consultants building YouTube authority whose production quality does not match their expertise.',
+      problemItSolves: 'Poor production quality signals amateurism, causing viewers to question expertise.',
+      corePromise: 'Professional editing that makes every video look like it belongs on a premium channel.',
+      whyThisWorks: 'Professionals with premium production are perceived as 3x more authoritative.',
+      nextStepCTA: 'Share with professionals not seeing results from YouTube. Offer a free 60-second sample.',
+    },
+    deliverables: [
+      {
+        label: 'Premium Polish Edit',
+        description: 'A professional-grade edit with clean audio levelling, colour grading, cinematic pacing, and subtle motion graphics that signal production value without distracting from the presenter\'s expertise',
+        whyItMatters: 'Personal brand viewers judge expertise by production quality. A premium polish edit ensures the video\'s production value matches the presenter\'s authority, building trust before the viewer hears a single word.',
+      },
+      {
+        label: 'Authority Narrative Edit',
+        description: 'A story-driven video that structures the personal brand\'s key message into a compelling narrative arc -- hook, context, insight, application, call to action -- positioning the presenter as a thought leader in their field',
+        whyItMatters: 'Authority is built through narrative, not information delivery. A narrative-structured edit transforms a standard talking-head video into a compelling case for the presenter\'s expertise and point of view.',
+      },
+      {
+        label: 'Educational Deep-Dive Edit',
+        description: 'A teaching-focused edit with visual aids, on-screen annotations, chapter markers, and progressive complexity -- designed for videos where the personal brand teaches a methodology or framework',
+        whyItMatters: 'Educational content is the highest-signal format for personal brand authority. A well-structured teaching edit demonstrates the depth of the presenter\'s knowledge and gives viewers a reason to follow for future lessons.',
+      },
+      {
+        label: 'Podcast and Interview Appearance Polish',
+        description: 'A guest appearance or interview recording edited into a standalone authority asset with intro branding, cleaned audio, visual consistency, and platform-optimised format for distribution on the brand\'s own channel',
+        whyItMatters: 'Personal brands appear as guests on other channels but rarely repurpose those appearances effectively. A polished version turns each guest appearance into permanent authority content on the brand\'s own channel.',
+      },
+      {
+        label: 'YouTube Shorts Repurpose Package',
+        description: 'Key moments from each long-form video extracted and edited into 60-second YouTube Shorts with vertical format, text overlays, and hook-focused editing designed for Shorts discovery traffic',
+        whyItMatters: 'YouTube Shorts is the primary discovery engine for personal brand channels. A short-form repurpose package ensures every long-form video also feeds the short-form content pipeline that drives new subscribers.',
+      },
+    ],
+    uniqueMechanisms: YOUTUBE_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Thumbnail and Title Strategy',
+        description: 'Custom thumbnail designs and click-optimised titles created for each video, following proven CTR patterns for authority and educational content',
+        whyItWorks: 'Personal brand videos compete for clicks against every other video published that day. A compelling thumbnail and title can double CTR, giving a well-edited video the initial audience needed for algorithmic traction.',
+      },
+      {
+        label: 'End Screen and Card Integration',
+        description: 'Strategic end screens, info cards, and playlist organisation designed to keep viewers on the channel after the video ends, with specific recommendations based on the viewer\'s position in the content journey',
+        whyItWorks: 'Personal brands grow through session watch time, not single-video views. Well-placed end screens and cards increase per-session view count by directing viewers to the next relevant video in the brand\'s library.',
+      },
+      {
+        label: 'Monthly Content Performance Review',
+        description: 'A monthly analytics review showing which video formats, topics, and editing approaches drive the most subscriber growth, watch time, and audience retention, with specific recommendations for the next month\'s content',
+        whyItWorks: 'Personal brand YouTube growth accelerates when content decisions are data-informed. Regular performance reviews reveal the specific patterns driving growth, enabling the brand to double down on what works.',
+      },
+    ],
+  }),
+  [key('wordpress_developer_coaches_consultants')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are professionals who need a website that builds trust and books consultations. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Authority Website Build',
+        description: 'A full WordPress site designed for coaches and consultants with service pages, about section with credentials, client testimonial display, blog setup, and integrated booking and contact functionality',
+        whyItMatters: 'Coaches and consultants sell trust-based services. A professionally built WordPress site with clear service offerings, social proof, and frictionless booking is the digital foundation that converts website visitors into paid clients.',
+      },
+      {
+        label: 'Client Intake and Delivery Portal',
+        description: 'A member-only WordPress area where clients can access resources, complete intake forms, book sessions, view progress, and communicate -- creating a professional client experience beyond just email',
+        whyItMatters: 'Coaches who deliver client materials via email look less professional than those with a dedicated portal. A client area improves the perceived value of coaching packages and streamlines the delivery workflow.',
+      },
+      {
+        label: 'Lead Generation Landing Page',
+        description: 'A dedicated opt-in landing page with email capture form integrated with the coach\'s CRM or email platform, offering a free resource (guide, assessment, consultation) in exchange for contact information',
+        whyItMatters: 'Coaches need a consistent pipeline of new leads. A lead generation page that captures email subscribers from content traffic builds the email list that feeds the coach\'s long-term client acquisition.',
+      },
+      {
+        label: 'Content Publishing System',
+        description: 'A blog or podcast setup with SEO-optimised structure, category organisation, content scheduling, and social sharing integration -- designed to support the coach\'s content marketing strategy',
+        whyItMatters: 'Coaches attract clients through demonstrated expertise. A well-structured content publishing system ensures every blog post or episode contributes to search visibility and positions the coach as the go-to authority.',
+      },
+      {
+        label: 'Booking and Calendar Integration',
+        description: 'Seamless Calendly or Acuity booking integration with automated email reminders, cancellation management, and buffer time settings -- built into the site so visitors can book directly without leaving the page',
+        whyItMatters: 'Every friction point between a prospect deciding to book and completing the booking costs coaches a potential client. A seamless on-site booking integration removes technical barriers and increases booked call volume.',
+      },
+    ],
+    uniqueMechanisms: WP_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'SEO Foundation Package',
+        description: 'On-page SEO optimisation, local and service-specific schema markup, keyword-targeted page titles and meta descriptions, XML sitemap setup, and Google Search Console integration',
+        whyItWorks: 'Coaches rely on search traffic for ongoing client discovery. A strong SEO foundation ensures the WordPress site ranks for the specific service terms and location keywords that potential clients are searching.',
+      },
+      {
+        label: 'Automated Email Follow-Up System',
+        description: 'Welcome email sequences, content nurture flows, re-engagement campaigns, and abandoned booking follow-ups automated through the coach\'s email platform and connected to WordPress user actions',
+        whyItWorks: 'Most coaching prospects need multiple touchpoints before booking. An automated email follow-up system keeps the coach top-of-mind and converts warm leads without requiring manual follow-up from the coach.',
+      },
+      {
+        label: 'Performance and Security Hardening',
+        description: 'Site speed optimisation (caching, image compression, CDN), SSL certificate management, automated backups, plugin update monitoring, and security firewall configuration',
+        whyItWorks: 'A slow or insecure WordPress site undermines the professional image coaches need to project. Performance and security hardening ensures the site loads fast and stays safe, protecting the coach\'s reputation and client data.',
+      },
+    ],
+  }),
+  [key('wordpress_developer_agencies')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Agencies',
+    audienceInsight: 'Agencies in the agency space are digital agencies that need to deliver client websites efficiently. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label WordPress Build',
+        description: 'Complete WordPress site built from brief or design, delivered under the agency\'s brand with consistent code quality, plugin configuration, and deployment standards across every client project',
+        whyItMatters: 'Agencies sell WordPress services on their reputation. White-label builds with consistent quality let the agency scale client delivery without investing in in-house development capacity or managing freelancers.',
+      },
+      {
+        label: 'Multi-Client Technical Adaptation',
+        description: 'Adapt to each agency client\'s preferred plugins, hosting environment, theme framework, and integration requirements -- with per-client configuration templates that prevent setup errors across projects',
+        whyItMatters: 'Agency clients use different hosting, plugins, and third-party tools. The ability to handle diverse technical requirements without errors is what separates a production partner from a single-stack freelancer.',
+      },
+      {
+        label: 'Staging and Deployment Pipeline',
+        description: 'A structured development workflow with local development, staging environment for client review, and production deployment process including database migration scripts and content sync between environments',
+        whyItMatters: 'Agencies need to show clients work-in-progress without affecting the live site. A staging-to-production pipeline enables smooth client review cycles and eliminates the risk of breaking a live site during development.',
+      },
+      {
+        label: 'Maintenance and Support Capacity',
+        description: 'Monthly retainer for ongoing maintenance of agency client WordPress sites including updates, backups, security monitoring, performance optimisation, and priority support with defined SLA',
+        whyItMatters: 'Agencies generate recurring revenue from maintenance retainers. A dedicated maintenance capacity lets the agency offer ongoing support packages to their clients, creating predictable monthly income beyond project builds.',
+      },
+      {
+        label: 'Plugin and Integration Audit',
+        description: 'Comprehensive audit of existing agency client WordPress sites covering plugin health, security vulnerabilities, performance bottlenecks, update status, and integration reliability with actionable recommendations',
+        whyItMatters: 'Agencies can upsell audit and rebuild services to existing clients. A plugin audit identifies specific technical debt and security issues, creating a natural sales pipeline for remediation and rebuild projects.',
+      },
+    ],
+    uniqueMechanisms: WP_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Brand QA Process',
+        description: 'A standardised quality assurance checklist applied to every WordPress build, covering code quality, plugin configuration, performance benchmarks, mobile responsiveness, and SEO foundation completeness',
+        whyItWorks: 'Agency brand reputation depends on consistent quality across every client deliverable. A QA checklist enforces standards that protect the agency\'s brand even as the volume of WordPress builds scales.',
+      },
+      {
+        label: 'Client Handoff Documentation',
+        description: 'Complete WordPress site documentation including admin login instructions, plugin guide, content management how-to, hosting account details, and maintenance schedule delivered with every site build',
+        whyItWorks: 'Agencies need to hand off sites to clients who may not be technical. Comprehensive documentation empowers the client to manage basic site tasks independently, reducing support requests and improving client satisfaction.',
+      },
+      {
+        label: 'Rush Turnaround Service',
+        description: '24--48 hour express WordPress build or emergency fix service for time-sensitive agency projects, with prioritised queue handling and expedited review cycles for urgent client deliverables',
+        whyItWorks: 'Agency client timelines shift constantly. A rush service ensures the agency never has to turn down an urgent WordPress project or miss a critical client deadline, strengthening their reputation for reliability.',
+      },
+    ],
+  }),
+[key('podcast_clip_editor_creators')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+  pathTitle: 'Podcast Clip Editing for Creators -- Turn Episode Gold Into Social Growth',
+  audienceInsight: 'Creators who podcast as part of their content strategy need clips that work as standalone content on every platform. Unlike podcasters who treat clips as episode trailers, creators need clips that attract new followers who have never heard the full episode. Each clip must hook a cold audience, deliver standalone value, and end with a reason to follow.',
+  offerStrategy: 'Position as a creator audience growth system, not a clip extraction service. The strategy is cold-audience-first -- each clip is designed to attract viewers who do not know the creator and convert them into followers. The clips should work as standalone content that builds the creator brand even without context from the full episode.',
+  recommendedOfferType: 'retainer',
+  pricingGuidance: {
+    suggestedModel: 'flat_rate',
+    beginnerRange: '$600-$1,200/mo',
+    intermediateRange: '$1,200-$2,500/mo',
+    premiumRange: '$2,500-$5,000/mo',
+    pricingLogic: 'Price as a monthly retainer for consistent clip output. Creators benefit from volume and consistency. Tier by number of clips per week and platforms distributed to. The value is in audience growth, not clip production.',
+  },
+  proposalAngle: {
+    headline: 'Podcast Clips That Grow Your Following, Not Just Your Episode Listens',
+    problem: 'Your podcast episodes are full of valuable moments, but without strategic clip distribution, only your existing listeners know about them. You need clips that attract new followers who have never heard your show.',
+    solution: 'I extract and edit your podcast moments into standalone clips designed to attract cold audiences -- each clip hooks viewers in the first 3 seconds, delivers standalone value, and ends with a reason to follow you.',
+    nextStep: 'Send me your best recent episode. I will extract and edit one clip designed for cold audience growth so you can see the approach in action.',
+  },
+  blueprintAngle: {
+    whoItIsFor: 'Creators who podcast as part of their content strategy and need clips that attract new followers, not just promote existing episodes.',
+    problemItSolves: 'Most podcast clips are designed for existing listeners -- they assume context and treat the clip as a trailer for the full episode. Creators need clips that work as standalone content for cold audiences.',
+    corePromise: 'A cold-audience-first clip editing system that extracts podcast moments, hooks new viewers in 3 seconds, and converts them into followers -- not just episode listeners.',
+    whyThisWorks: 'Creators who distribute cold-audience-optimized podcast clips grow their following 3-5x faster than those using episode-trailer-style clips, because each clip acts as a standalone entry point to the creator brand.',
+      nextStepCTA: 'Share this blueprint with creators who podcast but see slow follower growth. Offer a free cold-audience clip edit of their best episode moment.',
+    },
+    deliverables: [
+      {
+        label: 'Cold-Audience Hook Clip',
+        description: 'A podcast moment extracted and edited to hook a viewer who has never heard the episode -- opening with a compelling statement or question, delivering standalone value, and closing with a reason to follow rather than a plug to listen to the full episode',
+        whyItMatters: 'Creators need clips that attract new followers, not just promote episodes to existing listeners. A cold-audience-optimised clip converts viewers who have no context about the creator into followers who want to see more.',
+      },
+      {
+        label: 'Cross-Platform Repurpose Set',
+        description: 'Each clip reformatted for Instagram Reels (vertical, text overlays, trending audio), TikTok (vertical, fast pacing, captions), YouTube Shorts (vertical, searchable title, chapters), and LinkedIn (square, professional context)',
+        whyItMatters: 'Creator audience growth depends on being discoverable wherever potential followers spend time. Platform-specific reformatting ensures every clip performs optimally on each distribution channel.',
+      },
+      {
+        label: 'Standalone Value Clip',
+        description: 'A self-contained clip that delivers complete value -- insight, tip, or story -- without requiring context from the full episode. A viewer who watches only this clip should feel they gained something useful',
+        whyItMatters: 'Viewers who gain value from a clip without listening to the full episode are more likely to follow the creator for future content. Standalone value clips build audience trust through utility rather than episode promotion.',
+      },
+      {
+        label: 'Quote and Text Overlay Package',
+        description: 'Visually engaging text-based clips with the creator\'s key quotes overlaid on relevant footage or animated backgrounds -- designed for viewers watching without sound and for quote-based social shares',
+        whyItMatters: 'Text-based clips capture viewers scrolling with sound off and are highly shareable. Quote clips also serve as evergreen content that continues generating engagement long after the original episode was published.',
+      },
+      {
+        label: 'Follow-Bait Clip Series',
+        description: 'A sequence of 3--5 clips from a single episode designed together as a series -- each clip ends with a teaser for the next, encouraging viewers to follow the creator to see the rest of the series',
+        whyItMatters: 'The platform algorithm rewards creators who drive follow actions from clip content. A series designed to create anticipation converts casual viewers into followers by making the follow action feel necessary to get the full story.',
+      },
+    ],
+    uniqueMechanisms: PODCAST_CLIP_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Hook Testing Framework',
+        description: 'Multiple hook variants (different opening statement, question, or visual) produced for each clip, with performance tracking to identify which hook style drives the highest engagement for the creator\'s audience',
+        whyItWorks: 'The first 3 seconds determine whether a clip succeeds or fails on social platforms. Testing multiple hooks per clip dramatically increases the probability of finding a high-performing opener for each piece of content.',
+      },
+      {
+        label: 'Caption and Hashtag Strategy',
+        description: 'Platform-specific captions delivered with each clip, following proven engagement patterns for each platform and incorporating relevant hashtag sets for maximum discoverability',
+        whyItWorks: 'Clip success depends as much on the caption as the video. Optimised captions with strategic CTAs convert passive viewers into active followers by giving them a reason to engage beyond watching.',
+      },
+      {
+        label: 'Growth Analytics Review',
+        description: 'Monthly review of which clip formats, topics, and hooks drive the most follower growth, with specific recommendations for the next month\'s clip production priorities based on audience behaviour data',
+        whyItWorks: 'Creator growth accelerates when clip production decisions are informed by data. Regular analytics review reveals the specific content patterns that convert viewers into followers, enabling the creator to double down on effective approaches.',
+      },
+    ],
+  }),
+  [key('wordpress_developer_creators_course_sellers')]: derivePathContent(WORDPRESS_DEVELOPER_LOCAL_BUSINESSES, {
+    pathTitle: 'WordPress for Creators & Course Sellers',
+    audienceInsight: 'Creators & Course Sellers in the creator and course space are creators who need a website that sells digital products and grows their audience. They need a wordpress solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised wordpress solution for Creators & Course Sellers. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'WordPress for Creators & Course Sellers -- A System Built for Your Success',
+      problem: 'You know Creators & Course Sellers need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide WordPress services purpose-built for Creators & Course Sellers. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators & Course Sellers. I will provide a specific recommendation for how WordPress can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators & Course Sellers and need a reliable, scalable wordpress solution.',
+      problemItSolves: 'Most Creators & Course Sellers solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated wordpress system designed specifically for Creators & Course Sellers -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators & Course Sellers with tailored wordpress solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators & Course Sellers. Offer a free consultation to identify how WordPress can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Course Sales and Delivery Platform',
+        description: 'Full LearnDash, TutorLMS, or similar LMS setup with course builder, lesson progression, quiz system, student management, and integrated checkout with payment gateway connection',
+        whyItMatters: 'Course creators need a reliable platform to sell and deliver courses. A professionally configured LMS handles the technical complexity of course delivery, allowing the creator to focus on content and marketing.',
+      },
+      {
+        label: 'Membership Portal Build',
+        description: 'A member-only WordPress area with content gating, tiered access levels, course progression tracking, community features, and member profile management for recurring subscription models',
+        whyItMatters: 'Creators with recurring revenue models need a portal that balances content delivery with community engagement. A well-built membership portal increases retention by giving members reasons to return regularly.',
+      },
+      {
+        label: 'Digital Storefront Build',
+        description: 'Product pages, shopping cart, checkout flow, and order management for digital products (courses, downloads, templates) with payment gateway integration, order confirmation emails, and digital file delivery',
+        whyItMatters: 'Course creators need a reliable storefront that handles the purchase-to-delivery flow without errors. A properly built storefront reduces cart abandonment and ensures customers receive their purchases immediately.',
+      },
+      {
+        label: 'Launch Page and Funnel System',
+        description: 'Sales pages, order bump sequences, upsell and downsell flows, cart abandon recovery, and launch countdown functionality designed specifically for course launch campaigns with compressed conversion windows',
+        whyItMatters: 'Course launches generate most of a creator\'s revenue in short windows. A launch-specific page and funnel system maximises conversion during these critical periods through proven checkout flow patterns.',
+      },
+      {
+        label: 'Email and CRM Integration',
+        description: 'Automated email sequences for course launches, welcome series for new students, course completion follow-ups, abandoned cart recovery, and student segmentation based on purchase and engagement behaviour',
+        whyItMatters: 'Email is the highest-converting channel for course sales. A connected email and CRM integration ensures every course enrolment triggers the appropriate follow-up sequence, maximising student lifetime value.',
+      },
+    ],
+    uniqueMechanisms: WP_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Evergreen Sales Funnel Setup',
+        description: 'Automated evergreen sales pages, email sequences, payment plans, and trial-to-paid conversion flows that run continuously without manual intervention, generating sales between launch windows',
+        whyItWorks: 'Course creators who rely only on launch revenue leave money on the table between launches. An evergreen funnel captures the steady stream of discovery traffic and converts it into ongoing course sales.',
+      },
+      {
+        label: 'Affiliate and Partner Integration',
+        description: 'Affiliate program setup with tracking links, commission management, partner dashboard, automated payouts, and promotional asset delivery for the course creator\'s affiliate network',
+        whyItWorks: 'Course creators with affiliate programs sell 3x more courses because partners extend their reach into new audiences. A properly integrated affiliate system makes it easy for partners to promote and earn commissions.',
+      },
+      {
+        label: 'Student Analytics Dashboard',
+        description: 'A visual dashboard showing course completion rates, student progress distribution, revenue by course, refund rates, and engagement metrics designed for the creator to understand their business at a glance',
+        whyItWorks: 'Course creators who understand their student data make better content and marketing decisions. An analytics dashboard reveals which courses perform best and where students drop off, enabling data-driven improvements.',
+      },
+    ],
+  }),
+  [key('podcast_clip_editor_coaches')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+    pathTitle: 'Podcast Clip for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who use podcast clips to build authority and attract clients. They need a podcast clip solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised podcast clip solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Podcast Clip for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Podcast Clip services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Podcast Clip can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable podcast clip solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated podcast clip system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored podcast clip solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Podcast Clip can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Authority Clip Edit',
+        description: 'A podcast moment where the coach demonstrates expertise or shares a unique insight, edited to position the coach as the go-to authority in their niche -- designed to attract clients, not just listeners',
+        whyItMatters: 'Coaches attract clients through demonstrated expertise. An authority clip that showcases the coach\'s unique methodology or perspective converts viewers into prospects who want to work with them.',
+      },
+      {
+        label: 'Client Transformation Clip',
+        description: 'A client success story or result shared during the podcast, edited into a trust-building testimonial clip that communicates the coach\'s ability to deliver results through their clients\' own words',
+        whyItMatters: 'Coaching prospects need social proof before committing to high-ticket programs. A client transformation clip provides third-party validation that is more persuasive than any claim the coach makes directly.',
+      },
+      {
+        label: 'Teaching Moment Clip',
+        description: 'A coaching methodology or framework explanation from the podcast, edited into a self-contained educational clip that demonstrates the coach\'s teaching ability and gives viewers a sample of their approach',
+        whyItMatters: 'Prospects who experience the coach\'s teaching style through a clip are more likely to book a discovery call. A teaching moment clip serves as a free sample of the coaching experience.',
+      },
+      {
+        label: 'Call-to-Action Promotion Clip',
+        description: 'A clip designed specifically to promote the coach\'s discovery call, lead magnet, or free resource -- with a clear value proposition for taking the next step and a direct CTA that makes booking feel natural',
+        whyItMatters: 'Not every clip should drive followers; some should drive direct conversions. A dedicated CTA clip bridges the gap between content consumption and paid engagement with the coach.',
+      },
+      {
+        label: 'Testimonial and Review Clip Series',
+        description: 'Multiple client feedback moments from different podcast episodes, edited into a cohesive testimonial series that builds a comprehensive case for the coach\'s effectiveness across different client types and outcomes',
+        whyItMatters: 'Different prospects respond to different types of social proof. A testimonial series that covers various client situations and outcomes ensures every prospect finds a testimonial that resonates with their specific context.',
+      },
+    ],
+    uniqueMechanisms: PODCAST_CLIP_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Brand Consistency Package',
+        description: 'Consistent visual style, intro and outro animations, colour treatment, font choices, and logo placement applied across all clips -- ensuring the coach\'s brand is recognisable regardless of which platform the viewer discovers them on',
+        whyItWorks: 'Coaches build authority through consistent professional branding. A unified visual style across all clips makes the coach instantly recognisable, reinforcing brand recall every time a viewer encounters their content.',
+      },
+      {
+        label: 'Lead Generation CTA Integration',
+        description: 'Strategic placement of booking links, lead magnet download buttons, and consultation call CTAs within clip descriptions, pinned comments, and end screens -- aligned to the clip\'s content and viewer intent',
+        whyItWorks: 'The moment a viewer finishes a compelling clip is the optimal time to capture their interest. Strategic CTA placement at the peak of engagement converts clip viewers into coaching leads at significantly higher rates.',
+      },
+      {
+        label: 'Monthly Performance Report',
+        description: 'Monthly analytics showing which clips drove the most discovery call bookings, lead magnet downloads, and follower growth -- with specific recommendations for the next month\'s clip production priorities',
+        whyItWorks: 'Coaches need their content investment to produce measurable business results. A performance report that tracks clips to call bookings demonstrates the direct ROI of the clip production service.',
+      },
+    ],
+  }),
+  [key('podcast_clip_editor_agencies')]: derivePathContent(PODCAST_CLIP_EDITOR_PODCASTERS, {
+    pathTitle: 'Podcast Clip for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies managing multiple client podcasts who need scalable clip production. They need a podcast clip solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised podcast clip solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Podcast Clip for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Podcast Clip services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Podcast Clip can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable podcast clip solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated podcast clip system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored podcast clip solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Podcast Clip can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Clip Production',
+        description: 'Full podcast clip editing service delivered under the agency\'s brand, from episode ingestion to platform-ready clips with consistent quality across all agency client podcasts',
+        whyItMatters: 'Agencies managing client podcasts need reliable clip production that reflects well on their own brand. White-label delivery with consistent quality lets agencies scale clip services without building an in-house editing team.',
+      },
+      {
+        label: 'Multi-Client Production Pipeline',
+        description: 'A structured intake system covering episode delivery, clip preferences, brand reference collection, review cycle, and final delivery across multiple agency clients -- with per-client workflows and quality checklists',
+        whyItMatters: 'Agencies juggle multiple client podcasts with different brands and preferences. A structured production pipeline reduces management overhead and ensures every client receives consistent, on-brand clip delivery.',
+      },
+      {
+        label: 'Bulk Episode Processing',
+        description: 'Batch clip extraction from multiple podcast episodes at once, with automated timestamp marking for key moments and efficient processing of back catalogue content alongside new episodes',
+        whyItMatters: 'Agencies onboarding new clients often need to process back catalogue episodes in addition to ongoing production. Bulk processing handles the initial content pipeline without disrupting the regular weekly cadence.',
+      },
+      {
+        label: 'Rush Clip Turnaround',
+        description: '12--24 hour express clip editing for time-sensitive opportunities (guest promotions, trending topics, event tie-ins) with prioritised queue handling and expedited review cycles',
+        whyItMatters: 'Podcast marketing opportunities are time-sensitive and unpredictable. A rush turnaround service ensures the agency can capitalise on trending moments without being constrained by standard production timelines.',
+      },
+      {
+        label: 'Client Brand Adaptation System',
+        description: 'Per-client editing style guides, visual templates, and brand reference documentation that ensure every clip for every agency client maintains consistent brand identity without requiring detailed re-briefing each time',
+        whyItMatters: 'Each agency client has a unique podcast brand. Documented brand adaptation standards eliminate the need for repeated briefings, enabling faster turnaround and fewer revision cycles across the client portfolio.',
+      },
+    ],
+    uniqueMechanisms: PODCAST_CLIP_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Branded Delivery Templates',
+        description: 'Custom reporting templates, delivery formats, and client-facing documentation branded for the agency -- making every clip delivery look like it came from the agency\'s own production team',
+        whyItWorks: 'Agencies win and retain clients on perceived capability. Branded delivery templates reinforce the agency\'s professional image with every clip delivered, strengthening client confidence in the agency\'s production services.',
+      },
+      {
+        label: 'Client Reporting Dashboard',
+        description: 'Monthly clip performance report per client showing views, engagement, follower growth attributed to clips, and platform-specific analytics -- formatted for the agency to present directly to their clients',
+        whyItWorks: 'Agencies justify their clip production fees with client-facing performance data. A monthly dashboard gives the agency ready-to-present reports that demonstrate ROI and strengthen client retention.',
+      },
+      {
+        label: 'Scalable Production Framework',
+        description: 'A capacity planning system that tracks per-client production volume, identifies capacity constraints before they become delays, and provides the agency with accurate timeline commitments for new client proposals',
+        whyItWorks: 'Agencies planning to scale podcast clip services need to know their production capacity limits. A scalability framework prevents over-commitment and ensures the agency can confidently sell clip services to new clients.',
+      },
+    ],
+  }),
+  [key('ad_creative_editor_marketing_agencies')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'White-Label Ad Creative for Marketing Agencies -- Scale Client Ad Production Without an Internal Creative Team',
+    audienceInsight: 'Marketing agencies managing ad accounts for multiple clients need a steady pipeline of fresh creative. Every client needs new ad variants every 2-3 weeks to combat fatigue and maintain performance. But most agencies do not have an internal creative team dedicated to ad production. Hiring freelance designers is slow and inconsistent. They need a reliable creative partner who can take a brief, understand the client brand, and deliver ad-ready creative on a predictable schedule.',
+    offerStrategy: 'Position as an agency creative production partner. The core value is reliability, speed, and brand consistency across multiple client accounts. Offer white-label delivery: the agency presents the creative as their own work. Build systems for brief intake, brand reference collection, revision management, and format adaptation. Agencies care most about turnaround time and minimal revision cycles -- the creative should be right the first time because every revision cycle delays the ad launch.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,500-$3,000/mo',
+      intermediateRange: '$3,000-$6,000/mo',
+      premiumRange: '$6,000-$12,000/mo',
+      pricingLogic: 'Monthly retainer with a defined number of ad creative variants per month. Agencies need predictable costs to maintain margins on retainer clients. Tier by number of variants and client accounts managed. Premium tier includes rush turnaround and strategy calls. Frame as a fraction of what they would pay a full-time creative director or design agency.',
+    },
+    proposalAngle: {
+      headline: 'White-Label Ad Creative That Lets Agencies Scale Client Production Without a Creative Team',
+      problem: 'Your agency is bottlenecked by creative production. You have the account strategy and client relationships, but you cannot produce the ad variants fast enough to maintain performance across all your clients.',
+      solution: 'I serve as your dedicated ad creative production partner -- taking client briefs to production-ready ad variants with consistent brand quality and reliable turnaround, delivered white-label so you present it as your own.',
+      nextStep: 'Share a recent client brief and brand guidelines. I will produce a set of ad creative variants for that client so you can evaluate the quality, brand consistency, and turnaround time before committing to a partnership.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Marketing agencies that manage paid ad accounts for multiple clients and need reliable, scalable ad creative production without hiring an internal creative team.',
+      problemItSolves: 'Agencies lose margin on ad management services because creative production is slow, inconsistent, or requires expensive external vendors. Every revision cycle delays campaign launches and hurts client results.',
+      corePromise: 'A white-label ad creative production partnership with consistent brand quality, reliable turnaround, and sprint-based delivery -- so agencies can scale ad creative output without growing their team or sacrificing quality.',
+      whyThisWorks: 'Agencies using dedicated white-label creative partners increase client ad account revenue by 30-50% within 3 months because they can refresh creative faster, maintain higher campaign performance, and serve more clients without adding headcount.',
+      nextStepCTA: 'Share this with agency owners whose ad management services are bottlenecked by creative production capacity. Offer a free trial creative set for one of their clients.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Ad Creative Set',
+        description: 'Complete ad variant production from brief to final delivery, with consistent brand quality across all client accounts, delivered under the agency\'s own brand for client-facing presentation',
+        whyItMatters: 'Agencies win and retain clients on the strength of their creative output. White-label delivery with consistent quality preserves agency brand equity and eliminates the friction of managing multiple freelance editors.',
+      },
+      {
+        label: 'Brief-to-Creative Workflow',
+        description: 'A structured intake system where each client brief flows through a standardised process: creative brief review, concept development, first cut review, revision cycle, and final delivery with predictable turnaround',
+        whyItMatters: 'Agencies managing multiple client accounts need a process that scales without requiring manual oversight on every project. A structured workflow reduces management overhead and ensures no brief falls through the cracks.',
+      },
+      {
+        label: 'Multi-Client Brand Adaptation',
+        description: 'Maintain distinct ad creative styles, brand voices, and visual treatments across each agency client\'s brand, with per-client brand reference libraries and quality checklists',
+        whyItMatters: 'Each agency client has a unique brand identity that must be reflected in their ad creative. The ability to switch between distinct creative styles without losing quality differentiates a production partner from a generalist freelancer.',
+      },
+      {
+        label: 'Creative Testing Batch',
+        description: 'A set of 5 hook variant ads produced per campaign cycle, with different psychological triggers (scarcity, social proof, authority, reciprocity, loss aversion) while holding the ad body constant for clean A/B testing',
+        whyItMatters: 'Agencies need systematic creative testing to improve client ad performance. A structured batch of hook variants enables the agency to identify winning creative directions faster and justify their management fees with performance improvements.',
+      },
+      {
+        label: 'Performance Creative Refresh',
+        description: 'New ad creative variants based on analysis of existing creative performance data, refreshing fatiguing winners and creating new angles for underperforming accounts',
+        whyItMatters: 'Ad creative fatigue is the primary reason agency-managed ad performance declines over time. Regular creative refreshes based on performance data keep client campaigns performing at peak levels month after month.',
+      },
+    ],
+    uniqueMechanisms: AD_CREATIVE_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Hook Performance Analysis',
+        description: 'Monthly analysis of which hook types drive the best CPA and conversion rates across all agency client accounts, with a prioritised recommendation for the next creative testing cycle',
+        whyItWorks: 'Agencies manage diverse client accounts with different audiences. Cross-account hook performance analysis reveals universal patterns that improve creative strategy across the entire client portfolio, not just individual accounts.',
+      },
+      {
+        label: 'Competitor Creative Monitoring',
+        description: 'Monthly competitor ad creative analysis for each agency client, identifying emerging creative patterns, messaging angles, and offer structures that the client can test in their own campaigns',
+        whyItWorks: 'Agencies need to keep clients ahead of their competition. Regular competitor monitoring provides actionable creative intelligence that the agency can use to differentiate client campaigns and maintain a competitive edge.',
+      },
+      {
+        label: 'Agency Brand Creative Guidelines',
+        description: 'Per-client brand guideline documents covering visual style, tone of voice, creative formats, and messaging frameworks that ensure every ad variant stays on-brand without requiring detailed re-briefing',
+        whyItWorks: 'Agency teams change and client relationships evolve over years. Documented creative guidelines preserve institutional knowledge about each client\'s brand preferences, ensuring consistency even as agency personnel shifts.',
+      },
+    ],
+  }),
+    [key('ad_creative_editor_coaches')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for Coaches -- Video Ads That Turn Viewers Into Discovery Call Leads',
+    audienceInsight: 'Coaches running paid ads face a unique conversion challenge: their offer is a high-ticket intangible service. Unlike ecommerce where the ad clicks through to a product page, coaching ads need to generate enough trust in 15-30 seconds for a stranger to book a call. The creative needs to communicate the transformation, establish authority, and create urgency -- all without feeling salesy. Generic ad templates designed for product sales do not work for coaching.',
+    offerStrategy: 'Position as a coaching conversion creative specialist. Every ad is designed to generate one outcome: booked discovery calls. The strategy is authority-first creative: show the coach in action, demonstrate their methodology, preview the transformation. Use testimonials and results as social proof. Structure the ad to pre-qualify leads so the coach spends their call time with serious prospects only.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Monthly retainer for ongoing ad creative production. Coaches need fresh creative every 2-3 weeks to combat ad fatigue. Tier by number of ad variants produced per month and platforms covered. Frame pricing against cost per lead -- if an ad generates 10 qualified discovery calls per month, the cost per lead is a fraction of the coaching package value.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative That Fills Your Coaching Discovery Calendar Without Feeling Salesy',
+      problem: 'Your Facebook and Instagram ads generate clicks but not calls. The creative looks good but does not build enough trust in 15 seconds for someone to book a high-ticket coaching call.',
+      solution: 'I produce ad creative designed specifically for coaching conversions -- authority-first video ads that communicate transformation, establish credibility, and create urgency so viewers take the next step to book a discovery call.',
+      nextStep: 'Send me your best-performing ad and tell me your current cost per discovery call. I will produce a new creative variant designed to reduce your cost per lead by focusing on the specific trust and authority signals your audience needs.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Coaches running paid ads who are getting traffic but not enough booked discovery calls from their ad creative.',
+      problemItSolves: 'Most coaching ads use product-style templates that fail to build the trust required for high-ticket service purchases. The result is high click-through rates but low conversion to booked calls.',
+      corePromise: 'A coaching-specific ad creative system designed for discovery call generation -- using authority demonstrations, transformation previews, and social proof to convert ad viewers into qualified call leads.',
+      whyThisWorks: 'Coaches using authority-first ad creative optimized for call bookings reduce their cost per discovery call by 50-70% compared to generic product-style templates, because coaching buyers need trust signals before committing to a call.',
+      nextStepCTA: 'Share this with coaches running ads that get traffic but not calls. Offer a free creative audit with a recommendation for reducing their cost per discovery call.',
+    },
+    deliverables: [
+      {
+        label: 'Authority Ad Creative',
+        description: 'Video ads that showcase the coach in action -- teaching, coaching a client, or explaining their methodology -- designed to communicate expertise and build trust within the first 15 seconds of viewing',
+        whyItMatters: 'Coaches sell intangible transformations that require significant trust. An authority ad that shows the coach demonstrating their expertise is far more persuasive than a generic testimonial or offer-based creative.',
+      },
+      {
+        label: 'Testimonial Ad Package',
+        description: 'Client success story interviews edited into ad-ready testimonials with transformation arc (before, during, after), authentic emotion, and clear results that pre-qualify leads for coaching investment',
+        whyItMatters: 'Coaching prospects need social proof that the methodology works before they commit to a high-ticket program. Testimonial ads provide third-party validation that reduces perceived risk and accelerates the booking decision.',
+      },
+      {
+        label: 'Discovery Call Offer Ad',
+        description: 'Ads specifically designed to promote the free discovery call, with clear value proposition for the call itself, low-commitment framing, and a direct CTA that makes booking feel like the natural next step',
+        whyItMatters: 'The discovery call is the coach\'s primary conversion mechanism. A dedicated offer ad that de-risks the call booking process directly fills the coach\'s calendar with pre-qualified leads.',
+      },
+      {
+        label: 'Lead Magnet Promotion Ad',
+        description: 'Ads promoting free coaching resources (guides, checklists, mini-courses, assessments) designed to build an email list of warm prospects who have experienced the coach\'s value before being offered a paid program',
+        whyItMatters: 'Coaches with an email list of warm leads convert at 3-5x higher rates than cold traffic. Lead magnet ads build that list with prospects who have already sampled the coach\'s expertise and are primed for the paid offer.',
+      },
+      {
+        label: 'Retargeting Authority Series',
+        description: 'A 3-video sequence for retargeting warm audiences who visited the coach\'s site or engaged with content but did not book -- each video addresses a specific objection and builds trust progressively',
+        whyItMatters: 'Most coaching prospects need multiple touchpoints before booking. A retargeting sequence that systematically addresses objections keeps the coach top-of-mind and converts warm leads who were not ready to commit initially.',
+      },
+    ],
+    uniqueMechanisms: AD_CREATIVE_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Call Conversion Tracking Setup',
+        description: 'Facebook and Instagram pixel events configured for discovery call bookings, with conversion tracking from ad click to booked call so the coach knows exactly which creative drives calls',
+        whyItWorks: 'Coaches often measure ad success by clicks rather than booked calls. Proper tracking reveals which creative and targeting combinations actually produce discovery calls, enabling data-driven budget allocation to the highest-ROI ads.',
+      },
+      {
+        label: 'Ad-to-Landing Page Alignment',
+        description: 'Creative messaging, visuals, and offer matched to the landing page experience so the transition from ad to page feels seamless, maintaining the trust built in the ad through to the booking action',
+        whyItWorks: 'Ad-to-page misalignment is the #1 cause of landing page bounce for coaching ads. When the ad promise matches the page experience, visitors complete the booking flow at 2-3x higher rates.',
+      },
+      {
+        label: 'Monthly Creative Fatigue Review',
+        description: 'Analysis of when each creative variant starts showing fatigue (rising CPA, declining CTR), with specific recommendations for creative refreshes and new angles to test',
+        whyItWorks: 'Coaching audiences are small enough that ad fatigue sets in faster than for broad consumer products. A monthly creative fatigue review ensures the coach always has fresh creative in market, maintaining cost-effective ad delivery.',
+      },
+    ],
+  }),
+    [key('ad_creative_editor_saas_startups')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for SaaS Startups -- Video Ads That Drive Trial Signups and Feature Adoption',
+    audienceInsight: 'SaaS startups face a brutal ad dynamic: the product is complex, the audience is skeptical, and the action (sign up for a free trial) requires commitment. Unlike ecommerce where the purchase is low-risk, SaaS signups involve account creation, onboarding, and learning a new tool. Ad creative needs to communicate value instantly, overcome the what is this? barrier, and make the trial feel low-risk and high-reward.',
+    offerStrategy: 'Position as a SaaS trial conversion creative specialist. The ad strategy is problem-first, solution-second: show the painful workflow that the software replaces before showing the product. Use product demo clips, comparison shots, and social proof from similar companies. Focus on the specific user persona this creative targets -- different creative for the CTO vs the marketing manager. Every ad should answer: what does this do for someone like me?',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,500-$3,000/mo',
+      intermediateRange: '$3,000-$6,000/mo',
+      premiumRange: '$6,000-$12,000/mo',
+      pricingLogic: 'Monthly retainer for ongoing creative production and optimization. SaaS ads fatigue faster because the message is more complex. Tier by number of ad variants, audience segments targeted, and platforms. Frame pricing against blended cost per trial signup -- a 20% improvement in trial conversion rate can double the effective ad budget.',
+    },
+    proposalAngle: {
+      headline: 'Ad Creative That Gets SaaS Users to Sign Up for Your Trial -- Not Just Click Your Ad',
+      problem: 'Your ads generate clicks but the trial signup rate is low. The creative shows your product but does not answer the core question every SaaS buyer has: what does this do for someone in my role at my company?',
+      solution: 'I produce SaaS ad creative that communicates value in seconds -- problem-first storytelling, product demo clips, and persona-specific messaging that drives qualified trial signups, not just vanity clicks.',
+      nextStep: 'Share your product, target personas, and current trial conversion metrics. I will produce a creative brief with 3 ad concepts designed to increase trial signup rate by targeting specific user pain points and decision triggers.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'SaaS startups running paid ads who are spending money on traffic but seeing low trial signup conversion rates.',
+      problemItSolves: 'SaaS ad creative is difficult because the product is complex and the audience needs to understand value before investing time in a trial. Generic demo videos fail to convert because they speak to everyone and no one.',
+      corePromise: 'A SaaS-focused ad creative system that uses persona-specific messaging, problem-first storytelling, and product demonstration to convert ad traffic into qualified trial signups.',
+      whyThisWorks: 'SaaS companies using persona-targeted ad creative see 3-5x higher trial-to-paid conversion rates than those using generic product demos, because specific, problem-first messaging pre-qualifies leads who are ready to engage with the product.',
+      nextStepCTA: 'Share this with SaaS founders spending on ads but not seeing trial signups grow proportionally. Offer a free creative audit with trial conversion optimization recommendations.',
+    },
+    deliverables: [
+      {
+        label: 'Problem-First Demo Ad',
+        description: 'Ads that open with the painful workflow the software replaces before revealing the solution -- showing the problem visually, creating tension, then positioning the product as the obvious resolution',
+        whyItMatters: 'SaaS buyers are skeptical of feature-heavy ads. A problem-first approach resonates because it acknowledges the user\'s pain before asking for a trial signup, building the relevance that drives qualified conversions.',
+      },
+      {
+        label: 'Feature Spotlight Series',
+        description: 'Individual ad creative for each key product feature, demonstrating specific functionality with screen recordings, UI walkthroughs, and benefit-driven copy that shows exactly how the feature solves a real user problem',
+        whyItMatters: 'SaaS products have multiple selling points that appeal to different buyer segments. Feature-specific ads allow targeted messaging to different audiences, increasing relevance and trial signup rates for each persona.',
+      },
+      {
+        label: 'Social Proof Ad Package',
+        description: 'Customer testimonial and case study-based ads featuring real companies, results, and quotes -- edited with product context to show how similar companies achieved outcomes using the software',
+        whyItMatters: 'SaaS purchase decisions carry higher perceived risk than consumer purchases. Social proof ads provide the third-party validation that skeptical B2B buyers need before committing to a trial.',
+      },
+      {
+        label: 'Free Trial Promotion Ad',
+        description: 'Ads optimised specifically for trial signup conversion, with clear value proposition, risk-reversal messaging (free, no credit card), and a frictionless CTA that minimises the perceived commitment of starting a trial',
+        whyItMatters: 'Trial signup is the SaaS conversion event that matters most. A dedicated trial promotion ad with optimised messaging directly impacts the startup\'s most important growth metric: trial-to-paid pipeline volume.',
+      },
+      {
+        label: 'Persona-Specific Ad Variant Set',
+        description: 'Different creative versions targeting different buyer personas (e.g., CTO versus marketing manager versus operations lead), with role-specific pain points, vocabulary, and value propositions in each variant',
+        whyItMatters: 'SaaS products serve multiple stakeholders with different priorities. Persona-specific creative ensures each decision-maker sees messaging that speaks directly to their concerns, dramatically improving trial signup rates from diverse audiences.',
+      },
+    ],
+    uniqueMechanisms: AD_CREATIVE_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Trial Conversion Tracking Setup',
+        description: 'UTM parameters, pixel events, and conversion API configured to track the full journey from ad impression to trial signup, with attribution modelling that shows which creative drives actual registrations',
+        whyItWorks: 'SaaS startups waste ad spend on creative that generates clicks but not trials. Proper conversion tracking reveals the true cost-per-trial of each creative variant, enabling budget reallocation to the ads that actually produce signups.',
+      },
+      {
+        label: 'Creative Performance Dashboard',
+        description: 'A real-time dashboard showing CPA, trial conversion rate, and cost-per-trial by creative variant, platform, and audience segment -- updated as new performance data arrives',
+        whyItWorks: 'SaaS growth teams need real-time visibility into creative performance to make fast budget decisions. A dashboard eliminates the reporting lag that causes wasted spend on underperforming creative.',
+      },
+      {
+        label: 'A/B Creative Testing Calendar',
+        description: 'A structured 2-week creative testing cadence with scheduled new variant production, testing windows, performance review checkpoints, and winner promotion to full spend allocation',
+        whyItWorks: 'Systematic creative testing is the difference between SaaS startups that optimise their ad spend and those that burn it. A testing calendar enforces the discipline of continuous improvement that compounds into lower CPAs over time.',
+      },
+    ],
+  }),
+    [key('ad_creative_editor_local_businesses')]: derivePathContent(AD_CREATIVE_EDITOR_ECOMMERCE_BRANDS, {
+    pathTitle: 'Ad Creative for Local Businesses -- Local Ads That Drive Phone Calls and Walk-In Traffic',
+    audienceInsight: 'Local businesses running paid ads need creative that drives real-world actions: phone calls, in-store visits, appointment bookings. But most local business ads use the same templates as national brands -- beautiful product shots that work for ecommerce but do not drive local action. Local customers need to see the business, the people, and the specific value of choosing this location over competitors. A generic product image does not tell them why they should visit YOUR store today.',
+    offerStrategy: 'Position as a local action ad specialist. The strategy is location-visible creative: show the physical business, the staff, the atmosphere. Use local landmarks, local language, and clear calls to action: call now, get directions, visit today. Every ad must answer: why should a customer within 10 miles choose this business right now? Focus on urgency without being pushy -- limited-time offers, local events, seasonal relevance.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$600-$1,200/mo',
+      intermediateRange: '$1,200-$2,500/mo',
+      premiumRange: '$2,500-$5,000/mo',
+      pricingLogic: 'Monthly retainer for ongoing local ad creative. Local businesses need seasonal and event-based creative refreshes, not just evergreen ads. Tier by number of ad variants and platforms. Frame pricing against traditional local advertising costs like print, radio, or direct mail -- digital ads with strong creative deliver measurable ROI at a fraction of the cost.',
+    },
+    proposalAngle: {
+      headline: 'Local Ads That Make People Pick Up the Phone and Call Your Business',
+      problem: 'Your digital ads get impressions but not phone calls or visits. The creative shows your product but does not tell local customers why they should choose your business today instead of a competitor down the street.',
+      solution: 'I produce local ad creative designed to drive real-world actions -- showing your business, your team, and your location in a way that makes local customers pick up the phone or walk through your door.',
+      nextStep: 'Tell me about your business, your location, and what special offers or events you have coming up. I will produce a local ad creative concept designed to drive calls and visits within your target radius.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners running digital ads who are getting impressions but not enough phone calls or in-store visits from their ad spend.',
+      problemItSolves: 'Most local business ads use generic product templates that work for ecommerce but fail to drive local actions. The creative does not show the business location, the team, or the specific reason to visit today.',
+      corePromise: 'A local-action-focused ad creative system that uses location-visible visuals, local language, and clear calls to action to convert ad viewers into phone calls and walk-in customers.',
+      whyThisWorks: 'Local businesses using location-visible ad creative featuring their team and physical location generate 4x more phone calls and in-store visits than those using product-only ads, because local customers choose familiarity and proximity over generic product appeal.',
+      nextStepCTA: 'Share this with local business owners whose digital ads are not generating calls or visits. Offer a free local ad creative review with recommendations for improving action-driven results.',
+    },
+    deliverables: [
+      {
+        label: 'Location-Visible Ad Creative',
+        description: 'Ads that prominently feature the physical business location, team members, storefront, and service environment -- making the business feel real, accessible, and familiar to local viewers',
+        whyItMatters: 'Local customers choose familiar businesses over unknown ones. Location-visible creative builds the familiarity and trust that convinces local viewers to visit, call, or book rather than choosing a competitor.',
+      },
+      {
+        label: 'Offer Promotion Ad',
+        description: 'Time-limited offer or discount ads with clear urgency messaging, specific dates, and a direct call to action (call now, visit today, book this week) designed to drive immediate customer action',
+        whyItMatters: 'Local businesses need ads that produce measurable results within days. Offer promotion ads with urgency create a reason for the customer to act now rather than saving and forgetting.',
+      },
+      {
+        label: 'Local Event Ad',
+        description: 'Event-specific creative for grand openings, seasonal sales, community events, or special promotions -- with date-specific messaging and location cues that drive foot traffic during the event window',
+        whyItMatters: 'Local events are the highest-converting marketing moments for local businesses. Event-specific ads amplify the promotional impact and ensure the local community knows about the opportunity.',
+      },
+      {
+        label: 'Customer Story Ad',
+        description: 'Authentic local customer testimonial ads featuring real people from the community describing their experience, shot at the business location for visual context and local authenticity',
+        whyItMatters: 'Local customers trust recommendations from other local customers more than any brand messaging. Customer story ads provide the peer validation that converts undecided local viewers into first-time customers.',
+      },
+      {
+        label: 'Seasonal Promotion Package',
+        description: 'Holiday, seasonal, or weather-specific ad creative that ties the business\'s offering to what is happening in the local community right now -- creating relevance through timeliness and local context',
+        whyItMatters: 'Seasonal relevance is the highest-performing creative angle for local businesses. Ads that connect the offering to what customers are already thinking about (holidays, weather, local events) capture attention in the natural decision moment.',
+      },
+    ],
+    uniqueMechanisms: AD_CREATIVE_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Google Business Profile Ad Sync',
+        description: 'Creative formatted and optimised for Google Business Profile posting, with the correct specifications and local keywords for maximum visibility in local search and map results',
+        whyItWorks: 'Google Business Profile is the most visible local advertising platform. Synced creative ensures the same compelling messaging reaches customers searching on Google Maps and local search, not just on social platforms.',
+      },
+      {
+        label: 'Local Audience Targeting Guide',
+        description: 'Creative recommendations tailored to the business\'s specific radius targeting strategy, with messaging and visuals designed for the demographics, income levels, and interests of the local area',
+        whyItWorks: 'Local ad effectiveness depends on targeting relevance as much as creative quality. A targeting guide ensures the creative matches the audience it will be shown to, maximising relevance scores and minimising wasted impressions.',
+      },
+      {
+        label: 'Call Extension Integration',
+        description: 'Ad formats configured with click-to-call extensions, call tracking numbers, and call-only ad variants that make it frictionless for local customers to pick up the phone immediately',
+        whyItWorks: 'Phone calls convert at 3-5x higher rates than website visits for local businesses. Removing every friction point between seeing the ad and dialling the number directly increases the volume of inbound calls.',
+      },
+    ],
+  }),
+    [key('landing_page_developer_coaches')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page Build for Coaches -- Booking Pages That Turn Content Readers Into Discovery Calls',
+    audienceInsight: 'Coaches driving traffic from podcasts, Instagram, or guest posts need a landing page that converts content consumers into discovery call bookings. The typical coach landing page is a generic \'work with me\' page that assumes the visitor already knows they want coaching. But most visitors need their hand held: they need to see the transformation, understand the process, and feel confident booking. Coaches need a technically solid landing page with fast load times, seamless calendar API integration, form-to-email reliability, and tracking that shows exactly which content sources produce the most calls.',
+    offerStrategy: 'Position as a coach call-conversion landing page engineer. The focus is technical reliability: the page loads fast on mobile, the Calendly API fires without errors, the form data reaches the CRM, and UTM parameters track which content source produced each booking. Design decisions serve one goal: reducing every point of friction between \'interested reader\' and \'call booked.\' The coach provides the content that drives traffic; you provide the technical infrastructure that converts it.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,500-$3,000/site',
+      intermediateRange: '$3,000-$5,000/site',
+      premiumRange: '$5,000-$8,000/site',
+      pricingLogic: 'One-time project fee based on page count and integration complexity. A single discovery call landing page with Calendly and basic analytics is at the low end. A multi-page funnel with waitlist capture, webinar registration, and automated email triggers is at the high end. Frame as a fraction of what one booked client is worth -- if a coach closes $3K programs, converting just 2 more visitors per month pays for the page.',
+    },
+    proposalAngle: {
+      headline: 'A Landing Page That Books Coaching Discovery Calls While You Focus on Coaching',
+      problem: 'Your content drives traffic, but your landing page does not convert. The page loads slowly, the booking calendar glitches on mobile, and you have no idea which content source produced which call. You are leaving booked calls on the table.',
+      solution: 'I build a technically solid landing page engineered for conversion: sub-2-second mobile load time, seamless Calendly integration, reliable form-to-email delivery, and UTM tracking so you know exactly which podcast or post drives each booked call.',
+      nextStep: 'Send me the URL of your current landing page and your Calendly link. I will produce a page speed audit with 5 specific technical fixes and a wireframe for a redesigned call-booking page.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Coaches who drive traffic through content but whose current landing page fails to convert readers into booked discovery calls at a reliable rate.',
+      problemItSolves: 'Most coach landing pages are built quickly and accumulate performance debt -- slow load times, broken calendar integrations, missing analytics. The coach has no idea which content sources produce calls and which pages lose visitors.',
+      corePromise: 'A technically engineered landing page with mobile-first performance, seamless calendar API integration, UTM-attributed analytics, and form-to-CRM reliability -- turning every content visitor into a measurable call-booking opportunity.',
+      whyThisWorks: 'Coaches with technically solid landing pages that load in under 2 seconds and track UTM sources see 2-3x more booked discovery calls from the same content traffic, because the page converts reliably and the coach knows which channels to double down on.',
+      nextStepCTA: 'Share this with coaches whose content drives traffic but whose landing pages underperform. Offer a free page speed audit with 5 specific fixes and a conversion-focused wireframe.',
+    },
+    deliverables: [
+      {
+        label: 'Discovery Call Booking Page',
+        description: 'A dedicated landing page engineered for one conversion goal: booked discovery calls, with seamless calendar API integration, mobile-first performance, UTM tracking, and form-to-CRM reliability',
+        whyItMatters: 'Coaches drive traffic from content but lose most of it on generic booking pages. A dedicated call booking page with reliable technical infrastructure ensures every content visitor has a frictionless path to a booked call.',
+      },
+      {
+        label: 'Content-to-Call Funnel',
+        description: 'A multi-page funnel: content reader arrives on a value page (case study, methodology overview, transformation story), moves to an authority-building intermediate page, then proceeds to the booking page',
+        whyItMatters: 'Most coaching visitors need multiple trust-building steps before booking a call. A sequenced funnel provides the progressive conviction that converts skeptical content readers into qualified call leads.',
+      },
+      {
+        label: 'Webinar Registration Landing Page',
+        description: 'A landing page optimised for free workshop or webinar signups, with a clear value proposition for attending, social proof from past attendees, and a low-commitment registration flow',
+        whyItMatters: 'Webinars are the highest-converting coaching lead generation channel. A dedicated registration page that presents the webinar\'s value clearly can double attendance rates compared to a generic signup form.',
+      },
+      {
+        label: 'Lead Magnet Landing Page',
+        description: 'An opt-in page for free coaching resources (guides, assessments, checklists) with email capture, designed to build the coach\'s email list with prospects who have already received value from the coach\'s expertise',
+        whyItMatters: 'Coaches with robust email lists convert warm subscribers at 3-5x the rate of cold traffic. A lead magnet page that effectively communicates the resource\'s value grows the list with qualified prospects.',
+      },
+      {
+        label: 'Multi-Offer Booking System',
+        description: 'A landing page system that presents different coaching packages, programs, or offer types with clear differentiation, pricing context, and individual booking flows for each offer tier',
+        whyItMatters: 'Coaches with multiple offer tiers (one-on-one, group program, self-paced course) need a page that helps prospects self-select the right option. A multi-offer system reduces confusion and increases booking conversion across all packages.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'UTM Tracking Setup',
+        description: 'Full UTM parameter infrastructure on every page CTA and booking confirmation, with source-attributed analytics showing exactly which content piece, podcast appearance, or social post produced each booked call',
+        whyItWorks: 'Coaches produce content across multiple channels but rarely know which source drives the most bookings. UTM tracking reveals the highest-ROI content channels, enabling the coach to focus their efforts where it produces the most calls.',
+      },
+      {
+        label: 'Calendar API Integration',
+        description: 'Seamless Calendly or Acuity booking widget integration that loads without page reload, displays real-time availability, and sends confirmation emails automatically -- eliminating technical friction from the booking flow',
+        whyItWorks: 'Broken or slow calendar widgets are the #1 technical cause of abandoned booking flows. A seamless integration ensures the visitor completes the booking while their motivation is high, rather than abandoning due to technical friction.',
+      },
+      {
+        label: 'Post-Booking Email Sequence',
+        description: 'Automated confirmation, reminder, and preparation email sequence triggered after booking, with calendar attachment, call prep instructions, and rescheduling options built in',
+        whyItWorks: 'Coaches experience 20-30% no-show rates on discovery calls without proper reminder systems. An automated post-booking sequence dramatically reduces no-shows and ensures prospects arrive prepared for a productive first call.',
+      },
+    ],
+  }),
+    [key('landing_page_developer_saas_startups')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page Build for SaaS Startups -- Trial-Conversion Pages With Built-in Experiment Infrastructure',
+    audienceInsight: 'SaaS startups run their growth engine on landing pages: the pricing page, the free trial page, the demo request page, the feature comparison page. Every one of these pages is an experiment. But most startups either pay a designer for a one-off page that cannot be iterated, or build pages in-house that lack proper tracking, A/B testing setup, and performance optimisation. They need a landing page developer who builds pages with experiment infrastructure baked in: analytics events on every button, A/B testing framework wired up, form-to-CRM pipeline validated, and Lighthouse scores above 90 on mobile.',
+    offerStrategy: 'Position as a growth page engineer for SaaS, not a page builder. Every page is built with the assumption it will be tested and changed within 2 weeks -- so the component structure, analytics layer, and CMS integration are designed for iteration, not permanence. The deliverable is a tested, instrumented, experiment-ready page that the startup\'s growth team can start optimising immediately rather than spending the first month setting up tracking.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,500-$5,000/page',
+      intermediateRange: '$5,000-$10,000/funnel',
+      premiumRange: '$10,000-$18,000/multi-page system',
+      pricingLogic: 'Per-page or per-funnel project pricing. A single trial landing page with analytics and form integration is at the low end. A multi-page trial funnel (pricing → signup → onboarding page) with A/B testing infrastructure and CMS integration is at the mid-range. A complete landing page system with 5+ pages, experiment pipeline, and documentation is at the high end. Frame as a fraction of monthly ad spend -- a page that improves trial conversion by 10% pays for itself in weeks.',
+    },
+    proposalAngle: {
+      headline: 'Landing Pages Built for SaaS Growth Teams -- Instrumented, Testable, and Fast From Day One',
+      problem: 'Your landing pages look fine but you have no idea which variant converts better because the A/B testing tool was never wired up, analytics events fire inconsistently, and each page change requires developer time. Your growth team is flying blind.',
+      solution: 'I build SaaS landing pages with full experiment infrastructure: analytics events on every interaction, A/B testing framework integration, form-to-CRM pipelines, and Lighthouse 90+ mobile scores. Your growth team can run experiments from day one without touching code.',
+      nextStep: 'Share your current landing page URLs and your growth stack (analytics, A/B testing tool, CRM). I will produce a technical audit showing what tracking and testing infrastructure is missing, with a build plan for an experiment-ready page.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'SaaS startups whose landing pages lack proper tracking, A/B testing infrastructure, or performance optimisation -- growth teams that cannot run experiments because the page foundation is not built for iteration.',
+      problemItSolves: 'Most SaaS startups build landing pages as static assets without experiment infrastructure. Analytics events fire inconsistently, A/B testing is not wired, form data leaks, and page speed regresses with every update. The growth team spends more time fixing tracking than running experiments.',
+      corePromise: 'A landing page development system built for experimentation from the first commit -- with analytics instrumentation, A/B testing framework, validated form-to-CRM pipelines, and a performance budget enforced by CI -- so your growth team can iterate without engineering bottlenecks.',
+      whyThisWorks: 'SaaS startups with experiment-ready landing pages discover winning variants 3-5x faster than those whose growth team must request developer help for every test, because the infrastructure for measurement and iteration is built in rather than retrofitted.',
+      nextStepCTA: 'Share this with SaaS founders whose growth team cannot run landing page experiments without developer support. Offer a free technical audit of their current page tracking and testing setup.',
+    },
+    deliverables: [
+      {
+        label: 'Experiment-Ready Landing Page Build',
+        description: 'A fully instrumented landing page with analytics events on every interaction, A/B testing framework integration, form-to-CRM pipeline, and Lighthouse 90+ mobile/desktop performance',
+        whyItMatters: 'SaaS growth teams cannot optimise what they cannot measure. Building the page with experiment infrastructure from day one means the growth team can start running tests immediately instead of spending the first month retrofitting tracking.',
+      },
+      {
+        label: 'Multi-Page Trial Funnel',
+        description: 'A connected system of landing pages (pricing, signup, onboarding) with consistent experiment infrastructure, cross-page analytics, and funnel-level conversion tracking across all pages',
+        whyItMatters: 'SaaS conversion is a multi-page journey. Isolated page-level optimisation misses funnel dynamics; a connected system lets the startup identify where in the trial flow prospects drop off and run coordinated experiments across the entire journey.',
+      },
+      {
+        label: 'Growth Page Component Library',
+        description: 'A reusable component system of landing page sections (hero, feature grid, pricing table, testimonial carousel, CTA) built with experiment slots, analytics hooks, and CMS integration built in',
+        whyItMatters: 'Startups iterate landing pages weekly. A component library with built-in experiment slots eliminates the need for custom development on every test, reducing experiment setup time from days to hours.',
+      },
+      {
+        label: 'Landing Page Technical Audit',
+        description: 'A comprehensive audit of existing pages covering analytics event coverage, A/B testing capability, mobile performance, form-to-CRM reliability, conversion tracking setup, and experiment-readiness score',
+        whyItMatters: 'Most SaaS startups cannot run experiments because their pages lack fundamental infrastructure. The audit gives the growth team a clear, prioritised roadmap of what to fix before they can start optimising.',
+      },
+      {
+        label: 'Experiment Pipeline Documentation',
+        description: 'Technical documentation of the landing page experiment infrastructure including analytics event spec, A/B test setup guide, form-to-CRM data flow, and performance budget rules for the growth team',
+        whyItMatters: 'Growth teams change personnel and agencies. Documented experiment infrastructure ensures institutional knowledge is preserved and new team members can run experiments without relying on the original developer.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Performance Budget Enforcement',
+        description: 'Automated Lighthouse performance budget checks (CI integration) that block deployments if mobile performance drops below 90, ensuring pages stay fast as the growth team iterates page variants',
+        whyItWorks: 'SaaS landing pages suffer performance regression with every experiment iteration. CI-enforced budgets guarantee pages remain fast without manual oversight, directly preserving conversion rates that degrade with slow load times.',
+      },
+      {
+        label: 'Conversion Heatmap Integration',
+        description: 'Session recording and heatmap tool setup (Hotjar, Microsoft Clarity) with event tagging aligned to experiment metrics, enabling the growth team to visually analyse user behaviour on every page variant',
+        whyItWorks: 'Quantitative A/B test data tells you which variant won but not why. Heatmaps and session recordings reveal the behavioural reason behind conversion differences, enabling more effective next-test hypotheses.',
+      },
+      {
+        label: 'Dynamic Content Personalization',
+        description: 'URL-parameter-based content swapping (headline, CTA, testimonial) for targeted campaigns, allowing the growth team to run page experiments without requiring full A/B testing infrastructure',
+        whyItWorks: 'Not every test warrants a full A/B experiment. Parameter-based personalisation lets growth teams run lightweight tests on specific page elements without touching the experiment framework, speeding up low-risk iterations.',
+      },
+    ],
+  }),
+    [key('landing_page_developer_local_businesses')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'Landing Page Build for Local Businesses -- Service Pages That Show Up in Local Search and Convert to Calls',
+    audienceInsight: 'Local businesses rely on their service pages to generate phone calls, booking requests, and contact form submissions. But most local business pages are built by the owner or a generalist web developer who does not optimise for local conversion: no schema markup for reviews, no click-to-call on mobile, no Google Maps integration that shows proximity, no form that reliably emails the owner. A local service page needs to do three things technically: rank for local keywords, load fast on mobile (where 80% of local searches happen), and make it frictionless for the visitor to call or book.',
+    offerStrategy: 'Position as a local lead-generation page engineer. The focus is technical fundamentals: local business schema markup, sub-2-second mobile load time, click-to-call button that works across carriers, form-to-email with delivery confirmation, Google Maps embed with directions link, and review aggregation. The page is built to generate measurable leads, not to look pretty.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,500/site',
+      intermediateRange: '$2,500-$5,000/site',
+      premiumRange: '$5,000-$8,000/site',
+      pricingLogic: 'One-time project fee based on page count. A single service page with call tracking and form is at the low end. A full local site with 5+ service pages, review integration, and multi-location support is at the high end. Frame against monthly Google Ads spend -- a well-built service page generates organic leads for years at zero ongoing ad cost.',
+    },
+    proposalAngle: {
+      headline: 'A Local Service Page That Shows Up in Search, Loads Fast, and Makes the Phone Ring',
+      problem: 'Your service page exists but it does not show up when local customers search for what you offer. It loads slowly on phones, the call button does not work consistently, and contact forms disappear into spam folders. You are losing business to competitors with better-built pages.',
+      solution: 'I build local service pages that rank in local search (schema markup, local SEO structure), load in under 2 seconds on mobile, and convert visitors into calls and bookings (working click-to-call, reliable form-to-email, Maps integration). Every page is built to generate measurable leads.',
+      nextStep: 'Send me your business name, service area, and the top 3 services you want to rank for. I will research your current local search presence and deliver a page structure plan with schema markup spec and technical recommendations.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners whose current website does not show up in local search, loads slowly on mobile, or generates too few phone calls and contact form submissions.',
+      problemItSolves: 'Most local business websites are built by generalist developers who skip local SEO fundamentals, mobile performance optimisation, and reliable form delivery. The result is a page that exists but does not generate leads.',
+      corePromise: 'A technically engineered local service page with local business schema, mobile-first performance budget, working click-to-call and form delivery, and review integration -- turning your page into a reliable lead generation channel.',
+      whyThisWorks: 'Local businesses with technically optimised service pages (schema markup, sub-2s mobile load, working click-to-call) generate 3-5x more phone calls and form submissions than those with standard pages, because each technical element directly removes a conversion barrier.',
+      nextStepCTA: 'Share this with local business owners who have a website but are not getting calls from it. Offer a free technical audit of their current page speed, schema markup, and form delivery reliability.',
+    },
+    deliverables: [
+      {
+        label: 'Local Service Landing Page Build',
+        description: 'A single service landing page with local business schema markup, mobile-first performance (sub-2s load), click-to-call button, form-to-email delivery confirmation, and Google Maps integration with directions link',
+        whyItMatters: 'Local businesses need their service pages to rank in local search and convert visitors into calls. A technically optimised service page directly addresses the two things that matter most to local lead generation: visibility and conversion.',
+      },
+      {
+        label: 'Multi-Page Local Site Build',
+        description: 'A full local business website with 5+ service pages, each with individual schema markup, location-specific meta tags, and conversion-optimised layouts -- built as a connected system that funnels visitors toward contact',
+        whyItMatters: 'Local businesses with multiple services need individual pages for each to rank in local search. A multi-page build establishes comprehensive local SEO coverage, capturing search traffic across every service offering.',
+      },
+      {
+        label: 'Contact and Booking Integration',
+        description: 'Working contact forms with email delivery confirmation, click-to-call button tested across carriers, Google Maps directions embed, and third-party booking widget integration with reliable data delivery',
+        whyItMatters: 'Every technical failure in the contact flow costs the local business a potential customer. Reliable, tested contact integrations ensure every visitor who wants to reach the business can do so without friction.',
+      },
+      {
+        label: 'Review and Social Proof Integration',
+        description: 'Dynamic review aggregation pulling Google Business Profile and other review platform ratings into the page, with schema markup for review-rich snippets in search results and visual trust badges',
+        whyItMatters: 'Reviews are the #1 trust signal for local purchase decisions. A dynamic review display that feeds verified ratings into the site and search results builds credibility with visitors before they ever contact the business.',
+      },
+      {
+        label: 'Local SEO Technical Audit and Implementation',
+        description: 'Comprehensive local SEO audit covering schema markup audit, Google Business Profile alignment, local keyword gap analysis, Core Web Vitals check, and structured data implementation with verification',
+        whyItMatters: 'Most local business pages fail to rank because of technical SEO gaps the owner does not know exist. An audit and implementation package fixes the invisible issues that prevent pages from appearing in local search results.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Performance Optimisation Package',
+        description: 'Lighthouse 90+ scores enforced on mobile and desktop, Core Web Vitals passing, image optimisation, lazy loading, and CDN integration -- with automated monthly performance check reports',
+        whyItWorks: 'Google uses page speed as a local ranking factor. A performance-optimised local page ranks higher in local search and converts better, because mobile users abandon pages that take more than 3 seconds to load.',
+      },
+      {
+        label: 'UTM Tracking and Analytics Setup',
+        description: 'Source-attributed analytics with UTM tracking on every contact CTA, form submission tracking, call tracking number integration, and a dashboard that shows which channels drive the most leads',
+        whyItWorks: 'Local business owners waste ad budget on channels that do not produce calls. UTM-attributed analytics reveals exactly which marketing channel drives each lead, enabling data-driven budget allocation.',
+      },
+      {
+        label: 'Post-Launch Maintenance Plan',
+        description: 'Monthly performance monitoring, schema markup updates, content update support, plugin security patches, and quarterly SEO re-audit to keep the site performing and ranking over time',
+        whyItWorks: 'Local business websites degrade over time without maintenance: plugins break, schema goes stale, performance regresses. A maintenance plan prevents the gradual decline that turns a well-built site back into an underperformer.',
+      },
+    ],
+  }),
+    [key('landing_page_developer_agencies')]: derivePathContent(LANDING_PAGE_DEVELOPER_COURSE_CREATORS, {
+    pathTitle: 'White-Label Landing Page Builds for Agencies -- Reliable Page Delivery Without Hiring Developers',
+    audienceInsight: 'Digital agencies that sell landing page services to their clients need a reliable build partner. Every client wants a different landing page: different CRM integration, different tracking requirements, different page speed targets. Hiring full-stack developers for landing page work is expensive and slow. Freelance page builders disappear mid-project. Agencies need a landing page developer who can take a design mockup or brief and deliver a working, tracked, tested landing page on a predictable schedule -- white-label, so the agency presents the work as their own.',
+    offerStrategy: 'Position as an agency landing page delivery partner. The value is reliability and technical scope management: the agency sends a brief or Figma file, you return a built-and-tested page with analytics events firing, forms delivering, and page speed targets met. Build a system for brief intake, technical specification sign-off, and QA checklist delivery. The agency handles the client relationship and strategy; you handle the implementation.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/mo',
+      intermediateRange: '$4,000-$7,000/mo',
+      premiumRange: '$7,000-$12,000/mo',
+      pricingLogic: 'Monthly retainer with a defined page delivery capacity. Agencies need predictable costs to quote retainers to their clients. Tier by page count per month and integration complexity. Premium tier includes rush turnaround and advanced integrations (CRM, analytics, A/B testing setup). Frame as a fraction of what they would pay a full-time frontend developer.',
+    },
+    proposalAngle: {
+      headline: 'White-Label Landing Page Delivery That Lets Agencies Scale Without a Build Team',
+      problem: 'Your agency sells landing page services but every new client requires finding and managing a different developer. Quality is inconsistent, timelines slip, and you spend more time managing builds than selling. You are leaving revenue on the table because you cannot scale page delivery.',
+      solution: 'I act as your dedicated landing page build partner -- taking briefs or Figma files to production-ready, tracked, tested pages with consistent quality and predictable turnaround. White-label delivery so you present the work as your own.',
+      nextStep: 'Share a recent client landing page brief and the technical requirements (tracking, forms, integrations). I will deliver a completed page with QA report and analytics verification so you can evaluate quality, turnaround, and handoff process.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Digital agencies that sell landing page services but struggle with consistent delivery quality, developer capacity, or managing freelance page builders.',
+      problemItSolves: 'Agencies lose margin on landing page services because finding reliable developers is time-consuming and expensive. Inconsistent page quality damages the agency brand with clients, and timeline slippage creates client friction.',
+      corePromise: 'A white-label landing page delivery partnership with consistent code quality, reliable timelines, and technical scope management -- so agencies can scale page service revenue without hiring or managing developers.',
+      whyThisWorks: 'Agencies using dedicated white-label page build partners increase landing page service revenue by 40-60% within 3 months because they can take on more clients without adding headcount, and consistent delivery quality leads to higher client retention and referrals.',
+      nextStepCTA: 'Share this with agency owners who are turning down landing page work or struggling with build quality. Offer a free trial page build from one of their client briefs to demonstrate process and quality.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Landing Page Build',
+        description: 'Brief or Figma design to production-ready, tracked, tested landing page delivered under the agency\'s brand -- with analytics events firing, form data delivering, and page speed targets met on every build',
+        whyItMatters: 'Agencies win and retain clients on delivery reliability. White-label builds with consistent technical quality let the agency scale landing page services without investing in in-house development capacity or managing freelancers.',
+      },
+      {
+        label: 'Multi-Client Technical Adaptation',
+        description: 'Adapt to each agency client\'s tech stack, CRM system, analytics platform, and tracking requirements -- with per-client integration checklists and configuration templates that prevent setup errors',
+        whyItMatters: 'Agency clients use different CRMs, analytics tools, and form platforms. The ability to handle diverse technical requirements without errors is what separates a production partner from a single-stack freelancer.',
+      },
+      {
+        label: 'Landing Page Technical Audit Package',
+        description: 'Comprehensive audit of existing agency client pages covering page speed, analytics event coverage, form delivery reliability, schema markup correctness, and A/B testing readiness',
+        whyItMatters: 'Agencies can upsell audit services to existing clients and use findings to justify rebuild projects. A structured audit package creates a natural sales pipeline for ongoing page build work.',
+      },
+      {
+        label: 'Integration Pipeline Setup',
+        description: 'Pre-built connector architecture for CRM, analytics, A/B testing tools, email marketing, and payment platforms -- installed and configured with event tracking so each page feeds the agency client\'s business systems from launch day',
+        whyItMatters: 'A landing page that does not feed data into the client\'s business systems is a lead black hole. Integration pipeline setup ensures every page actively contributes to the client\'s sales and marketing infrastructure.',
+      },
+      {
+        label: 'Sprint-Based Page Capacity',
+        description: 'Reserved monthly page build capacity with a defined sprint velocity, allowing the agency to plan and quote client projects with predictable delivery timelines and no scheduling conflicts',
+        whyItMatters: 'Agencies need certainty when selling page build services. Reserved capacity eliminates the risk of schedule conflicts, enabling the agency to confidently commit to delivery dates with their clients.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Brand QA Checklist',
+        description: 'A standardised quality assurance checklist applied to every page build, covering code quality, tracking verification, form testing, performance benchmarks, and handoff documentation completeness',
+        whyItWorks: 'Agency brand reputation depends on consistent quality across every client deliverable. A QA checklist enforces standards that protect the agency\'s brand, even as the volume of page builds scales.',
+      },
+      {
+        label: 'Handoff Documentation Package',
+        description: 'Complete build documentation including architecture notes, integration configuration details, analytics event reference, deployment instructions, and maintenance guidelines delivered with every page build',
+        whyItWorks: 'Agencies need to maintain client pages long after the initial build. Comprehensive handoff documentation ensures the agency\'s team can confidently manage the page without relying on the original developer.',
+      },
+      {
+        label: 'Rush Turnaround Service',
+        description: '24--48 hour express page build for time-sensitive agency projects, with prioritised queue handling and expedited review cycles for urgent client deliverables',
+        whyItWorks: 'Agency client timelines shift constantly. A rush service ensures the agency never has to turn down an urgent project or miss a critical client deadline, strengthening their reputation for reliability.',
+      },
+    ],
+  }),
+  [key('no_code_developer_startups')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Startups',
+    audienceInsight: 'Startups in the startup space are early-stage startups who need MVPs and internal tools built without engineering teams. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Startups -- A System Built for Your Success',
+      problem: 'You know Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Startups. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Startups and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Startups with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Startups. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'MVP Build System',
+        description: 'A functional minimum viable product built entirely with no-code tools (Bubble, Glide, Adalo, FlutterFlow, or similar) -- including database schema, user auth, core feature set, and a deploy-ready frontend',
+        whyItMatters: 'Startups need to validate ideas before investing in custom development. A no-code MVP that costs a fraction of traditional development gets the startup to market faster and provides real user feedback to inform future investment decisions.',
+      },
+      {
+        label: 'Internal Operations Dashboard',
+        description: 'An automated operations dashboard connecting CRUD, user management, data visualisation, task assignments, and team collaboration -- giving the startup a command centre without requiring developer headcount',
+        whyItMatters: 'Early-stage startups lack the operational infrastructure of mature companies. An operations dashboard centralises core business functions in one accessible tool, enabling lean teams to operate efficiently without hiring engineers.',
+      },
+      {
+        label: 'Automated CRM and Lead Management',
+        description: 'A no-code CRM pipeline tracking leads from first touch to closed deal, with automated email sequences, follow-up reminders, lead scoring, and a visual pipeline dashboard that requires zero manual data entry',
+        whyItMatters: 'Startups often lose leads because they lack structured follow-up processes. An automated CRM ensures every lead receives consistent, timely engagement without requiring a dedicated sales operations person.',
+      },
+      {
+        label: 'API and Tool Integration Connector',
+        description: 'Bridged connections between the startup\'s no-code stack and external services (Stripe, Slack, Google Sheets, Mailchimp, Zapier, Airtable) -- with automated data sync, error handling, and logging',
+        whyItMatters: 'Startups rely on multiple third-party tools that need to communicate. A no-code integration layer connects these tools without requiring API development, saving weeks of engineering time per integration.',
+      },
+      {
+        label: 'User Authentication and Access System',
+        description: 'Complete user management with email/password login, Google OAuth, role-based access control, session management, password reset flows, and admin panel for user administration',
+        whyItMatters: 'User authentication is a critical safety and UX element that is complex to build from scratch. A pre-built no-code auth system delivers production-ready authentication without the security risks of amateur implementation.',
+      },
+    ],
+    uniqueMechanisms: NO_CODE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Scalability Roadmap',
+        description: 'A forward-looking migration strategy that identifies which parts of the no-code system will need custom development as the startup scales, prioritised by growth impact and migration complexity',
+        whyItWorks: 'Founders worry that no-code is a dead end. A scalability roadmap shows them the full arc from no-code MVP to custom architecture, giving confidence that their initial investment in no-code is the first step in a planned growth trajectory.',
+      },
+      {
+        label: 'User Testing and Feedback Pipeline',
+        description: 'A built-in feedback collection system with in-app surveys, usage analytics, feature request tracking, and session recording that feeds user insights directly into the startup\'s product development decisions',
+        whyItWorks: 'Startups that iterate based on user feedback succeed at dramatically higher rates. An integrated feedback pipeline ensures every user interaction generates actionable data for the next product improvement cycle.',
+      },
+      {
+        label: 'Deployment and CI/CD Simulation',
+        description: 'Automated staging-to-production deployment workflow using no-code tooling, with version control simulation, environment separation, and rollback capability that mirrors professional software deployment practices',
+        whyItWorks: 'Professional deployment practices build startup team confidence in the technology stack. A CI/CD-like workflow using no-code tools demonstrates that the no-code approach supports the same quality standards as traditional development.',
+      },
+    ],
+  }),
+  [key('no_code_developer_coaches_consultants')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need automated client management and delivery systems. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Client Onboarding Automation',
+        description: 'An automated onboarding flow integrating intake forms, scheduling, document collection, payment setup, welcome sequences, and client portal access -- turning manual onboarding into a self-service system that works 24/7',
+        whyItMatters: 'Coaches lose prospects during manual onboarding because the process feels unprofessional and slow. An automated onboarding flow creates a premium first impression, reduces admin work, and converts more inquiries into paying clients.',
+      },
+      {
+        label: 'Client Portal and Progress Tracker',
+        description: 'A private client portal with session scheduling, progress tracking, goal setting, resource library, homework submission, and communication tools -- designed for the coach to track client advancement between sessions',
+        whyItMatters: 'Coaching outcomes improve dramatically when clients have structured accountability between sessions. A client portal provides the framework for clients to track their own progress, reducing the coach\'s administrative burden.',
+      },
+      {
+        label: 'Session Booking and Calendar System',
+        description: 'An integrated booking system with calendar sync, automated reminders, waitlist management, recurring session scheduling, cancellation policies, and rescheduling workflows that minimises no-shows',
+        whyItMatters: 'No-shows and scheduling friction are the biggest operational drains on coaching practices. A professional booking system with automated reminders reduces no-shows by 40% and eliminates back-and-forth scheduling emails.',
+      },
+      {
+        label: 'Payment and Subscription Management',
+        description: 'A billing system handling one-time payments, recurring subscriptions, payment plans, invoice generation, late payment reminders, and client billing history -- integrated with the coach\'s existing payment processor',
+        whyItMatters: 'Coaches with manual billing processes experience payment delays and tracking headaches. An automated payment system ensures consistent cash flow by handling billing on schedule without requiring admin follow-up.',
+      },
+      {
+        label: 'Email and Communication Automation',
+        description: 'Automated email sequences for new client onboarding, session follow-ups, milestone celebrations, re-engagement campaigns for inactive clients, and referral request flows -- all triggered by client behaviour and program stage',
+        whyItMatters: 'Coaches who maintain client engagement between sessions achieve higher renewal rates. Behaviour-triggered email sequences keep clients connected to the coaching program without requiring the coach to remember to send each message.',
+      },
+    ],
+    uniqueMechanisms: NO_CODE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Client Analytics Dashboard',
+        description: 'A visual dashboard showing client progress metrics, session completion rates, goal achievement scores, engagement trends, and client satisfaction data -- designed for the coach to identify at-risk clients at a glance',
+        whyItWorks: 'Coaches who monitor client engagement metrics can intervene before clients churn. An analytics dashboard surfaces early warning signs like declining session attendance or low goal completion, enabling proactive retention actions.',
+      },
+      {
+        label: 'Program Delivery Framework',
+        description: 'A structured no-code system for delivering coaching programs with sequenced module release, completion tracking, certification generation, and automated progression to the next program phase',
+        whyItWorks: 'Structured program delivery improves client outcomes because clients follow a proven sequence rather than an ad-hoc approach. An automated framework enforces program structure while the coach focuses on content delivery.',
+      },
+      {
+        label: 'Referral and Review Automation',
+        description: 'Automated referral link generation, client review collection, satisfaction survey delivery, and testimonial request sequences that turn successful client outcomes into the coach\'s best marketing asset',
+        whyItWorks: 'Referrals are the highest-quality lead source for coaches, but most coaches lack a system to request them. Automated referral and review sequences systematically convert happy clients into new business generation.',
+      },
+    ],
+  }),
+  [key('no_code_developer_creators')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need automated content delivery and audience management systems. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Content Publishing Pipeline',
+        description: 'An automated content flow connecting content creation, editing, scheduling, cross-platform publishing, and performance tracking -- eliminating manual posting across multiple creator platforms',
+        whyItMatters: 'Creators who manually post to multiple platforms waste hours each week on repetitive tasks. A no-code publishing pipeline automates the distribution workflow, freeing the creator to focus on content creation and audience engagement.',
+      },
+      {
+        label: 'Digital Product Delivery System',
+        description: 'A self-service checkout and delivery platform for digital products (templates, guides, presets, courses, downloads) with purchase confirmation, file delivery, license key generation, and access management',
+        whyItMatters: 'Creators who sell digital products manually waste time on delivery and support requests from customers who cannot access their purchases. An automated delivery system ensures every customer receives their product immediately after purchase.',
+      },
+      {
+        label: 'Audience Segmentation and Email System',
+        description: 'An automated email platform with audience tagging, behaviour-based segmentation, targeted content delivery, newsletter automation, and campaign analytics -- all managed through a no-code visual builder',
+        whyItMatters: 'Creators who send the same content to their entire audience miss opportunities to engage different segments. An automated segmentation system delivers relevant content to each audience group, increasing open rates and conversion.',
+      },
+      {
+        label: 'Community and Membership Portal',
+        description: 'A creator-branded community portal with member profiles, content gating, discussion forums, live event scheduling, tiered access levels, and engagement gamification -- designed to build a paid community around the creator\'s content',
+        whyItMatters: 'Creators with engaged communities generate recurring revenue that is independent of platform algorithm changes. A membership portal creates a direct relationship with the audience that no platform can interrupt.',
+      },
+      {
+        label: 'Sponsorship and Collaboration Tracker',
+        description: 'A CRM system for tracking brand outreach, sponsorship proposals, collaboration agreements, deliverable tracking, invoice management, and campaign performance reporting -- purpose-built for creator business operations',
+        whyItMatters: 'Creators who manage brand deals manually lose track of proposals, deliverables, and payments. A sponsorship tracker professionalises the creator\'s business operations, enabling them to manage multiple brand relationships effectively.',
+      },
+    ],
+    uniqueMechanisms: NO_CODE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Content Performance Dashboard',
+        description: 'A real-time analytics dashboard showing content performance across all platforms, audience growth trends, top-performing content formats, and revenue attribution -- giving the creator a single-pane view of their entire business',
+        whyItWorks: 'Creators who understand their content analytics make better strategic decisions. A unified dashboard reveals which platforms, formats, and topics drive the most growth and revenue, enabling data-driven content planning.',
+      },
+      {
+        label: 'Automated Affiliate Management',
+        description: 'An affiliate program system with automated link generation, commission tracking, payout processing, affiliate dashboard, and promotional asset delivery for creators who sell digital products through affiliates',
+        whyItWorks: 'Affiliate marketing scales creator revenue by extending reach through partner networks. An automated affiliate system makes it easy for creators to recruit and manage affiliates without dedicating time to manual administration.',
+      },
+      {
+        label: 'Merch and Physical Product Integration',
+        description: 'A no-code storefront integration with print-on-demand services, inventory management, order tracking, shipping notifications, and customer support ticketing for creators expanding into merchandise revenue',
+        whyItWorks: 'Merchandise creates a new revenue stream and deepens audience connection. A no-code merch integration handles the operational complexity of physical product sales (fulfilment, returns, customer service) so the creator can focus on design and promotion.',
+      },
+    ],
+  }),
+  [key('no_code_developer_local_businesses')]: derivePathContent(NO_CODE_DEVELOPER_AGENCIES, {
+    pathTitle: 'No-Code for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need automated daily operations and customer management. They need a no-code solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised no-code solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'No-Code for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide No-Code services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how No-Code can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable no-code solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated no-code system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored no-code solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how No-Code can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Local Booking and Appointment System',
+        description: 'An online booking system with service catalogue display, real-time availability, automated reminders, cancellation management, and payment at booking -- designed for local service businesses with multiple staff and locations',
+        whyItMatters: 'Local businesses that still manage bookings by phone lose customers who prefer self-service. An online booking system captures after-hours reservations and reduces no-shows through automated reminders.',
+      },
+      {
+        label: 'Customer Reviews and Reputation Manager',
+        description: 'An automated review collection system with post-service SMS and email review requests, review response templates, review aggregation dashboard, and reputation monitoring across Google, Yelp, and Facebook',
+        whyItMatters: 'Local businesses live and die by their online reputation. An automated review collection system systematically generates positive reviews while giving the business owner tools to manage and respond to negative feedback.',
+      },
+      {
+        label: 'Local SEO Landing Page Builder',
+        description: 'A no-code landing page creation system with Google Maps integration, local keyword targeting, service area pages, schema markup, and citation management -- designed to rank for local search terms',
+        whyItMatters: 'Most local businesses fail to capture local search traffic because they lack SEO-optimised landing pages. A local landing page builder ensures the business appears for every relevant local search query without requiring SEO expertise.',
+      },
+      {
+        label: 'Inventory and Order Management System',
+        description: 'A simple inventory tracking system with stock alerts, purchase order management, supplier directory, order status tracking, and basic reporting -- built for local businesses that do not need an enterprise ERP',
+        whyItMatters: 'Local businesses with manual inventory systems experience stock-outs and over-ordering that eat into margins. A lightweight inventory system reduces waste by maintaining optimal stock levels without complex setup.',
+      },
+      {
+        label: 'Customer Loyalty and Retention Program',
+        description: 'A digital loyalty program with punch cards, points accumulation, reward redemption, birthday offers, referral bonuses, and automated re-engagement campaigns for past customers -- all managed through a simple dashboard',
+        whyItMatters: 'Local businesses with loyalty programs retain customers 2x longer than those without. A digital loyalty system that does not require customers to carry physical cards makes it easy for customers to participate consistently.',
+      },
+    ],
+    uniqueMechanisms: NO_CODE_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Multi-Location Management Hub',
+        description: 'A centralised dashboard for managing multiple business locations, each with its own booking system, review profile, staff directory, and performance metrics -- designed for small chains and multi-location operators',
+        whyItWorks: 'Local business owners with multiple locations struggle to maintain consistency across sites. A multi-location hub provides oversight of all locations from one interface, ensuring uniform customer experience and operational standards.',
+      },
+      {
+        label: 'Staff Scheduling and Payroll Sync',
+        description: 'An automated staff scheduling system with shift assignments, time-off requests, clock-in/clock-out tracking, and payroll data export -- eliminating the spreadsheets and paper schedules that waste local business owner time',
+        whyItWorks: 'Manual staff scheduling is one of the biggest time drains for local business owners. Automated scheduling reduces admin time by 80% while providing staff with self-service tools for shift management and time-off requests.',
+      },
+      {
+        label: 'Emergency Communication System',
+        description: 'A mass notification system for urgent business communications (weather closures, emergency openings, policy changes, appointment availability alerts) that reaches customers via SMS, email, and social media simultaneously',
+        whyItWorks: 'Local businesses that communicate proactively during disruptions retain customer trust. An emergency notification system ensures every customer receives timely updates about changes that affect their service experience.',
+      },
+    ],
+  }),
+  [key('automation_developer_coaches_consultants')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need automated booking, follow-up, and client delivery systems. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Client Intake and Qualification Flow',
+        description: 'An automated multi-step intake flow with qualification questions, discovery call scheduling, document upload, intake form completion, and automated follow-up for incomplete applications',
+        whyItMatters: 'Coaches and consultants waste hours on unqualified leads. An automated intake and qualification system pre-screens prospects, ensuring only qualified leads reach the discovery call stage.',
+      },
+      {
+        label: 'Proposal and Contract Automation',
+        description: 'Automated proposal generation from intake data, e-signature contract delivery, payment schedule setup, and client portal access provisioning -- triggered immediately after the client accepts the proposal',
+        whyItMatters: 'The time between verbal agreement and signed contract is when deals cool off. Automated proposal-to-contract flow captures momentum by reducing the delay between a coach saying yes and the client signing.',
+      },
+      {
+        label: 'Client Offboarding and Re-engagement',
+        description: 'An automated offboarding sequence with completion certificates, final surveys, testimonial requests, referral program enrolment, and re-engagement campaigns triggered 30/60/90 days after program completion',
+        whyItMatters: 'Coaches leave money on the table by not systematically re-engaging past clients. An automated offboarding and re-engagement system converts successful outcomes into testimonials, referrals, and repeat engagements.',
+      },
+      {
+        label: 'Financial Reporting and Dashboard',
+        description: 'Automated income tracking, expense categorisation, profit calculation, tax report preparation, and cash flow forecasting -- pulling data from payments, subscriptions, and expenses into a single financial dashboard',
+        whyItMatters: 'Coaches who lack financial visibility make poor business decisions. An automated reporting system provides real-time financial intelligence without requiring the coach to manually reconcile accounts.',
+      },
+      {
+        label: 'Client Feedback and Outcome Tracking',
+        description: 'Automated feedback collection at program milestones, outcome measurement surveys, NPS tracking, and success story generation -- linking client progress data to coaching methodology improvement',
+        whyItMatters: 'Coaches improve their methodology through systematic feedback analysis. An automated outcome tracking system collects structured feedback at scale, revealing which coaching approaches drive the best results.',
+      },
+    ],
+    uniqueMechanisms: AUTOMATION_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Marketing Automation Integration',
+        description: 'A connected marketing automation layer that tracks lead sources, attribution, campaign performance, and ROI -- linking the coach\'s marketing spend directly to client acquisition and revenue',
+        whyItWorks: 'Coaches who understand which marketing channels drive the best clients can optimise their ad spend. Marketing automation integration reveals the full funnel from lead source to signed client, enabling data-driven marketing decisions.',
+      },
+      {
+        label: 'Group Program Delivery System',
+        description: 'Automated group program management with cohort creation, batch communications, group session scheduling, progress tracking, and community management -- enabling coaches to scale beyond 1:1 delivery',
+        whyItWorks: 'Coaches who scale to group programs multiply their revenue without multiplying their time. A group delivery system handles the operational complexity of cohort-based programs, making group coaching scalable.',
+      },
+      {
+        label: 'Compliance and Record-Keeping',
+        description: 'Automated client record storage, consent management, data retention policies, audit trail generation, and compliance reporting for coaches who need to meet industry regulation requirements',
+        whyItWorks: 'Coaches in regulated industries need compliant client management without administrative overhead. An automated compliance system ensures every client interaction is properly recorded and retained for regulatory review.',
+      },
+    ],
+  }),
+  [key('automation_developer_ecommerce_brands')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Ecommerce Brands',
+    audienceInsight: 'Ecommerce Brands in the ecommerce space are ecommerce brands who need automated order processing and customer follow-up. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Ecommerce Brands. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Ecommerce Brands -- A System Built for Your Success',
+      problem: 'You know Ecommerce Brands need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Ecommerce Brands. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Ecommerce Brands. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Ecommerce Brands and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Ecommerce Brands solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Ecommerce Brands -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Ecommerce Brands with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Ecommerce Brands. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Order Processing and Fulfilment Automation',
+        description: 'An end-to-end automated order flow from cart completion through payment capture, inventory deduction, order confirmation, fulfilment routing, shipping label generation, and tracking number delivery -- eliminating manual order processing for every transaction',
+        whyItMatters: 'Ecommerce brands processing manual orders lose hours each day to repetitive admin work. An automated order pipeline processes every transaction without human intervention, reducing processing time from minutes per order to zero.',
+      },
+      {
+        label: 'Customer Segmentation and Email Automation',
+        description: 'Behaviour-triggered email sequences based on purchase history, browsing behaviour, cart abandonment, product affinity, and customer lifetime value segments -- with automated content personalisation that matches each customer segment\'s buying stage',
+        whyItMatters: 'Ecommerce brands that send the same email to every customer leave revenue on the table. Automated segmentation delivers the right message at the right time based on individual customer behaviour, increasing conversion rates across every funnel stage.',
+      },
+      {
+        label: 'Inventory and Supplier Management',
+        description: 'An automated inventory tracking system with reorder point alerts, supplier purchase order generation, stock level dashboards, warehouse transfer coordination, and low-stock notifications -- integrated with the ecommerce platform\'s product catalogue',
+        whyItMatters: 'Stock-outs cost ecommerce brands revenue and damage customer trust. An inventory automation system maintains optimal stock levels by triggering replenishment orders before inventory runs out, preventing lost sales.',
+      },
+      {
+        label: 'Customer Support and Returns Pipeline',
+        description: 'Automated ticket routing, FAQ chatbot, return authorisation generation, shipping label creation for returns, refund processing workflows, and customer satisfaction follow-ups -- reducing support overhead while maintaining service quality',
+        whyItMatters: 'Ecommerce brands with manual support processes struggle to scale customer service during peak periods. An automated support pipeline handles routine inquiries instantly while routing complex issues to the right team member.',
+      },
+      {
+        label: 'Post-Purchase Retention and Review System',
+        description: 'Automated post-purchase sequences including delivery confirmation, product review requests, repeat purchase incentives, loyalty program enrolment, replenishment reminders for consumable products, and win-back campaigns for lapsed customers',
+        whyItMatters: 'Acquiring a new customer costs 5x more than retaining an existing one. An automated post-purchase retention system systematically converts one-time buyers into repeat customers through timed, relevant follow-up sequences.',
+      },
+    ],
+    uniqueMechanisms: AUTOMATION_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Multi-Channel Inventory Sync',
+        description: 'Real-time inventory synchronisation across all sales channels (website, Amazon, eBay, Shopify, physical store POS) with automated stock adjustment, channel-specific listings management, and oversell prevention',
+        whyItWorks: 'Ecommerce brands selling across multiple channels risk overselling when inventory is not synchronised in real time. Multi-channel sync eliminates oversells by maintaining a single source of truth for stock levels across every sales channel.',
+      },
+      {
+        label: 'Dynamic Pricing and Promotions Engine',
+        description: 'Automated pricing rules based on inventory levels, competitor pricing, seasonal demand, customer segments, and purchase history -- with promotion scheduling, coupon generation, and discount expiry management',
+        whyItWorks: 'Ecommerce brands using static pricing leave profit on the table during high-demand periods and lose sales during slow periods. A dynamic pricing engine optimises prices in real time based on market conditions and inventory position.',
+      },
+      {
+        label: 'Analytics and Revenue Attribution Dashboard',
+        description: 'A real-time dashboard showing revenue by channel, customer acquisition cost, customer lifetime value, marketing ROI, conversion funnel performance, and inventory turnover -- with automated report generation and anomaly alerts',
+        whyItWorks: 'Ecommerce brands that track revenue attribution make smarter marketing spend decisions. An automated analytics dashboard reveals which channels and campaigns drive the most profitable customers, enabling data-driven budget allocation.',
+      },
+    ],
+  }),
+  [key('automation_developer_local_businesses')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need automated customer management and operations. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Appointment Scheduling and Reminder System',
+        description: 'An automated booking system with online self-scheduling, calendar sync, multi-staff availability management, SMS and email reminders, cancellation and rescheduling workflows, and waitlist management -- designed for local service businesses',
+        whyItMatters: 'Local businesses that still manage bookings by phone lose customers who prefer self-service and experience high no-show rates. An automated scheduling system captures after-hours bookings and reduces no-shows through systematic reminders.',
+      },
+      {
+        label: 'Customer Intake and Lead Capture Flow',
+        description: 'Automated lead capture from website, social media, and local listings -- with instant response, qualification questions, appointment offer, and CRM entry -- ensuring no lead goes unanswered regardless of when they inquire',
+        whyItMatters: 'Local businesses lose leads when they do not respond quickly to inquiries. An automated intake flow replies instantly to every lead, qualifies them with questions, and books them into the business calendar without requiring staff availability.',
+      },
+      {
+        label: 'Invoice and Payment Collection Automation',
+        description: 'Automated invoice generation, payment reminders, recurring billing setup, digital payment links, late payment escalation sequences, and receipt delivery -- integrated with the business\'s accounting and POS systems',
+        whyItMatters: 'Local businesses with manual invoicing experience payment delays and cash flow gaps. Automated invoicing ensures every billable service generates an invoice on schedule and follows up until payment is received.',
+      },
+      {
+        label: 'Review and Reputation Management Pipeline',
+        description: 'Automated post-service review request sequences sent via SMS and email, review response templates, review aggregation dashboard, negative review alert system, and reputation monitoring across Google, Yelp, and Facebook',
+        whyItMatters: 'Local businesses depend on online reviews for new customer acquisition. An automated review pipeline systematically generates positive reviews from every satisfied customer while alerting the business owner to negative reviews that need immediate response.',
+      },
+      {
+        label: 'Marketing and Re-Engagement Automation',
+        description: 'Automated email and SMS marketing sequences targeting past customers with seasonal promotions, service reminders, referral requests, birthday offers, and win-back campaigns -- scheduled based on customer purchase history and service lifecycle',
+        whyItMatters: 'Local businesses that only market to new customers miss the easiest revenue source: past customers. Automated re-engagement sequences bring previous customers back for repeat services without requiring manual outreach.',
+      },
+    ],
+    uniqueMechanisms: AUTOMATION_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Multi-Location Operations Hub',
+        description: 'A centralised dashboard managing bookings, staff schedules, inventory, and reporting across multiple business locations -- with per-location analytics and consolidated business performance views',
+        whyItWorks: 'Local business owners with multiple locations waste time logging into separate systems for each site. A multi-location hub provides unified oversight, enabling owners to manage their entire operation from a single interface.',
+      },
+      {
+        label: 'Staff Performance and Payroll Integration',
+        description: 'Automated staff scheduling, time tracking, commission calculation, payroll data export, and performance reporting -- eliminating the spreadsheets that consume local business owners\' time each week',
+        whyItWorks: 'Manual staff management is the biggest time drain for local business owners. An automated staff system handles scheduling conflicts, tracks hours accurately, and integrates with payroll, saving hours of admin time per week.',
+      },
+      {
+        label: 'Emergency Notification and Communication',
+        description: 'A mass notification system for urgent communications (weather closures, emergency openings, policy changes, appointment availability) that reaches customers via SMS, email, and social media simultaneously',
+        whyItWorks: 'Local businesses that communicate proactively during disruptions retain customer trust and minimise revenue loss. An emergency notification system ensures every customer receives timely updates about changes affecting their service.',
+      },
+    ],
+  }),
+  [key('automation_developer_creators')]: derivePathContent(AUTOMATION_DEVELOPER_AGENCIES, {
+    pathTitle: 'Automation for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need automated audience management and digital product delivery. They need a automation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised automation solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Automation for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Automation services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how Automation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable automation solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated automation system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored automation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how Automation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Content Publishing and Distribution Pipeline',
+        description: 'An automated content distribution system that connects content creation to multi-platform publishing, scheduling, repurposing, and performance tracking -- eliminating manual cross-platform posting for every piece of content',
+        whyItMatters: 'Creators who manually post to multiple platforms waste hours each week on distribution. An automated publishing pipeline handles cross-platform delivery, letting creators focus on content creation instead of administrative posting.',
+      },
+      {
+        label: 'Digital Product Sales and Delivery Automation',
+        description: 'Automated checkout, payment capture, digital file delivery, licence key generation, access provisioning, and customer support for digital products (courses, templates, presets, downloads) -- operating 24/7 without creator involvement',
+        whyItMatters: 'Creators selling digital products manually handle every transaction, every support request, and every delivery issue. An automated system processes sales and delivers products instantly, eliminating the creator from the transaction loop.',
+      },
+      {
+        label: 'Audience Growth and Email Marketing Engine',
+        description: 'Behaviour-triggered email sequences for new subscribers, content launches, product promotions, audience re-engagement, and list segmentation -- with automated content personalisation based on audience interests and engagement history',
+        whyItMatters: 'Creators who rely on platform algorithms for audience reach face unpredictable income. An owned email audience that is automatically nurtured through triggered sequences generates consistent revenue independent of algorithm changes.',
+      },
+      {
+        label: 'Sponsorship and Brand Deal Management',
+        description: 'A CRM system for tracking brand outreach, proposal management, deliverable tracking, payment collection, campaign reporting, and relationship management -- purpose-built for creators managing multiple brand partnerships',
+        whyItMatters: 'Creators managing brand deals manually lose track of proposals, deadlines, and payments. An automated sponsorship tracker professionalises creator business operations, enabling them to manage multiple partnerships effectively.',
+      },
+      {
+        label: 'Merchandise and Physical Product Fulfilment',
+        description: 'An integrated storefront connecting to print-on-demand or drop-shipping partners, with automated order routing, inventory sync, shipping notifications, tracking updates, and customer service ticketing for physical product sales',
+        whyItMatters: 'Creators expanding into merchandise face fulfilment complexity that distracts from content creation. An automated fulfilment pipeline handles the operational overhead of physical product sales from order to delivery.',
+      },
+    ],
+    uniqueMechanisms: AUTOMATION_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Revenue Diversification Dashboard',
+        description: 'A real-time dashboard showing revenue breakdown by stream (ads, sponsorships, digital products, merch, memberships), growth trends, and channel attribution -- giving the creator a complete view of their business finances',
+        whyItWorks: 'Creators who understand their revenue sources can strategically diversify income streams. A revenue dashboard reveals which revenue streams are growing or declining, enabling data-driven decisions about where to invest content effort.',
+      },
+      {
+        label: 'Audience Insight and Segmentation Engine',
+        description: 'Automated audience profiling based on engagement behaviour, purchase history, content preferences, and platform activity -- enabling targeted content and product recommendations for specific audience segments',
+        whyItWorks: 'Creators who understand their audience segments can create content and products that resonate with each group. An audience insight engine reveals distinct audience clusters, enabling targeted marketing without guesswork.',
+      },
+      {
+        label: 'Collaboration and Cross-Promotion Manager',
+        description: 'Automated collaboration matching, cross-promotion scheduling, deliverable tracking, audience overlap analysis, and performance measurement for creator collaborations and joint ventures',
+        whyItWorks: 'Creator collaborations drive rapid audience growth but are administratively complex to manage. An automated collaboration manager handles the logistics of partner coordination, freeing creators to focus on the collaborative content itself.',
+      },
+    ],
+  }),
+  [key('landing_page_designer_course_creators')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page Design for Course Creators -- Launch Pages That Present Curriculum, Overcome Objections, and Drive Enrolment',
+    audienceInsight: 'Course creators sell during compressed launch windows where every page view either converts or is lost forever. Unlike coaches who optimise for call bookings or SaaS companies that optimise for free trials, course creators need a page that presents the full case for enrolment: what is in the curriculum, who is this for, what will I be able to do after, what do other students say, is there a guarantee, and why should I buy now. The page must communicate the course value across multiple decision factors simultaneously while maintaining a clear visual hierarchy that guides the prospect toward purchase.',
+    offerStrategy: 'Position as a course launch page visual strategist. The design is not about making the page look good -- it is about presenting the right information in the right order to move a prospect from curiosity to purchase. The visual hierarchy follows the course buyer decision journey: transformation promise first, then curriculum proof (what you will learn), then social proof (who else succeeded), then objection handling (FAQ, guarantee), then the offer and urgency. Every section has a clear visual role in the narrative.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/design',
+      intermediateRange: '$4,000-$7,000/design',
+      premiumRange: '$7,000-$12,000/design',
+      pricingLogic: 'One-time design fee based on page complexity and deliverable scope. A single launch page design at the low end. A full launch system design (sales page + email sequence graphics + checkout page design) at the mid-range. A complete course brand and multi-page launch system at the high end. Frame as a percentage of launch revenue -- a 5-figure course launch justifies a 4-figure page investment.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page Design That Presents Your Course So Well That Prospects Enrol Before They Finish Reading',
+      problem: 'Your course landing page lists the modules and price but does not answer the questions prospects have before they buy: Is this for me? Will I have time? What will I actually learn? The page looks okay but the visual hierarchy does not lead prospects toward enrolment.',
+      solution: 'I design a course launch page with a visual hierarchy that follows the buyer decision journey -- moving from transformation promise to curriculum proof to social proof to objection handling to enrolment CTA. Every section visually guides the prospect closer to purchase.',
+      nextStep: 'Send me your current course sales page and tell me the launch date. I will produce a visual hierarchy audit showing what information is missing or poorly ordered, with a wireframe redesign that follows the course buyer decision journey.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Course creators whose launch pages have solid content but poor visual hierarchy -- prospects read the page but do not enrol because the information order does not match their buying decision journey.',
+      problemItSolves: 'Most course landing pages list information in the order the creator thought of it rather than in the order the prospect needs to make a purchase decision. The visual hierarchy fights the buyer psychology, resulting in high page views but low enrolment rates.',
+      corePromise: 'A course launch page design with a buyer-decision visual hierarchy: transformation promise, curriculum proof, social proof, objection handling, and urgency -- presented in the order that converts curiosity into enrolment.',
+      whyThisWorks: 'Course creators whose landing pages follow a buyer-decision visual hierarchy see 30-60% higher enrolment rates from the same traffic, because the page answers each question the prospect has exactly when they need it, rather than making them hunt for information.',
+      nextStepCTA: 'Share this with course creators whose launch pages get lots of traffic but low conversion. Offer a free visual hierarchy audit that identifies the 3 biggest information ordering problems on their current page.',
+    },
+    deliverables: [
+      {
+        label: 'Course Launch Page Design',
+        description: 'A full launch page design with buyer-decision visual hierarchy: transformation promise hero, curriculum proof section, social proof with student results, objection handling FAQ, and urgency-driven offer presentation',
+        whyItMatters: 'Course launches happen in compressed windows where every page view either converts or is lost. A buyer-decision visual hierarchy ensures the prospect gets the right information at the right time to make an enrolment decision.',
+      },
+      {
+        label: 'Curriculum Presentation Design',
+        description: 'Visual design for the course curriculum section that makes module progression, learning outcomes, and skill level clear at a glance -- using visual hierarchy instead of text lists to communicate course value',
+        whyItMatters: 'Prospects enrol based on what they will learn, not what the course contains. A well-designed curriculum presentation communicates the transformation journey visually, making the learning path feel achievable and exciting.',
+      },
+      {
+        label: 'Social Proof Integration Design',
+        description: 'Testimonial, case study, and student result showcase design with before-and-after visuals, student photo integration, result statistics, and social proof placement timed to the decision journey',
+        whyItMatters: 'Course enrolment requires overcoming the prospect\'s fear of wasting money on content that does not deliver. Visible social proof at the moment of evaluation provides the confidence needed to commit to purchase.',
+      },
+      {
+        label: 'Objection Handling Section Design',
+        description: 'FAQ, guarantee badge, refund policy, time commitment clarification, and prerequisite information section design -- presented in a hierarchy that addresses the most common enrolment objections before the prospect reaches the pricing section',
+        whyItMatters: 'Most course prospects have specific objections that prevent purchase: not enough time, not the right level, risk of buyer\'s remorse. A well-designed objection section answers these concerns before they become deal-breakers.',
+      },
+      {
+        label: 'Urgency and Offer Presentation Design',
+        description: 'Launch timer, bonus stack visual, pricing tier comparison, payment plan options, and scarcity indicators designed to create appropriate urgency without feeling manipulative',
+        whyItMatters: 'Course launches rely on urgency to drive enrolment during the launch window. A visually clear offer presentation that communicates the deal structure and deadline helps prospects make a timely decision.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Launch Day Countdown System',
+        description: 'Dynamic countdown timer, cart-close timer, bonus expiry indicators, and rolling scarcity elements designed to create genuine urgency throughout the launch window without aggressive pressure',
+        whyItWorks: 'Launch day urgency is the primary conversion driver for course creators. Dynamic countdown systems that communicate real deadlines increase enrolment rates by creating a clear reason to act now rather than later.',
+      },
+      {
+        label: 'Email Sequence Graphic Package',
+        description: 'Email header graphics, social proof cards, teaser images, and CTA button designs that match the launch page visual language and maintain brand consistency across the full email launch sequence',
+        whyItWorks: 'Course launches depend on email sequences to drive traffic to the page. Matching email graphics create a seamless visual experience from inbox to landing page, reducing cognitive friction and improving click-through rates.',
+      },
+      {
+        label: 'Post-Launch Optimisation Report',
+        description: 'Heatmap analysis, click tracking data, section-level engagement metrics, and A/B testing recommendations based on actual launch performance data from the live page',
+        whyItWorks: 'No launch page design is perfect on the first iteration. Post-launch data reveals exactly which sections performed and which underperformed, enabling data-driven improvements that compound across future launches.',
+      },
+    ],
+  }),
+    [key('landing_page_designer_saas_startups')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page Design for SaaS Startups -- Trial Pages That Make Product Value Obvious in Seconds',
+    audienceInsight: 'SaaS landing pages have a brutal job: communicate what a complex product does, who it is for, and why someone should try it -- all within the 5-10 seconds a visitor spends deciding whether to scroll or bounce. Unlike course or coach pages that can rely on emotional transformation promises, SaaS pages must communicate functional value clearly and quickly. The design must make the product concept obvious through visual hierarchy, feature presentation, and demo/trial flow that feels like a natural next step rather than a commitment.',
+    offerStrategy: 'Position as a SaaS trial conversion page designer. Every visual element serves one goal: making the product value obvious and the trial signup feel like the obvious next step. The design strategy is clarity-first: use product screenshots, feature comparison tables, and benefit-driven copy hierarchy to show value before asking for commitment. The page should communicate what the product does in under 3 seconds of scanning.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,500-$5,000/design',
+      intermediateRange: '$5,000-$9,000/design',
+      premiumRange: '$9,000-$15,000/design',
+      pricingLogic: 'One-time design fee based on page complexity. A single trial landing page design with product mockups is at the low end. A multi-page trial funnel (landing + feature pages + pricing page redesign) at the mid-range. Full trial experience design including onboarding page flow is at the high end. Frame as a fraction of monthly ad spend -- improving trial page conversion by 15% can double the ROI of existing ad campaigns.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page Design That Makes Your SaaS Product Obvious Enough to Try in Under 5 Seconds',
+      problem: 'Your landing page has all the information a prospect needs, but they are not signing up for trials. The page buries the product value under generic headlines, the feature list reads like a spec sheet, and the visual hierarchy does not guide visitors toward the trial CTA.',
+      solution: 'I design SaaS landing pages with clarity-first visual hierarchy: hero section communicates value proposition in under 3 seconds, feature section uses visual comparison not text lists, and the trial CTA is presented at the exact moment the prospect understands why they need the product.',
+      nextStep: 'Share your current landing page URL and trial signup metrics. I will produce a visual conversion audit with heatmap-informed recommendations and 3 wireframe concepts for a clarity-optimised redesign.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'SaaS startups whose landing pages have high traffic but low trial signup rates -- prospects visit, read, and leave without trying the product.',
+      problemItSolves: 'Most SaaS landing pages fail to communicate product value quickly enough. The design prioritises aesthetic appeal over functional clarity, leaving prospects unsure what the product does or why they should try it.',
+      corePromise: 'A clarity-first landing page design with rapid-value hero section, visual feature comparison, and trial CTA placement timed to the moment of understanding -- so prospects sign up for trials because they clearly see the value, not because they guessed.',
+      whyThisWorks: 'SaaS startups with clarity-optimised landing pages (product value obvious in under 3 seconds) see 2-3x higher trial signup rates from the same traffic, because prospects understand what the product does before they decide whether to engage further.',
+      nextStepCTA: 'Share this with SaaS founders whose landing page traffic does not match trial signup numbers. Offer a free visual conversion audit that identifies the 3 biggest clarity blockers on their current page.',
+    },
+    deliverables: [
+      {
+        label: 'Clarity-First Landing Page Design',
+        description: 'A visual design system for the trial landing page with rapid-value hero section, visual feature comparison using screenshots and illustrations, and trial CTA placement timed to the moment of product comprehension',
+        whyItMatters: 'SaaS visitors decide whether to engage within seconds. A clarity-first design ensures the product value is understood before the visitor is asked to commit, directly reducing bounce rates on high-traffic landing pages.',
+      },
+      {
+        label: 'Trial Funnel Visual Design',
+        description: 'A cohesive visual design for the multi-page trial experience (landing, pricing, signup, onboarding preview) with consistent typography, colour, spacing, and visual rhythm that guides prospects through the decision journey',
+        whyItMatters: 'Inconsistent visual language across the trial funnel confuses prospects and creates cognitive friction at each transition, reducing the likelihood they complete the signup process.',
+      },
+      {
+        label: 'Visual Conversion Audit',
+        description: 'A heatmap-informed audit of existing landing page visual design covering clarity blockers in visual hierarchy, CTA visibility issues, mobile tap target problems, feature presentation effectiveness, and trust signal placement',
+        whyItMatters: 'Most SaaS landing page conversion problems are visual, not functional. A heatmap-informed audit reveals exactly where visitors look, what they miss, and what confuses them -- enabling targeted design fixes rather than guesswork.',
+      },
+      {
+        label: 'Design System for Experiment Pages',
+        description: 'A set of visual components (hero variants, feature section templates, pricing table designs, testimonial layouts, CTA styles) designed for A/B testing with visual consistency maintained across all variants',
+        whyItMatters: 'A/B testing loses validity when visual inconsistency across variants introduces confounding variables. A component system ensures tests compare one variable at a time while maintaining brand coherence.',
+      },
+      {
+        label: 'SaaS Product Mockup Integration',
+        description: 'Design treatment for product screenshots, feature illustrations, and demo video embeds that communicate product value immediately through visual hierarchy without relying on copy to explain what the product does',
+        whyItMatters: 'SaaS products are inherently complex to explain. Well-designed product imagery communicates functionality faster and more persuasively than text, reducing the cognitive effort required for a prospect to understand the product.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Animated Product Showcase',
+        description: 'Subtle motion design for product mockups (demo video autoplay on scroll, feature illustration reveal animations, screenshot zoom on hover) that communicates product interactivity and visual sophistication',
+        whyItWorks: 'Animated product demonstrations convey functionality without requiring the visitor to read or click. The motion communicates that the product is active and responsive, building perceived sophistication and capability.',
+      },
+      {
+        label: 'Social Proof Visual Layer',
+        description: 'Design integration for customer logo bars, testimonial carousels, case study preview cards, and social proof counters arranged in a visual hierarchy that builds credibility without distracting from the primary conversion goal',
+        whyItWorks: 'SaaS purchase decisions carry higher perceived risk than consumer purchases. Visible social proof at the moment of evaluation reduces perceived risk and accelerates trial signup decisions.',
+      },
+      {
+        label: 'Mobile-First Visual Priority',
+        description: 'Mobile-first visual comps that prioritise trial signup action above all other elements on small screens, with thumb-friendly CTA placement, reduced visual noise, and mobile-optimised product imagery that loads instantly',
+        whyItWorks: 'Over 60% of SaaS landing page traffic comes from mobile devices. A mobile-first design ensures trial signup conversion is optimised for the most common access point, not treated as an afterthought.',
+      },
+    ],
+  }),
+    [key('landing_page_designer_local_businesses')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'Landing Page Design for Local Businesses -- Service Pages That Make Trust Obvious and Action Easy',
+    audienceInsight: 'Local business visitors arrive with a specific intent: find a service provider they can trust and contact them quickly. Unlike SaaS or course pages that need to explain complex products, local pages need to communicate trust, service scope, and ease of action. The design needs to answer: does this business serve my area, do they do what I need, are they reputable, and how do I contact them now. Every visual decision should make those answers immediate and the contact action frictionless.',
+    offerStrategy: 'Position as a local trust-and-action page designer. The visual strategy is credibility-first: service photos, team photos, review highlights, certifications, and clear service menus presented in a hierarchy that answers the visitor\'s trust questions before they ask them. The contact CTA (call, book, get directions) should be visually dominant and persistent. The design signals professionalism and reliability without needing a single word about it.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,500-$3,000/design',
+      intermediateRange: '$3,000-$5,000/design',
+      premiumRange: '$5,000-$8,000/design',
+      pricingLogic: 'One-time design fee based on page count. A single service page design at the low end. A full local site design (homepage, 3-5 service pages, about, contact) at the mid-range. Multi-location site design with review integration and booking flow is at the high end. Frame against what a local business spends on print advertising in a year -- a well-designed digital page works 24/7 at a fraction of the cost.',
+    },
+    proposalAngle: {
+      headline: 'Landing Page Design That Makes Your Local Business Look Trustworthy and Easy to Contact',
+      problem: 'Your website has your business information but does not make visitors feel confident enough to call. The design feels generic, the service menu is unclear, and the contact button is easy to miss. Visitors leave and call a competitor whose page looks more professional.',
+      solution: 'I design local service pages with a credibility-first visual hierarchy: team and service photos, review highlights, certifications, and clear service descriptions -- all presented to build trust immediately. The contact CTA is persistent and visually dominant so visitors never wonder how to reach you.',
+      nextStep: 'Send me your current website URL and tell me the top 3 services you want to promote. I will produce a visual trust audit showing where your current design fails to build confidence, with a wireframe for a redesigned service page.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners whose websites look generic or outdated -- the design does not communicate trust or make it obvious how to contact the business, causing visitors to leave for competitors.',
+      problemItSolves: 'Most local business websites use generic templates that do not communicate the specific trust signals local customers need: team photos, service clarity, review proof, and obvious contact paths. The design works against the business instead of for it.',
+      corePromise: 'A credibility-first landing page design with team and service photography, review integration, clear service hierarchy, and a persistent contact CTA -- making your business look trustworthy and easy to contact from the first second a visitor lands.',
+      whyThisWorks: 'Local businesses with professionally designed service pages that prominently feature trust signals (photos, reviews, certifications) generate 2-3x more contact form submissions and phone calls than those with generic template designs, because visual trust is the primary decision factor for local service buyers.',
+      nextStepCTA: 'Share this with local business owners whose website design does not reflect the quality of their service. Offer a free visual trust audit that identifies the 3 biggest trust gaps in their current page design.',
+    },
+    deliverables: [
+      {
+        label: 'Service Page Trust Design',
+        description: 'A credibility-first page design with prominent team photography, service showcase images, review highlights, certification badges, and trust signal hierarchy -- making the business look professional and reliable from the first scroll',
+        whyItMatters: 'Local customers judge a business\'s quality by its website design. A credibility-first design communicates professionalism and trustworthiness instantly, directly influencing whether a visitor contacts the business or moves to a competitor.',
+      },
+      {
+        label: 'Contact CTA Visual Design',
+        description: 'Persistent, visually dominant call-to-action buttons for call, book, get directions, and contact form -- designed to be thumb-friendly on mobile and always visible regardless of scroll position',
+        whyItMatters: 'The primary goal of a local business page is to generate customer action. A persistent, well-designed CTA ensures the visitor can always see how to take the next step, reducing the likelihood they leave without acting.',
+      },
+      {
+        label: 'Local SEO Visual Integration',
+        description: 'Design elements that enhance local search visibility: structured data-friendly review display markup, location-specific imagery, Google Maps embed design, and local keyword-optimised heading hierarchy',
+        whyItMatters: 'Local search visibility depends on how well the page communicates location relevance. Visual design that reinforces local context signals relevance to both users and search engines, improving ranking for local queries.',
+      },
+      {
+        label: 'Multi-Service Menu Design',
+        description: 'Visual service selection interface that presents each service offering with clear differentiation, pricing context, service description, and an individual CTA per service -- designed for easy scanning and comparison',
+        whyItMatters: 'Local businesses with multiple services lose customers when the service menu is unclear or overwhelming. A well-designed service selection interface helps customers find what they need quickly and confidently.',
+      },
+      {
+        label: 'Mobile-First Conversion Layout',
+        description: 'Mobile-first page layout where contact CTAs are thumb-reachable, content is single-column and optimised for vertical scrolling, images are compressed for instant loading, and forms have mobile-optimised input fields',
+        whyItMatters: 'Over 70% of local business website traffic comes from mobile devices. A mobile-first layout ensures the page converts effectively on the device where most local customers will view it.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Photo and Video Integration Design',
+        description: 'Visual templates and layout specifications for integrating professional local photography and video content into the page design, ensuring media assets match the brand and conversion goals',
+        whyItWorks: 'Pages with professional photography convert 40% better than those without, because visual quality signals business quality. Designated photo integration ensures the business\'s visual assets are deployed for maximum conversion impact.',
+      },
+      {
+        label: 'Review Widget Design System',
+        description: 'Custom-designed review display widgets that pull Google Business Profile ratings and reviews into the page design, with filter options, highlight extraction, and schema markup for search result visibility',
+        whyItWorks: 'Google reviews are the most trusted source of social proof for local purchase decisions. A review widget that seamlessly integrates verified ratings into the page design builds credibility without requiring manual review updates.',
+      },
+      {
+        label: 'Local Analytics Dashboard Design',
+        description: 'Visual dashboard design for tracking page performance, lead sources, conversion rates, and customer actions -- designed for the business owner to understand at a glance without technical interpretation',
+        whyItWorks: 'Local business owners do not have analytics teams. A simple visual dashboard makes performance data accessible, enabling the owner to make informed decisions about their online presence without needing a data analyst.',
+      },
+    ],
+  }),
+    [key('landing_page_designer_agencies')]: derivePathContent(LANDING_PAGE_DESIGNER_COACHES, {
+    pathTitle: 'White-Label Landing Page Design for Agencies -- Reliable Design Delivery on Client Deadlines',
+    audienceInsight: 'Agencies that sell landing page services to their clients need a reliable design partner who can deliver polished, conversion-focused page designs on deadline. Every client has different brand guidelines, different page goals, and different feedback cycles. The agency needs a designer who can interpret a creative brief, produce a well-structured page design, iterate through client feedback efficiently, and hand off clean Figma files that developers can build from without ambiguity. The agency handles strategy and client relationships; the designer handles visual execution.',
+    offerStrategy: 'Position as an agency landing page design partner. The value is reliability, speed, and clean handoff. The designer works within the agency\'s brand system, follows their page structure conventions, and delivers Figma files organised for developer handoff. The focus is on delivering exactly what the brief requires, on deadline, with minimal revision cycles -- because every revision cycle delays the agency\'s client delivery timeline.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/mo',
+      intermediateRange: '$4,000-$7,000/mo',
+      premiumRange: '$7,000-$12,000/mo',
+      pricingLogic: 'Monthly retainer with a defined page design capacity. Agencies need predictable costs to quote retainers to their clients. Tier by number of page designs per month and research depth. Premium tier includes conversion research (heatmap analysis, competitor page benchmarking) with each design. Frame as a fraction of what they would pay a full-time senior designer.',
+    },
+    proposalAngle: {
+      headline: 'White-Label Landing Page Design That Lets Agencies Deliver on Deadline Without a Design Team',
+      problem: 'Your agency sells landing page design, but every new design project means scrambling for freelance capacity. Quality varies, feedback cycles drag, and Figma files arrive in inconsistent formats that slow down your development team.',
+      solution: 'I serve as your dedicated landing page design partner -- delivering polished, conversion-focused page designs on deadline with clean Figma handoff files. You present the work as your own while I handle the design execution from brief to final handoff.',
+      nextStep: 'Share a recent client brief and brand guidelines. I will produce a complete page design for that client so you can evaluate design quality, Figma file organisation, and turnaround time before committing to a retainer.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Agencies that sell landing page design services but struggle with design capacity, quality consistency, or developer-disruptive handoff files.',
+      problemItSolves: 'Agencies lose margin on design services because freelance designers produce inconsistent quality, miss deadlines, or deliver Figma files that developers cannot build from efficiently. The agency spends more time managing designers than selling new projects.',
+      corePromise: 'A white-label landing page design partnership with consistent quality, deadline reliability, and developer-ready Figma handoff -- so agencies can scale design service revenue without growing their team or sacrificing page quality.',
+      whyThisWorks: 'Agencies using dedicated white-label design partners reduce design delivery time by 40-60% and increase page design capacity by 2-3x, because the partner works within the agency\'s conventions and delivers production-ready files without management overhead.',
+      nextStepCTA: 'Share this with agency owners whose design delivery is bottlenecked by freelance capacity or inconsistent quality. Offer a free trial page design from one of their current client briefs.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Page Design Package',
+        description: 'Client brief to complete Figma page design delivered under the agency\'s brand, with organised layers, componentised elements, developer-ready specs, and brand guideline adherence across every design',
+        whyItMatters: 'Agencies sell design services on their reputation. White-label delivery with consistent quality preserves the agency\'s brand equity and ensures every client project meets the same high standard without requiring agency designer oversight.',
+      },
+      {
+        label: 'Multi-Client Brand Adaptation',
+        description: 'Maintain distinct page design styles, visual languages, and layout conventions across each agency client\'s brand, with per-client design reference files and style guide annotations',
+        whyItMatters: 'Agencies serve clients with different brand identities. The ability to switch between distinct design styles per client without losing quality differentiates a design partner from a generalist freelancer.',
+      },
+      {
+        label: 'Conversion-Focused Wireframe Set',
+        description: 'Low-fidelity wireframes designed for conversion first and visual polish second -- presented to the client for approval before visual design begins, reducing revision cycles by getting the structure right early',
+        whyItMatters: 'Design revisions are the biggest time cost in agency page design. Wireframe-first delivery ensures the client approves the structure before the agency invests in visual polish, reducing revision cycles by 40-60%.',
+      },
+      {
+        label: 'Developer-Ready Figma Handoff',
+        description: 'Figma files organised with named layers, componentised elements, auto-layout constraints, asset exports, spacing annotations, typography specifications, and interaction notes -- ready for direct developer implementation',
+        whyItMatters: 'Developers waste hours interpreting poorly organised design files. A developer-ready Figma handoff eliminates back-and-forth clarification, speeding up the build phase and reducing the agency\'s overall delivery timeline.',
+      },
+      {
+        label: 'Agency Brand Template System',
+        description: 'Reusable page design templates matching the agency\'s page structure conventions, brand system, and delivery format standards -- enabling faster turnaround on repeat client page types without starting from scratch',
+        whyItMatters: 'Agencies build similar page types repeatedly for different clients. A template system eliminates redundant design work, enabling faster delivery and higher margins on each client design project.',
+      },
+    ],
+    uniqueMechanisms: LANDING_PAGE_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Structured Feedback Integration',
+        description: 'A structured revision request and tracking process with annotation tools, change log documentation, and version comparison -- ensuring every feedback cycle is clear, tracked, and resolved efficiently',
+        whyItWorks: 'Agency client feedback often goes through multiple stakeholders, generating ambiguous revision requests. A structured feedback system eliminates misinterpretation and reduces the revision cycle time by 30-50%.',
+      },
+      {
+        label: 'Performance-Informed Design Updates',
+        description: 'Design revisions based on page performance data (heatmaps, click tracking, conversion analytics) rather than subjective preferences -- ensuring every design change has a measurable rationale tied to conversion improvement',
+        whyItWorks: 'Design decisions based on data outperform subjective preferences every time. Performance-informed updates give the agency a defensible rationale for design changes and demonstrate ROI to their clients.',
+      },
+      {
+        label: 'Shared Agency Component Library',
+        description: 'A shared Figma component library with the agency\'s page design patterns, reusable sections, and consistent styling -- enabling faster iteration and visual consistency across the agency\'s entire client portfolio',
+        whyItWorks: 'Agencies that share design components across clients reduce design time per page by 40% while maintaining visual brand distinction per client, because common patterns are reused rather than redesigned.',
+      },
+    ],
+  }),
+  [key('brand_designer_coaches_consultants')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need a professional brand identity that commands premium rates. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Coaching Brand Identity System',
+        description: 'A complete brand identity including logo suite (primary, secondary, submark), colour palette, typography system, brand patterns, and visual guidelines -- designed specifically to communicate coaching authority and trustworthiness to premium clients',
+        whyItMatters: 'Coaches command higher fees when their brand communicates authority and professionalism. A purpose-built coaching brand identity signals to prospects that the coach operates at a premium level before the first conversation.',
+      },
+      {
+        label: 'Social Media Brand Templates',
+        description: 'Platform-specific social media templates (Instagram, LinkedIn, Twitter, Facebook) that apply the brand identity consistently across every post -- with variations for quotes, tips, testimonials, announcements, and engagement posts',
+        whyItMatters: 'Coaches build authority through consistent social media presence. Ready-made brand templates eliminate the daily design decision, ensuring every post reinforces the coach\'s professional image without requiring design skills.',
+      },
+      {
+        label: 'Lead Magnet and Opt-In Brand Package',
+        description: 'Designed lead magnets (guide, checklist, assessment, workbook) with matching opt-in page graphics, thank-you page design, and email sequence visuals -- presenting a cohesive brand experience from first touch to lead capture',
+        whyItMatters: 'The lead magnet is often a prospect\'s first experience of the coach\'s brand quality. A professionally designed lead magnet package makes a strong first impression that carries through the entire prospect journey.',
+      },
+      {
+        label: 'Discovery Call and Sales Deck Branding',
+        description: 'Branded discovery call presentation template, proposal document template, client onboarding PDF, and testimonial showcase -- ensuring every client-facing document reinforces the same professional brand identity',
+        whyItMatters: 'Coaches who present branded discovery materials convert at higher rates because every touchpoint builds credibility. A cohesive brand across all client-facing materials signals that the coach runs a professional, organised practice.',
+      },
+      {
+        label: 'Website and Landing Page Brand Kit',
+        description: 'Brand guidelines, web-ready assets, colour codes, font specifications, and example page layouts for the coach\'s website -- ensuring the web presence matches the brand identity across every page',
+        whyItMatters: 'A coach\'s website is the central hub where prospects evaluate their professionalism. A complete brand kit ensures the website designer or the coach themselves can build a site that accurately reflects the brand\'s quality.',
+      },
+    ],
+    uniqueMechanisms: BRAND_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Brand Photography and Visual Direction',
+        description: 'A visual direction guide with shot lists, lighting references, composition guidelines, and editing presets for the coach\'s brand photoshoot -- ensuring all photography consistently communicates the brand\'s tone and personality',
+        whyItWorks: 'Coaches who use inconsistent photography undermine their brand identity. A visual direction guide ensures every photo shoot produces images that reinforce the brand, whether taken by the coach or a professional photographer.',
+      },
+      {
+        label: 'Brand Voice and Messaging Framework',
+        description: 'A written brand voice guide with tone guidelines, key messaging pillars, phrase examples, and content frameworks -- ensuring the coach\'s writing across all platforms matches the visual brand in tone and personality',
+        whyItWorks: 'Coaches whose written voice matches their visual brand create a unified brand experience that builds trust faster. A messaging framework ensures every piece of content, from social posts to emails, sounds like the same brand.',
+      },
+      {
+        label: 'Brand Rollout and Transition Kit',
+        description: 'A phased rollout plan with announcement graphics, email templates, social media posts, and a transition schedule -- helping established coaches rebrand without confusing their existing audience',
+        whyItWorks: 'Coaches with an existing audience risk losing followers during a rebrand if the transition is abrupt. A structured rollout kit manages the change gradually, keeping the audience engaged through each phase of the brand evolution.',
+      },
+    ],
+  }),
+  [key('brand_designer_startups')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Startups',
+    audienceInsight: 'Startups in the startup space are startups who need a polished brand that attracts investors and customers. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Startups. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Startups -- A System Built for Your Success',
+      problem: 'You know Startups need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Startups. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Startups. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Startups and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Startups solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Startups -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Startups with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Startups. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Startup Brand Identity and Logo System',
+        description: 'A complete brand identity including primary and secondary logos, colour palette, typography system, brand patterns, iconography, and visual guidelines -- designed to communicate innovation and credibility to investors and early customers',
+        whyItMatters: 'Startups are evaluated on perceived professionalism from the first impression. A polished brand identity signals to investors, partners, and customers that the startup is serious, well-funded, and ready to scale.',
+      },
+      {
+        label: 'Investor Pitch Deck Branding',
+        description: 'Branded pitch deck template with consistent visual identity across all slides, data visualisation styling, cover and divider designs, and investor leave-behind document branding -- making every investor touchpoint cohesive',
+        whyItMatters: 'Investors see hundreds of pitch decks; branded, visually consistent decks stand out and communicate attention to detail that investors associate with founder quality and execution capability.',
+      },
+      {
+        label: 'Product and App Brand Elements',
+        description: 'App icon designs, loading screen branding, empty state illustrations, onboarding screen graphics, and in-app visual elements that extend the brand identity into the product experience itself',
+        whyItMatters: 'Startup products that feel branded from the first launch create stronger user attachment and perceived value. In-app brand elements make the product feel complete and premium, reducing early churn.',
+      },
+      {
+        label: 'Landing Page and Marketing Brand Kit',
+        description: 'Brand guidelines, web-ready logo formats, colour codes, font specifications, button and form styling, and example landing page layouts -- ensuring the startup\'s website and marketing materials are on-brand',
+        whyItMatters: 'A startup\'s website is the primary conversion tool for early customers. A complete brand kit ensures every marketing asset, from landing pages to social ads, presents a unified brand that builds trust and drives conversion.',
+      },
+      {
+        label: 'Social Media Launch Brand Package',
+        description: 'Platform-specific social media profile assets, cover images, post templates, story templates, and highlight covers -- giving the startup a ready-to-launch social presence that matches the core brand identity',
+        whyItMatters: 'Startups launching on social media need to look established from day one. A complete social brand package ensures every platform profile looks professional and consistent, accelerating the perception of an established brand.',
+      },
+    ],
+    uniqueMechanisms: BRAND_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Brand Messaging and Positioning Framework',
+        description: 'A positioning document with key messaging pillars, tagline options, value proposition statements, audience-specific messaging variants, and brand tone guidelines -- ensuring every communication reinforces the startup\'s market position',
+        whyItWorks: 'Startups that communicate inconsistent positioning confuse their market and slow adoption. A messaging framework aligns every team member\'s communication around the same positioning, creating a unified brand narrative.',
+      },
+      {
+        label: 'Brand Asset Library and Handoff System',
+        description: 'A structured asset library with organised file naming, format variants (SVG, PNG, PDF, WEBP), colour code references, and usage examples -- designed for easy handoff to developers, marketers, and agency partners',
+        whyItWorks: 'Startups working with multiple agencies and contractors need brand assets that are easy to find and use correctly. An organised asset library prevents brand inconsistency by making the right files available to everyone who needs them.',
+      },
+      {
+        label: 'Brand Evolution and Scaling Guide',
+        description: 'A forward-looking brand guide that accounts for the startup\'s growth trajectory -- with guidelines for how the brand should evolve as the company expands from early-stage to growth-stage to enterprise',
+        whyItWorks: 'Startups that outgrow their initial brand face costly rebrands. An evolution guide anticipates the brand\'s growth path, building flexibility into the initial identity so it scales naturally without requiring a full rebrand later.',
+      },
+    ],
+  }),
+  [key('brand_designer_local_businesses')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need a brand refresh to stand out and attract customers. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Local Business Brand Identity System',
+        description: 'A complete brand identity including logo (with local-relevant iconography), colour palette, typography, brand patterns, and visual guidelines -- designed to attract local customers and stand out in the local market',
+        whyItMatters: 'Local businesses compete for attention in crowded markets where customers make split-second aesthetic judgments. A professional local brand identity signals quality and reliability, making the business the obvious choice.',
+      },
+      {
+        label: 'Storefront and Signage Brand Kit',
+        description: 'Brand guidelines for physical application including storefront sign design specifications, window decal templates, interior signage, menu boards, business card layouts, and uniform branding -- ensuring the physical location matches the digital brand',
+        whyItMatters: 'For local businesses, the physical location is the primary brand touchpoint. A coordinated storefront and signage strategy ensures the in-person experience matches the brand promise communicated through digital channels.',
+      },
+      {
+        label: 'Vehicle and Mobile Branding Package',
+        description: 'Vehicle wrap design templates, mobile signage specifications, trade show booth branding, and event collateral templates -- extending the brand identity into the local business\'s mobile and event presence',
+        whyItMatters: 'Local businesses with branded vehicles and event presence generate free advertising every time they move through the community. A coordinated mobile branding package turns every trip into a brand impression.',
+      },
+      {
+        label: 'Local Listing and Review Brand Cohesion',
+        description: 'Branded Google Business Profile assets, Yelp page branding, Facebook local page design, consistent NAP (name, address, phone) formatting across all listings, and branded review response templates',
+        whyItMatters: 'Local businesses appear across dozens of online directories where brand inconsistency erodes trust. A unified local listing brand ensures customers see the same professional brand wherever they find the business online.',
+      },
+      {
+        label: 'Promotional and Seasonal Brand Templates',
+        description: 'Seasonal promotion templates, holiday graphics, event flyer designs, special offer templates, and local sponsorship collateral -- with brand-compliant designs that can be customised quickly for any promotion',
+        whyItMatters: 'Local businesses that run promotions without consistent branding dilute their brand equity. Ready-made promotional templates make it easy to launch seasonal campaigns that reinforce rather than undermine the brand.',
+      },
+    ],
+    uniqueMechanisms: BRAND_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Community Connection Brand Strategy',
+        description: 'A community-focused brand positioning that identifies local partnerships, sponsorship opportunities, community event integration, and local storytelling angles -- building the brand as a community pillar rather than just a business',
+        whyItWorks: 'Local businesses that embed themselves in the community enjoy higher customer loyalty and word-of-mouth referrals. A community-focused brand strategy positions the business as an essential part of the local ecosystem.',
+      },
+      {
+        label: 'Referral and Word-of-Mouth Brand Materials',
+        description: 'Branded referral cards, digital share links, customer review request materials, and "tell a friend" campaign templates -- designed to make it easy for satisfied customers to spread the word about the local business',
+        whyItWorks: 'Word-of-mouth is the most effective marketing channel for local businesses, but most rely on customers to remember to refer. Branded referral materials make it easy and natural for customers to share the business with friends.',
+      },
+      {
+        label: 'Brand Continuity Audit and Maintenance',
+        description: 'Quarterly brand audit of all customer-facing touchpoints (digital, physical, print, signage) with a correction report and updated asset delivery -- ensuring brand consistency is maintained as the business evolves',
+        whyItWorks: 'Local businesses drift from their brand over time as new staff, new locations, and new materials are added without brand oversight. A maintenance audit catches brand drift before it becomes noticeable to customers.',
+      },
+    ],
+  }),
+  [key('brand_designer_agencies')]: derivePathContent(BRAND_DESIGNER_CREATORS, {
+    pathTitle: 'Brand for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver complete brand identity projects for more clients. They need a brand solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised brand solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Brand for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Brand services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Brand can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable brand solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated brand system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored brand solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Brand can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Brand Identity System',
+        description: 'A complete brand identity delivered as a white-label package that the agency can present to their clients as their own work -- including logo suite, colour palette, typography, patterns, and brand guidelines in agency-branded documentation formats',
+        whyItMatters: 'Agencies offering brand services need deliverables that look like they came from the agency\'s own team. A white-label brand system lets agencies present premium brand work to clients under their own brand, strengthening client relationships.',
+      },
+      {
+        label: 'Multi-Client Brand Production Pipeline',
+        description: 'A structured brand production workflow with client discovery templates, mood board presentation formats, brand review and revision cycles, and final delivery checklists -- enabling efficient brand production across multiple agency clients',
+        whyItMatters: 'Agencies juggling multiple brand projects need a repeatable production process that maintains quality while reducing per-project overhead. A standardised pipeline prevents bottlenecks and ensures consistent quality across the client portfolio.',
+      },
+      {
+        label: 'Client Presentation and Proposal Branding',
+        description: 'Branded pitch deck templates, proposal document formats, mood board presentation templates, client presentation templates, and case study formats -- all designed to make the agency\'s brand work shine during client presentations',
+        whyItMatters: 'Agencies win brand projects through compelling presentations. Professionally designed proposal and presentation templates showcase the agency\'s design sensibility before the first deliverable, increasing win rates.',
+      },
+      {
+        label: 'Agency Brand Portfolio and Case Study Kit',
+        description: 'Branded portfolio templates, case study formats, before-and-after presentation layouts, and results showcase templates -- designed to help the agency present their brand work to prospective clients',
+        whyItMatters: 'Agencies sell brand services through their portfolio. A professionally designed portfolio presentation system ensures every case study communicates the full value of the agency\'s brand work.',
+      },
+      {
+        label: 'Scalable Brand Maintenance System',
+        description: 'A brand maintenance and update system with quarterly review templates, brand drift correction workflows, asset update procedures, and client reporting formats -- enabling the agency to offer ongoing brand maintenance retainers',
+        whyItMatters: 'Brand maintenance creates recurring revenue for agencies beyond the initial brand project. A scalable maintenance system makes it profitable to serve multiple clients with ongoing brand management retainers.',
+      },
+    ],
+    uniqueMechanisms: BRAND_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Branded Asset Library Platform',
+        description: 'A shared digital asset management platform branded for the agency, where all client brand assets are organised, version-controlled, and accessible to the agency team and clients -- with usage analytics and download tracking',
+        whyItWorks: 'Agencies managing brand assets across multiple clients need a centralised system that prevents file loss and version confusion. A branded DAM platform professionalises the agency\'s asset management while presenting a unified agency brand.',
+      },
+      {
+        label: 'Client Brand Education and Onboarding Kit',
+        description: 'A client-facing brand education package explaining how to use the new brand, common mistakes to avoid, and how to request brand updates -- reducing the agency\'s support burden while increasing client brand compliance',
+        whyItWorks: 'Clients who understand how to use their brand properly require fewer revision requests and produce better-looking materials. An education kit prevents common brand misuse before it happens, saving agency time.',
+      },
+      {
+        label: 'Cross-Sell Brand Extension Framework',
+        description: 'A framework for identifying and proposing brand extension services (social media templates, presentation design, website design) to existing brand clients -- with pre-built proposal templates and pricing guidance for each extension',
+        whyItWorks: 'Agencies that cross-sell brand extensions increase client lifetime value without new client acquisition costs. A structured extension framework makes it natural to propose additional services during ongoing brand relationships.',
+      },
+    ],
+  }),
+  [key('video_editor_coaches')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video Editing for Coaches -- Authority-Building Content That Books Discovery Calls',
+    audienceInsight: 'Coaches sell high-ticket transformations through trust. A well-edited video where a coach explains their methodology, shares a client breakthrough, or delivers a teaching moment can book more discovery calls than any landing page. But most coaches film raw, rambling content that never gets edited because they cannot afford a full production team. They need an editor who can take a single coaching session, podcast appearance, or teaching recording and turn it into a polished, authority-building asset that makes viewers think: I need to work with this person.',
+    offerStrategy: 'Position as a coaching authority editor, not a video editor. Every video serves one goal: making the coach look like the obvious expert in their niche. The editing should be invisible -- clean pacing, professional audio, subtle graphics that reinforce authority. The coach provides expertise; the editor packages it into content that commands premium rates. The deliverable is not a video but a trust-building asset that fills the coaches discovery call calendar.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$600-$1,200/mo',
+      intermediateRange: '$1,200-$2,500/mo',
+      premiumRange: '$2,500-$5,000/mo',
+      pricingLogic: 'Monthly retainer based on video output. A coach posting 2-3 videos per week needs consistent turnaround at a predictable cost. Tier by weekly volume: 2 videos at the low end, 4-5 videos with short-form repurposing at the high end. Frame as a fraction of client revenue -- one booked client from a video covers months of editing.',
+    },
+    proposalAngle: {
+      headline: 'Video Editing That Makes Coaches Look Like the Obvious Expert in Their Niche',
+      problem: 'Your coaching knowledge books clients, but raw unedited video does not reflect your expertise. You film content that could be powerful, but it never gets polished into the authority-building asset it should be.',
+      solution: 'I edit your coaching content into polished, professional videos that communicate authority at first glance. Clean pacing, professional audio, and subtle visual polish make your expertise the star -- so every video fills your discovery call calendar.',
+      nextStep: 'Send me your best recent recording -- a coaching session, podcast appearance, or teaching video. I will edit a 3-minute sample that shows how polished content can book more calls.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Coaches who record video content but never get it edited to a professional standard -- coaches who know polished video builds trust faster than raw footage.',
+      problemItSolves: 'Most coaches film valuable content that never gets published because the raw recording does not reflect the quality of their expertise. Unedited pacing, background noise, and rough transitions signal amateurism.',
+      corePromise: 'A professional video editing system for coaches that transforms raw recordings into polished authority content -- making every video a trust-building asset that books discovery calls.',
+      whyThisWorks: 'Coaches who publish professionally edited content book 3-5x more discovery calls from the same amount of video, because polished production signals premium expertise and makes viewers more likely to invest in high-ticket coaching.',
+      nextStepCTA: 'Share this with coaches who record content but never publish it. Offer a free 3-minute polish sample of their best recording.',
+    },
+    deliverables: [
+      {
+        label: 'Authority Edit Package',
+        description: 'Raw coaching session transformed into a polished authority video with clean pacing, professional audio levelling, colour grading, and subtle lower-third graphics that reinforce credibility without distracting',
+        whyItMatters: 'Coaches sell high-ticket transformations through trust. A polished video makes the coach look like the obvious expert, directly increasing the likelihood that viewers book a discovery call after watching.',
+      },
+      {
+        label: 'Client Transformation Story',
+        description: 'A client breakthrough session or case study interview edited into a 3--5 minute narrative video with setup (the problem), conflict (the struggle), and resolution (the transformation achieved through coaching)',
+        whyItMatters: 'Social proof in video form is the single most persuasive asset for coaching businesses. A well-edited transformation story communicates the coach\'s value more convincingly than any testimonial text.',
+      },
+      {
+        label: 'Teaching Content Series',
+        description: 'A single methodology explanation or teaching recording edited into a 3-part content series with consistent branding, pacing, and calls to action that build authority progressively across each video',
+        whyItMatters: 'Coaches build trust through demonstrated expertise. A teaching series shows the coach delivering transformational knowledge, positioning them as the authority in their niche across multiple content touchpoints.',
+      },
+      {
+        label: 'Short-Form Repurposing Package',
+        description: 'Long-form coaching content (sessions, podcasts, workshops) cut into 30--90 second platform-optimised clips with text overlays, subtitles, and attention-grabbing hooks for Instagram, TikTok, and LinkedIn',
+        whyItMatters: 'Short-form content drives 3x more discovery call leads for coaches than long-form alone, because bite-sized value previews lower the commitment barrier and make viewers curious about the full transformation.',
+      },
+      {
+        label: 'Podcast Appearance Polish',
+        description: 'A podcast interview or guest appearance recording edited into a standalone authority asset with intro branding, cleaned audio, visual consistency, and a soft CTA tailored to the podcast audience',
+        whyItMatters: 'Coaches frequently appear as podcast guests but the raw recordings rarely get republished. A polished version turns every guest appearance into a permanent authority asset that continues generating leads.',
+      },
+    ],
+    uniqueMechanisms: VIDEO_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Thumbnail and Title Optimization',
+        description: 'Custom YouTube thumbnail design and click-optimised title creation for each video, following proven CTR patterns for coaching content',
+        whyItWorks: 'A compelling thumbnail and title can double video CTR for coaching content. Coaches compete for attention against entertainment content; optimized thumbnails ensure the video gets the initial views it needs to gain traction.',
+      },
+      {
+        label: 'Multi-Platform Distribution Cuts',
+        description: 'Each video re-edited and reformatted for YouTube (16:9), Instagram Reels (9:16), LinkedIn (native ratio), and TikTok (vertical with trending audio)',
+        whyItWorks: 'Coaches build authority fastest when their content appears consistently across platforms. Platform-specific cuts ensure the coach\'s message reaches audiences wherever they prefer to consume content.',
+      },
+      {
+        label: 'Monthly Performance Review',
+        description: 'A monthly analytics report showing which videos produced the most discovery calls, watch time, and engagement, with recommendations for the next month\'s content focus',
+        whyItWorks: 'Coaches need data-driven content decisions. A regular performance review shifts editing from a cost center to a growth driver, showing exactly which content types produce the best coaching lead conversion.',
+      },
+    ],
+  }),
+      [key('video_editor_agencies')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'White-Label Video Editing for Agencies -- Scale Client Deliverables Without Hiring In-House Editors',
+    audienceInsight: 'Digital agencies that offer video production to their clients face a scaling problem. Hiring full-time editors is expensive and inflexible -- client needs fluctuate wildly between months. Yet outsourcing to random freelancers creates quality inconsistency that damages the agency brand. They need a reliable production partner who maintains quality across projects, handles scope creep, and delivers on time so the agency can focus on client relationships and account growth.',
+    offerStrategy: 'Position as an agency production partner, not a freelance video editor. The core value is reliability and quality consistency at scale. Agencies need to know that every video delivered under their brand meets the same standard. Offer white-label delivery -- the agency presents the work as their own. Build systems for brief handoff, revision management, and predictable turnaround that remove the friction of managing an external editor.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$800-$1,500/mo',
+      intermediateRange: '$1,500-$3,000/mo',
+      premiumRange: '$3,000-$6,000/mo',
+      pricingLogic: 'Monthly retainer with a fixed number of videos included. Agencies need predictable costs to quote clients confidently. Tier by video count and complexity. Premium tier includes rush turnaround and unlimited revisions. Frame as a fraction of what they would pay a full-time editor.',
+    },
+    proposalAngle: {
+      headline: 'White-Label Video Editing That Lets Agencies Scale Without Hiring Full-Time Editors',
+      problem: 'Your agency is turning down video work or overworking your team because you cannot find reliable editors who deliver consistent quality. Every new client means scrambling for production capacity.',
+      solution: 'I act as your dedicated video production partner -- white-label delivery, consistent quality, predictable turnaround. You present the work as your own while I handle editing from brief to final delivery.',
+      nextStep: 'Send me a brief from your most recent client video project. I will return a completed edit with a breakdown of my process so you can evaluate the quality and turnaround time.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Digital agencies that offer video services but struggle with production capacity, quality consistency, or managing freelance editors.',
+      problemItSolves: 'Agencies lose money on video services because internal teams are too expensive and freelancers are unreliable. Inconsistent editor quality damages the agency brand with clients.',
+      corePromise: 'A white-label video production partnership with consistent quality, predictable pricing, and reliable turnaround -- so agencies can scale video services without hiring or managing editors.',
+      whyThisWorks: 'Agencies that use dedicated white-label production partners increase video service revenue by 40-60% within 6 months because they can take on more clients without adding headcount, and consistent quality leads to higher client retention.',
+      nextStepCTA: 'Share this with agency owners who are leaving video revenue on the table because they cannot find reliable production capacity. Offer a free trial video project.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Video Edit Package',
+        description: 'Full editing service from raw footage to brand-polished final delivery, delivered under the agency\'s brand with consistent quality markers across every client project',
+        whyItMatters: 'Agencies sell video services as their own offering. White-label delivery with consistent quality preserves agency brand equity and builds trust with agency clients, leading to higher retention and referrals.',
+      },
+      {
+        label: 'Brief-to-Delivery Production System',
+        description: 'A structured workflow covering intake brief, raw footage receipt, brand reference collection, first cut review, revision cycle, and final delivery with predictable turnaround times at each stage',
+        whyItMatters: 'Agencies juggle multiple clients and cannot manage ad-hoc editor processes. A structured system reduces the agency\'s management overhead and ensures every project follows the same reliable pipeline.',
+      },
+      {
+        label: 'Multi-Client Brand Adaptation',
+        description: 'Maintain distinct editing styles, pacing preferences, and visual treatments across each agency client\'s brand, with per-client style references and quality checklists',
+        whyItMatters: 'Agencies serve clients with different brand identities. The ability to switch between distinct editing styles per client without losing quality is what separates a production partner from a freelancer.',
+      },
+      {
+        label: 'Long-Form to Short-Form Repurposing',
+        description: 'Agency client long-form content (testimonials, case studies, interviews) cut into platform-optimised short-form clips for Instagram, LinkedIn, and TikTok distribution',
+        whyItMatters: 'Agencies need to maximise the value of each production shoot. Repurposing long-form content into multiple short-form clips increases the ROI of each video project and gives agencies more content to deliver.',
+      },
+      {
+        label: 'Rush Turnover Service',
+        description: '24--48 hour express editing for time-sensitive agency projects, with prioritised queue handling and expedited review cycles for urgent client deliverables',
+        whyItMatters: 'Agency timelines shift constantly. A rush service means the agency never has to turn down a tight-deadline project or deliver late to an important client, protecting their reputation for reliability.',
+      },
+    ],
+    uniqueMechanisms: VIDEO_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Client Brand Style Guide Creation',
+        description: 'A reusable edit reference document per agency client covering pacing preferences, colour treatment, font choices, music style, and graphic treatment standards',
+        whyItWorks: 'A style guide eliminates guesswork across projects and ensures consistent quality even when the agency scales to more clients. Every video looks like it belongs to the same client brand without requiring a new briefing each time.',
+      },
+      {
+        label: 'Monthly Performance Analytics Pack',
+        description: 'Detailed analytics per video per client showing views, engagement, and platform-specific performance, formatted for agency client reporting',
+        whyItWorks: 'Agencies justify their video service fees with client-facing performance data. A monthly analytics pack gives the agency ready-to-present reports that demonstrate ROI and strengthen client retention.',
+      },
+      {
+        label: 'Extended Revision Window',
+        description: 'Additional revision rounds beyond standard allowance for complex agency client feedback loops, with structured revision request forms to prevent scope creep',
+        whyItWorks: 'Agency client feedback often goes through multiple internal stakeholders, generating more revision cycles than a direct client relationship. Extended revisions accommodate this workflow without creating friction in the partnership.',
+      },
+    ],
+  }),
+      [key('video_editor_local_businesses')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video Production for Local Businesses -- Content That Drives Foot Traffic and Phone Calls',
+    audienceInsight: 'Local business owners know video is powerful but have no idea what to film or how to make it look professional. They see big brands with polished commercials and think video production is out of reach. But local audiences do not expect cinematic quality -- they want authentic video that shows the business, the people, and the experience of walking through the door. A 60-second video of the owner explaining what makes their shop special can drive more local customers than a month of static social posts.',
+    offerStrategy: 'Position as a local video marketing system. Every video serves one goal: making viewers want to visit or call. Focus on what makes the business unique locally -- the owners story, the atmosphere, the specific service that nearby competitors do not offer. Keep production quality high enough to feel professional but authentic enough to feel like the real business. Avoid overly polished commercial style that feels disconnected from the local experience.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$500-$1,000/mo',
+      intermediateRange: '$1,000-$2,000/mo',
+      premiumRange: '$2,000-$4,000/mo',
+      pricingLogic: 'Monthly retainer for consistent video output. Local businesses benefit most from regular content showing different aspects of their business. Tier by number of finished videos per month. Frame against traditional local advertising costs -- a single TV ad spot costs more than 3 months of video production.',
+    },
+    proposalAngle: {
+      headline: 'Video Production That Gets Local Customers to Walk Through Your Door',
+      problem: 'You know video marketing works, but you do not have time to film or edit, and hiring a production company sounds expensive. Meanwhile, competitors are posting videos that bring in customers.',
+      solution: 'I produce professional local video content that makes your business the obvious choice in your area -- showing your team, your space, and your unique value in a way that drives phone calls and foot traffic.',
+      nextStep: 'Tell me about your business and what makes you different from competitors down the street. I will film and edit one sample video at your location so you can see how local video can bring in customers.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners who know video marketing is important but lack time, skills, or confidence to produce it themselves.',
+      problemItSolves: 'Most local businesses post static photos that do not capture attention. Video content gets 3-5x more local engagement, but business owners do not know how to create it affordably.',
+      corePromise: 'A local video production system that captures your business atmosphere, highlights what makes you unique, and drives real customer visits -- with production quality that feels authentic and professional.',
+      whyThisWorks: 'Local businesses that post video content showing their team and location generate 3x more foot traffic and phone calls than those using photos alone, because video builds trust and familiarity before the customer ever visits.',
+      nextStepCTA: 'Share this with local business owners who are losing customers to competitors with better video marketing. Offer a free sample video shot at their location.',
+    },
+    deliverables: [
+      {
+        label: 'Local Business Highlight Video',
+        description: 'A 60--90 second video showcasing the business location, team members, atmosphere, and unique service experience, shot on-site with authentic customer interaction moments',
+        whyItMatters: 'Local customers choose businesses they trust and recognise. A highlight video that shows the real team and space builds familiarity before the customer ever visits, giving the local business a competitive edge over faceless competitors.',
+      },
+      {
+        label: 'Service Spotlight Series',
+        description: 'Individual short videos for each main service or product offering, explaining what it is, who it is for, and what makes the local business\'s version better than alternatives',
+        whyItMatters: 'Local businesses struggle to communicate the breadth of their services. A spotlight series helps customers discover offerings they did not know existed, increasing average order value without additional ad spend.',
+      },
+      {
+        label: 'Customer Testimonial Edit',
+        description: 'Raw customer interview footage polished into 30--60 second trust-building testimonial videos with name cards, service tags, and authentic reaction shots',
+        whyItMatters: 'Local purchase decisions are heavily influenced by word-of-mouth and peer recommendations. Well-edited testimonial videos provide social proof that convinces undecided local customers to choose this business.',
+      },
+      {
+        label: 'Seasonal Campaign Video',
+        description: 'Time-limited offer, seasonal promotion, or local event video with clear call to action, urgency messaging, and location-specific visuals that drive immediate customer action',
+        whyItMatters: 'Local businesses thrive on seasonal and event-driven traffic. A campaign video timed to local events or seasons creates urgency and gives customers a reason to visit now rather than later.',
+      },
+      {
+        label: 'Behind-the-Scenes Content Package',
+        description: 'Regular short clips showing daily operations, team interactions, product preparation, or service delivery -- capturing the authentic character that makes the business unique locally',
+        whyItMatters: 'Behind-the-scenes content humanises the business and builds a loyal local following. Customers who feel connected to the people behind the business are more likely to choose it repeatedly.',
+      },
+    ],
+    uniqueMechanisms: VIDEO_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Local SEO Video Optimisation',
+        description: 'Every video delivered with local SEO-optimised titles, descriptions with location keywords, tags, and closed captions to improve discoverability in local search results',
+        whyItWorks: 'Local video content with proper SEO appears in Google local pack results and YouTube local search. Optimised videos continue driving new customer discovery long after the initial posting date.',
+      },
+      {
+        label: 'Social Media Cutdown Package',
+        description: 'Each video cut into platform-specific variants for Instagram, Facebook, and local community groups, with format-appropriate edits and CTAs per platform',
+        whyItWorks: 'Local customers discover businesses across multiple platforms. Platform-specific cuts ensure the business\'s video message reaches customers wherever they spend time online, maximising the ROI of each production.',
+      },
+      {
+        label: 'Google Business Profile Integration',
+        description: 'Video formatted and optimised for Google Business Profile upload, with the correct aspect ratio, length, description, and category tags for local discovery visibility',
+        whyItWorks: 'Google Business Profile videos appear prominently in local search results. A properly integrated GBP video increases click-through rates by 30%+ for local searches, driving more calls and direction requests.',
+      },
+    ],
+  }),
+      [key('video_editor_personal_brands')]: derivePathContent(VIDEO_EDITOR_YOUTUBE_CREATORS, {
+    pathTitle: 'Video Editing for Personal Brands -- Narrative Content That Builds a Following Around Your Expertise',
+    audienceInsight: 'Personal brand builders face a unique challenge: their content IS their brand. Unlike businesses selling products, personal brands sell connection, trust, and authority. Every video must deliver value while making the viewer feel like they know the person on screen. The audience does not just consume the content -- they follow the person. This means every video needs a narrative arc, a personality, and a reason for the viewer to invest in following along.',
+    offerStrategy: 'Position as a personal brand storytelling editor. The value is not in cutting footage but in shaping narrative. Every video should feel like a conversation with the audience, not a broadcast. Focus on story arc, authentic pacing (not over-edited), and maintaining the persons natural charisma while removing material that does not serve the brand. The strategy is personality-amplified editing: make the person more of who they already are.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$800-$1,500/mo',
+      intermediateRange: '$1,500-$3,000/mo',
+      premiumRange: '$3,000-$6,000/mo',
+      pricingLogic: 'Monthly retainer based on content volume. Personal brands grow through consistent publishing. Tier by videos per week and platforms repurposed for. Frame as the production engine behind their audience growth -- 3 months of consistent video builds momentum that compounds.',
+    },
+    proposalAngle: {
+      headline: 'Video Editing That Builds Your Personal Brand Into a Following',
+      problem: 'You have the expertise and personality to build a strong personal brand, but raw footage does not capture it. Your videos feel flat and fail to communicate who you really are or why someone should follow you.',
+      solution: 'I edit your videos with a narrative-first approach -- shaping raw footage into compelling content that showcases your expertise, personality, and unique perspective. Every video builds a deeper connection with your audience.',
+      nextStep: 'Send me 3 of your recent recordings. I will identify the strongest narrative throughline and edit a complete video that demonstrates how storytelling editing transforms personal brand content.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Professionals, experts, and thought leaders building a personal brand who need video content that communicates their expertise and personality effectively.',
+      problemItSolves: 'Most personal brand videos are talking-head monologues that fail to engage. Viewers scroll past because the content lacks narrative structure and personality -- it feels like a lecture, not a conversation.',
+      corePromise: 'A narrative-first video editing system for personal brands that shapes raw footage into compelling, personality-driven content -- every video builds authority, trust, and a reason to follow.',
+      whyThisWorks: 'Personal brands using narrative-driven video content grow 3-5x faster than those using standard talking-head formats, because storytelling content creates emotional connection that static expertise delivery cannot match.',
+      nextStepCTA: 'Share this with professionals building a personal brand whose video content is not gaining traction. Offer a free narrative restructure of one of their existing videos.',
+    },
+    deliverables: [
+      {
+        label: 'Narrative Brand Video',
+        description: 'A story-driven video built around the personal brand\'s origin, mission, and unique perspective -- structured with narrative arc, emotional beats, and personality moments that make viewers feel connected to the person',
+        whyItMatters: 'Personal brands succeed on connection, not information. A narrative-driven video establishes the emotional foundation that makes viewers invest in following the person rather than just consuming content.',
+      },
+      {
+        label: 'Thought Leadership Series',
+        description: 'A multi-episode content package where each video explores a specific aspect of the brand\'s expertise area, with consistent intro/outro, visual branding, and progressive value that builds a loyal audience over time',
+        whyItMatters: 'Personal brands grow through consistent publishing of differentiated perspectives. A series format creates anticipation and habit, giving viewers a reason to follow and return for each new episode.',
+      },
+      {
+        label: 'Educational Content Package',
+        description: 'How-to and teaching videos with clear structure (hook, teach, summary, CTA), annotated visuals, on-screen text highlights, and progressive complexity that establishes the brand as the go-to teacher in their niche',
+        whyItMatters: 'Educational content is the highest-signal format for personal authority. Teaching videos demonstrate expertise in a way that attracts followers who value the brand\'s specific knowledge and methodology.',
+      },
+      {
+        label: 'Personal Connection Content',
+        description: 'Behind-the-scenes, day-in-the-life, or personal story videos that reveal the person behind the brand -- filmed with authentic, less-polished style to build genuine rapport with the audience',
+        whyItMatters: 'Audiences follow people, not brands. Personal connection content bridges the gap between professional authority and human relatability, creating the trust that drives long-term audience loyalty.',
+      },
+      {
+        label: 'Event and Talk Repurpose',
+        description: 'A keynote, panel appearance, or speaking engagement recording edited into standalone content with intro branding, cleaned audio, visual highlights, and platform-optimised format for YouTube and social distribution',
+        whyItMatters: 'Speaking engagements are high-effort moments that most personal brands underutilise. A repurposed talk extends the reach of a single event into permanent content that continues building authority for months.',
+      },
+    ],
+    uniqueMechanisms: VIDEO_EDITOR_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Hook Optimisation Service',
+        description: 'The first 15 seconds of each video re-edited 3 different ways (different open, pacing, or angle), with the best version selected based on engagement prediction',
+        whyItWorks: 'Personal brand videos live or die in the first 15 seconds. Multiple hook variants dramatically increase the probability that the video captures viewer attention, since different hooks resonate with different audience segments.',
+      },
+      {
+        label: 'Transcript-to-Content Repurposing',
+        description: 'Full video transcript turned into LinkedIn posts, Twitter threads, newsletter content, and blog outlines -- extending the value of each video into written content across channels',
+        whyItWorks: 'Personal brands grow fastest when content exists in multiple formats. Transcript repurposing turns one production effort into a week\'s worth of cross-platform content, maximising reach without additional filming.',
+      },
+      {
+        label: 'Engagement Analytics Review',
+        description: 'Monthly review of which video formats, topics, and narrative structures drive the most audience growth, engagement, and follower conversion, with specific recommendations for the next month\'s content strategy',
+        whyItWorks: 'Personal brand growth accelerates when content decisions are data-informed. Regular analytics review reveals the specific content patterns that resonate with the audience, enabling the brand to double down on what works.',
+      },
+    ],
+  }),
+    [key('frontend_developer_agencies')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'White-Label Frontend Development for Agencies -- Deliver Client Sites Without Hiring Developers',
+    audienceInsight: 'Digital agencies need to deliver polished, performant websites to clients but struggle with frontend capacity. Hiring full-stack developers for frontend work is expensive. Outsourcing to random freelancers creates quality and reliability problems. Agencies need a frontend partner who can take Figma designs and deliver production-ready React or Vue code that meets their quality standards, integrates with their preferred stack, and ships on schedule -- so they can sell more web projects without scaling their team.',
+    offerStrategy: 'Position as an agency frontend delivery partner. The value is reliability, code quality, and seamless integration with agency workflows. Offer white-label delivery: the agency owns the client relationship while you handle the frontend implementation. Build systems for design-to-code handoff, code review, and deployment. Agencies care about predictable timelines and code they can maintain -- not your process, but your output.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/mo',
+      intermediateRange: '$4,000-$7,000/mo',
+      premiumRange: '$7,000-$12,000/mo',
+      pricingLogic: 'Monthly retainer with a defined sprint capacity rather than per-project pricing. Agencies need predictable monthly costs to quote retainers to their clients. Tier by story point velocity or component count per sprint. Frame as a fraction of a full-time senior developer salary in their market.',
+    },
+    proposalAngle: {
+      headline: 'White-Label Frontend Development That Lets Agencies Scale Without Hiring Developers',
+      problem: 'Your agency is turning down web projects because you lack frontend capacity, or you are overworking your team trying to deliver everything. Freelancers are unreliable and code quality is inconsistent.',
+      solution: 'I serve as your dedicated frontend delivery partner -- taking designs to production-ready code with consistent quality, predictable timelines, and seamless handoff. You present the work as your own.',
+      nextStep: 'Share your current project backlog and tech stack. I will provide a capacity plan showing how much frontend work I can offload per sprint, including my code quality standards and handoff process.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Digital agencies that sell web development services but struggle with frontend capacity, developer hiring, or code quality consistency.',
+      problemItSolves: 'Agencies lose margin on web projects because senior frontend developers are expensive and hard to find, while junior developers produce code that creates maintenance debt for the agency.',
+      corePromise: 'A white-label frontend development partnership with production-ready code, consistent quality, and sprint-based pricing -- so agencies can scale web service revenue without growing their development team.',
+      whyThisWorks: 'Agencies using dedicated white-label frontend partners reduce delivery costs by 30-50% compared to in-house developers while increasing project capacity by 2-3x, because they only pay for productive development time.',
+      nextStepCTA: 'Share this with agency owners who are bottlenecked by frontend delivery capacity. Offer a free sprint to demonstrate code quality and process fit.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Frontend Delivery',
+        description: 'Design-to-production-ready code implementation delivered under the agency\'s brand, with consistent code quality, documentation standards, and sprint-based timelines across all client projects',
+        whyItMatters: 'Agencies sell web projects on their reputation. White-label delivery with consistent quality preserves the agency\'s brand equity and ensures every client project meets the same high standard without requiring agency developer oversight.',
+      },
+      {
+        label: 'Component Library Build',
+        description: 'A reusable frontend component library built for the agency\'s client portfolio, with standardised UI elements, layout templates, and interaction patterns that can be assembled into new pages in hours not days',
+        whyItMatters: 'Agencies build similar page types across different clients. A component library eliminates redundant development work, enabling faster delivery times and higher margins on each client project.',
+      },
+      {
+        label: 'Sprint-Based Capacity Block',
+        description: 'Reserved monthly sprint capacity with a defined story point velocity, allowing the agency to plan and quote client projects with predictable frontend delivery timelines',
+        whyItMatters: 'Agencies need certainty when quoting client projects. A reserved capacity block eliminates the risk of schedule conflicts and enables the agency to confidently sell frontend work with known delivery dates.',
+      },
+      {
+        label: 'Code Review and Handoff Package',
+        description: 'Production-ready code delivered with comprehensive documentation, style guides, deployment instructions, and maintenance notes that the agency\'s team can take over and extend without a learning curve',
+        whyItMatters: 'Agencies need to maintain client code long after the initial build. Complete documentation ensures the agency\'s internal team can extend the frontend without needing the original developer, preventing long-term dependency.',
+      },
+      {
+        label: 'Multi-Project Portfolio Build',
+        description: 'Frontend implementation for multiple agency clients running concurrently, with separate development branches, staging environments, and delivery timelines managed through a shared project tracking system',
+        whyItMatters: 'Agencies rarely have a single project running at a time. The ability to handle multiple concurrent projects without quality degradation is what makes a production partner valuable versus a single-project freelancer.',
+      },
+    ],
+    uniqueMechanisms: FRONTEND_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Tech Stack Integration',
+        description: 'Frontend built in the agency\'s preferred framework and stack (React, Next.js, Vue, or custom), with existing tooling and workflow patterns matched to the agency\'s development pipeline',
+        whyItWorks: 'Agencies have established tech stacks and deployment workflows. Code delivered in the agency\'s stack integrates seamlessly with their existing processes, eliminating the integration cost of adopting a different approach.',
+      },
+      {
+        label: 'White-Label Demo Environment',
+        description: 'A staging environment branded for the agency where client walkthroughs and approvals happen, with the agency\'s branding and client-specific URL structure',
+        whyItWorks: 'Agency clients form their opinion of the agency\'s capability during demos. A white-label demo environment reinforces the agency\'s brand and professionalism during the most important client touchpoint.',
+      },
+      {
+        label: 'Documentation and Style Guide',
+        description: 'Complete code documentation covering architecture decisions, component usage, styling conventions, and deployment process -- delivered as a living style guide that the agency\'s team can reference',
+        whyItWorks: 'Documentation is the difference between code that the agency can maintain and code that creates dependency. A thorough style guide enables the agency\'s internal team to confidently extend and modify the frontend over time.',
+      },
+    ],
+  }),
+    [key('frontend_developer_startups')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend Development for Startups -- MVP-Ready Interfaces That Investors and Users Love',
+    audienceInsight: 'Startups need frontend that moves as fast as they do. Every week of development delay is a week of lost learning, lost users, or lost investor interest. But speed without quality creates technical debt that slows future iterations. Founders need a frontend developer who understands the startup context: build for today, design for tomorrow. The MVP needs to look polished enough to impress investors and early adopters, while the architecture needs to scale without a rewrite.',
+    offerStrategy: 'Position as a startup frontend partner, not a contract developer. The strategy is speed-to-value without sacrificing quality. Use proven component libraries and design systems instead of custom CSS. Ship a working MVP in weeks, not months. Make architecture decisions that support rapid iteration -- founders do not know what they need until they see it working. The value is replacing the guesswork of frontend with reliable, fast delivery.',
+     recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$5,000-$10,000/MVP',
+      intermediateRange: '$10,000-$25,000/platform',
+      premiumRange: '$25,000-$50,000/enterprise',
+      pricingLogic: 'Project-based pricing for startups with clear scope. MVP at the low end for early-stage products with standard UI patterns. Full platform build at the mid-range. Complex enterprise-grade applications at the top. Frame pricing against the cost of 2-3 months of a senior developer salary plus the opportunity cost of delayed market entry.',
+    },
+    proposalAngle: {
+      headline: 'Frontend Development That Gets Your Startup to Market Fast Without Technical Debt',
+      problem: 'You need a polished frontend to show investors and acquire early users, but every week of development delays your market entry. Hiring a full-time senior developer takes months and costs more than you can afford.',
+      solution: 'I build startup frontends that ship fast and scale clean -- leveraging proven design systems and component libraries to deliver production-ready interfaces in weeks, not months, with architecture that supports rapid iteration.',
+      nextStep: 'Share your product concept, target users, and key features. I will provide a sprint plan and timeline for delivering a working MVP frontend, including the tech stack recommendation and architecture approach.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Startup founders who need a polished, production-ready frontend quickly to validate their product, acquire early users, and raise their next funding round.',
+      problemItSolves: 'Most startups waste months on frontend development that either ships too slowly or ships quickly with poor architecture that requires a complete rewrite within 6 months.',
+      corePromise: 'A startup-focused frontend delivery system that ships polished MVPs in weeks using proven components, with architecture designed for the rapid iteration that early-stage products require.',
+      whyThisWorks: 'Startups that launch with a polished frontend in under 8 weeks raise seed rounds 2x faster and acquire early users 3x faster than those who spend months building, because investor confidence and user adoption depend on first impressions of the product.',
+      nextStepCTA: 'Share this with startup founders who are stuck in development cycles without a shippable frontend. Offer a free architecture review and sprint plan.',
+    },
+    deliverables: [
+      {
+        label: 'MVP Frontend Sprint',
+        description: 'A concentrated development sprint delivering a working, polished MVP frontend in 4--6 weeks, using proven component libraries and design systems to maximise output without sacrificing code quality',
+        whyItMatters: 'Startups need a shippable frontend to validate their product, acquire early users, and raise funding. A focused sprint delivers that frontend in weeks rather than months, directly accelerating the startup\'s go-to-market timeline.',
+      },
+      {
+        label: 'Design System Foundation',
+        description: 'A reusable component system with typography, colour, spacing, and interaction pattern standards that serves as the visual and technical foundation for the entire product as it scales beyond MVP',
+        whyItMatters: 'Startups that skip design system foundations end up with inconsistent UI that requires a full redesign within 6 months. A frontend foundation from day one enables the product to scale without accumulating visual debt.',
+      },
+      {
+        label: 'User-Facing Dashboard Build',
+        description: 'Core dashboard and key user interface screens with data visualisation, navigation patterns, empty states, loading states, and responsive layouts that work across desktop and mobile devices',
+        whyItMatters: 'Investors and early users judge a startup\'s credibility by the quality of its core dashboard. A polished dashboard build creates the confidence needed for user adoption and fundraising conversations.',
+      },
+      {
+        label: 'Authentication and Onboarding Flow',
+        description: 'Complete signup, login, password reset, and onboarding wizard frontend with social login options, multi-step registration flows, and progressive profile completion patterns',
+        whyItMatters: 'The signup and onboarding experience is the startup\'s first impression on every new user. A smooth authentication and onboarding flow reduces drop-off at the most critical conversion point in the user journey.',
+      },
+      {
+        label: 'Landing and Waitlist Page',
+        description: 'Pre-launch pages with email capture, product teaser, social proof sections, and analytics tracking -- designed to build the startup\'s early user list and validate market interest before the MVP is complete',
+        whyItMatters: 'Startups that launch with a pre-built audience have a 3x higher success rate. A landing and waitlist page captures interested users before launch, ensuring the startup has a user base ready on day one.',
+      },
+    ],
+    uniqueMechanisms: FRONTEND_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Investor Demo Environment',
+        description: 'A polished staging environment with sample data, complete UI flows, and performance optimised for fundraising demos -- ensuring the startup presents at its best during investor meetings',
+        whyItWorks: 'Fundraising success depends on the quality of product demos. A dem-optimised environment eliminates the risk of bugs, loading issues, or incomplete flows derailing an investor presentation.',
+      },
+      {
+        label: 'Analytics and Tracking Setup',
+        description: 'User behaviour analytics infrastructure (page views, events, user sessions, funnels) integrated from day one, so the startup can measure user engagement and product-market fit signals immediately after launch',
+        whyItWorks: 'Startups that measure user behaviour from day one make better product decisions 3x faster. Built-in analytics eliminates the retrofitting cost and ensures the startup has data to inform every iteration.',
+      },
+      {
+        label: 'Performance Optimization Package',
+        description: 'Lighthouse 90+ scores across mobile and desktop before launch, with Core Web Vitals passing, lazy loading, image optimisation, and bundle size budgets enforced in CI',
+        whyItWorks: 'Startup frontends with poor performance lose 40% of users to slow load times. Performance optimization ensures the startup\'s first users experience a fast, professional product that builds confidence from the first interaction.',
+      },
+    ],
+  }),
+    [key('frontend_developer_creators')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Custom Frontend Development for Creators -- A Website That Works as Hard as Your Content',
+    audienceInsight: 'Creators outgrow platform restrictions fast. A link-in-bio page or Carrd site stops working once you have multiple revenue streams, a podcast, a newsletter, a course, and merchandise to sell. Creators need a custom website that unifies their entire business -- content hub, store, membership area, and portfolio -- in one place that they own. No platform fees, no algorithm risk, no design limitations.',
+    offerStrategy: 'Position as a creators business hub builder, not a web developer. The deliverable is not a website but a content business operating system. Strategy is integration-first: connect the creators YouTube, podcast, newsletter, store, and membership into a single experience where the audience can discover everything in one place. Focus on performance (creators lose audience if pages load slow) and ease of update (creators need to add content without developer involvement).',
+     recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$3,000-$6,000/portfolio',
+      intermediateRange: '$6,000-$15,000/content hub',
+      premiumRange: '$15,000-$30,000/creator platform',
+      pricingLogic: 'Project-based pricing based on integration complexity. Simple portfolio site at the low end for creators with fewer revenue streams. Full content hub with store, membership, and newsletter integration at the mid-range. Complete creator platform with custom functionality at the top. Frame against 12 months of platform fees and lost revenue from algorithmic risk.',
+    },
+    proposalAngle: {
+      headline: 'A Custom Website That Unifies Your Entire Creator Business in One Place You Own',
+      problem: 'You manage your content across YouTube, Instagram, Substack, Gumroad, and a Patreon page -- but none of these platforms you own. If the algorithm changes or the platform shuts down, you lose everything you built.',
+      solution: 'I build a custom website that brings your entire creator business into one owned destination -- content hub, store, membership, portfolio -- with seamless integrations so your audience finds everything in one place.',
+      nextStep: 'Share links to all your platforms and revenue sources. I will design a site map and integration plan showing how everything connects into a single creator hub that you own and control.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Creators who have outgrown link-in-bio tools and platform-specific pages and need a unified, owned website that connects their entire content business.',
+      problemItSolves: 'Platform lock-in means creators lose audience and revenue every time an algorithm changes or a platform policy shifts. Operating across 5+ platforms with no central hub creates a fragmented audience experience.',
+      corePromise: 'A custom frontend system that unifies content, store, membership, and portfolio into a single owned website -- with the performance, design flexibility, and update ease that creators need.',
+      whyThisWorks: 'Creators with a unified owned website generate 3x more revenue per follower than those relying solely on platform pages, because the owned destination allows cross-selling content, products, and memberships in one seamless experience.',
+      nextStepCTA: 'Share this with creators managing 5+ platforms who worry about algorithm dependency. Offer a free site architecture plan that unifies their content business onto a single owned website.',
+    },
+    deliverables: [
+      {
+        label: 'Creator Content Hub Build',
+        description: 'A custom frontend system that unifies YouTube, podcast, newsletter, store, and membership into a single owned website with integrated content discovery, cross-platform feed aggregation, and SEO-optimised content pages',
+        whyItMatters: 'Creators managing 5+ platforms lose audience attention to fragmentation. A unified hub creates a single destination where the audience discovers the creator\'s full body of work, increasing cross-platform conversion and follower lifetime value.',
+      },
+      {
+        label: 'Membership Portal Frontend',
+        description: 'A protected membership area with content delivery (courses, resources), community features (discussion threads, member profiles), and tier-based access control, built as a custom frontend with membership payment platform integration',
+        whyItMatters: 'Membership churn is the biggest revenue risk for creator businesses. A well-designed portal that balances content delivery with community interaction directly increases retention by giving members reasons to return regularly.',
+      },
+      {
+        label: 'Store and Commerce Frontend',
+        description: 'A custom storefront for digital and physical products with checkout flow, product pages, inventory display, and member pricing support, integrated with the creator\'s existing commerce platform and payment processor',
+        whyItMatters: 'Creators leaving revenue on the table when fans cannot easily find and purchase their products. An owned storefront reduces friction in the purchase path and allows the creator to capture full margin without platform commission fees.',
+      },
+      {
+        label: 'Content CMS Admin',
+        description: 'A headless CMS admin interface for managing all site content (pages, posts, products, memberships) without developer involvement, with custom content blocks for embedded video, podcast player, newsletter signup forms, and product cards',
+        whyItMatters: 'Creators publish content daily and cannot wait for developer support for every update. A self-serve CMS eliminates the bottleneck between the creator\'s content production and their owned website, keeping the site current without ongoing development costs.',
+      },
+      {
+        label: 'Creator Portfolio Site',
+        description: 'A polished portfolio site for early-stage creators with content showcase, social proof sections, contact and booking forms, media kit download, and platform link aggregation with analytics tracking for audience insights',
+        whyItMatters: 'Early-stage creators need a professional online presence to attract brand partnerships and paid opportunities. A portfolio site replaces a link-in-bio page with a credible business destination that opens monetisation doors.',
+      },
+    ],
+    uniqueMechanisms: FRONTEND_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Platform Migration Service',
+        description: 'Migrate existing content from YouTube, Substack, Gumroad, and Patreon into the new owned website with redirects, content formatting, SEO preservation, and cross-linking between migrated content and new site pages for unified audience experience',
+        whyItWorks: 'Creators fear losing their existing content and SEO during migration. A structured migration service eliminates that risk and ensures the creator starts their owned site with a complete content library rather than an empty shell.',
+      },
+      {
+        label: 'Newsletter-to-Website Integration',
+        description: 'Bidirectional integration between the creator\'s newsletter platform and website: newsletter signup forms with landing page tracking, subscriber-only content gating, content previews sent via email, and list segmentation based on site behaviour analytics',
+        whyItWorks: 'Email remains the highest-converting channel for creator monetisation. Integrating the newsletter with the site creates a flywheel where email drives site traffic and site behaviour informs list segmentation for more relevant email content.',
+      },
+      {
+        label: 'Performance Monitoring Dashboard',
+        description: 'A custom dashboard showing site performance metrics (Core Web Vitals, uptime, CDN statistics) and audience analytics, giving the creator visibility into how their owned site performs compared to platform-hosted content',
+        whyItWorks: 'Creators accustomed to platform analytics (YouTube Studio, Instagram Insights) expect data visibility. A performance dashboard provides comparable analytics for their owned site, building confidence in the migration from platform-dependent to owned infrastructure.',
+      },
+    ],
+  }),
+    [key('frontend_developer_local_businesses')]: derivePathContent(FRONTEND_DEVELOPER_SAAS_STARTUPS, {
+    pathTitle: 'Frontend Development for Local Businesses -- A Website That Shows Up in Local Search and Converts Visitors Into Customers',
+    audienceInsight: 'Local businesses need a website that does two things: rank in local search when potential customers are looking for their service, and convert those visitors into phone calls, bookings, or visits. But most local business websites are either expensive custom builds that take months or cheap templates that look generic and perform poorly. Owners need a frontend solution that is professional, loads fast on mobile, and makes it dead simple for customers to take action -- call, book, directions, request a quote.',
+    offerStrategy: 'Position as a local business growth website builder. The strategy is conversion-first design: every page element should make the next action obvious. Focus on local SEO fundamentals in the markup, mobile-first performance (most local searches happen on phones), and trust signals (reviews, certifications, local photos). Keep the tech simple and maintainable -- the business owner should be able to update basic content without developer help.',
+     recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/site',
+      intermediateRange: '$4,000-$8,000/site',
+      premiumRange: '$8,000-$15,000/site',
+      pricingLogic: 'One-time project pricing with optional monthly maintenance. Local businesses prefer paying for a finished product rather than ongoing development. Tier by page count and functionality complexity. Frame pricing against what they spend on Google Ads in 3 months -- a well-built site converts 5-10x better than ads for the same cost.',
+    },
+    proposalAngle: {
+      headline: 'A Local Business Website That Ranks in Search and Actually Brings in Customers',
+      problem: 'Your current website looks outdated, loads slowly on phones, and does not show up when local customers search for your service. You are losing business to competitors with better online presence.',
+      solution: 'I build local business websites that rank in local search, load instantly on mobile, and make it obvious for visitors to call, book, or visit -- turning your website into a customer acquisition engine.',
+      nextStep: 'Send me your business name, address, and the top 3 services you offer. I will research how you currently appear in local search and provide a site plan showing how a redesigned frontend can improve local visibility and conversions.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners who need a professional, fast-loading website that ranks in local search and converts visitors into paying customers.',
+      problemItSolves: 'Most local business websites are either expensive custom builds or generic templates that fail to rank in search and do not drive customer actions. The result is a site that exists but does not generate business.',
+      corePromise: 'A conversion-optimized local business website with mobile-first performance, local SEO markup, and clear customer actions -- turning your online presence into a reliable source of new customers.',
+      whyThisWorks: 'Local businesses with mobile-optimized, locally-ranked websites get 3-5x more phone calls and booking requests than those with outdated or template-based sites, because mobile-local search is how 78% of local customers discover businesses.',
+      nextStepCTA: 'Share this with local business owners whose websites are not generating calls or bookings. Offer a free local search audit and conversion review of their current site.',
+    },
+    deliverables: [
+      {
+        label: 'Local Business Website Build',
+        description: 'A full local business website with 5--10 pages (home, about, services, contact, reviews, blog) built with mobile-first performance, local SEO markup, and conversion-optimised layouts',
+        whyItMatters: 'Most local business websites fail because they are either too expensive (custom build) or too generic (template). A purpose-built local site combines professional quality with the specific local conversion features that drive customer action.',
+      },
+      {
+        label: 'Local SEO Frontend Setup',
+        description: 'Schema markup for local business (LocalBusiness, review, product, service schemas), structured data for Google local pack, mobile-first responsive design, and location-specific meta tags',
+        whyItMatters: '78% of local customers discover businesses through search. Proper local SEO markup is the technical foundation that determines whether the website appears in local search results at all, directly impacting customer acquisition.',
+      },
+      {
+        label: 'Service Page Template System',
+        description: 'Reusable, conversion-optimised page templates for each of the business\'s service offerings, with consistent structure: service description, benefits, process, pricing context, testimonials, and call to action',
+        whyItMatters: 'Local businesses with multiple services need individual pages for each to rank in search. A template system enables rapid deployment of SEO-optimised service pages without starting from scratch each time.',
+      },
+      {
+        label: 'Contact and Booking Integration',
+        description: 'Working contact forms with email delivery confirmation, Google Maps embed with directions link, click-to-call buttons with carrier verification, and third-party booking widget integration',
+        whyItMatters: 'Every second of friction in the contact flow costs the local business a potential customer. Reliable, tested contact integrations ensure every visitor who wants to reach the business can do so without technical barriers.',
+      },
+      {
+        label: 'Review and Testimonial Display',
+        description: 'Dynamic review aggregation sections that pull Google Business Profile and other review platform ratings, with filtered display options and schema markup for review-rich snippets in search results',
+        whyItMatters: 'Reviews are the #1 trust signal for local purchase decisions. A dynamic review display that feeds Google-sourced ratings into the site builds credibility with visitors and improves search result visibility through review schema.',
+      },
+    ],
+    uniqueMechanisms: FRONTEND_DEV_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Google Business Profile Integration',
+        description: 'Bidirectional integration between the website and Google Business Profile, with GBP posts synced to a site blog section, review data displayed on the site, and analytics showing GBP-driven traffic',
+        whyItWorks: 'Google Business Profile is the most visible local search asset. Integration ensures the website and GBP work together, with each reinforcing the other\'s authority in local search rankings.',
+      },
+      {
+        label: 'Multi-Location Architecture',
+        description: 'Frontend architecture designed for multi-location businesses, with individual location pages, location-specific schema markup, separate contact flows per location, and central management dashboard',
+        whyItWorks: 'Multi-location businesses that add new locations face the cost of rebuilding their site. A multi-location architecture from day one enables the business to add new locations without significant additional development investment.',
+      },
+      {
+        label: 'Self-Serve Content Editor',
+        description: 'A simple admin interface where the business owner can update text content, images, offers, and business hours without touching code or needing developer assistance for basic changes',
+        whyItWorks: 'Local business owners want to keep their site current but cannot wait for developer availability for every text update. A self-serve editor eliminates the update bottleneck, keeping the site fresh and accurate without ongoing development costs.',
+      },
+    ],
+  }),
+    [key('ui_ux_designer_saas_startups')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'SaaS Product UX Design -- Onboarding Flows and Activation Experiences That Convert Trial Users Into Paid Customers',
+    audienceInsight: 'SaaS startups live on activation metrics: what percentage of trial users reach the aha moment, how long does it take, where do they drop off. Unlike marketing site design that optimises for conversion to signup, product UX design optimises for conversion to value. The startup needs a UX designer who understands onboarding flows, feature discovery, workflow design, and retention loops -- not just page layouts. Every screen, every onboarding step, every empty state should move the user toward their first moment of value faster.',
+    offerStrategy: 'Position as a SaaS product activation designer, not a screen layout designer. The deliverable is not a set of screens -- it is a sequenced onboarding-to-value experience. The design process starts with mapping the activation journey (signup → setup → first workflow → aha moment) and then designing each step to reduce time-to-value. The focus is on workflow efficiency, feature discovery patterns, and reducing drop-off between signup and first paid conversion.',
+    recommendedOfferType: 'milestone_based',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$5,000-$10,000/milestone',
+      intermediateRange: '$10,000-$20,000/milestone',
+      premiumRange: '$20,000-$35,000/milestone',
+      pricingLogic: 'Milestone-based pricing tied to specific product UX outcomes rather than screen count. Each milestone delivers a measurable improvement in an activation metric: onboarding flow completion, time-to-first-action, feature adoption rate. Beginner tier covers a single workflow redesign. Mid tier covers onboarding-to-activation flow. Premium tier covers full product UX audit and redesign with user testing. Frame as a fraction of monthly subscription revenue churn prevented -- a 5% improvement in trial-to-paid conversion at a $100K ARR startup is worth $5K in annual recurring revenue.',
+    },
+    proposalAngle: {
+      headline: 'SaaS Product UX That Gets Users to Their Aha Moment Faster -- and Keeps Them There',
+      problem: 'Your trial users sign up but do not convert to paid. The onboarding flow is confusing, key features are hard to discover, and users never reach the moment where they understand your product\'s value. Your churn is not a pricing problem -- it is a UX problem.',
+      solution: 'I design SaaS product UX focused on activation: mapping the onboarding journey, eliminating friction in key workflows, designing feature discovery patterns, and reducing time-to-value so more trial users become paid customers.',
+      nextStep: 'Share your product, current trial-to-paid conversion metrics, and a screen recording of a new user going through onboarding. I will produce a UX audit identifying the 5 biggest activation blockers with specific redesign recommendations.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'SaaS startups whose trial-to-paid conversion rates are below industry benchmarks -- users sign up but do not reach the aha moment or convert within the trial period.',
+      problemItSolves: 'Most SaaS products are designed for feature completeness rather than activation speed. Users sign up, encounter confusing onboarding, fail to discover key workflows, and leave before experiencing the product\'s core value. The result is high trial traffic but low paid conversion.',
+      corePromise: 'A SaaS product UX redesign focused on activation metrics: onboarding flow optimisation, workflow efficiency, feature discovery patterns, and reduced time-to-value -- delivering measurable improvement in trial-to-paid conversion.',
+      whyThisWorks: 'SaaS companies that invest in activation-focused UX redesign see 30-60% improvements in trial-to-paid conversion rates within 2 months, because reducing friction in the first experience directly removes the barriers between signup and purchase decision.',
+      nextStepCTA: 'Share this with SaaS founders whose trial conversion rates are below 5% and onboarding drop-off exceeds 60%. Offer a free activation audit that includes a screen-recording analysis of a new user\'s onboarding experience.',
+    },
+    deliverables: [
+      {
+        label: 'Activation Journey Mapping',
+        description: 'A sequenced UX design deliverable covering the full onboarding-to-activation flow: signup screen, setup wizard, first workflow, aha moment, and post-activation engagement loop designed to minimise time-to-value and maximise feature discovery',
+        whyItMatters: 'SaaS products lose 40-60% of trial users before they reach the aha moment. Mapping the full activation journey reveals the exact points where users stall, enabling targeted intervention at the most critical drop-off points.',
+      },
+      {
+        label: 'Onboarding Flow Redesign',
+        description: 'A UX redesign of the product onboarding experience including user onboarding wizard, progressive feature reveal, in-app guidance tooltips, sample data integration, and first-workflow templates that get new users to value in their first session',
+        whyItMatters: 'The first session determines whether a trial user continues or churns. An onboarding flow that delivers value in the first visit creates the momentum needed to carry the user through the rest of the trial period.',
+      },
+      {
+        label: 'Workflow Efficiency Design',
+        description: 'UX design for core product workflows (dashboard, key task flows, settings) focused on reducing task completion time, minimising steps, and eliminating cognitive load through thoughtful information architecture and interaction patterns',
+        whyItMatters: 'Users who complete key workflows efficiently are more likely to adopt the product as a daily tool. Every unnecessary step in a workflow increases the likelihood that users abandon the task and the product.',
+      },
+      {
+        label: 'Feature Discovery System',
+        description: 'A UX pattern design for feature discovery: empty states with guided actions, contextual feature suggestions, analytics-triggered tooltips, what\'s-new announcements, and progressive disclosure that surfaces advanced features at the right moment',
+        whyItMatters: 'SaaS products lose retention value when users never discover advanced features that deepen product stickiness. A structured discovery system ensures users graduate from basic to advanced usage without overwhelming them early on.',
+      },
+      {
+        label: 'Retention Loop Design',
+        description: 'UX design for post-activation engagement including milestone celebrations, progress tracking, usage streak rewards, feature adoption nudges, and re-engagement prompts that extend the user journey beyond the initial aha moment into ongoing habit formation',
+        whyItMatters: 'Acquiring a paying user is expensive; losing them to churn erodes LTV. Retention loop design builds the habitual usage patterns that reduce churn and turn one-time purchasers into long-term subscribers.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'User Testing and Validation',
+        description: 'Conduct moderated user testing sessions with 5--8 target users on redesigned flows, producing a findings report with usability issue severity ratings, task completion rates, behavioural observations, and specific design iteration recommendations',
+        whyItWorks: 'UX design decisions based on assumptions rather than user behaviour risk creating new friction points. Moderated testing validates that the redesign actually improves activation metrics before engineering resources are committed to implementation.',
+      },
+      {
+        label: 'Design System for Product Screens',
+        description: 'Create a product design system with reusable UI components, interaction patterns, and screen templates specifically for the product\'s workflow screens, ensuring consistent UX across the entire product experience beyond the marketing pages',
+        whyItWorks: 'SaaS products grow through feature additions that often fragment the user experience. A product-focused design system maintains UX consistency as the product scales, preventing the activation friction that grows with every new feature.',
+      },
+      {
+        label: 'Analytics Event Taxonomy Design',
+        description: 'Define a structured analytics event taxonomy aligned to activation metrics: onboarding step completion events, feature discovery events, time-to-first-action tracking, funnel conversion events, and retention signals with implementation guidance for the engineering team',
+        whyItWorks: 'Without structured event tracking, the startup cannot measure whether UX changes actually improve activation. A deliberate taxonomy ensures every redesign iteration produces measurable data on its impact on trial-to-paid conversion.',
+      },
+    ],
+  }),
+    [key('ui_ux_designer_creators')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'Creator Audience Product UX -- Membership Portals and Community Experiences That Keep Followers Engaged',
+    audienceInsight: 'Creators who sell memberships, courses, or community access face a retention challenge that SaaS products do not: their audience pays for access to the creator\'s expertise and community, not a tool they need to use. The UX needs to make the audience feel connected to the creator and other members, not just click through lessons. The portal, membership area, or community platform must balance content delivery (courses, resources) with community interaction (discussions, live events, feedback) in a way that feels exclusive and valuable enough to justify a recurring payment.',
+    offerStrategy: 'Position as a creator audience experience designer, not a portal UI designer. The deliverable is a digital space where the audience feels connected to the creator and invested in staying. The design focuses on community interaction patterns, content discovery, live event UX, and member-to-member connection features. The goal is not just usability but belonging -- members should feel like they are part of something, not just accessing content.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$3,000-$6,000/design',
+      intermediateRange: '$6,000-$12,000/design',
+      premiumRange: '$12,000-$20,000/design',
+      pricingLogic: 'One-time project fee based on platform scope and community features. A basic membership portal design with course delivery and discussion area is at the low end. A full community platform design with live events, member directory, feedback systems, and content library is at the mid-range. A complete creator ecosystem design (portal + mobile app concept + email nurture UX) is at the high end. Frame as a fraction of monthly membership revenue -- improving retention by 10% at a $10K/mo membership pays for the design in months.',
+    },
+    proposalAngle: {
+      headline: 'Membership UX That Makes Your Audience Feel Connected to You and Invested in Staying',
+      problem: 'Your members pay monthly but engagement drops after the first week. The portal feels like a content library, not a community. Members consume a few lessons then stop visiting because there is no reason to come back. Your retention is bleeding value.',
+      solution: 'I design a creator membership experience focused on engagement and retention: community interaction flows, content discovery that rewards regular visits, live event UX that builds connection, and member-to-member features that create belonging. Your members stay because they feel part of something.',
+      nextStep: 'Share your current membership platform and community links. I will produce a retention UX audit identifying the 5 biggest engagement drop-off points, with a redesign concept that focuses on community connection and repeat-visit behaviours.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Creators with paid memberships or community products whose retention drops after the first month -- members pay but do not stay engaged enough to justify recurring charges.',
+      problemItSolves: 'Most creator membership platforms are designed as content libraries with a comment section. The UX does not create connection, belonging, or reasons to return regularly. Members consume initial value, disengage, and churn.',
+      corePromise: 'A creator audience product UX designed for engagement and retention: community interaction patterns, content discovery loops, live event experiences, and member connection features -- turning a content library into a community members want to return to.',
+      whyThisWorks: 'Creators who invest in community-focused UX design see 20-40% higher member retention at 6 months compared to those with standard portal UIs, because the feeling of belonging and connection is the primary driver of membership renewal, not content library quality.',
+      nextStepCTA: 'Share this with creators whose membership churn is above 10% per month and members stop engaging after the first week. Offer a free retention UX audit that identifies engagement drop-off points and redesign opportunities.',
+    },
+    deliverables: [
+      {
+        label: 'Membership Portal UX Design',
+        description: 'A community-focused portal UX design balancing content delivery (courses, resources) with community interaction (discussion threads, member profiles, live events) -- designed to create belonging and repeat visitation',
+        whyItMatters: 'Creator membership retention depends on the feeling of connection, not content library quality. A UX design that prioritises community interaction over content consumption keeps members engaged and renewing.',
+      },
+      {
+        label: 'Onboarding Flow Design',
+        description: 'A new member onboarding UX that progressively reveals features, connects new members with the community, sets expectations for content cadence, and delivers the first value moment within the first session',
+        whyItMatters: 'Members who experience value in their first session are 3x more likely to renew at 60 days. A structured onboarding flow that delivers connection and content early sets the foundation for long-term retention.',
+      },
+      {
+        label: 'Community Interaction Pattern Design',
+        description: 'UX patterns for discussion threads, member-to-member messaging, live event interaction, feedback systems, and community recognition features -- designed to encourage participation and build relationships',
+        whyItMatters: 'Members who interact with other members are 5x more likely to renew than passive content consumers. Interaction pattern design that makes participation feel natural and rewarding directly reduces churn.',
+      },
+      {
+        label: 'Content Discovery Interface',
+        description: 'A personalised content discovery UX that surfaces relevant courses, resources, and community conversations based on member interests, engagement history, and content completion patterns',
+        whyItMatters: 'Members who regularly discover new content relevant to their interests stay engaged longer. A discovery interface that personalises the content experience keeps the membership feeling fresh and valuable over time.',
+      },
+      {
+        label: 'Retention Loop UX Design',
+        description: 'Engagement triggers, milestone celebrations, progress tracking, usage streak rewards, feature adoption nudges, and re-engagement prompts designed into the product UX to extend the member journey beyond the initial value moment',
+        whyItMatters: 'The biggest drop-off in creator memberships happens after the initial content consumption bursts. Retention loop UX creates ongoing reasons to return, transforming one-time purchasers into long-term subscribers.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Mobile App UX Concept',
+        description: 'A mobile app UX concept design for the creator\'s membership community, with native mobile interaction patterns, push notification strategy, and offline content access design',
+        whyItWorks: 'Members who access the community on mobile are 2x more likely to engage daily. A mobile app concept gives the creator a roadmap for the most impactful platform expansion, designed specifically for community engagement.',
+      },
+      {
+        label: 'Member Analytics Dashboard Design',
+        description: 'A visual dashboard UX for the creator to track member engagement, churn signals, content consumption patterns, and community health metrics -- designed for easy interpretation without data analysis expertise',
+        whyItWorks: 'Creators who understand their membership data can make informed content and community decisions. An analytics dashboard makes churn signals visible early, enabling proactive retention interventions.',
+      },
+      {
+        label: 'Content A/B Testing UX Framework',
+        description: 'A UX framework for testing different content presentation patterns, community engagement prompts, and onboarding variations -- designed to help the creator optimise the membership experience based on member behavior data',
+        whyItWorks: 'No membership UX is optimal on the first version. An A/B testing framework enables the creator to systematically improve engagement and retention through data-driven UX iterations.',
+      },
+    ],
+  }),
+    [key('ui_ux_designer_agencies')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'White-Label Product UX Design for Agencies -- Scalable Design Delivery With Clean Developer Handoff',
+    audienceInsight: 'Agencies building digital products for clients need UX design capacity that scales with their project pipeline. Every client product has different user workflows, different information architectures, and different design requirements. The agency needs a UX designer who can research user needs, design workflow architectures, and produce clean wireframes and prototypes that developers can build from without ambiguity. White-label delivery so the agency presents the UX work as their own.',
+    offerStrategy: 'Position as an agency product UX partner. The value is design process reliability: the agency sends a product brief or user research, you return wireframes, user flows, and high-fidelity prototypes with developer-ready annotations. Build systems for UX audit handoff, wireframe review cycles, and developer handoff specifications. The agency owns the client relationship and strategic direction; you own the UX execution and documentation quality.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$3,000-$6,000/mo',
+      intermediateRange: '$6,000-$10,000/mo',
+      premiumRange: '$10,000-$18,000/mo',
+      pricingLogic: 'Monthly retainer with a defined UX capacity in sprint points or deliverables per month. Agencies need predictable costs to quote product design retainers to their clients. Tier by complexity: UX audits and wireframes at the low end; full workflow design with interactive prototypes and developer handoff specs at the mid-range; complete product UX from research to final handoff at the premium tier.',
+    },
+    proposalAngle: {
+      headline: 'White-Label UX Design That Lets Agencies Deliver Product Design Without a Full-Time Designer',
+      problem: 'Your agency sells product design services but struggles with UX capacity. Every new project means finding and onboarding a new freelance UX designer, and the quality of wireframes, user flows, and developer handoff varies wildly between designers.',
+      solution: 'I serve as your dedicated UX design partner -- delivering research-backed wireframes, polished prototypes, and developer-ready specifications on a predictable schedule. White-label so you present the UX work as your own, while I handle the design process from audit to handoff.',
+      nextStep: 'Share a recent client product brief or UX requirements document. I will deliver a UX audit and wireframe set for the key user flow so you can evaluate the design quality, documentation standards, and handoff readiness.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Agencies that sell digital product design services but lack in-house UX capacity or struggle with freelance UX designer quality and reliability.',
+      problemItSolves: 'Agencies lose margin on product design projects because finding reliable UX designers is time-consuming, their handoff quality is inconsistent, and developers lose time interpreting ambiguous wireframes and specs.',
+      corePromise: 'A white-label product UX design partnership with consistent documentation quality, research-backed wireframes, and developer-ready specifications -- so agencies can scale product design revenue without hiring or managing UX designers.',
+      whyThisWorks: 'Agencies using dedicated white-label UX partners reduce product design delivery time by 30-50% and increase project capacity by 2x, because the partner delivers production-ready wireframes and specs that developers can build from without clarification rounds.',
+      nextStepCTA: 'Share this with agency owners whose product design services are bottlenecked by UX capacity or developer handoff quality. Offer a free UX audit and wireframe set for one of their current client projects.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label UX Research Package',
+        description: 'User research, stakeholder interviews, competitive analysis, and usability findings delivered as a structured report under the agency\'s brand -- with actionable insights that inform product design decisions',
+        whyItMatters: 'Agencies sell product design services based on strategic thinking, not just visual output. A research-backed UX deliverable demonstrates strategic value that justifies premium pricing and strengthens the agency\'s position as a partner rather than a vendor.',
+      },
+      {
+        label: 'User Flow and Wireframe Set',
+        description: 'Complete workflow architecture with user flow diagrams, low-fidelity wireframes for every key screen, and interaction notes -- delivered as a structured package the agency\'s clients can review and approve before visual design begins',
+        whyItMatters: 'Agency project margins erode when clients request major changes after visual design is complete. Wireframe-first delivery ensures structural approval before visual polish, reducing costly late-stage revisions.',
+      },
+      {
+        label: 'Interactive Prototype Delivery',
+        description: 'Clickable high-fidelity prototype with annotated user flows, transition specifications, error state designs, loading state treatments, and edge case handling -- ready for client review and developer handoff',
+        whyItMatters: 'Agencies that present interactive prototypes close design approval faster because clients can experience the product rather than imagining it from static screens. An interactive prototype reduces approval cycles by up to 50%.',
+      },
+      {
+        label: 'Developer Handoff Specification',
+        description: 'Annotated screen designs with interaction specifications, responsive behaviour notes, state variations (loading, empty, error, edge case), spacing measurements, and component documentation organised for direct developer implementation',
+        whyItMatters: 'Developer handoff quality is the biggest bottleneck in agency product delivery. Comprehensive specifications eliminate the back-and-forth between designers and developers, reducing build time and preserving design fidelity.',
+      },
+      {
+        label: 'UX Audit and Improvement Report',
+        description: 'Existing agency client product UX evaluation covering usability issues, information architecture problems, workflow efficiency gaps, accessibility compliance, and prioritised recommendations with estimated effort and impact',
+        whyItMatters: 'UX audits create a natural sales pipeline for agencies. A structured audit report identifies specific improvement opportunities, giving the agency a clear proposal for follow-on design work with measurable expected outcomes.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Usability Testing Package',
+        description: 'Moderated usability testing sessions with 5--8 target users on redesigned workflows, producing a findings report with severity ratings, task completion rates, behavioural observations, and iteration recommendations',
+        whyItWorks: 'Agencies that validate designs with user testing before development reduce post-launch rework by 60%. A testing package gives the agency defensible data to present to clients and reduces the risk of design failures after launch.',
+      },
+      {
+        label: 'Product Design System Creation',
+        description: 'A reusable UI component library, interaction pattern documentation, and screen template set specifically for the product\'s workflow screens -- ensuring consistent UX as the product scales',
+        whyItWorks: 'Agencies that build design systems for their clients create ongoing dependency and recurring revenue. A product design system ensures the client\'s product maintains UX consistency as new features are added, reducing future design costs.',
+      },
+      {
+        label: 'UX Analytics Event Specification',
+        description: 'Defined UX metrics and analytics event taxonomy covering user flows, feature adoption, funnel completion, engagement signals, and retention indicators -- with implementation guidance for the engineering team',
+        whyItWorks: 'Product teams cannot improve what they do not measure. A structured event specification gives the agency\'s client the data infrastructure needed to make informed product decisions, demonstrating the agency\'s strategic value beyond design deliverables.',
+      },
+    ],
+  }),
+    [key('ui_ux_designer_local_businesses')]: derivePathContent(UI_UX_DESIGNER_COACHES, {
+    pathTitle: 'Local Business Service UX -- Booking Flows and Service Workflows That Customers Can Actually Navigate',
+    audienceInsight: 'Local businesses that take appointments, quotes, or bookings online often force customers through confusing multi-step forms, unclear service menus, and checkout flows that feel designed for the business\'s internal process rather than the customer\'s convenience. A plumber, salon, or clinic does not need a full UX strategy -- they need their booking flow redesigned so customers can complete it in under 2 minutes on a phone without confusion. The UX problem for local businesses is not complex; it is ignored.',
+    offerStrategy: 'Position as a local service flow simplifier, not a UX strategist. The deliverable is a simplified booking or service request flow that removes unnecessary steps, clarifies service options, and works reliably on mobile. The design approach is reductive: remove every field, click, and page that does not directly help the customer complete their goal. The result is a flow that feels obvious even to a first-time visitor on a phone screen.',
+    recommendedOfferType: 'one_time_project',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$2,000-$4,000/design',
+      intermediateRange: '$4,000-$7,000/design',
+      premiumRange: '$7,000-$12,000/design',
+      pricingLogic: 'One-time project fee based on flow complexity. A single booking flow redesign is at the low end. A full service workflow redesign (booking + intake form + confirmation + reminder flow) at the mid-range. Multi-location or multi-service business with complex scheduling at the high end. Frame as a fraction of annual revenue lost to abandoned bookings -- a confusing booking flow can cost a local business thousands per month in missed appointments.',
+    },
+    proposalAngle: {
+      headline: 'A Booking Flow So Simple Customers Complete It on Their Phone in Under 2 Minutes',
+      problem: 'Your online booking or service request process is confusing. Customers start filling it out, get stuck on unclear options or too many fields, and abandon the form. You are losing appointments to competitors whose booking process is simpler.',
+      solution: 'I redesign your booking or service request flow to be completed in under 2 minutes on a phone: remove every unnecessary field, clarify service options with visual choices, and create a confirmation process that customers trust. The result is a flow that feels obvious, not frustrating.',
+      nextStep: 'Share your current booking page URL or a screen recording of your booking process. I will identify the 5 steps where customers abandon the flow and produce a simplified redesign that can be completed in half the time.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Local business owners whose online booking or service request process causes customer frustration and abandonment -- appointments and leads lost to confusing forms and multi-step flows.',
+      problemItSolves: 'Most local businesses implement booking systems without considering the customer experience. Too many fields, unclear options, mobile-unfriendly forms, and confusing confirmation processes drive customers to competitors with simpler systems.',
+      corePromise: 'A simplified booking or service request flow redesign that removes friction, clarifies options with visual choices, and works reliably on mobile -- so customers complete their booking in under 2 minutes instead of abandoning halfway through.',
+      whyThisWorks: 'Local businesses that simplify their booking flow to under 2 minutes on mobile see 30-50% more completed bookings from the same traffic, because each removed field and clarified option reduces the cognitive load that causes abandonment.',
+      nextStepCTA: 'Share this with local business owners whose online booking process loses customers. Offer a free booking flow audit that identifies abandonment points and shows a simplified alternative.',
+    },
+    deliverables: [
+      {
+        label: 'Booking Flow Simplification',
+        description: 'A streamlined booking flow redesigned to be completable in under 2 minutes on a mobile phone -- removing every unnecessary field, consolidating steps, and using visual choices instead of text inputs wherever possible',
+        whyItMatters: 'Every extra field and step in a booking flow costs a local business customers. A simplified flow that eliminates unnecessary friction directly increases the number of completed bookings from the same traffic.',
+      },
+      {
+        label: 'Service Selection UX Design',
+        description: 'Clear service options presented with visual choices (photos, icons, brief descriptions) instead of dropdown menus -- making it easy for the customer to identify and select the right service without confusion',
+        whyItMatters: 'Customers abandon booking when they are unsure which service to select or what each option includes. Visual service selection reduces decision friction and helps customers complete their booking with confidence.',
+      },
+      {
+        label: 'Mobile-Optimised Booking UX',
+        description: 'A mobile-first booking flow designed specifically for phone screens with thumb-friendly tap targets, single-column layout, minimised scrolling, auto-fill for repeated fields, and mobile keyboard-optimised input types',
+        whyItMatters: 'The majority of local booking attempts happen on mobile devices. A booking UX designed for the phone removes the pinch-zoom, tiny-button, and excessive-scrolling frustrations that cause mobile abandonment.',
+      },
+      {
+        label: 'Confirmation and Reminder UX',
+        description: 'Post-booking flow with clear confirmation screen, calendar attachment, automated email and SMS reminders, rescheduling and cancellation options, and pre-appointment preparation instructions designed into the experience',
+        whyItMatters: 'Local businesses lose 20-30% of bookings to no-shows without proper confirmation and reminder systems. A well-designed post-booking UX dramatically reduces no-shows and ensures customers arrive prepared.',
+      },
+      {
+        label: 'Multi-Service and Multi-Provider Scheduling UX',
+        description: 'Complex scheduling UX for businesses with multiple services, multiple staff members, varying appointment durations, and location-specific availability -- designed to handle complexity without confusing the customer',
+        whyItMatters: 'Service businesses with complex scheduling (salons, clinics, repair services) lose customers to competitors with simpler booking systems. A UX that handles complexity elegantly turns scheduling confusion into a competitive advantage.',
+      },
+    ],
+    uniqueMechanisms: UIUX_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Booking Abandonment Analysis',
+        description: 'Flow analysis identifying exactly where customers drop off in the current booking process, with specific UX recommendations for each abandonment point based on user behaviour data',
+        whyItWorks: 'Most local businesses have no idea where their booking flow loses customers. Abandonment analysis reveals the specific steps causing friction, enabling targeted fixes that produce immediate improvements in completion rates.',
+      },
+      {
+        label: 'Customer Intake Form Simplification',
+        description: 'Reduced-field form design that collects only essential information during booking, with optional fields moved to post-confirmation and smart defaults pre-filled based on service type selection',
+        whyItWorks: 'Long intake forms are the #1 cause of booking abandonment for local services. A simplified form that defers non-essential data collection reduces the upfront commitment perception and increases form completion rates.',
+      },
+      {
+        label: 'Automated Reminder UX Design',
+        description: 'SMS and email reminder flow design with timing strategy (48h, 24h, 2h before appointment), cancellation and rescheduling links, preparation instructions, and directions -- all designed into a single cohesive customer experience',
+        whyItWorks: 'Well-designed automated reminders can reduce local business no-show rates from 25% to under 5%. A reminder UX that makes it easy for customers to confirm, reschedule, or cancel reduces last-minute cancellations and fills gaps efficiently.',
+      },
+    ],
+  }),
+  [key('social_media_designer_coaches')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Coaches',
+    audienceInsight: 'Coaches in the coaching space are coaches who need polished social media visuals that build authority. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Coaches. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Coaches -- A System Built for Your Success',
+      problem: 'You know Coaches need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Coaches. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Coaches solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Coaches -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Authority-Building Post Design System',
+        description: 'A visual post design system tailored for coaching content -- quote cards with the coach\'s face, tip graphics with methodology frameworks, testimonial cards, and thought-leadership post templates -- all designed to build perceived authority with every post',
+        whyItMatters: 'Coaches attract clients through demonstrated expertise, not entertainment. An authority-focused post design system ensures every social media post reinforces the coach\'s position as a trusted expert in their niche.',
+      },
+      {
+        label: 'Lead Magnet and Opt-In Visual Package',
+        description: 'Designed lead magnet covers, opt-in graphic sets, thank-you page visuals, and email sequence headers -- creating a cohesive visual journey from social media discovery through lead capture and into the coach\'s email nurture sequence',
+        whyItMatters: 'Coaches convert followers into leads through targeted lead magnets. A consistent visual journey from post to opt-in to email builds trust at every step, increasing conversion rates from social traffic to coaching leads.',
+      },
+      {
+        label: 'Discovery Call Promotion Graphics',
+        description: 'Call-to-action graphics specifically designed to promote discovery calls -- with visual urgency elements, benefit highlights, social proof integration, and clear booking instructions that drive consultation bookings',
+        whyItMatters: 'The goal of coach social media is discovery call bookings, not vanity metrics. Dedicated call promotion graphics that are optimised for conversion directly increase the number of qualified consultations booked through social channels.',
+      },
+      {
+        label: 'Program and Offer Launch Graphics',
+        description: 'Visual campaign assets for coaching program launches including announcement graphics, countdown sequences, curriculum showcase cards, pricing reveal graphics, enrolment close reminders, and post-launch celebration posts',
+        whyItMatters: 'Coaching program launches are high-stakes revenue events where visual quality directly impacts enrolment. A complete launch graphic system maintains momentum throughout the launch window with timely, compelling visuals.',
+      },
+      {
+        label: 'Educational Carousel Design System',
+        description: 'Multi-slide carousel templates designed for teaching coaching concepts, frameworks, and methodologies -- with consistent visual progression, clear typography hierarchy, and strong last-slide CTAs that drive engagement and saves',
+        whyItMatters: 'Educational carousels are the highest-engagement format for coaching content on LinkedIn and Instagram. A carousel design system makes it fast to produce high-quality educational content that builds authority and generates leads.',
+      },
+    ],
+    uniqueMechanisms: SOCIAL_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Content Performance Analytics Dashboard',
+        description: 'Monthly visual performance report showing which post types, topics, and formats drive the highest engagement, lead conversion, and discovery call bookings -- with actionable recommendations for the next month\'s content strategy',
+        whyItWorks: 'Coaches who know which content formats drive results can focus their efforts on high-ROI activities. A performance dashboard reveals the specific visual approaches that convert followers into coaching leads.',
+      },
+      {
+        label: 'Seasonal and Campaign Content Calendar',
+        description: 'A quarterly content calendar with pre-designed seasonal graphics, holiday-themed posts, industry event tie-ins, and campaign-specific visual templates -- ensuring timely content without last-minute design scrambles',
+        whyItWorks: 'Coaches who plan content seasonally maintain consistent engagement throughout the year. A pre-designed campaign calendar ensures the coach always has relevant, on-brand content for key dates and industry moments.',
+      },
+      {
+        label: 'Brand Consistency Monitoring System',
+        description: 'Monthly brand audit of the coach\'s social media presence checking colour accuracy, typography consistency, logo usage, and visual tone across all platforms -- with correction recommendations and updated asset delivery',
+        whyItWorks: 'Coaches whose social media drifts from their brand identity lose the trust premium that consistent branding provides. A monitoring system catches visual inconsistencies early, maintaining the professional image that attracts premium clients.',
+      },
+    ],
+  }),
+  [key('social_media_designer_agencies')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need to deliver on-brand social graphics at scale. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'White-Label Social Graphics Production',
+        description: 'A complete social media graphics production service delivered under the agency\'s brand -- with consistent quality, brand-compliant templates, and reliable turnaround across every client the agency serves',
+        whyItMatters: 'Agencies offering social media services need reliable graphic production that reflects well on the agency. White-label delivery with consistent quality lets agencies scale social services without building an in-house design team.',
+      },
+      {
+        label: 'Multi-Client Content Calendar System',
+        description: 'A structured content calendar system per agency client, with post scheduling, platform-specific requirements, brand reference integration, review cycles, and approval workflows -- enabling efficient management of multiple social media calendars',
+        whyItMatters: 'Agencies managing social media for multiple clients need a system that prevents scheduling conflicts, missed deadlines, and brand confusion. A structured calendar system keeps every client\'s content pipeline organised and on track.',
+      },
+      {
+        label: 'Client Brand Adaptation Templates',
+        description: 'Per-client social media template sets that adapt the agency\'s production system to each client\'s unique brand identity -- with client-specific colours, fonts, logo placements, and visual styles while maintaining production efficiency',
+        whyItMatters: 'Each agency client has a unique brand that must be respected. Brand adaptation templates ensure every client receives personalised social graphics without requiring full redesign for each post, balancing efficiency with customisation.',
+      },
+      {
+        label: 'Campaign and Promotion Graphic Sets',
+        description: 'Pre-designed campaign graphic sets for common agency client needs (product launches, seasonal promotions, events, sales) -- with customisable text, imagery placeholders, and platform-specific sizing for fast campaign deployment',
+        whyItMatters: 'Agency clients frequently launch promotions with tight deadlines. Pre-built campaign sets reduce production time from days to hours, enabling agencies to respond quickly to client marketing opportunities.',
+      },
+      {
+        label: 'Client Reporting and Analytics Visuals',
+        description: 'Branded monthly performance report templates with engagement metrics, growth charts, top-performing content analysis, and recommendations -- designed for the agency to present results directly to each client',
+        whyItMatters: 'Agencies retain clients by demonstrating ROI. A professional, branded monthly report template makes it easy to present social media performance data in a compelling format that justifies the agency\'s ongoing engagement.',
+      },
+    ],
+    uniqueMechanisms: SOCIAL_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Branded Client Portal',
+        description: 'A client-facing portal where each client can view their content calendar, approve designs, download assets, and review performance reports -- branded with the agency\'s identity for a cohesive client experience',
+        whyItWorks: 'Agencies that provide clients with a professional portal reduce communication overhead and present a more polished service. A branded portal makes every client interaction feel like they are working with a premium service partner.',
+      },
+      {
+        label: 'Scalable Production Workflow',
+        description: 'A capacity planning and workflow management system that tracks per-client production volume, identifies bottlenecks before they cause delays, and provides accurate turnaround commitments for new client proposals',
+        whyItWorks: 'Agencies scaling social media services need to know their production limits. A scalable workflow framework prevents over-commitment and ensures the agency can confidently sell social services to new clients.',
+      },
+      {
+        label: 'Cross-Sell Visual Discovery System',
+        description: 'A quarterly review of each client\'s visual content performance identifying opportunities for additional services (video production, ad creative, brand refresh) -- with pre-built proposal templates for each cross-sell opportunity',
+        whyItWorks: 'Agencies that systematically identify cross-sell opportunities increase client lifetime value. A visual discovery system reveals gaps in each client\'s current social content that the agency\'s other services can fill.',
+      },
+    ],
+  }),
+  [key('social_media_designer_local_businesses')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Local Businesses',
+    audienceInsight: 'Local Businesses in the local business space are local businesses who need professional social presence that attracts local customers. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Local Businesses. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Local Businesses -- A System Built for Your Success',
+      problem: 'You know Local Businesses need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Local Businesses. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Local Businesses. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Local Businesses and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Local Businesses solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Local Businesses -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Local Businesses with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Local Businesses. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Local Service Promotion Graphics',
+        description: 'Social media graphics designed specifically for promoting local services -- with service spotlight cards, before-and-after showcases, location-based call-to-action graphics, and local event announcement templates',
+        whyItMatters: 'Local businesses need social content that drives foot traffic and phone calls, not website traffic. Service promotion graphics with clear local CTAs convert social scrollers into in-person customers more effectively.',
+      },
+      {
+        label: 'Customer Review and Testimonial Graphics',
+        description: 'Designed testimonial cards, review highlight graphics, rating showcase posts, and customer story carousels -- turning positive customer feedback into compelling social proof that attracts new local customers',
+        whyItMatters: 'Local customers rely heavily on reviews and word-of-mouth when choosing services. Professionally designed testimonial graphics amplify positive reviews by making them visually shareable and attention-grabbing.',
+      },
+      {
+        label: 'Local SEO and Listing Brand Assets',
+        description: 'Branded Google Business Profile cover images, post graphics, offer images, and profile photos -- ensuring the local business\'s most visible online touchpoint presents a consistent, professional brand',
+        whyItMatters: 'Google Business Profile is the first thing local customers see when searching for services. Branded GBP assets create a strong first impression that drives clicks, calls, and visits over unbranded competitors.',
+      },
+      {
+        label: 'Seasonal and Holiday Campaign Graphics',
+        description: 'Pre-designed seasonal promotion templates, holiday greeting graphics, local event tie-in posts, and community sponsorship graphics -- enabling the local business to participate in local calendar moments with minimal design effort',
+        whyItMatters: 'Local businesses that participate in seasonal and community moments build stronger local connections. Ready-made seasonal templates make it easy to participate without requiring design expertise or advance planning.',
+      },
+      {
+        label: 'Behind-the-Scenes and Culture Content Design',
+        description: 'Visual templates for behind-the-scenes content, team introductions, workspace showcases, process demonstrations, and community involvement posts -- building personal connection with the local audience',
+        whyItMatters: 'Local customers choose businesses they feel connected to. Behind-the-scenes content humanises the business, creating the personal connection that differentiates local businesses from national chains.',
+      },
+    ],
+    uniqueMechanisms: SOCIAL_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Local Content Calendar and Trend Integration',
+        description: 'A monthly content calendar aligned with local events, holidays, seasonal patterns, and community activities -- with pre-designed graphics for key local moments that drive engagement within the community',
+        whyItWorks: 'Local businesses that participate in community conversations on social media see higher engagement and local shareability. A localised content calendar ensures the business is always part of the relevant local conversation.',
+      },
+      {
+        label: 'Review Amplification System',
+        description: 'A system for converting positive customer reviews into shareable social content -- with automated review-to-graphic workflows, review collection prompts, and testimonial rotation schedules',
+        whyItWorks: 'Local businesses that showcase reviews on social media build trust faster than those that do not. A review amplification system ensures every positive review generates social content that attracts new local customers.',
+      },
+      {
+        label: 'Local Influencer and Partnership Graphics',
+        description: 'Co-branded graphic templates for local collaborations, influencer partnerships, community sponsorships, and joint promotions -- making it easy for the local business to participate in community partnerships',
+        whyItWorks: 'Local partnerships extend the business\'s reach into new local audiences. Co-branded template sets make it easy to create professional-looking collaboration content without custom design for each partnership.',
+      },
+    ],
+  }),
+  [key('social_media_designer_ecommerce_brands')]: derivePathContent(SOCIAL_MEDIA_DESIGNER_CREATORS, {
+    pathTitle: 'Social Media for Ecommerce Brands',
+    audienceInsight: 'Ecommerce Brands in the ecommerce space are ecommerce brands who need compelling social media creatives that drive sales. They need a social media solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised social media solution for Ecommerce Brands. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Social Media for Ecommerce Brands -- A System Built for Your Success',
+      problem: 'You know Ecommerce Brands need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Social Media services purpose-built for Ecommerce Brands. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Ecommerce Brands. I will provide a specific recommendation for how Social Media can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Ecommerce Brands and need a reliable, scalable social media solution.',
+      problemItSolves: 'Most Ecommerce Brands solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated social media system designed specifically for Ecommerce Brands -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Ecommerce Brands with tailored social media solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Ecommerce Brands. Offer a free consultation to identify how Social Media can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Product Showcase Feed Graphics',
+        description: 'Social media graphics designed to showcase products in an ecommerce context -- product hero shots with overlay text, feature highlight cards, lifestyle product images with branding, and product comparison visuals that drive purchase intent',
+        whyItMatters: 'Ecommerce brands rely on social media to drive product discovery and purchase. Professionally designed product graphics that stop the scroll and communicate value directly correlate with social-to-website conversion rates.',
+      },
+      {
+        label: 'Sale and Promotion Campaign Graphics',
+        description: 'Pre-designed campaign templates for sales events, flash promotions, seasonal discounts, bundle offers, and new product launches -- with urgency elements, discount callouts, and clear purchase CTAs optimised for social platforms',
+        whyItMatters: 'Ecommerce promotions depend on creating urgency through visual design. Professionally designed promotion graphics communicate offer value instantly, driving faster purchase decisions during limited-time campaigns.',
+      },
+      {
+        label: 'Lifestyle and Brand Storytelling Content',
+        description: 'Visual templates for lifestyle content that shows products in use, customer experience stories, brand mission posts, and behind-the-scenes content -- building emotional connection with the brand beyond the transaction',
+        whyItMatters: 'Ecommerce brands that only post product shots struggle to build audience connection. Lifestyle and storytelling content creates the emotional attachment that turns one-time buyers into brand loyalists who follow and engage.',
+      },
+      {
+        label: 'User-Generated Content Showcase Design',
+        description: 'Templates for reposting customer photos and reviews as polished social content -- with brand overlays, customer attribution, product tagging, and UGC-specific visual treatments that make customer content look premium',
+        whyItMatters: 'User-generated content is the most trusted form of social proof for ecommerce. A UGC showcase system amplifies customer content by making it look polished and professional, increasing its persuasive impact on prospective buyers.',
+      },
+      {
+        label: 'Platform-Specific Ad Creative Mockups',
+        description: 'Social ad creative mockups designed for each platform\'s ad format specifications (Facebook feed, Instagram stories, TikTok in-feed, Pinterest pins, LinkedIn sponsored content) -- with copy placeholder areas and brand-compliant visual treatments',
+        whyItMatters: 'Ecommerce brands running social ads need creatives that follow platform best practices without reinventing the design for every format. Platform-specific ad mockups ensure every campaign launches with optimised creatives.',
+      },
+    ],
+    uniqueMechanisms: SOCIAL_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Social-to-Store Conversion Tracking',
+        description: 'A visual analytics system linking social media post performance to website traffic and sales data -- showing which post types and designs drive the highest conversion rates from social to purchase',
+        whyItWorks: 'Ecommerce brands that track social-to-store conversion can optimise their social content for sales rather than engagement. A conversion tracking system reveals the specific visual approaches that drive revenue.',
+      },
+      {
+        label: 'Seasonal Product Launch Calendar',
+        description: 'A quarterly content calendar aligned with the ecommerce brand\'s product launch schedule, seasonal promotions, and industry events -- with pre-designed graphic templates for each planned campaign',
+        whyItWorks: 'Ecommerce brands that plan content around their product calendar maintain consistent social engagement throughout the year. A pre-designed campaign calendar ensures every product launch has supporting social content ready to deploy.',
+      },
+      {
+        label: 'Competitor Visual Benchmark Report',
+        description: 'Quarterly competitor visual analysis comparing the brand\'s social graphics against key competitors -- identifying visual trends, content gaps, and opportunities for differentiation in the social space',
+        whyItWorks: 'Ecommerce brands that differentiate their visual content on social media capture attention in crowded feeds. A competitor benchmark report reveals where the brand\'s current visual strategy blends in and where it can stand out.',
+      },
+    ],
+  }),
+  [key('presentation_designer_coaches_consultants')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Coaches & Consultants',
+    audienceInsight: 'Coaches & Consultants in the coaching and consulting space are coaches who need polished sales and workshop presentations that win clients. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Coaches & Consultants. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Coaches & Consultants -- A System Built for Your Success',
+      problem: 'You know Coaches & Consultants need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Coaches & Consultants. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Coaches & Consultants. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Coaches & Consultants and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Coaches & Consultants solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Coaches & Consultants -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Coaches & Consultants with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Coaches & Consultants. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Sales Presentation Deck Design',
+        description: 'A polished sales presentation designed to win high-ticket coaching clients -- with authority-building opener slides, methodology explanation visuals, client results showcases, objection-handling sections, and a compelling closing structure that drives discovery call bookings',
+        whyItMatters: 'Coaches win high-ticket clients through compelling sales conversations, not website forms. A professionally designed sales deck that communicates authority and results dramatically increases discovery call-to-client conversion rates.',
+      },
+      {
+        label: 'Workshop and Group Program Slides',
+        description: 'Visual presentation templates for coaching workshops, group programs, and live events -- with engagement slide formats (polls, exercises, breakout instructions), content delivery slides, and participant resource slides designed for screen sharing',
+        whyItMatters: 'Coaches delivering group programs need presentations that facilitate participant engagement, not just information delivery. Workshop-specific slide designs keep participants engaged and improve learning outcomes.',
+      },
+      {
+        label: 'Client Case Study and Results Deck',
+        description: 'A client results presentation template with before-and-after formats, outcome measurement slides, testimonial integration, and results visualisation -- designed to showcase the coach\'s effectiveness in new prospect conversations',
+        whyItMatters: 'Social proof is the most powerful tool in a coach\'s sales arsenal. A professionally designed case study deck presents client results in a format that builds immediate credibility with prospective clients.',
+      },
+      {
+        label: 'Webinar and Live Event Presentation',
+        description: 'A complete webinar presentation system with registration page design integration, presentation slides, poll and Q&A slide formats, offer presentation slides, and post-webinar follow-up slide deck -- designed for live virtual delivery',
+        whyItMatters: 'Webinars are the primary lead generation channel for many coaches. A professionally designed webinar presentation keeps virtual audiences engaged through visual variety and clear information hierarchy.',
+      },
+      {
+        label: 'Client Onboarding and Education Decks',
+        description: 'Presentation templates for client onboarding, methodology education, program overviews, and progress review sessions -- ensuring every client touchpoint that involves a presentation reinforces the coach\'s professionalism',
+        whyItMatters: 'Coaches who present professionally at every client touchpoint differentiate themselves from less organised competitors. A complete onboarding presentation system ensures the coaching relationship starts with a strong, professional impression.',
+      },
+    ],
+    uniqueMechanisms: PRESENTATION_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Presentation Delivery Notes and Script Templates',
+        description: 'Speaker notes, timing guides, transition scripts, and delivery tips embedded within each slide deck -- enabling the coach to deliver presentations confidently without memorising every slide\'s talking points',
+        whyItWorks: 'Coaches who deliver presentations with confidence close more clients and retain more workshop participants. Embedded delivery notes reduce presenter anxiety and ensure consistent messaging across every presentation.',
+      },
+      {
+        label: 'Interactive Presentation Elements',
+        description: 'Built-in interactive slide components including participant poll slides, digital whiteboard integration, breakout session instruction slides, and engagement tracking formats -- designed for live virtual and in-person delivery',
+        whyItWorks: 'Interactive presentations hold audience attention 2x longer than static slide decks. Built-in engagement elements keep workshop and webinar participants actively involved rather than passively watching slides.',
+      },
+      {
+        label: 'Presentation Analytics and Improvement System',
+        description: 'A feedback collection and analytics system tracking which presentation sections resonate most with audiences, where engagement drops off, and which slides drive the most action -- enabling continuous improvement of presentation effectiveness',
+        whyItWorks: 'Coaches who track presentation effectiveness can systematically improve their messaging and delivery. An analytics system reveals which slides and sections drive the best audience response, enabling data-driven presentation refinement.',
+      },
+    ],
+  }),
+  [key('presentation_designer_agencies')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Agencies',
+    audienceInsight: 'Agencies in the agency space are agencies who need world-class presentation design to win more pitches. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Agencies. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Agencies -- A System Built for Your Success',
+      problem: 'You know Agencies need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Agencies. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Agencies. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Agencies and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Agencies solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Agencies -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Agencies with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Agencies. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Agency Pitch Deck Design System',
+        description: 'A branded pitch deck template system designed for agency new business pitches -- with consistent visual identity, modular slide sections (credentials, case studies, methodology, pricing, next steps), and customisable content blocks for each prospect',
+        whyItMatters: 'Agencies win new business through compelling pitch presentations. A professional pitch deck system reduces proposal preparation time while ensuring every pitch communicates agency capability and client results effectively.',
+      },
+      {
+        label: 'Client Proposal and SOW Presentation',
+        description: 'A branded proposal presentation template with scope of work visualisation, pricing breakdown slides, timeline graphics, team introduction slides, and terms summary -- designed to present proposals in client meetings with maximum impact',
+        whyItMatters: 'Agencies that present proposals visually rather than sending PDFs close at higher rates. A branded proposal presentation creates a more engaging client meeting experience that increases proposal acceptance.',
+      },
+      {
+        label: 'Case Study and Results Showcase Deck',
+        description: 'A modular case study presentation template with before-and-after formats, results data visualisation, client quote integration, methodology explanation slides, and industry-specific variants -- built for agency new business development',
+        whyItMatters: 'Case studies are the most persuasive tool in agency new business. A professional case study deck system enables agencies to quickly assemble compelling case study presentations tailored to each prospect\'s industry.',
+      },
+      {
+        label: 'Quarterly Business Review Presentation',
+        description: 'A branded QBR presentation template with performance review slides, results dashboard, goal tracking, upcoming strategy, and recommendations -- designed for agency-client quarterly business reviews that demonstrate value and strengthen retention',
+        whyItMatters: 'QBRs are the most important retention touchpoint for agencies. A professional QBR presentation template makes it easy to present results in a compelling format that justifies the agency\'s ongoing engagement and fees.',
+      },
+      {
+        label: 'Industry Event and Conference Deck',
+        description: 'Presentation templates for agency speaking engagements, conference presentations, workshop delivery, and panel participation -- ensuring the agency\'s thought leadership content is delivered with the same visual quality as client work',
+        whyItMatters: 'Agency speaking engagements drive new business leads and industry credibility. A conference-ready presentation system ensures the agency\'s thought leadership is presented at the same professional standard as their client deliverables.',
+      },
+    ],
+    uniqueMechanisms: PRESENTATION_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Agency Branded Presentation Library',
+        description: 'A centralised library of all agency presentation templates organised by use case (pitch, proposal, QBR, event) -- with version control, brand compliance checks, and easy customisation for each presentation need',
+        whyItWorks: 'Agencies that reuse proven presentation templates reduce production time and maintain consistent quality. A branded presentation library makes it fast to assemble any presentation without starting from scratch.',
+      },
+      {
+        label: 'Presentation Training and Coaching Kit',
+        description: 'A presentation delivery guide with best practices for agency presenters, including slide-by-slide speaking notes, timing recommendations, objection-handling talking points, and delivery technique tips',
+        whyItWorks: 'Agencies whose presenters deliver confidently in pitch meetings win more business. A training kit equips every agency team member who presents to clients with the delivery skills that maximise presentation impact.',
+      },
+      {
+        label: 'Competitive Pitch Differentiation Framework',
+        description: 'A structured approach to differentiating the agency in competitive pitch presentations -- with competitor landscape slides, unique methodology positioning, and proof-point organisation that highlights the agency\'s distinct advantages',
+        whyItWorks: 'Agencies in competitive pitches need to clearly differentiate themselves within the presentation format. A differentiation framework ensures every pitch deck communicates the agency\'s unique value proposition effectively.',
+      },
+    ],
+  }),
+  [key('presentation_designer_creators')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Creators',
+    audienceInsight: 'Creators in the creator space are creators who need engaging webinar and course presentations. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Creators. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Creators -- A System Built for Your Success',
+      problem: 'You know Creators need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Creators. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Creators. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Creators and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Creators solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Creators -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Creators with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Creators. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Webinar and Live Stream Presentation System',
+        description: 'A complete webinar presentation system with hook slides, content delivery slides, engagement slide formats (polls, Q&A, exercises), offer presentation slides, and post-webinar follow-up deck -- designed for creators who teach and sell through live content',
+        whyItMatters: 'Creators who monetise through webinars and live streams need presentations that maintain audience engagement for extended viewing sessions. A webinar-specific presentation system keeps viewers watching from intro to offer.',
+      },
+      {
+        label: 'Course Content Presentation Templates',
+        description: 'Visual presentation templates for online course content with consistent lesson slide formats, progress indicator slides, exercise and worksheet slides, quiz integration, and module summary formats -- designed for creators building educational products',
+        whyItMatters: 'Creators building online courses need presentations that facilitate learning, not lecture. A course-specific presentation system with structured lesson formats improves student comprehension and course completion rates.',
+      },
+      {
+        label: 'Brand Partnership and Sponsorship Deck',
+        description: 'A branded media kit and sponsorship proposal presentation with audience demographics, engagement metrics, content examples, partnership tier options, and ROI framework -- designed for creators pitching brand partnerships',
+        whyItMatters: 'Creators who present professional sponsorship decks command higher rates and close more brand deals. A polished media kit presentation communicates the creator\'s value to brand partners more effectively than a PDF.',
+      },
+      {
+        label: 'Product Launch Presentation System',
+        description: 'A presentation system for product launches including teaser slides, reveal presentations, feature walkthroughs, pricing announcement slides, and post-launch recap formats -- designed for creators launching digital products and courses',
+        whyItMatters: 'Creator product launches generate concentrated revenue in short windows. A professional launch presentation system maintains momentum and excitement throughout the launch period with timely, engaging visuals.',
+      },
+      {
+        label: 'Speaker and Guest Appearance Deck',
+        description: 'A speaker presentation template for creator guest appearances on podcasts, virtual summits, conference stages, and panel discussions -- with introduction slides, content delivery, audience engagement, and call-to-action closing',
+        whyItMatters: 'Guest appearances drive audience growth for creators. A professional speaker deck ensures every appearance presents the creator at their best, maximising the follower growth and engagement from guest opportunities.',
+      },
+    ],
+    uniqueMechanisms: PRESENTATION_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Presentation Performance Analytics',
+        description: 'A tracking system measuring audience engagement during presentations -- identifying which slides hold attention, where viewers drop off, and which sections drive the most actions -- enabling continuous presentation improvement',
+        whyItWorks: 'Creators who understand how their presentations perform can improve their content delivery over time. Performance analytics reveal exactly which presentation sections resonate with audiences and which need refinement.',
+      },
+      {
+        label: 'Reusable Content Block Library',
+        description: 'A library of pre-designed presentation blocks (about sections, testimonial slides, feature showcases, pricing comparisions, FAQ sections) that can be mixed and matched across different presentation types for rapid creation',
+        whyItWorks: 'Creators producing multiple presentation types benefit from reusable components that maintain consistency while reducing creation time. A content block library enables fast assembly of any presentation from proven elements.',
+      },
+      {
+        label: 'Presentation Brand Consistency System',
+        description: 'A brand compliance system ensuring every presentation the creator delivers uses correct colours, fonts, logo usage, and visual treatments -- with automated checks and easy template updates as the brand evolves',
+        whyItWorks: 'Creators whose presentation quality varies across different uses dilute their brand. A consistency system ensures every presentation, from webinars to speaker decks, maintains the same professional standard.',
+      },
+    ],
+  }),
+  [key('presentation_designer_business_owners')]: derivePathContent(PRESENTATION_DESIGNER_STARTUPS, {
+    pathTitle: 'Presentation for Business Owners',
+    audienceInsight: 'Business Owners in the business owner space are business owners who need professional stakeholder presentations. They need a presentation solution that understands their specific market context, pain points, and buying behaviour. Generic approaches fail because they do not account for the unique dynamics of serving this audience effectively.',
+    offerStrategy: 'Position as a specialised presentation solution for Business Owners. The strategy is market-specific positioning that speaks directly to their unique needs and challenges. Every deliverable should feel designed specifically for this audience, not adapted from a generic template.',
+    recommendedOfferType: 'retainer',
+    pricingGuidance: {
+      suggestedModel: 'flat_rate',
+      beginnerRange: '$1,000-$2,000/mo',
+      intermediateRange: '$2,000-$4,000/mo',
+      premiumRange: '$4,000-$8,000/mo',
+      pricingLogic: 'Price based on market segment and engagement complexity. Tier by volume and complexity. Frame pricing as an investment in market growth and efficiency.',
+    },
+    proposalAngle: {
+      headline: 'Presentation for Business Owners -- A System Built for Your Success',
+      problem: 'You know Business Owners need better solutions, but generic approaches waste time and money. You need a partner who understands the specific challenges of serving this market.',
+      solution: 'I provide Presentation services purpose-built for Business Owners. Every deliverable is designed around the specific needs of this audience -- not a one-size-fits-all template.',
+      nextStep: 'Send me details about your current approach to serving Business Owners. I will provide a specific recommendation for how Presentation can improve your results.',
+    },
+    blueprintAngle: {
+      whoItIsFor: 'Service providers and agencies who work with Business Owners and need a reliable, scalable presentation solution.',
+      problemItSolves: 'Most Business Owners solutions are generic and miss the specific needs of this audience.',
+      corePromise: 'A dedicated presentation system designed specifically for Business Owners -- with deliverables, pricing, and workflows optimised for this market.',
+      whyThisWorks: 'Service providers specialising in Business Owners with tailored presentation solutions outperform generalists because every deliverable is designed for the specific context.',
+      nextStepCTA: 'Share this blueprint with service providers who work with Business Owners. Offer a free consultation to identify how Presentation can improve their approach.',
+    },
+    deliverables: [
+      {
+        label: 'Board and Investor Presentation Deck',
+        description: 'A professional board meeting and investor presentation template with strategic review slides, financial performance visualisations, KPI dashboards, growth roadmap slides, and risk assessment formats -- designed for business owners reporting to stakeholders',
+        whyItMatters: 'Business owners presenting to boards and investors need clear, data-driven presentations that communicate business performance at a glance. A professional board deck ensures leadership communicates effectively with stakeholders.',
+      },
+      {
+        label: 'Company All-Hands and Town Hall Deck',
+        description: 'An internal communication presentation template for company all-hands meetings, town halls, and team updates -- with vision and strategy slides, team recognition formats, department updates, and employee engagement slides',
+        whyItMatters: 'Business owners who communicate effectively with their teams build stronger company cultures. A professional all-hands presentation template ensures internal communications are engaging, clear, and aligned with company values.',
+      },
+      {
+        label: 'Sales and Partner Presentation System',
+        description: 'A modular sales presentation system for business development conversations including company overview, value proposition, solution presentation, pricing slides, case studies, and partnership proposal formats',
+        whyItMatters: 'Business owners drive growth through effective sales and partnership conversations. A professional sales presentation system ensures every business development meeting communicates the company\'s value proposition effectively.',
+      },
+      {
+        label: 'Industry Conference and Speaking Deck',
+        description: 'A thought leadership presentation template for conference speaking engagements, industry panels, keynote presentations, and workshop delivery -- positioning the business owner as an industry authority',
+        whyItMatters: 'Business owners who speak at industry events generate leads and build personal brand equity. A professional conference presentation system ensures thought leadership content is delivered at the same quality as the business itself.',
+      },
+      {
+        label: 'Strategic Planning and Offsite Presentation',
+        description: 'Presentation templates for strategic planning sessions, leadership offsites, annual planning meetings, and quarterly strategy reviews -- with activity slides, planning frameworks, goal-setting formats, and action plan templates',
+        whyItMatters: 'Business owners leading strategic planning need presentations that facilitate productive discussions, not just information sharing. A strategic planning presentation system helps leadership teams make better decisions together.',
+      },
+    ],
+    uniqueMechanisms: PRESENTATION_DESIGN_MECHANISMS,
+    valueAmplifiers: [
+      {
+        label: 'Data Visualisation and Dashboard Templates',
+        description: 'Pre-designed data visualisation templates for financial performance, KPIs, market analysis, competitive positioning, and growth metrics -- ensuring complex business data is presented clearly and persuasively in every presentation',
+        whyItWorks: 'Business owners who present data clearly make stronger cases to boards, investors, and teams. Professional data visualisation templates transform raw business metrics into compelling visual stories that drive decision-making.',
+      },
+      {
+        label: 'Presentation Replay and Distribution Kit',
+        description: 'A system for recording, editing, and distributing presentation recordings across internal and external channels -- with branded video templates, thumbnail designs, and distribution checklists for each presentation type',
+        whyItWorks: 'Business presentations have value beyond the live delivery when recorded and distributed. A replay kit extends the reach of every presentation to team members who could not attend and stakeholders who want to review.',
+      },
+      {
+        label: 'Presentation Feedback and Iteration System',
+        description: 'A structured feedback collection process for each presentation type -- with stakeholder review templates, effectiveness scoring, improvement recommendations, and version tracking for continuous presentation quality improvement',
+        whyItWorks: 'Business owners who systematically improve their presentations communicate more effectively over time. A feedback and iteration system captures lessons from each presentation and applies them to future versions.',
+      },
+    ],
+  }),
 };
 
 export function getAllPathContentKeys(): PathContentKey[] {
@@ -2111,4 +6029,3 @@ export function getAllPathContentKeys(): PathContentKey[] {
 export function getPathContentEntry(key: PathContentKey): OfferEngineeringPathContent | undefined {
   return OFFER_ENGINEERING_PATH_CONTENT[key];
 }
-

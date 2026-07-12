@@ -460,12 +460,6 @@ export async function exportBlueprintPDF(
   const doc = new jsPDF('p', 'mm', 'a4');
   bg(doc);
 
-  // ── DEBUG MARKER — proves this export function is running ──
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.setTextColor('#dc2626');
-  doc.text('PDF TEMPLATE v4 ACTIVE', 20, 20);
-
   let y = M + 6;
 
   // ── Header / Hero ──

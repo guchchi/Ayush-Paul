@@ -4,6 +4,13 @@ dist/
 coverage/
 .DS_Store
 *.log
-.env*
-!.env.example
+.env
+.env.local
+.env.production
+.env.development
+*.pem
+serviceAccount*.json
+firebase-adminsdk*.json
 service-account.json
+.vercel
+!.env.example

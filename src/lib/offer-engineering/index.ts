@@ -58,3 +58,8 @@ export type {
   ResolvePathContentResult,
   PathContentValidationResult,
 } from './pathContentResolver';
+export {
+  useModule2ResolvedContent,
+  scopeDefaultsToScopeLimits,
+} from './useModule2PathContent';
+export type { Module2ResolvedContent } from './useModule2PathContent';

@@ -25,13 +25,84 @@ function getDb() {
   return _db;
 }
 
+async function verifyIdToken(req: VercelRequest): Promise<string | null> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+  const token = authHeader.split("Bearer ")[1];
+  try {
+    getDb();
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return decodedToken.uid;
+  } catch (error) {
+    return null;
+  }
+}
+
 async function handleCreateCheckoutSession(req: VercelRequest, res: VercelResponse) {
-  const { productId, userId, amount, isDonation, couponCode, creatorCode } = req.body;
+  const { productId, userId, amount, tierName, couponCode, creatorCode } = req.body;
+
+  // Handle donation tier purchase (legacy support)
+  if (amount && tierName) {
+    const validTiers = [99, 299, 999];
+    if (!validTiers.includes(amount)) {
+      return res.status(400).json({ error: "Invalid support tier" });
+    }
+
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      console.error("STRIPE_SECRET_KEY is not set");
+      return res.status(500).json({ error: "Payment system not configured" });
+    }
+
+    const stripe = new Stripe(secretKey, { apiVersion: "2024-06-20" });
+    const protocol = req.headers["x-forwarded-proto"] || "http";
+    const host = req.headers.host || "localhost:5173";
+    const appUrl = process.env.APP_URL || `${protocol}://${host}`;
+
+    try {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card", "upi"],
+        line_items: [
+          {
+            price_data: {
+              currency: "inr",
+              product_data: {
+                name: `Support Ayush Paul - ${tierName}`,
+                description: "Thank you for supporting my work and projects!",
+                images: ["https://ayushpaul.in/og-image.png"],
+              },
+              unit_amount: amount * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `${appUrl}/success`,
+        cancel_url: `${appUrl}/cancel`,
+      });
+
+      return res.status(200).json({ url: session.url });
+    } catch (err: any) {
+      console.error("Stripe Session Error:", err);
+      return res.status(500).json({ error: err.message || "Failed to create checkout session" });
+    }
+  }
 
   console.log(`[Checkout] Creating session: productId=${productId}, userId=${userId}, couponCode=${couponCode || 'none'}, creatorCode=${creatorCode || 'none'}`);
 
   if (!productId || !userId) {
     return res.status(400).json({ error: "Missing required parameters" });
+  }
+
+  // Token Validation
+  const decodedUid = await verifyIdToken(req);
+  if (!decodedUid) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+  if (decodedUid !== userId) {
+    return res.status(403).json({ error: "Forbidden: User ID mismatch" });
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -298,6 +369,15 @@ async function handleVerifyCheckoutSession(req: VercelRequest, res: VercelRespon
 
   if (!sessionId || !userId) {
     return res.status(400).json({ error: "Missing required parameters" });
+  }
+
+  // Token Validation
+  const decodedUid = await verifyIdToken(req);
+  if (!decodedUid) {
+    return res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+  }
+  if (decodedUid !== userId) {
+    return res.status(403).json({ error: "Forbidden: User ID mismatch" });
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;

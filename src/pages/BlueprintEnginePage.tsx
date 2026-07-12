@@ -400,6 +400,31 @@ export function BlueprintEnginePage() {
             nextModuleTitle={nextModule?.title}
             onNextModule={nextModule ? () => handleModuleChange(nextModule.id) : undefined}
           />
+
+          {slug === 'get-your-first-3-clients' && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="ds-card p-6 lg:p-8 mt-6"
+            >
+              <div className="flex flex-col items-center text-center">
+                <p className="text-body-md font-semibold text-text-primary mb-1">
+                  Ready to Start?
+                </p>
+                <p className="text-body-sm text-text-secondary mb-6">
+                  Launch the interactive workspace to choose your track, define your market, and craft your positioning statement.
+                </p>
+                <button
+                  onClick={() => navigate('/workspace/client-acquisition')}
+                  className="btn-base bg-brand-primary text-white hover:bg-brand-secondary gap-2"
+                >
+                  Launch Module 1: Direction
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       )}
     </BlueprintLayout>

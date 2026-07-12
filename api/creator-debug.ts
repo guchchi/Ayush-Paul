@@ -12,8 +12,20 @@ function getDb(): FirebaseFirestore.Firestore {
   return getFirestore(admin.app(), dbId);
 }
 
-export default async function handler(_req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Content-Type", "application/json");
+
+  // Disable completely in production
+  if (process.env.NODE_ENV === "production") {
+    return res.status(404).json({ error: "Not Found" });
+  }
+
+  // Require DEBUG_API_KEY in dev
+  const debugKey = process.env.DEBUG_API_KEY;
+  const incomingKey = req.headers["x-api-key"] || req.query?.key;
+  if (!debugKey || incomingKey !== debugKey) {
+    return res.status(403).json({ error: "Access Denied" });
+  }
 
   const result: Record<string, any> = {};
 

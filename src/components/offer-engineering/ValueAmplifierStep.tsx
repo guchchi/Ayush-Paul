@@ -1,24 +1,27 @@
 import { useMemo } from 'react';
 import { Zap, Check } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 
 export function ValueAmplifierStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const valueAmplifier = useOfferEngineeringStore((s) => s.valueAmplifier);
   const setValueAmplifier = useOfferEngineeringStore((s) => s.setValueAmplifier);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData } = useModule2ResolvedContent();
 
-  const amplifiers = useMemo(
-    () => engineeringData?.valueAmplifiers ?? [],
-    [engineeringData],
-  );
+  const pathAmplifiers = pathContent?.content.valueAmplifiers;
+
+  const amplifiers = useMemo(() => {
+    if (pathAmplifiers && pathAmplifiers.length > 0) {
+      return pathAmplifiers.map((a) => ({
+        id: a.label.toLowerCase().replace(/\s+/g, '_'),
+        label: a.label,
+        description: a.description,
+      }));
+    }
+    return engineeringData?.valueAmplifiers ?? [];
+  }, [pathAmplifiers, engineeringData]);
 
   const isEmpty = valueAmplifier.trim().length === 0;
 
@@ -61,7 +64,7 @@ export function ValueAmplifierStep() {
                   'relative flex flex-col gap-1 w-full p-5 rounded-2xl text-left border shadow-sm transition-all duration-150 group cursor-pointer bg-white',
                   isSelected
                     ? 'border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.1)]'
-                    : 'border-neutral-200 hover:border-neutral-350 hover:shadow-md',
+                    : 'border-neutral-200 hover:border-neutral-300 hover:shadow-md',
                 )}
               >
                 <div className="flex items-center gap-2.5 w-full">

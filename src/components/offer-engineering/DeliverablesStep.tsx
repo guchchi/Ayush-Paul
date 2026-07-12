@@ -1,16 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, X, Package, Sparkles } from 'lucide-react';
-import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
-import { useOpportunityMapStore } from '../../lib/opportunity-map';
+import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { cn } from '../../lib/utils';
 import type { Transition } from 'motion/react';
 
 const POP_LAYOUT_TRANSITION: Transition = { duration: 0.15 };
 
 export function DeliverablesStep() {
-  const serviceId = useOpportunityMapStore((s) => s.serviceId);
-  const nicheId = useOpportunityMapStore((s) => s.nicheId);
   const deliverables = useOfferEngineeringStore((s) => s.deliverables);
   const addDeliverable = useOfferEngineeringStore((s) => s.addDeliverable);
   const removeDeliverable = useOfferEngineeringStore((s) => s.removeDeliverable);
@@ -18,16 +15,18 @@ export function DeliverablesStep() {
 
   const [inputValue, setInputValue] = useState('');
 
-  const engineeringData = useMemo(
-    () => (serviceId ? getEngineeringDataForService(serviceId) : undefined),
-    [serviceId],
-  );
+  const { pathContent, engineeringData, nicheId } = useModule2ResolvedContent();
+
+  const pathDeliverables = pathContent?.content.deliverables;
 
   const suggested = useMemo(() => {
+    if (pathDeliverables && pathDeliverables.length > 0) {
+      return pathDeliverables.map((d) => d.label);
+    }
     if (!engineeringData) return [];
     const nicheLabels = nicheId ? engineeringData.nicheDeliverables?.[nicheId] : undefined;
     return nicheLabels ?? engineeringData.deliverables.map((d) => d.label);
-  }, [engineeringData, nicheId]);
+  }, [pathDeliverables, engineeringData, nicheId]);
 
   const selectedSet = useMemo(() => new Set(deliverables), [deliverables]);
 
@@ -76,7 +75,7 @@ export function DeliverablesStep() {
       {/* Suggested deliverables chips */}
       {suggested.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-1.5 text-neutral-450">
+          <div className="flex items-center gap-1.5 text-neutral-400">
             <Sparkles size={13} className="text-[#0058be]" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Suggested Deliverables</span>
           </div>
@@ -105,7 +104,7 @@ export function DeliverablesStep() {
 
       {/* Scoped Deliverables list & Empty State */}
       <div className="space-y-3">
-        <div className="flex items-center gap-1.5 text-neutral-450">
+        <div className="flex items-center gap-1.5 text-neutral-400">
           <span className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
           <span className="text-[10px] font-bold uppercase tracking-wider">
             Your Scoped Deliverables ({deliverables.length})
@@ -138,7 +137,7 @@ export function DeliverablesStep() {
                     <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#eff4ff] text-[#0058be] shrink-0">
                       <Package size={12} />
                     </span>
-                    <span className="text-xs text-[#0b1c30] font-semibold truncate">
+                    <span className="text-xs text-[#0b1c30] font-semibold truncate" title={item}>
                       {item}
                     </span>
                   </div>
@@ -158,7 +157,7 @@ export function DeliverablesStep() {
 
       {/* Input section */}
       <div className="space-y-2 pt-4 border-t border-neutral-200">
-        <div className="flex items-center gap-1.5 text-neutral-450">
+        <div className="flex items-center gap-1.5 text-neutral-400">
           <Package size={12} className="text-[#0058be]" />
           <span className="text-[10px] font-bold uppercase tracking-wider">Add Custom Deliverable</span>
         </div>

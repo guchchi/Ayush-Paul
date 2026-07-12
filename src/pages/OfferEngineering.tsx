@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { OfferEngineeringShell } from '../components/offer-engineering/OfferEngineeringShell';
 import { StepContent } from '../components/offer-engineering/StepContent';
 import { OfferEngineeringIntroPage } from '../components/offer-engineering/OfferEngineeringIntroPage';
@@ -26,19 +27,26 @@ export function OfferEngineering() {
   const setOfferId = useOfferEngineeringStore((s) => s.setOfferId);
   const setPhase1OfferId = useOfferEngineeringStore((s) => s.setPhase1OfferId);
   const reset = useOfferEngineeringStore((s) => s.reset);
-  const phase1OfferId = useOfferEngineeringStore((s) => s.phase1OfferId);
+  const completedSteps = useOfferEngineeringStore((s) => s.completedSteps);
 
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
   const marketLabel = useOpportunityMapStore((s) => s.marketLabel);
+  const nicheId = useOpportunityMapStore((s) => s.nicheId);
   const nicheLabel = useOpportunityMapStore((s) => s.nicheLabel);
   const positioning = useOpportunityMapStore((s) => s.positioning);
   const offerId = useOpportunityMapStore((s) => s.offerId);
 
+  const prevFingerprint = useRef<string | null>(null);
+
   useEffect(() => {
-    // Phase 1 context changed → reset Phase 2 for new opportunity
-    if (offerId && phase1OfferId !== null && phase1OfferId !== offerId) {
+    const fingerprint = [serviceId ?? '', marketId ?? '', nicheId ?? '', offerId ?? ''].join('|');
+
+    if (prevFingerprint.current !== null && prevFingerprint.current !== fingerprint && completedSteps.length > 0) {
       reset();
     }
+
+    prevFingerprint.current = fingerprint;
 
     // Always hydrate Phase 1 context labels (idempotent if unchanged)
     if (serviceId) setService(serviceId);
@@ -49,7 +57,7 @@ export function OfferEngineering() {
       setOfferId(offerId);
       setPhase1OfferId(offerId);
     }
-  }, [serviceId, marketLabel, nicheLabel, positioning, offerId, setService, setMarket, setNiche, setPositioning, setOfferId, setPhase1OfferId, reset, phase1OfferId]);
+  }, [serviceId, marketId, nicheId, offerId, marketLabel, nicheLabel, positioning, setService, setMarket, setNiche, setPositioning, setOfferId, setPhase1OfferId, reset, completedSteps]);
 
   const handleStart = () => {
     setModuleStarted(true);
@@ -72,6 +80,31 @@ export function OfferEngineering() {
       // ignore
     }
   };
+
+  // Guard: Module 1 context is required
+  if (!serviceId) {
+    return (
+      <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
+        <div className="max-w-md text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto">
+            <AlertCircle size={28} className="text-amber-500" />
+          </div>
+          <h1 className="text-2xl font-bold">Opportunity Mapping Required</h1>
+          <p className="text-sm text-neutral-500 leading-relaxed">
+            Complete Module 1 (Opportunity Mapping) first to unlock Offer Engineering.
+            Select your service, market, and niche to generate a tailored offer blueprint.
+          </p>
+          <button
+            onClick={() => navigate('/blueprints/get-your-first-3-clients')}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:bg-[#0047a0] cursor-pointer"
+          >
+            <ArrowLeft size={14} />
+            Go to Module 1
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!moduleStarted) {
     return (
