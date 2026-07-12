@@ -70,7 +70,7 @@ export function UniqueMechanismStep() {
       {/* Suggested mechanisms */}
       {mechanisms.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-1.5 text-neutral-450">
+          <div className="flex items-center gap-1.5 text-neutral-400">
             <Lightbulb size={13} className="text-[#0058be]" />
             <span className="text-[10px] font-bold uppercase tracking-wider">
               {!pathMechanisms?.length && nicheId && engineeringData?.nicheMechanisms?.[nicheId] ? `Suggested for your niche` : `Suggested Systems`}
@@ -88,7 +88,7 @@ export function UniqueMechanismStep() {
                     'relative flex items-center justify-between gap-3 w-full p-4 rounded-2xl text-left border shadow-sm transition-all duration-150 group cursor-pointer bg-white',
                     isSelected
                       ? 'border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.1)]'
-                      : 'border-neutral-200 hover:border-neutral-350 hover:shadow-md',
+                      : 'border-neutral-200 hover:border-neutral-300 hover:shadow-md',
                   )}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -122,7 +122,7 @@ export function UniqueMechanismStep() {
 
       {/* Custom Write-in area */}
       <div className="space-y-2 pt-2 border-t border-neutral-200">
-        <div className="flex items-center gap-1.5 text-neutral-450">
+        <div className="flex items-center gap-1.5 text-neutral-400">
           <span className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
           <span className="text-[10px] font-bold uppercase tracking-wider">
             {isSuggestedSelection ? 'Edit Your Selection' : 'Or Write Your Own'}

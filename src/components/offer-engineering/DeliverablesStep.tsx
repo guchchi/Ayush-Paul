@@ -75,7 +75,7 @@ export function DeliverablesStep() {
       {/* Suggested deliverables chips */}
       {suggested.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-1.5 text-neutral-450">
+          <div className="flex items-center gap-1.5 text-neutral-400">
             <Sparkles size={13} className="text-[#0058be]" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Suggested Deliverables</span>
           </div>
@@ -104,7 +104,7 @@ export function DeliverablesStep() {
 
       {/* Scoped Deliverables list & Empty State */}
       <div className="space-y-3">
-        <div className="flex items-center gap-1.5 text-neutral-450">
+        <div className="flex items-center gap-1.5 text-neutral-400">
           <span className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
           <span className="text-[10px] font-bold uppercase tracking-wider">
             Your Scoped Deliverables ({deliverables.length})
@@ -137,7 +137,7 @@ export function DeliverablesStep() {
                     <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#eff4ff] text-[#0058be] shrink-0">
                       <Package size={12} />
                     </span>
-                    <span className="text-xs text-[#0b1c30] font-semibold truncate">
+                    <span className="text-xs text-[#0b1c30] font-semibold truncate" title={item}>
                       {item}
                     </span>
                   </div>
@@ -157,7 +157,7 @@ export function DeliverablesStep() {
 
       {/* Input section */}
       <div className="space-y-2 pt-4 border-t border-neutral-200">
-        <div className="flex items-center gap-1.5 text-neutral-450">
+        <div className="flex items-center gap-1.5 text-neutral-400">
           <Package size={12} className="text-[#0058be]" />
           <span className="text-[10px] font-bold uppercase tracking-wider">Add Custom Deliverable</span>
         </div>

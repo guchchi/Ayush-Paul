@@ -94,7 +94,7 @@ export function PricingStep() {
                 'relative flex flex-col gap-3 w-full p-4 rounded-2xl text-left border shadow-sm transition-all duration-150 cursor-pointer group bg-white',
                 isSelected
                   ? 'border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.1)]'
-                  : 'border-neutral-200 hover:border-neutral-350 hover:shadow-md',
+                  : 'border-neutral-200 hover:border-neutral-300 hover:shadow-md',
               )}
             >
               <div className="flex items-center justify-between w-full">
@@ -102,7 +102,7 @@ export function PricingStep() {
                   'flex items-center justify-center w-8 h-8 rounded-xl border transition-all duration-200',
                   isSelected
                     ? 'bg-[#0058be]/8 text-[#0058be] border-transparent'
-                    : 'bg-neutral-50 text-neutral-400 border-neutral-105 group-hover:bg-neutral-100/50',
+                    : 'bg-neutral-50 text-neutral-400 border-neutral-100 group-hover:bg-neutral-100/50',
                 )}>
                   <Icon size={14} />
                 </span>
@@ -152,11 +152,11 @@ export function PricingStep() {
             transition={{ duration: 0.15 }}
             className="space-y-2.5 pt-4 border-t border-neutral-200"
           >
-            <div className="flex items-center gap-1.5 text-neutral-450">
+            <div className="flex items-center gap-1.5 text-neutral-400">
               <DollarSign size={13} className="text-[#0058be]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">Final Price (USD)</span>
             </div>
-            <div className="relative max-w-[200px]">
+            <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-neutral-400">$</span>
               <input
                 type="number"
@@ -184,7 +184,7 @@ export function PricingStep() {
             transition={{ duration: 0.15 }}
             className="space-y-3 pt-4 border-t border-neutral-200"
           >
-            <div className="flex items-center gap-1.5 text-neutral-450">
+            <div className="flex items-center gap-1.5 text-neutral-400">
               <Layers size={13} className="text-[#0058be]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">Tiered pricing packages</span>
             </div>
@@ -230,14 +230,14 @@ export function PricingStep() {
             transition={{ duration: 0.15 }}
             className="space-y-4 pt-4 border-t border-neutral-200"
           >
-            <div className="flex items-center gap-1.5 text-neutral-450">
+            <div className="flex items-center gap-1.5 text-neutral-400">
               <Target size={13} className="text-[#0058be]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">Value-based parameters</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-450">Estimated Annual Client Value</span>
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Estimated Annual Client Value</span>
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-neutral-400">$</span>
                   <input
@@ -256,7 +256,7 @@ export function PricingStep() {
               </div>
 
               <div className="space-y-1.5">
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-450">Business Impact Level</span>
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Business Impact Level</span>
                 <input
                   type="text"
                   value={valueBasedPricing.impactLevel}
@@ -267,7 +267,7 @@ export function PricingStep() {
               </div>
 
               <div className="space-y-1.5">
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-450">Suggested Price Range</span>
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Suggested Price Range</span>
                 <input
                   type="text"
                   value={valueBasedPricing.suggestedPriceRange}
@@ -278,7 +278,7 @@ export function PricingStep() {
               </div>
 
               <div className="space-y-1.5">
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-450">Your Target Final Price</span>
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Your Target Final Price</span>
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-neutral-400">$</span>
                   <input
@@ -302,7 +302,7 @@ export function PricingStep() {
 
       {/* Actions footer */}
       <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-        <span className="text-xs text-neutral-450">
+        <span className="text-xs text-neutral-400">
           {!isValid
             ? !pricingModel ? 'Select a pricing model' : 'Complete pricing fields to continue'
             : pricingModel === 'flat_rate'

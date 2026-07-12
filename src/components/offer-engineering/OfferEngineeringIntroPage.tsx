@@ -214,7 +214,7 @@ export function OfferEngineeringIntroPage({
 
               {/* Carried Module 1 Context */}
               <div className="p-4 rounded-2xl bg-[#eff4ff]/60 border border-[#eff4ff] space-y-3">
-                <h3 className="text-[10px] font-bold text-neutral-450 uppercase tracking-wider">
+                <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
                   Carried From Module 1
                 </h3>
                 
@@ -290,7 +290,7 @@ export function OfferEngineeringIntroPage({
                             ? 'bg-emerald-50 text-emerald-600'
                             : step.isActive
                             ? 'bg-[#d1f34d] text-[#0b1c30]'
-                            : 'bg-neutral-100 text-neutral-450',
+                            : 'bg-neutral-100 text-neutral-400',
                         )}
                       >
                         {statusText}
@@ -305,7 +305,7 @@ export function OfferEngineeringIntroPage({
                     >
                       {step.title}
                     </h3>
-                    <p className="text-[11px] text-neutral-450 leading-relaxed">
+                    <p className="text-[11px] text-neutral-400 leading-relaxed">
                       {step.desc}
                     </p>
                   </div>

@@ -169,6 +169,8 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
 
       /* ── actions ── */
 
+      /* ── actions ── */
+
       setOfferId(id: string | null) {
         set({ offerId: id });
       },
@@ -346,6 +348,32 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
     }),
     {
       name: 'offer-engineering-progress',
+      version: 1,
+      migrate(persisted, version) {
+        if (version === 0) {
+          const old = persisted as Record<string, unknown>;
+          const proposalSummary = old.proposalSummary as Record<string, unknown> | undefined;
+          return {
+            ...(old as Record<string, unknown>),
+            offerBlueprint: old.offerBlueprint ?? null,
+            completedSteps: Array.isArray(old.completedSteps) ? old.completedSteps : [],
+            currentStep: typeof old.currentStep === 'string' ? old.currentStep : 'offer_type',
+            scopeLimits: old.scopeLimits && typeof old.scopeLimits === 'object'
+              ? { ...defaultScopeLimits(), ...(old.scopeLimits as Record<string, unknown>) }
+              : defaultScopeLimits(),
+            proposalSummary: proposalSummary && typeof proposalSummary === 'object'
+              ? { ...defaultProposalSummary(), ...proposalSummary }
+              : defaultProposalSummary(),
+            tieredPricing: old.tieredPricing && typeof old.tieredPricing === 'object'
+              ? { ...defaultTieredPricing(), ...(old.tieredPricing as Record<string, unknown>) }
+              : defaultTieredPricing(),
+            valueBasedPricing: old.valueBasedPricing && typeof old.valueBasedPricing === 'object'
+              ? { ...defaultValueBasedPricing(), ...(old.valueBasedPricing as Record<string, unknown>) }
+              : defaultValueBasedPricing(),
+          } as OfferEngineeringState;
+        }
+        return persisted as OfferEngineeringState;
+      },
       partialize: (state) => ({
         phase1OfferId: state.phase1OfferId,
         offerId: state.offerId,

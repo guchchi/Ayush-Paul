@@ -205,12 +205,12 @@ function OfferBriefPanel({ onClose }: { onClose?: () => void }) {
 
       <div className="px-5 py-4 border-t border-neutral-100 bg-[#f8f9ff] shrink-0">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-neutral-450">Blueprint Completion</span>
+          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-neutral-400">Blueprint Completion</span>
           <span className="text-[10px] font-bold text-[#0058be]">
             {completedSteps.length} / 8 steps
           </span>
         </div>
-        <div className="w-full h-1.5 bg-neutral-150 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-neutral-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#0058be] rounded-full transition-all duration-500"
             style={{ width: `${(completedSteps.length / 8) * 100}%` }}
@@ -306,7 +306,7 @@ function DesktopSidebar({
             >
               <StepDot status={status} />
               <div className="flex-1 min-w-0">
-                <p className="text-[9px] font-bold text-neutral-450 uppercase tracking-widest mb-0.5">
+                <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">
                   Step 0{index + 1}
                 </p>
                 <p className={cn(
@@ -343,7 +343,7 @@ export function OfferEngineeringShell({
   const nextStep = activeIndex < OFFER_ENGINEERING_STEPS.length - 1 ? OFFER_ENGINEERING_STEPS[activeIndex + 1] : null;
 
   return (
-    <div className="flex h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-hidden font-sans">
+    <div className="flex h-dvh bg-[#f8f9ff] text-[#0b1c30] overflow-hidden font-sans">
       {/* 1. Left Stepper Column */}
       <DesktopSidebar
         completedSteps={completedSteps}
@@ -371,7 +371,7 @@ export function OfferEngineeringShell({
               className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-neutral-200 bg-white"
             >
               <div className="flex items-center justify-between p-5 border-b border-neutral-100 shrink-0">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-450">Navigation</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Navigation</span>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="p-1 text-neutral-400 hover:text-neutral-600 cursor-pointer"
@@ -392,7 +392,7 @@ export function OfferEngineeringShell({
                     <ArrowLeft size={14} /> Back to Overview
                   </button>
                 )}
-                <div className="w-full h-1 bg-neutral-150 rounded-full overflow-hidden">
+                <div className="w-full h-1 bg-neutral-200 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[#0058be] rounded-full transition-all duration-500"
                     style={{ width: `${(completedSteps.length / 8) * 100}%` }}

@@ -141,8 +141,8 @@ export function ScopeProtectionStep() {
           const Icon = field.icon;
           return (
             <div key={field.key} className="space-y-1.5">
-              <div className="flex items-center gap-1.5 text-neutral-450">
-                <Icon size={12} className="text-neutral-450" />
+              <div className="flex items-center gap-1.5 text-neutral-400">
+                <Icon size={12} className="text-neutral-400" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">{field.label}</span>
               </div>
               <input
@@ -155,7 +155,7 @@ export function ScopeProtectionStep() {
                 placeholder={field.placeholder}
                 className="w-full h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
               />
-              <p className="text-[10px] text-neutral-450 pl-1">{field.hint}</p>
+              <p className="text-[10px] text-neutral-400 pl-1">{field.hint}</p>
             </div>
           );
         })}

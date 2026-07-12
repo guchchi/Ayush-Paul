@@ -64,7 +64,7 @@ export function ValueAmplifierStep() {
                   'relative flex flex-col gap-1 w-full p-5 rounded-2xl text-left border shadow-sm transition-all duration-150 group cursor-pointer bg-white',
                   isSelected
                     ? 'border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.1)]'
-                    : 'border-neutral-200 hover:border-neutral-350 hover:shadow-md',
+                    : 'border-neutral-200 hover:border-neutral-300 hover:shadow-md',
                 )}
               >
                 <div className="flex items-center gap-2.5 w-full">

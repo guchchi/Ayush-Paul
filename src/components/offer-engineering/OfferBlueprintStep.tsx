@@ -54,15 +54,15 @@ function buildMarkdown(bp: OfferBlueprint): string {
     ...(bp.pricingModel === 'tiered'
       ? [
           '',
-          `- Starter: $${bp.tieredPricing.starterPrice}`,
-          `- Pro: $${bp.tieredPricing.proPrice}`,
-          `- Premium: $${bp.tieredPricing.premiumPrice}`,
+          `- Starter: ${bp.tieredPricing.starterPrice !== null && bp.tieredPricing.starterPrice > 0 ? `$${bp.tieredPricing.starterPrice}` : 'TBD'}`,
+          `- Pro: ${bp.tieredPricing.proPrice !== null && bp.tieredPricing.proPrice > 0 ? `$${bp.tieredPricing.proPrice}` : 'TBD'}`,
+          `- Premium: ${bp.tieredPricing.premiumPrice !== null && bp.tieredPricing.premiumPrice > 0 ? `$${bp.tieredPricing.premiumPrice}` : 'TBD'}`,
         ]
       : []),
     ...(bp.pricingModel === 'value_based'
       ? [
           '',
-          `- Estimated Client Value: $${bp.valueBasedPricing.estimatedClientValue}`,
+          `- Estimated Client Value: ${bp.valueBasedPricing.estimatedClientValue !== null && bp.valueBasedPricing.estimatedClientValue > 0 ? `$${bp.valueBasedPricing.estimatedClientValue}` : 'TBD'}`,
           ...(bp.valueBasedPricing.impactLevel ? [`- Impact: ${bp.valueBasedPricing.impactLevel}`] : []),
         ]
       : []),
@@ -84,6 +84,8 @@ function buildMarkdown(bp: OfferBlueprint): string {
 function getSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'offer-blueprint';
 }
+
+function p(v: number | null): string { return v !== null && v > 0 ? `$${v}` : 'TBD'; }
 
 export function OfferBlueprintStep() {
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
@@ -136,7 +138,7 @@ export function OfferBlueprintStep() {
       : 'Custom';
 
   const pricingDesc = pricingModel === 'tiered'
-    ? `$${tieredPricing.starterPrice} \u2013 $${tieredPricing.premiumPrice}`
+    ? `${p(tieredPricing.starterPrice)} \u2013 ${p(tieredPricing.premiumPrice)}`
     : pricingModel === 'value_based'
       ? valueBasedPricing.suggestedPriceRange || `$${finalPrice}`
       : finalPrice ? `$${finalPrice}` : 'TBD';
@@ -370,12 +372,12 @@ export function OfferBlueprintStep() {
           <div className="pt-4 border-t border-neutral-200 flex flex-col gap-2.5">
             <button
               onClick={() => navigate('/workspace/authority-system')}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-colors cursor-pointer w-full"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-colors cursor-pointer w-full sm:w-auto"
             >
               Continue to Authority System
               <ArrowRight size={14} />
             </button>
-            <span className="text-[10px] text-neutral-450 uppercase tracking-widest text-center font-bold">
+            <span className="text-[10px] text-neutral-400 uppercase tracking-widest text-center font-bold">
               Phase 3 — Construct your authority assets & trust signals
             </span>
           </div>
@@ -416,7 +418,7 @@ function BlueprintEditor({
   return (
     <div className="rounded-3xl border border-neutral-200 bg-white p-6 space-y-5 shadow-sm">
       <div className="space-y-0.5">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-450">Edit Blueprint Fields</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Edit Blueprint Fields</span>
         <p className="text-xs text-neutral-400">
           Refine the language before sending. These changes do not affect store config, only the document output.
         </p>
@@ -424,7 +426,7 @@ function BlueprintEditor({
 
       {fields.map((f) => (
         <div key={f.key} className="space-y-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-450">{f.label}</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">{f.label}</span>
           {f.multiline ? (
             <textarea
               value={String(draft[f.key] ?? '')}
@@ -444,7 +446,7 @@ function BlueprintEditor({
       ))}
 
       <div className="space-y-2">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-450">Deliverables</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Deliverables</span>
         {draft.deliverables.map((d, i) => (
           <input
             key={i}
@@ -457,7 +459,7 @@ function BlueprintEditor({
       </div>
 
       <div className="space-y-1.5">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-450">Pricing Output</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Pricing Output</span>
         <input
           type="text"
           value={draft.pricingStructure}
@@ -509,7 +511,7 @@ function BlueprintPreview({ bp }: { bp: OfferBlueprint }) {
               ))}
             </div>
           ) : (
-            <p className="text-neutral-450 italic">—</p>
+            <p className="text-neutral-400 italic">—</p>
           )}
         </PreviewSection>
 
@@ -518,7 +520,7 @@ function BlueprintPreview({ bp }: { bp: OfferBlueprint }) {
         </PreviewSection>
 
         <PreviewSection icon={Shield} title="Scope SLA & Limits">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 bg-[#f8f9ff] border border-neutral-150 p-4 rounded-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 bg-[#f8f9ff] border border-neutral-200 p-4 rounded-2xl">
             <ScopeItem label="Revisions SLA" value={`${bp.scopeLimits.revisionCount} rounds allowed`} />
             <ScopeItem label="Review Rounds" value={`${bp.scopeLimits.includedRounds} feedback rounds`} />
             <ScopeItem label="Project Turnaround" value={bp.scopeLimits.deliveryTime || bp.timeline} />
@@ -535,15 +537,15 @@ function BlueprintPreview({ bp }: { bp: OfferBlueprint }) {
           <div className="space-y-3">
             <p className="text-2xl font-bold text-[#0b1c30] tracking-tight">{bp.pricingStructure}</p>
             {bp.pricingModel === 'tiered' && (
-              <div className="flex gap-4 text-xs text-neutral-450 border-t border-neutral-100 pt-3">
-                <span>Starter: <strong className="text-[#0b1c30] font-bold">${bp.tieredPricing.starterPrice}</strong></span>
-                <span>Pro: <strong className="text-[#0b1c30] font-bold">${bp.tieredPricing.proPrice}</strong></span>
-                <span>Premium: <strong className="text-[#0b1c30] font-bold">${bp.tieredPricing.premiumPrice}</strong></span>
+              <div className="flex gap-4 text-xs text-neutral-400 border-t border-neutral-100 pt-3">
+                <span>Starter: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.starterPrice)}</strong></span>
+                <span>Pro: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.proPrice)}</strong></span>
+                <span>Premium: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.premiumPrice)}</strong></span>
               </div>
             )}
             {bp.pricingModel === 'value_based' && (
-              <div className="flex gap-4 text-xs text-neutral-450 border-t border-neutral-100 pt-3">
-                <span>Client Value: <strong className="text-[#0b1c30] font-bold">${bp.valueBasedPricing.estimatedClientValue}</strong></span>
+              <div className="flex gap-4 text-xs text-neutral-400 border-t border-neutral-100 pt-3">
+                <span>Client Value: <strong className="text-[#0b1c30] font-bold">{p(bp.valueBasedPricing.estimatedClientValue)}</strong></span>
                 {bp.valueBasedPricing.impactLevel && <span>Impact: <strong className="text-[#0b1c30] font-bold">{bp.valueBasedPricing.impactLevel}</strong></span>}
               </div>
             )}
@@ -569,10 +571,10 @@ function PreviewSection({ icon: Icon, title, children, accent }: { icon: typeof 
         <Icon size={12} className={accent ? 'text-[#0058be]' : 'text-neutral-400'} />
         <span className={cn(
           'text-[9px] font-bold uppercase tracking-wider',
-          accent ? 'text-[#0058be]' : 'text-neutral-450',
+          accent ? 'text-[#0058be]' : 'text-neutral-400',
         )}>{title}</span>
       </div>
-      <div className="pl-3.5 border-l border-neutral-150">
+      <div className="pl-3.5 border-l border-neutral-200">
         {children}
       </div>
     </div>
