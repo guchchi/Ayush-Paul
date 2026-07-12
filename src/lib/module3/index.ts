@@ -3,6 +3,7 @@ export {
   MODULE3_STEPS,
   canNavigateTo,
   getStepIndex,
+  buildFingerprint,
 } from './store';
 export type {
   Module3State,
@@ -16,4 +17,6 @@ export type {
   PortfolioSection,
   ChecklistItem,
   StepAccess,
+  Module1Context,
+  Module2Context,
 } from '../../types/module3';

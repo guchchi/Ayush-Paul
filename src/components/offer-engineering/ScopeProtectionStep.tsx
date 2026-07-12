@@ -100,27 +100,15 @@ export function ScopeProtectionStep() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2 flex items-start justify-between gap-4 flex-wrap">
-        <div className="space-y-1.5">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-1">
-            Step 4 of 8
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Set Scope Boundaries</h2>
-          <p className="text-neutral-500 text-sm leading-relaxed">
-            Protect your time. Define strict boundaries so clients know exactly how you operate.
-          </p>
-        </div>
-
-        {defaults && (
-          <button
-            onClick={applyDefaults}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-colors shadow-sm cursor-pointer select-none mt-1"
-          >
-            <RefreshCw size={10} />
-            Load Defaults
-          </button>
-        )}
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-1">
+          Step 4 of 8
+        </span>
+        <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Set Scope Boundaries</h2>
+        <p className="text-neutral-500 text-sm leading-relaxed">
+          Protect your time. Define strict boundaries so clients know exactly how you operate.
+        </p>
       </div>
 
       {/* Scope guard explanation */}
@@ -135,30 +123,50 @@ export function ScopeProtectionStep() {
         </div>
       </div>
 
-      {/* Grid of boundary fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-        {fields.map((field) => {
-          const Icon = field.icon;
-          return (
-            <div key={field.key} className="space-y-1.5">
-              <div className="flex items-center gap-1.5 text-neutral-400">
-                <Icon size={12} className="text-neutral-400" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">{field.label}</span>
+      {/* Scope Configuration Card */}
+      <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm space-y-4">
+        {/* Card header */}
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div className="space-y-0.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Scope Configuration</span>
+            <p className="text-[10px] text-neutral-400">Set the working rules for this offer.</p>
+          </div>
+          {defaults && (
+            <button
+              onClick={applyDefaults}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-colors shadow-sm cursor-pointer select-none shrink-0"
+            >
+              <RefreshCw size={10} />
+              Load Defaults
+            </button>
+          )}
+        </div>
+
+        {/* Grid of boundary fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          {fields.map((field) => {
+            const Icon = field.icon;
+            return (
+              <div key={field.key} className={cn('space-y-1.5', field.key === 'responseTime' && 'md:col-span-2')}>
+                <div className="flex items-center gap-1.5 text-neutral-400">
+                  <Icon size={12} className="text-neutral-400" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">{field.label}</span>
+                </div>
+                <input
+                  type={field.type}
+                  value={field.value || ''}
+                  onChange={(e) => {
+                    const val = field.type === 'number' ? (e.target.value === '' ? 0 : Number(e.target.value)) : e.target.value;
+                    updateField(field.key, val as never);
+                  }}
+                  placeholder={field.placeholder}
+                  className={cn('w-full h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors', field.key === 'responseTime' && 'max-w-sm')}
+                />
+                <p className="text-[10px] text-neutral-400 pl-1">{field.hint}</p>
               </div>
-              <input
-                type={field.type}
-                value={field.value || ''}
-                onChange={(e) => {
-                  const val = field.type === 'number' ? (e.target.value === '' ? 0 : Number(e.target.value)) : e.target.value;
-                  updateField(field.key, val as never);
-                }}
-                placeholder={field.placeholder}
-                className="w-full h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
-              />
-              <p className="text-[10px] text-neutral-400 pl-1">{field.hint}</p>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* Action Footer */}

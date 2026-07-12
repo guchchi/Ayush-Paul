@@ -2,9 +2,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
-  FileText, Check, Download, ArrowLeft, Users, AlertCircle, Target,
-  Package, Lightbulb, Clock, Shield, Zap, DollarSign, TrendingUp, ArrowRight, Copy,
-  Edit3, Save, FileDown
+  FileText, Check, Download, ArrowLeft, ArrowRight, Copy,
+  Edit3, Save, FileDown, ChevronDown
 } from 'lucide-react';
 import { useOfferEngineeringStore, getEngineeringDataForService, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
@@ -111,6 +110,8 @@ export function OfferBlueprintStep() {
   const [toast, setToast] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [showFullDetail, setShowFullDetail] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -130,6 +131,12 @@ export function OfferBlueprintStep() {
       : offerType === 'one_time_project' ? 'one_time_project'
       : offerType === 'milestone_based' ? 'milestone_based'
       : 'one_time_project';
+
+  const offerTypeDisplay =
+    offerType === 'retainer' ? 'Retainer'
+      : offerType === 'one_time_project' ? 'One-Time Project'
+      : offerType === 'milestone_based' ? 'Milestone Based'
+      : 'One-Time Project';
 
   const modelLabel =
     pricingModel === 'flat_rate' ? 'Flat Rate'
@@ -267,7 +274,7 @@ export function OfferBlueprintStep() {
           </div>
         </div>
 
-        <BlueprintPreview bp={bp} />
+        <BlueprintPreview bp={bp} offerTypeDisplay={offerTypeDisplay} pricingModelDisplay={modelLabel} marketDisplay={audience} />
 
         <div className="flex items-center gap-3 pt-4 border-t border-neutral-200">
           <button
@@ -316,7 +323,31 @@ export function OfferBlueprintStep() {
       {editing ? (
         <BlueprintEditor draft={editDraft!} onChange={setEditDraft} updateDraft={updateDraft} updateDeliverable={updateDeliverable} />
       ) : (
-        <BlueprintPreview bp={draft} />
+        <>
+          <BlueprintPreview bp={draft} offerTypeDisplay={offerTypeDisplay} pricingModelDisplay={modelLabel} marketDisplay={audience} />
+          <div className="rounded-2xl border border-neutral-200 bg-white overflow-hidden">
+            <button
+              onClick={() => setShowFullDetail(!showFullDetail)}
+              className="w-full flex items-center justify-between gap-3 px-5 py-3 text-left hover:bg-neutral-50 transition-colors cursor-pointer"
+            >
+              <span className="flex items-center gap-2 text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                <FileText size={13} className="text-neutral-600" />
+                View full blueprint
+              </span>
+              <span className={cn(
+                'transition-transform duration-200 text-neutral-500',
+                showFullDetail && 'rotate-180'
+              )}>
+                <ChevronDown size={14} />
+              </span>
+            </button>
+            {showFullDetail && (
+              <div className="border-t border-neutral-200 p-5 space-y-3">
+                <BlueprintFullDetail bp={draft} />
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       {/* Structured Action Toolbar */}
@@ -333,53 +364,68 @@ export function OfferBlueprintStep() {
           ) : (
             <>
               <button
-                onClick={handleDownloadPDF}
-                disabled={pdfLoading}
-                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer"
-              >
-                <FileDown size={13} />
-                {pdfLoading ? 'Exporting...' : 'Download PDF'}
-              </button>
-
-              <button
                 onClick={startEditing}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
               >
                 <Edit3 size={11} />
-                Edit Text
+                Edit
               </button>
 
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
               >
                 <Copy size={11} />
-                Copy Copy
+                Copy Blueprint
               </button>
 
-              <button
-                onClick={handleDownloadMD}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
-              >
-                <FileText size={11} />
-                Markdown
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowExportMenu(!showExportMenu)}
+                  disabled={pdfLoading}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
+                >
+                  <FileDown size={11} />
+                  {pdfLoading ? 'Exporting...' : 'Export'}
+                  {!pdfLoading && (
+                    <ChevronDown size={10} className="text-neutral-400" />
+                  )}
+                </button>
+                {showExportMenu && (
+                  <div className="absolute top-full left-0 mt-1 w-44 rounded-xl border border-neutral-200 bg-white shadow-lg z-20 overflow-hidden">
+                    <button
+                      onClick={() => { handleDownloadPDF(); setShowExportMenu(false); }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-colors cursor-pointer"
+                    >
+                      <FileDown size={11} className="text-neutral-400" />
+                      Download PDF
+                    </button>
+                    <button
+                      onClick={() => { handleDownloadMD(); setShowExportMenu(false); }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-colors cursor-pointer border-t border-neutral-100"
+                    >
+                      <FileText size={11} className="text-neutral-400" />
+                      Markdown
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
 
         {!editing && (
-          <div className="pt-4 border-t border-neutral-200 flex flex-col gap-2.5">
+          <div className="pt-4 border-t border-neutral-200">
             <button
               onClick={() => navigate('/workspace/authority-system')}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-colors cursor-pointer w-full sm:w-auto"
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-sm uppercase tracking-wider shadow-md transition-colors cursor-pointer"
             >
               Continue to Authority System
               <ArrowRight size={14} />
             </button>
-            <span className="text-[10px] text-neutral-400 uppercase tracking-widest text-center font-bold">
-              Phase 3 — Construct your authority assets & trust signals
-            </span>
+            <p className="text-[10px] text-neutral-500 text-center mt-1.5 leading-relaxed">
+              Next: Build proof assets and authority signals.
+            </p>
           </div>
         )}
       </div>
@@ -471,121 +517,263 @@ function BlueprintEditor({
   );
 }
 
-/* Document View BlueprintPreview */
-function BlueprintPreview({ bp }: { bp: OfferBlueprint }) {
-  const initials = bp.whoItIsFor.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+/* ── Dashboard helpers ── */
+
+function ClampedText({ text, textClass }: { text: string; textClass?: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = text.length > 80;
 
   return (
-    <div className="rounded-3xl border border-neutral-200 bg-white overflow-hidden shadow-md">
-      <div className="p-6 border-b border-neutral-100 bg-[#f8f9ff]/50">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-[#0058be]">Document Outline</span>
-            <h3 className="text-xl font-bold text-[#0b1c30] tracking-tight mt-1">{bp.offerName}</h3>
+    <div>
+      <p className={cn('text-sm leading-relaxed', textClass || 'text-neutral-600', !expanded && 'line-clamp-2')}>
+        {text}
+      </p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-[10px] font-bold text-[#0058be] hover:text-[#0047a0] mt-1 cursor-pointer"
+        >
+          {expanded ? 'Show less' : 'View reasoning \u2192'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="px-6 py-4">
+      <span className="block text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-1">{label}</span>
+      <span className="block text-sm font-bold text-[#0b1c30]">{value}</span>
+    </div>
+  );
+}
+
+function DashboardSection({ title, children, accent }: { title: string; children: React.ReactNode; accent?: boolean }) {
+  return (
+    <div className={cn('rounded-2xl border p-4', accent ? 'bg-[#eff4ff]/60 border-[#eff4ff]' : 'bg-white border-neutral-200 shadow-sm')}>
+      <span className={cn('block text-[9px] font-bold uppercase tracking-wider mb-2', accent ? 'text-[#0058be]' : 'text-neutral-400')}>
+        {title}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+/* ── Dashboard-style BlueprintPreview ── */
+
+function BlueprintPreview({
+  bp,
+  offerTypeDisplay,
+  pricingModelDisplay,
+  marketDisplay,
+}: {
+  bp: OfferBlueprint;
+  offerTypeDisplay?: string;
+  pricingModelDisplay?: string;
+  marketDisplay?: string;
+}) {
+  const deliverablesCount = bp.deliverables.length;
+  const revisionRounds = `${bp.scopeLimits.revisionCount} round${bp.scopeLimits.revisionCount !== 1 ? 's' : ''}`;
+  const turnaround = bp.scopeLimits.deliveryTime || bp.timeline || 'Per agreed schedule';
+  const isPriceTBD =
+    (bp.tieredPricing.starterPrice === null || bp.tieredPricing.starterPrice <= 0) &&
+    (bp.tieredPricing.proPrice === null || bp.tieredPricing.proPrice <= 0) &&
+    (bp.tieredPricing.premiumPrice === null || bp.tieredPricing.premiumPrice <= 0) &&
+    (bp.valueBasedPricing.estimatedClientValue === null || bp.valueBasedPricing.estimatedClientValue <= 0) &&
+    (bp.finalPrice === null || bp.finalPrice <= 0);
+
+  return (
+    <div className="space-y-5">
+      {/* Header Card */}
+      <div className="rounded-3xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+        <div className="p-6 sm:p-8">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#d1f34d]/20 text-[#0b1c30] text-[9px] font-extrabold uppercase tracking-widest mb-3">
+            <Check size={10} className="text-[#0b1c30]" strokeWidth={3} />
+            Your Offer Is Ready
+          </span>
+          <h3 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight mb-2">{bp.offerName}</h3>
+          <p className="text-sm text-neutral-500 leading-relaxed">{bp.whoItIsFor}</p>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {offerTypeDisplay && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#eff4ff] border border-[#eff4ff] text-[10px] font-bold text-[#0058be]">
+                {offerTypeDisplay}
+              </span>
+            )}
+            {pricingModelDisplay && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#eff4ff] border border-[#eff4ff] text-[10px] font-bold text-[#0058be]">
+                {pricingModelDisplay}
+              </span>
+            )}
+            {marketDisplay && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#eff4ff] border border-[#eff4ff] text-[10px] font-bold text-[#0058be]">
+                {marketDisplay}
+              </span>
+            )}
           </div>
-          {initials && (
-            <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-white border border-neutral-200 text-xs font-bold text-[#0058be] shrink-0 shadow-sm">
-              {initials}
-            </span>
-          )}
         </div>
-        <p className="text-xs text-neutral-500 mt-3 leading-relaxed">
-          {bp.whoItIsFor}
-        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-neutral-100 border-t border-neutral-100">
+          <StatCard label="Deliverables" value={`${deliverablesCount} item${deliverablesCount !== 1 ? 's' : ''}`} />
+          <StatCard label="Revisions" value={revisionRounds} />
+          <StatCard label="Turnaround" value={turnaround} />
+        </div>
       </div>
 
-      <div className="p-6 space-y-5 text-xs">
-        <PreviewSection icon={AlertCircle} title="The Problem">
-          <p className="text-neutral-500 leading-relaxed font-normal">{bp.problemItSolves}</p>
-        </PreviewSection>
+      {/* Offer Summary */}
+      {bp.problemItSolves && (
+        <DashboardSection title="Offer Summary">
+          <p className="text-sm text-neutral-600 leading-relaxed">{bp.problemItSolves}</p>
+        </DashboardSection>
+      )}
 
-        <PreviewSection icon={Target} title="Core Promise">
-          <p className="text-neutral-700 leading-relaxed font-semibold">{bp.corePromise}</p>
-        </PreviewSection>
+      {/* Core Promise */}
+      {bp.corePromise && (
+        <DashboardSection title="Core Promise">
+          <p className="text-sm text-[#0b1c30] font-semibold leading-relaxed">{bp.corePromise}</p>
+        </DashboardSection>
+      )}
 
-        <PreviewSection icon={Package} title="Scope & Deliverables">
-          {bp.deliverables.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
-              {bp.deliverables.map((d, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-lg bg-[#eff4ff]/60 border border-[#eff4ff] text-[10px] text-[#0058be] font-bold">{d}</span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-neutral-400 italic">—</p>
-          )}
-        </PreviewSection>
-
-        <PreviewSection icon={Lightbulb} title="Unique Mechanism">
-          <p className="text-neutral-700 font-semibold">{bp.uniqueMechanism}</p>
-        </PreviewSection>
-
-        <PreviewSection icon={Shield} title="Scope SLA & Limits">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 bg-[#f8f9ff] border border-neutral-200 p-4 rounded-2xl">
-            <ScopeItem label="Revisions SLA" value={`${bp.scopeLimits.revisionCount} rounds allowed`} />
-            <ScopeItem label="Review Rounds" value={`${bp.scopeLimits.includedRounds} feedback rounds`} />
-            <ScopeItem label="Project Turnaround" value={bp.scopeLimits.deliveryTime || bp.timeline} />
-            <ScopeItem label="Response Time" value={bp.scopeLimits.responseTime} />
-            <ScopeItem label="Communication Hub" value={bp.scopeLimits.communicationMethod} />
+      {/* Deliverables */}
+      {bp.deliverables.length > 0 && (
+        <DashboardSection title="Deliverables">
+          <div className="space-y-2">
+            {bp.deliverables.map((d, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-neutral-50 border border-neutral-100">
+                <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold shrink-0">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-xs font-semibold text-[#0b1c30]">{d}</span>
+              </div>
+            ))}
           </div>
-        </PreviewSection>
+        </DashboardSection>
+      )}
 
-        <PreviewSection icon={Zap} title="Value Bonus / Amplifier">
-          <p className="text-neutral-500 leading-relaxed">{bp.valueAmplifier}</p>
-        </PreviewSection>
+      {/* Unique Mechanism */}
+      {bp.uniqueMechanism && (
+        <DashboardSection title="Your Unique Mechanism" accent>
+          <p className="text-sm font-bold text-[#0b1c30]">{bp.uniqueMechanism}</p>
+        </DashboardSection>
+      )}
 
-        <PreviewSection icon={DollarSign} title="Pricing & Structure">
-          <div className="space-y-3">
-            <p className="text-2xl font-bold text-[#0b1c30] tracking-tight">{bp.pricingStructure}</p>
+      {/* Scope & Working Style */}
+      <DashboardSection title="Scope & Working Style">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Turnaround</span>
+            <span className="text-xs font-bold text-[#0b1c30]">{turnaround}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Revisions</span>
+            <span className="text-xs font-bold text-[#0b1c30]">{revisionRounds}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Feedback Rounds</span>
+            <span className="text-xs font-bold text-[#0b1c30]">{bp.scopeLimits.includedRounds} rounds</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Communication</span>
+            <span className="text-xs font-bold text-[#0b1c30]">{bp.scopeLimits.communicationMethod || '—'}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4 py-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Response Time</span>
+            <span className="text-xs font-bold text-[#0b1c30]">{bp.scopeLimits.responseTime || '—'}</span>
+          </div>
+        </div>
+      </DashboardSection>
+
+      {/* Value Amplifier */}
+      {bp.valueAmplifier && (
+        <DashboardSection title="Value Amplifier" accent>
+          <p className="text-sm text-neutral-600 leading-relaxed">{bp.valueAmplifier}</p>
+        </DashboardSection>
+      )}
+
+      {/* Pricing */}
+      <DashboardSection title="Pricing">
+        {isPriceTBD ? (
+          <>
+            <p className="text-xl sm:text-2xl font-bold text-[#0b1c30] tracking-tight">TBD</p>
+            <p className="text-[10px] text-neutral-400 mt-0.5">
+              {bp.pricingModel === 'flat_rate' ? 'Flat Rate'
+                : bp.pricingModel === 'tiered' ? 'Tiered'
+                : bp.pricingModel === 'value_based' ? 'Value Based'
+                : 'Custom'} pricing
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-xl sm:text-2xl font-bold text-[#0b1c30] tracking-tight">{bp.pricingStructure}</p>
             {bp.pricingModel === 'tiered' && (
-              <div className="flex gap-4 text-xs text-neutral-400 border-t border-neutral-100 pt-3">
+              <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-neutral-500">
                 <span>Starter: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.starterPrice)}</strong></span>
                 <span>Pro: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.proPrice)}</strong></span>
                 <span>Premium: <strong className="text-[#0b1c30] font-bold">{p(bp.tieredPricing.premiumPrice)}</strong></span>
               </div>
             )}
             {bp.pricingModel === 'value_based' && (
-              <div className="flex gap-4 text-xs text-neutral-400 border-t border-neutral-100 pt-3">
+              <div className="flex flex-wrap gap-3 mt-1.5 text-xs text-neutral-500">
                 <span>Client Value: <strong className="text-[#0b1c30] font-bold">{p(bp.valueBasedPricing.estimatedClientValue)}</strong></span>
                 {bp.valueBasedPricing.impactLevel && <span>Impact: <strong className="text-[#0b1c30] font-bold">{bp.valueBasedPricing.impactLevel}</strong></span>}
               </div>
             )}
-          </div>
-        </PreviewSection>
+            {bp.pricingModel === 'flat_rate' && bp.finalPrice !== null && (
+              <p className="text-xs text-neutral-400 mt-0.5">Single price for the entire mapped scope.</p>
+            )}
+          </>
+        )}
+      </DashboardSection>
 
-        <PreviewSection icon={TrendingUp} title="Why This Approach Works">
-          <p className="text-neutral-500 leading-relaxed font-normal">{bp.whyThisWorks}</p>
-        </PreviewSection>
+      {/* Why This Works */}
+      {bp.whyThisWorks && (
+        <DashboardSection title="Why This Works">
+          <ClampedText text={bp.whyThisWorks} />
+        </DashboardSection>
+      )}
 
-        <PreviewSection icon={ArrowRight} title="Next Action" accent>
-          <p className="text-neutral-700 font-semibold leading-relaxed">{bp.nextStepCTA}</p>
-        </PreviewSection>
-      </div>
+      {/* Next Action */}
+      {bp.nextStepCTA && (
+        <div className="rounded-2xl border border-[#eff4ff] bg-[#eff4ff]/60 p-4">
+          <span className="block text-[9px] font-bold uppercase tracking-wider text-[#0058be] mb-1">Next Action</span>
+          <ClampedText text={bp.nextStepCTA} textClass="text-[#0b1c30] font-semibold" />
+        </div>
+      )}
     </div>
   );
 }
 
-function PreviewSection({ icon: Icon, title, children, accent }: { icon: typeof Users; title: string; children: React.ReactNode; accent?: boolean }) {
-  return (
-    <div className={cn("space-y-1.5", accent && 'p-4 rounded-2xl bg-[#eff4ff]/60 border border-[#eff4ff]')}>
-      <div className="flex items-center gap-1.5 text-neutral-400">
-        <Icon size={12} className={accent ? 'text-[#0058be]' : 'text-neutral-400'} />
-        <span className={cn(
-          'text-[9px] font-bold uppercase tracking-wider',
-          accent ? 'text-[#0058be]' : 'text-neutral-400',
-        )}>{title}</span>
-      </div>
-      <div className="pl-3.5 border-l border-neutral-200">
-        {children}
-      </div>
-    </div>
-  );
-}
+/* ── Full-detail document view inside collapsible ── */
 
-function ScopeItem({ label, value }: { label: string; value: string | number }) {
+function BlueprintFullDetail({ bp }: { bp: OfferBlueprint }) {
+  const sections: { label: string; value: string | null | undefined }[] = [
+    { label: 'Offer Name', value: bp.offerName },
+    { label: 'Productized Service', value: bp.productizedService },
+    { label: 'Who It Is For', value: bp.whoItIsFor },
+    { label: 'Problem It Solves', value: bp.problemItSolves },
+    { label: 'Core Promise', value: bp.corePromise },
+    { label: 'Deliverables', value: bp.deliverables.map((d, i) => `${i + 1}. ${d}`).join('\n') },
+    { label: 'Unique Mechanism', value: bp.uniqueMechanism },
+    {
+      label: 'Scope & Limits',
+      value: `Revisions: ${bp.scopeLimits.revisionCount} rounds · Feedback: ${bp.scopeLimits.includedRounds} rounds · Turnaround: ${bp.scopeLimits.deliveryTime || bp.timeline || '—'} · Response: ${bp.scopeLimits.responseTime || '—'} · Communication: ${bp.scopeLimits.communicationMethod || '—'}`,
+    },
+    { label: 'Value Amplifier', value: bp.valueAmplifier },
+    { label: 'Pricing Structure', value: bp.pricingStructure },
+    { label: 'Why This Works', value: bp.whyThisWorks },
+    { label: 'Next Action', value: bp.nextStepCTA },
+  ];
+
   return (
-    <div className="flex items-center justify-between gap-4 py-0.5">
-      <span className="text-neutral-400 text-[10px] uppercase font-bold tracking-wider">{label}</span>
-      <span className="text-[#0b1c30] font-bold">{value ?? '—'}</span>
+    <div className="space-y-3">
+      {sections.map(
+        (s) =>
+          s.value && (
+            <div key={s.label} className="space-y-0.5">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">{s.label}</span>
+              <p className="text-xs text-[#0b1c30] leading-relaxed whitespace-pre-wrap">{s.value}</p>
+            </div>
+          ),
+      )}
     </div>
   );
 }

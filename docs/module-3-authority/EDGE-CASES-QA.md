@@ -2,11 +2,30 @@
 
 ## 1. Upstream Data Edge Cases
 
-| Scenario | Expected Behaviour | User-Facing UX | QA Test |
-| :--- | :--- | :--- | :--- |
-| Zero Module 1/2 Context | Route blocked. Redirect to Mod 1. | "You need an offer first." | Navigate to `/module-3` with empty DB. |
-| User changes Mod 1 Market | Fingerprint mismatch triggers on next Mod 3 load. | Modal warning: "Your market changed. Regenerate proof?" | Change Mod 1, load Mod 3. Verify modal. |
-| User changes Mod 2 Mechanism | Fingerprint mismatch. | Modal warning. | Change Mod 2, load Mod 3. Verify modal. |
+All scenarios below require the upstream fingerprint to detect the change. The fingerprint includes every authority-relevant field from Module 1 and Module 2.
+
+| # | Scenario | Expected Behaviour | User-Facing UX |
+|---|---------|-------------------|----------------|
+| 1 | Zero Module 1/2 Context | Route blocked. Redirect to Mod 1. | "Complete Module 1 first" |
+| 2 | First-ever Module 3 entry | Hydrate context. Save fingerprint. No warning. | Seamless entry to Step 1 |
+| 3 | Refresh with same upstream data | Fingerprints match. Preserve all state. | Seamless reload |
+| 4 | Navigate away and return | Fingerprints match. Preserve state. | Seamless return |
+| 5 | Module 1 `careerTrackId` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 6 | Module 1 `serviceId` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 7 | Module 1 `marketId` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 8 | Module 1 `nicheId` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 9 | Module 2 `offerType` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 10 | Module 2 `uniqueMechanism` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 11 | Module 2 `deliverables` change | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 12 | Module 2 `scopeLimits` change | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 13 | Module 2 `valueAmplifier` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 14 | Module 2 `pricingModel` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 15 | Module 2 `finalPrice` / tiered / value-based price changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 16 | Module 2 `proposalSummary` changes | Fingerprint mismatch + progress → stale state | "Your context changed. Rebuild?" |
+| 17 | Upstream change before any Module 3 progress | Rehydrate context silently. Save new fingerprint. | Seamless — user sees updated context |
+| 18 | Upstream change after Module 3 progress | Set `isUpstreamStale`. Blocking stale-state UI. | "Reset and Rebuild Authority System" |
+| 19 | Completed Module 3 + upstream change | Same as #18 — never silently reset completed work | "Reset and Rebuild Authority System" |
+| 20 | Explicit "Reset and Rebuild" action | Clear step data + progress. Hydrate context. Save fingerprint. Start from Step 1. | Returned to Step 1 with updated context |
 
 ## 2. In-Module Edge Cases
 
@@ -29,12 +48,16 @@
 
 | Scenario | Expected Behaviour | User-Facing UX | QA Test |
 | :--- | :--- | :--- | :--- |
-| Old Persisted Schema | Migration script runs on load, adds new default fields. | Seamless. | Mock v1 state, load app, verify state upgrades to v2. |
+| Old Persisted Schema (v1) | Migration runs on load. Drops incompatible v1 fields. Fresh v2 defaults. | Seamless. | Mock v1 state, load app, verify fresh start. |
 | Mod 4 opened without Mod 3 completion | Mod 4 locks and redirects to Mod 3. | "Complete your Authority System first." | Navigate to `/module-4` directly. |
 | Changing Position in Step 1 after reaching Step 4 | Destructive action. Wipes Step 2, 3, 4 state. | "This will reset your portfolio. Are you sure?" | Complete step 4, go to step 1, change option. |
 
 ## QA Sign-off Requirements
 Before merging any phase, developers must manually verify:
-1.  The Fingerprint system correctly identifies upstream changes.
-2.  Generated copy is editable and those edits survive a hard page refresh.
-3.  The final Authority Pack correctly compiles data from all 4 previous steps.
+1.  The Fingerprint system correctly identifies upstream changes (#1–16).
+2.  First entry and same-context refresh are seamless (#2–4).
+3.  Pre-progress upstream change silently rehydrates (#17).
+4.  Post-progress upstream change shows blocking stale-state UI (#18–19).
+5.  "Reset and Rebuild" clears data, hydrates context, saves fingerprint, returns to Step 1 (#20).
+6.  Generated copy is editable and those edits survive a hard page refresh.
+7.  The final Authority Pack correctly compiles data from all 4 previous steps.

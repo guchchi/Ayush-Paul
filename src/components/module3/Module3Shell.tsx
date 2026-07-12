@@ -48,14 +48,13 @@ function StepDot({ status }: { status: 'completed' | 'active' | 'upcoming' }) {
 }
 
 function PhaseContext() {
-  const mod1Service = useModule3Store((s) => s.mod1Service);
-  const mod1Market = useModule3Store((s) => s.mod1Market);
-  const mod1Niche = useModule3Store((s) => s.mod1Niche);
+  const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
+  const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
+  const mod1NicheId = useModule3Store((s) => s.mod1NicheId);
   const mod1Positioning = useModule3Store((s) => s.mod1Positioning);
-  const mod2OfferType = useModule3Store((s) => s.mod2OfferType);
   const mod2UniqueMechanism = useModule3Store((s) => s.mod2UniqueMechanism);
 
-  if (!mod1Service) {
+  if (!mod1ServiceId) {
     return (
       <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-amber-400/5 border border-amber-400/15 space-y-1">
         <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-amber-500">Module 1 &amp; 2 Context</p>
@@ -70,8 +69,8 @@ function PhaseContext() {
     <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-white/[0.02] border border-white/5">
       <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">Opportunity &amp; Offer</p>
       <div className="space-y-1.5">
-        <ContextRow label="Service" value={mod1Service} />
-        {mod1Market && mod1Niche && <ContextRow label="Opportunity" value={`${mod1Market} / ${mod1Niche}`} />}
+        <ContextRow label="Service" value={mod1ServiceId} />
+        {mod1MarketId && mod1NicheId && <ContextRow label="Opportunity" value={`${mod1MarketId} / ${mod1NicheId}`} />}
         {mod1Positioning && <ContextRow label="Positioning" value={mod1Positioning} />}
         {mod2UniqueMechanism && <ContextRow label="Mechanism" value={mod2UniqueMechanism} />}
       </div>

@@ -1,3 +1,12 @@
+import type {
+  OfferType,
+  PricingModel,
+  ScopeLimits,
+  TieredPricing,
+  ValueBasedPricing,
+  ProposalSummary,
+} from './offer-engineering';
+
 export const MODULE3_STEPS = [
   'authority_position',
   'proof_strategy',
@@ -71,6 +80,28 @@ export interface ChecklistItem {
   isCompleted: boolean;
 }
 
+export type Module1Context = {
+  careerTrackId: string | null;
+  serviceId: string | null;
+  marketId: string | null;
+  nicheId: string | null;
+  offerId: string | null;
+  positioning: string;
+};
+
+export type Module2Context = {
+  offerType: OfferType | null;
+  deliverables: string[];
+  uniqueMechanism: string;
+  scopeLimits: ScopeLimits;
+  valueAmplifier: string;
+  pricingModel: PricingModel | null;
+  finalPrice: number | null;
+  tieredPricing: TieredPricing;
+  valueBasedPricing: ValueBasedPricing;
+  proposalSummary: ProposalSummary;
+};
+
 export interface Module3State {
   authorityPosition: AuthorityPosition | null;
   coreTrustPromise: string;
@@ -86,38 +117,34 @@ export interface Module3State {
   checklist: ChecklistItem[];
 
   isCompleted: boolean;
+  isUpstreamStale: boolean;
   lastUpdated: number;
   upstreamFingerprint: string;
   version: number;
 
-  mod1Service: string | null;
-  mod1Market: string | null;
-  mod1Niche: string | null;
+  mod1CareerTrackId: string | null;
+  mod1ServiceId: string | null;
+  mod1MarketId: string | null;
+  mod1NicheId: string | null;
+  mod1OfferId: string | null;
   mod1Positioning: string;
 
-  mod2OfferType: string | null;
-  mod2UniqueMechanism: string;
+  mod2OfferType: OfferType | null;
   mod2Deliverables: string[];
-  mod2ScopeLimits: string;
-  mod2Pricing: string;
+  mod2UniqueMechanism: string;
+  mod2ScopeLimits: ScopeLimits;
+  mod2ValueAmplifier: string;
+  mod2PricingModel: PricingModel | null;
+  mod2FinalPrice: number | null;
+  mod2TieredPricing: TieredPricing;
+  mod2ValueBasedPricing: ValueBasedPricing;
+  mod2ProposalSummary: ProposalSummary;
 
   currentStep: Module3Step;
   completedSteps: Module3Step[];
 
-  setPhase1Context(ctx: {
-    service: string | null;
-    market: string | null;
-    niche: string | null;
-    positioning: string;
-  }): void;
-
-  setPhase2Context(ctx: {
-    offerType: string | null;
-    uniqueMechanism: string;
-    deliverables: string[];
-    scopeLimits: string;
-    pricing: string;
-  }): void;
+  setPhase1Context(ctx: Module1Context): void;
+  setPhase2Context(ctx: Module2Context): void;
 
   setAuthorityPosition(value: AuthorityPosition): void;
   setCoreTrustPromise(value: string): void;
@@ -128,7 +155,9 @@ export interface Module3State {
   setPortfolioCopy(value: PortfolioCopy): void;
   setChecklist(value: ChecklistItem[]): void;
   setIsCompleted(value: boolean): void;
+  setIsUpstreamStale(value: boolean): void;
   setUpstreamFingerprint(value: string): void;
+  clearModule3Data(): void;
 
   confirmStep(): void;
   nextStep(): void;

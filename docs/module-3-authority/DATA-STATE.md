@@ -69,30 +69,109 @@ interface Module3State {
     isCompleted: boolean;
   }[];
 
+  // Module 1 & 2 Context
+  mod1CareerTrackId: string | null;
+  mod1ServiceId: string | null;
+  mod1MarketId: string | null;
+  mod1NicheId: string | null;
+  mod1OfferId: string | null;
+  mod1Positioning: string;
+
+  mod2OfferType: OfferType | null;
+  mod2Deliverables: string[];
+  mod2UniqueMechanism: string;
+  mod2ScopeLimits: ScopeLimits;
+  mod2ValueAmplifier: string;
+  mod2PricingModel: PricingModel | null;
+  mod2FinalPrice: number | null;
+  mod2TieredPricing: TieredPricing;
+  mod2ValueBasedPricing: ValueBasedPricing;
+  mod2ProposalSummary: ProposalSummary;
+
   // System
   isCompleted: boolean;
+  isUpstreamStale: boolean;
   lastUpdated: number;
   upstreamFingerprint: string;
+  version: number;
+  currentStep: Module3Step;
+  completedSteps: Module3Step[];
 }
 ```
 
 ## Context Fingerprint & Upstream Changes
 
 Module 3 is highly dependent on Modules 1 and 2. 
-*   **Fingerprint Generation:** When Module 3 is initialized, it creates a hash/fingerprint of `mod1.service + mod1.market + mod2.offerType + mod2.mechanism`.
-*   **Stale-State Detection:** Every time the user opens Module 3, it compares the current upstream data against `upstreamFingerprint`.
-*   **Stale-State UX:** If the fingerprint mismatches (meaning the user went back and changed their offer), a blocking modal appears:
-    *   *"You recently changed your Offer. Your Authority System is now out of sync. Do you want to regenerate your proof strategy to match your new offer, or keep your old assets?"*
+
+### Fingerprint Generation
+
+When Module 3 is initialized, the current upstream context is read and serialised into a deterministic fingerprint payload:
+
+```
+payload = {
+  m1ct: module1.careerTrackId,
+  m1s:  module1.serviceId,
+  m1m:  module1.marketId,
+  m1n:  module1.nicheId,
+  m1o:  module1.offerId,
+  m1p:  module1.positioning,
+  m2ot: module2.offerType,
+  m2d:  module2.deliverables,
+  m2um: module2.uniqueMechanism,
+  m2sl: module2.scopeLimits,
+  m2va: module2.valueAmplifier,
+  m2pm: module2.pricingModel,
+  m2fp: module2.finalPrice,
+  m2tp: module2.tieredPricing,
+  m2vp: module2.valueBasedPricing,
+  m2ps: module2.proposalSummary,
+}
+fingerprint = JSON.stringify(payload)
+```
+
+A change to any of these upstream values produces a new fingerprint. The fingerprint is deterministic — identical upstream state always produces the identical string.
+
+### Stale-State Detection
+
+Every time the user opens Module 3 (on mount, refresh, or navigation), the current upstream data is fingerprinted and compared against the persisted `upstreamFingerprint`.
+
+| Condition | Behaviour |
+|---|---|
+| `upstreamFingerprint` is empty (first-ever entry) | Hydrate Module 1 & 2 context into store. Save current fingerprint. No warning. |
+| `upstreamFingerprint` matches current fingerprint | Preserve all Module 3 state. No action. |
+| Fingerprint mismatch, no Module 3 progress | Hydrate context with new upstream values. Save new fingerprint. No destructive warning. |
+| Fingerprint mismatch, Module 3 progress exists | Set `isUpstreamStale = true`. Show blocking stale-context UI. Do NOT silently reset or regenerate. |
+| Fingerprint mismatch, Module 3 completed | Same as progress — set `isUpstreamStale = true`. Never silently reset completed work. |
+
+### Stale-State UX
+
+When `isUpstreamStale` is `true`, a blocking screen is displayed:
+
+> "Your offer or target context changed. Your Authority System needs to be rebuilt from the updated context."
+
+The user is given a single explicit action:
+
+> "Reset and Rebuild Authority System"
+
+On confirm:
+1. All step data (`authorityPosition` through `checklist`) is cleared.
+2. Module 3 progress (`currentStep`, `completedSteps`, `isCompleted`) is reset.
+3. Fresh Module 1 & 2 context is hydrated.
+4. New fingerprint is computed and saved.
+5. `isUpstreamStale` is set to `false`.
+6. User starts from Step 1 with the updated context.
+
+Context is preserved on rebuild so that the freshly hydrated values are immediately available for the new session.
 
 ## Persistence & Refresh Behaviour
 *   **Storage:** State is synced to the database (or `localStorage` during initial MVP) on every successful step completion.
-*   **Browser Refresh:** A hard refresh on Step 3 must remount Step 3 exactly as it was, pulling from persisted state, NOT regenerating the briefs.
-*   **Regeneration:** Explicit regeneration ONLY happens when the user clicks a "Regenerate" button or intentionally changes a core upstream variable (like Authority Position).
+*   **Browser Refresh:** State loads from persistence. Fingerprint comparison runs on mount — if unchanged, all progress and edits survive.
+*   **Regeneration:** Explicit regeneration ONLY happens when the user clicks "Regenerate" or triggers the stale-context rebuild action.
 
 ## Reset & Migration Rules
-*   **Direct Route Guard:** If a user navigates to `/module-3` but `module2.isCompleted === false`, redirect to `/module-2`.
+*   **Direct Route Guard:** If a user navigates to `/module-3` but Module 2 lacks an offer type, redirect to Module 2.
 *   **Editing after Completion:** A user can return to Module 3 after completing it to tweak portfolio copy. Editing copy does NOT trigger regeneration.
-*   **Schema Versioning:** State must include a `version` flag to handle future schema updates without breaking in-progress users.
+*   **Schema Versioning:** State includes a `version` flag (currently `2`). A migration script drops incompatible v1 state and initialises fresh defaults.
 
 ## Module 4 Bridge (The Export)
 When transitioning to Module 4, Module 3 exposes a lightweight getter matching this exact interface:
@@ -133,8 +212,8 @@ getModule4Context(): Module4BridgeContext {
       title: a.title, 
       assetType: a.assetType,
       credibilityGap: a.credibilityGapProved,
-      completionStatus: a.isAccepted, // or tied to checklist completion
-      link: undefined // Populated later by user
+      completionStatus: a.isAccepted,
+      link: undefined
     })),
     authorityReadiness: state.isCompleted,
     professionalHeadline: state.profileCopy.professionalHeadline,
