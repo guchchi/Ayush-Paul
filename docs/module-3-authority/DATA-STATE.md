@@ -177,7 +177,7 @@ Context is preserved on rebuild so that the freshly hydrated values are immediat
 ## Reset & Migration Rules
 *   **Direct Route Guard:** If a user navigates to `/module-3` but Module 2 lacks an offer type, redirect to Module 2.
 *   **Editing after Completion:** A user can return to Module 3 after completing it to tweak portfolio copy. Editing copy does NOT trigger regeneration.
-*   **Schema Versioning:** State includes a `version` flag (currently `2`). A migration script drops incompatible v1 state and initialises fresh defaults.
+*   **Schema Versioning:** State includes a `version` flag (currently `3`). Migration from v2 to v3 clears legacy v2 proofAssets and resets the step index to Step 3 (proof_asset_builder) while preserving the validated Module 1 & 2 context, Step 1 choice, and Step 2 proof priorities. Legacy v1 state is dropped entirely with fresh defaults initialized.
 
 ## Module 4 Bridge (The Export)
 When transitioning to Module 4, Module 3 exposes a lightweight getter matching this exact interface:

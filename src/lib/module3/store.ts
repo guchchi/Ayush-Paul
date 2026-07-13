@@ -9,6 +9,7 @@ import type {
   ProofAsset,
   ProfileCopy,
   PortfolioCopy,
+  PortfolioSection,
   ChecklistItem,
   Module1Context,
   Module2Context,
@@ -140,11 +141,14 @@ export const useModule3Store = create<Module3State>()(
 
       checklist: [],
 
+      isProfileCopyCustom: false,
+      isPortfolioCopyCustom: false,
+
       isCompleted: false,
       isUpstreamStale: false,
       lastUpdated: Date.now(),
       upstreamFingerprint: '',
-      version: 2,
+      version: 4,
 
       ...INITIAL_CONTEXT,
 
@@ -200,12 +204,17 @@ export const useModule3Store = create<Module3State>()(
       },
 
       updateProofAsset(id: string, updates: Partial<ProofAsset>) {
-        set((state) => ({
-          proofAssets: state.proofAssets.map((asset) => 
-            asset.id === id ? { ...asset, ...updates, isCustom: true } : asset
-          ),
-          lastUpdated: Date.now()
-        }));
+        set((state) => {
+          const isStatusOnly = Object.keys(updates).every((key) => key === 'isAccepted');
+          return {
+            proofAssets: state.proofAssets.map((asset) => 
+              asset.id === id 
+                ? { ...asset, ...updates, isCustom: isStatusOnly ? asset.isCustom : true } 
+                : asset
+            ),
+            lastUpdated: Date.now()
+          };
+        });
       },
 
       replaceProofAsset(id: string, newAsset: ProofAsset) {
@@ -225,8 +234,70 @@ export const useModule3Store = create<Module3State>()(
         set({ portfolioCopy: value, lastUpdated: Date.now() });
       },
 
+      replaceGeneratedProfileCopy(value: ProfileCopy) {
+        set({ profileCopy: value, isProfileCopyCustom: false, lastUpdated: Date.now() });
+      },
+
+      replaceGeneratedPortfolioCopy(value: PortfolioCopy) {
+        set({ portfolioCopy: value, isPortfolioCopyCustom: false, lastUpdated: Date.now() });
+      },
+
+      updateProfileCopy(value: Partial<ProfileCopy>) {
+        set((s) => ({
+          profileCopy: { ...s.profileCopy, ...value },
+          isProfileCopyCustom: true,
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      updatePortfolioCopy(value: Partial<PortfolioCopy>) {
+        set((s) => ({
+          portfolioCopy: { ...s.portfolioCopy, ...value },
+          isPortfolioCopyCustom: true,
+          lastUpdated: Date.now(),
+        }));
+      },
+
       setChecklist(value: ChecklistItem[]) {
         set({ checklist: value, lastUpdated: Date.now() });
+      },
+
+      updateChecklistItem(id: string, updates: Partial<ChecklistItem>) {
+        set((state) => ({
+          checklist: state.checklist.map((item) =>
+            item.id === id ? { ...item, ...updates } : item
+          ),
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      getModule4Context() {
+        const state = get();
+        return {
+          authorityPosition: state.authorityPosition || 'builder',
+          coreTrustPromise: state.coreTrustPromise,
+          proofPriorities: state.proofPriorities.map((p) => ({
+            id: p.id,
+            gapTitle: p.gapTitle,
+            recommendedFormat: p.recommendedFormat,
+          })),
+          proofAssets: state.proofAssets.map((a) => ({
+            id: a.id,
+            title: a.title,
+            assetType: a.assetType,
+            credibilityGap: a.credibilityGapProved,
+            completionStatus: a.isAccepted,
+            link: undefined,
+          })),
+          authorityReadiness: state.isCompleted,
+          professionalHeadline: state.profileCopy.professionalHeadline,
+          offerStatement: state.profileCopy.offerStatement,
+          proofReferenceLine: state.profileCopy.proofReferenceLine,
+          ctaLine: state.profileCopy.ctaLine,
+          portfolioCta: state.portfolioCopy.portfolioCta,
+          profileUrl: undefined,
+          portfolioUrl: undefined,
+        };
       },
 
       setIsCompleted(value: boolean) {
@@ -250,6 +321,8 @@ export const useModule3Store = create<Module3State>()(
           proofAssets: [],
           profileCopy: defaultProfileCopy(),
           portfolioCopy: defaultPortfolioCopy(),
+          isProfileCopyCustom: false,
+          isPortfolioCopyCustom: false,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
@@ -257,6 +330,7 @@ export const useModule3Store = create<Module3State>()(
           currentStep: 'authority_position',
           completedSteps: [],
           lastUpdated: Date.now(),
+          version: 4,
         });
       },
 
@@ -319,12 +393,13 @@ export const useModule3Store = create<Module3State>()(
           proofAssets: [],
           profileCopy: defaultProfileCopy(),
           portfolioCopy: defaultPortfolioCopy(),
+          isProfileCopyCustom: false,
+          isPortfolioCopyCustom: false,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
           lastUpdated: Date.now(),
-          upstreamFingerprint: '',
-          version: 2,
+          version: 4,
           ...INITIAL_CONTEXT,
           currentStep: 'authority_position',
           completedSteps: [],
@@ -333,7 +408,7 @@ export const useModule3Store = create<Module3State>()(
     }),
     {
       name: 'module-3-progress',
-      version: 2,
+      version: 4,
       migrate(persisted, version) {
         if (version === 0 || version === 1) {
           return {
@@ -344,15 +419,47 @@ export const useModule3Store = create<Module3State>()(
             proofAssets: [],
             profileCopy: defaultProfileCopy(),
             portfolioCopy: defaultPortfolioCopy(),
+            isProfileCopyCustom: false,
+            isPortfolioCopyCustom: false,
             checklist: [],
             isCompleted: false,
             isUpstreamStale: false,
             lastUpdated: Date.now(),
             upstreamFingerprint: '',
-            version: 2,
+            version: 4,
             ...INITIAL_CONTEXT,
             currentStep: 'authority_position',
             completedSteps: [],
+          } as Module3State;
+        }
+        if (version === 2) {
+          const completedSteps = ((persisted as any).completedSteps || []) as string[];
+          const filteredCompletedSteps = completedSteps.filter(
+            (step) => step !== 'proof_asset_builder' && step !== 'profile_portfolio' && step !== 'authority_pack'
+          );
+
+          let currentStep = (persisted as any).currentStep;
+          if (currentStep === 'proof_asset_builder' || currentStep === 'profile_portfolio' || currentStep === 'authority_pack') {
+            currentStep = 'proof_asset_builder';
+          }
+
+          return {
+            ...(persisted as any),
+            proofAssets: [],
+            completedSteps: filteredCompletedSteps,
+            currentStep,
+            isCompleted: false,
+            isProfileCopyCustom: false,
+            isPortfolioCopyCustom: false,
+            version: 4,
+          } as unknown as Module3State;
+        }
+        if (version === 3) {
+          return {
+            ...(persisted as any),
+            isProfileCopyCustom: false,
+            isPortfolioCopyCustom: false,
+            version: 4,
           } as Module3State;
         }
         return persisted as Module3State;
@@ -365,6 +472,8 @@ export const useModule3Store = create<Module3State>()(
         proofAssets: state.proofAssets,
         profileCopy: state.profileCopy,
         portfolioCopy: state.portfolioCopy,
+        isProfileCopyCustom: state.isProfileCopyCustom,
+        isPortfolioCopyCustom: state.isPortfolioCopyCustom,
         checklist: state.checklist,
         isCompleted: state.isCompleted,
         isUpstreamStale: state.isUpstreamStale,

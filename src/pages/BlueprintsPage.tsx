@@ -5,7 +5,6 @@ import { getCanonicalUrl } from '../lib/domain';
 import { getPublishedProducts } from '../lib/product-utils';
 import { Product } from '../types';
 import { BlueprintsHero } from '../components/sections/BlueprintsHero';
-import { BlueprintsCategories } from '../components/sections/BlueprintsCategories';
 import { BlueprintsFeatured } from '../components/sections/BlueprintsFeatured';
 import { BlueprintsGrid } from '../components/sections/BlueprintsGrid';
 import { BlueprintsWhy } from '../components/sections/BlueprintsWhy';
@@ -165,11 +164,11 @@ export const BlueprintsPage = () => {
     }
   };
 
-  const scrollToBrowse = () => {
-    const el = document.getElementById('categories-section');
+  const scrollToWhy = () => {
+    const el = document.getElementById('blueprints-why-anchor');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      trackEvent('CTA Clicked', { location: 'Hero', label: 'Browse Categories', targetUrl: '#categories-section' });
+      trackEvent('CTA Clicked', { location: 'Hero', label: 'How It Works', targetUrl: '#blueprints-why-anchor' });
     }
   };
 
@@ -190,36 +189,31 @@ export const BlueprintsPage = () => {
       {/* 1. HERO SECTION */}
       <BlueprintsHero 
         onExploreClick={scrollToExplore} 
-        onBrowseClick={scrollToBrowse} 
+        onBrowseClick={scrollToWhy} 
         loading={loading}
       />
 
-      {/* 2. CATEGORIES SECTION */}
-      <BlueprintsCategories 
-        activeCategory={activeCategory} 
-        onSelectCategory={handleCategorySelect} 
-      />
-
-      {/* 3. FEATURED BLUEPRINTS */}
+      {/* 2. FEATURED BLUEPRINTS */}
       <BlueprintsFeatured />
 
-      {/* 4. ALL BLUEPRINTS LIBRARY */}
+      {/* 3. ALL BLUEPRINTS LIBRARY */}
       <BlueprintsGrid 
         products={products} 
         loading={loading} 
         error={error} 
         activeCategory={activeCategory} 
+        onCategorySelect={handleCategorySelect}
         onRetry={fetchProducts} 
         trackEvent={trackEvent} 
       />
 
-      {/* 5. WHY BLUEPRINTS EXIST */}
+      {/* 4. WHY BLUEPRINTS EXIST */}
       <BlueprintsWhy />
 
-      {/* 6. FAQ SECTION */}
+      {/* 5. FAQ SECTION */}
       <BlueprintsFAQ />
 
-      {/* 7. FINAL CTA */}
+      {/* 6. FINAL CTA */}
       <BlueprintsFinalCTA trackEvent={trackEvent} />
     </motion.div>
   );

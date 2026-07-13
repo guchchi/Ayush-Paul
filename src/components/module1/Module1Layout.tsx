@@ -1,13 +1,13 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowLeft, CheckCircle2, Circle } from 'lucide-react';
+import { Menu, X, ArrowLeft, CheckCircle2, Circle, Lock } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 
 export interface StepItem {
   id: string;
   label: string;
-  status: 'completed' | 'current' | 'locked';
+  status: 'completed' | 'current' | 'upcoming' | 'locked';
 }
 
 interface Module1LayoutProps {
@@ -62,7 +62,9 @@ export function Module1Layout({
             style={{ width: `${Math.max(progress, 2)}%` }}
           />
         </div>
-        <p className="text-xs font-bold text-neutral-400 mt-2 text-right">{Math.round(progress)}% Complete</p>
+        <p className="text-xs font-bold text-neutral-400 mt-2 text-right font-semibold">
+          {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+        </p>
       </div>
 
       <div className="flex-1 overflow-y-auto py-6 px-4">
@@ -70,6 +72,7 @@ export function Module1Layout({
           {steps.map((step, index) => {
             const isCompleted = step.status === 'completed';
             const isCurrent = step.status === 'current';
+            const isUpcoming = step.status === 'upcoming';
             const isLocked = step.status === 'locked';
 
             return (
@@ -80,27 +83,34 @@ export function Module1Layout({
                 aria-current={isCurrent ? 'step' : undefined}
                 aria-disabled={isLocked}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]",
-                  isCurrent ? "bg-[#f8f9ff] text-[#0058be]" : "hover:bg-neutral-50",
-                  isLocked && "opacity-50 cursor-not-allowed"
+                  "w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]",
+                  isCurrent 
+                    ? "text-[#0b1c30] border-l-2 border-[#0058be] -ml-4 pl-[14px] rounded-l-none bg-neutral-50/40" 
+                    : "text-neutral-600 hover:bg-neutral-50/70 border-l-2 border-transparent",
+                  isLocked && "opacity-40 cursor-not-allowed"
                 )}
               >
-                <div className="shrink-0">
+                <div className="shrink-0" aria-hidden="true">
                   {isCompleted ? (
                     <CheckCircle2 size={18} className="text-[#0058be]" />
                   ) : isCurrent ? (
-                    <Circle size={18} className="text-[#0058be] fill-[#0058be]/10" />
+                    <Circle size={18} className="text-[#0058be] fill-[#0058be]" />
+                  ) : isUpcoming ? (
+                    <div className="w-[18px] h-[18px] rounded-full border border-neutral-300 bg-white" />
                   ) : (
-                    <div className="w-[18px] h-[18px] rounded-full border-2 border-neutral-200" />
+                    <Lock size={15} className="text-neutral-300" />
                   )}
                 </div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">
+                <div className="flex-1 min-w-0">
+                  <p className={cn(
+                    "text-[10px] font-bold uppercase tracking-widest mb-0.5 leading-none",
+                    isCurrent ? "text-[#0058be]" : "text-neutral-400"
+                  )}>
                     Step 0{index + 1}
                   </p>
                   <p className={cn(
-                    "text-sm font-semibold",
-                    isCurrent ? "text-[#0b1c30]" : "text-neutral-600"
+                    "text-xs truncate",
+                    isCurrent ? "text-[#0b1c30] font-bold" : (isLocked ? "text-neutral-400 font-normal" : "text-neutral-600 font-semibold")
                   )}>
                     {step.label}
                   </p>
@@ -130,7 +140,9 @@ export function Module1Layout({
               />
             </div>
           </div>
-          <span className="text-xs font-bold text-[#0b1c30]">{Math.round(progress)}%</span>
+          <span className="text-xs font-bold text-[#0b1c30] shrink-0">
+            {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+          </span>
         </div>
       )}
 

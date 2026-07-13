@@ -31,6 +31,7 @@ export function AuthoritySystem() {
 
   /* ── Module 2 — raw values from useOfferEngineeringStore ── */
   const m2OfferType = useOfferEngineeringStore((s) => s.offerType);
+  const m2OfferBlueprint = useOfferEngineeringStore((s) => s.offerBlueprint);
   const m2Deliverables = useOfferEngineeringStore((s) => s.deliverables);
   const m2UniqueMechanism = useOfferEngineeringStore((s) => s.uniqueMechanism);
   const m2ScopeLimits = useOfferEngineeringStore((s) => s.scopeLimits);
@@ -120,8 +121,8 @@ export function AuthoritySystem() {
     );
   }
 
-  /* ── Guard: no Module 2 context ── */
-  if (!m2OfferType) {
+  /* ── Guard: no Module 2 context (check offerType or full offerBlueprint) ── */
+  if (!m2OfferType && !m2OfferBlueprint) {
     return (
       <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
         <div className="max-w-md text-center space-y-6">
@@ -148,21 +149,21 @@ export function AuthoritySystem() {
   /* ── Stale-context blocking state ── */
   if (isStale) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center px-5">
+      <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
         <div className="max-w-md text-center space-y-8">
-          <div className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center mx-auto">
-            <AlertCircle size={28} className="text-amber-400" />
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto">
+            <AlertCircle size={28} className="text-amber-500" />
           </div>
           <div className="space-y-3">
             <h1 className="text-xl font-bold tracking-tight">Your Context Changed</h1>
-            <p className="text-sm text-zinc-400 leading-relaxed">
+            <p className="text-sm text-neutral-500 leading-relaxed">
               Your offer or target context changed. Your Authority System needs to be
               rebuilt from the updated context.
             </p>
           </div>
           <button
             onClick={handleRebuild}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-primary text-white font-bold text-sm transition-colors hover:opacity-90 cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:opacity-90 cursor-pointer"
           >
             <RefreshCw size={14} />
             Reset and Rebuild Authority System

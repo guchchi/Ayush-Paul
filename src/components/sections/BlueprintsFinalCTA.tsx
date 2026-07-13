@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Users, ArrowUpRight } from 'lucide-react';
-import { MagneticButton } from '../ui/MagneticButton';
 
 const options = [
   {
@@ -10,8 +9,8 @@ const options = [
     title: 'Learn With Me',
     description:
       'Understand the frameworks, decision processes, and architectural thinking behind modern blueprints through the Academy.',
-    cta: 'Explore Academy',
-    href: '/academy',
+    cta: 'Explore Mastery Courses',
+    href: '/mastery',
     style: 'secondary',
     iconBg: '#f0fbe8',
     iconColor: '#558b2f',
@@ -19,10 +18,10 @@ const options = [
   },
   {
     icon: Users,
-    title: 'Studio',
+    title: 'Studio Collaboration',
     description:
       'Bring in Ayush for custom implementation, API configuration, product builds, and systems designed for long-term execution.',
-    cta: 'Start Building',
+    cta: 'Collaborate at Studio',
     href: '/collaborate',
     style: 'primary',
     iconBg: 'rgba(255,255,255,0.05)',
@@ -37,47 +36,28 @@ interface BlueprintsFinalCTAProps {
 
 export const BlueprintsFinalCTA = ({ trackEvent }: BlueprintsFinalCTAProps) => {
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
+    <section className="py-16 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
       
       {/* Header */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-14 text-left">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-12 text-left">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-4">
             <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-pulse" />
             <span className="tracking-[0.22em]">Next Step</span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
-          >
-            Need More Than<br />
-            A Blueprint?
-          </motion.h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tighter leading-[1.1] text-[#0b1c30]">
+            Need more than a blueprint?
+          </h2>
         </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[#424754] text-base leading-relaxed font-medium"
-        >
+        <p className="text-[#424754] text-sm leading-relaxed font-medium">
           Whether you're looking for deeper learning, implementation support, or a strategic partner, choose the path that helps you move forward with confidence.
-        </motion.p>
+        </p>
       </div>
 
       {/* Two Options Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         {options.map((opt, i) => {
           const Icon = opt.icon;
           const isPrimary = opt.style === 'primary';
@@ -85,79 +65,68 @@ export const BlueprintsFinalCTA = ({ trackEvent }: BlueprintsFinalCTAProps) => {
           return (
             <motion.div
               key={opt.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.45, delay: 0.15 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={`group relative rounded-[32px] border p-10 flex flex-col gap-6 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-ambient hover:scale-[1.01]
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.05 + i * 0.05 }}
+              className={`group relative rounded-2xl border p-8 flex flex-col gap-5 overflow-hidden transition-all duration-200 shadow-sm
                 ${isPrimary
                   ? 'bg-[#0b1c30] border-[#0b1c30] text-white'
-                  : 'bg-white border-[#c2c6d6]/30 hover:border-[#d1f34d]/20'
+                  : 'bg-white border-[#c2c6d6]/30'
                 }`}
             >
-              {isPrimary && (
-                <div className="absolute -top-16 -right-16 w-48 h-48 bg-[#d1f34d]/5 rounded-full blur-3xl pointer-events-none" />
-              )}
-
               {/* Icon */}
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border text-left"
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border text-left"
                 style={{ 
                   backgroundColor: isPrimary ? 'rgba(255,255,255,0.05)' : opt.iconBg,
                   borderColor: isPrimary ? 'rgba(255,255,255,0.1)' : '#e1f7d2'
                 }}
               >
-                <Icon size={20} style={{ color: isPrimary ? '#d1f34d' : opt.iconColor }} />
+                <Icon size={18} style={{ color: isPrimary ? '#d1f34d' : opt.iconColor }} aria-hidden="true" />
               </div>
 
               {/* Content */}
-              <div className="flex flex-col gap-3 flex-1 text-left">
-                <h3 className={`text-xl font-extrabold tracking-tight ${isPrimary ? 'text-white' : 'text-[#0b1c30]'}`}>
+              <div className="flex flex-col gap-2 text-left">
+                <h3 className={`text-base font-extrabold tracking-tight ${isPrimary ? 'text-white' : 'text-[#0b1c30]'}`}>
                   {opt.title}
                 </h3>
-                <p className={`text-xs leading-relaxed font-semibold ${isPrimary ? 'text-white/65' : 'text-[#424754]'}`}>
+                <p className={`text-xs leading-relaxed font-semibold ${isPrimary ? 'text-white/70' : 'text-[#424754]'}`}>
                   {opt.description}
                 </p>
               </div>
 
-              {/* Action Link */}
-              <MagneticButton>
+              {/* Action Link - restyled to be secondary, non-glowing text-links */}
+              <div className="mt-auto pt-4">
                 <Link
                   to={opt.href}
                   onClick={() => trackEvent?.('CTA Clicked', { location: 'Blueprints Final CTA', label: opt.trackLabel, targetUrl: opt.href })}
-                  className={`inline-flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-widest
-                              transition-all duration-300 w-fit
-                              ${isPrimary
-                                ? 'text-[#d1f34d] hover:text-white'
-                                : 'text-[#0b1c30] hover:text-[#558b2f]'
-                              }`}
+                  className={`inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0b1c30]
+                    ${isPrimary
+                      ? 'text-[#d1f34d] hover:text-white'
+                      : 'text-[#0b1c30] hover:text-[#0058be]'
+                    }`}
                 >
                   {opt.cta}
                   <span
-                    className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-300
+                    className={`w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-200
                       ${isPrimary
-                        ? 'bg-[#d1f34d] border-[#d1f34d] text-black group-hover:bg-white group-hover:border-white group-hover:text-black'
-                        : 'bg-bg-secondary border-[#c2c6d6]/20 text-[#558b2f] group-hover:bg-[#558b2f] group-hover:border-[#558b2f] group-hover:text-white'
+                        ? 'bg-[#d1f34d] border-[#d1f34d] text-black group-hover:bg-white group-hover:border-white'
+                        : 'bg-bg-secondary border-[#c2c6d6]/20 text-[#0b1c30] group-hover:bg-[#0b1c30] group-hover:text-white'
                       }`}
                   >
-                    <ArrowUpRight size={13} />
+                    <ArrowUpRight size={11} />
                   </span>
                 </Link>
-              </MagneticButton>
+              </div>
             </motion.div>
           );
         })}
       </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="text-center text-[10px] font-bold uppercase tracking-[0.28em] text-[#424754]/30 select-none"
-      >
+      <p className="text-center text-[9px] font-bold uppercase tracking-[0.25em] text-[#424754]/30 select-none">
         Learn it. Use it. Build it. Scale it.
-      </motion.p>
+      </p>
     </section>
   );
 };

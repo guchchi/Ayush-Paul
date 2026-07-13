@@ -48,7 +48,8 @@ All scenarios below require the upstream fingerprint to detect the change. The f
 
 | Scenario | Expected Behaviour | User-Facing UX | QA Test |
 | :--- | :--- | :--- | :--- |
-| Old Persisted Schema (v1) | Migration runs on load. Drops incompatible v1 fields. Fresh v2 defaults. | Seamless. | Mock v1 state, load app, verify fresh start. |
+| Old Persisted Schema (v1) | Migration runs on load. Drops incompatible v1 fields. Fresh v3 defaults. | Seamless. | Mock v1 state, load app, verify fresh start. |
+| Old Persisted Schema (v2) | Migration clears legacy v2 proofAssets and resets completedSteps to Step 3. | Preserves Step 1/2 work but forces Step 3 regeneration. | Mock v2 state, load app, verify redirected to Step 3 with empty assets. |
 | Mod 4 opened without Mod 3 completion | Mod 4 locks and redirects to Mod 3. | "Complete your Authority System first." | Navigate to `/module-4` directly. |
 | Changing Position in Step 1 after reaching Step 4 | Destructive action. Wipes Step 2, 3, 4 state. | "This will reset your portfolio. Are you sure?" | Complete step 4, go to step 1, change option. |
 

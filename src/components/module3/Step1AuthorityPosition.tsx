@@ -1,6 +1,6 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, ArrowLeft, ArrowRight, Sparkles, RotateCcw, AlertTriangle } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, Sparkles, RotateCcw, AlertTriangle, Award, BookOpen, GitBranch, Compass, ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
@@ -13,6 +13,13 @@ import {
   getServiceLabel,
 } from '../../data/module3/authority-positions';
 import type { PositionContext } from '../../data/module3/authority-positions';
+
+const POSITION_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  prior_client_results: Award,
+  domain_expertise: BookOpen,
+  proprietary_process: GitBranch,
+  strategic_frameworks: Compass,
+};
 
 function usePositionContext() {
   const careerTrackId = useModule3Store((s) => s.mod1CareerTrackId);
@@ -59,13 +66,8 @@ export function Step1AuthorityPosition() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingPosition, setPendingPosition] = useState<AuthorityPosition | null>(null);
   const [promiseModified, setPromiseModified] = useState(false);
+  const [rationaleOpen, setRationaleOpen] = useState(false);
   const generatedBaseline = useRef<string>('');
-
-  useEffect(() => {
-    if (coreTrustPromise && !generatedBaseline.current) {
-      generatedBaseline.current = coreTrustPromise;
-    }
-  }, [coreTrustPromise]);
 
   const recommended = useMemo(
     () => resolveRecommendedPosition(ctx),
@@ -112,11 +114,7 @@ export function Step1AuthorityPosition() {
 
   const handlePromiseChange = useCallback((value: string) => {
     setCoreTrustPromise(value);
-    if (value !== generatedBaseline.current) {
-      setPromiseModified(true);
-    } else {
-      setPromiseModified(false);
-    }
+    setPromiseModified(value !== generatedBaseline.current);
   }, [setCoreTrustPromise]);
 
   const handleRegenerate = useCallback(() => {
@@ -138,66 +136,93 @@ export function Step1AuthorityPosition() {
     nextStep();
   }, [isCompleted, confirmStep, nextStep]);
 
+  const activeService = getServiceLabel(ctx.serviceId);
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-lg font-bold text-white tracking-tight">Authority Position</h1>
-        <p className="text-sm text-zinc-400 mt-1 leading-relaxed">
-          Choose how you will demonstrate credibility without past client work.
+        <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
+          Step 1 of 5
+        </span>
+        <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Authority Position</h2>
+        <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
+          Choose the credibility position that best matches how you work and what you can honestly demonstrate.
         </p>
       </div>
 
-      <div className="space-y-1">
-        <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Recommended for {getServiceLabel(ctx.serviceId)}</p>
-      </div>
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-3">Recommended for {activeService}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {AUTHORITY_POSITIONS.map((pos, i) => {
+            const isRecommended = pos.id === recommended;
+            const isSelected = pos.id === selected;
+            const Icon = POSITION_ICONS[pos.id] || Award;
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {AUTHORITY_POSITIONS.map((pos, i) => {
-          const isRecommended = pos.id === recommended;
-          const isSelected = pos.id === selected;
-
-          return (
-            <motion.button
-              key={pos.id}
-              onClick={() => handleSelect(pos.id)}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * i, duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className={cn(
-                'relative flex flex-col gap-3 w-full p-5 rounded-2xl text-left border transition-all duration-200 cursor-pointer group',
-                isSelected
-                  ? 'border-brand-primary/60 ring-1 ring-brand-primary/30 bg-brand-primary/5 shadow-[0_0_32px_rgba(0,88,190,0.08)]'
-                  : 'border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04]',
-              )}
-            >
-              {isRecommended && (
-                <span className="absolute -top-2.5 right-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-primary/15 border border-brand-primary/30 text-[8px] font-bold uppercase tracking-[0.12em] text-brand-primary">
-                  <Sparkles size={8} className="text-brand-primary" />
-                  Recommended
-                </span>
-              )}
-
-              <div className="flex items-center gap-3">
-                <div className={cn(
-                  'flex items-center justify-center w-5 h-5 rounded-full border shrink-0 transition-all duration-200',
+            return (
+              <motion.button
+                key={pos.id}
+                onClick={() => handleSelect(pos.id)}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * i, duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  'relative flex flex-col gap-3 w-full p-5 rounded-2xl text-left border transition-all duration-200 cursor-pointer',
                   isSelected
-                    ? 'bg-brand-primary border-brand-primary ring-2 ring-brand-primary/30'
-                    : 'border-white/10 group-hover:border-white/20',
-                )}>
-                  {isSelected && <Check size={10} className="text-white stroke-[3]" />}
+                    ? 'bg-white border-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.14)] ring-1 ring-[#0058be]'
+                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm',
+                )}
+              >
+                {isRecommended && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[8px] font-bold uppercase tracking-widest shrink-0 self-start">
+                    <Sparkles size={8} />
+                    Recommended
+                  </span>
+                )}
+
+                <div className="flex items-start gap-3">
+                  <span className={cn(
+                    'flex items-center justify-center w-10 h-10 rounded-xl shrink-0 transition-colors',
+                    isSelected ? 'bg-[#0058be]/10' : 'bg-[#f8f9ff]',
+                  )}>
+                    <Icon size={16} className={cn(isSelected ? 'text-[#0058be]' : 'text-neutral-500')} />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-bold text-[#0b1c30] block">{pos.label}</span>
+                    <span className="text-[11px] text-neutral-500 leading-relaxed block mt-0.5">{pos.shortExplanation}</span>
+                  </div>
+                  <span className={cn(
+                    'flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-all duration-200 mt-0.5',
+                    isSelected
+                      ? 'bg-[#0058be] border-[#0058be]'
+                      : 'border-neutral-300',
+                  )}>
+                    {isSelected && <Check size={10} className="text-white stroke-[3]" />}
+                  </span>
                 </div>
-                <span className="text-sm font-bold text-white/90 tracking-tight">{pos.label}</span>
-              </div>
 
-              <p className="text-[11px] text-zinc-400 leading-relaxed">{pos.shortExplanation}</p>
-
-              <div className="pt-1">
-                <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-zinc-500 mb-1">How trust is earned</p>
-                <p className="text-[10px] text-zinc-500 leading-relaxed">{pos.howTrustIsEarned}</p>
-              </div>
-            </motion.button>
-          );
-        })}
+                <AnimatePresence initial={false}>
+                  {isSelected && (
+                    <motion.div
+                      key="trust-details"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-3 border-t border-neutral-100">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">How trust is earned</p>
+                        <p className="text-[11px] text-neutral-500 leading-relaxed">{pos.howTrustIsEarned}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
 
       {selected && (
@@ -207,47 +232,96 @@ export function Step1AuthorityPosition() {
           transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
           className="space-y-5"
         >
-          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Core Trust Promise</p>
-                {promiseModified && (
-                  <span className="text-[7px] font-bold uppercase tracking-[0.12em] text-amber-400 px-1.5 py-0.5 rounded border border-amber-400/20 bg-amber-400/5">
-                    Edited
-                  </span>
-                )}
+          <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+            <div className="p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded bg-[#0058be]/10 border border-[#0058be]/20 flex items-center justify-center shrink-0">
+                    <Sparkles size={10} className="text-[#0058be]" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[#0b1c30]">Core Trust Promise</h3>
+                    <p className="text-[10px] text-neutral-500">
+                      This answers: &ldquo;What honest reason should a prospect have to believe I understand this problem?&rdquo;
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {promiseModified && (
+                    <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-amber-700 px-1.5 py-0.5 rounded border border-amber-200 bg-amber-50">
+                      Edited
+                    </span>
+                  )}
+                  <button
+                    onClick={handleRegenerate}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
+                  >
+                    <RotateCcw size={9} />
+                    Regenerate
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={handleRegenerate}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/5 bg-white/[0.03] text-[8px] font-bold uppercase tracking-[0.12em] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all cursor-pointer"
-              >
-                <RotateCcw size={9} />
-                Regenerate
-              </button>
+              <textarea
+                value={coreTrustPromise}
+                onChange={(e) => handlePromiseChange(e.target.value)}
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl outline-none text-sm text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be]/30 transition-colors resize-y min-h-[80px] leading-relaxed"
+                placeholder="Write your core trust promise..."
+              />
             </div>
-            <p className="text-[10px] text-zinc-500 leading-relaxed">
-              This answers: <span className="text-zinc-400">&ldquo;What honest reason should a prospect have to believe I understand this problem?&rdquo;</span>
-            </p>
-            <textarea
-              value={coreTrustPromise}
-              onChange={(e) => handlePromiseChange(e.target.value)}
-              rows={3}
-              className="w-full px-4 py-3 rounded-xl outline-none text-xs text-white/90 placeholder:text-zinc-500 bg-white/[0.03] border border-white/5 focus:border-brand-primary/60 focus:ring-1 focus:ring-brand-primary/30 transition-colors resize-none leading-relaxed"
-              placeholder="Write your core trust promise..."
-            />
+            <div className="px-5 py-2.5 bg-[#f8f9ff] border-t border-neutral-100 flex items-center gap-2 text-[10px] text-neutral-400">
+              <span className={cn(
+                'w-1.5 h-1.5 rounded-full',
+                promiseModified ? 'bg-amber-400' : 'bg-emerald-400',
+              )} />
+              {promiseModified ? 'Editing' : 'Saved'}
+            </div>
           </div>
 
-          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-5 space-y-2">
-            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Position Rationale</p>
-            <p className="text-[11px] text-zinc-400 leading-relaxed">{authorityPositionRationale}</p>
+          <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+            <button
+              onClick={() => setRationaleOpen(!rationaleOpen)}
+              className="flex items-center justify-between w-full p-4 text-left cursor-pointer hover:bg-neutral-50 transition-colors"
+              aria-expanded={rationaleOpen}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded bg-neutral-100 border border-neutral-200 flex items-center justify-center shrink-0">
+                  <BookOpen size={10} className="text-neutral-500" />
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-[#0b1c30]">Why this position?</span>
+                  {!rationaleOpen && (
+                    <p className="text-[10px] text-neutral-500 mt-0.5">{authorityPositionRationale?.slice(0, 80)}...</p>
+                  )}
+                </div>
+              </div>
+              <ChevronDown size={14} className={cn('text-neutral-400 transition-transform shrink-0', rationaleOpen && 'rotate-180')} />
+            </button>
+            <AnimatePresence initial={false}>
+              {rationaleOpen && (
+                <motion.div
+                  key="rationale-content"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 pb-4 space-y-2 border-t border-neutral-100 pt-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Position Rationale</p>
+                    <p className="text-xs text-neutral-600 leading-relaxed">{authorityPositionRationale}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       )}
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
         <button
           onClick={previousStep}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/5 bg-white/[0.03] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
         >
           <ArrowLeft size={14} />
           Back
@@ -259,11 +333,11 @@ export function Step1AuthorityPosition() {
           className={cn(
             'inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border',
             selected
-              ? 'bg-brand-primary text-white border-transparent hover:opacity-90 shadow-sm'
-              : 'bg-white/[0.02] border-white/5 text-zinc-500 cursor-not-allowed',
+              ? 'bg-[#0058be] text-white border-transparent hover:opacity-90 shadow-sm'
+              : 'bg-white border-neutral-200 text-neutral-400 cursor-not-allowed',
           )}
         >
-          {isCompleted ? 'Next Step' : 'Lock in Position'}
+          {isCompleted ? 'Continue' : 'Use this position'}
           <ArrowRight size={14} />
         </button>
       </div>
@@ -274,7 +348,7 @@ export function Step1AuthorityPosition() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
             onClick={cancelPositionChange}
           >
             <motion.div
@@ -283,15 +357,18 @@ export function Step1AuthorityPosition() {
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-sm rounded-2xl border border-white/5 bg-zinc-900/95 backdrop-blur-xl p-6 shadow-2xl space-y-4"
+              role="dialog"
+              aria-labelledby="confirm-title"
+              aria-modal="true"
+              className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl space-y-4"
             >
               <div className="flex items-start gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-400/10 border border-amber-400/20 shrink-0">
-                  <AlertTriangle size={14} className="text-amber-400" />
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 border border-amber-200 shrink-0">
+                  <AlertTriangle size={14} className="text-amber-700" />
                 </span>
                 <div className="space-y-1">
-                  <p className="text-sm font-bold text-white/90">You edited your Core Trust Promise</p>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  <p id="confirm-title" className="text-sm font-bold text-[#0b1c30]">You edited your Core Trust Promise</p>
+                  <p className="text-[11px] text-neutral-500 leading-relaxed">
                     {pendingPosition
                       ? 'Changing your authority position can regenerate the promise. What would you like to do?'
                       : 'Regenerating will replace your edited promise. What would you like to do?'}
@@ -302,13 +379,13 @@ export function Step1AuthorityPosition() {
               <div className="flex items-center gap-2 pt-1">
                 <button
                   onClick={cancelPositionChange}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/5 bg-white/[0.03] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
+                  className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
                 >
                   Keep My Edit
                 </button>
                 <button
                   onClick={confirmPositionChange}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-brand-primary text-white border-transparent hover:opacity-90 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
+                  className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#0058be] text-white border-transparent hover:opacity-90 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
                 >
                   {pendingPosition ? 'Use New Position' : 'Regenerate Promise'}
                 </button>

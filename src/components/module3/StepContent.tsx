@@ -20,12 +20,16 @@ export function StepContent() {
 
   if (!Component) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-        <p className="text-sm text-zinc-500">Step not found. Please return to the previous step.</p>
-        <p className="text-[10px] text-zinc-600">Unknown step: {currentStep}</p>
+      <div role="region" className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+        <p className="text-sm text-neutral-500">Step not found. Please return to the previous step.</p>
+        <p className="text-[10px] text-neutral-400">Unknown step: {currentStep}</p>
       </div>
     );
   }
 
-  return <Component />;
+  return (
+    <div role="region" aria-label={`Step ${currentStep.replace(/_/g, ' ')}`}>
+      <Component />
+    </div>
+  );
 }

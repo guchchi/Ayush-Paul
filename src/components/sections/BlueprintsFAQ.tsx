@@ -39,101 +39,83 @@ export const BlueprintsFAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-white py-24 px-6 md:px-12 lg:px-24 text-left relative z-10 border-t border-gray-100">
+    <section className="bg-white py-16 px-6 text-left relative z-10 border-t border-gray-150">
       <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-14 text-left">
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-sm w-fit inline-block mb-6"
-          >
-            FAQ
-          </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* LEFT: Intro/Title */}
+          <div className="lg:col-span-5 text-left lg:sticky lg:top-36">
+            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-sm w-fit inline-block mb-4">
+              FAQ
+            </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
-          >
-            Questions Worth<br />
-            Asking
-          </motion.h2>
-        </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter leading-[1.1] text-[#0b1c30] mb-4">
+              Questions worth asking
+            </h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[#424754] text-base leading-relaxed font-medium"
-        >
-          Everything you need to know before choosing a blueprint, starting a learning path, or working together.
-        </motion.p>
-      </div>
+            <p className="text-[#424754] text-sm leading-relaxed font-medium max-w-sm">
+              Everything you need to know before choosing a blueprint, starting a learning path, or working together.
+            </p>
+          </div>
 
-      <div className="space-y-4">
-        {FAQ_DATA.map((item, i) => {
-          const isOpen = openIndex === i;
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.35, delay: 0.05 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-              className={cn(
-                "bg-white border rounded-[24px] overflow-hidden transition-all duration-300 shadow-sm text-left",
-                isOpen ? "border-[#0b1c30] ring-1 ring-[#0b1c30]/10" : "border-[#c2c6d6]/35 hover:border-[#c2c6d6]/50"
-              )}
-            >
-              <button
-                onClick={() => setOpenIndex(isOpen ? null : i)}
-                className="w-full px-8 py-6 flex items-center justify-between text-left gap-6 group cursor-pointer"
-              >
-                <span
+          {/* RIGHT: Accordions */}
+          <div className="lg:col-span-7 space-y-3.5 w-full">
+            {FAQ_DATA.map((item, i) => {
+              const isOpen = openIndex === i;
+              return (
+                <div
+                  key={i}
                   className={cn(
-                    "text-base font-extrabold tracking-tight leading-snug transition-colors duration-200 flex-1",
-                    isOpen ? "text-[#0b1c30]" : "text-[#0b1c30]"
+                    "bg-white border rounded-2xl overflow-hidden transition-all duration-200 shadow-sm text-left",
+                    isOpen ? "border-[#0b1c30]" : "border-[#c2c6d6]/35 hover:border-[#c2c6d6]/50"
                   )}
                 >
-                  {item.q}
-                </span>
-
-                <span
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 border",
-                    isOpen
-                      ? "bg-[#f0fbe8] border-[#d1f34d] text-[#0b1c30]"
-                      : "bg-bg-secondary border-[#c2c6d6]/20 text-[#424754]/60 group-hover:border-[#0b1c30]/20 group-hover:text-[#0b1c30]"
-                  )}
-                >
-                  {isOpen ? <Minus size={13} /> : <Plus size={13} />}
-                </span>
-              </button>
-
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${i}`}
+                    id={`faq-btn-${i}`}
+                    className="w-full px-6 py-5 flex items-center justify-between text-left gap-6 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1c30] rounded-2xl"
                   >
-                    <div className="px-8 pb-6 text-xs text-[#424754] font-semibold leading-relaxed">
-                      {item.a}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
-      </div>
+                    <span className="text-sm font-extrabold tracking-tight leading-snug text-[#0b1c30] flex-1">
+                      {item.q}
+                    </span>
+
+                    <span
+                      className={cn(
+                        "w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 border",
+                        isOpen
+                          ? "bg-[#f0fbe8] border-[#d1f34d] text-[#0b1c30]"
+                          : "bg-bg-secondary border-[#c2c6d6]/20 text-[#424754]/60 group-hover:border-[#0b1c30]/20 group-hover:text-[#0b1c30]"
+                      )}
+                    >
+                      {isOpen ? <Minus size={12} /> : <Plus size={12} />}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        id={`faq-answer-${i}`}
+                        role="region"
+                        aria-labelledby={`faq-btn-${i}`}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.15, ease: "easeInOut" }}
+                      >
+                        <div className="px-6 pb-5 text-xs text-[#424754] font-semibold leading-relaxed border-t border-gray-50 pt-3">
+                          {item.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
       </div>
     </section>
   );

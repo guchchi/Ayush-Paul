@@ -1,16 +1,4 @@
-import type { AuthorityPosition, ProofPriority } from '../../types/module3';
-
-export type ProofFormat =
-  | 'case_study'
-  | 'demo_video'
-  | 'comparison'
-  | 'framework'
-  | 'before_after'
-  | 'explainer'
-  | 'testimonial_equivalent'
-  | 'data_report'
-  | 'process_walkthrough'
-  | 'educational_content';
+import type { AuthorityPosition, ProofPriority, ProofFormat } from '../../types/module3';
 
 export const ALL_FORMATS: { value: ProofFormat; label: string; description: string }[] = [
   { value: 'case_study', label: 'Case Study', description: 'Document a specific problem, your approach, and the result.' },

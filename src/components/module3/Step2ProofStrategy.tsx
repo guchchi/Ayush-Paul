@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
 import { resolveProofPriorities, resolveAlternateGaps, ALL_FORMATS } from '../../data/module3/proof-priorities';
-import type { ProofPriority } from '../../types/module3';
+import type { ProofPriority, ProofFormat } from '../../types/module3';
 import type { PriorityContext } from '../../data/module3/proof-priorities';
 
 function usePriorityContext() {
@@ -98,7 +98,7 @@ export function Step2ProofStrategy() {
     setShowPositionStaleDialog(false);
   }, [ctx, setProofPriorities]);
 
-  const handleFormatChange = useCallback((priorityId: string, format: string) => {
+  const handleFormatChange = useCallback((priorityId: string, format: ProofFormat) => {
     setProofPriorities(
       proofPriorities.map((p) =>
         p.id === priorityId ? { ...p, recommendedFormat: format, isCustom: true } : p,
@@ -122,7 +122,7 @@ export function Step2ProofStrategy() {
     );
   }, [proofPriorities, setProofPriorities]);
 
-  const handleSwap = useCallback((priorityId: string, altTitle: string, altDescription: string, altFormat: string) => {
+  const handleSwap = useCallback((priorityId: string, altTitle: string, altDescription: string, altFormat: ProofFormat) => {
     setProofPriorities(
       proofPriorities.map((p) =>
         p.id === priorityId
@@ -157,17 +157,20 @@ export function Step2ProofStrategy() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold text-white tracking-tight">Proof Strategy</h1>
-          <p className="text-sm text-zinc-400 mt-1 leading-relaxed">
-            Here are the 3 things your market needs to believe before they hire you.
+          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
+            Step 2 of 5
+          </span>
+          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Strategy</h2>
+          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
+            These are the 3 credibility gaps your market needs you to prove before they hire you.
           </p>
         </div>
         {proofPriorities.length > 0 && (
           <button
             onClick={handleRegenerate}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/5 bg-white/[0.03] text-[9px] font-bold uppercase tracking-[0.12em] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer shrink-0"
           >
             <RotateCcw size={10} />
             Regenerate
@@ -176,8 +179,8 @@ export function Step2ProofStrategy() {
       </div>
 
       {proofPriorities.length === 0 && (
-        <div className="rounded-xl border border-white/5 bg-white/[0.02] p-8 text-center">
-          <p className="text-xs text-zinc-500">Complete Step 1 (Authority Position) first to generate your proof strategy.</p>
+        <div className="rounded-xl border border-neutral-200 bg-white p-8 text-center">
+          <p className="text-xs text-neutral-500">Complete Step 1 (Authority Position) first to generate your proof strategy.</p>
         </div>
       )}
 
@@ -192,105 +195,108 @@ export function Step2ProofStrategy() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * index, duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className="rounded-xl border border-white/5 bg-white/[0.02] p-5 space-y-3"
+              className="rounded-xl border border-neutral-200 bg-white overflow-hidden"
             >
-              <div className="flex items-center gap-2.5">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-brand-primary/15 border border-brand-primary/30 text-[8px] font-bold text-brand-primary shrink-0">
-                  {index + 1}
-                </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Priority {index + 1}</span>
-                {priority.isCustom && (
-                  <span className="text-[7px] font-bold uppercase tracking-[0.12em] text-zinc-500 px-1.5 py-0.5 rounded border border-white/5 bg-white/[0.02]">
-                    Custom
+              <div className="p-5 space-y-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[#0058be]/10 text-[10px] font-bold text-[#0058be] shrink-0">
+                    {index + 1}
                   </span>
-                )}
-              </div>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Priority {index + 1}</span>
+                  {priority.isCustom && (
+                    <span className="text-[8px] font-bold uppercase tracking-[0.1em] text-neutral-500 px-1.5 py-0.5 rounded border border-neutral-200 bg-white">
+                      Custom
+                    </span>
+                  )}
+                </div>
 
-              <div className="space-y-2">
-                {isEditing && editingId === priority.id ? (
-                  <textarea
-                    value={editValue}
-                    onChange={(e) => {
-                      setEditValue(e.target.value);
-                      handleTitleEdit(priority.id, e.target.value);
-                    }}
-                    onBlur={stopEditing}
-                    rows={2}
-                    className="w-full px-3 py-2 rounded-lg outline-none text-xs text-white/90 placeholder:text-zinc-500 bg-white/[0.03] border border-white/5 focus:border-brand-primary/60 focus:ring-1 focus:ring-brand-primary/30 transition-colors resize-none leading-relaxed"
-                    autoFocus
-                  />
-                ) : (
-                  <div className="flex items-start gap-2">
-                    <p className="text-sm font-semibold text-white/80 leading-relaxed flex-1">{priority.gapTitle}</p>
-                    <button
-                      onClick={() => {
-                        if (editingId === priority.id) {
-                          stopEditing();
-                        } else {
-                          startEditing(priority.id, priority.gapTitle);
-                        }
+                <div className="space-y-2">
+                  {isEditing && editingId === priority.id ? (
+                    <textarea
+                      value={editValue}
+                      onChange={(e) => {
+                        setEditValue(e.target.value);
+                        handleTitleEdit(priority.id, e.target.value);
                       }}
-                      className="shrink-0 w-6 h-6 rounded flex items-center justify-center hover:bg-white/[0.05] transition-all cursor-pointer"
-                    >
-                      <Edit3 size={10} className="text-zinc-500 hover:text-zinc-400" />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {!isEditing && (
-                <div className="relative">
-                  <textarea
-                    value={priority.gapDescription}
-                    onChange={(e) => handleDescriptionEdit(priority.id, e.target.value)}
-                    rows={2}
-                    className="w-full px-3 py-2 rounded-lg outline-none text-[11px] text-zinc-400 placeholder:text-zinc-600 bg-transparent border border-transparent hover:border-white/5 focus:border-white/10 focus:bg-white/[0.02] transition-all resize-none leading-relaxed"
-                    placeholder="Describe this credibility gap..."
-                  />
-                </div>
-              )}
-
-              <div className="flex items-center justify-between pt-1 border-t border-white/5">
-                <div className="flex items-center gap-2">
-                  <span className="text-[8px] font-bold uppercase tracking-[0.12em] text-zinc-500">Format</span>
-                  <FormatDropdown
-                    value={priority.recommendedFormat}
-                    onChange={(fmt) => handleFormatChange(priority.id, fmt)}
-                  />
-                </div>
-
-                <div className="relative">
-                  <button
-                    onClick={() => setSwappingId(isSwapping ? null : priority.id)}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-white/5 bg-white/[0.03] text-[8px] font-bold uppercase tracking-[0.1em] text-zinc-500 hover:text-zinc-400 hover:bg-white/[0.06] transition-all cursor-pointer"
-                  >
-                    <RotateCcw size={8} />
-                    Swap
-                  </button>
-
-                  {isSwapping && alternates.length > 0 && (
-                    <div className="absolute right-0 bottom-full mb-2 z-50 w-72 rounded-xl border border-white/5 bg-black/95 backdrop-blur-xl shadow-2xl overflow-hidden py-2 px-2 space-y-1">
-                      <p className="px-2 py-1 text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500">Swap with</p>
-                      {alternates.map((alt, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleSwap(priority.id, alt.gapTitle, alt.gapDescription, alt.recommendedFormat)}
-                          className="w-full flex flex-col gap-0.5 px-3 py-2 rounded-lg text-left transition-colors hover:bg-white/[0.03] cursor-pointer"
-                        >
-                          <span className="text-[10px] font-semibold text-zinc-300 leading-snug">{alt.gapTitle}</span>
-                          <span className="text-[9px] text-zinc-500 leading-relaxed line-clamp-2">{alt.gapDescription}</span>
-                        </button>
-                      ))}
-                      <button
-                        onClick={() => setSwappingId(null)}
-                        className="w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-[8px] font-bold uppercase tracking-[0.12em] text-zinc-500 hover:bg-white/[0.03] transition-colors cursor-pointer"
+                      onBlur={stopEditing}
+                      rows={2}
+                      className="w-full px-3 py-2 rounded-lg outline-none text-sm font-semibold text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be]/30 transition-colors resize-none leading-relaxed"
+                      autoFocus
+                    />
+                  ) : (
+                    <div className="flex items-start gap-2">
+                      <div
+                        onClick={() => startEditing(priority.id, priority.gapTitle)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            startEditing(priority.id, priority.gapTitle);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        className="flex-1 cursor-text rounded hover:bg-neutral-50 -mx-1 px-1 py-0.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]"
                       >
-                        <X size={8} />
-                        Cancel
+                        <p className="text-sm font-semibold text-[#0b1c30] leading-relaxed">{priority.gapTitle}</p>
+                      </div>
+                      <button
+                        onClick={() => startEditing(priority.id, priority.gapTitle)}
+                        className="shrink-0 w-6 h-6 rounded flex items-center justify-center hover:bg-neutral-100 transition-all cursor-pointer"
+                        aria-label="Edit title"
+                      >
+                        <Edit3 size={10} className="text-neutral-400 hover:text-neutral-600" />
                       </button>
                     </div>
                   )}
                 </div>
+
+                {!isEditing && (
+                  <div>
+                    <p className="text-[11px] font-medium text-neutral-500 leading-relaxed mb-3">{priority.gapDescription}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-400">Format</span>
+                        <FormatDropdown
+                          value={priority.recommendedFormat}
+                          onChange={(fmt) => handleFormatChange(priority.id, fmt)}
+                        />
+                      </div>
+
+                      <div className="relative">
+                        <button
+                          onClick={() => setSwappingId(isSwapping ? null : priority.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-neutral-200 bg-white text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
+                        >
+                          <RotateCcw size={8} />
+                          Change
+                        </button>
+
+                        {isSwapping && alternates.length > 0 && (
+                          <div className="absolute right-0 bottom-full mb-2 z-50 w-72 rounded-xl border border-neutral-200 bg-white shadow-2xl overflow-hidden py-2 px-2 space-y-1">
+                            <p className="px-2 py-1 text-[8px] font-bold uppercase tracking-[0.15em] text-neutral-400">Swap with</p>
+                            {alternates.map((alt, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => handleSwap(priority.id, alt.gapTitle, alt.gapDescription, alt.recommendedFormat)}
+                                className="w-full flex flex-col gap-0.5 px-3 py-2 rounded-lg text-left transition-colors hover:bg-neutral-50 cursor-pointer"
+                              >
+                                <span className="text-[10px] font-semibold text-[#0b1c30] leading-snug">{alt.gapTitle}</span>
+                                <span className="text-[9px] text-neutral-500 leading-relaxed line-clamp-2">{alt.gapDescription}</span>
+                              </button>
+                            ))}
+                            <button
+                              onClick={() => setSwappingId(null)}
+                              className="w-full flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-[8px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:bg-neutral-50 transition-colors cursor-pointer"
+                            >
+                              <X size={8} />
+                              Cancel
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           );
@@ -302,22 +308,22 @@ export function Step2ProofStrategy() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
-          className="rounded-xl border border-emerald-500/10 bg-emerald-500/[0.02] p-4 flex items-start gap-3"
+          className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 flex items-start gap-3"
         >
-          <Sparkles size={14} className="text-emerald-400 shrink-0 mt-0.5" />
+          <Sparkles size={14} className="text-emerald-600 shrink-0 mt-0.5" />
           <div>
-            <p className="text-[10px] font-bold text-emerald-400">All 3 priorities defined</p>
-            <p className="text-[9px] text-emerald-400/60 mt-0.5">
+            <p className="text-[10px] font-bold text-emerald-700">All 3 priorities defined</p>
+            <p className="text-[9px] text-emerald-700/60 mt-0.5">
               You can edit any priority or swap formats before continuing. These will become the foundation of your proof assets.
             </p>
           </div>
         </motion.div>
       )}
 
-      <div className="flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
         <button
           onClick={previousStep}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/5 bg-white/[0.03] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
         >
           <ArrowLeft size={14} />
           Back
@@ -329,11 +335,11 @@ export function Step2ProofStrategy() {
           className={cn(
             'inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border',
             hasAllPriorities
-              ? 'bg-brand-primary text-white border-transparent hover:opacity-90 shadow-sm'
-              : 'bg-white/[0.02] border-white/5 text-zinc-500 cursor-not-allowed',
+              ? 'bg-[#0058be] text-white border-transparent hover:opacity-90 shadow-sm'
+              : 'bg-white border-neutral-200 text-neutral-400 cursor-not-allowed',
           )}
         >
-          {isCompleted ? 'Next Step' : 'Confirm & Continue'}
+          {isCompleted ? 'Continue' : 'Build my proof assets'}
           <ArrowRight size={14} />
         </button>
       </div>
@@ -383,7 +389,7 @@ function Dialog({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
       onClick={onCancel}
     >
       <motion.div
@@ -392,28 +398,30 @@ function Dialog({
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-2xl border border-white/5 bg-zinc-900/95 backdrop-blur-xl p-6 shadow-2xl space-y-4"
+        role="dialog"
+        aria-modal="true"
+        className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl space-y-4"
       >
         <div className="flex items-start gap-3">
-          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-400/10 border border-amber-400/20 shrink-0">
-            <AlertTriangle size={14} className="text-amber-400" />
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 border border-amber-200 shrink-0">
+            <AlertTriangle size={14} className="text-amber-700" />
           </span>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-white/90">{title}</p>
-            <p className="text-[11px] text-zinc-400 leading-relaxed">{message}</p>
+            <p className="text-sm font-bold text-[#0b1c30]">{title}</p>
+            <p className="text-[11px] text-neutral-500 leading-relaxed">{message}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 pt-1">
           <button
             onClick={onCancel}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/5 bg-white/[0.03] text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-brand-primary text-white border-transparent hover:opacity-90 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#0058be] text-white border-transparent hover:opacity-90 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
           >
             {confirmLabel}
           </button>
@@ -427,8 +435,8 @@ function FormatDropdown({
   value,
   onChange,
 }: {
-  value: string;
-  onChange: (val: string) => void;
+  value: ProofFormat;
+  onChange: (val: ProofFormat) => void;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -449,14 +457,14 @@ function FormatDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-white/5 bg-white/[0.03] text-[9px] font-semibold text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.06] transition-all cursor-pointer whitespace-nowrap"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-neutral-200 bg-white text-[10px] font-semibold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer whitespace-nowrap"
       >
         {current?.label ?? value}
         <ChevronDown size={10} className={cn('transition-transform', open && 'rotate-180')} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 w-56 rounded-xl border border-white/5 bg-black/95 backdrop-blur-xl shadow-2xl overflow-hidden py-1">
+        <div className="absolute right-0 top-full mt-1 z-50 w-56 rounded-xl border border-neutral-200 bg-white shadow-2xl overflow-hidden py-1">
           {ALL_FORMATS.map((fmt) => {
             const isActive = fmt.value === value;
             return (
@@ -468,10 +476,10 @@ function FormatDropdown({
                 }}
                 className={cn(
                   'w-full flex items-center gap-2 px-3 py-2 text-left transition-colors text-[10px]',
-                  isActive ? 'bg-brand-primary/10 text-brand-primary' : 'text-zinc-400 hover:bg-white/[0.03] hover:text-zinc-300',
+                  isActive ? 'bg-[#0058be]/5 text-[#0058be]' : 'text-neutral-500 hover:bg-neutral-50 hover:text-[#0b1c30]',
                 )}
               >
-                {isActive && <Check size={10} className="shrink-0 text-brand-primary" />}
+                {isActive && <Check size={10} className="shrink-0 text-[#0058be]" />}
                 <span className={cn(!isActive && 'ml-[18px]')}>{fmt.label}</span>
               </button>
             );

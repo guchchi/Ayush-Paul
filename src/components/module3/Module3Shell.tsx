@@ -1,6 +1,6 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Check, ChevronLeft, ChevronRight, Sparkles, Sun, Moon, Shield } from 'lucide-react';
+import { Menu, X, Check, ChevronLeft, ChevronRight, Shield, Circle, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../../lib/module3';
 import type { Module3Step } from '../../types/module3';
 
-const SIDEBAR_WIDTH = 240;
+const SIDEBAR_WIDTH = 280;
 
 const STEP_LABELS: Record<Module3Step, string> = {
   authority_position: 'Authority Position',
@@ -21,30 +21,12 @@ const STEP_LABELS: Record<Module3Step, string> = {
 
 function StepDot({ status }: { status: 'completed' | 'active' | 'upcoming' }) {
   if (status === 'completed') {
-    return (
-      <span className="relative flex items-center justify-center w-5 h-5 shrink-0">
-        <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping" style={{ animationDuration: '2s' }} />
-        <span className="relative flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/40">
-          <Check size={10} className="text-emerald-400" strokeWidth={3} />
-        </span>
-      </span>
-    );
+    return <CheckCircle2 size={16} className="text-[#0058be] shrink-0" />;
   }
   if (status === 'active') {
-    return (
-      <span className="relative flex items-center justify-center w-5 h-5 shrink-0">
-        <span className="absolute inset-0 rounded-full bg-brand-primary/30 animate-ping" style={{ animationDuration: '2.5s' }} />
-        <span className="relative flex items-center justify-center w-5 h-5 rounded-full bg-brand-primary/15 border border-brand-primary/60 ring-2 ring-brand-primary/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
-        </span>
-      </span>
-    );
+    return <Circle size={16} className="text-[#0058be] fill-[#0058be]/10 shrink-0" />;
   }
-  return (
-    <span className="flex items-center justify-center w-5 h-5 shrink-0">
-      <span className="w-5 h-5 rounded-full bg-white/[0.03] border border-white/[0.08]" />
-    </span>
-  );
+  return <div className="w-4 h-4 rounded-full border-2 border-neutral-200 shrink-0" />;
 }
 
 function PhaseContext() {
@@ -56,9 +38,9 @@ function PhaseContext() {
 
   if (!mod1ServiceId) {
     return (
-      <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-amber-400/5 border border-amber-400/15 space-y-1">
-        <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-amber-500">Module 1 &amp; 2 Context</p>
-        <p className="text-[9px] text-amber-400/60 leading-relaxed">
+      <div className="px-3 py-2 rounded-lg bg-amber-50/80 border border-amber-200 space-y-1">
+        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-amber-700">Module 1 &amp; 2 Context</p>
+        <p className="text-[10px] text-amber-600/70 leading-relaxed">
           Complete Modules 1 and 2 first to pipe your selections here.
         </p>
       </div>
@@ -66,9 +48,9 @@ function PhaseContext() {
   }
 
   return (
-    <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-white/[0.02] border border-white/5">
-      <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">Opportunity &amp; Offer</p>
-      <div className="space-y-1.5">
+    <div className="px-3 py-2 rounded-lg bg-[#eff4ff]/60 border border-[#eff4ff]">
+      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-neutral-400 mb-1.5">Context</p>
+      <div className="space-y-1">
         <ContextRow label="Service" value={mod1ServiceId} />
         {mod1MarketId && mod1NicheId && <ContextRow label="Opportunity" value={`${mod1MarketId} / ${mod1NicheId}`} />}
         {mod1Positioning && <ContextRow label="Positioning" value={mod1Positioning} />}
@@ -80,9 +62,9 @@ function PhaseContext() {
 
 function ContextRow({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-zinc-500">{label}</p>
-      <p className="text-[10px] text-white/70 truncate">{value}</p>
+    <div className="flex items-start gap-1.5">
+      <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-400 shrink-0">{label}:</span>
+      <span className="text-[10px] text-[#0b1c30]/70 truncate">{value}</span>
     </div>
   );
 }
@@ -91,82 +73,88 @@ function DesktopSidebar({
   completedSteps,
   currentStep,
   onStepSelect,
+  onBack,
 }: {
   completedSteps: Module3Step[];
   currentStep: Module3Step;
   onStepSelect: (id: Module3Step) => void;
+  onBack?: () => void;
 }) {
   const completedCount = completedSteps.length;
   const totalSteps = MODULE3_STEPS.length;
-  const progress = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
 
   return (
     <aside
-      className="hidden lg:flex flex-col shrink-0 border-r border-white/5 bg-black"
+      className="hidden lg:flex flex-col shrink-0 border-r border-neutral-200 bg-white"
       style={{ width: SIDEBAR_WIDTH }}
     >
-      <div className="flex items-center gap-2.5 px-4 h-12 border-b border-white/5 shrink-0">
-        <span className="flex items-center justify-center w-5 h-5 rounded-md bg-brand-primary/15 border border-brand-primary/30">
-          <Shield size={10} className="text-brand-primary" />
-        </span>
-        <div>
-          <span className="text-[10px] font-bold text-white/80 tracking-tight">Authority System</span>
-          <p className="text-[7px] text-zinc-500 uppercase tracking-[0.15em]">Module 3</p>
-        </div>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto custom-scrollbar py-2 px-2.5">
-        <div className="relative">
-          <div className="absolute left-[20px] top-2 bottom-2 w-px bg-white/5" />
-
-          <div className="space-y-[2px]">
-            {MODULE3_STEPS.map((step) => {
-              const isActive = step === currentStep;
-              const isCompleted = completedSteps.includes(step);
-              const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
-
-              return (
-                <button
-                  key={step}
-                  onClick={() => onStepSelect(step)}
-                  className={cn(
-                    'relative flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-left transition-all duration-200 cursor-pointer group',
-                    isActive ? 'bg-white/5' : 'hover:bg-white/[0.03]',
-                  )}
-                >
-                  <StepDot status={status} />
-                  <span
-                    className={cn(
-                      'text-[11px] font-medium transition-colors duration-200 truncate',
-                      isActive && 'text-white/95',
-                      isCompleted && 'text-zinc-400',
-                      !isActive && !isCompleted && 'text-zinc-500 group-hover:text-zinc-400',
-                    )}
-                  >
-                    {STEP_LABELS[step]}
-                  </span>
-                </button>
-              );
-            })}
+      <div className="p-5 pb-4 border-b border-neutral-100 shrink-0">
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#0058be]/10 border border-[#0058be]/20">
+            <Shield size={12} className="text-[#0058be]" />
+          </span>
+          <div>
+            <h2 className="text-sm font-bold text-[#0b1c30]">Authority System</h2>
+            <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-[0.12em]">Module 3</p>
           </div>
         </div>
-      </nav>
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-700 transition-colors cursor-pointer"
+            aria-label="Back to overview"
+          >
+            <ArrowLeft size={12} aria-hidden="true" />
+            Back to Overview
+          </button>
+        )}
+      </div>
 
-      <PhaseContext />
-
-      <div className="px-4 py-3 border-t border-white/5 shrink-0">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500">Progress</span>
-          <span className="text-[9px] font-semibold tabular-nums text-zinc-400">{completedCount}/{totalSteps}</span>
-        </div>
-        <div className="w-full h-[2px] rounded-full bg-white/5 overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-brand-primary"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.8, ease: EASING.PREMIUM }}
+      <div className="px-5 pt-4 pb-2 shrink-0">
+        <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+          <div
+            className="h-full bg-[#0058be] rounded-full transition-all duration-500"
+            style={{ width: `${Math.max((completedCount / totalSteps) * 100, 2)}%` }}
           />
         </div>
+        <p className="text-[10px] font-bold text-neutral-400 mt-1.5 text-right">{Math.round((completedCount / totalSteps) * 100)}% Complete</p>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3 space-y-0.5" aria-label="Module steps">
+        {MODULE3_STEPS.map((step, index) => {
+          const isActive = step === currentStep;
+          const isCompleted = completedSteps.includes(step);
+          const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
+
+          return (
+            <button
+              key={step}
+              onClick={() => onStepSelect(step)}
+              aria-current={isActive ? 'step' : undefined}
+              className={cn(
+                'w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer',
+                isActive ? 'bg-[#f8f9ff] text-[#0058be]' : 'hover:bg-neutral-50 text-neutral-600',
+              )}
+            >
+              <StepDot status={status} />
+              <div className="flex-1 min-w-0">
+                <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">
+                  Step 0{index + 1}
+                </p>
+                <p className={cn(
+                  'text-xs font-semibold truncate',
+                  isActive ? 'text-[#0b1c30]' : 'text-neutral-600',
+                )}>
+                  {STEP_LABELS[step]}
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+
+      <div className="px-3 pb-3 shrink-0">
+        <PhaseContext />
       </div>
     </aside>
   );
@@ -177,240 +165,192 @@ function MobileSidebar({
   currentStep,
   onStepSelect,
   onClose,
+  onBack,
 }: {
   completedSteps: Module3Step[];
   currentStep: Module3Step;
   onStepSelect: (id: Module3Step) => void;
   onClose: () => void;
+  onBack?: () => void;
 }) {
   return (
-    <div className="flex flex-col h-full bg-black">
-      <div className="flex items-center justify-between px-5 h-14 border-b border-white/5 shrink-0">
+    <div className="flex flex-col h-full bg-white">
+      <div className="flex items-center justify-between px-5 h-14 border-b border-neutral-100 shrink-0">
         <div className="flex items-center gap-3">
-          <span className="w-6 h-6 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center">
-            <Shield size={12} className="text-white/70" />
+          <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 border border-[#0058be]/20 flex items-center justify-center">
+            <Shield size={12} className="text-[#0058be]" />
           </span>
-          <span className="text-xs font-semibold text-white/70 tracking-tight">Authority System</span>
+          <span className="text-xs font-semibold text-[#0b1c30] tracking-tight">Authority System</span>
         </div>
-        <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/5 transition-colors cursor-pointer">
-          <X size={14} className="text-zinc-400" />
+        <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 transition-colors cursor-pointer">
+          <X size={14} className="text-neutral-400" />
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3">
-        <div className="relative">
-          <div className="absolute left-[22px] top-3 bottom-3 w-px bg-white/5" />
-          <div className="space-y-0.5">
-            {MODULE3_STEPS.map((step) => {
-              const isActive = step === currentStep;
-              const isCompleted = completedSteps.includes(step);
-              const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
-
-              return (
-                <button
-                  key={step}
-                  onClick={() => { onStepSelect(step); onClose(); }}
-                  className={cn(
-                    'relative flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-all duration-200 cursor-pointer',
-                    isActive && 'bg-white/5',
-                  )}
-                >
-                  <StepDot status={status} />
-                  <span className={cn(
-                    'text-xs font-medium transition-colors duration-200 truncate',
-                    isActive && 'text-white/95',
-                    isCompleted && 'text-zinc-400',
-                    !isActive && !isCompleted && 'text-zinc-500',
-                  )}>
-                    {STEP_LABELS[step]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+      {onBack && (
+        <div className="px-3 pt-3">
+          <button
+            onClick={() => { onBack(); onClose(); }}
+            className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-700 transition-colors cursor-pointer"
+            aria-label="Back to overview"
+          >
+            <ArrowLeft size={12} aria-hidden="true" />
+            Back to Overview
+          </button>
         </div>
+      )}
+
+      <div className="px-5 pt-3 pb-1">
+        <div className="w-full h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#0058be] rounded-full transition-all duration-500"
+            style={{ width: `${Math.max((completedSteps.length / MODULE3_STEPS.length) * 100, 2)}%` }}
+          />
+        </div>
+        <p className="text-[9px] font-bold text-neutral-400 mt-1 text-right">{completedSteps.length} / {MODULE3_STEPS.length} steps</p>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto custom-scrollbar py-2 px-3 space-y-0.5" aria-label="Module steps">
+        {MODULE3_STEPS.map((step, index) => {
+          const isActive = step === currentStep;
+          const isCompleted = completedSteps.includes(step);
+          const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
+
+          return (
+            <button
+              key={step}
+              onClick={() => { onStepSelect(step); onClose(); }}
+              aria-current={isActive ? 'step' : undefined}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer',
+                isActive ? 'bg-[#f8f9ff]' : 'hover:bg-neutral-50',
+              )}
+            >
+              <StepDot status={status} />
+              <div className="flex-1 min-w-0">
+                <span className="block text-[9px] font-bold text-neutral-400 uppercase tracking-widest">Step 0{index + 1}</span>
+                <span className={cn(
+                  'text-xs font-medium truncate',
+                  isActive ? 'text-[#0b1c30]' : 'text-neutral-500',
+                )}>
+                  {STEP_LABELS[step]}
+                </span>
+              </div>
+            </button>
+          );
+        })}
       </nav>
 
-      <PhaseContext />
-
-      <div className="px-5 py-4 border-t border-white/5 shrink-0">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Progress</span>
-          <span className="text-[10px] font-semibold text-zinc-400">{completedSteps.length}/{MODULE3_STEPS.length}</span>
-        </div>
-        <div className="w-full h-[3px] rounded-full bg-white/5 overflow-hidden">
-          <div className="h-full rounded-full bg-brand-primary transition-all duration-700 ease-out"
-            style={{ width: `${(completedSteps.length / MODULE3_STEPS.length) * 100}%` }} />
-        </div>
+      <div className="px-3 pb-3">
+        <PhaseContext />
       </div>
     </div>
   );
 }
 
-export function Module3Shell({ children }: { children: ReactNode }) {
+export function Module3Shell({ children, onBack }: { children: ReactNode; onBack?: () => void }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLight, setIsLight] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('m3-theme');
-    if (stored === 'light') {
-      document.documentElement.classList.add('light');
-      setIsLight(true);
-    } else if (stored === 'dark') {
-      document.documentElement.classList.remove('light');
-      setIsLight(false);
-    } else {
-      const init = document.documentElement.classList.contains('light');
-      setIsLight(init);
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isLight;
-    setIsLight(next);
-    if (next) {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-    localStorage.setItem('m3-theme', next ? 'light' : 'dark');
-  };
 
   const currentStep = useModule3Store((s) => s.currentStep);
   const completedSteps = useModule3Store((s) => s.completedSteps);
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
 
   const activeIndex = MODULE3_STEPS.indexOf(currentStep);
-  const completedCount = completedSteps.length;
-  const totalSteps = MODULE3_STEPS.length;
-  const progress = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
 
   const prevStep = activeIndex > 0 ? MODULE3_STEPS[activeIndex - 1] : null;
   const nextStep = activeIndex < MODULE3_STEPS.length - 1 ? MODULE3_STEPS[activeIndex + 1] : null;
 
   return (
-    <div className="flex min-h-screen bg-black text-white selection:bg-white/10">
+    <div className="flex h-dvh bg-[#f8f9ff] text-[#0b1c30] overflow-hidden font-sans">
       <DesktopSidebar
         completedSteps={completedSteps}
         currentStep={currentStep}
         onStepSelect={jumpToStep}
+        onBack={onBack}
       />
 
       <AnimatePresence>
         {sidebarOpen && (
-          <motion.div
-            key="sidebar-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: DURATION.FAST }}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {sidebarOpen && (
-          <motion.div
-            key="mobile-sidebar"
-            initial={{ x: -SIDEBAR_WIDTH }}
-            animate={{ x: 0 }}
-            exit={{ x: -SIDEBAR_WIDTH }}
-            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-            className="fixed inset-y-0 left-0 z-50 shadow-2xl"
-            style={{ width: SIDEBAR_WIDTH }}
-          >
-            <MobileSidebar
-              completedSteps={completedSteps}
-              currentStep={currentStep}
-              onStepSelect={jumpToStep}
-              onClose={() => setSidebarOpen(false)}
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black"
+              onClick={() => setSidebarOpen(false)}
             />
-          </motion.div>
+            <motion.div
+              initial={{ x: -SIDEBAR_WIDTH }}
+              animate={{ x: 0 }}
+              exit={{ x: -SIDEBAR_WIDTH }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="fixed inset-y-0 left-0 z-50 border-r border-neutral-200 bg-white"
+              style={{ width: SIDEBAR_WIDTH }}
+            >
+              <MobileSidebar
+                completedSteps={completedSteps}
+                currentStep={currentStep}
+                onStepSelect={jumpToStep}
+                onClose={() => setSidebarOpen(false)}
+                onBack={onBack}
+              />
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col flex-1 min-w-0">
-        <header className="sticky top-0 z-30 flex items-center h-12 border-b border-white/5 bg-black/80 backdrop-blur-2xl px-4 gap-3">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden w-7 h-7 rounded-md bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-all duration-200 cursor-pointer shrink-0"
-          >
-            <Menu size={13} className="text-zinc-400" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0 bg-[#f8f9ff] overflow-hidden">
+        <header className="sticky top-0 z-30 flex items-center justify-between h-12 border-b border-neutral-200 bg-white/85 backdrop-blur-md px-4 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-1.5 rounded hover:bg-neutral-100 text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer"
+              aria-label="Open navigation menu"
+            >
+              <Menu size={14} />
+            </button>
+            <span className="text-xs font-semibold text-[#0b1c30] truncate select-none">
+              Step {activeIndex + 1} of {MODULE3_STEPS.length}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
             {prevStep && (
               <button
                 onClick={() => jumpToStep(prevStep)}
-                className="hidden sm:flex w-6 h-6 rounded items-center justify-center hover:bg-white/5 transition-all duration-200 cursor-pointer shrink-0"
+                className="p-1.5 rounded hover:bg-neutral-100 text-neutral-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer"
+                aria-label={`Go to previous step: ${STEP_LABELS[prevStep]}`}
               >
-                <ChevronLeft size={12} className="text-zinc-400" />
+                <ChevronLeft size={14} />
               </button>
             )}
-
-            <span className="flex items-center justify-center w-5 h-5 rounded bg-white/10 border border-white/10 text-[9px] font-bold text-white/70 shrink-0 tabular-nums">
-              {activeIndex + 1}
-            </span>
-
-            <span className="text-sm font-semibold text-white/90 truncate tracking-tight">
+            <span className="hidden sm:inline text-[11px] font-medium text-neutral-600 truncate max-w-[200px]">
               {STEP_LABELS[currentStep]}
             </span>
-
             {nextStep && (
               <button
                 onClick={() => jumpToStep(nextStep)}
-                className="hidden sm:flex w-6 h-6 rounded items-center justify-center hover:bg-white/5 transition-all duration-200 cursor-pointer shrink-0"
+                className="p-1.5 rounded hover:bg-neutral-100 text-neutral-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer"
+                aria-label={`Go to next step: ${STEP_LABELS[nextStep]}`}
               >
-                <ChevronRight size={12} className="text-zinc-400" />
+                <ChevronRight size={14} />
               </button>
             )}
-          </div>
-
-          <div className="flex-1" />
-
-          <div className="flex items-center gap-2">
-            <motion.button
-              onClick={toggleTheme}
-              whileTap={{ scale: 0.92 }}
-              className="flex items-center justify-center w-7 h-7 rounded-md bg-white/5 border border-white/5 hover:bg-white/10 transition-all duration-200 cursor-pointer shrink-0"
-              title={isLight ? 'Switch to dark' : 'Switch to light'}
-            >
-              {isLight ? <Moon size={12} className="text-zinc-400" /> : <Sun size={12} className="text-zinc-400" />}
-            </motion.button>
-
-            <span className="hidden sm:inline text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500">
-              Step {activeIndex + 1} / {totalSteps}
-            </span>
-            <div className="hidden sm:flex items-center gap-2 px-2 py-1 rounded-md bg-white/5 border border-white/5">
-              <div className="w-12 h-[2px] rounded-full bg-white/5 overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-white/70"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.6, ease: EASING.PREMIUM }}
-                />
-              </div>
-              <span className="text-[8px] font-bold text-zinc-400 tabular-nums">{Math.round(progress)}%</span>
-            </div>
           </div>
         </header>
 
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto w-full max-w-3xl px-5 sm:px-10 py-8 lg:py-12">
+          <div className="mx-auto w-full px-5 sm:px-8 py-8 md:py-12 max-w-[720px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
-                initial={{ opacity: 0, y: 12, filter: 'blur(3px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -12, filter: 'blur(3px)' }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
               >
                 {children}
               </motion.div>
             </AnimatePresence>
-            <div className="h-16" />
           </div>
         </main>
       </div>

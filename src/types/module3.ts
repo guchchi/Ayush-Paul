@@ -15,6 +15,18 @@ export const MODULE3_STEPS = [
   'authority_pack',
 ] as const;
 
+export type ProofFormat =
+  | 'case_study'
+  | 'demo_video'
+  | 'comparison'
+  | 'framework'
+  | 'before_after'
+  | 'explainer'
+  | 'testimonial_equivalent'
+  | 'data_report'
+  | 'process_walkthrough'
+  | 'educational_content';
+
 export type Module3Step = typeof MODULE3_STEPS[number];
 
 export type AuthorityPosition = 'builder' | 'auditor' | 'deconstructor' | 'practitioner';
@@ -23,7 +35,7 @@ export interface ProofPriority {
   id: string;
   gapTitle: string;
   gapDescription: string;
-  recommendedFormat: string;
+  recommendedFormat: ProofFormat;
   isCustom: boolean;
 }
 
@@ -38,7 +50,7 @@ export interface ProofAsset {
   id: string;
   priorityId: string;
   title: string;
-  assetType: string;
+  assetType: ProofFormat;
   credibilityGapProved: string;
   targetAudience: string;
   businessProblem: string;
@@ -120,6 +132,9 @@ export interface Module3State {
   profileCopy: ProfileCopy;
   portfolioCopy: PortfolioCopy;
 
+  isProfileCopyCustom: boolean;
+  isPortfolioCopyCustom: boolean;
+
   checklist: ChecklistItem[];
 
   isCompleted: boolean;
@@ -161,7 +176,13 @@ export interface Module3State {
   replaceProofAsset(id: string, newAsset: ProofAsset): void;
   setProfileCopy(value: ProfileCopy): void;
   setPortfolioCopy(value: PortfolioCopy): void;
+  replaceGeneratedProfileCopy(value: ProfileCopy): void;
+  replaceGeneratedPortfolioCopy(value: PortfolioCopy): void;
+  updateProfileCopy(value: Partial<ProfileCopy>): void;
+  updatePortfolioCopy(value: Partial<PortfolioCopy>): void;
   setChecklist(value: ChecklistItem[]): void;
+  updateChecklistItem(id: string, updates: Partial<ChecklistItem>): void;
+  getModule4Context(): Module4BridgeContext;
   setIsCompleted(value: boolean): void;
   setIsUpstreamStale(value: boolean): void;
   setUpstreamFingerprint(value: string): void;
@@ -172,6 +193,28 @@ export interface Module3State {
   previousStep(): void;
   jumpToStep(step: Module3Step): void;
   reset(): void;
+}
+
+export interface Module4BridgeContext {
+  authorityPosition: string;
+  coreTrustPromise: string;
+  proofPriorities: { id: string; gapTitle: string; recommendedFormat: string }[];
+  proofAssets: {
+    id: string;
+    title: string;
+    assetType: string;
+    credibilityGap: string;
+    completionStatus: boolean;
+    link?: string;
+  }[];
+  authorityReadiness: boolean;
+  professionalHeadline: string;
+  offerStatement: string;
+  proofReferenceLine: string;
+  ctaLine: string;
+  portfolioCta: string;
+  profileUrl?: string;
+  portfolioUrl?: string;
 }
 
 export interface StepAccess {

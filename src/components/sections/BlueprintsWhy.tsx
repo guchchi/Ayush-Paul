@@ -38,41 +38,25 @@ const pillars = [
 
 export const BlueprintsWhy = () => {
   return (
-    <section className="py-24 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-16 text-left">
+    <section 
+      id="blueprints-why-anchor" 
+      className="py-16 px-6 max-w-7xl mx-auto relative z-10 border-t border-[#c2c6d6]/20 scroll-mt-24"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end mb-12 text-left">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-6"
-          >
-            <span className="w-1.5 h-1.5 bg-[#0b1c30] rounded-full animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#c2c6d6]/35 text-[10px] font-bold uppercase tracking-widest text-[#424754] shadow-sm mb-4">
+            <span className="w-1.5 h-1.5 bg-[#0b1c30] rounded-full" />
             <span className="tracking-[0.22em]">Why Blueprints</span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.45, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl font-extrabold tracking-tighter leading-[1.1] text-[#0b1c30]"
-          >
-            Built For<br />
-            Execution
-          </motion.h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tighter leading-[1.1] text-[#0b1c30]">
+            Built for execution
+          </h2>
         </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[#424754] text-base leading-relaxed font-medium"
-        >
+        <p className="text-[#424754] text-sm leading-relaxed font-medium">
           Most builders don't need more theory. They need a validated starting point. These blueprints eliminate guesswork, reduce configuration errors, and let you ship with certainty.
-        </motion.p>
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -81,40 +65,40 @@ export const BlueprintsWhy = () => {
           return (
             <motion.div
               key={pillar.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.45, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.05 + i * 0.05 }}
               whileHover={{
-                y: -6,
-                scale: 1.015,
+                y: -4,
+                scale: 1.005,
                 borderColor: pillar.accentHover,
               }}
-              className="group bg-white border border-[#c2c6d6]/30 rounded-[32px] p-8 flex flex-col gap-6
-                         hover:shadow-ambient transition-all duration-300 shadow-sm"
+              className="group bg-white border border-[#c2c6d6]/30 rounded-2xl p-7 flex flex-col gap-5
+                         hover:shadow-md transition-all duration-200 shadow-sm"
             >
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shrink-0 border"
+                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 shrink-0 border"
                 style={{
                   backgroundColor: pillar.iconBg,
                   borderColor: pillar.iconBorder,
                 }}
               >
-                <Icon size={20} style={{ color: pillar.iconColor }} />
+                <Icon size={18} style={{ color: pillar.iconColor }} aria-hidden="true" />
               </div>
 
-              <div className="flex flex-col gap-3 text-left">
-                <h3 className="text-xl font-extrabold text-[#0b1c30] tracking-tight">
+              <div className="flex flex-col gap-2.5 text-left">
+                <h3 className="text-base font-extrabold text-[#0b1c30] tracking-tight">
                   {pillar.title}
                 </h3>
-                <p className="text-xs text-[#424754] leading-relaxed font-semibold">
+                <p className="text-xs text-[#424754] leading-relaxed font-medium">
                   {pillar.description}
                 </p>
               </div>
 
-              <div className="mt-auto">
+              <div className="mt-auto pt-2">
                 <div
-                  className="h-0.5 w-8 rounded-full bg-[#c2c6d6]/30 group-hover:w-full transition-all duration-500"
+                  className="h-0.5 w-8 rounded-full bg-[#c2c6d6]/30 group-hover:w-full transition-all duration-300"
                   style={{ backgroundColor: pillar.accentHover }}
                 />
               </div>
@@ -124,20 +108,14 @@ export const BlueprintsWhy = () => {
       </div>
 
       {/* Blog crosslink — internal linking */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="mt-12 text-center"
-      >
+      <div className="mt-10 text-center">
         <p className="text-xs text-[#424754]/60 font-semibold">
           Want to understand how these are built?{' '}
-          <Link to="/blog" className="text-[#0b1c30] font-bold underline underline-offset-2 hover:text-[#558b2f] transition-colors">
+          <Link to="/blog" className="text-[#0b1c30] font-bold underline underline-offset-2 hover:text-[#0058be] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1c30] rounded-sm">
             Read implementation guides on the Blog →
           </Link>
         </p>
-      </motion.div>
+      </div>
 
       {/* Hidden entity definitions for SEO and GEO crawlability — not visible to users */}
       <div className="sr-only" aria-hidden="false">
