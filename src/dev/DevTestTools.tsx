@@ -11,7 +11,8 @@ import { downloadAudit } from './content-audit/generateContentAudit';
 import { downloadBlueprintAudit } from './blueprint-audit/generateBlueprintAudit';
 import type { OfferBlueprint, ScopeLimits, ProposalSummary, TieredPricing, ValueBasedPricing } from '../types/offer-engineering';
 import type { ProofAsset, PortfolioAsset, ContentAsset, TrustBuilderItem, SocialProofPlan, AuthorityProfileData } from '../types/authority-system';
-import type { PortfolioGoal, CaseStudy, SampleProject, PortfolioPageStructure, PortfolioCopy, PortfolioChecklistItem } from '../types/portfolio-system';
+import { composeAll } from '../lib/portfolio-system/composer';
+import type { PortfolioGoal } from '../types/portfolio-system';
 
 /* ───────────────────────────────────────────────
  *  Scope of work defaults
@@ -120,7 +121,7 @@ const SCENARIOS: Record<Scenario, {
 const ALL_MOD1_STEPS = ['career_track', 'service', 'market', 'niche', 'offer', 'positioning', 'opportunity_score'] as const;
 const ALL_MOD2 = ['offer_type', 'deliverables', 'unique_mechanism', 'scope_protection', 'value_amplifier', 'pricing', 'proposal_summary', 'offer_blueprint'] as const;
 const ALL_MOD3 = ['authority_position', 'proof_asset_builder', 'portfolio_asset_plan', 'trust_builder', 'social_proof_strategy', 'content_asset_generator', 'authority_profile', 'authority_report'] as const;
-const ALL_MOD4 = ['portfolio_goal', 'asset_selection', 'case_study_builder', 'sample_project_builder', 'proof_page_structure', 'portfolio_copy_generator', 'portfolio_checklist', 'portfolio_report'] as const;
+const ALL_MOD4 = ['portfolio_direction', 'platform_structure', 'project_arrangement', 'project_presentations', 'portfolio_copy_cta', 'portfolio_build_pack'] as const;
 const ALL_MOD5 = ['client_source_map', 'ideal_client_criteria', 'prospect_type_selector', 'search_query_builder', 'lead_qualification_score', 'pipeline_list_builder', 'priority_plan', 'client_pipeline_report'] as const;
 
 function seedPhase1(s: Scenario) {
@@ -233,82 +234,79 @@ function seedPhase3(s: Scenario) {
   });
 }
 
-const MOD4_GOALS = ['deliver_service', 'understand_niche', 'clear_process', 'improve_results', 'communicate_professionally'];
+const SCENARIO_TO_CANONICAL: Record<string, { serviceId: string; marketId: string; nicheId: string | null }> = {
+  video: { serviceId: 'short_form_editor', marketId: 'creators', nicheId: 'gaming' },
+  wordpress: { serviceId: 'wordpress_developer', marketId: 'startups', nicheId: null },
+  design: { serviceId: 'ui_ux_designer', marketId: 'saas_startups', nicheId: null },
+};
 
 function seedPhase4(s: Scenario) {
   const d = SCENARIOS[s];
-  const cat = getServiceCategory(d.service);
-  const audience = getAudienceLabel(d.niche, d.market);
+  const canonical = SCENARIO_TO_CANONICAL[s];
 
-  const csData = generateCaseStudy(cat, d.deliverables, audience, d.niche, d.service);
-  const sp = generateSampleProject(cat, d.niche, d.service);
-  const pc = generatePortfolioCopy(cat, d.niche, d.service);
-
-  const goal: PortfolioGoal = {
-    goals: [...MOD4_GOALS],
-    statement: generatePortfolioGoalStatement(cat, d.serviceLabel, d.niche),
-  };
-
-  const cs: CaseStudy = {
-    projectTitle: `Sample ${d.serviceLabel} Project`,
-    clientNicheType: audience,
-    problem: csData.problem,
-    process: csData.process,
-    deliverables: d.deliverables.slice(0, 3).join(', '),
-    resultExpectedOutcome: csData.result,
-    toolsUsed: csData.tools,
-    cta: csData.cta,
-    isSampleProject: true,
-  };
-
-  const pageStructure: PortfolioPageStructure = {
-    sections: PAGE_SECTIONS.map((s) => ({ ...s, included: true })),
-  };
-
-  usePortfolioSystemStore.getState().reset();
-  usePortfolioSystemStore.setState({
-    phase3Service: d.service,
-    phase3ServiceLabel: d.serviceLabel,
-    phase3Market: d.market,
-    phase3Niche: d.niche,
-    phase3Positioning: d.positioning,
-    phase3OfferName: d.offerName,
-    phase3OfferType: d.offerType,
-    phase3Deliverables: d.deliverables,
-    phase3UniqueMechanism: d.mechanism,
-    phase3Pricing: `$${d.price}`,
-    phase3Timeline: d.timeline,
-    phase3ScopeDetails: `${d.deliverables.length} deliverables included`,
-    phase3AuthorityAngle: d.angle,
-    phase3ProofAssets: [{ title: `Sample ${d.serviceLabel}`, type: 'sample_project' }],
-    phase3PortfolioAssets: [{ name: `Portfolio: ${d.serviceLabel}` }],
-    phase3TrustBuilderChecklist: [{ label: 'Clear process', status: 'in_progress' }],
-    phase3ContentAssets: [{ title: `Why ${d.niche} need ${d.serviceLabel}` }],
-    phase3AuthorityProfile: { oneLinePositioning: d.positioning, shortBio: `I help ${d.niche}.`, trustBullets: ['Clear process', 'Fast turnaround'], ctaLine: 'Let us talk.' },
-    portfolioGoal: goal,
-    selectedAssetTypes: ['sample_project', 'before_after', 'process_walkthrough'],
-    caseStudy: cs,
-    sampleProject: sp,
-    pageStructure,
-    portfolioCopy: pc,
-    checklist: [
-      { label: '1 strong headline', status: 'pending' },
-      { label: '1 clear service description', status: 'pending' },
-      { label: '2-3 proof assets', status: 'pending' },
-      { label: '1 case study', status: 'pending' },
-      { label: '1 process explanation', status: 'pending' },
-      { label: '1 CTA', status: 'pending' },
-      { label: 'Contact method', status: 'pending' },
-      { label: 'No fake claims', status: 'ready' },
+  const ctx: import('../types/portfolio-system').UpstreamContext = {
+    mod1CareerTrackId: d.career,
+    mod1ServiceId: canonical.serviceId,
+    mod1MarketId: canonical.marketId,
+    mod1NicheId: canonical.nicheId,
+    mod1OfferId: null,
+    mod1Positioning: d.positioning,
+    mod2OfferType: d.offerType === 'Retainer' ? 'retainer' : d.offerType === 'One-Time Project' ? 'one_time_project' : 'milestone_based',
+    mod2Deliverables: d.deliverables,
+    mod2UniqueMechanism: d.mechanism,
+    mod2ScopeLimits: {},
+    mod2ValueAmplifier: 'Priority Support',
+    mod2PricingModel: 'flat_rate',
+    mod2ProposalSummary: {},
+    mod3AuthorityPosition: 'builder',
+    mod3CoreTrustPromise: d.promise,
+    mod3ProofPriorities: [
+      { id: 'pp1', gapTitle: 'Capability demonstration', gapDescription: 'Show ability to deliver', recommendedFormat: 'case_study' },
     ],
-    portfolioReport: null,
-    currentStep: 'portfolio_goal',
-    completedSteps: [],
-  });
+    mod3ProofAssets: [
+      {
+        id: 'asset1', priorityId: 'pp1', title: `Sample ${d.serviceLabel}`, assetType: 'case_study',
+        credibilityGapProved: 'demonstrated ability',
+        portfolioCopy: { headline: `${d.serviceLabel}: Case Study`, description: `How I helped ${d.niche}`, proofStatement: `Delivered professional ${d.serviceLabel.toLowerCase()}`, cta: 'See the work' },
+        presentationStructure: ['problem', 'process', 'result'],
+        isAccepted: true,
+      },
+    ],
+    mod3ProfileCopy: {
+      professionalHeadline: d.positioning,
+      shortBio: `I help ${d.niche} with ${d.serviceLabel.toLowerCase()}.`,
+      longBio: d.positioning,
+      offerStatement: d.offerName,
+      credibilityBullets: ['Clear process', 'Fast turnaround'],
+      proofReferenceLine: 'See my work below.',
+      ctaLine: 'Let us talk.',
+    },
+    mod3PortfolioCopy: {
+      portfolioCta: 'Ready to start?',
+      sections: [],
+    },
+  };
+
+  const result = composeAll(ctx);
+  const store = usePortfolioSystemStore.getState();
+  store.reset();
+
+  store.setPhase3Context(ctx);
+  store.setPortfolioDirection(result.direction);
+  store.setPlatformRecommendation(result.platform);
+  store.setSections(result.sections);
+  store.setProjectPlacements(result.placements);
+  store.setProjectPresentations(result.presentations);
+  store.setPortfolioCopy(result.copy);
+  store.setBuildChecklist(result.buildChecklist);
+  store.setPublishChecklist(result.publishChecklist);
+  store.setBuildPack(result.pack);
+  store.confirmStep();
 }
 
 function seedPhase5(s: Scenario) {
   const d = SCENARIOS[s];
+  const canonical = SCENARIO_TO_CANONICAL[s];
   const cat = getServiceCategory(d.service);
 
   const sourceMap = generateClientSourceMap(cat, d.niche);
@@ -319,11 +317,13 @@ function seedPhase5(s: Scenario) {
 
   useClientPipelineStore.getState().reset();
   const ps = usePortfolioSystemStore.getState();
+  const up = ps.upstream;
+  const dir = ps.portfolioDirection;
   useClientPipelineStore.setState({
-    phase4Service: d.service,
+    phase4Service: canonical.serviceId,
     phase4ServiceLabel: d.serviceLabel,
-    phase4Market: d.market,
-    phase4Niche: d.niche,
+    phase4Market: canonical.marketId,
+    phase4Niche: canonical.nicheId ?? d.niche,
     phase4Positioning: d.positioning,
     phase4OfferName: d.offerName,
     phase4OfferType: d.offerType,
@@ -333,17 +333,22 @@ function seedPhase5(s: Scenario) {
     phase4Timeline: d.timeline,
     phase4ScopeDetails: `${d.deliverables.length} deliverables included`,
     phase4AuthorityAngle: d.angle,
-    phase4ProofAssets: ps.phase3ProofAssets,
-    phase4PortfolioAssets: ps.phase3PortfolioAssets,
-    phase4TrustBuilderChecklist: ps.phase3TrustBuilderChecklist,
-    phase4ContentAssets: ps.phase3ContentAssets,
-    phase4AuthorityProfile: ps.phase3AuthorityProfile,
-    phase4PortfolioGoal: ps.portfolioGoal,
-    phase4SelectedAssets: ps.selectedAssetTypes,
-    phase4CaseStudy: { projectTitle: ps.caseStudy.projectTitle, clientNicheType: ps.caseStudy.clientNicheType },
-    phase4SampleProject: { projectName: ps.sampleProject.projectName, goal: ps.sampleProject.goal },
-    phase4PortfolioCopy: { headline: ps.portfolioCopy.headline, shortIntro: ps.portfolioCopy.shortIntro },
-    phase4PortfolioReport: ps.portfolioReport,
+    phase4ProofAssets: (up?.mod3ProofAssets ?? []).map((a) => ({ title: a.title, type: a.assetType })),
+    phase4PortfolioAssets: [],
+    phase4TrustBuilderChecklist: [],
+    phase4ContentAssets: [],
+    phase4AuthorityProfile: {
+      oneLinePositioning: up?.mod3ProfileCopy.professionalHeadline || d.positioning,
+      shortBio: up?.mod3ProfileCopy.shortBio || '',
+      trustBullets: up?.mod3ProfileCopy.credibilityBullets || [],
+      ctaLine: up?.mod3ProfileCopy.ctaLine || '',
+    },
+    phase4PortfolioGoal: { goals: [], statement: dir?.portfolioPromise || '' },
+    phase4SelectedAssets: [],
+    phase4CaseStudy: { projectTitle: '', clientNicheType: '' },
+    phase4SampleProject: { projectName: '', goal: '' },
+    phase4PortfolioCopy: { headline: ps.portfolioCopy?.headline || '', shortIntro: ps.portfolioCopy?.shortIntro || '' },
+    phase4PortfolioReport: null,
     clientSourceMap: sourceMap,
     idealClientCriteria: criteria,
     prospectTypes: prospectTypes,
@@ -407,7 +412,7 @@ export function DevTestTools() {
   const seedCompleteModule4 = useCallback(() => {
     seedCompleteModule3();
     usePortfolioSystemStore.getState().reset();
-    usePortfolioSystemStore.setState({ completedSteps: [...ALL_MOD4], currentStep: 'portfolio_report' });
+    usePortfolioSystemStore.setState({ completedSteps: [...ALL_MOD4] as any, currentStep: 'portfolio_build_pack' });
     show('✅ Module 4 marked complete');
   }, [seedCompleteModule3, show]);
 

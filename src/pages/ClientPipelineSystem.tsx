@@ -9,84 +9,56 @@ export function ClientPipelineSystemPage() {
   const phase4Service = useClientPipelineStore((s) => s.phase4Service);
   const reset = useClientPipelineStore((s) => s.reset);
 
-  const service = usePortfolioSystemStore((s) => s.phase3Service);
-  const serviceLabel = usePortfolioSystemStore((s) => s.phase3ServiceLabel);
-  const market = usePortfolioSystemStore((s) => s.phase3Market);
-  const niche = usePortfolioSystemStore((s) => s.phase3Niche);
-  const positioning = usePortfolioSystemStore((s) => s.phase3Positioning);
-  const offerName = usePortfolioSystemStore((s) => s.phase3OfferName);
-  const offerType = usePortfolioSystemStore((s) => s.phase3OfferType);
-  const deliverables = usePortfolioSystemStore((s) => s.phase3Deliverables);
-  const uniqueMechanism = usePortfolioSystemStore((s) => s.phase3UniqueMechanism);
-  const pricing = usePortfolioSystemStore((s) => s.phase3Pricing);
-  const timeline = usePortfolioSystemStore((s) => s.phase3Timeline);
-  const scopeDetails = usePortfolioSystemStore((s) => s.phase3ScopeDetails);
-  const authorityAngle = usePortfolioSystemStore((s) => s.phase3AuthorityAngle);
-  const proofAssets = usePortfolioSystemStore((s) => s.phase3ProofAssets);
-  const portfolioAssets = usePortfolioSystemStore((s) => s.phase3PortfolioAssets);
-  const trustBuilderChecklist = usePortfolioSystemStore((s) => s.phase3TrustBuilderChecklist);
-  const contentAssets = usePortfolioSystemStore((s) => s.phase3ContentAssets);
-  const authorityProfile = usePortfolioSystemStore((s) => s.phase3AuthorityProfile);
-  const portfolioGoal = usePortfolioSystemStore((s) => s.portfolioGoal);
-  const selectedAssets = usePortfolioSystemStore((s) => s.selectedAssetTypes);
-  const caseStudy = usePortfolioSystemStore((s) => s.caseStudy);
-  const sampleProject = usePortfolioSystemStore((s) => s.sampleProject);
+  const upstream = usePortfolioSystemStore((s) => s.upstream);
+  const portfolioDirection = usePortfolioSystemStore((s) => s.portfolioDirection);
   const portfolioCopy = usePortfolioSystemStore((s) => s.portfolioCopy);
-  const portfolioReport = usePortfolioSystemStore((s) => s.portfolioReport);
+  const buildPack = usePortfolioSystemStore((s) => s.buildPack);
 
   useEffect(() => {
-    if (!service) return;
+    if (!upstream?.mod1ServiceId) return;
+    const service = upstream.mod1ServiceId;
     const ctxChanged = phase4Service !== null && phase4Service !== service;
     if (ctxChanged) reset();
+
     setPhase4Context({
       service,
-      serviceLabel,
-      market,
-      niche,
-      positioning: positioning || '',
-      offerName: offerName || service || '',
-      offerType,
-      deliverables: deliverables ?? [],
-      uniqueMechanism: uniqueMechanism || '',
-      pricing: pricing || '',
-      timeline: timeline || '',
-      scopeDetails: scopeDetails || '',
-      authorityAngle: authorityAngle || '',
-      proofAssets: (proofAssets ?? []).map((a) => ({ title: a.title, type: a.type })),
-      portfolioAssets: (portfolioAssets ?? []).map((a) => ({ name: a.name })),
-      trustBuilderChecklist: (trustBuilderChecklist ?? []).map((i) => ({ label: i.label, status: i.status })),
-      contentAssets: (contentAssets ?? []).map((a) => ({ title: a.title })),
+      serviceLabel: service.replace(/_/g, ' '),
+      market: upstream.mod1MarketId || '',
+      niche: upstream.mod1NicheId || '',
+      positioning: upstream.mod1Positioning || '',
+      offerName: upstream.mod3ProfileCopy.professionalHeadline || service || '',
+      offerType: upstream.mod2OfferType || '',
+      deliverables: upstream.mod2Deliverables ?? [],
+      uniqueMechanism: upstream.mod2UniqueMechanism || '',
+      pricing: '',
+      timeline: '',
+      scopeDetails: '',
+      authorityAngle: upstream.mod3AuthorityPosition || '',
+      proofAssets: upstream.mod3ProofAssets.map((a) => ({ title: a.title, type: a.assetType })),
+      portfolioAssets: [],
+      trustBuilderChecklist: [],
+      contentAssets: [],
       authorityProfile: {
-        oneLinePositioning: authorityProfile?.oneLinePositioning || '',
-        shortBio: authorityProfile?.shortBio || '',
-        trustBullets: authorityProfile?.trustBullets || [],
-        ctaLine: authorityProfile?.ctaLine || '',
+        oneLinePositioning: upstream.mod3ProfileCopy.professionalHeadline || '',
+        shortBio: upstream.mod3ProfileCopy.shortBio || '',
+        trustBullets: upstream.mod3ProfileCopy.credibilityBullets || [],
+        ctaLine: upstream.mod3ProfileCopy.ctaLine || '',
       },
       portfolioGoal: {
-        goals: portfolioGoal?.goals || [],
-        statement: portfolioGoal?.statement || '',
+        goals: [],
+        statement: portfolioDirection?.portfolioPromise || '',
       },
-      selectedAssets: selectedAssets ?? [],
-      caseStudy: {
-        projectTitle: caseStudy?.projectTitle || '',
-        clientNicheType: caseStudy?.clientNicheType || '',
-      },
-      sampleProject: {
-        projectName: sampleProject?.projectName || '',
-        goal: sampleProject?.goal || '',
-      },
+      selectedAssets: [],
+      caseStudy: { projectTitle: '', clientNicheType: '' },
+      sampleProject: { projectName: '', goal: '' },
       portfolioCopy: {
         headline: portfolioCopy?.headline || '',
         shortIntro: portfolioCopy?.shortIntro || '',
       },
-      portfolioReport,
+      portfolioReport: null,
     });
   }, [
-    service, serviceLabel, market, niche, positioning, offerName, offerType,
-    deliverables, uniqueMechanism, pricing, timeline, scopeDetails,
-    authorityAngle, proofAssets, portfolioAssets, trustBuilderChecklist,
-    contentAssets, authorityProfile, portfolioGoal, selectedAssets,
-    caseStudy, sampleProject, portfolioCopy, portfolioReport,
+    upstream, portfolioDirection, portfolioCopy, buildPack,
     setPhase4Context, phase4Service, reset,
   ]);
 
