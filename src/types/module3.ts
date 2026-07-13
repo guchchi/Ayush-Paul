@@ -31,6 +31,7 @@ export interface ProofAssetPortfolioCopy {
   headline: string;
   description: string;
   proofStatement: string;
+  cta: string;
 }
 
 export interface ProofAsset {
@@ -42,12 +43,17 @@ export interface ProofAsset {
   targetAudience: string;
   businessProblem: string;
   scenario: string;
-  startingMaterial: string;
+  startingMaterial: string[];
   executionSteps: string[];
   deliverables: string[];
   evidenceToCapture: string[];
-  presentationStructure: string;
+  processToDocument: string[];
+  whatNotToClaim: string[];
+  presentationStructure: string[];
   portfolioCopy: ProofAssetPortfolioCopy;
+  completionChecklist: string[];
+  sourcePriorityFingerprint: string;
+  isCustom: boolean;
   isAccepted: boolean;
 }
 
@@ -151,6 +157,8 @@ export interface Module3State {
   setAuthorityPositionRationale(value: string): void;
   setProofPriorities(value: ProofPriority[]): void;
   setProofAssets(value: ProofAsset[]): void;
+  updateProofAsset(id: string, updates: Partial<ProofAsset>): void;
+  replaceProofAsset(id: string, newAsset: ProofAsset): void;
   setProfileCopy(value: ProfileCopy): void;
   setPortfolioCopy(value: PortfolioCopy): void;
   setChecklist(value: ChecklistItem[]): void;

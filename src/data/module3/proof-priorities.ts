@@ -15,7 +15,7 @@ export type ProofFormat =
 export const ALL_FORMATS: { value: ProofFormat; label: string; description: string }[] = [
   { value: 'case_study', label: 'Case Study', description: 'Document a specific problem, your approach, and the result.' },
   { value: 'demo_video', label: 'Demo / Walkthrough', description: 'Show how you build, edit, or execute your process in real time.' },
-  { value: 'comparison', label: 'Comparison', description: 'Compare two approaches and demonstrate which works better and why.' },
+  { value: 'comparison', label: 'Comparison', description: 'Compare two approaches and demonstrate how they differ in process or outcome.' },
   { value: 'framework', label: 'Framework / System', description: 'Present your repeatable method as a structured framework.' },
   { value: 'before_after', label: 'Before & After', description: 'Show the transformation your work creates.' },
   { value: 'explainer', label: 'Explainer / Educational', description: 'Teach something valuable to demonstrate your expertise.' },
@@ -162,7 +162,7 @@ function generateServiceCandidates(ctx: PriorityContext): CandidateGap[] {
   if (track === 'editor') {
     const delivLabel = topDeliverables.length > 0 ? topDeliverables.join(' and ') : 'edited content';
     candidates.push({
-      title: `Prove you can ${topDeliverables.length > 0 ? 'deliver ' + delivLabel : 'edit content'} that holds attention`,
+      title: `Prove you can ${topDeliverables.length > 0 ? 'deliver ' + delivLabel : 'edit content'} designed to hold attention`,
       description: `${capitalizeFirst(buyer)} need to believe your editing keeps viewers watching. Show a concrete example that demonstrates your pacing, hook structure, and retention-focused editing decisions.`,
       format: pickFormat(ctx.authorityPosition, 'service_capability'),
       weight: 9,
@@ -190,8 +190,11 @@ function generateServiceCandidates(ctx: PriorityContext): CandidateGap[] {
 
   if (track === 'designer') {
     const delivLabel = topDeliverables.length > 0 ? topDeliverables.join(' and ') : 'design work';
+    const labelWithArticle = topDeliverables.length === 1 && !topDeliverables[0].endsWith('s')
+      ? 'a ' + delivLabel
+      : delivLabel;
     candidates.push({
-      title: `Prove you can create ${delivLabel} with purpose`,
+      title: `Prove you can create ${labelWithArticle} with purpose`,
       description: `${capitalizeFirst(buyer)} need to see your design thinking, not just your final output. Walk through a design decision process that shows you solve real problems, not just make things look good.`,
       format: pickFormat(ctx.authorityPosition, 'service_capability'),
       weight: 9,
@@ -262,7 +265,7 @@ function generateBuyerDoubtCandidates(ctx: PriorityContext): CandidateGap[] {
     local_businesses: [
       {
         title: 'Prove you understand local customer acquisition',
-        description: `Local businesses need to attract nearby customers, not a global audience. Show that you understand local SEO, review signals, and community-based marketing.`,
+        description: `Local businesses need to attract nearby customers, not a global audience. Show that your work drives local visibility — through local-intent structure, clear conversion and enquiry paths, and trust signals placed where nearby customers will see them.`,
       },
       {
         title: 'Prove you can work with limited budgets',
@@ -382,8 +385,8 @@ function generateOfferRiskCandidates(ctx: PriorityContext): CandidateGap[] {
       }
       case 'developer': {
         const scope = topDeliverables.length > 0
-          ? `translate requirements into a responsive, tested, deployable ${topDeliverables.join(' and ')}`
-          : `translate agreed requirements into a responsive, tested, deployable build`;
+          ? `translate requirements into ${topDeliverables.join(' and ')} that are production-ready`
+          : `translate agreed requirements into a production-ready build`;
         candidates.push({
           title: 'Prove you can deliver production-ready builds',
           description: `${capitalizeFirst(buyer)} need confidence that you can ${scope}. Show a project from requirements to deployment.`,
@@ -395,7 +398,7 @@ function generateOfferRiskCandidates(ctx: PriorityContext): CandidateGap[] {
       }
       case 'designer': {
         const scope = topDeliverables.length > 0
-          ? `move from brand direction to a coherent final ${topDeliverables.join(' and ')}`
+          ? `move from brand direction to coherent final ${topDeliverables.join(' and ')}`
           : `move from creative brief to a coherent final design system`;
         candidates.push({
           title: 'Prove you can take a brief to finished design',
@@ -459,7 +462,7 @@ function generateOfferRiskCandidates(ctx: PriorityContext): CandidateGap[] {
   if (mechanism) {
     candidates.push({
       title: `Prove your "${ctx.uniqueMechanism}" approach works`,
-      description: `${capitalizeFirst(buyer)} are buying your mechanism, not generic output. Show exactly how your approach produces different — and better — results than alternatives.`,
+      description: `${capitalizeFirst(buyer)} are buying your mechanism, not generic output. Show exactly how your approach changes the process or final output compared with a clear baseline.`,
       format: 'comparison',
       weight: 8,
       category: 'offer_risk',
@@ -608,28 +611,28 @@ function generateFallbackPriorities(ctx: PriorityContext): ProofPriority[] {
     switch (track) {
       case 'editor':
         gaps.push({
-          title: `Prove you can deliver a polished ${deliverableLabel} from start to finish`,
+          title: `Prove you can deliver polished ${deliverableLabel} from start to finish`,
           description: `${capitalizeFirst(buyer)} need confidence you can own a project end-to-end. Document a full editing lifecycle showing how you took raw footage to final delivery.`,
           format: 'case_study',
         });
         break;
       case 'developer':
         gaps.push({
-          title: `Prove you can deliver a complete ${deliverableLabel} from start to finish`,
+          title: `Prove you can deliver complete ${deliverableLabel} from start to finish`,
           description: `${capitalizeFirst(buyer)} need confidence you can own a project end-to-end. Document a full build lifecycle showing how you took it from requirements to deployment.`,
           format: 'case_study',
         });
         break;
       case 'designer':
         gaps.push({
-          title: `Prove you can deliver a complete ${deliverableLabel} from start to finish`,
+          title: `Prove you can deliver complete ${deliverableLabel} from start to finish`,
           description: `${capitalizeFirst(buyer)} need confidence you can own a project end-to-end. Document a full design lifecycle showing how you took it from brief to final output.`,
           format: 'case_study',
         });
         break;
       default:
         gaps.push({
-          title: `Prove you can deliver a complete ${deliverableLabel} from start to finish`,
+          title: `Prove you can deliver complete ${deliverableLabel} from start to finish`,
           description: `${capitalizeFirst(buyer)} need confidence you can own a project end-to-end. Document a full project lifecycle showing how you took it from brief to delivery.`,
           format: 'case_study',
         });
@@ -639,13 +642,13 @@ function generateFallbackPriorities(ctx: PriorityContext): ProofPriority[] {
 
   if (mechanism) {
     gaps.push({
-      title: `Prove your "${mechanism}" approach produces better outcomes`,
-      description: `${capitalizeFirst(buyer)} are choosing you for your specific approach, not generic output. Compare your method against a common alternative and show why it works better.`,
+      title: `Prove your "${mechanism}" approach changes the outcome`,
+      description: `${capitalizeFirst(buyer)} are choosing you for your specific approach, not generic output. Compare your method against a common alternative and show how the results differ.`,
       format: 'comparison',
     });
   } else {
     gaps.push({
-      title: `Prove you deliver ${deliverableLabel} that solves real market problems`,
+      title: `Prove you deliver ${deliverableLabel} designed for real market problems`,
       description: `${capitalizeFirst(buyer)} need proof that your work addresses their actual challenges, not just generic best practices. Show how you tailored your approach to a specific buyer need.`,
       format: 'educational_content',
     });

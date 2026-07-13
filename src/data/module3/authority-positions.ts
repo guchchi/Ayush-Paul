@@ -157,13 +157,32 @@ export function resolveBuyerProblem(marketId: string | null): string {
   return BUYER_PROBLEMS[marketId] ?? 'finding credible expertise they can trust';
 }
 
-function normalise(value: string): string {
-  return value.toLowerCase().trim();
+const BUYER_PROBLEM_CLAUSES: Record<string, string> = {
+  youtube_creators: 'consistent, high-quality content earns viewer trust',
+  creators: 'they can build authority without a big portfolio',
+  coaches: 'educational content earns attention and trust',
+  agencies: 'reliable quality at scale drives client retention',
+  local_businesses: 'a credible online presence attracts local customers',
+  saas_startups: 'a polished product experience attracts users and investors',
+  startups: 'fast execution must not sacrifice quality',
+  coaches_consultants: 'professional credibility drives consultation bookings',
+  course_creators: 'polished content keeps students engaged',
+  podcasters: 'better-produced episodes grow listenership',
+  educators: 'clear video lessons improve student outcomes',
+  personal_brands: 'consistent quality builds audience trust',
+  business_owners: 'professional content works without full-time overhead',
+  ecommerce_brands: 'reliable creative production at volume wins',
+  marketing_agencies: 'dependable creative production keeps clients',
+  personal_brand_creators: 'expertise must be reflected through every piece of content',
+};
+
+export function resolveBuyerProblemClause(marketId: string | null): string {
+  if (!marketId) return 'they can earn trust without past client work';
+  return BUYER_PROBLEM_CLAUSES[marketId] ?? 'they need credible expertise they can trust';
 }
 
-function countMatches(terms: string[], source: string): number {
-  const lower = normalise(source);
-  return terms.reduce((count, term) => (lower.includes(term) ? count + 1 : count), 0);
+function normalise(value: string): string {
+  return value.toLowerCase().trim();
 }
 
 function scoreBuilder(ctx: PositionContext): number {
@@ -369,17 +388,55 @@ function describeDeliverableSet(deliverables: string[], serviceId: string | null
   return `${top[0]} and ${top[1]}`;
 }
 
-function describeProcess(deliverables: string[], mechanism: string, serviceId: string | null): string {
+interface ProcessPhrase {
+  text: string;
+}
+
+function normaliseMechanismToProcess(mechanism: string): string {
+  const text = mechanism.trim();
+  const words = text.split(/\s+/);
+  const lastWord = words[words.length - 1] ?? '';
+  const lowerLast = lastWord.toLowerCase();
+
+  if (lowerLast === 'builder' && words.length >= 2) {
+    const penultimate = words[words.length - 2];
+    const prefix = words.slice(0, -2).join(' ');
+    if (prefix) return `${prefix} ${penultimate}-building system`;
+    return `${penultimate}-building system`;
+  }
+
+  if (lowerLast === 'design' && words.length >= 2) {
+    const penultimate = words[words.length - 2];
+    const prefix = words.slice(0, -2).join(' ');
+    if (prefix) return `${prefix}, ${penultimate}-focused design approach`;
+    return `${penultimate}-focused design approach`;
+  }
+
+  return text;
+}
+
+function describeProcess(deliverables: string[], mechanism: string, serviceId: string | null): ProcessPhrase {
   const mech = mechanism.trim();
   if (mech) {
-    return mech;
+    return { text: normaliseMechanismToProcess(mech) };
   }
   const label = getServiceLabel(serviceId).toLowerCase();
-  if (label.includes('edit')) return 'selecting the best moments, pacing the story, and polishing every frame';
-  if (label.includes('develop')) return 'turning requirements into clean, functional builds';
-  if (label.includes('design')) return 'moving from concept to pixel-perfect output';
-  if (label.includes('automation')) return 'designing workflows that save time and eliminate errors';
-  return 'applying a structured, repeatable approach';
+  if (label.includes('edit')) return { text: 'selecting the best moments, pacing the story, and polishing every frame' };
+  if (label.includes('develop')) return { text: 'turning requirements into clean, functional builds' };
+  if (label.includes('design')) return { text: 'moving from concept to pixel-perfect output' };
+  if (label.includes('automation')) return { text: 'designing workflows that save time and eliminate errors' };
+  return { text: 'applying a structured, repeatable approach' };
+}
+
+function mechanismLead(mechanismText: string): string {
+  const lastWord = mechanismText.trim().split(/\s+/).pop() ?? '';
+  const endsWithGerund = lastWord.endsWith('ing');
+  if (endsWithGerund) {
+    return `Using ${mechanismText}`;
+  }
+  const first = mechanismText.trim().charAt(0).toLowerCase();
+  const article = 'aeiou'.includes(first) ? 'an' : 'a';
+  return `Using ${article} ${mechanismText}`;
 }
 
 export function generateCoreTrustPromise(
@@ -389,7 +446,7 @@ export function generateCoreTrustPromise(
   const serviceLabel = getServiceLabel(ctx.serviceId);
   const article = indefiniteArticle(serviceLabel);
   const buyer = getBuyerLabel(ctx.marketId);
-  const problem = resolveBuyerProblem(ctx.marketId);
+  const problemClause = resolveBuyerProblemClause(ctx.marketId);
 
   const positioning = ctx.positioning.trim();
   const roleWithPositioning = positioning
@@ -402,27 +459,27 @@ export function generateCoreTrustPromise(
   switch (position) {
     case 'builder': {
       const process = describeProcess(deliverables, mechanism, ctx.serviceId);
-      const processLead = mechanism
-        ? `Through ${process}`
-        : `By ${process}`;
-      return `As ${roleWithPositioning}, I prove my expertise through the quality of what I produce. ${processLead}, I show ${buyer} I understand their need for ${problem}. This is the standard of work they can expect.`;
+      if (mechanism) {
+        return `As ${roleWithPositioning}, I prove my expertise through the quality of what I produce. ${mechanismLead(process.text)}, I show ${buyer} that I understand how ${problemClause}. This is the standard of work they can expect.`;
+      }
+      return `As ${roleWithPositioning}, I prove my expertise through the quality of what I produce. By ${process.text}, I show ${buyer} that I understand how ${problemClause}. This is the standard of work they can expect.`;
     }
 
     case 'auditor': {
       const method = mechanism || 'structured analysis';
-      return `As ${roleWithPositioning}, I prove my expertise by finding what is broken and showing how to fix it. My ${method} gives ${buyer} a clear, measurable path to better results, because I understand their need for ${problem}.`;
+      return `As ${roleWithPositioning}, I prove my expertise by finding what is broken and showing how to fix it. My ${method} gives ${buyer} a clear, measurable path to better results, because I understand that ${problemClause}.`;
     }
 
     case 'deconstructor': {
       const framework = mechanism || 'structured analysis';
-      return `As ${roleWithPositioning}, I prove my expertise by breaking down why effective work succeeds. My ${framework} framework helps ${buyer} see exactly how to solve their need for ${problem}.`;
+      return `As ${roleWithPositioning}, I prove my expertise by breaking down why effective work succeeds. My ${framework} framework helps ${buyer} see exactly how to solve the challenge that ${problemClause}.`;
     }
 
     case 'practitioner': {
       const action = mechanism
         ? `applying ${mechanism} every day`
         : `delivering ${describeDeliverableSet(deliverables, ctx.serviceId)} myself`;
-      return `As ${roleWithPositioning}, I prove my expertise by doing the work myself, every day. I help ${buyer} by ${action}, which means I understand their need for ${problem} first-hand.`;
+      return `As ${roleWithPositioning}, I prove my expertise by doing the work myself, every day. I help ${buyer} by ${action}, which means I understand first-hand that ${problemClause}.`;
     }
   }
 }

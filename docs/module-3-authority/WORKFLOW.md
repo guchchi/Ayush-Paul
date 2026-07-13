@@ -52,14 +52,18 @@
     *   `credibilityGapProved`: Mapped from Step 2.
     *   `businessProblem`: The hypothetical or real public problem being solved.
     *   `scenario`: Context of the project.
-    *   `startingMaterial`: What the user needs to find/prepare to start.
+    *   `startingMaterial`: Array of what the user needs to find/prepare to start.
     *   `executionSteps`: 3-5 bulleted steps to actually do the work.
     *   `deliverables`: What physical files/documents to output.
     *   `evidenceToCapture`: Specific screenshots or screen recordings needed.
-    *   `whatNotToClaim`: Explicit warning (e.g., "Do not claim this was paid work").
+    *   `processToDocument`: Specific reasoning/decisions the user must explain.
+    *   `whatNotToClaim`: Explicit warnings (e.g., "Do not claim this was paid work"). Minimum 2 items.
     *   `presentationStructure`: How to lay it out in the portfolio.
-    *   `suggestedHeadline`, `suggestedDescription`, `proofStatement`: Copy for the portfolio card.
+    *   `portfolioCopy`: Object containing `headline`, `description`, `proofStatement`, and `cta` for the portfolio card.
     *   `completionChecklist`: Task list for this specific asset.
+    *   `sourcePriorityFingerprint`: Persisted deterministic fingerprint of the linked ProofPriority used to generate the asset.
+    *   `isCustom`: Boolean, true when the user manually edits any Proof Asset content.
+    *   `isAccepted`: Boolean, indicates the user has accepted/finalised the generated brief.
 *   **Personalisation Dimensions:** Highly specific. An Email Marketer targeting SaaS (Auditor) gets a brief to "Audit an abandoned cart sequence from a top 100 SaaS".
 *   **Asset Editing Behaviour:** Users can regenerate a single brief if they don't like it, or manually edit the text.
 *   **Validation:** All 3 briefs must be marked as "Accepted" to proceed.

@@ -199,6 +199,24 @@ export const useModule3Store = create<Module3State>()(
         set({ proofAssets: value, lastUpdated: Date.now() });
       },
 
+      updateProofAsset(id: string, updates: Partial<ProofAsset>) {
+        set((state) => ({
+          proofAssets: state.proofAssets.map((asset) => 
+            asset.id === id ? { ...asset, ...updates, isCustom: true } : asset
+          ),
+          lastUpdated: Date.now()
+        }));
+      },
+
+      replaceProofAsset(id: string, newAsset: ProofAsset) {
+        set((state) => ({
+          proofAssets: state.proofAssets.map((asset) => 
+            asset.id === id ? newAsset : asset
+          ),
+          lastUpdated: Date.now()
+        }));
+      },
+
       setProfileCopy(value: ProfileCopy) {
         set({ profileCopy: value, lastUpdated: Date.now() });
       },

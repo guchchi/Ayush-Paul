@@ -27,16 +27,22 @@ interface Module3State {
     targetAudience: string;
     businessProblem: string;
     scenario: string;
-    startingMaterial: string;
+    startingMaterial: string[];
     executionSteps: string[];
     deliverables: string[];
     evidenceToCapture: string[];
-    presentationStructure: string;
+    processToDocument: string[];
+    whatNotToClaim: string[];
+    presentationStructure: string[];
     portfolioCopy: {
       headline: string;
       description: string;
       proofStatement: string;
+      cta: string;
     };
+    completionChecklist: string[];
+    sourcePriorityFingerprint: string;
+    isCustom: boolean;
     isAccepted: boolean;
   }[];
 
