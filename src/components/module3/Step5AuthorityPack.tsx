@@ -10,6 +10,7 @@ import { useModule3Store } from '../../lib/module3';
 import { compileAuthorityPack, compileMarkdown } from '../../data/module3/authority-pack';
 import type { CompiledAuthorityPack } from '../../data/module3/authority-pack';
 import type { ChecklistItem } from '../../types/module3';
+import { composeStep5Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 
 const CHECKLIST_TEMPLATES: { id: string; category: ChecklistItem['category']; task: string }[] = [
   { id: 'build_1', category: 'build', task: 'Create proof asset #1 from its brief' },
@@ -78,6 +79,33 @@ export function Step5AuthorityPack() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const hasProfile = useModule3Store((s) => !!s.profileCopy.professionalHeadline);
+
+  const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
+  const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
+  const mod1NicheId = useModule3Store((s) => s.mod1NicheId);
+  const mod1Positioning = useModule3Store((s) => s.mod1Positioning);
+  const mod2OfferType = useModule3Store((s) => s.mod2OfferType);
+  const mod2Deliverables = useModule3Store((s) => s.mod2Deliverables);
+  const mod2UniqueMechanism = useModule3Store((s) => s.mod2UniqueMechanism);
+  const mod2ValueAmplifier = useModule3Store((s) => s.mod2ValueAmplifier);
+
+  const personalized = useMemo(() => {
+    const pctx = buildPersonalizationContext({
+      serviceId: mod1ServiceId,
+      marketId: mod1MarketId,
+      nicheId: mod1NicheId,
+      positioning: mod1Positioning,
+      offerType: mod2OfferType,
+      deliverables: mod2Deliverables,
+      uniqueMechanism: mod2UniqueMechanism,
+      valueAmplifier: mod2ValueAmplifier,
+      authorityPosition: null,
+      coreTrustPromise: '',
+      proofPriorities: undefined,
+      proofAssets: undefined,
+    });
+    return composeStep5Content(pctx);
+  }, [mod1ServiceId, mod1MarketId, mod1NicheId, mod1Positioning, mod2OfferType, mod2Deliverables, mod2UniqueMechanism, mod2ValueAmplifier]);
 
   const initialized = useMemo(() => {
     if (checklist.length === 0) {
@@ -156,11 +184,11 @@ export function Step5AuthorityPack() {
             Step 5 of 5
           </span>
           <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Authority Pack</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Compile all outputs and prepare to publish.</p>
+          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Compile all outputs and prepare to publish for your market.</p>
         </div>
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center space-y-4">
           <AlertTriangle size={24} className="mx-auto text-amber-700" />
-          <p className="text-sm text-neutral-600">Complete your profile and portfolio copy in Step 4 first.</p>
+          <p className="text-sm text-neutral-600">{personalized.emptyStateGuidance}</p>
           <button onClick={() => jumpToStep('profile_portfolio')} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0058be] text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer">
             Go to Step 4
           </button>
@@ -178,7 +206,7 @@ export function Step5AuthorityPack() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Your Authority System Is Ready</h2>
         <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          Your trust position, proof plan, profile copy, and portfolio structure are compiled into one execution pack.
+          {personalized.completedDescription}
         </p>
       </div>
 
@@ -319,6 +347,7 @@ export function Step5AuthorityPack() {
           </div>
           <span className="text-[10px] font-bold text-neutral-500 tabular-nums">{completedChecklistCount} of {totalChecklistCount}</span>
         </div>
+        <p className="text-[9px] text-neutral-400 leading-relaxed">{personalized.checklistGuidance}</p>
 
         <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
           {(['build', 'assemble', 'publish'] as const).map((category) => {

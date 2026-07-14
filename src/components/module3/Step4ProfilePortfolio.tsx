@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowLeft, ArrowRight, RotateCcw, AlertTriangle,
@@ -9,6 +9,7 @@ import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
 import { generateProfileCopy, generatePortfolioCopy } from '../../data/module3/profile-copy';
 import type { ProfileCopy, PortfolioCopy, PortfolioSection } from '../../types/module3';
+import { composeStep4Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -82,7 +83,7 @@ function ListField({ label, items, onChange }: { label: string; items: string[];
   );
 }
 
-function SectionCard({ section, index, onChange }: { section: PortfolioSection; index: number; onChange: (idx: number, s: PortfolioSection) => void }) {
+function SectionCard({ section, index, onChange, headingPlaceholder }: { section: PortfolioSection; index: number; onChange: (idx: number, s: PortfolioSection) => void; headingPlaceholder?: string }) {
   const update = (partial: Partial<PortfolioSection>) => onChange(index, { ...section, ...partial });
 
   const typeColors: Record<string, string> = {
@@ -111,7 +112,7 @@ function SectionCard({ section, index, onChange }: { section: PortfolioSection; 
           value={section.heading}
           onChange={(e) => update({ heading: e.target.value })}
           className="flex-1 bg-transparent text-sm font-semibold text-[#0b1c30] border-b border-transparent focus:border-[#0058be]/30 outline-none transition-colors"
-          placeholder="Section heading..."
+          placeholder={headingPlaceholder || 'Section heading...'}
         />
       </div>
       <textarea
@@ -164,6 +165,44 @@ export function Step4ProfilePortfolio() {
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
 
   const isCompleted = completedSteps.includes('profile_portfolio');
+
+  const personalized = useMemo(() => {
+    const pctx = buildPersonalizationContext({
+      serviceId: ctx.serviceId,
+      marketId: ctx.marketId,
+      nicheId: ctx.nicheId,
+      positioning: ctx.positioning,
+      offerType: ctx.offerType,
+      deliverables: ctx.deliverables,
+      uniqueMechanism: ctx.uniqueMechanism,
+      valueAmplifier: ctx.valueAmplifier,
+      authorityPosition: authorityPosition,
+      coreTrustPromise: coreTrustPromise || '',
+      proofPriorities: proofPriorities.map((p) => ({
+        id: p.id,
+        gapTitle: p.gapTitle,
+        gapDescription: p.gapDescription,
+        recommendedFormat: p.recommendedFormat,
+      })),
+      proofAssets: proofAssets.map((a) => ({
+        id: a.id,
+        title: a.title,
+        assetType: a.assetType,
+        isAccepted: a.isAccepted,
+      })),
+      professionalHeadline: profileCopy.professionalHeadline,
+      shortBio: profileCopy.shortBio,
+      longBio: profileCopy.longBio,
+      offerStatement: profileCopy.offerStatement,
+      credibilityBullets: profileCopy.credibilityBullets,
+      proofReferenceLine: profileCopy.proofReferenceLine,
+      ctaLine: profileCopy.ctaLine,
+      portfolioCta: portfolioCopy.portfolioCta,
+      portfolioSections: portfolioCopy.sections,
+    });
+    return composeStep4Content(pctx);
+  }, [ctx, authorityPosition, coreTrustPromise, proofPriorities, proofAssets, profileCopy, portfolioCopy]);
+
   const [generated, setGenerated] = useState(false);
   const [showRegenWarning, setShowRegenWarning] = useState(false);
 
@@ -232,7 +271,7 @@ export function Step4ProfilePortfolio() {
         </div>
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center space-y-4">
           <AlertTriangle size={24} className="mx-auto text-amber-700" />
-          <p className="text-sm text-neutral-600">Accept all 3 proof assets in Step 3 first.</p>
+          <p className="text-sm text-neutral-600">{personalized.emptyStateGuidance}</p>
           <button onClick={() => jumpToStep('proof_asset_builder')} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0058be] text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer">
             Go to Step 3
           </button>
@@ -249,7 +288,7 @@ export function Step4ProfilePortfolio() {
             Step 4 of 5
           </span>
           <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Profile &amp; Portfolio Authority</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Finalize your platform-agnostic profile and portfolio copy.</p>
+          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">{personalized.loadingText}</p>
         </div>
         <div className="flex items-center justify-center py-16">
           <div className="w-5 h-5 border-2 border-[#0058be]/20 border-t-[#0058be] rounded-full animate-spin" />
@@ -266,7 +305,7 @@ export function Step4ProfilePortfolio() {
             Step 4 of 5
           </span>
           <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Profile &amp; Portfolio Authority</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Review, edit, and finalize your public copy.</p>
+          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">{personalized.description}</p>
         </div>
         <button
           onClick={handleRegenerate}
@@ -317,9 +356,9 @@ export function Step4ProfilePortfolio() {
               <User size={10} />
               Identity
             </div>
-            <Field label="Professional Headline" value={profileCopy.professionalHeadline} onChange={(v) => handleProfileField('professionalHeadline', v)} helperText="Appears at the top of your profile" />
-            <Field label="Short Bio" value={profileCopy.shortBio} onChange={(v) => handleProfileField('shortBio', v)} rows={4} helperText="2-3 sentence summary" />
-            <Field label="Long Bio" value={profileCopy.longBio} onChange={(v) => handleProfileField('longBio', v)} rows={6} helperText="Detailed background and expertise" />
+            <Field label="Professional Headline" value={profileCopy.professionalHeadline} onChange={(v) => handleProfileField('professionalHeadline', v)} helperText={personalized.fieldHelpers.professional_headline} />
+            <Field label="Short Bio" value={profileCopy.shortBio} onChange={(v) => handleProfileField('shortBio', v)} rows={4} helperText={personalized.fieldHelpers.short_bio} />
+            <Field label="Long Bio" value={profileCopy.longBio} onChange={(v) => handleProfileField('longBio', v)} rows={6} helperText={personalized.fieldHelpers.long_bio} />
           </div>
 
           <div className="space-y-3">
@@ -327,7 +366,7 @@ export function Step4ProfilePortfolio() {
               <Briefcase size={10} />
               Offer
             </div>
-            <Field label="Offer Statement" value={profileCopy.offerStatement} onChange={(v) => handleProfileField('offerStatement', v)} rows={3} helperText="What you do and who you serve" />
+            <Field label="Offer Statement" value={profileCopy.offerStatement} onChange={(v) => handleProfileField('offerStatement', v)} rows={3} helperText={personalized.fieldHelpers.offer_statement} />
           </div>
 
           <div className="space-y-3">
@@ -336,7 +375,7 @@ export function Step4ProfilePortfolio() {
               Credibility
             </div>
             <ListField label="Credibility Bullets" items={profileCopy.credibilityBullets} onChange={(v) => handleProfileField('credibilityBullets', v)} />
-            <Field label="Proof Reference Line" value={profileCopy.proofReferenceLine} onChange={(v) => handleProfileField('proofReferenceLine', v)} helperText="Link to portfolio or proof assets" />
+            <Field label="Proof Reference Line" value={profileCopy.proofReferenceLine} onChange={(v) => handleProfileField('proofReferenceLine', v)} helperText={personalized.fieldHelpers.proof_reference_line} />
           </div>
 
           <div className="space-y-3">
@@ -344,7 +383,7 @@ export function Step4ProfilePortfolio() {
               <Zap size={10} />
               Action
             </div>
-            <Field label="CTA Line" value={profileCopy.ctaLine} onChange={(v) => handleProfileField('ctaLine', v)} helperText="What should someone do next?" />
+            <Field label="CTA Line" value={profileCopy.ctaLine} onChange={(v) => handleProfileField('ctaLine', v)} helperText={personalized.fieldHelpers.cta_line} />
           </div>
         </div>
 
@@ -366,7 +405,7 @@ export function Step4ProfilePortfolio() {
 
           <div className="space-y-3">
             {portfolioCopy.sections.map((section, i) => (
-              <SectionCard key={i} section={section} index={i} onChange={handlePortfolioSection} />
+              <SectionCard key={i} section={section} index={i} onChange={handlePortfolioSection} headingPlaceholder={personalized.sectionHeadingPlaceholder} />
             ))}
           </div>
 

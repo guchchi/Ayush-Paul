@@ -1,27 +1,118 @@
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Sparkles, Search, Check, ArrowRight } from 'lucide-react';
 import { useClientPipelineStore } from '../../lib/client-pipeline-system';
 import { cn } from '../../lib/utils';
-import { getServiceCategory, generateSearchQueries } from '../../lib/blueprint-content';
+import type { SearchQuery } from '../../types/client-pipeline-system';
+
+/**
+ * Deterministic search query generator — M5-local.
+ * Derives search queries from pipeline pack context (target channels,
+ * ideal prospect profile, niche, offer type, deliverables).
+ * No LLM calls, no random IDs.
+ */
+function generateSearchQueriesFromPack(
+  channels: { platform: string; searchInstructions: string }[],
+  profileTitle: string,
+  profileCharacteristics: string[],
+  serviceLabel: string,
+  offerType: string | null,
+  deliverables: string[],
+): SearchQuery[] {
+  const queries: SearchQuery[] = [];
+
+  // Collect unique platforms from channels
+  const platforms = [...new Set(channels.map((c) => c.platform))];
+  const topPlatforms = platforms.slice(0, 4);
+
+  // Extract keywords from profile
+  const keywords = [
+    profileTitle,
+    serviceLabel,
+    ...profileCharacteristics
+      .flatMap((c) => c.split(/need|who|that|with|for|and/))
+      .map((w) => w.trim())
+      .filter((w) => w.length > 3),
+  ].filter(Boolean);
+
+  // Platform-targeted queries
+  for (const platform of topPlatforms) {
+    const channel = channels.find((c) => c.platform === platform);
+    const instruction = channel?.searchInstructions || '';
+
+    // Query 1: Direct service search
+    queries.push({
+      platform,
+      query: `"${serviceLabel}" ${profileTitle.split(' ').slice(0, 3).join(' ')}`,
+      whatToLookFor: `${profileTitle} who need ${serviceLabel} — check for outdated web presence or inconsistent content quality`,
+      howToUse: instruction || `Search on ${platform} for prospects matching the profile`,
+      expectedQuality: 'Medium — broad search, requires manual filtering',
+    });
+
+    // Query 2: Problem-based search
+    if (keywords.length > 0) {
+      const problemTerms = deliverables.length > 0
+        ? deliverables.slice(0, 2).map((d) => d.replace(/_/g, ' '))
+        : ['improve', 'need help'];
+      queries.push({
+        platform,
+        query: `${problemTerms.join(' ')} ${profileTitle.split(' ').slice(0, 2).join(' ')}`,
+        whatToLookFor: `Prospects actively discussing problems related to ${problemTerms.join(' and ')}`,
+        howToUse: `Look for posts, listings, or profiles mentioning these keywords in context`,
+        expectedQuality: 'High — indicates active need or awareness',
+      });
+    }
+
+    // Query 3: Niche-specific search
+    if (offerType) {
+      queries.push({
+        platform,
+        query: `${profileTitle.split(' ').slice(0, 3).join(' ')} ${offerType.replace(/_/g, ' ')}`,
+        whatToLookFor: `Prospects looking for ${offerType.replace(/_/g, ' ')}-based engagements`,
+        howToUse: `Filter by recent activity to find active prospects`,
+        expectedQuality: 'Medium — depends on platform search capabilities',
+      });
+    }
+  }
+
+  // Deduplicate by query string
+  const seen = new Set<string>();
+  return queries.filter((q) => {
+    const key = `${q.platform}:${q.query}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 8);
+}
 
 export function SearchQueryBuilderStep() {
-  const searchQueryBank = useClientPipelineStore((s) => s.searchQueryBank);
+  const pipelinePack = useClientPipelineStore((s) => s.pipelinePack);
   const setSearchQueryBank = useClientPipelineStore((s) => s.setSearchQueryBank);
   const confirmStep = useClientPipelineStore((s) => s.confirmStep);
   const nextStep = useClientPipelineStore((s) => s.nextStep);
   const isCompleted = useClientPipelineStore((s) => s.completedSteps).includes('search_query_builder');
-  const service = useClientPipelineStore((s) => s.phase4Service);
-  const niche = useClientPipelineStore((s) => s.phase4Niche) ?? '';
+  const serviceLabel = useClientPipelineStore((s) => s.phase4ServiceLabel) ?? '';
+  const offerType = useClientPipelineStore((s) => s.phase4OfferType);
+  const deliverables = useClientPipelineStore((s) => s.phase4Deliverables);
 
-  const isValid = searchQueryBank.queries.length > 0;
+  const generatedQueries = useMemo((): SearchQuery[] => {
+    if (!pipelinePack) return [];
+    const channels = pipelinePack.targetChannels;
+    const profile = pipelinePack.idealProspectProfile;
+    return generateSearchQueriesFromPack(
+      channels,
+      profile.title,
+      profile.characteristics,
+      serviceLabel,
+      offerType,
+      deliverables,
+    );
+  }, [pipelinePack, serviceLabel, offerType, deliverables]);
 
-  const generate = () => {
-    const cat = getServiceCategory(service);
-    setSearchQueryBank(generateSearchQueries(cat, niche, service ?? undefined));
-  };
+  const isValid = generatedQueries.length > 0;
 
-  const handleContinue = () => {
-    if (!isValid) return;
+  const handleGenerate = () => {
+    setSearchQueryBank({ queries: generatedQueries });
     confirmStep();
     nextStep();
   };
@@ -30,9 +121,9 @@ export function SearchQueryBuilderStep() {
     <div className="space-y-8">
       <div className="space-y-2">
         <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">Step 4 of 8</span>
-        <h2 className="text-2xl font-bold tracking-tight text-white/95">Search Query Builder</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-white/95">Search Queries</h2>
         <p className="text-sm text-zinc-400 max-w-lg">
-          Use these search queries to find and qualify prospects across different platforms.
+          Ready-to-use search queries tailored to your prospect profile, channels, and offer.
         </p>
       </div>
 
@@ -41,24 +132,25 @@ export function SearchQueryBuilderStep() {
         <div className="space-y-1">
           <p className="text-xs text-white/80 font-medium">Prospecting Search Queries</p>
           <p className="text-[11px] text-zinc-500 leading-relaxed">
-            Copy these queries into the specified platforms to find potential clients. Each query targets specific signals.
+            Copy these queries into the specified platforms to find potential clients. Each query targets signals from your strategy context.
           </p>
         </div>
       </div>
 
-      {searchQueryBank.queries.length === 0 && (
-        <button
-          onClick={generate}
-          className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-dashed border-brand-primary/30 bg-brand-primary/5 text-sm font-semibold text-brand-primary hover:bg-brand-primary/10 transition-all cursor-pointer"
-        >
-          <Sparkles size={16} />
-          Generate Search Queries
-        </button>
-      )}
-
-      {searchQueryBank.queries.length > 0 && (
+      {!pipelinePack ? (
+        <div className="flex items-center justify-center p-8 rounded-xl bg-white/[0.02] border border-white/5">
+          <div className="text-center space-y-2">
+            <p className="text-sm text-zinc-500">Pipeline strategy not yet generated.</p>
+            <p className="text-[11px] text-zinc-600">Complete upstream modules and return here.</p>
+          </div>
+        </div>
+      ) : generatedQueries.length === 0 ? (
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+          <p className="text-xs text-amber-400">No queries could be generated. Ensure strategy context is available.</p>
+        </div>
+      ) : (
         <div className="space-y-3">
-          {searchQueryBank.queries.map((query, i) => (
+          {generatedQueries.map((query, i) => (
             <div
               key={i}
               className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-3"
@@ -90,45 +182,29 @@ export function SearchQueryBuilderStep() {
         </div>
       )}
 
-      {import.meta.env.DEV && (
-        <details className="group">
-          <summary className="text-[9px] font-bold uppercase tracking-[0.1em] text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors select-none">
-            View Debug Data
-          </summary>
-          <textarea
-            value={JSON.stringify(searchQueryBank, null, 2)}
-            onChange={(e) => {
-              try { setSearchQueryBank(JSON.parse(e.target.value)); }
-              catch { /* ignore invalid json while typing */ }
-            }}
-            rows={4}
-            className="w-full mt-2 px-4 py-3 rounded-xl outline-none text-xs text-white/90 placeholder:text-zinc-500 resize-none bg-white/[0.03] border border-white/5 focus:border-white/20 transition-all duration-300 font-mono"
-            placeholder="Search query data (JSON)"
-          />
-        </details>
-      )}
-
-      {isCompleted ? (
-        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-          <Check size={14} className="text-emerald-400" />
-          <span className="text-xs font-medium text-emerald-400">Search queries saved</span>
-        </div>
-      ) : (
-        <motion.button
-          onClick={handleContinue}
-          disabled={!isValid}
-          whileTap={{ scale: 0.97 }}
-          className={cn(
-            'inline-flex items-center gap-2 px-6 h-11 rounded-lg text-xs font-bold uppercase tracking-[0.08em] transition-all duration-200 cursor-pointer',
-            isValid
-              ? 'bg-white text-black hover:bg-white/90 shadow-[0_0_30px_-12px_rgba(255,255,255,0.15)]'
-              : 'bg-white/[0.03] border border-white/5 text-zinc-500 cursor-not-allowed',
-          )}
-        >
-          <ArrowRight size={14} />
-          Continue to Lead Qualification Score
-        </motion.button>
-      )}
+      <div className="space-y-2">
+        {isCompleted ? (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <Check size={14} className="text-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400">Search queries saved</span>
+          </div>
+        ) : (
+          <motion.button
+            onClick={handleGenerate}
+            disabled={!isValid}
+            whileTap={{ scale: 0.97 }}
+            className={cn(
+              'inline-flex items-center gap-2 px-6 h-11 rounded-lg text-xs font-bold uppercase tracking-[0.08em] transition-all duration-200 cursor-pointer',
+              isValid
+                ? 'bg-white text-black hover:bg-white/90 shadow-[0_0_30px_-12px_rgba(255,255,255,0.15)]'
+                : 'bg-white/[0.03] border border-white/5 text-zinc-500 cursor-not-allowed',
+            )}
+          >
+            <Sparkles size={14} />
+            Generate &amp; Confirm Search Queries
+          </motion.button>
+        )}
+      </div>
     </div>
   );
 }

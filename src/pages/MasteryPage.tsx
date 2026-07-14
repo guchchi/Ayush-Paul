@@ -9,7 +9,6 @@ import { AuthModal } from "../components/ui/AuthModal";
 
 // Modular Sections
 import { MasteryHero } from "../components/sections/MasteryHero";
-import { MasteryExploreSkills } from "../components/sections/MasteryExploreSkills";
 import { MasteryHowToLearn } from "../components/sections/MasteryHowToLearn";
 import { MasteryTracks } from "../components/sections/MasteryTracks";
 import { MasteryWorkshops } from "../components/sections/MasteryWorkshops";
@@ -284,9 +283,6 @@ export const MasteryPage = () => {
 
   const handleCategorySelect = (categoryId: string) => {
     setActiveCategory(categoryId);
-    setTimeout(() => {
-      scrollToCourses();
-    }, 100);
   };
 
   // Derive skill categories dynamically from Firestore course data
@@ -305,29 +301,19 @@ export const MasteryPage = () => {
       exit={{ opacity: 0 }}
       className="w-full min-h-screen bg-bg-primary pt-32 relative overflow-hidden text-text-primary"
     >
-      {/* Background Soft Grid Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,88,190,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(0,88,190,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-100 -z-10" />
-
       {/* 1. HERO */}
       <MasteryHero 
         onExploreClick={scrollToExploreSkills} 
         onCoursesClick={scrollToCourses} 
       />
 
-      {/* 2. EXPLORE SKILLS */}
-      <MasteryExploreSkills 
-        categories={categoriesWithCounts}
-        activeCategory={activeCategory}
-        onCategorySelect={handleCategorySelect}
-      />
-
-      {/* 3. CHOOSE HOW YOU WANT TO LEARN */}
+      {/* 2. CHOOSE HOW YOU WANT TO LEARN */}
       <MasteryHowToLearn 
         onExploreCoursesClick={scrollToCourses}
         onMentorshipClick={scrollToMentorship}
       />
 
-      {/* 4. FEATURED COURSES */}
+      {/* 3. COURSE DISCOVERY (Now containing the explore skills category filters!) */}
       <MasteryTracks 
         courses={courses}
         userEnrollments={userEnrollments}
@@ -335,21 +321,23 @@ export const MasteryPage = () => {
         onNavigateToCourse={handleNavigateToCourse}
         loading={loading}
         activeCategory={activeCategory}
+        categories={categoriesWithCounts}
+        onCategorySelect={handleCategorySelect}
       />
 
-      {/* 5. WORKSHOPS */}
+      {/* 4. WORKSHOPS */}
       <MasteryWorkshops />
 
-      {/* 6. 1-ON-1 LEARNING */}
+      {/* 5. 1-ON-1 LEARNING */}
       <MasteryMentorship />
 
-      {/* 7. WHY MASTERY WORKS */}
+      {/* 6. WHY MASTERY WORKS */}
       <MasteryWhy />
 
-      {/* 8. FAQ */}
+      {/* 7. FAQ */}
       <MasteryFAQ />
 
-      {/* 9. FINAL CTA */}
+      {/* 8. FINAL CTA */}
       <MasteryFinalCTA 
         onExploreCoursesClick={scrollToCourses}
         onBookSessionClick={scrollToMentorship}

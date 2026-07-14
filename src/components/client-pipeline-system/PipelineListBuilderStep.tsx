@@ -1,8 +1,8 @@
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, List, Plus, Trash2, Check, ArrowRight } from 'lucide-react';
+import { Plus, Trash2, Check, ArrowRight, Target, Radio, Compass } from 'lucide-react';
 import { useClientPipelineStore } from '../../lib/client-pipeline-system';
 import { cn } from '../../lib/utils';
-import { getServiceCategory, generatePipelineSampleProspects } from '../../lib/blueprint-content';
 import type { PipelineEntry } from '../../types/client-pipeline-system';
 
 const STATUS_OPTIONS: PipelineEntry['status'][] = [
@@ -25,9 +25,10 @@ function blankEntry(): PipelineEntry {
   };
 }
 
-function computePriority(score: number): 'high' | 'medium' | 'low' {
-  if (score >= 22) return 'high';
-  if (score >= 13) return 'medium';
+function computePriority(score: number, maxPossible: number): 'high' | 'medium' | 'low' {
+  const pct = maxPossible > 0 ? score / maxPossible : 0;
+  if (pct >= 0.7) return 'high';
+  if (pct >= 0.35) return 'medium';
   return 'low';
 }
 
@@ -38,19 +39,34 @@ const priorityColors: Record<string, string> = {
 };
 
 export function PipelineListBuilderStep() {
+  const pipelinePack = useClientPipelineStore((s) => s.pipelinePack);
   const pipelineList = useClientPipelineStore((s) => s.pipelineList);
   const setPipelineList = useClientPipelineStore((s) => s.setPipelineList);
   const confirmStep = useClientPipelineStore((s) => s.confirmStep);
   const nextStep = useClientPipelineStore((s) => s.nextStep);
   const isCompleted = useClientPipelineStore((s) => s.completedSteps).includes('pipeline_list_builder');
-  const service = useClientPipelineStore((s) => s.phase4Service);
-  const niche = useClientPipelineStore((s) => s.phase4Niche) ?? '';
+  const leadScorecard = useClientPipelineStore((s) => s.leadScorecard);
 
-  const cat = getServiceCategory(service);
+  const maxPossible = leadScorecard.factors.reduce((sum, f) => sum + f.maxScore, 0) || 35;
 
   const validCount = pipelineList.filter(
     (p) => p.prospectName?.trim() || p.websiteUrl?.trim()
   ).length;
+
+  // Strategy context for the builder
+  const strategyContext = useMemo(() => {
+    if (!pipelinePack) return null;
+    return {
+      profileTitle: pipelinePack.idealProspectProfile.title,
+      topChannel: pipelinePack.targetChannels
+        .filter((c) => c.priority === 'high')
+        .map((c) => c.platform)
+        .slice(0, 2),
+      keySignal: pipelinePack.buyingSignals.length > 0
+        ? pipelinePack.buyingSignals[0].signal
+        : null,
+    };
+  }, [pipelinePack]);
 
   const addProspect = () => {
     setPipelineList([...pipelineList, blankEntry()]);
@@ -66,23 +82,11 @@ export function PipelineListBuilderStep() {
         if (e.id !== id) return e;
         const updated = { ...e, ...partial };
         if (partial.score !== undefined) {
-          updated.priority = computePriority(partial.score);
+          updated.priority = computePriority(partial.score, maxPossible);
         }
         return updated;
       }),
     );
-  };
-
-  const addSampleProspects = () => {
-    const samples = generatePipelineSampleProspects(cat, niche, service ?? undefined);
-    const hasOnlyBlanks = pipelineList.length > 0 && pipelineList.every(
-      (p) => !p.prospectName?.trim() && !p.websiteUrl?.trim()
-    );
-    if (hasOnlyBlanks || pipelineList.length === 0) {
-      setPipelineList(samples);
-    } else {
-      setPipelineList([...pipelineList, ...samples]);
-    }
   };
 
   const handleContinue = () => {
@@ -94,32 +98,44 @@ export function PipelineListBuilderStep() {
     <div className="space-y-8">
       <div className="space-y-2">
         <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">Step 6 of 8</span>
-        <h2 className="text-2xl font-bold tracking-tight text-white/95">Pipeline List Builder</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-white/95">Pipeline Builder</h2>
         <p className="text-sm text-zinc-400 max-w-lg">
-          Build your prospect pipeline by adding leads with their details and qualification scores.
+          Add real prospects you have discovered. Score and track each one through your pipeline stages.
         </p>
       </div>
 
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
-        <List size={14} className="text-brand-primary shrink-0 mt-0.5" />
-        <div className="space-y-1">
-          <p className="text-xs text-white/80 font-medium">Your Prospect Pipeline</p>
-          <p className="text-[11px] text-zinc-500 leading-relaxed">
-            Add individual prospects to your pipeline. Score and prioritize each one before moving to outreach planning.
-          </p>
+      {/* Strategy context sidebar */}
+      {strategyContext && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-brand-primary/5 border border-brand-primary/10">
+            <Target size={12} className="text-brand-primary shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-brand-primary/70">Target</p>
+              <p className="text-[10px] text-zinc-300 truncate">{strategyContext.profileTitle}</p>
+            </div>
+          </div>
+          {strategyContext.topChannel.length > 0 && (
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-brand-primary/5 border border-brand-primary/10">
+              <Compass size={12} className="text-brand-primary shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-brand-primary/70">Top Channels</p>
+                <p className="text-[10px] text-zinc-300 truncate">{strategyContext.topChannel.join(', ')}</p>
+              </div>
+            </div>
+          )}
+          {strategyContext.keySignal && (
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-brand-primary/5 border border-brand-primary/10">
+              <Radio size={12} className="text-brand-primary shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-brand-primary/70">Key Signal</p>
+                <p className="text-[10px] text-zinc-300 truncate">{strategyContext.keySignal}</p>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-
-      {pipelineList.length === 0 && (
-        <button
-          onClick={addSampleProspects}
-          className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-dashed border-brand-primary/30 bg-brand-primary/5 text-sm font-semibold text-brand-primary hover:bg-brand-primary/10 transition-all cursor-pointer"
-        >
-          <Sparkles size={16} />
-          Add Sample Prospects
-        </button>
       )}
 
+      {/* Pipeline entry form */}
       {pipelineList.length > 0 && (
         <div className="flex items-center gap-2">
           <p className="text-[9px] font-medium text-zinc-500">
@@ -176,7 +192,7 @@ export function PipelineListBuilderStep() {
                   <input
                     type="number"
                     min={0}
-                    max={35}
+                    max={maxPossible}
                     value={entry.score}
                     onChange={(e) => updateEntry(entry.id, { score: parseInt(e.target.value) || 0 })}
                     className="w-full h-8 px-2 rounded-md outline-none text-xs text-white/80 placeholder:text-zinc-500 bg-white/[0.03] border border-white/5 focus:border-white/20 transition-all"
@@ -218,27 +234,16 @@ export function PipelineListBuilderStep() {
         ))}
       </div>
 
-      {pipelineList.length > 0 && (
-        <div className="flex items-center gap-3 flex-wrap">
-          <motion.button
-            onClick={addProspect}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-[10px] font-bold uppercase tracking-[0.08em] bg-white/[0.03] border border-white/5 text-zinc-400 hover:bg-white/5 hover:text-zinc-300 transition-all duration-200 cursor-pointer"
-          >
-            <Plus size={12} />
-            Add Prospect
-          </motion.button>
-
-          <motion.button
-            onClick={addSampleProspects}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-[10px] font-bold uppercase tracking-[0.08em] bg-white/[0.03] border border-white/5 text-zinc-400 hover:bg-white/5 hover:text-zinc-300 transition-all duration-200 cursor-pointer"
-          >
-            <Sparkles size={12} />
-            Add Sample Prospects
-          </motion.button>
-        </div>
-      )}
+      <div className="flex items-center gap-3 flex-wrap">
+        <motion.button
+          onClick={addProspect}
+          whileTap={{ scale: 0.97 }}
+          className="inline-flex items-center gap-2 px-4 h-9 rounded-lg text-[10px] font-bold uppercase tracking-[0.08em] bg-white/[0.03] border border-white/5 text-zinc-400 hover:bg-white/5 hover:text-zinc-300 transition-all duration-200 cursor-pointer"
+        >
+          <Plus size={12} />
+          Add Prospect
+        </motion.button>
+      </div>
 
       {isCompleted ? (
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
@@ -252,7 +257,7 @@ export function PipelineListBuilderStep() {
           className="inline-flex items-center gap-2 px-6 h-11 rounded-lg text-xs font-bold uppercase tracking-[0.08em] bg-white text-black hover:bg-white/90 shadow-[0_0_30px_-12px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer"
         >
           <ArrowRight size={14} />
-          Continue to Priority Plan
+          Continue to Priority Strategy
         </motion.button>
       )}
     </div>

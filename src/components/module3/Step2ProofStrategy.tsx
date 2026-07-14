@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Check, ArrowLeft, ArrowRight, RotateCcw, ChevronDown, Edit3, X, Sparkles, AlertTriangle } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -7,6 +7,7 @@ import { useModule3Store } from '../../lib/module3';
 import { resolveProofPriorities, resolveAlternateGaps, ALL_FORMATS } from '../../data/module3/proof-priorities';
 import type { ProofPriority, ProofFormat } from '../../types/module3';
 import type { PriorityContext } from '../../data/module3/proof-priorities';
+import { composeStep2Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -47,6 +48,24 @@ export function Step2ProofStrategy() {
   const completedSteps = useModule3Store((s) => s.completedSteps);
 
   const isCompleted = completedSteps.includes('proof_strategy');
+
+  const personalized = useMemo(() => {
+    const ctx2 = buildPersonalizationContext({
+      serviceId: ctx.serviceId,
+      marketId: ctx.marketId,
+      nicheId: ctx.nicheId,
+      positioning: ctx.positioning,
+      offerType: ctx.offerType,
+      deliverables: ctx.deliverables,
+      uniqueMechanism: ctx.uniqueMechanism,
+      valueAmplifier: ctx.valueAmplifier,
+      authorityPosition: ctx.authorityPosition,
+      coreTrustPromise: ctx.coreTrustPromise,
+      proofPriorities: undefined,
+      proofAssets: undefined,
+    });
+    return composeStep2Content(ctx2);
+  }, [ctx]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -164,7 +183,7 @@ export function Step2ProofStrategy() {
           </span>
           <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Strategy</h2>
           <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-            These are the 3 credibility gaps your market needs you to prove before they hire you.
+            {personalized.description}
           </p>
         </div>
         {proofPriorities.length > 0 && (
@@ -180,7 +199,7 @@ export function Step2ProofStrategy() {
 
       {proofPriorities.length === 0 && (
         <div className="rounded-xl border border-neutral-200 bg-white p-8 text-center">
-          <p className="text-xs text-neutral-500">Complete Step 1 (Authority Position) first to generate your proof strategy.</p>
+          <p className="text-xs text-neutral-500">{personalized.emptyStateGuidance}</p>
         </div>
       )}
 
@@ -314,7 +333,7 @@ export function Step2ProofStrategy() {
           <div>
             <p className="text-[10px] font-bold text-emerald-700">All 3 priorities defined</p>
             <p className="text-[9px] text-emerald-700/60 mt-0.5">
-              You can edit any priority or swap formats before continuing. These will become the foundation of your proof assets.
+              {personalized.allDefinedBanner}
             </p>
           </div>
         </motion.div>

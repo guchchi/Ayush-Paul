@@ -151,30 +151,130 @@ const marketModifier: Modifier = (ctx, acc) => {
 /* ──────────────────────────────────────────────
    2. NICHE MODIFIER
    ──────────────────────────────────────────────
-   Matches niche against known niche patterns to
+   Matches niche against known Module 1 niche IDs to
    adjust prospect characteristics, discovery surfaces,
    search vocabulary, and niche-specific disqualifiers.
+   Uses an explicit deterministic mapping from upstream
+   M1 niche IDs to M5 niche config keys.
    ────────────────────────────────────────────── */
 
-function normalizeNicheKey(niche: string | null): string {
-  if (!niche) return '';
-  const lower = niche.toLowerCase().trim();
-  if (lower.includes('gaming') || lower.includes('streamer') || lower.includes('twitch')) return 'gaming';
-  if (lower.includes('educational') || lower.includes('tutorial') || lower.includes('learning') || lower.includes('course')) return 'educational';
-  if (lower.includes('podcast') || lower.includes('podcaster')) return 'podcast';
-  if (lower.includes('fitness') || lower.includes('workout') || lower.includes('transformation')) return 'fitness';
-  if (lower.includes('ai startup') || lower.includes('ai startups')) return 'ai_startups';
-  if (lower.includes('local business') || lower.includes('local') || lower.includes('small business') || lower.includes('service business')) return 'local_business';
-  if (lower.includes('marketing agency') || lower.includes('marketing agencies')) return 'marketing_agencies';
-  if (lower.includes('design agency') || lower.includes('design agencies') || lower.includes('ux agency')) return 'design_agencies';
-  if (lower.includes('saas') || lower.includes('b2b saas')) return 'saas';
-  if (lower.includes('product startup') || lower.includes('product startups') || lower.includes('startup')) return 'product_startups';
-  if (lower.includes('ecommerce') || lower.includes('e-commerce') || lower.includes('shopify') || lower.includes('dtc')) return 'ecommerce';
-  if (lower.includes('personal brand') || lower.includes('creator') || lower.includes('influencer')) return 'creator';
-  if (lower.includes('coach') || lower.includes('coaches') || lower.includes('consultant')) return 'coaches';
-  if (lower.includes('restaurant') || lower.includes('food')) return 'restaurant';
-  return 'default';
-}
+/**
+ * Explicit mapping of all known Module 1 niche IDs to
+ * the M5 NICHE_CONFIGS keys they should unlock.
+ *
+ * This replaces the fragile keyword-based normalizeNicheKey()
+ * approach. Every niche ID that appears in ALL_NICHES across
+ * all 5 tracks (video, short-form, youtube, wordpress, design)
+ * must be listed here.
+ */
+const NICHE_ID_MAP: Record<string, string> = {
+  // ── Gaming ──
+  gaming_youtubers: 'gaming',
+
+  // ── Educational / Course / Tutorial ──
+  course_creators: 'educational',
+  online_educators: 'educational',
+  education_coaches: 'educational',
+  education_youtubers: 'educational',
+  howto_youtubers: 'educational',
+  online_course_creators: 'educational',
+  cohort_program_creators: 'educational',
+  workshop_hosts: 'educational',
+  skill_educators: 'educational',
+  education_consultants: 'educational',
+
+  // ── Podcast ──
+  podcasters: 'podcast',
+
+  // ── Fitness ──
+  fitness_coaches: 'fitness',
+
+  // ── AI / Tech Startups ──
+  ai_startups: 'ai_startups',
+  ai_tools: 'ai_startups',
+
+  // ── Local Business ──
+  gyms: 'local_business',
+  clinics: 'local_business',
+  real_estate_agents: 'local_business',
+  salons_beauty_studios: 'local_business',
+  salons: 'local_business',
+
+  // ── Marketing Agencies ──
+  marketing_agencies: 'marketing_agencies',
+  social_media_agencies: 'marketing_agencies',
+  video_agencies: 'marketing_agencies',
+  personal_branding_agencies: 'marketing_agencies',
+  seo_agencies: 'marketing_agencies',
+  paid_ads_agencies: 'marketing_agencies',
+  creator_management_agencies: 'marketing_agencies',
+  performance_marketing_agencies: 'marketing_agencies',
+
+  // ── Design / Creative Agencies ──
+  design_agencies: 'design_agencies',
+  web_design_agencies: 'design_agencies',
+  branding_agencies: 'design_agencies',
+  creative_agencies: 'design_agencies',
+  product_design_agencies: 'design_agencies',
+
+  // ── SaaS / Product Companies ──
+  saas: 'saas',
+  saas_tools: 'saas',
+  saas_startups: 'saas',
+  edtech_startups: 'saas',
+  productivity_tools: 'saas',
+  marketing_tools: 'saas',
+  b2b_saas: 'saas',
+  creator_tools: 'saas',
+  productivity_startups: 'saas',
+
+  // ── Product Startups ──
+  product_startups: 'product_startups',
+
+  // ── Ecommerce ──
+  ecommerce: 'ecommerce',
+
+  // ── Creator / Personal Brand / Influencer ──
+  youtubers_retention: 'creator',
+  instagram_creators: 'creator',
+  personal_brand_creators: 'creator',
+  tiktok_creators: 'creator',
+  youtube_shorts_creators: 'creator',
+  linkedin_creators: 'creator',
+  lifestyle_creators: 'creator',
+  founders: 'creator',
+  creators: 'creator',
+  executives: 'creator',
+  public_speakers: 'creator',
+  tech_youtubers: 'creator',
+  finance_youtubers: 'creator',
+  lifestyle_youtubers: 'creator',
+  video_essayists: 'creator',
+  commentary_creators: 'creator',
+  storytelling_youtubers: 'creator',
+  newsletter_creators: 'creator',
+  community_creators: 'creator',
+  youtube_creators: 'creator',
+  ebook_authors: 'creator',
+  membership_creators: 'creator',
+  digital_product_sellers: 'creator',
+  creator_startups: 'creator',
+
+  // ── Coaches / Consultants ──
+  business_coaches: 'coaches',
+  career_coaches: 'coaches',
+  mindset_coaches: 'coaches',
+  coaches: 'coaches',
+  consultants: 'coaches',
+  business_consultants: 'coaches',
+  financial_consultants: 'coaches',
+  coaches_selling_programs: 'coaches',
+  coaching_program_sellers: 'coaches',
+  high_ticket_coaches: 'coaches',
+
+  // ── Restaurant / Food ──
+  restaurants: 'restaurant',
+};
 
 type NicheConfig = {
   characteristics: string[];
@@ -438,8 +538,8 @@ const NICHE_CONFIGS: Record<string, NicheConfig> = {
 };
 
 const nicheModifier: Modifier = (ctx, acc) => {
-  const key = normalizeNicheKey(ctx.niche);
-  if (key === 'default' || !key) return acc;
+  const key = ctx.niche ? (NICHE_ID_MAP[ctx.niche] || 'default') : 'default';
+  if (key === 'default') return acc;
 
   const config = NICHE_CONFIGS[key];
   if (!config) return acc;

@@ -13,6 +13,7 @@ import {
   getServiceLabel,
 } from '../../data/module3/authority-positions';
 import type { PositionContext } from '../../data/module3/authority-positions';
+import { composeStep1Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 
 const POSITION_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   prior_client_results: Award,
@@ -62,6 +63,24 @@ export function Step1AuthorityPosition() {
   const completedSteps = useModule3Store((s) => s.completedSteps);
 
   const isCompleted = completedSteps.includes('authority_position');
+
+  const personalized = useMemo(() => {
+    const pctx = buildPersonalizationContext({
+      serviceId: ctx.serviceId,
+      marketId: ctx.marketId,
+      nicheId: ctx.nicheId,
+      positioning: ctx.positioning,
+      offerType: ctx.offerType,
+      deliverables: ctx.deliverables,
+      uniqueMechanism: ctx.uniqueMechanism,
+      valueAmplifier: ctx.valueAmplifier,
+      authorityPosition: authorityPosition,
+      coreTrustPromise: coreTrustPromise,
+      proofPriorities: undefined,
+      proofAssets: undefined,
+    });
+    return composeStep1Content(pctx);
+  }, [ctx, authorityPosition, coreTrustPromise]);
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [pendingPosition, setPendingPosition] = useState<AuthorityPosition | null>(null);
@@ -146,7 +165,7 @@ export function Step1AuthorityPosition() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Authority Position</h2>
         <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          Choose the credibility position that best matches how you work and what you can honestly demonstrate.
+          {personalized.description}
         </p>
       </div>
 
@@ -242,7 +261,7 @@ export function Step1AuthorityPosition() {
                   <div>
                     <h3 className="text-sm font-bold text-[#0b1c30]">Core Trust Promise</h3>
                     <p className="text-[10px] text-neutral-500">
-                      This answers: &ldquo;What honest reason should a prospect have to believe I understand this problem?&rdquo;
+                      {personalized.promiseHelperText}
                     </p>
                   </div>
                 </div>
@@ -266,7 +285,7 @@ export function Step1AuthorityPosition() {
                 onChange={(e) => handlePromiseChange(e.target.value)}
                 rows={4}
                 className="w-full px-4 py-3 rounded-xl outline-none text-sm text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be]/30 transition-colors resize-y min-h-[80px] leading-relaxed"
-                placeholder="Write your core trust promise..."
+                placeholder={personalized.promisePlaceholder}
               />
             </div>
             <div className="px-5 py-2.5 bg-[#f8f9ff] border-t border-neutral-100 flex items-center gap-2 text-[10px] text-neutral-400">

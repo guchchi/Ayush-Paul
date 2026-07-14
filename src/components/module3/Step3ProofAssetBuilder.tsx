@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useId } from 'react';
+import { useState, useEffect, useCallback, useId, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowLeft, ArrowRight, RotateCcw, AlertTriangle, 
@@ -9,6 +9,7 @@ import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
 import { generateProofAsset, calculatePriorityFingerprint } from '../../data/module3/proof-assets';
 import type { ProofAsset } from '../../types/module3';
+import { composeStep3Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -42,6 +43,24 @@ export function Step3ProofAssetBuilder() {
   const completedSteps = useModule3Store((s) => s.completedSteps);
 
   const isCompleted = completedSteps.includes('proof_asset_builder');
+
+  const personalized = useMemo(() => {
+    const pctx = buildPersonalizationContext({
+      serviceId: ctx.serviceId,
+      marketId: ctx.marketId,
+      nicheId: ctx.nicheId,
+      positioning: ctx.positioning,
+      offerType: ctx.offerType,
+      deliverables: ctx.deliverables,
+      uniqueMechanism: ctx.uniqueMechanism,
+      valueAmplifier: ctx.valueAmplifier,
+      authorityPosition: ctx.authorityPosition,
+      coreTrustPromise: ctx.coreTrustPromise,
+      proofPriorities: undefined,
+      proofAssets: undefined,
+    });
+    return composeStep3Content(pctx);
+  }, [ctx]);
 
   const [activeTab, setActiveTab] = useState<number>(0);
   const [staleAssetId, setStaleAssetId] = useState<string | null>(null);
@@ -84,7 +103,7 @@ export function Step3ProofAssetBuilder() {
   if (proofAssets.length !== 3 || proofPriorities.length !== 3) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-        <p className="text-sm text-neutral-500">Generating Proof Assets...</p>
+        <p className="text-sm text-neutral-500">{personalized.loadingText}</p>
       </div>
     );
   }
@@ -190,7 +209,7 @@ export function Step3ProofAssetBuilder() {
         </span>
         <h1 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Asset Builder</h1>
         <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          Build and refine 3 execution-ready proof assets for your portfolio.
+          {personalized.description}
         </p>
       </div>
 
@@ -282,23 +301,23 @@ export function Step3ProofAssetBuilder() {
         {/* LEFT: EDITING AREA (45%) */}
         <div className="w-full lg:w-[45%] space-y-6 min-w-0">
           {/* Collapsible Sections with Progressive Disclosure */}
-          <CollapsibleSection title="Proof Objective" description="Target audience and business problem" defaultOpen={false}>
+          <CollapsibleSection title="Proof Objective" description={personalized.sectionHelpers.proof_objective} defaultOpen={false}>
             <Field label="Target Audience" value={activeAsset.targetAudience} onChange={(v) => handleFieldChange('targetAudience', v)} />
             <Field label="Business Problem" value={activeAsset.businessProblem} onChange={(v) => handleFieldChange('businessProblem', v)} type="textarea" />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Project Brief" description="Scenario, materials, and deliverables" defaultOpen={true}>
+          <CollapsibleSection title="Project Brief" description={personalized.sectionHelpers.project_brief} defaultOpen={true}>
             <Field label="Title" value={activeAsset.title} onChange={(v) => handleFieldChange('title', v)} />
             <Field label="Scenario" value={activeAsset.scenario} onChange={(v) => handleFieldChange('scenario', v)} type="textarea" />
             <ArrayField label="Starting Materials" values={activeAsset.startingMaterial} onChange={(i, v) => handleArrayChange('startingMaterial', i, v)} />
             <ArrayField label="Deliverables" values={activeAsset.deliverables} onChange={(i, v) => handleArrayChange('deliverables', i, v)} />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Execution Plan" description="Ordered execution steps" defaultOpen={false}>
+          <CollapsibleSection title="Execution Plan" description={personalized.sectionHelpers.execution_plan} defaultOpen={false}>
             <ArrayField label="Execution Steps" values={activeAsset.executionSteps} onChange={(i, v) => handleArrayChange('executionSteps', i, v)} numbered />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Evidence" description="What to capture and document" defaultOpen={false}>
+          <CollapsibleSection title="Evidence" description={personalized.sectionHelpers.evidence} defaultOpen={false}>
             <ArrayField label="Evidence to Capture" values={activeAsset.evidenceToCapture} onChange={(i, v) => handleArrayChange('evidenceToCapture', i, v)} />
             <ArrayField label="Process to Document" values={activeAsset.processToDocument} onChange={(i, v) => handleArrayChange('processToDocument', i, v)} />
           </CollapsibleSection>
@@ -318,11 +337,11 @@ export function Step3ProofAssetBuilder() {
             </div>
           </div>
 
-          <CollapsibleSection title="Presentation" description="Structure for presenting this project" defaultOpen={false}>
+          <CollapsibleSection title="Presentation" description={personalized.sectionHelpers.presentation} defaultOpen={false}>
             <ArrayField label="Presentation Structure" values={activeAsset.presentationStructure} onChange={(i, v) => handleArrayChange('presentationStructure', i, v)} numbered />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Completion" description="Project completion checklist" defaultOpen={false}>
+          <CollapsibleSection title="Completion" description={personalized.sectionHelpers.completion} defaultOpen={false}>
             <ArrayField label="Completion Checklist" values={activeAsset.completionChecklist} onChange={(i, v) => handleArrayChange('completionChecklist', i, v)} />
           </CollapsibleSection>
         </div>
@@ -350,7 +369,7 @@ export function Step3ProofAssetBuilder() {
                   value={activeAsset.portfolioCopy.headline}
                   onChange={(e) => handleCopyChange('headline', e.target.value)}
                   className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-base font-bold text-[#0b1c30] transition-colors resize-y min-h-[50px]"
-                  placeholder="Your portfolio project headline..."
+                  placeholder={personalized.fieldPlaceholders.portfolio_headline}
                 />
               </div>
 
@@ -361,7 +380,7 @@ export function Step3ProofAssetBuilder() {
                   value={activeAsset.portfolioCopy.description}
                   onChange={(e) => handleCopyChange('description', e.target.value)}
                   className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-neutral-500 transition-colors resize-y min-h-[60px]"
-                  placeholder="Brief project description..."
+                  placeholder={personalized.fieldPlaceholders.project_description}
                 />
               </div>
 
@@ -372,7 +391,7 @@ export function Step3ProofAssetBuilder() {
                   value={activeAsset.portfolioCopy.proofStatement}
                   onChange={(e) => handleCopyChange('proofStatement', e.target.value)}
                   className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-[#0b1c30] transition-colors resize-y min-h-[80px]"
-                  placeholder="Your proof statement..."
+                  placeholder={personalized.fieldPlaceholders.proof_statement}
                 />
               </div>
 
@@ -383,7 +402,7 @@ export function Step3ProofAssetBuilder() {
                   value={activeAsset.portfolioCopy.cta}
                   onChange={(e) => handleCopyChange('cta', e.target.value)}
                   className="w-full bg-[#0058be]/5 border border-[#0058be]/20 hover:bg-[#0058be]/10 focus:border-[#0058be]/50 outline-none text-xs font-bold text-[#0058be] text-center py-2.5 rounded-lg transition-colors"
-                  placeholder="Call to Action..."
+                  placeholder={personalized.fieldPlaceholders.cta}
                 />
               </div>
             </div>
@@ -410,7 +429,7 @@ export function Step3ProofAssetBuilder() {
                 <CheckCircle2 size={16} className="shrink-0" />
                 <div>
                   <p className="text-xs font-bold">All 3 proof assets accepted</p>
-                  <p className="text-[10px] text-neutral-500 mt-0.5">Ready to continue to Profile & Portfolio.</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">{personalized.status.allAccepted}</p>
                 </div>
               </div>
             ) : activeAsset.isAccepted ? (
@@ -418,7 +437,7 @@ export function Step3ProofAssetBuilder() {
                 <CheckCircle2 size={16} className="text-[#0058be] shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-xs font-bold">Proof asset {activeTab + 1} accepted</p>
-                  <p className="text-[10px] text-neutral-500 mt-0.5">Proceed to the next asset or review copy.</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">{personalized.status.oneAccepted}</p>
                 </div>
               </div>
             ) : (
@@ -426,7 +445,7 @@ export function Step3ProofAssetBuilder() {
                 <Circle size={16} className="text-neutral-300 shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-xs font-bold">Review and refine this proof asset</p>
-                  <p className="text-[10px] text-neutral-500 mt-0.5">Mark as accepted to finalize this brief.</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">{personalized.status.noneAccepted}</p>
                 </div>
               </div>
             )}

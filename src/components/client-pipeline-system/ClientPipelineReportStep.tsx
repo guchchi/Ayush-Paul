@@ -1,89 +1,103 @@
 import { useMemo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check, Copy, FileText, Download, ArrowRight } from 'lucide-react';
+import { Check, Copy, FileText, Download, ArrowRight, ShieldCheck, Shield, ShieldAlert, UserCheck, Radio, Compass, Target, BarChart3 } from 'lucide-react';
 import { useClientPipelineStore } from '../../lib/client-pipeline-system';
-import { getServiceCategory, generatePipelineNextActions, isValidProspect } from '../../lib/blueprint-content';
-import type { PipelineReport } from '../../types/client-pipeline-system';
+import { cn } from '../../lib/utils';
 
-function buildMarkdown(report: PipelineReport): string {
+function buildMarkdown(report: {
+  profileTitle: string;
+  profileDescription: string;
+  characteristics: string[];
+  evidenceOfFit: string[];
+  buyingSignals: { signal: string; whyItMatters: string }[];
+  disqualifiers: string[];
+  channels: { platform: string; priority: string; channelType: string }[];
+  qualificationFactors: { name: string; weight: number; whyImportant: string }[];
+  pipelineCount: number;
+  priorityProspects: string[];
+  readinessStatus: string;
+  readinessReasons: string[];
+  portfolioAssetAvailable: boolean;
+  portfolioAssetTitle?: string;
+  portfolioAssetUrl?: string;
+  m6Handoff: { portfolioHeadline?: string; portfolioUrl?: string; positioning?: string; deliverables: string[] };
+}): string {
   const lines: string[] = [
     '# Client Pipeline Report',
     '',
     '---',
     '',
-    '## 1. Client Source Map',
+    '## 1. Ideal Prospect Profile',
     '',
-    ...report.clientSourceMap.sources.map((s) => `- **${s.sourceName}** (${s.difficulty}): ${s.whereToFind}`),
+    `**${report.profileTitle}**`,
     '',
-    '---',
+    report.profileDescription,
     '',
-    '## 2. Ideal Client Criteria',
+    '### Characteristics',
+    ...report.characteristics.map((c) => `- ${c}`),
     '',
-    ...report.idealClientCriteria.criteria.map((c) => `- **${c.label}** (${c.priority}): ${c.whyItMatters}`),
-    '',
-    '---',
-    '',
-    '## 3. Prospect Types',
-    '',
-    ...report.prospectTypes.types.map((t) => `- **${t.name}** (${t.difficulty}, ${t.priority}): ${t.description}`),
+    '### Evidence of Fit',
+    ...report.evidenceOfFit.map((e) => `- ${e}`),
     '',
     '---',
     '',
-    '## 4. Search Queries',
+    '## 2. Buying Signals',
     '',
-    ...report.searchQueryBank.queries.map((q) => `- **${q.platform}**: \`${q.query}\``),
+    ...report.buyingSignals.map((s) => `- **${s.signal}** — ${s.whyItMatters}`),
     '',
-    '---',
-    '',
-    '## 5. Lead Scorecard',
-    '',
-    ...report.leadScorecard.factors.map((f) => `- **${f.name}**: ${f.score}/${f.maxScore}`),
-    '',
-    `**Total:** ${report.leadScorecard.total}/35 — ${report.leadScorecard.interpretation}`,
-    '',
-    '---',
-    '',
-    '## 6. Pipeline List',
-    '',
-    ...(() => {
-      const valid = report.pipelineList.filter(isValidProspect);
-      return [
-        `**Valid Prospects:** ${valid.length}`,
-        '',
-        ...valid.map((e, i) =>
-          `${i + 1}. **${e.prospectName}** (${e.platform}) — Score: ${e.score}/35, Priority: ${e.priority}, Status: ${e.status}`
-        ),
-      ];
-    })(),
-    '',
-    '---',
-    '',
-    '## 7. Priority Plan',
-    '',
-    ...report.priorityPlan.entries.map((e, i) => {
-      const why = e.whyWorthContacting?.length > 120 ? e.whyWorthContacting.slice(0, 120) + '...' : e.whyWorthContacting;
-      return `${i + 1}. **${e.prospectName}** — ${why}`;
-    }),
-    '',
-    ...(report.priorityPlan.entries.length > 0 ? [
+    ...(report.disqualifiers.length > 0 ? [
+      '### Do Not Pursue',
+      ...report.disqualifiers.map((d) => `- ${d}`),
       '',
-      '### Priority Entry Details',
-      ...report.priorityPlan.entries.map((e, i) => [
-        '',
-        `**${i + 1}. ${e.prospectName}**`,
-        `- Why: ${e.whyWorthContacting}`,
-        `- Angle: ${e.angleToUse}`,
-        `- Asset: ${e.portfolioAssetToShow}`,
-        `- Next Step: ${e.nextStep}`,
-      ].join('\n')),
     ] : []),
+    '---',
+    '',
+    '## 3. Priority Discovery Channels',
+    '',
+    ...report.channels.map((c) => `- **${c.platform}** (${c.priority}): ${c.channelType}`),
     '',
     '---',
     '',
-    '## 8. Next Actions',
+    '## 4. Qualification Approach',
     '',
-    ...report.nextActions.map((a, i) => `${i + 1}. ${a}`),
+    ...report.qualificationFactors.map((f) => `- **${f.name}** (max: ${f.weight}): ${f.whyImportant}`),
+    '',
+    '---',
+    '',
+    '## 5. Pipeline Summary',
+    '',
+    `**Qualified Prospects:** ${report.pipelineCount}`,
+    '',
+    '---',
+    '',
+    '## 6. Priority Prospects',
+    '',
+    ...report.priorityProspects.map((name, i) => `${i + 1}. ${name}`),
+    '',
+    '---',
+    '',
+    '## 7. Prospecting Readiness',
+    '',
+    `**Status:** ${report.readinessStatus}`,
+    ...report.readinessReasons.map((r) => `- ${r}`),
+    '',
+    '---',
+    '',
+    '## 8. Portfolio Lead Asset',
+    '',
+    report.portfolioAssetAvailable
+      ? `- **Available:** ${report.portfolioAssetTitle || 'Yes'}\n- **URL:** ${report.portfolioAssetUrl || 'N/A'}`
+      : '- No portfolio lead asset available — prospecting is limited',
+    '',
+    '---',
+    '',
+    '## 9. Module 6 Handoff Context',
+    '',
+    ...(report.m6Handoff.positioning ? [`- **Positioning:** ${report.m6Handoff.positioning}`] : []),
+    ...(report.m6Handoff.portfolioHeadline ? [`- **Portfolio:** ${report.m6Handoff.portfolioHeadline}`] : []),
+    ...(report.m6Handoff.portfolioUrl ? [`- **Portfolio URL:** ${report.m6Handoff.portfolioUrl}`] : []),
+    ...(report.m6Handoff.deliverables.length > 0 ? [`- **Deliverables:** ${report.m6Handoff.deliverables.join(', ')}`] : []),
     '',
     '---',
     '',
@@ -95,47 +109,84 @@ function buildMarkdown(report: PipelineReport): string {
 
 export function ClientPipelineReportStep() {
   const navigate = useNavigate();
-  const clientSourceMap = useClientPipelineStore((s) => s.clientSourceMap);
-  const idealClientCriteria = useClientPipelineStore((s) => s.idealClientCriteria);
-  const prospectTypes = useClientPipelineStore((s) => s.prospectTypes);
-  const searchQueryBank = useClientPipelineStore((s) => s.searchQueryBank);
-  const leadScorecard = useClientPipelineStore((s) => s.leadScorecard);
+  const pipelinePack = useClientPipelineStore((s) => s.pipelinePack);
   const pipelineList = useClientPipelineStore((s) => s.pipelineList);
-  const priorityPlan = useClientPipelineStore((s) => s.priorityPlan);
+  const leadScorecard = useClientPipelineStore((s) => s.leadScorecard);
   const report = useClientPipelineStore((s) => s.pipelineReport);
   const setReport = useClientPipelineStore((s) => s.setPipelineReport);
   const confirmStep = useClientPipelineStore((s) => s.confirmStep);
   const isCompleted = useClientPipelineStore((s) => s.completedSteps).includes('client_pipeline_report');
-  const service = useClientPipelineStore((s) => s.phase4Service);
-  const niche = useClientPipelineStore((s) => s.phase4Niche) ?? '';
   const [copied, setCopied] = useState(false);
-
-  const cat = getServiceCategory(service);
 
   const downloadSlug = 'client-pipeline-report.md';
 
-  const generatedReport = useMemo((): PipelineReport => {
-    if (report) return report;
-    const serviceId = service ?? undefined;
+  // Build report data from pipelinePack + pipelineList
+  const reportData = useMemo(() => {
+    if (!pipelinePack) return null;
+
+    const validEntries = pipelineList.filter(
+      (p) => p.prospectName?.trim() || p.websiteUrl?.trim()
+    );
+    const scoredEntries = validEntries.filter((p) => p.score > 0)
+      .sort((a, b) => b.score - a.score);
+
     return {
-      clientSourceMap,
-      idealClientCriteria,
-      prospectTypes,
-      searchQueryBank,
-      leadScorecard,
-      pipelineList,
-      priorityPlan,
-      nextActions: generatePipelineNextActions(cat, niche, serviceId),
+      profileTitle: pipelinePack.idealProspectProfile.title,
+      profileDescription: pipelinePack.idealProspectProfile.description,
+      characteristics: pipelinePack.idealProspectProfile.characteristics,
+      evidenceOfFit: pipelinePack.idealProspectProfile.evidenceOfFit,
+      buyingSignals: pipelinePack.buyingSignals,
+      disqualifiers: pipelinePack.disqualifiers,
+      channels: pipelinePack.targetChannels.map((c) => ({
+        platform: c.platform,
+        priority: c.priority,
+        channelType: c.channelType,
+      })),
+      qualificationFactors: pipelinePack.qualificationFactors,
+      pipelineCount: validEntries.length,
+      priorityProspects: scoredEntries.slice(0, 10).map((e) => e.prospectName || 'Unnamed'),
+      readinessStatus: pipelinePack.prospectingReadiness.status,
+      readinessReasons: pipelinePack.prospectingReadiness.reasons,
+      portfolioAssetAvailable: pipelinePack.portfolioLeadAsset.available,
+      portfolioAssetTitle: pipelinePack.portfolioLeadAsset.title,
+      portfolioAssetUrl: pipelinePack.portfolioLeadAsset.url,
+      m6Handoff: {
+        portfolioHeadline: pipelinePack.module6HandoffContext.portfolioHeadline,
+        portfolioUrl: pipelinePack.module6HandoffContext.portfolioUrl,
+        portfolioCta: pipelinePack.module6HandoffContext.portfolioCta,
+        positioning: pipelinePack.module6HandoffContext.positioning,
+        deliverables: pipelinePack.module6HandoffContext.deliverables,
+        featuredProofTitle: pipelinePack.module6HandoffContext.featuredProofTitle,
+        featuredProofUrl: pipelinePack.module6HandoffContext.featuredProofUrl,
+      },
     };
-  }, [report, clientSourceMap, idealClientCriteria, prospectTypes, searchQueryBank, leadScorecard, pipelineList, priorityPlan, cat, niche, service]);
+  }, [pipelinePack, pipelineList]);
 
   const handleGenerate = () => {
-    setReport(generatedReport);
+    if (!reportData) return;
+    setReport({
+      clientSourceMap: { sources: [] },
+      idealClientCriteria: { criteria: [] },
+      prospectTypes: { types: [] },
+      searchQueryBank: { queries: [] },
+      leadScorecard,
+      pipelineList,
+      priorityPlan: { entries: [] },
+      nextActions: [
+        `Review priority prospects (${reportData.priorityProspects.length} identified)`,
+        `Prepare outreach for ${reportData.readinessStatus === 'ready' ? 'top-priority' : 'available'} prospects`,
+        reportData.portfolioAssetAvailable
+          ? `Lead with "${reportData.portfolioAssetTitle || 'featured proof'}" in conversations`
+          : 'Build portfolio proof asset before active outreach',
+        'Proceed to Outreach Engine (Module 6) for messaging and sequences',
+      ],
+    });
     confirmStep();
   };
 
   const handleCopy = useCallback(async () => {
-    const markdown = buildMarkdown(generatedReport);
+    if (!reportData) return;
+    const markdown = buildMarkdown(reportData);
     try {
       await navigator.clipboard.writeText(markdown);
       setCopied(true);
@@ -152,10 +203,11 @@ export function ClientPipelineReportStep() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
-  }, [generatedReport]);
+  }, [reportData]);
 
   const handleDownload = useCallback(() => {
-    const markdown = buildMarkdown(generatedReport);
+    if (!reportData) return;
+    const markdown = buildMarkdown(reportData);
     const blob = new Blob([markdown], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -165,9 +217,9 @@ export function ClientPipelineReportStep() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [generatedReport]);
+  }, [reportData]);
 
-  if (!report) {
+  if (!pipelinePack || !reportData) {
     return (
       <div className="space-y-8">
         <div className="space-y-2">
@@ -177,17 +229,37 @@ export function ClientPipelineReportStep() {
             Compile everything into a final client pipeline report.
           </p>
         </div>
+        <div className="flex items-center justify-center p-8 rounded-xl bg-white/[0.02] border border-white/5">
+          <div className="text-center space-y-2">
+            <p className="text-sm text-zinc-500">Pipeline strategy not yet generated.</p>
+            <p className="text-[11px] text-zinc-600">Complete upstream modules and return here.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!report) {
+    return (
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">Step 8 of 8</span>
+          <h2 className="text-2xl font-bold tracking-tight text-white/95">Client Pipeline Report</h2>
+          <p className="text-sm text-zinc-400 max-w-lg">
+            Review your full pipeline strategy and generate the final report.
+          </p>
+        </div>
 
         <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
           <FileText size={14} className="text-zinc-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <p className="text-xs text-white/80 leading-relaxed">
-              Review all pipeline sections and generate the final report. Once generated, you can copy or download as Markdown.
+              The report summarises your prospect profile, signals, channels, qualification approach, pipeline, priority prospects, readiness, and Module 6 handoff context.
             </p>
           </div>
         </div>
 
-        <ReportPreview report={generatedReport} />
+        <ReportPreview data={reportData} />
 
         <motion.button
           onClick={handleGenerate}
@@ -218,7 +290,7 @@ export function ClientPipelineReportStep() {
         </span>
       </div>
 
-      <ReportPreview report={generatedReport} />
+      <ReportPreview data={reportData} />
 
       <div className="flex items-center gap-3 pt-2 flex-wrap">
         <motion.button
@@ -252,7 +324,33 @@ export function ClientPipelineReportStep() {
   );
 }
 
-function ReportPreview({ report }: { report: PipelineReport }) {
+function ReportPreview({ data }: {
+  data: {
+    profileTitle: string;
+    profileDescription: string;
+    characteristics: string[];
+    evidenceOfFit: string[];
+    buyingSignals: { signal: string; whyItMatters: string }[];
+    disqualifiers: string[];
+    channels: { platform: string; priority: string; channelType: string }[];
+    qualificationFactors: { name: string; weight: number; whyImportant: string }[];
+    pipelineCount: number;
+    priorityProspects: string[];
+    readinessStatus: string;
+    readinessReasons: string[];
+    portfolioAssetAvailable: boolean;
+    portfolioAssetTitle?: string;
+    portfolioAssetUrl?: string;
+    m6Handoff: {
+      portfolioHeadline?: string;
+      portfolioUrl?: string;
+      positioning?: string;
+      deliverables: string[];
+      featuredProofTitle?: string;
+      featuredProofUrl?: string;
+    };
+  };
+}) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
       <div className="p-5 border-b border-white/5">
@@ -263,138 +361,155 @@ function ReportPreview({ report }: { report: PipelineReport }) {
       </div>
 
       <div className="p-5 space-y-5 divide-y divide-white/[0.04]">
-        <Section title="Client Source Map">
-          <p className="text-[11px] text-zinc-400">{report.clientSourceMap.sources.length} source{report.clientSourceMap.sources.length !== 1 ? 's' : ''}</p>
-          {report.clientSourceMap.sources.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5 mt-1">
-              {report.clientSourceMap.sources.map((s, i) => (
+        {/* 1. Profile */}
+        <div className="pt-0">
+          <div className="flex items-center gap-2 mb-2">
+            <UserCheck size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Ideal Prospect Profile</p>
+          </div>
+          <p className="text-sm font-semibold text-white/90 mb-1">{data.profileTitle}</p>
+          <p className="text-[11px] text-zinc-400 mb-2">{data.profileDescription}</p>
+          {data.characteristics.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {data.characteristics.slice(0, 4).map((c, i) => (
                 <span key={i} className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/5 text-[9px] text-zinc-400">
-                  {s.sourceName}
+                  {c.length > 40 ? c.slice(0, 40) + '...' : c}
                 </span>
               ))}
             </div>
-          ) : <Empty />}
-        </Section>
+          )}
+        </div>
 
-        <Section title="Ideal Client Criteria" className="pt-4">
-          <p className="text-[11px] text-zinc-400">{report.idealClientCriteria.criteria.length} criteria</p>
-          {report.idealClientCriteria.criteria.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5 mt-1">
-              {report.idealClientCriteria.criteria.map((c, i) => (
+        {/* 2. Buying Signals */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Radio size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Buying Signals ({data.buyingSignals.length})</p>
+          </div>
+          {data.buyingSignals.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {data.buyingSignals.map((s, i) => (
                 <span key={i} className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/5 text-[9px] text-zinc-400">
-                  {c.label}
+                  {s.signal.length > 50 ? s.signal.slice(0, 50) + '...' : s.signal}
                 </span>
               ))}
             </div>
-          ) : <Empty />}
-        </Section>
+          ) : <p className="text-[11px] text-zinc-500">—</p>}
+        </div>
 
-        <Section title="Prospect Types" className="pt-4">
-          {report.prospectTypes.types.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {report.prospectTypes.types.map((t, i) => (
-                <span key={i} className="px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-[11px] font-medium text-white/80">
-                  {t.name}
+        {/* 3. Channels */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Compass size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Discovery Channels ({data.channels.length})</p>
+          </div>
+          {data.channels.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {data.channels.map((c, i) => (
+                <span key={i} className={cn(
+                  'px-2 py-0.5 rounded text-[9px] border',
+                  c.priority === 'high'
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                    : c.priority === 'medium'
+                      ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                      : 'bg-zinc-500/10 border-zinc-500/20 text-zinc-400',
+                )}>
+                  {c.platform}
                 </span>
               ))}
             </div>
-          ) : <Empty />}
-        </Section>
+          ) : <p className="text-[11px] text-zinc-500">—</p>}
+        </div>
 
-        <Section title="Search Queries" className="pt-4">
-          <p className="text-[11px] text-zinc-400">{report.searchQueryBank.queries.length} quer{report.searchQueryBank.queries.length !== 1 ? 'ies' : 'y'}</p>
-          {report.searchQueryBank.queries.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5 mt-1">
-              {report.searchQueryBank.queries.map((q, i) => (
+        {/* 4. Qualification */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <BarChart3 size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Qualification Factors ({data.qualificationFactors.length})</p>
+          </div>
+          {data.qualificationFactors.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {data.qualificationFactors.map((f, i) => (
                 <span key={i} className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/5 text-[9px] text-zinc-400">
-                  {q.platform}: {q.query.length > 30 ? q.query.slice(0, 30) + '...' : q.query}
+                  {f.name} (max {f.weight})
                 </span>
               ))}
             </div>
-          ) : <Empty />}
-        </Section>
+          ) : <p className="text-[11px] text-zinc-500">—</p>}
+        </div>
 
-        <Section title="Lead Scorecard" className="pt-4">
-          {report.leadScorecard.factors.length > 0 ? (
-            <div className="space-y-1">
-              <div className="flex flex-wrap gap-1.5">
-                {report.leadScorecard.factors.map((f, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/5 text-[9px] text-zinc-400">
-                    {f.name}: {f.score}/{f.maxScore}
-                  </span>
-                ))}
-              </div>
-              <p className="text-[10px] text-white/70 mt-1">
-                Total: {report.leadScorecard.total}/35 — {report.leadScorecard.interpretation}
-              </p>
-            </div>
-          ) : <Empty />}
-        </Section>
-
-        <Section title="Pipeline List" className="pt-4">
-          {(() => {
-            const valid = report.pipelineList.filter(isValidProspect);
-            return (
-              <>
-                <p className="text-[11px] text-zinc-400">{valid.length} valid entr{valid.length !== 1 ? 'ies' : 'y'}</p>
-                {valid.length > 0 ? (
-                  <div className="space-y-1 mt-1">
-                    {valid.slice(0, 5).map((e, i) => (
-                      <p key={e.id} className="text-[10px] text-zinc-400">
-                        {e.prospectName} ({e.platform}) — {e.score}/35
-                      </p>
-                    ))}
-                    {valid.length > 5 && (
-                      <p className="text-[9px] text-zinc-500">+{valid.length - 5} more</p>
-                    )}
-                  </div>
-                ) : <Empty />}
-              </>
-            );
-          })()}
-        </Section>
-
-        <Section title="Priority Plan" className="pt-4">
-          {report.priorityPlan.entries.length > 0 ? (
-            <div className="space-y-2">
-              {report.priorityPlan.entries.map((e, i) => (
-                <div key={i} className="flex items-start gap-2 text-[10px] text-zinc-400">
-                  <span className="flex items-center justify-center w-4 h-4 rounded-full bg-brand-primary/15 text-[7px] font-bold text-brand-primary shrink-0 mt-0.5">
-                    {i + 1}
-                  </span>
-                  <span>{e.prospectName}: {e.whyWorthContacting}</span>
-                </div>
+        {/* 5. Pipeline */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Target size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Pipeline Summary</p>
+          </div>
+          <p className="text-[11px] text-zinc-400">{data.pipelineCount} total prospects</p>
+          {data.priorityProspects.length > 0 && (
+            <div className="space-y-1 mt-2">
+              <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-zinc-500">Priority Prospects</p>
+              {data.priorityProspects.slice(0, 5).map((name, i) => (
+                <p key={i} className="text-[10px] text-zinc-400">{i + 1}. {name}</p>
               ))}
             </div>
-          ) : <Empty />}
-        </Section>
+          )}
+        </div>
 
-        <Section title="Next Actions" className="pt-4">
-          <ul className="space-y-1.5">
-            {report.nextActions.map((action, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-white/70">
-                <span className="flex items-center justify-center w-4 h-4 rounded-full bg-brand-primary/15 text-[8px] font-bold text-brand-primary shrink-0 mt-0.5">
-                  {i + 1}
-                </span>
-                {action}
-              </li>
-            ))}
-          </ul>
-        </Section>
+        {/* 6. Readiness */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            {data.readinessStatus === 'ready'
+              ? <ShieldCheck size={12} className="text-emerald-400" />
+              : data.readinessStatus === 'limited'
+                ? <Shield size={12} className="text-amber-400" />
+                : <ShieldAlert size={12} className="text-red-400" />}
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Prospecting Readiness: {data.readinessStatus}</p>
+          </div>
+          {data.readinessReasons.length > 0 && (
+            <ul className="space-y-0.5">
+              {data.readinessReasons.map((r, i) => (
+                <li key={i} className="text-[10px] text-zinc-500">{r}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* 7. Portfolio Lead Asset */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            {data.portfolioAssetAvailable
+              ? <ShieldCheck size={12} className="text-emerald-400" />
+              : <Shield size={12} className="text-zinc-400" />}
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">
+              {data.portfolioAssetAvailable ? 'Portfolio Lead Asset Available' : 'No Portfolio Lead Asset'}
+            </p>
+          </div>
+          {data.portfolioAssetAvailable && data.portfolioAssetTitle && (
+            <p className="text-[10px] text-zinc-300">{data.portfolioAssetTitle}</p>
+          )}
+          {data.portfolioAssetUrl && (
+            <p className="text-[9px] text-zinc-500 font-mono">{data.portfolioAssetUrl}</p>
+          )}
+        </div>
+
+        {/* 8. M6 Handoff */}
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <ArrowRight size={12} className="text-brand-primary" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Module 6 Handoff</p>
+          </div>
+          <div className="space-y-1">
+            {data.m6Handoff.positioning && <p className="text-[10px] text-zinc-400">Positioning: {data.m6Handoff.positioning}</p>}
+            {data.m6Handoff.portfolioHeadline && <p className="text-[10px] text-zinc-400">Portfolio: {data.m6Handoff.portfolioHeadline}</p>}
+            {data.m6Handoff.deliverables.length > 0 && (
+              <p className="text-[10px] text-zinc-400">Deliverables: {data.m6Handoff.deliverables.join(', ')}</p>
+            )}
+            {data.m6Handoff.featuredProofTitle && (
+              <p className="text-[10px] text-zinc-400">Proof: {data.m6Handoff.featuredProofTitle}</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
-}
-
-function Section({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={className || ''}>
-      <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">{title}</p>
-      {children}
-    </div>
-  );
-}
-
-function Empty() {
-  return <p className="text-sm text-zinc-500">—</p>;
 }
