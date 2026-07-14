@@ -211,7 +211,7 @@ async function runValidation(): Promise<void> {
       const ctx = buildContext(serviceId, marketId, nicheId, 'builder');
       try {
         const result = composeAll(ctx);
-        nicheResults.push({ serviceId, marketId, nicheId, authorityPosition: 'builder', pack: result, errors: [] });
+        nicheResults.push({ serviceId, marketId, nicheId, authorityPosition: 'builder', pack: result.pack, errors: [] });
         allResults.push({ serviceId, marketId, nicheId, authorityPosition: 'builder', pack: result.pack, errors: [] });
       } catch (err: any) {
         console.error(`  CRASH: ${serviceId} / ${marketId} / ${nicheId}: ${err.message}`);
@@ -227,9 +227,9 @@ async function runValidation(): Promise<void> {
   const diffMarket = 'creators';
   for (const serviceId of ['video_editor', 'short_form_editor', 'wordpress_developer', 'ui_ux_designer'] as const) {
     const ctx = buildContext(serviceId, diffMarket, null, 'builder');
-    const pack = composeAll(ctx);
+    const full = composeAll(ctx);
     const existing = allResults.find((r) => r.serviceId === serviceId && r.marketId === diffMarket && r.nicheId === null);
-    if (!existing) allResults.push({ serviceId, marketId: diffMarket, nicheId: null, authorityPosition: 'builder', pack, errors: [] });
+    if (!existing) allResults.push({ serviceId, marketId: diffMarket, nicheId: null, authorityPosition: 'builder', pack: full.pack, errors: [] });
   }
 
   /* ── REPRESENTATIVE OUTPUTS ── */

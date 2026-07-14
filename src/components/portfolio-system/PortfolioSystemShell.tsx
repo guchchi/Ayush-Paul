@@ -12,14 +12,12 @@ import type { PortfolioSystemStep } from '../../types/portfolio-system';
 const SIDEBAR_WIDTH = 240;
 
 const STEP_LABELS: Record<PortfolioSystemStep, string> = {
-  portfolio_goal: 'Portfolio Goal',
-  asset_selection: 'Asset Selection',
-  case_study_builder: 'Case Study Builder',
-  sample_project_builder: 'Sample Project Builder',
-  proof_page_structure: 'Proof Page Structure',
-  portfolio_copy_generator: 'Portfolio Copy Generator',
-  portfolio_checklist: 'Portfolio Checklist',
-  portfolio_report: 'Portfolio Report',
+  portfolio_direction: 'Portfolio Direction',
+  platform_structure: 'Destination & Structure',
+  project_arrangement: 'Project Arrangement',
+  project_presentations: 'Project Presentations',
+  portfolio_copy_cta: 'Copy & CTA',
+  portfolio_build_pack: 'Portfolio Build Pack',
 };
 
 function StepDot({ status }: { status: 'completed' | 'active' | 'upcoming' }) {
@@ -51,14 +49,9 @@ function StepDot({ status }: { status: 'completed' | 'active' | 'upcoming' }) {
 }
 
 function PhaseContext() {
-  const serviceLabel = usePortfolioSystemStore((s) => s.phase3ServiceLabel);
-  const market = usePortfolioSystemStore((s) => s.phase3Market);
-  const niche = usePortfolioSystemStore((s) => s.phase3Niche);
-  const positioning = usePortfolioSystemStore((s) => s.phase3Positioning);
-  const offerName = usePortfolioSystemStore((s) => s.phase3OfferName);
-  const authorityAngle = usePortfolioSystemStore((s) => s.phase3AuthorityAngle);
+  const upstream = usePortfolioSystemStore((s) => s.upstream);
 
-  if (!serviceLabel) {
+  if (!upstream) {
     return (
       <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-amber-400/5 border border-amber-400/15 space-y-1">
         <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-amber-500">Phase 3 Context</p>
@@ -73,11 +66,17 @@ function PhaseContext() {
     <div className="px-4 py-3 mx-3 mt-2 rounded-lg bg-white/[0.02] border border-white/5">
       <p className="text-[8px] font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">Authority &amp; Offer</p>
       <div className="space-y-1.5">
-        <ContextRow label="Service" value={serviceLabel} />
-        {market && niche && <ContextRow label="Opportunity" value={`${market} / ${niche}`} />}
-        <ContextRow label="Offer" value={offerName || serviceLabel} />
-        {authorityAngle && <ContextRow label="Authority" value={authorityAngle} />}
-        {positioning && <ContextRow label="Positioning" value={positioning} />}
+        <ContextRow label="Service" value={upstream.mod1ServiceId || upstream.mod3ProfileCopy.offerStatement || '—'} />
+        {upstream.mod1MarketId && upstream.mod1NicheId && (
+          <ContextRow label="Opportunity" value={`${upstream.mod1MarketId} / ${upstream.mod1NicheId}`} />
+        )}
+        <ContextRow label="Offer" value={upstream.mod2OfferType || upstream.mod1ServiceId || '—'} />
+        {upstream.mod3AuthorityPosition && (
+          <ContextRow label="Authority" value={upstream.mod3AuthorityPosition} />
+        )}
+        {upstream.mod1Positioning && (
+          <ContextRow label="Positioning" value={upstream.mod1Positioning} />
+        )}
       </div>
     </div>
   );

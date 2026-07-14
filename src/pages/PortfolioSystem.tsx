@@ -1,10 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { PortfolioSystemShell } from '../components/portfolio-system/PortfolioSystemShell';
+import { PortfolioSystemIntroPage } from '../components/portfolio-system/PortfolioSystemIntroPage';
 import { StepContent } from '../components/portfolio-system/StepContent';
 import { usePortfolioSystemStore } from '../lib/portfolio-system';
 import { useAuthoritySystemStore } from '../lib/authority-system';
 import { useModule3Store } from '../lib/module3';
 import type { UpstreamContext } from '../types/portfolio-system';
+
+const MODULE4_STARTED_KEY = 'blueprint-module4-started';
 
 function buildUpstreamFromModule3(): UpstreamContext | null {
   const m3 = useModule3Store.getState();
@@ -106,6 +111,16 @@ function buildUpstreamFromLegacy(): UpstreamContext | null {
 }
 
 export function PortfolioSystemPage() {
+  const navigate = useNavigate();
+
+  const [moduleStarted, setModuleStarted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(MODULE4_STARTED_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   const setPhase3Context = usePortfolioSystemStore((s) => s.setPhase3Context);
   const upstream = usePortfolioSystemStore((s) => s.upstream);
   const m3Completed = useModule3Store((s) => s.isCompleted);
@@ -137,13 +152,60 @@ export function PortfolioSystemPage() {
     setPhase3Context(fresh);
   }, [m3ServiceId]);
 
+  const handleStart = useCallback(() => {
+    setModuleStarted(true);
+    try {
+      localStorage.setItem(MODULE4_STARTED_KEY, 'true');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleBackToBlueprint = useCallback(() => {
+    navigate('/blueprints/get-your-first-3-clients');
+  }, [navigate]);
+
+  const handleBackToOverview = useCallback(() => {
+    setModuleStarted(false);
+    try {
+      localStorage.setItem(MODULE4_STARTED_KEY, 'false');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  /* ── Guard: No Module 3 context ── */
   if (!upstream) {
     return (
-      <PortfolioSystemShell>
-        <div className="flex items-center justify-center h-64 text-muted-foreground">
-          Complete Module 3 (Authority System) first to unlock Portfolio System.
+      <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
+        <div className="max-w-md text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto">
+            <AlertCircle size={28} className="text-amber-500" />
+          </div>
+          <h1 className="text-2xl font-bold">Authority System Required</h1>
+          <p className="text-sm text-neutral-500 leading-relaxed">
+            Complete the Authority System (Module 3) first to unlock the Portfolio System.
+            Your portfolio plan uses your authority strategy and accepted proof assets.
+          </p>
+          <button
+            onClick={() => navigate('/workspace/authority-system')}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:bg-[#0047a0] cursor-pointer"
+          >
+            <ArrowLeft size={14} />
+            Go to Authority System
+          </button>
         </div>
-      </PortfolioSystemShell>
+      </div>
+    );
+  }
+
+  /* ── Intro page for first-time / non-started users ── */
+  if (!moduleStarted) {
+    return (
+      <PortfolioSystemIntroPage
+        onStart={handleStart}
+        onBackToBlueprint={handleBackToBlueprint}
+      />
     );
   }
 

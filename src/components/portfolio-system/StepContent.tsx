@@ -1,23 +1,19 @@
 import { usePortfolioSystemStore } from '../../lib/portfolio-system';
 import type { PortfolioSystemStep } from '../../types/portfolio-system';
-import { PortfolioGoalStep } from './PortfolioGoalStep';
-import { AssetSelectionStep } from './AssetSelectionStep';
-import { CaseStudyBuilderStep } from './CaseStudyBuilderStep';
-import { SampleProjectBuilderStep } from './SampleProjectBuilderStep';
-import { ProofPageStructureStep } from './ProofPageStructureStep';
-import { PortfolioCopyGeneratorStep } from './PortfolioCopyGeneratorStep';
-import { PortfolioChecklistStep } from './PortfolioChecklistStep';
-import { PortfolioReportStep } from './PortfolioReportStep';
+import { PortfolioDirectionStep } from './PortfolioDirectionStep';
+import { DestinationStructureStep } from './DestinationStructureStep';
+import { ProjectArrangementStep } from './ProjectArrangementStep';
+import { ProjectPresentationsStep } from './ProjectPresentationsStep';
+import { PortfolioCopyCTAStep } from './PortfolioCopyCTAStep';
+import { PortfolioBuildPackStep } from './PortfolioBuildPackStep';
 
 const STEP_COMPONENTS: Partial<Record<PortfolioSystemStep, React.FC>> = {
-  portfolio_goal: PortfolioGoalStep,
-  asset_selection: AssetSelectionStep,
-  case_study_builder: CaseStudyBuilderStep,
-  sample_project_builder: SampleProjectBuilderStep,
-  proof_page_structure: ProofPageStructureStep,
-  portfolio_copy_generator: PortfolioCopyGeneratorStep,
-  portfolio_checklist: PortfolioChecklistStep,
-  portfolio_report: PortfolioReportStep,
+  portfolio_direction: PortfolioDirectionStep,
+  platform_structure: DestinationStructureStep,
+  project_arrangement: ProjectArrangementStep,
+  project_presentations: ProjectPresentationsStep,
+  portfolio_copy_cta: PortfolioCopyCTAStep,
+  portfolio_build_pack: PortfolioBuildPackStep,
 };
 
 export function StepContent() {

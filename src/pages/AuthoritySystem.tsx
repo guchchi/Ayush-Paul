@@ -1,15 +1,26 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { Module3Shell } from '../components/module3/Module3Shell';
+import { Module3IntroPage } from '../components/module3/Module3IntroPage';
 import { StepContent } from '../components/module3/StepContent';
 import { useModule3Store, buildFingerprint } from '../lib/module3';
 import type { Module1Context, Module2Context } from '../types/module3';
 import { useOfferEngineeringStore } from '../lib/offer-engineering';
 import { useOpportunityMapStore } from '../lib/opportunity-map';
 
+const MODULE3_STARTED_KEY = 'blueprint-module3-started';
+
 export function AuthoritySystem() {
   const navigate = useNavigate();
+
+  const [moduleStarted, setModuleStarted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(MODULE3_STARTED_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   const setPhase1Context = useModule3Store((s) => s.setPhase1Context);
   const setPhase2Context = useModule3Store((s) => s.setPhase2Context);
@@ -21,7 +32,6 @@ export function AuthoritySystem() {
   const completedSteps = useModule3Store((s) => s.completedSteps);
   const isCompleted = useModule3Store((s) => s.isCompleted);
 
-  /* ── Module 1 — read DIRECTLY from useOpportunityMapStore ── */
   const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const marketId = useOpportunityMapStore((s) => s.marketId);
@@ -29,7 +39,6 @@ export function AuthoritySystem() {
   const offerId = useOpportunityMapStore((s) => s.offerId);
   const positioning = useOpportunityMapStore((s) => s.positioning);
 
-  /* ── Module 2 — raw values from useOfferEngineeringStore ── */
   const m2OfferType = useOfferEngineeringStore((s) => s.offerType);
   const m2OfferBlueprint = useOfferEngineeringStore((s) => s.offerBlueprint);
   const m2Deliverables = useOfferEngineeringStore((s) => s.deliverables);
@@ -67,7 +76,6 @@ export function AuthoritySystem() {
   const currentFP = buildFingerprint(mod1Ctx, mod2Ctx);
   const hasProgress = completedSteps.length > 0 || isCompleted;
 
-  /* ── Fingerprint comparison on mount / upstream change ── */
   useEffect(() => {
     if (!serviceId) return;
 
@@ -96,7 +104,28 @@ export function AuthoritySystem() {
     setUpstreamFingerprint(currentFP);
   }, [mod1Ctx, mod2Ctx, currentFP]);
 
-  /* ── Guard: no Module 1 context ── */
+  const handleStart = useCallback(() => {
+    setModuleStarted(true);
+    try {
+      localStorage.setItem(MODULE3_STARTED_KEY, 'true');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleBackToBlueprint = useCallback(() => {
+    navigate('/blueprints/get-your-first-3-clients');
+  }, [navigate]);
+
+  const handleBackToOverview = useCallback(() => {
+    setModuleStarted(false);
+    try {
+      localStorage.setItem(MODULE3_STARTED_KEY, 'false');
+    } catch {
+      // ignore
+    }
+  }, []);
+
   if (!serviceId) {
     return (
       <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
@@ -121,7 +150,6 @@ export function AuthoritySystem() {
     );
   }
 
-  /* ── Guard: no Module 2 context (check offerType or full offerBlueprint) ── */
   if (!m2OfferType && !m2OfferBlueprint) {
     return (
       <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
@@ -146,7 +174,6 @@ export function AuthoritySystem() {
     );
   }
 
-  /* ── Stale-context blocking state ── */
   if (isStale) {
     return (
       <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
@@ -173,8 +200,17 @@ export function AuthoritySystem() {
     );
   }
 
+  if (!moduleStarted) {
+    return (
+      <Module3IntroPage
+        onStart={handleStart}
+        onBackToBlueprint={handleBackToBlueprint}
+      />
+    );
+  }
+
   return (
-    <Module3Shell>
+    <Module3Shell onBack={handleBackToOverview}>
       <StepContent />
     </Module3Shell>
   );

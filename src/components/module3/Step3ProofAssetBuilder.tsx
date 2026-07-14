@@ -48,6 +48,7 @@ export function Step3ProofAssetBuilder() {
   const [regenerateWarningId, setRegenerateWarningId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'failure'>('idle');
 
   useEffect(() => {
     if (proofPriorities.length === 3 && proofAssets.length !== 3) {
@@ -168,25 +169,33 @@ export function Step3ProofAssetBuilder() {
     ].filter(Boolean).join('\n\n');
     try {
       await navigator.clipboard.writeText(text);
+      setCopyStatus('success');
       setCopiedId(activeAsset.id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch {}
+      setTimeout(() => {
+        setCopyStatus('idle');
+        setCopiedId(null);
+      }, 2000);
+    } catch {
+      setCopyStatus('failure');
+      setTimeout(() => setCopyStatus('idle'), 3000);
+    }
   }, [activeAsset]);
 
   return (
     <div className="space-y-6">
-      <div>
+      {/* Header */}
+      <div className="text-left">
         <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
           Step 3 of 5
         </span>
-        <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Asset Builder</h2>
+        <h1 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Asset Builder</h1>
         <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
           Build and refine 3 execution-ready proof assets for your portfolio.
         </p>
       </div>
 
       {/* TABS */}
-      <div role="tablist" aria-label="Proof assets" className="flex flex-col sm:flex-row gap-2 border-b border-neutral-200 pb-4 overflow-x-auto no-scrollbar">
+      <div role="tablist" aria-label="Proof assets" className="flex flex-row gap-2 border-b border-neutral-200 pb-4 overflow-x-auto no-scrollbar">
         {proofAssets.map((asset, idx) => {
           const isActive = idx === activeTab;
           return (
@@ -198,33 +207,65 @@ export function Step3ProofAssetBuilder() {
               aria-controls={`asset-panel-${idx}`}
               onClick={() => setActiveTab(idx)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all cursor-pointer whitespace-nowrap min-w-max",
+                "flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all cursor-pointer whitespace-nowrap min-w-max outline-none",
                 isActive 
-                  ? "bg-[#0058be]/5 border-[#0058be]/30 text-[#0058be]" 
-                  : "bg-white border-neutral-200 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700"
+                  ? "bg-[#0058be]/5 border-[#0058be] text-[#0058be] ring-1 ring-[#0058be]" 
+                  : "bg-white border-neutral-200 text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700",
+                "focus-visible:ring-2 focus-visible:ring-[#0058be]"
               )}
             >
               {asset.isAccepted ? (
-                <CheckCircle2 size={14} className={isActive ? "text-[#0058be]" : "text-emerald-600"} />
+                <CheckCircle2 size={14} className="text-[#0058be]" />
               ) : (
-                <Circle size={14} className={isActive ? "text-[#0058be]" : "text-neutral-400"} />
+                <Circle size={14} className="text-neutral-300" />
               )}
-              <span className="text-xs font-semibold tracking-wide">Proof Asset {idx + 1}</span>
+              <span className="text-xs font-bold tracking-wide">Proof Asset {idx + 1}</span>
               {asset.isCustom && !asset.isAccepted && (
-                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-amber-50 border border-amber-200 text-[7px] font-bold uppercase tracking-wider text-amber-700">
-                  <Edit3 size={7} />
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-[8px] font-bold uppercase tracking-wider text-amber-700">
+                  <Edit3 size={8} />
                   Edited
                 </span>
               )}
               {asset.isAccepted && (
-                <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-[7px] font-bold uppercase tracking-wider text-emerald-700">
-                  <Check size={7} />
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-[8px] font-bold uppercase tracking-wider text-emerald-700">
+                  <Check size={8} />
                   Accepted
                 </span>
               )}
             </button>
           );
         })}
+      </div>
+
+      {/* Active Asset Header / Status Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm text-left">
+        <div className="space-y-1 min-w-0">
+          <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
+            Proof Asset {activeTab + 1} of 3
+          </span>
+          <h2 className="text-base font-bold text-[#0b1c30] flex flex-wrap items-center gap-1.5">
+            <span>Credibility Gap:</span>
+            <span className="font-semibold text-neutral-600 truncate">{activeAsset.credibilityGapProved}</span>
+          </h2>
+          {activePriority && (
+            <p className="text-xs text-neutral-500">
+              Recommended Format: <span className="font-bold text-[#0058be]">{activePriority.recommendedFormat.replace(/_/g, ' ')}</span>
+            </p>
+          )}
+        </div>
+        <button
+          onClick={handleRegenerateClick}
+          disabled={isRegenerating}
+          className={cn(
+            "inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]",
+            isRegenerating
+              ? "border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed"
+              : "border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 active:scale-[0.98]"
+          )}
+        >
+          <RotateCcw size={13} className={cn("text-neutral-500", isRegenerating && "animate-spin")} />
+          <span>{isRegenerating ? 'Regenerating...' : 'Regenerate'}</span>
+        </button>
       </div>
 
       {/* SPLIT SCREEN LAYOUT */}
@@ -236,57 +277,24 @@ export function Step3ProofAssetBuilder() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
-        className="flex flex-col lg:flex-row gap-6"
+        className="flex flex-col lg:flex-row gap-8 items-start"
       >
-        {/* LEFT: EDITING AREA */}
-        <div className="flex-1 min-w-0 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-              Proof Asset {activeTab + 1} of 3
-            </span>
-            <button
-              onClick={handleRegenerateClick}
-              disabled={isRegenerating}
-              className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[9px] font-bold uppercase tracking-[0.1em] transition-all cursor-pointer",
-                isRegenerating
-                  ? "border-neutral-200 bg-neutral-50 text-neutral-400 cursor-not-allowed"
-                  : "border-neutral-200 bg-white text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50"
-              )}
-            >
-              <RotateCcw size={10} className={cn(isRegenerating && "animate-spin")} />
-              {isRegenerating ? 'Regenerating...' : 'Regenerate'}
-            </button>
-          </div>
-
-          {/* Read-only Priority Context */}
-          <div className="p-3 rounded-xl bg-[#f8f9ff] border border-neutral-200 flex items-start gap-3">
-            <FileText size={14} className="text-neutral-400 shrink-0 mt-0.5" />
-            <div className="min-w-0">
-              <p className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Credibility Gap</p>
-              <p className="text-xs font-semibold text-[#0b1c30] mt-0.5 leading-relaxed">{activeAsset.credibilityGapProved}</p>
-              {activePriority && (
-                <p className="text-[10px] text-neutral-500 mt-1">
-                  Format: <span className="font-semibold text-neutral-600">{activePriority.recommendedFormat.replace(/_/g, ' ')}</span>
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Collapsible Sections */}
-          <CollapsibleSection title="Proof Objective" description="Target audience and business problem" defaultOpen>
+        {/* LEFT: EDITING AREA (45%) */}
+        <div className="w-full lg:w-[45%] space-y-6 min-w-0">
+          {/* Collapsible Sections with Progressive Disclosure */}
+          <CollapsibleSection title="Proof Objective" description="Target audience and business problem" defaultOpen={false}>
             <Field label="Target Audience" value={activeAsset.targetAudience} onChange={(v) => handleFieldChange('targetAudience', v)} />
             <Field label="Business Problem" value={activeAsset.businessProblem} onChange={(v) => handleFieldChange('businessProblem', v)} type="textarea" />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Project Brief" description="Scenario, materials, and deliverables" defaultOpen>
+          <CollapsibleSection title="Project Brief" description="Scenario, materials, and deliverables" defaultOpen={true}>
             <Field label="Title" value={activeAsset.title} onChange={(v) => handleFieldChange('title', v)} />
             <Field label="Scenario" value={activeAsset.scenario} onChange={(v) => handleFieldChange('scenario', v)} type="textarea" />
             <ArrayField label="Starting Materials" values={activeAsset.startingMaterial} onChange={(i, v) => handleArrayChange('startingMaterial', i, v)} />
             <ArrayField label="Deliverables" values={activeAsset.deliverables} onChange={(i, v) => handleArrayChange('deliverables', i, v)} />
           </CollapsibleSection>
 
-          <CollapsibleSection title="Execution Plan" description="Ordered execution steps" defaultOpen>
+          <CollapsibleSection title="Execution Plan" description="Ordered execution steps" defaultOpen={false}>
             <ArrayField label="Execution Steps" values={activeAsset.executionSteps} onChange={(i, v) => handleArrayChange('executionSteps', i, v)} numbered />
           </CollapsibleSection>
 
@@ -295,11 +303,11 @@ export function Step3ProofAssetBuilder() {
             <ArrayField label="Process to Document" values={activeAsset.processToDocument} onChange={(i, v) => handleArrayChange('processToDocument', i, v)} />
           </CollapsibleSection>
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50 overflow-hidden">
-            <div className="p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle size={12} className="text-amber-700" />
-                <span className="text-[9px] font-bold uppercase tracking-wider text-amber-700">What Not To Claim</span>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 overflow-hidden text-left">
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertTriangle size={14} className="text-amber-700" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">What Not To Claim</span>
               </div>
               <ArrayField 
                 label="" 
@@ -310,7 +318,7 @@ export function Step3ProofAssetBuilder() {
             </div>
           </div>
 
-          <CollapsibleSection title="Presentation" description="Structure for presenting this project" defaultOpen>
+          <CollapsibleSection title="Presentation" description="Structure for presenting this project" defaultOpen={false}>
             <ArrayField label="Presentation Structure" values={activeAsset.presentationStructure} onChange={(i, v) => handleArrayChange('presentationStructure', i, v)} numbered />
           </CollapsibleSection>
 
@@ -319,56 +327,57 @@ export function Step3ProofAssetBuilder() {
           </CollapsibleSection>
         </div>
 
-        {/* RIGHT: PRESENTATION PREVIEW */}
-        <div className="w-full lg:w-[400px] shrink-0 space-y-4">
-          <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">Portfolio Preview</span>
+        {/* RIGHT: PRESENTATION PREVIEW (55% sticky) */}
+        <div className="w-full lg:w-[55%] min-w-0 space-y-4 lg:sticky lg:top-6 lg:self-start">
+          <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-wider text-left">Portfolio Preview</h2>
           
-          <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
+          <div className="rounded-2xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
             <div className="h-32 bg-neutral-50 border-b border-neutral-200 relative flex items-center justify-center overflow-hidden">
-              <FileText size={40} className="text-neutral-200" />
+              <FileText size={40} className="text-neutral-200" aria-hidden="true" />
               <div className="absolute inset-0 bg-gradient-to-t from-white/60 to-transparent" />
               <div className="absolute bottom-3 left-3">
-                <span className="text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/80 text-neutral-500 border border-neutral-200">
+                <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/90 text-neutral-500 border border-neutral-200">
                   {activeAsset.assetType.replace(/_/g, ' ')}
                 </span>
               </div>
             </div>
             
-            <div className="p-5 space-y-4">
+            <div className="p-6 space-y-5 text-left">
               <div className="space-y-1.5">
-                <label htmlFor="preview-headline" className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Portfolio Headline</label>
-                <input 
+                <label htmlFor="preview-headline" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Portfolio Headline</label>
+                <textarea 
                   id="preview-headline"
                   value={activeAsset.portfolioCopy.headline}
                   onChange={(e) => handleCopyChange('headline', e.target.value)}
-                  className="w-full bg-transparent border-b border-transparent hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-base font-bold text-[#0b1c30] transition-colors"
+                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-base font-bold text-[#0b1c30] transition-colors resize-y min-h-[50px]"
                   placeholder="Your portfolio project headline..."
                 />
-                <label htmlFor="preview-description" className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Project Description</label>
+              </div>
+
+              <div className="space-y-1.5 pt-3 border-t border-neutral-100">
+                <label htmlFor="preview-description" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Project Description</label>
                 <textarea 
                   id="preview-description"
                   value={activeAsset.portfolioCopy.description}
                   onChange={(e) => handleCopyChange('description', e.target.value)}
-                  className="w-full bg-transparent border border-transparent hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-[11px] text-neutral-500 transition-colors resize-none overflow-hidden"
-                  rows={2}
+                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-neutral-500 transition-colors resize-y min-h-[60px]"
                   placeholder="Brief project description..."
                 />
               </div>
 
               <div className="space-y-1.5 pt-3 border-t border-neutral-100">
-                <label htmlFor="preview-proof" className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Proof Statement</label>
+                <label htmlFor="preview-proof" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Proof Statement</label>
                 <textarea 
                   id="preview-proof"
                   value={activeAsset.portfolioCopy.proofStatement}
                   onChange={(e) => handleCopyChange('proofStatement', e.target.value)}
-                  className="w-full bg-transparent border border-transparent hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-[11px] text-[#0b1c30] transition-colors resize-none"
-                  rows={3}
+                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-[#0b1c30] transition-colors resize-y min-h-[80px]"
                   placeholder="Your proof statement..."
                 />
               </div>
 
               <div className="pt-2 space-y-1.5">
-                <label htmlFor="preview-cta" className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">CTA</label>
+                <label htmlFor="preview-cta" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">CTA</label>
                 <input 
                   id="preview-cta"
                   value={activeAsset.portfolioCopy.cta}
@@ -379,77 +388,112 @@ export function Step3ProofAssetBuilder() {
               </div>
             </div>
           </div>
-
-          <div className="flex items-center justify-between p-4 rounded-xl border border-neutral-200 bg-white">
-            <div>
-              <p className="text-xs font-bold text-[#0b1c30]">Finalise Brief</p>
-              <p className="text-[10px] text-neutral-500 mt-0.5">Mark as accepted to proceed.</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopyPreview}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-neutral-200 text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
-              >
-                {copiedId === activeAsset.id ? (
-                  <><Check size={12} className="text-emerald-600" />Copied</>
-                ) : (
-                  <><Copy size={12} />Copy</>
-                )}
-              </button>
-              <button
-                onClick={() => handleFieldChange('isAccepted', !activeAsset.isAccepted)}
-                className={cn(
-                  "inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer",
-                  activeAsset.isAccepted 
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
-                    : "bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-50"
-                )}
-              >
-                {activeAsset.isAccepted ? (
-                  <><CheckCircle2 size={14} />Accepted</>
-                ) : (
-                  'Accept Brief'
-                )}
-              </button>
-            </div>
-          </div>
         </div>
       </motion.div>
 
-      {/* NAVIGATION BUTTONS */}
-      <div className="flex items-center justify-between pt-6 mt-4 border-t border-neutral-200">
-        <button
-          onClick={previousStep}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          Back
-        </button>
+      {/* Authoritative Action Area */}
+      <div className="p-5 rounded-2xl border border-neutral-200 bg-white shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {/* Left: Status text & Back button */}
+        <div className="flex items-center gap-4 text-left">
+          <button
+            onClick={previousStep}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]"
+            aria-label="Go back to Step 2"
+          >
+            <ArrowLeft size={14} aria-hidden="true" />
+            <span>Back</span>
+          </button>
+          
+          <div className="min-w-0" aria-live="polite">
+            {allAccepted ? (
+              <div className="flex items-center gap-2 text-emerald-700">
+                <CheckCircle2 size={16} className="shrink-0" />
+                <div>
+                  <p className="text-xs font-bold">All 3 proof assets accepted</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">Ready to continue to Profile & Portfolio.</p>
+                </div>
+              </div>
+            ) : activeAsset.isAccepted ? (
+              <div className="flex items-center gap-2 text-neutral-700">
+                <CheckCircle2 size={16} className="text-[#0058be] shrink-0" aria-hidden="true" />
+                <div>
+                  <p className="text-xs font-bold">Proof asset {activeTab + 1} accepted</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">Proceed to the next asset or review copy.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-neutral-600">
+                <Circle size={16} className="text-neutral-300 shrink-0" aria-hidden="true" />
+                <div>
+                  <p className="text-xs font-bold">Review and refine this proof asset</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">Mark as accepted to finalize this brief.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-        <button
-          onClick={handleConfirm}
-          disabled={!allAccepted}
-          className={cn(
-            'inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border',
-            allAccepted
-              ? 'bg-[#0058be] text-white border-transparent hover:opacity-90 shadow-sm'
-              : 'bg-white border-neutral-200 text-neutral-400 cursor-not-allowed',
+        {/* Right: Actions (Copy & Primary Action) */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <button
+            onClick={handleCopyPreview}
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]"
+          >
+            {copiedId === activeAsset.id ? (
+              <Check size={14} className="text-[#0058be] stroke-[3]" aria-hidden="true" />
+            ) : (
+              <Copy size={14} aria-hidden="true" />
+            )}
+            <span>
+              {copyStatus === 'success' && 'Copied brief'}
+              {copyStatus === 'failure' && "Couldn't copy. Try again."}
+              {copyStatus === 'idle' && 'Copy brief'}
+            </span>
+          </button>
+
+          {!activeAsset.isAccepted ? (
+            <button
+              onClick={() => handleFieldChange('isAccepted', true)}
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be] active:scale-[0.98]"
+            >
+              <span>Accept proof asset</span>
+            </button>
+          ) : !allAccepted ? (
+            <button
+              onClick={() => {
+                const nextIndex = proofAssets.findIndex((a) => !a.isAccepted);
+                if (nextIndex !== -1) {
+                  setActiveTab(nextIndex);
+                } else {
+                  setActiveTab((activeTab + 1) % 3);
+                }
+              }}
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0b1c30] active:scale-[0.98]"
+            >
+              <span>Next proof asset</span>
+              <ArrowRight size={14} aria-hidden="true" />
+            </button>
+          ) : (
+            <button
+              onClick={handleConfirm}
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be] active:scale-[0.98]"
+            >
+              <span>Continue to Profile & Portfolio</span>
+              <ArrowRight size={14} aria-hidden="true" />
+            </button>
           )}
-        >
-          {isCompleted ? 'Continue' : 'Accept All & Continue'}
-          <ArrowRight size={14} />
-        </button>
+        </div>
       </div>
 
       {/* DIALOGS */}
       <AnimatePresence>
         {regenerateWarningId && (
           <Dialog
-            title="Regenerate Edited Asset?"
-            message="Regenerating will replace your manual edits for this asset. Are you sure?"
+            title="Regenerate this proof asset?"
+            message="This will replace the current generated brief and discard all manual edits for this asset."
             onCancel={() => setRegenerateWarningId(null)}
             onConfirm={confirmRegenerate}
-            confirmLabel="Regenerate"
+            confirmLabel="Regenerate asset"
             loading={isRegenerating}
           />
         )}
@@ -473,44 +517,61 @@ export function Step3ProofAssetBuilder() {
 
 function Field({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (v: string) => void; type?: 'text' | 'textarea' }) {
   return (
-    <div className="space-y-1">
-      <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400">{label}</label>
+    <div className="space-y-1.5 text-left">
+      <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">{label}</label>
       {type === 'text' ? (
         <input 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be]/50 transition-colors"
+          className="w-full px-3 py-2 rounded-lg outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be]/50 transition-colors focus:ring-2 focus:ring-[#0058be]/20"
         />
       ) : (
         <textarea 
           value={value} 
           onChange={(e) => onChange(e.target.value)}
-          rows={2}
-          className="w-full px-3 py-2 rounded-lg outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be]/50 transition-colors resize-y min-h-[60px]"
+          rows={3}
+          className="w-full px-3 py-2 rounded-lg outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be]/50 transition-colors resize-y min-h-[70px] focus:ring-2 focus:ring-[#0058be]/20"
         />
       )}
     </div>
   );
 }
 
-function ArrayField({ label, values, onChange, hideLabel = false, numbered = false }: { label: string; values: string[]; onChange: (idx: number, v: string) => void; hideLabel?: boolean; numbered?: boolean }) {
+function ArrayField({ 
+  label, 
+  values, 
+  onChange, 
+  hideLabel = false, 
+  numbered = false 
+}: { 
+  label: string; 
+  values: string[]; 
+  onChange: (idx: number, v: string) => void; 
+  hideLabel?: boolean; 
+  numbered?: boolean; 
+}) {
   return (
-    <div className="space-y-1.5">
-      {!hideLabel && <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400">{label}</label>}
-      <div className="space-y-1.5">
+    <div className="space-y-2 text-left">
+      {!hideLabel && (
+        <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block mb-1">
+          {label}
+        </label>
+      )}
+      <div className="space-y-2">
         {values.map((v, i) => (
           <div key={i} className="flex items-start gap-2">
             {numbered ? (
-              <span className="shrink-0 mt-2 w-5 h-5 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[8px] font-bold text-neutral-500">
+              <span className="shrink-0 mt-1.5 w-6 h-6 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-[9px] font-bold text-neutral-500">
                 {i + 1}
               </span>
             ) : (
-              <span className="shrink-0 mt-2.5 w-1.5 h-1.5 rounded-full bg-neutral-300" />
+              <span className="shrink-0 mt-2.5 w-1.5 h-1.5 rounded-full bg-neutral-300" aria-hidden="true" />
             )}
-            <input 
+            <textarea
               value={v}
               onChange={(e) => onChange(i, e.target.value)}
-              className="flex-1 bg-white border border-neutral-200 rounded-lg px-3 py-2 outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 focus:border-[#0058be]/50 transition-colors"
+              rows={1}
+              className="flex-1 bg-white border border-neutral-200 rounded-lg px-3 py-2 outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 focus:border-[#0058be]/50 transition-colors resize-y min-h-[36px] focus:ring-2 focus:ring-[#0058be]/20"
             />
           </div>
         ))}
@@ -552,7 +613,7 @@ function Dialog({
               <RotateCcw size={14} className="text-[#0058be]" />
             </span>
           )}
-          <div className="space-y-1">
+          <div className="space-y-1 text-left">
             <p className="text-sm font-bold text-[#0b1c30]">{title}</p>
             <p className="text-[11px] text-neutral-500 leading-relaxed">{message}</p>
           </div>
@@ -562,7 +623,7 @@ function Dialog({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-[#0058be]"
           >
             {cancelLabel}
           </button>
@@ -573,7 +634,7 @@ function Dialog({
               'flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl transition-all font-bold text-xs uppercase tracking-wider',
               loading
                 ? 'bg-neutral-100 text-neutral-400 border border-neutral-200 cursor-not-allowed'
-                : 'bg-[#0058be] text-white border-transparent hover:opacity-90 cursor-pointer shadow-sm'
+                : 'bg-[#0058be] text-white border-transparent hover:opacity-90 cursor-pointer shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]'
             )}
           >
             {loading ? 'Processing...' : confirmLabel}
@@ -599,12 +660,12 @@ function CollapsibleSection({
   const sectionId = useId();
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-controls={sectionId}
-        className="flex items-center justify-between w-full p-4 text-left cursor-pointer group hover:bg-neutral-50 transition-colors"
+        className="flex items-center justify-between w-full p-4 text-left cursor-pointer group hover:bg-neutral-50 transition-colors focus-visible:ring-2 focus-visible:ring-[#0058be] outline-none"
       >
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">{title}</span>

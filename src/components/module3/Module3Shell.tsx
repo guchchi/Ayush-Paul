@@ -339,7 +339,7 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
         </header>
 
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto w-full px-5 sm:px-8 py-8 md:py-12 max-w-[720px]">
+          <div className={cn("mx-auto w-full px-5 sm:px-8 py-8 md:py-12 transition-all duration-300", currentStep === 'proof_asset_builder' ? "max-w-7xl" : "max-w-[720px]")}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, type ReactNode } from 'react';
+import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu, X, Check, ChevronLeft, ChevronRight, Sparkles,
@@ -236,9 +236,9 @@ function BriefItem({
     <div className="flex items-start gap-2.5 text-xs py-1">
       <span className={cn(
         "mt-0.5 shrink-0 transition-colors",
-        completed ? "text-[#0058be]" : "text-neutral-300"
+        completed ? "text-[#0058be]" : "text-neutral-400"
       )}>
-        <Icon size={12} />
+        <Icon size={12} aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1 leading-snug">
         <span className="block text-[9px] text-neutral-400 font-bold uppercase tracking-wider">{label}</span>
@@ -334,6 +334,9 @@ export function OfferEngineeringShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
 
+  const briefToggleRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+
   const currentStep = useOfferEngineeringStore((s) => s.currentStep);
   const completedSteps = useOfferEngineeringStore((s) => s.completedSteps);
   const jumpToStep = useOfferEngineeringStore((s) => s.jumpToStep);
@@ -341,6 +344,85 @@ export function OfferEngineeringShell({
   const activeIndex = OFFER_ENGINEERING_STEPS.indexOf(currentStep);
   const prevStep = activeIndex > 0 ? OFFER_ENGINEERING_STEPS[activeIndex - 1] : null;
   const nextStep = activeIndex < OFFER_ENGINEERING_STEPS.length - 1 ? OFFER_ENGINEERING_STEPS[activeIndex + 1] : null;
+
+  const handleCloseSummary = () => {
+    setSummaryOpen(false);
+    setTimeout(() => {
+      briefToggleRef.current?.focus();
+    }, 50);
+  };
+
+  // Drawer accessibility: focus trap, esc closure, scroll locking
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!summaryOpen) return;
+
+      if (e.key === 'Escape') {
+        handleCloseSummary();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        if (!drawerRef.current) return;
+        const focusableElements = drawerRef.current.querySelectorAll(
+          'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]'
+        );
+        if (focusableElements.length === 0) return;
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    if (summaryOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+      // Set initial focus inside drawer close button or panel
+      setTimeout(() => {
+        const closeBtn = drawerRef.current?.querySelector('button');
+        if (closeBtn) {
+          closeBtn.focus();
+        } else {
+          drawerRef.current?.focus();
+        }
+      }, 50);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [summaryOpen]);
+
+  // Breakpoint transitions: auto-close brief drawer if viewport expands to persistent-rail width (>= 1536px)
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1536px)');
+    const handleBreakpointChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      if (e.matches) {
+        setSummaryOpen(false);
+        document.body.style.overflow = '';
+      }
+    };
+
+    // Run initially
+    handleBreakpointChange(mediaQuery);
+
+    mediaQuery.addEventListener('change', handleBreakpointChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleBreakpointChange);
+    };
+  }, []);
 
   return (
     <div className="flex h-dvh bg-[#f8f9ff] text-[#0b1c30] overflow-hidden font-sans">
@@ -472,10 +554,14 @@ export function OfferEngineeringShell({
 
           <div className="flex items-center gap-3 shrink-0">
             <button
+              ref={briefToggleRef}
               onClick={() => setSummaryOpen(true)}
-              className="lg:hidden flex items-center gap-1 px-3 py-1.5 text-[10px] font-bold tracking-wider text-neutral-500 hover:text-neutral-800 border border-neutral-200 rounded-lg bg-white transition-all uppercase shadow-sm cursor-pointer"
+              aria-expanded={summaryOpen}
+              aria-controls="offer-brief-drawer"
+              aria-label="Open offer specifications brief"
+              className="2xl:hidden flex items-center gap-1 px-3 py-1.5 text-[10px] font-bold tracking-wider text-neutral-500 hover:text-neutral-800 border border-neutral-200 rounded-lg bg-white transition-all uppercase shadow-sm cursor-pointer"
             >
-              <FileText size={11} />
+              <FileText size={11} aria-hidden="true" />
               Brief
             </button>
 
@@ -505,7 +591,7 @@ export function OfferEngineeringShell({
 
       {/* 3. Right Live Offer Brief Panel (Desktop) */}
       <div
-        className="hidden lg:block shrink-0 h-full overflow-hidden"
+        className="hidden 2xl:block shrink-0 h-full overflow-hidden"
         style={{ width: BRIEF_WIDTH }}
       >
         <OfferBriefPanel />
@@ -520,17 +606,23 @@ export function OfferEngineeringShell({
               animate={{ opacity: 0.4 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40 bg-black"
-              onClick={() => setSummaryOpen(false)}
+              onClick={handleCloseSummary}
             />
             <motion.div
+              ref={drawerRef}
+              tabIndex={-1}
+              id="offer-brief-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Offer specifications brief"
               initial={{ x: BRIEF_WIDTH }}
               animate={{ x: 0 }}
               exit={{ x: BRIEF_WIDTH }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="fixed inset-y-0 right-0 z-50 border-l border-neutral-200 bg-white"
+              className="fixed inset-y-0 right-0 z-50 border-l border-neutral-200 bg-white outline-none flex flex-col h-full"
               style={{ width: BRIEF_WIDTH }}
             >
-              <OfferBriefPanel onClose={() => setSummaryOpen(false)} />
+              <OfferBriefPanel onClose={handleCloseSummary} />
             </motion.div>
           </>
         )}

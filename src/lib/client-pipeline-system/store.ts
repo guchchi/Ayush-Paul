@@ -3,10 +3,13 @@ import { persist } from 'zustand/middleware';
 import type {
   ClientPipelineState, ClientPipelineStep, ClientSourceMap, IdealClientCriteria,
   ProspectTypes, SearchQueryBank, LeadScorecard, PipelineEntry, PriorityPlan, PipelineReport,
+  Module5BridgeState, ClientPipelinePack,
 } from '../../types/client-pipeline-system';
-import { CLIENT_PIPELINE_STEPS, canNavigateTo, getStepIndex } from '../../types/client-pipeline-system';
+import { CLIENT_PIPELINE_STEPS, canNavigateTo, getStepIndex, defaultBridgeState } from '../../types/client-pipeline-system';
 
 export { canNavigateTo, getStepIndex, CLIENT_PIPELINE_STEPS };
+
+const CURRENT_SCHEMA_VERSION = 1;
 
 function defaultSourceMap(): ClientSourceMap { return { sources: [] }; }
 function defaultCriteria(): IdealClientCriteria { return { criteria: [] }; }
@@ -18,6 +21,10 @@ function defaultPriorityPlan(): PriorityPlan { return { entries: [] }; }
 export const useClientPipelineStore = create<ClientPipelineState>()(
   persist(
     (set, get) => ({
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      upstreamFingerprint: '',
+      bridgeState: defaultBridgeState(),
+
       phase4Service: null,
       phase4ServiceLabel: null,
       phase4Market: null,
@@ -42,6 +49,8 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
       phase4SampleProject: { projectName: '', goal: '' },
       phase4PortfolioCopy: { headline: '', shortIntro: '' },
       phase4PortfolioReport: null,
+
+      pipelinePack: null,
 
       clientSourceMap: defaultSourceMap(),
       idealClientCriteria: defaultCriteria(),
@@ -82,6 +91,14 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
           phase4PortfolioCopy: ctx.portfolioCopy,
           phase4PortfolioReport: ctx.portfolioReport,
         });
+      },
+
+      setBridgeState(bridge) {
+        set({ bridgeState: bridge });
+      },
+
+      setPipelinePack(pack) {
+        set({ pipelinePack: pack });
       },
 
       setClientSourceMap(value) { set({ clientSourceMap: value }); },
@@ -134,6 +151,9 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
 
       reset() {
         set({
+          schemaVersion: CURRENT_SCHEMA_VERSION,
+          upstreamFingerprint: '',
+          bridgeState: defaultBridgeState(),
           phase4Service: null,
           phase4ServiceLabel: null,
           phase4Market: null,
@@ -158,6 +178,7 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
           phase4SampleProject: { projectName: '', goal: '' },
           phase4PortfolioCopy: { headline: '', shortIntro: '' },
           phase4PortfolioReport: null,
+          pipelinePack: null,
           clientSourceMap: defaultSourceMap(),
           idealClientCriteria: defaultCriteria(),
           prospectTypes: defaultProspectTypes(),
@@ -173,7 +194,26 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
     }),
     {
       name: 'client-pipeline-progress',
+      version: CURRENT_SCHEMA_VERSION,
+      migrate(persisted, version) {
+        // Version 0 → 1: add new fields
+        if (version < 1) {
+          const old = persisted as Record<string, unknown>;
+          return {
+            schemaVersion: 1,
+            upstreamFingerprint: old.upstreamFingerprint as string || '',
+            bridgeState: (old.bridgeState as Module5BridgeState) || defaultBridgeState(),
+            pipelinePack: null,
+            // Preserve all existing fields
+            ...old,
+          } as ClientPipelineState;
+        }
+        return persisted as ClientPipelineState;
+      },
       partialize: (state) => ({
+        schemaVersion: state.schemaVersion,
+        upstreamFingerprint: state.upstreamFingerprint,
+        bridgeState: state.bridgeState,
         phase4Service: state.phase4Service,
         phase4ServiceLabel: state.phase4ServiceLabel,
         phase4Market: state.phase4Market,
@@ -198,6 +238,7 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
         phase4SampleProject: state.phase4SampleProject,
         phase4PortfolioCopy: state.phase4PortfolioCopy,
         phase4PortfolioReport: state.phase4PortfolioReport,
+        pipelinePack: state.pipelinePack,
         clientSourceMap: state.clientSourceMap,
         idealClientCriteria: state.idealClientCriteria,
         prospectTypes: state.prospectTypes,

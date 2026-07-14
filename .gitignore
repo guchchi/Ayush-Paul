@@ -14,3 +14,8 @@ firebase-adminsdk*.json
 service-account.json
 .vercel
 !.env.example
+
+# Custom Agentic Awesome Skills
+agentic-awesome-skills/
+.agents/skills.json
+

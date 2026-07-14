@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, Repeat, Diamond, Layers, Sparkles } from 'lucide-react';
+import { Check, Repeat, Diamond, Layers, Sparkles, ArrowRight } from 'lucide-react';
 import { useOfferEngineeringStore, getEngineeringDataForService } from '../../lib/offer-engineering';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
@@ -115,7 +115,7 @@ export function OfferTypeStep() {
   const offerType = useOfferEngineeringStore((s) => s.offerType);
   const setOfferType = useOfferEngineeringStore((s) => s.setOfferType);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
-  const [expandedCard, setExpandedCard] = useState<OfferType | null>(offerType);
+
   const resolvedExample = useMemo(
     () => (offerType ? getOfferExample(serviceId, offerType) : ''),
     [serviceId, offerType],
@@ -133,124 +133,202 @@ export function OfferTypeStep() {
 
   const handleSelect = (id: OfferType) => {
     setOfferType(id);
-    setExpandedCard(id);
   };
 
   const handleConfirm = () => {
     nextStep();
   };
 
+  const selectedMeta = offerType ? OFFER_TYPE_META[offerType] : null;
+
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
+      {/* Header */}
+      <div className="space-y-2 text-left">
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-1">
           Step 1 of 8
         </span>
-        <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Choose Your Offer Type</h2>
+        <h1 className="text-3xl font-bold text-[#0b1c30] mb-2">Choose Your Offer Type</h1>
         <p className="text-neutral-500 text-sm leading-relaxed">
           Select the engagement model that best fits how you want to deliver value to your clients.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {availableTypes.map((type, i) => {
-          const meta = OFFER_TYPE_META[type];
-          const isSelected = offerType === type;
-          const isExpanded = expandedCard === type;
-          const Icon = meta.icon;
+      {/* Grid of Compact Radio Cards */}
+      <fieldset>
+        <legend className="sr-only">Choose an offer type</legend>
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
+          {availableTypes.map((type) => {
+            const meta = OFFER_TYPE_META[type];
+            const isSelected = offerType === type;
+            const Icon = meta.icon;
 
-          return (
-            <motion.div
-              key={type}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.FAST, ease: 'easeOut', delay: i * 0.03 }}
-              className={cn(
-                'relative flex flex-col w-full rounded-2xl text-left transition-all duration-200 border bg-white shadow-sm hover:shadow-md',
-                isSelected
-                  ? 'border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.1)]'
-                  : 'border-neutral-200 hover:border-neutral-300',
-                isExpanded ? 'cursor-default' : 'cursor-pointer',
-              )}
-            >
-              {meta.recommended && (
-                <span className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0058be]/8 text-[10px] font-extrabold uppercase tracking-wider text-[#0058be]">
-                  <Sparkles size={10} className="text-[#0058be]" />
-                  Recommended
-                </span>
-              )}
-
-              <button
-                onClick={() => handleSelect(type)}
-                className="flex flex-col gap-3 w-full p-5 text-left transition-all duration-200 group cursor-pointer"
+            return (
+              <label
+                key={type}
+                htmlFor={`radio-offer-type-${type}`}
+                className="relative flex flex-col w-full rounded-2xl text-left cursor-pointer outline-none group"
               >
-                <span className={cn(
-                  'flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 border',
+                <input
+                  type="radio"
+                  name="offerTypeSelection"
+                  id={`radio-offer-type-${type}`}
+                  value={type}
+                  checked={isSelected}
+                  onChange={() => handleSelect(type)}
+                  className="peer sr-only"
+                />
+                <div className={cn(
+                  'relative flex flex-col gap-4 w-full h-full p-5 rounded-2xl border bg-white shadow-sm transition-all duration-200 text-left',
+                  'border-neutral-200 group-hover:border-neutral-300 group-hover:shadow-md active:bg-neutral-50/50',
                   isSelected
-                    ? 'bg-[#0058be]/8 text-[#0058be] border-transparent'
-                    : 'bg-neutral-50 text-neutral-400 border-neutral-100 group-hover:bg-neutral-100/50',
+                    ? 'border-[#0058be] ring-1 ring-[#0058be] bg-[#eff4ff]/5 shadow-[0_8px_32px_rgba(0,88,190,0.06)]'
+                    : '',
+                  'peer-focus-visible:ring-2 peer-focus-visible:ring-[#0058be] peer-focus-visible:ring-offset-2'
                 )}>
-                  <Icon size={16} />
-                </span>
+                  {meta.recommended && (
+                    <span className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#0058be]/8 text-[9px] font-extrabold uppercase tracking-wider text-[#0058be]">
+                      <Sparkles size={10} className="text-[#0058be]" />
+                      Rec.
+                    </span>
+                  )}
 
-                <div className="space-y-1">
-                  <span className={cn(
-                    'block text-sm font-bold transition-colors',
-                    isSelected ? 'text-[#0058be]' : 'text-[#0b1c30] group-hover:text-[#0058be]',
-                  )}>
-                    {meta.label}
-                  </span>
-                  <span className="block text-xs text-neutral-500 leading-relaxed">
-                    {meta.description}
-                  </span>
-                </div>
-              </button>
-
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-5 pb-5 space-y-3 border-t border-neutral-100 pt-4 text-xs">
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-0.5">What it means</p>
-                        <p className="text-neutral-600 leading-relaxed">{meta.whatItMeans}</p>
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-0.5">Best for</p>
-                        <p className="text-neutral-600 leading-relaxed">{meta.bestFor}</p>
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 mb-0.5">Example</p>
-                        <p className="text-neutral-600 leading-relaxed italic">&ldquo;{offerType === type ? resolvedExample : meta.example}&rdquo;</p>
-                      </div>
+                  <div className="flex items-start justify-between w-full">
+                    <span className={cn(
+                      'flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 border',
+                      isSelected
+                        ? 'bg-[#0058be]/8 text-[#0058be] border-transparent'
+                        : 'bg-neutral-50 text-neutral-400 border-neutral-100 group-hover:bg-neutral-100/50',
+                    )} aria-hidden="true">
+                      <Icon size={16} />
+                    </span>
+                    <div className="shrink-0" aria-hidden="true">
+                      {isSelected ? (
+                        <div className="w-5 h-5 rounded-full bg-[#0058be] flex items-center justify-center shadow-sm">
+                          <Check size={12} className="text-[#d1f34d] stroke-[3]" />
+                        </div>
+                      ) : (
+                        <div className="w-5 h-5 rounded-full border border-neutral-300 bg-white" />
+                      )}
                     </div>
-                  </motion.div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className={cn(
+                      'block text-sm font-bold transition-colors',
+                      isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]'
+                    )}>
+                      {meta.label}
+                    </span>
+                    <span className="block text-xs text-neutral-500 leading-relaxed break-words">
+                      {meta.description}
+                    </span>
+                  </div>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {/* Stable Context Panel */}
+      <div className="min-h-[140px] relative">
+        <AnimatePresence mode="wait">
+          {selectedMeta ? (
+            <motion.div
+              key={offerType}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-4 text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-[#0058be]/8 text-[#0058be]" aria-hidden="true">
+                  {(() => {
+                    const Icon = selectedMeta.icon;
+                    return <Icon size={14} />;
+                  })()}
+                </span>
+                <h2 className="text-sm font-bold text-[#0b1c30]">
+                  {selectedMeta.label} Details
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-6 text-xs text-neutral-600 leading-relaxed">
+                {selectedMeta.whatItMeans && (
+                  <div className="xl:col-span-4">
+                    <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+                      What it means
+                    </span>
+                    <p className="text-neutral-600 font-medium">{selectedMeta.whatItMeans}</p>
+                  </div>
                 )}
-              </AnimatePresence>
+                {selectedMeta.bestFor && (
+                  <div className="xl:col-span-4">
+                    <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+                      Best for
+                    </span>
+                    <p className="text-neutral-600 font-medium">{selectedMeta.bestFor}</p>
+                  </div>
+                )}
+                {resolvedExample && (
+                  <div className="md:col-span-2 xl:col-span-4">
+                    <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+                      Example
+                    </span>
+                    <p className="italic font-medium text-[#0b1c30] bg-white p-3 rounded-xl border border-neutral-100 mt-1 shadow-sm break-words">
+                      &ldquo;{resolvedExample}&rdquo;
+                    </p>
+                  </div>
+                )}
+              </div>
             </motion.div>
-          );
-        })}
+          ) : (
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="p-6 rounded-2xl border border-dashed border-neutral-200 text-left bg-white space-y-2"
+            >
+              <h2 className="text-sm font-bold text-[#0b1c30]">Choose an offer type</h2>
+              <p className="text-xs text-neutral-500">
+                Select how you want to package this service. Details for your choice will appear here.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {offerType && (
-        <motion.div
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-end pt-4"
+      {/* Authoritative Action Area */}
+      <div className="mt-8 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="text-left" aria-live="polite">
+          {offerType ? (
+            <p className="text-xs font-bold text-[#0b1c30]">
+              {OFFER_TYPE_META[offerType].label} selected
+            </p>
+          ) : (
+            <p className="text-xs text-neutral-400 font-medium">
+              Choose an offer type to continue.
+            </p>
+          )}
+        </div>
+        <button
+          disabled={!offerType}
+          onClick={handleConfirm}
+          className={cn(
+            'flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-base transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0058be]',
+            offerType
+              ? 'bg-[#0b1c30] text-white hover:bg-[#152a45] shadow-lg cursor-pointer active:scale-[0.98]'
+              : 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
+          )}
         >
-          <button
-            onClick={handleConfirm}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer"
-          >
-            Continue with {OFFER_TYPE_META[offerType].label}
-          </button>
-        </motion.div>
-      )}
+          <span>Continue to Deliverables</span>
+          <ArrowRight size={16} aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }

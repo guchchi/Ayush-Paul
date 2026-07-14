@@ -1,18 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ClientPipelineShell } from '../components/client-pipeline-system/ClientPipelineShell';
 import { StepContent } from '../components/client-pipeline-system/StepContent';
 import { useClientPipelineStore } from '../lib/client-pipeline-system';
 import { usePortfolioSystemStore } from '../lib/portfolio-system';
+import { buildModule5Bridge } from '../lib/portfolio-system/composer';
+import { computeUpstreamFingerprint, normalizeModule5Context, composeClientPipelinePack } from '../lib/client-pipeline-system';
 
 export function ClientPipelineSystemPage() {
   const setPhase4Context = useClientPipelineStore((s) => s.setPhase4Context);
+  const setBridgeState = useClientPipelineStore((s) => s.setBridgeState);
+  const setPipelinePack = useClientPipelineStore((s) => s.setPipelinePack);
   const phase4Service = useClientPipelineStore((s) => s.phase4Service);
+  const upstreamFingerprint = useClientPipelineStore((s) => s.upstreamFingerprint);
+  const bridgeState = useClientPipelineStore((s) => s.bridgeState);
   const reset = useClientPipelineStore((s) => s.reset);
 
   const upstream = usePortfolioSystemStore((s) => s.upstream);
   const portfolioDirection = usePortfolioSystemStore((s) => s.portfolioDirection);
   const portfolioCopy = usePortfolioSystemStore((s) => s.portfolioCopy);
   const buildPack = usePortfolioSystemStore((s) => s.buildPack);
+
+  // Build bridge context from Module 4 build pack
+  const bridge = useMemo(() => buildModule5Bridge(buildPack), [buildPack]);
 
   useEffect(() => {
     if (!upstream?.mod1ServiceId) return;
@@ -57,9 +66,92 @@ export function ClientPipelineSystemPage() {
       },
       portfolioReport: null,
     });
+
+    // Set bridge state from Module 4
+    setBridgeState({
+      portfolioReady: bridge.portfolioReady,
+      portfolioDestination: bridge.portfolioDestination,
+      portfolioUrl: bridge.portfolioUrl || '',
+      featuredProofAssetId: bridge.featuredProofAssetId,
+      featuredProofTitle: bridge.featuredProofTitle,
+      featuredProofUrl: bridge.featuredProofUrl || '',
+      portfolioCta: bridge.portfolioCta,
+      portfolioHeadline: bridge.portfolioHeadline,
+    });
   }, [
-    upstream, portfolioDirection, portfolioCopy, buildPack,
-    setPhase4Context, phase4Service, reset,
+    upstream, portfolioDirection, portfolioCopy, buildPack, bridge,
+    setPhase4Context, setBridgeState, phase4Service, reset,
+  ]);
+
+  // Compute upstream fingerprint for stale-context detection
+  // and recompose pipeline pack when context changes
+  useEffect(() => {
+    if (!upstream?.mod1ServiceId) return;
+    const service = upstream.mod1ServiceId;
+
+    const newFingerprint = computeUpstreamFingerprint(
+      service,
+      upstream.mod1MarketId || '',
+      upstream.mod1NicheId || '',
+      upstream.mod1Positioning || '',
+      upstream.mod3ProfileCopy.professionalHeadline || '',
+      upstream.mod2OfferType || '',
+      upstream.mod2Deliverables ?? [],
+      upstream.mod2UniqueMechanism || '',
+      upstream.mod3AuthorityPosition || '',
+      upstream.mod3ProofAssets.map((a) => ({ title: a.title, type: a.assetType })),
+      {
+        portfolioReady: bridge.portfolioReady,
+        portfolioDestination: bridge.portfolioDestination,
+        portfolioUrl: bridge.portfolioUrl || '',
+        featuredProofAssetId: bridge.featuredProofAssetId,
+        featuredProofTitle: bridge.featuredProofTitle,
+        featuredProofUrl: bridge.featuredProofUrl || '',
+        portfolioCta: bridge.portfolioCta,
+        portfolioHeadline: bridge.portfolioHeadline,
+      },
+    );
+
+    // Only recompose if fingerprint changed (avoids unnecessary recomposition on unrelated updates)
+    if (newFingerprint !== upstreamFingerprint) {
+      // Build normalized context
+      const m5ctx = normalizeModule5Context(
+        service,
+        service.replace(/_/g, ' '),
+        upstream.mod1MarketId || '',
+        upstream.mod1NicheId || '',
+        upstream.mod1Positioning || '',
+        upstream.mod3ProfileCopy.professionalHeadline || '',
+        upstream.mod2OfferType || '',
+        upstream.mod2Deliverables ?? [],
+        upstream.mod2UniqueMechanism || '',
+        upstream.mod3AuthorityPosition || '',
+        upstream.mod3ProofAssets.map((a) => ({ title: a.title, type: a.assetType })),
+        {
+          oneLinePositioning: upstream.mod3ProfileCopy.professionalHeadline || '',
+          shortBio: upstream.mod3ProfileCopy.shortBio || '',
+          trustBullets: upstream.mod3ProfileCopy.credibilityBullets || [],
+          ctaLine: upstream.mod3ProfileCopy.ctaLine || '',
+        },
+        {
+          portfolioReady: bridge.portfolioReady,
+          portfolioDestination: bridge.portfolioDestination,
+          portfolioUrl: bridge.portfolioUrl || '',
+          featuredProofAssetId: bridge.featuredProofAssetId,
+          featuredProofTitle: bridge.featuredProofTitle,
+          featuredProofUrl: bridge.featuredProofUrl || '',
+          portfolioCta: bridge.portfolioCta,
+          portfolioHeadline: bridge.portfolioHeadline,
+        },
+      );
+
+      // Compose pipeline pack
+      const pack = composeClientPipelinePack(m5ctx);
+      setPipelinePack(pack);
+    }
+  }, [
+    upstream, bridge, upstreamFingerprint,
+    setPipelinePack,
   ]);
 
   return (
