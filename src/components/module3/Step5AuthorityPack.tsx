@@ -12,6 +12,8 @@ import { compileAuthorityPack, compileMarkdown } from '../../data/module3/author
 import type { CompiledAuthorityPack } from '../../data/module3/authority-pack';
 import type { ChecklistItem } from '../../types/module3';
 import { composeStep5Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
+import { StepHeader } from '../workspace/StepHeader';
+import { ModuleButton } from '../workspace/ModuleButton';
 
 const CHECKLIST_TEMPLATES: { id: string; category: ChecklistItem['category']; task: string }[] = [
   { id: 'build_1', category: 'build', task: 'Create proof asset #1 from its brief' },
@@ -191,19 +193,17 @@ export function Step5AuthorityPack() {
   if (!hasProfile) {
     return (
       <div className="space-y-6">
-        <div>
-          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-            Step 5 of 5
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Authority Pack</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Compile all outputs and prepare to publish for your market.</p>
-        </div>
+        <StepHeader
+          step={{ current: 5, total: 5 }}
+          title="Authority Pack"
+          description="Compile all outputs and prepare to publish for your market."
+        />
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center space-y-4">
           <AlertTriangle size={24} className="mx-auto text-amber-700" />
           <p className="text-sm text-neutral-600">{personalized.emptyStateGuidance}</p>
-          <button onClick={() => jumpToStep('profile_portfolio')} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0058be] text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer">
+          <ModuleButton variant="primary" onClick={() => jumpToStep('profile_portfolio')}>
             Go to Step 4
-          </button>
+          </ModuleButton>
         </div>
       </div>
     );
@@ -222,7 +222,6 @@ export function Step5AuthorityPack() {
         </p>
       </div>
 
-      {/* Readiness Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <ReadinessCard label="Authority Position" ready={!!pack.authorityPosition} />
         <ReadinessCard label="3 Proof Assets" ready={pack.proofAssets.length === 3} />
@@ -230,31 +229,22 @@ export function Step5AuthorityPack() {
         <ReadinessCard label="Portfolio Structure" ready={pack.portfolioCopy.sections.length > 0} />
       </div>
 
-      {/* Authority Pack Sections */}
       <div className="space-y-4">
-        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Authority Position</span>
-            <button onClick={() => handleCopy(sectionCopy('position'), 'position')} className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer">
-              {copiedId === 'position' ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
-              {copiedId === 'position' ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <div className="p-5">
-            <p className="text-sm font-semibold text-[#0b1c30]">{pack.authorityPosition}</p>
-            {pack.coreTrustPromise && <p className="text-xs text-neutral-500 mt-2 leading-relaxed">{pack.coreTrustPromise}</p>}
-          </div>
-        </div>
+        <SectionCard
+          title="Authority Position"
+          onCopy={() => handleCopy(sectionCopy('position'), 'position')}
+          copied={copiedId === 'position'}
+        >
+          <p className="text-sm font-semibold text-[#0b1c30]">{pack.authorityPosition}</p>
+          {pack.coreTrustPromise && <p className="text-xs text-neutral-500 mt-2 leading-relaxed">{pack.coreTrustPromise}</p>}
+        </SectionCard>
 
-        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Proof Priorities</span>
-            <button onClick={() => handleCopy(sectionCopy('priorities'), 'priorities')} className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer">
-              {copiedId === 'priorities' ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
-              {copiedId === 'priorities' ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <div className="p-5 space-y-2">
+        <SectionCard
+          title="Proof Priorities"
+          onCopy={() => handleCopy(sectionCopy('priorities'), 'priorities')}
+          copied={copiedId === 'priorities'}
+        >
+          <div className="space-y-2">
             {pack.proofPriorities.map((p, i) => (
               <div key={i} className="flex items-center gap-3">
                 <span className="w-5 h-5 rounded-full bg-[#0058be]/10 flex items-center justify-center text-[9px] font-bold text-[#0058be] shrink-0">{i + 1}</span>
@@ -265,17 +255,14 @@ export function Step5AuthorityPack() {
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Proof Assets ({pack.proofAssets.length})</span>
-            <button onClick={() => handleCopy(sectionCopy('assets'), 'assets')} className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer">
-              {copiedId === 'assets' ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
-              {copiedId === 'assets' ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <div className="p-5 space-y-2">
+        <SectionCard
+          title={`Proof Assets (${pack.proofAssets.length})`}
+          onCopy={() => handleCopy(sectionCopy('assets'), 'assets')}
+          copied={copiedId === 'assets'}
+        >
+          <div className="space-y-2">
             {pack.proofAssets.map((a, i) => (
               <details key={a.id} className="rounded-lg border border-neutral-200 bg-white overflow-hidden">
                 <summary className="flex items-center gap-2 p-3 cursor-pointer hover:bg-neutral-50 transition-colors">
@@ -292,33 +279,27 @@ export function Step5AuthorityPack() {
               </details>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Profile Copy</span>
-            <button onClick={() => handleCopy(sectionCopy('profile'), 'profile')} className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer">
-              {copiedId === 'profile' ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
-              {copiedId === 'profile' ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <div className="p-5 space-y-2">
+        <SectionCard
+          title="Profile Copy"
+          onCopy={() => handleCopy(sectionCopy('profile'), 'profile')}
+          copied={copiedId === 'profile'}
+        >
+          <div className="space-y-2">
             <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Headline:</span> {pack.profileCopy.professionalHeadline}</p>
             <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Bio:</span> {pack.profileCopy.shortBio}</p>
             <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Offer:</span> {pack.profileCopy.offerStatement}</p>
             <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">CTA:</span> {pack.profileCopy.ctaLine}</p>
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Portfolio Structure</span>
-            <button onClick={() => handleCopy(sectionCopy('portfolio'), 'portfolio')} className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer">
-              {copiedId === 'portfolio' ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
-              {copiedId === 'portfolio' ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <div className="p-5 space-y-2">
+        <SectionCard
+          title="Portfolio Structure"
+          onCopy={() => handleCopy(sectionCopy('portfolio'), 'portfolio')}
+          copied={copiedId === 'portfolio'}
+        >
+          <div className="space-y-2">
             <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">CTA:</span> {pack.portfolioCopy.portfolioCta}</p>
             <div className="space-y-1 mt-2">
               {pack.portfolioCopy.sections.map((s, i) => (
@@ -329,28 +310,20 @@ export function Step5AuthorityPack() {
               ))}
             </div>
           </div>
-        </div>
+        </SectionCard>
       </div>
 
-      {/* Export Actions */}
       <div className="flex items-center gap-2">
-        <button
-          onClick={copyFullPack}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-neutral-200 bg-white text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
-        >
+        <ModuleButton variant="secondary" onClick={copyFullPack}>
           {copiedId === 'full' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
           {copiedId === 'full' ? 'Copied' : 'Copy Full Pack'}
-        </button>
-        <button
-          onClick={handleExport}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-neutral-200 bg-white text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
-        >
+        </ModuleButton>
+        <ModuleButton variant="secondary" onClick={handleExport}>
           <Download size={12} />
           Export Markdown
-        </button>
+        </ModuleButton>
       </div>
 
-      {/* Publish Checklist */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -402,28 +375,24 @@ export function Step5AuthorityPack() {
         </div>
       </div>
 
-      {/* Final Actions */}
       <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-        <button
-          onClick={() => jumpToStep('profile_portfolio')}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-neutral-200 text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer"
-        >
+        <ModuleButton variant="secondary" onClick={() => jumpToStep('profile_portfolio')}>
           <ArrowLeft size={12} />
           Back
-        </button>
+        </ModuleButton>
         <div className="flex items-center gap-2">
           {!isCompleted && (
-            <button
-              onClick={handleComplete}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#0058be] text-white text-xs font-bold hover:opacity-90 transition-all shadow-sm cursor-pointer"
-            >
+            <ModuleButton variant="primary" onClick={handleComplete}>
               <Check size={13} />
               Complete Authority System
-            </button>
+            </ModuleButton>
           )}
           <a
             href="/workspace/portfolio-system"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer no-underline"
+            className={cn(
+              'inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer no-underline',
+              'border-neutral-200 bg-white text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50',
+            )}
           >
             Continue to Portfolio System
             <ExternalLink size={12} />
@@ -431,5 +400,39 @@ export function Step5AuthorityPack() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SectionCard({
+  title,
+  children,
+  onCopy,
+  copied,
+}: {
+  title: string;
+  children: React.ReactNode;
+  onCopy: () => void;
+  copied: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-xl border border-neutral-200 bg-white overflow-hidden"
+    >
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">{title}</span>
+        <button
+          onClick={onCopy}
+          className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer"
+        >
+          {copied ? <Check size={10} className="text-emerald-600" /> : <Copy size={10} />}
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+      <div className="p-5">
+        {children}
+      </div>
+    </motion.div>
   );
 }

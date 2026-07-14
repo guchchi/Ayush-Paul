@@ -10,6 +10,9 @@ import { useModule3Store } from '../../lib/module3';
 import { generateProfileCopy, generatePortfolioCopy } from '../../data/module3/profile-copy';
 import type { ProfileCopy, PortfolioCopy, PortfolioSection } from '../../types/module3';
 import { composeStep4Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
+import { StepHeader } from '../workspace/StepHeader';
+import { StepActionArea } from '../workspace/StepActionArea';
+import { ModuleButton } from '../workspace/ModuleButton';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -267,19 +270,17 @@ export function Step4ProfilePortfolio() {
   if (!allAccepted) {
     return (
       <div className="space-y-6">
-        <div>
-          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-            Step 4 of 5
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Profile &amp; Portfolio Authority</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">Finalize your platform-agnostic profile and portfolio copy.</p>
-        </div>
+        <StepHeader
+          step={{ current: 4, total: 5 }}
+          title="Profile & Portfolio Authority"
+          description="Finalize your platform-agnostic profile and portfolio copy."
+        />
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-center space-y-4">
           <AlertTriangle size={24} className="mx-auto text-amber-700" />
           <p className="text-sm text-neutral-600">{personalized.emptyStateGuidance}</p>
-          <button onClick={() => jumpToStep('proof_asset_builder')} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0058be] text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer">
+          <ModuleButton variant="primary" onClick={() => jumpToStep('proof_asset_builder')}>
             Go to Step 3
-          </button>
+          </ModuleButton>
         </div>
       </div>
     );
@@ -288,13 +289,11 @@ export function Step4ProfilePortfolio() {
   if (!profileCopy.professionalHeadline) {
     return (
       <div className="space-y-6">
-        <div>
-          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-            Step 4 of 5
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Profile &amp; Portfolio Authority</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">{personalized.loadingText}</p>
-        </div>
+        <StepHeader
+          step={{ current: 4, total: 5 }}
+          title="Profile & Portfolio Authority"
+          description={personalized.loadingText}
+        />
         <div className="flex items-center justify-center py-16">
           <div className="w-5 h-5 border-2 border-[#0058be]/20 border-t-[#0058be] rounded-full animate-spin" />
         </div>
@@ -305,20 +304,21 @@ export function Step4ProfilePortfolio() {
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-            Step 4 of 5
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Profile &amp; Portfolio Authority</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">{personalized.description}</p>
+        <div className="flex-1">
+          <StepHeader
+            step={{ current: 4, total: 5 }}
+            title="Profile & Portfolio Authority"
+            description={personalized.description}
+          />
         </div>
-        <button
+        <ModuleButton
+          variant="secondary"
           onClick={handleRegenerate}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all duration-200 cursor-pointer shrink-0"
+          className="shrink-0 mt-2"
         >
           <RotateCcw size={11} />
           Regenerate Copy
-        </button>
+        </ModuleButton>
       </div>
 
       <AnimatePresence>
@@ -337,12 +337,12 @@ export function Step4ProfilePortfolio() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={doRegenerate} className="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-[10px] font-bold hover:bg-amber-500 transition-all cursor-pointer">
+              <ModuleButton variant="primary" onClick={doRegenerate} className="!bg-amber-600 hover:!bg-amber-500">
                 Confirm Regenerate
-              </button>
-              <button onClick={() => setShowRegenWarning(false)} className="px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-[10px] font-bold text-neutral-500 hover:text-neutral-700 transition-all cursor-pointer">
+              </ModuleButton>
+              <ModuleButton variant="secondary" onClick={() => setShowRegenWarning(false)}>
                 Cancel
-              </button>
+              </ModuleButton>
             </div>
           </motion.div>
         )}
@@ -433,16 +433,16 @@ export function Step4ProfilePortfolio() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-        <button onClick={previousStep} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-[10px] font-bold text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer">
+      <StepActionArea>
+        <ModuleButton variant="secondary" onClick={previousStep}>
           <ArrowLeft size={11} />
           Back
-        </button>
-        <button onClick={handleConfirm} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0058be] text-white text-[10px] font-bold hover:opacity-90 transition-all cursor-pointer">
+        </ModuleButton>
+        <ModuleButton variant="primary" onClick={handleConfirm}>
           {isCompleted ? 'Continue' : 'Finalize Authority Assets'}
           <ArrowRight size={11} />
-        </button>
-      </div>
+        </ModuleButton>
+      </StepActionArea>
     </div>
   );
 }

@@ -8,6 +8,9 @@ import { resolveProofPriorities, resolveAlternateGaps, ALL_FORMATS } from '../..
 import type { ProofPriority, ProofFormat } from '../../types/module3';
 import type { PriorityContext } from '../../data/module3/proof-priorities';
 import { composeStep2Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
+import { StepHeader } from '../workspace/StepHeader';
+import { StepActionArea } from '../workspace/StepActionArea';
+import { ModuleButton } from '../workspace/ModuleButton';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -177,19 +180,17 @@ export function Step2ProofStrategy() {
   return (
     <div className="space-y-8">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-            Step 2 of 5
-          </span>
-          <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Strategy</h2>
-          <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-            {personalized.description}
-          </p>
+        <div className="flex-1">
+          <StepHeader
+            step={{ current: 2, total: 5 }}
+            title="Proof Strategy"
+            description={personalized.description}
+          />
         </div>
         {proofPriorities.length > 0 && (
           <button
             onClick={handleRegenerate}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-200 bg-white text-[9px] font-bold uppercase tracking-[0.1em] text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all cursor-pointer shrink-0 mt-2"
           >
             <RotateCcw size={10} />
             Regenerate
@@ -339,29 +340,21 @@ export function Step2ProofStrategy() {
         </motion.div>
       )}
 
-      <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-        <button
-          onClick={previousStep}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
-        >
+      <StepActionArea>
+        <ModuleButton variant="secondary" onClick={previousStep}>
           <ArrowLeft size={14} />
           Back
-        </button>
+        </ModuleButton>
 
-        <button
+        <ModuleButton
+          variant="primary"
           onClick={handleConfirm}
           disabled={!hasAllPriorities}
-          className={cn(
-            'inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border',
-            hasAllPriorities
-              ? 'bg-[#0058be] text-white border-transparent hover:opacity-90 shadow-sm'
-              : 'bg-white border-neutral-200 text-neutral-400 cursor-not-allowed',
-          )}
         >
           {isCompleted ? 'Continue' : 'Build my proof assets'}
           <ArrowRight size={14} />
-        </button>
-      </div>
+        </ModuleButton>
+      </StepActionArea>
 
       <AnimatePresence>
         {showRegenerateDialog && (
@@ -432,18 +425,12 @@ function Dialog({
         </div>
 
         <div className="flex items-center gap-2 pt-1">
-          <button
-            onClick={onCancel}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
-          >
+          <ModuleButton variant="secondary" onClick={onCancel} className="flex-1">
             {cancelLabel}
-          </button>
-          <button
-            onClick={onConfirm}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#0058be] text-white border-transparent hover:opacity-90 transition-all font-bold text-xs uppercase tracking-wider shadow-sm cursor-pointer"
-          >
+          </ModuleButton>
+          <ModuleButton variant="primary" onClick={onConfirm} className="flex-1">
             {confirmLabel}
-          </button>
+          </ModuleButton>
         </div>
       </motion.div>
     </motion.div>

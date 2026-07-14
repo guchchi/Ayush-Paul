@@ -14,6 +14,10 @@ import {
 } from '../../data/module3/authority-positions';
 import type { PositionContext } from '../../data/module3/authority-positions';
 import { composeStep1Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
+import { StepHeader } from '../workspace/StepHeader';
+import { StepActionArea } from '../workspace/StepActionArea';
+import { ModuleButton } from '../workspace/ModuleButton';
+import { SelectionCard } from '../workspace/SelectionCard';
 
 const POSITION_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   prior_client_results: Award,
@@ -159,42 +163,30 @@ export function Step1AuthorityPosition() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-          Step 1 of 5
-        </span>
-        <h2 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Authority Position</h2>
-        <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          {personalized.description}
-        </p>
-      </div>
+      <StepHeader
+        step={{ current: 1, total: 5 }}
+        title="Authority Position"
+        description={personalized.description}
+      />
 
       <div>
         <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-3">Recommended for {activeService}</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {AUTHORITY_POSITIONS.map((pos, i) => {
             const isRecommended = pos.id === recommended;
             const isSelected = pos.id === selected;
             const Icon = POSITION_ICONS[pos.id] || Award;
 
             return (
-              <motion.button
+              <SelectionCard
                 key={pos.id}
+                selected={isSelected}
                 onClick={() => handleSelect(pos.id)}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * i, duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  'relative flex flex-col gap-3 w-full p-5 rounded-2xl text-left border transition-all duration-200 cursor-pointer',
-                  isSelected
-                    ? 'bg-white border-[#0058be] shadow-[0_8px_32px_rgba(0,88,190,0.14)] ring-1 ring-[#0058be]'
-                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm',
-                )}
+                delay={0.05 * i}
+                ariaLabel={pos.label}
               >
                 {isRecommended && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[8px] font-bold uppercase tracking-widest shrink-0 self-start">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[8px] font-bold uppercase tracking-widest shrink-0 self-start mb-2">
                     <Sparkles size={8} />
                     Recommended
                   </span>
@@ -231,14 +223,14 @@ export function Step1AuthorityPosition() {
                       transition={{ duration: 0.2, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="pt-3 border-t border-neutral-100">
+                      <div className="pt-3 mt-3 border-t border-neutral-100">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 mb-1">How trust is earned</p>
                         <p className="text-[11px] text-neutral-500 leading-relaxed">{pos.howTrustIsEarned}</p>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.button>
+              </SelectionCard>
             );
           })}
         </div>
@@ -337,29 +329,21 @@ export function Step1AuthorityPosition() {
         </motion.div>
       )}
 
-      <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-        <button
-          onClick={previousStep}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer"
-        >
+      <StepActionArea>
+        <ModuleButton variant="secondary" onClick={previousStep}>
           <ArrowLeft size={14} />
           Back
-        </button>
+        </ModuleButton>
 
-        <button
+        <ModuleButton
+          variant="primary"
           onClick={handleConfirm}
           disabled={!selected}
-          className={cn(
-            'inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border',
-            selected
-              ? 'bg-[#0058be] text-white border-transparent hover:opacity-90 shadow-sm'
-              : 'bg-white border-neutral-200 text-neutral-400 cursor-not-allowed',
-          )}
         >
           {isCompleted ? 'Continue' : 'Use this position'}
           <ArrowRight size={14} />
-        </button>
-      </div>
+        </ModuleButton>
+      </StepActionArea>
 
       <AnimatePresence>
         {showConfirmDialog && (

@@ -10,6 +10,8 @@ import { useModule3Store } from '../../lib/module3';
 import { generateProofAsset, calculatePriorityFingerprint } from '../../data/module3/proof-assets';
 import type { ProofAsset } from '../../types/module3';
 import { composeStep3Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
+import { StepHeader } from '../workspace/StepHeader';
+import { ModuleButton } from '../workspace/ModuleButton';
 
 function usePriorityContext() {
   const serviceId = useModule3Store((s) => s.mod1ServiceId);
@@ -107,8 +109,15 @@ export function Step3ProofAssetBuilder() {
 
   if (proofAssets.length !== 3 || proofPriorities.length !== 3) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
-        <p className="text-sm text-neutral-500">{personalized.loadingText}</p>
+      <div className="space-y-6">
+        <StepHeader
+          step={{ current: 3, total: 5 }}
+          title="Proof Asset Builder"
+          description={personalized.description}
+        />
+        <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
+          <p className="text-sm text-neutral-500">{personalized.loadingText}</p>
+        </div>
       </div>
     );
   }
@@ -207,16 +216,11 @@ export function Step3ProofAssetBuilder() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="text-left">
-        <span className="inline-flex items-center rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-          Step 3 of 5
-        </span>
-        <h1 className="text-3xl font-bold text-[#0b1c30] tracking-tight">Proof Asset Builder</h1>
-        <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          {personalized.description}
-        </p>
-      </div>
+      <StepHeader
+        step={{ current: 3, total: 5 }}
+        title="Proof Asset Builder"
+        description={personalized.description}
+      />
 
       {/* TABS */}
       <div role="tablist" aria-label="Proof assets" className="flex flex-row gap-2 border-b border-neutral-200 pb-4 overflow-x-auto no-scrollbar">
@@ -261,7 +265,7 @@ export function Step3ProofAssetBuilder() {
         })}
       </div>
 
-      {/* Active Asset Header / Status Card */}
+      {/* Active Asset Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-neutral-200 shadow-sm text-left">
         <div className="space-y-1 min-w-0">
           <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
@@ -292,7 +296,7 @@ export function Step3ProofAssetBuilder() {
         </button>
       </div>
 
-      {/* SPLIT SCREEN LAYOUT */}
+      {/* Split Screen */}
       <motion.div 
         key={activeAsset.id}
         role="tabpanel"
@@ -303,9 +307,8 @@ export function Step3ProofAssetBuilder() {
         transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
         className="flex flex-col lg:flex-row gap-8 items-start"
       >
-        {/* LEFT: EDITING AREA (45%) */}
+        {/* LEFT: EDITING */}
         <div className="w-full lg:w-[45%] space-y-6 min-w-0">
-          {/* Collapsible Sections with Progressive Disclosure */}
           <CollapsibleSection title="Proof Objective" description={personalized.sectionHelpers.proof_objective} defaultOpen={false}>
             <Field label="Target Audience" value={activeAsset.targetAudience} onChange={(v) => handleFieldChange('targetAudience', v)} />
             <Field label="Business Problem" value={activeAsset.businessProblem} onChange={(v) => handleFieldChange('businessProblem', v)} type="textarea" />
@@ -351,7 +354,7 @@ export function Step3ProofAssetBuilder() {
           </CollapsibleSection>
         </div>
 
-        {/* RIGHT: PRESENTATION PREVIEW (55% sticky) */}
+        {/* RIGHT: PREVIEW */}
         <div className="w-full lg:w-[55%] min-w-0 space-y-4 lg:sticky lg:top-6 lg:self-start">
           <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-wider text-left">Portfolio Preview</h2>
           
@@ -367,39 +370,27 @@ export function Step3ProofAssetBuilder() {
             </div>
             
             <div className="p-6 space-y-5 text-left">
-              <div className="space-y-1.5">
-                <label htmlFor="preview-headline" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Portfolio Headline</label>
-                <textarea 
-                  id="preview-headline"
-                  value={activeAsset.portfolioCopy.headline}
-                  onChange={(e) => handleCopyChange('headline', e.target.value)}
-                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-base font-bold text-[#0b1c30] transition-colors resize-y min-h-[50px]"
-                  placeholder={personalized.fieldPlaceholders.portfolio_headline}
-                />
-              </div>
-
-              <div className="space-y-1.5 pt-3 border-t border-neutral-100">
-                <label htmlFor="preview-description" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Project Description</label>
-                <textarea 
-                  id="preview-description"
-                  value={activeAsset.portfolioCopy.description}
-                  onChange={(e) => handleCopyChange('description', e.target.value)}
-                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-neutral-500 transition-colors resize-y min-h-[60px]"
-                  placeholder={personalized.fieldPlaceholders.project_description}
-                />
-              </div>
-
-              <div className="space-y-1.5 pt-3 border-t border-neutral-100">
-                <label htmlFor="preview-proof" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Proof Statement</label>
-                <textarea 
-                  id="preview-proof"
-                  value={activeAsset.portfolioCopy.proofStatement}
-                  onChange={(e) => handleCopyChange('proofStatement', e.target.value)}
-                  className="w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none text-xs text-[#0b1c30] transition-colors resize-y min-h-[80px]"
-                  placeholder={personalized.fieldPlaceholders.proof_statement}
-                />
-              </div>
-
+              <PreviewField
+                label="Portfolio Headline"
+                value={activeAsset.portfolioCopy.headline}
+                onChange={(v) => handleCopyChange('headline', v)}
+                className="text-base font-bold text-[#0b1c30]"
+                placeholder={personalized.fieldPlaceholders.portfolio_headline}
+              />
+              <PreviewField
+                label="Project Description"
+                value={activeAsset.portfolioCopy.description}
+                onChange={(v) => handleCopyChange('description', v)}
+                className="text-xs text-neutral-500"
+                placeholder={personalized.fieldPlaceholders.project_description}
+              />
+              <PreviewField
+                label="Proof Statement"
+                value={activeAsset.portfolioCopy.proofStatement}
+                onChange={(v) => handleCopyChange('proofStatement', v)}
+                className="text-xs text-[#0b1c30]"
+                placeholder={personalized.fieldPlaceholders.proof_statement}
+              />
               <div className="pt-2 space-y-1.5">
                 <label htmlFor="preview-cta" className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">CTA</label>
                 <input 
@@ -415,18 +406,13 @@ export function Step3ProofAssetBuilder() {
         </div>
       </motion.div>
 
-      {/* Authoritative Action Area */}
+      {/* Action area */}
       <div className="p-5 rounded-2xl border border-neutral-200 bg-white shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-        {/* Left: Status text & Back button */}
         <div className="flex items-center gap-4 text-left">
-          <button
-            onClick={previousStep}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]"
-            aria-label="Go back to Step 2"
-          >
-            <ArrowLeft size={14} aria-hidden="true" />
-            <span>Back</span>
-          </button>
+          <ModuleButton variant="secondary" onClick={previousStep}>
+            <ArrowLeft size={14} />
+            Back
+          </ModuleButton>
           
           <div className="min-w-0" aria-live="polite">
             {allAccepted ? (
@@ -457,33 +443,28 @@ export function Step3ProofAssetBuilder() {
           </div>
         </div>
 
-        {/* Right: Actions (Copy & Primary Action) */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <button
-            onClick={handleCopyPreview}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-600 hover:text-neutral-800 hover:bg-neutral-50 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]"
-          >
+          <ModuleButton variant="secondary" onClick={handleCopyPreview}>
             {copiedId === activeAsset.id ? (
-              <Check size={14} className="text-[#0058be] stroke-[3]" aria-hidden="true" />
+              <Check size={14} className="text-[#0058be] stroke-[3]" />
             ) : (
-              <Copy size={14} aria-hidden="true" />
+              <Copy size={14} />
             )}
             <span>
-              {copyStatus === 'success' && 'Copied brief'}
-              {copyStatus === 'failure' && "Couldn't copy. Try again."}
-              {copyStatus === 'idle' && 'Copy brief'}
+              {copyStatus === 'success' ? 'Copied brief' : copyStatus === 'failure' ? "Couldn't copy" : 'Copy brief'}
             </span>
-          </button>
+          </ModuleButton>
 
           {!activeAsset.isAccepted ? (
-            <button
+            <ModuleButton
+              variant="primary"
               onClick={() => handleFieldChange('isAccepted', true)}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be] active:scale-[0.98]"
             >
-              <span>Accept proof asset</span>
-            </button>
+              Accept proof asset
+            </ModuleButton>
           ) : !allAccepted ? (
-            <button
+            <ModuleButton
+              variant="primary"
               onClick={() => {
                 const nextIndex = proofAssets.findIndex((a) => !a.isAccepted);
                 if (nextIndex !== -1) {
@@ -492,27 +473,25 @@ export function Step3ProofAssetBuilder() {
                   setActiveTab((activeTab + 1) % 3);
                 }
               }}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0b1c30] active:scale-[0.98]"
             >
-              <span>Next proof asset</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </button>
+              Next proof asset
+              <ArrowRight size={14} />
+            </ModuleButton>
           ) : (
-            <button
+            <ModuleButton
+              variant="primary"
               onClick={handleConfirm}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be] active:scale-[0.98]"
             >
-              <span>Continue to Profile & Portfolio</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </button>
+              Continue to Profile & Portfolio
+              <ArrowRight size={14} />
+            </ModuleButton>
           )}
         </div>
       </div>
 
-      {/* DIALOGS */}
       <AnimatePresence>
         {regenerateWarningId && (
-          <Dialog
+          <RegenDialog
             title="Regenerate this proof asset?"
             message="This will replace the current generated brief and discard all manual edits for this asset."
             onCancel={() => setRegenerateWarningId(null)}
@@ -521,9 +500,8 @@ export function Step3ProofAssetBuilder() {
             loading={isRegenerating}
           />
         )}
-        
         {staleAssetId && (
-          <Dialog
+          <RegenDialog
             title="Proof Strategy Changed"
             message="The linked priority or format for this project was changed in Step 2. Do you want to refresh this brief to match the new strategy?"
             onCancel={keepStaleAsset}
@@ -557,6 +535,20 @@ function Field({ label, value, onChange, type = 'text' }: { label: string; value
           className="w-full px-3 py-2 rounded-lg outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be]/50 transition-colors resize-y min-h-[70px] focus:ring-2 focus:ring-[#0058be]/20"
         />
       )}
+    </div>
+  );
+}
+
+function PreviewField({ label, value, onChange, className, placeholder }: { label: string; value: string; onChange: (v: string) => void; className?: string; placeholder?: string }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">{label}</label>
+      <textarea 
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn('w-full bg-transparent border-b border-neutral-100 hover:border-neutral-200 focus:border-[#0058be]/50 outline-none transition-colors resize-y min-h-[50px]', className)}
+        placeholder={placeholder}
+      />
     </div>
   );
 }
@@ -604,7 +596,7 @@ function ArrayField({
   );
 }
 
-function Dialog({
+function RegenDialog({
   title, message, onCancel, onConfirm, confirmLabel = 'Confirm', cancelLabel = 'Cancel', warningIcon = false, loading = false
 }: {
   title: string; message: string; onCancel: () => void; onConfirm: () => void; confirmLabel?: string; cancelLabel?: string; warningIcon?: boolean; loading?: boolean;
@@ -644,25 +636,17 @@ function Dialog({
         </div>
 
         <div className="flex items-center gap-2 pt-1">
-          <button
-            onClick={onCancel}
-            disabled={loading}
-            className="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-neutral-200 bg-white text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all font-bold text-xs uppercase tracking-wider cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-[#0058be]"
-          >
+          <ModuleButton variant="secondary" onClick={onCancel} disabled={loading} className="flex-1">
             {cancelLabel}
-          </button>
-          <button
+          </ModuleButton>
+          <ModuleButton
+            variant="primary"
             onClick={onConfirm}
             disabled={loading}
-            className={cn(
-              'flex-1 inline-flex items-center justify-center px-4 py-2 rounded-xl transition-all font-bold text-xs uppercase tracking-wider',
-              loading
-                ? 'bg-neutral-100 text-neutral-400 border border-neutral-200 cursor-not-allowed'
-                : 'bg-[#0058be] text-white border-transparent hover:opacity-90 cursor-pointer shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0058be]'
-            )}
+            className="flex-1"
           >
             {loading ? 'Processing...' : confirmLabel}
-          </button>
+          </ModuleButton>
         </div>
       </motion.div>
     </motion.div>
