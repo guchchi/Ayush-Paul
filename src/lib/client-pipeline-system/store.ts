@@ -101,6 +101,10 @@ export const useClientPipelineStore = create<ClientPipelineState>()(
         set({ pipelinePack: pack });
       },
 
+      setUpstreamFingerprint(value) {
+        set({ upstreamFingerprint: value });
+      },
+
       setClientSourceMap(value) { set({ clientSourceMap: value }); },
       setIdealClientCriteria(value) { set({ idealClientCriteria: value }); },
       setProspectTypes(value) { set({ prospectTypes: value }); },

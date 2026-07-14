@@ -23,10 +23,15 @@ function usePriorityContext() {
   const authorityPosition = useModule3Store((s) => s.authorityPosition);
   const coreTrustPromise = useModule3Store((s) => s.coreTrustPromise);
 
-  return {
+  const deliverablesKey = deliverables.join(',');
+
+  return useMemo(() => ({
     serviceId, marketId, nicheId, positioning, offerType, 
     deliverables, uniqueMechanism, valueAmplifier, authorityPosition, coreTrustPromise,
-  };
+  }), [
+    serviceId, marketId, nicheId, positioning, offerType, 
+    deliverablesKey, uniqueMechanism, valueAmplifier, authorityPosition, coreTrustPromise,
+  ]);
 }
 
 export function Step3ProofAssetBuilder() {

@@ -156,6 +156,15 @@ export const useModule3Store = create<Module3State>()(
       completedSteps: [],
 
       setPhase1Context(ctx: Module1Context) {
+        const current = get();
+        if (current.mod1CareerTrackId === ctx.careerTrackId &&
+            current.mod1ServiceId === ctx.serviceId &&
+            current.mod1MarketId === ctx.marketId &&
+            current.mod1NicheId === ctx.nicheId &&
+            current.mod1OfferId === ctx.offerId &&
+            current.mod1Positioning === ctx.positioning) {
+          return; // materially identical — skip
+        }
         set({
           mod1CareerTrackId: ctx.careerTrackId,
           mod1ServiceId: ctx.serviceId,
@@ -168,6 +177,19 @@ export const useModule3Store = create<Module3State>()(
       },
 
       setPhase2Context(ctx: Module2Context) {
+        const current = get();
+        if (current.mod2OfferType === ctx.offerType &&
+            current.mod2UniqueMechanism === ctx.uniqueMechanism &&
+            current.mod2ValueAmplifier === ctx.valueAmplifier &&
+            current.mod2PricingModel === ctx.pricingModel &&
+            current.mod2FinalPrice === ctx.finalPrice &&
+            JSON.stringify(current.mod2Deliverables) === JSON.stringify(ctx.deliverables) &&
+            JSON.stringify(current.mod2ScopeLimits) === JSON.stringify(ctx.scopeLimits) &&
+            JSON.stringify(current.mod2TieredPricing) === JSON.stringify(ctx.tieredPricing) &&
+            JSON.stringify(current.mod2ValueBasedPricing) === JSON.stringify(ctx.valueBasedPricing) &&
+            JSON.stringify(current.mod2ProposalSummary) === JSON.stringify(ctx.proposalSummary)) {
+          return; // materially identical — skip
+        }
         set({
           mod2OfferType: ctx.offerType,
           mod2Deliverables: ctx.deliverables,
@@ -305,10 +327,14 @@ export const useModule3Store = create<Module3State>()(
       },
 
       setIsUpstreamStale(value: boolean) {
+        const current = get();
+        if (current.isUpstreamStale === value) return; // identical — skip
         set({ isUpstreamStale: value, lastUpdated: Date.now() });
       },
 
       setUpstreamFingerprint(value: string) {
+        const current = get();
+        if (current.upstreamFingerprint === value) return; // identical — skip
         set({ upstreamFingerprint: value, lastUpdated: Date.now() });
       },
 

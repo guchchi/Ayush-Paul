@@ -114,6 +114,10 @@ export interface ProspectContext {
   recommendedAsset: string;
   notes: string;
   isSampleProspect: boolean;
+  canonicalProspectId?: string;
+  nicheFit?: string;
+  contactAvailable?: boolean;
+  status?: string;
 }
 
 export type AngleType = 'problem_first' | 'quick_win' | 'sample_project' | 'permission_based' | 'audit' | 'soft_conversation';

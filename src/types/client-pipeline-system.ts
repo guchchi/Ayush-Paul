@@ -299,6 +299,9 @@ export interface ClientPipelineState {
   /** Set the composed pipeline pack */
   setPipelinePack(pack: ClientPipelinePack | null): void;
 
+  /** Set the upstream fingerprint */
+  setUpstreamFingerprint(value: string): void;
+
   setClientSourceMap(value: ClientSourceMap): void;
   setIdealClientCriteria(value: IdealClientCriteria): void;
   setProspectTypes(value: ProspectTypes): void;

@@ -27,7 +27,10 @@ function StarIcon() {
 
 export default function OutreachGoalStep() {
   const store = useOutreachEngineStore();
-  const { outreachGoal, phase5LeadScore, phase5SampleProject, phase5PipelineProspects, setOutreachGoal, confirmStep, nextStep } = store;
+  const {
+    outreachGoal, phase5LeadScore, phase5SampleProject, phase5PipelineProspects, phase5SelectedProspect,
+    upstreamContext, setOutreachGoal, confirmStep, nextStep,
+  } = store;
 
   const [selectedGoal, setSelectedGoal] = useState<GoalType | null>(outreachGoal?.goalType ?? null);
   const [selectedTone, setSelectedTone] = useState<'Friendly' | 'Professional' | 'Direct' | 'Soft'>(
@@ -39,21 +42,81 @@ export default function OutreachGoalStep() {
     catch { return 'dark'; }
   });
 
+  const readiness = upstreamContext?.prospecting?.readiness ?? null;
+  const readinessReasons = upstreamContext?.prospecting?.readinessReasons ?? [];
+  const proofAvailable = upstreamContext?.proof?.available ?? false;
+
+  const blockerInfo = readiness === 'blocked'
+    ? { message: readinessReasons.length > 0 ? readinessReasons[0] : 'Prospecting readiness is blocked.', }
+    : null;
+
   const recommendations = useMemo(() => {
     const result: GoalType[] = [];
     const hasProspect = phase5PipelineProspects.length > 0;
+    const highPriorityCount = phase5PipelineProspects.filter((p) => p.priority === 'high').length;
     const hasSampleProject = phase5SampleProject.projectName.length > 0 || phase5SampleProject.goal.length > 0;
     const score = phase5LeadScore;
 
-    if (hasSampleProject) result.push('share_sample_project');
+    // Canonical strategy context
+    const buyingSignals = upstreamContext?.strategy?.buyingSignals ?? [];
+    const targetChannels = upstreamContext?.strategy?.targetChannels ?? [];
+    const hasHighPriorityChannel = targetChannels.some((ch) => ch.priority === 'high');
 
-    if (score >= 27 && hasProspect) {
-      result.push('book_discovery_call');
-      result.push('offer_free_audit');
-    } else if (score >= 18 && score <= 26) {
-      result.push('offer_free_audit');
+    // — Blocked — surface blocker, do not recommend aggressive goals
+    if (readiness === 'blocked') {
+      result.push('ask_permission');
       result.push('start_conversation');
-    } else if (hasProspect) {
+      // show blocker reason
+      return result;
+    }
+
+    // — Limited + No proof — permission-based, relationship-first
+    if ((readiness === 'limited' || !readiness) && !proofAvailable) {
+      result.push('ask_permission');
+      result.push('start_conversation');
+      if (buyingSignals.length > 0) result.push('share_sample_project');
+      return result;
+    }
+
+    // — Limited + Has proof — soft outreach with sample hook
+    if (readiness === 'limited' && proofAvailable) {
+      result.push('share_sample_project');
+      result.push('ask_permission');
+      result.push('start_conversation');
+      return result;
+    }
+
+    // — Ready + proof — may recommend targeted proof-led outreach
+    if (proofAvailable && hasProspect) {
+      if (hasSampleProject) result.push('share_sample_project');
+      if (score >= 27 && (highPriorityCount > 0 || hasHighPriorityChannel) && readiness === 'ready') {
+        result.push('book_discovery_call');
+        result.push('offer_free_audit');
+      } else if (score >= 20) {
+        result.push('offer_free_audit');
+        result.push('start_conversation');
+      } else {
+        result.push('start_conversation');
+        result.push('share_sample_project');
+      }
+      return result;
+    }
+
+    // — Ready, no proof but has prospects
+    if (hasProspect && readiness === 'ready') {
+      if (score >= 27 && highPriorityCount > 0) {
+        result.push('offer_free_audit');
+        result.push('start_conversation');
+      } else {
+        result.push('start_conversation');
+        result.push('ask_permission');
+      }
+      return result;
+    }
+
+    // — Fallback: no strong signal
+    if (hasSampleProject) result.push('share_sample_project');
+    if (hasProspect) {
       result.push('start_conversation');
       result.push('ask_permission');
     } else {
@@ -62,7 +125,7 @@ export default function OutreachGoalStep() {
     }
 
     return result;
-  }, [phase5LeadScore, phase5PipelineProspects.length, phase5SampleProject]);
+  }, [phase5LeadScore, phase5PipelineProspects, phase5SampleProject, phase5SelectedProspect, upstreamContext]);
 
   function handleSelectGoal(option: GoalOption) {
     setSelectedGoal(option.goalType);
@@ -191,6 +254,14 @@ export default function OutreachGoalStep() {
           );
         })}
       </div>
+
+      {blockerInfo && (
+        <div className={`rounded-lg border-2 p-4 ${isDark === 'dark' ? 'border-red-800 bg-red-900/20 text-red-200' : 'border-red-300 bg-red-50 text-red-700'}`}>
+          <p className="text-sm font-medium">Prospecting Readiness Blocked</p>
+          <p className="text-sm mt-1 opacity-80">{blockerInfo.message}</p>
+          <p className="text-xs mt-2 opacity-70">Aggressive outreach objectives like booking a discovery call are not recommended until the blockers are resolved. The recommended options above are safe low-pressure choices.</p>
+        </div>
+      )}
 
       <div>
         <label className={`block text-sm font-medium mb-2 ${isDark === 'dark' ? 'text-zinc-300' : 'text-gray-700'}`}>

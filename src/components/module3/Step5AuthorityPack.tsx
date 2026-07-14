@@ -1,9 +1,10 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   ArrowLeft, CheckCircle2, Circle,
   Copy, Download, FileText, Check, AlertTriangle, ExternalLink, Shield, Sparkles
 } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
@@ -64,10 +65,20 @@ function ReadinessCard({ label, ready }: { label: string; ready: boolean }) {
 }
 
 export function Step5AuthorityPack() {
-  const pack = useModule3Store((s) => {
-    const state = useModule3Store.getState();
-    return compileAuthorityPack(state);
-  });
+  const packInput = useModule3Store(
+    useShallow((state) => ({
+      authorityPosition: state.authorityPosition,
+      coreTrustPromise: state.coreTrustPromise,
+      proofPriorities: state.proofPriorities,
+      proofAssets: state.proofAssets,
+      profileCopy: state.profileCopy,
+      portfolioCopy: state.portfolioCopy,
+      checklist: state.checklist,
+    }))
+  );
+
+  const pack = useMemo(() => compileAuthorityPack(packInput as any), [packInput]);
+
   const checklist = useModule3Store((s) => s.checklist);
   const setChecklist = useModule3Store((s) => s.setChecklist);
   const updateChecklistItem = useModule3Store((s) => s.updateChecklistItem);
@@ -107,17 +118,18 @@ export function Step5AuthorityPack() {
     return composeStep5Content(pctx);
   }, [mod1ServiceId, mod1MarketId, mod1NicheId, mod1Positioning, mod2OfferType, mod2Deliverables, mod2UniqueMechanism, mod2ValueAmplifier]);
 
-  const initialized = useMemo(() => {
-    if (checklist.length === 0) {
-      const items: ChecklistItem[] = CHECKLIST_TEMPLATES.map((t) => ({
-        ...t,
+  useEffect(() => {
+    if (checklist.length > 0 || CHECKLIST_TEMPLATES.length === 0) return;
+
+    setChecklist(
+      CHECKLIST_TEMPLATES.map((template) => ({
+        ...template,
         isCompleted: false,
-      }));
-      setChecklist(items);
-      return items;
-    }
-    return checklist;
-  }, []);
+      }))
+    );
+  }, [checklist.length, setChecklist]);
+
+  const initialized = checklist.length === 0 ? CHECKLIST_TEMPLATES.map(t => ({ ...t, isCompleted: false })) : checklist;
 
   const completedChecklistCount = initialized.filter((c) => c.isCompleted).length;
   const totalChecklistCount = initialized.length;

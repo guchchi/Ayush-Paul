@@ -7,12 +7,33 @@ import type {
   Module6UpstreamContext,
 } from '../../types/outreach-engine-system';
 import { OUTREACH_ENGINE_STEPS, canNavigateTo, getStepIndex } from '../../types/outreach-engine-system';
-import { resolveBlueprintContext } from '../blueprint-content/blueprint-context';
-
 export { canNavigateTo, getStepIndex, OUTREACH_ENGINE_STEPS };
 
 import { getNicheKey, getCleanOutreachContext, sanitizeText } from './context-helper';
 import { generateOutreachContextDefaults } from '../blueprint-content';
+import { buildGeneratorContext } from './generation-context';
+import { generateAngles as generateAnglesPure } from './angle-generator';
+import { generateMessageDrafts as generateMessageDraftsPure } from './message-generator';
+import { generateFollowUpSequence as generateFollowUpSequencePure } from './followup-generator';
+import { generateObjectionReplies as generateObjectionRepliesPure } from './objection-generator';
+import type { Module6ProspectContext } from '../../types/outreach-engine-system';
+
+function toModule6ProspectContext(pc: ProspectContext | null): Module6ProspectContext | null {
+  if (!pc) return null;
+  return {
+    id: pc.canonicalProspectId ?? pc.prospectName.replace(/\s+/g, '-').toLowerCase(),
+    prospectName: pc.prospectName,
+    platform: pc.platform,
+    websiteUrl: pc.websiteOrProfileUrl,
+    nicheFit: pc.nicheFit ?? '',
+    visibleProblem: pc.visibleProblem,
+    score: pc.leadScore,
+    priority: pc.priority,
+    contactAvailable: pc.contactAvailable ?? false,
+    notes: pc.notes,
+    status: pc.status ?? 'pending',
+  };
+}
 
 function generateSampleProspectForService(serviceId: string | null, nicheKey: string): ProspectContext {
   const defaults = generateOutreachContextDefaults(serviceId, nicheKey);
@@ -32,471 +53,11 @@ function generateSampleProspectForService(serviceId: string | null, nicheKey: st
   };
 }
 
-function isWeakInput(text: string): boolean {
-  const t = (text ?? '').trim();
-  if (t.length < 12) return true;
-  const weak = ['h', 'kh', 'hk', 'test', 'abc', 'xyz', 'random', 'asd', 'qwe', 'hkh', 'dfg'];
-  return weak.some((w) => t.toLowerCase() === w);
-}
-
-function cleanProblemText(text: string): string {
-  return text.replace(/\.+$/, '').trim();
-}
-
-function needsHookRewrite(text: string): string | null {
-  const trimmed = text.trim();
-  if (/^(They|Their|The website|The page)\b/i.test(trimmed)) {
-    return `The visible issue I noticed is: ${trimmed}`;
-  }
-  return null;
-}
-
-function generateAngles(
-  serviceId: string | null,
-  nicheKey: string,
-  prospectName: string,
-  visibleProblem: string,
-  assetName: string,
-  goalType: string | undefined,
-): PersonalizationAngle[] {
-  const ctx = serviceId ? resolveBlueprintContext(serviceId, nicheKey) : null;
-  const offerLabel = ctx?.offerLabel ?? null;
-  const audienceLabel = ctx?.audienceLabel ?? 'people like you';
-  const cta = ctx?.caseStudyTemplate?.cta ?? 'let me know if you\'d like some ideas';
-
-  const angleFocus: Record<string, { problem: string; sample: string; audit: string }> = {
-    short_form_clips: {
-      problem: 'their long-form content has moments that could reach new audiences as short clips',
-      sample: 'a short-form clip sample pack showing how to repurpose long-form content',
-      audit: 'review one of their videos and suggest 3 specific clip opportunities',
-    },
-    podcast_post_production: {
-      problem: 'their episodes contain quotable moments that could work as discovery clips',
-      sample: 'a podcast clip sample pack showing episode-to-clip repurposing',
-      audit: 'review one episode and suggest 3 clip opportunities',
-    },
-    custom_theme_development: {
-      problem: 'their landing page could communicate their product value more clearly',
-      sample: 'a custom landing page build focused on performance and mobile responsiveness',
-      audit: 'review their site and suggest 3 specific improvements',
-    },
-    plugin_integration_dev: {
-      problem: 'their disconnected tools create manual work that could be automated',
-      sample: 'a multi-tool integration prototype connecting key platforms',
-      audit: 'review their tool stack and suggest 3 integration opportunities',
-    },
-    site_migration_performance: {
-      problem: 'their slow website could be losing them visitors and leads',
-      sample: 'a site migration and performance optimisation project',
-      audit: 'audit their site speed and suggest 3 performance fixes',
-    },
-    product_ui_design: {
-      problem: 'their interface has friction that could be reducing activation',
-      sample: 'a product interface redesign concept with clearer user flows',
-      audit: 'review their interface and suggest 3 UX improvements',
-    },
-    brand_identity_visual_systems: {
-      problem: 'their inconsistent design assets slow down delivery',
-      sample: 'a reusable design system library with tokens and components',
-      audit: 'audit their current design assets and suggest 3 system improvements',
-    },
-    ux_research_conversion_audits: {
-      problem: 'their onboarding flow has friction that could be reducing conversions',
-      sample: 'a UX audit and improvement report with actionable recommendations',
-      audit: 'review their onboarding flow and suggest 3 conversion improvements',
-    },
-  };
-
-  const focus = angleFocus[serviceId ?? ''] ?? {
-    problem: 'their current approach could be improved with a fresh perspective',
-    sample: offerLabel ? `a sample ${offerLabel} project showing the approach` : 'a sample project showing how this kind of problem could be approached',
-    audit: 'review what they have and suggest 3 specific improvements',
-  };
-
-  const rawProblem = isWeakInput(visibleProblem)
-    ? 'there may be an opportunity to improve how this is presented'
-    : cleanProblemText(visibleProblem);
-
-  const safeProblemShort = isWeakInput(visibleProblem)
-    ? 'how things could be improved'
-    : cleanProblemText(visibleProblem);
-
-  const problemFirstHook = needsHookRewrite(rawProblem) ?? `I noticed ${rawProblem}`;
-
-  const sampleHook = assetName
-    ? `I created a sample project called ${assetName} that may be relevant to this.`
-    : `I created ${focus.sample.startsWith('a ') ? focus.sample : 'a ' + focus.sample} that may be relevant to what you are working on.`;
-
-  const angles: { id: string; type: AngleType; name: string; hook: string; why: string; channels: string[]; risk: 'Very Low' | 'Low' | 'Medium' | 'High' }[] = [
-    {
-      id: 'angle-problem-first',
-      type: 'problem_first',
-      name: 'Problem-First Angle',
-      hook: `${problemFirstHook}. Would it be useful if I shared a few thoughts?`,
-      why: `Directly references the prospect's visible issue, showing you paid attention. Best for prospects who respond to specificity.`,
-      channels: ['LinkedIn DM', 'Email'],
-      risk: 'Low',
-    },
-    {
-      id: 'angle-quick-win',
-      type: 'quick_win',
-      name: 'Quick-Win Angle',
-      hook: `I had 2 quick ideas that could help with ${safeProblemShort}. Happy to share if useful.`,
-      why: `Offers immediate value without commitment. Low pressure, easy to say yes to.`,
-      channels: ['LinkedIn DM', 'Email', 'Instagram/Twitter DM'],
-      risk: 'Low',
-    },
-    {
-      id: 'angle-sample-project',
-      type: 'sample_project',
-      name: 'Sample Project Angle',
-      hook: sampleHook,
-      why: `Lets your work speak for itself. Effective when you have a strong sample that connects to their situation.`,
-      channels: ['LinkedIn DM', 'Email'],
-      risk: 'Low',
-    },
-    {
-      id: 'angle-permission-based',
-      type: 'permission_based',
-      name: 'Permission-Based Angle',
-      hook: `Would it be useful if I sent a few quick ideas on ${safeProblemShort}? No pitch, just thoughts.`,
-      why: `Ultra-soft opener. Respectful and easy for the prospect to accept without pressure.`,
-      channels: ['LinkedIn DM', 'Instagram/Twitter DM', 'Community Message'],
-      risk: 'Very Low',
-    },
-    {
-      id: 'angle-audit',
-      type: 'audit',
-      name: 'Audit Angle',
-      hook: `I can send a short 3-point review of ${isWeakInput(visibleProblem) ? 'what I noticed' : 'what I noticed'} if that would be useful.`,
-      why: `Position yourself as helpful and knowledgeable. Good for prospects who want proof before engaging.`,
-      channels: ['Email', 'LinkedIn DM', 'Website Contact Form'],
-      risk: 'Medium',
-    },
-    {
-      id: 'angle-soft-conversation',
-      type: 'soft_conversation',
-      name: 'Soft Conversation Angle',
-      hook: isWeakInput(visibleProblem)
-        ? `Are you currently working on improving how things are presented?`
-        : `Are you currently working on improving this?`,
-      why: `Starts a natural conversation without any ask. Best for cold outreach where you want to build rapport first.`,
-      channels: ['LinkedIn DM', 'Instagram/Twitter DM', 'Community Message'],
-      risk: 'Very Low',
-    },
-  ];
-
-  const isDirectGoal = goalType === 'book_discovery_call' || goalType === 'offer_free_audit';
-  const isSoftGoal = goalType === 'ask_permission' || goalType === 'start_conversation';
-
-  return angles.map((a) => ({
-    id: a.id,
-    angleName: a.name,
-    angleType: a.type,
-    whyItFits: a.why,
-    messageHook: a.hook,
-    bestChannel: a.channels,
-    riskLevel: a.risk,
-    selected: false,
-  }));
-}
-
-function generateDrafts(
-  serviceId: string | null,
-  nicheKey: string,
-  prospectName: string,
-  visibleProblem: string,
-  reasonToContact: string,
-  assetName: string,
-  goalType: string | undefined,
-  goalLabel: string | undefined,
-  selectedTone: string | undefined,
-  selectedAngle: PersonalizationAngle | undefined,
-  isSampleData: boolean,
-): MessageDraft[] {
-  const isWeakProblem = isWeakInput(visibleProblem);
-
-  const sampleWordingMap: Record<string, string> = {
-    short_form_clips: 'I created a sample shorts pack showing how long-form moments can become short-form clips.',
-    podcast_post_production: 'I created a sample podcast clip pack showing how full episodes can become discovery clips.',
-    custom_theme_development: 'I created a sample landing page build showing how product value, trust, and demo/signup path can be structured.',
-    plugin_integration_dev: 'I created a sample plugin integration setup showing how forms, CRM, tracking, and campaign tools can connect cleanly.',
-    site_migration_performance: 'I created a sample site migration project showing how speed, mobile layout, and local SEO can be improved.',
-    product_ui_design: 'I created a sample dashboard redesign showing how onboarding and interface clarity can be improved.',
-    brand_identity_visual_systems: 'I created a sample design system breakdown showing how reusable components and design tokens improve consistency.',
-    ux_research_conversion_audits: 'I created a sample UX audit showing how friction points can be identified and improved.',
-  };
-
-  const observation = isWeakProblem
-    ? 'there may be an opportunity to improve how this is presented'
-    : (visibleProblem || 'there may be an opportunity to improve how this is presented');
-
-  const sampleWording = isSampleData
-    ? (sampleWordingMap[serviceId ?? ''] ?? (assetName
-        ? `I created a sample project called ${assetName} that may be useful as a reference.`
-        : `I created a sample project around this kind of problem that may be useful as a reference.`))
-    : (assetName
-        ? `I also have a sample breakdown, ${assetName}, that connects closely to this.`
-        : `I had a few practical ideas that may be useful.`);
-
-  const ctaLine = ctaLocale(selectedTone);
-
-  function buildBody(channel: string): string {
-    const lines: string[] = [];
-
-    if (channel === 'linkedin_dm') {
-      lines.push(`Hey ${prospectName},`);
-      lines.push(`I noticed ${observation}.`);
-      lines.push(sampleWording);
-      lines.push(ctaLocale(selectedTone));
-      return lines.join('\n\n');
-    }
-
-    if (channel === 'email') {
-      lines.push(`Hi ${prospectName},`);
-      lines.push(`I came across your work and noticed ${observation}.`);
-      lines.push(sampleWording);
-      lines.push(ctaLocale(selectedTone));
-      return lines.join('\n\n');
-    }
-
-    if (channel === 'instagram_twitter_dm') {
-      return `Hey! I noticed ${observation.slice(0, 50)} — ${sampleWording} ${ctaLocale(selectedTone)}`;
-    }
-
-    if (channel === 'website_contact_form') {
-      return `Hi, I'm reaching out because I noticed ${observation}. ${sampleWording} ${ctaLocale(selectedTone)}`;
-    }
-
-    return `Hey ${prospectName}, hope you're doing well. I noticed ${observation}. ${sampleWording} ${ctaLocale(selectedTone)}`;
-  }
-
-  function ctaLocale(tone?: string): string {
-    if (tone === 'Direct') return `Would it be useful if I sent 2-3 quick ideas?`;
-    if (tone === 'Professional') return `Let me know if a few suggestions would be helpful.`;
-    if (tone === 'Soft') return `No pressure at all, but happy to share if useful.`;
-    return `Would it be useful if I sent a few quick ideas?`;
-  }
-
-  function subjectLine(tone?: string): string {
-    if (isWeakProblem) {
-      if (tone === 'Direct') return `Quick thought on an opportunity`;
-      if (tone === 'Professional') return `Suggestion regarding how things could be improved`;
-      if (tone === 'Soft') return `Quick idea`;
-      return `Thought on an opportunity`;
-    }
-    if (tone === 'Direct') return `Quick thought on ${observation.slice(0, 40)}`;
-    if (tone === 'Professional') return `Suggestion regarding ${observation.slice(0, 40)}`;
-    if (tone === 'Soft') return `Quick idea`;
-    return `Thought on ${observation.slice(0, 40)}`;
-  }
-
-  const channels: { id: string; channel: MessageChannel; label: string; risk: 'Very Low' | 'Low' | 'Medium' | 'High'; bestFor: string }[] = [
-    { id: 'draft-linkedin', channel: 'linkedin_dm', label: 'LinkedIn DM', risk: 'Low', bestFor: 'Professional networking, B2B outreach' },
-    { id: 'draft-email', channel: 'email', label: 'Email', risk: 'Medium', bestFor: 'More space for detail, follow-up friendly' },
-    { id: 'draft-social', channel: 'instagram_twitter_dm', label: 'Instagram / Twitter DM', risk: 'Low', bestFor: 'Casual, short outreach' },
-    { id: 'draft-website', channel: 'website_contact_form', label: 'Website Contact Form', risk: 'Medium', bestFor: 'Direct business inquiries' },
-    { id: 'draft-community', channel: 'community_message', label: 'Community Message', risk: 'Very Low', bestFor: 'Community-based soft outreach' },
-  ];
-
-  return channels.map((ch) => ({
-    id: ch.id,
-    channel: ch.channel,
-    label: ch.label,
-    subject: ch.channel === 'email' ? subjectLine(selectedTone) : undefined,
-    message: buildBody(ch.channel),
-    tone: selectedTone ?? 'Friendly',
-    cta: ctaLine,
-    riskLevel: ch.risk,
-    bestFor: ch.bestFor,
-  }));
-}
-
-function generateFollowUpSequence(
-  serviceId: string | null,
-  nicheKey: string,
-  prospectName: string,
-  visibleProblem: string,
-  assetName: string,
-  selectedTone: string | undefined,
-  isSampleData: boolean,
-): FollowUpMessage[] {
-  const isWeakProblem = isWeakInput(visibleProblem);
-  const problemRef = isWeakProblem ? 'improving how things are presented' : visibleProblem.slice(0, 60);
-
-  const serviceTips: Record<string, string> = {
-    short_form_clips: 'turning one strong moment from each VOD into a short clip can make posting more consistent without creating new content from scratch.',
-    podcast_post_production: 'pulling one quotable moment from each episode as a short clip can help grow discovery without extra recording.',
-    custom_theme_development: 'making the demo/signup path visible earlier could make the page easier for early users or investors to act on.',
-    plugin_integration_dev: 'repeated form, CRM, and tracking setup across campaign pages can be streamlined with a simple integration checklist.',
-    site_migration_performance: 'improving mobile layout and local SEO visibility can directly impact how many local visitors contact the business.',
-    product_ui_design: 'reducing the number of unclear first-step choices can make onboarding feel easier for new users.',
-    brand_identity_visual_systems: 'using a shared component library across projects can make design delivery faster and more consistent.',
-    ux_research_conversion_audits: 'mapping the onboarding flow step by step often reveals one or two changes that reduce drop-off significantly.',
-  };
-
-  const tip = serviceTips[serviceId ?? ''] ?? 'taking a fresh look at the current approach often reveals a few quick improvements.';
-  const assetRef = isSampleData
-    ? (assetName ? `sample project called ${assetName}` : 'sample project')
-    : (assetName ? `breakdown, ${assetName}` : 'few practical ideas');
-
-  const toneAdj = selectedTone === 'Direct' ? '' : selectedTone === 'Professional' ? 'just ' : '';
-
-  return [
-    {
-      id: 'followup-1',
-      sequenceStep: 1,
-      label: 'Gentle Reminder',
-      timing: '2–3 days after first message',
-      message: `Hey ${prospectName}, quick follow-up on my note about ${problemRef}. Happy to send ${toneAdj}the ideas over if useful.`,
-      purpose: 'Bring the message back politely without pressure.',
-      tone: selectedTone ?? 'Friendly',
-      riskLevel: 'Low',
-    },
-    {
-      id: 'followup-2',
-      sequenceStep: 2,
-      label: 'Value Add',
-      timing: '5–7 days after first message',
-      message: `One quick thought: ${tip} No pressure, just wanted to share in case it is helpful.`,
-      purpose: 'Add one useful insight or quick idea without asking for a reply.',
-      tone: selectedTone ?? 'Friendly',
-      riskLevel: 'Low',
-    },
-    {
-      id: 'followup-3',
-      sequenceStep: 3,
-      label: 'Close the Loop',
-      timing: '10–14 days after first message',
-      message: `No worries if this is not a priority right now. I will leave it here, but happy to share the ${assetRef} later if useful.`,
-      purpose: 'Politely end the sequence and leave the door open for future contact.',
-      tone: selectedTone ?? 'Friendly',
-      riskLevel: 'Very Low',
-    },
-  ];
-}
-
-function generateObjectionReplies(
-  serviceId: string | null,
-  nicheKey: string,
-  prospectName: string,
-  visibleProblem: string,
-  assetName: string,
-  isSampleData: boolean,
-  offerName: string | null,
-): ObjectionReply[] {
-  const ctx = serviceId ? resolveBlueprintContext(serviceId, nicheKey) : null;
-  const offerLabel = ctx?.offerLabel ?? null;
-  const isWeakProblem = isWeakInput(visibleProblem);
-  const problemRef = isWeakProblem ? 'an opportunity to improve how things are presented' : visibleProblem.slice(0, 80);
-
-  const assetReply = isSampleData
-    ? (assetName
-        ? `Sure — I can share a sample project called ${assetName} that I created around this type of problem.`
-        : 'Sure — I can share a sample project I created around this type of problem.')
-    : (assetName
-        ? `Sure — I can share my work on ${assetName} that connects closely to this.`
-        : 'Sure — I can share a few examples of how I have approached similar situations.');
-
-  const serviceExamples: Record<string, string> = {
-    short_form_clips: 'a sample gaming shorts pack showing how I select moments, shape hooks, add captions, and prepare clips for Shorts/Reels/TikTok.',
-    podcast_post_production: 'a sample podcast clip pack showing how I identify quotable moments and turn them into discovery clips.',
-    custom_theme_development: 'a sample AI startup landing page structure I created. It shows how I would organize the product value, trust section, and demo/signup path.',
-    plugin_integration_dev: 'a sample agency plugin integration setup showing how forms, CRM, tracking, and campaign tools can be connected.',
-    site_migration_performance: 'a sample site migration and performance audit showing how I approach speed, mobile responsiveness, and local SEO.',
-    product_ui_design: 'a sample SaaS dashboard redesign concept. It shows how I approach information hierarchy, onboarding clarity, and component consistency.',
-    brand_identity_visual_systems: 'a sample design system library showing how I build reusable tokens, components, and documentation.',
-    ux_research_conversion_audits: 'a sample UX audit report showing how I identify friction points and suggest actionable improvements.',
-  };
-
-  const serviceExample = serviceExamples[serviceId ?? ''] ?? 'a sample project showing my approach to this type of work.';
-
-  const howItWorks: Record<string, string> = {
-    short_form_clips: 'I review the source footage, select the best moments, shape each clip around a hook, add captions, tighten pacing, and prepare the clips for Shorts, Reels, or TikTok.',
-    podcast_post_production: 'I review the episode, identify quotable moments, edit them into short clips with captions, and prepare them for distribution on short-form platforms.',
-    custom_theme_development: 'I start by understanding the product and audience, plan the site structure, build a custom WordPress theme with performance optimisation, and deliver a responsive, SEO-optimised site.',
-    plugin_integration_dev: 'I start by mapping the current tool stack and workflow bottlenecks, then design a plugin architecture that connects key platforms, build the integration, test the flow, and deliver setup documentation.',
-    site_migration_performance: 'I start with a full performance audit, then plan the migration, build the new site with optimisation, test across devices, and deliver a handoff with local SEO in place.',
-    product_ui_design: 'I review the existing interface, map key user flows, identify friction points, redesign screens with clearer information hierarchy, and deliver developer-ready handoff files.',
-    brand_identity_visual_systems: 'I start by auditing the current design assets, then build a reusable component library with design tokens, patterns, and documentation.',
-    ux_research_conversion_audits: 'I review the current user flow, identify friction points, suggest actionable improvements, and present findings in a clear report.',
-  };
-
-  const howItWorksText = howItWorks[serviceId ?? ''] ?? 'I start by understanding the current situation, then identify opportunities for improvement, and deliver actionable suggestions.';
-
-  return [
-    {
-      id: 'obj-not-interested',
-      objectionType: 'not_interested',
-      label: 'Not Interested',
-      prospectSays: '"Not interested."',
-      reply: `No problem at all, ${prospectName}. I appreciate you letting me know. If things change or you ever want to revisit this, feel free to reach out.`,
-      strategy: 'Respectfully close without pressure.',
-      tone: 'Friendly',
-      riskLevel: 'Very Low',
-    },
-    {
-      id: 'obj-send-details',
-      objectionType: 'send_details',
-      label: 'Send Details',
-      prospectSays: '"Send details."',
-      reply: `Happy to share more. I focus on ${offerLabel ?? 'helping with this type of work'} — specifically helping with ${problemRef}. If you let me know what part is most relevant, I can tailor the details rather than send a long wall of text.`,
-      strategy: 'Offer detail without overwhelming them.',
-      tone: 'Friendly',
-      riskLevel: 'Low',
-    },
-    {
-      id: 'obj-pricing',
-      objectionType: 'pricing_question',
-      label: 'What Do You Charge?',
-      prospectSays: '"What do you charge?"',
-      reply: `Great question. Pricing depends on the specific scope, but I typically start with a small review or trial piece to make sure the approach fits before discussing numbers. Would it be useful if I took a quick look first and suggested a direction?`,
-      strategy: 'Offer a small review first instead of quoting blind.',
-      tone: 'Professional',
-      riskLevel: 'Low',
-    },
-    {
-      id: 'obj-have-someone',
-      objectionType: 'already_have_someone',
-      label: 'Already Have Someone',
-      prospectSays: '"We already have someone."',
-      reply: `That is great to hear — I am glad you have support in place. If there is ever a specific area where you need extra help or a backup, feel free to reach out. No pitch here, just wanted you to know I am around.`,
-      strategy: 'Respect existing setup and offer backup support.',
-      tone: 'Friendly',
-      riskLevel: 'Very Low',
-    },
-    {
-      id: 'obj-maybe-later',
-      objectionType: 'maybe_later',
-      label: 'Maybe Later',
-      prospectSays: '"Maybe later."',
-      reply: `No worries at all, ${prospectName}. I will leave this here. If you ever want to revisit, feel free to ping me — happy to help whenever the timing works.`,
-      strategy: 'Leave the door open without follow-up pressure.',
-      tone: 'Friendly',
-      riskLevel: 'Very Low',
-    },
-    {
-      id: 'obj-show-examples',
-      objectionType: 'show_examples',
-      label: 'Can You Show Examples?',
-      prospectSays: '"Can you show examples?"',
-      reply: `Sure — I can share ${serviceExample}`,
-      strategy: 'Share sample/portfolio asset honestly.',
-      tone: 'Friendly',
-      riskLevel: 'Low',
-    },
-    {
-      id: 'obj-how-it-works',
-      objectionType: 'how_it_works',
-      label: 'How Does This Work?',
-      prospectSays: '"How does this work?"',
-      reply: `${howItWorksText} Happy to walk through it in more detail if useful.`,
-      strategy: 'Explain simple process in 2–3 steps.',
-      tone: 'Friendly',
-      riskLevel: 'Low',
-    },
-  ];
-}
+/* ──────────────────────────────────────────────
+   Legacy generators removed — each superseded by a dedicated pure generator:
+     angle-generator.ts, message-generator.ts,
+     followup-generator.ts, objection-generator.ts
+   ────────────────────────────────────────────── */
 
 export const useOutreachEngineStore = create<OutreachEngineState>()(
   persist(
@@ -742,29 +303,65 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
         const state = get();
         const prospect = state.phase5PipelineProspects[prospectId];
         if (!prospect) return;
-        const serviceId = state.phase5Service;
-        const niche = state.phase5Niche ?? '';
-        const nicheKey = getNicheKey(niche);
-        const sample = generateSampleProspectForService(serviceId, nicheKey);
-        set({
-          phase5SelectedProspect: prospect,
-          phase5VisibleProblem: prospect.visibleProblem,
-          phase5LeadScore: prospect.score,
-          phase5Priority: prospect.priority,
-          prospectContext: {
-            prospectName: prospect.prospectName,
-            companyOrChannelName: '',
-            platform: prospect.platform,
-            websiteOrProfileUrl: '',
-            visibleProblem: prospect.visibleProblem,
-            reasonToContact: sample.reasonToContact,
-            leadScore: prospect.score,
-            priority: prospect.priority as 'low' | 'medium' | 'high',
-            recommendedAsset: state.phase5PortfolioAsset || sample.recommendedAsset,
-            notes: '',
-            isSampleProspect: false,
-          },
-        });
+
+        // Resolve canonical prospect from upstream context
+        const upstream = state.upstreamContext;
+        const canonical = upstream?.prospects?.find(
+          (pr) => pr.prospectName === prospect.prospectName && pr.platform === prospect.platform,
+        ) ?? null;
+
+        if (canonical) {
+          // Populate ProspectContext from full canonical data
+          set({
+            phase5SelectedProspect: prospect,
+            phase5VisibleProblem: prospect.visibleProblem,
+            phase5LeadScore: prospect.score,
+            phase5Priority: prospect.priority,
+            prospectContext: {
+              prospectName: canonical.prospectName,
+              companyOrChannelName: '',
+              platform: canonical.platform,
+              websiteOrProfileUrl: canonical.websiteUrl,
+              visibleProblem: canonical.visibleProblem,
+              reasonToContact: state.outreachGoal?.description ?? '',
+              leadScore: canonical.score,
+              priority: canonical.priority,
+              recommendedAsset: state.phase5PortfolioAsset,
+              notes: canonical.notes,
+              isSampleProspect: false,
+              canonicalProspectId: canonical.id,
+              nicheFit: canonical.nicheFit,
+              contactAvailable: canonical.contactAvailable,
+              status: canonical.status,
+            },
+          });
+        } else {
+          // Fallback: no canonical match — preserve entered values with honest defaults
+          const serviceId = state.phase5Service;
+          const niche = state.phase5Niche ?? '';
+          const nicheKey = getNicheKey(niche);
+          const sample = generateSampleProspectForService(serviceId, nicheKey);
+          set({
+            phase5SelectedProspect: prospect,
+            phase5VisibleProblem: prospect.visibleProblem,
+            phase5LeadScore: prospect.score,
+            phase5Priority: prospect.priority,
+            prospectContext: {
+              prospectName: prospect.prospectName,
+              companyOrChannelName: '',
+              platform: prospect.platform,
+              websiteOrProfileUrl: '',
+              visibleProblem: prospect.visibleProblem,
+              reasonToContact: sample.reasonToContact,
+              leadScore: prospect.score,
+              priority: prospect.priority as 'low' | 'medium' | 'high',
+              recommendedAsset: state.phase5PortfolioAsset || sample.recommendedAsset,
+              notes: '',
+              isSampleProspect: false,
+              contactAvailable: false,
+            },
+          });
+        }
       },
 
       updateProspectContext(partial) {
@@ -785,25 +382,45 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
 
       generatePersonalizationAngles() {
         const state = get();
-        const serviceId = state.phase5Service;
-        const niche = state.phase5Niche ?? '';
-        const nicheKey = getNicheKey(niche);
-        const prospectName = state.prospectContext?.prospectName ?? 'there';
-        const visibleProblem = state.prospectContext?.visibleProblem ?? '';
-        const assetName = state.prospectContext?.recommendedAsset ?? state.phase5PortfolioAsset ?? '';
-        const goalType = state.outreachGoal?.goalType;
-
-        const angles = generateAngles(serviceId, nicheKey, prospectName, visibleProblem, assetName, goalType);
-        set({ personalizationAngles: angles, selectedAngleId: null });
+        const upstream = state.upstreamContext;
+        if (!upstream) return;
+        const prospect = toModule6ProspectContext(state.prospectContext);
+        const ctx = buildGeneratorContext(upstream, prospect, state.outreachGoal, undefined);
+        const angles = generateAnglesPure(ctx);
+        // Invalidate downstream content that depended on the previous angle
+        set({
+          personalizationAngles: angles,
+          selectedAngleId: null,
+          messageDrafts: [],
+          selectedMessageDraftId: null,
+          followUpSequence: [],
+          selectedFollowUpId: null,
+          objectionReplies: [],
+          outreachReport: null,
+        });
       },
 
       selectPersonalizationAngle(angleId: string) {
         const state = get();
+        const angleChanged = state.selectedAngleId !== angleId;
         const updated = state.personalizationAngles.map((a) => ({
           ...a,
           selected: a.id === angleId,
         }));
-        set({ personalizationAngles: updated, selectedAngleId: angleId });
+        const updates: Record<string, unknown> = {
+          personalizationAngles: updated,
+          selectedAngleId: angleId,
+        };
+        // Invalidate downstream content when a different angle is selected
+        if (angleChanged) {
+          updates.messageDrafts = [];
+          updates.selectedMessageDraftId = null;
+          updates.followUpSequence = [];
+          updates.selectedFollowUpId = null;
+          updates.objectionReplies = [];
+          updates.outreachReport = null;
+        }
+        set(updates as Partial<OutreachEngineState>);
       },
 
       updatePersonalizationAngle(angleId: string, partial) {
@@ -816,24 +433,12 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
 
       generateMessageDrafts() {
         const state = get();
-        const serviceId = state.phase5Service;
-        const niche = state.phase5Niche ?? '';
-        const nicheKey = getNicheKey(niche);
-        const prospectName = state.prospectContext?.prospectName ?? 'there';
-        const visibleProblem = state.prospectContext?.visibleProblem ?? '';
-        const reasonToContact = state.prospectContext?.reasonToContact ?? '';
-        const assetName = state.prospectContext?.recommendedAsset ?? state.phase5PortfolioAsset ?? '';
-        const goalType = state.outreachGoal?.goalType;
-        const goalLabel = state.outreachGoal?.label;
-        const selectedTone = state.outreachGoal?.selectedTone;
-        const isSampleData = state.prospectContext?.isSampleProspect ?? false;
+        const upstream = state.upstreamContext;
+        if (!upstream) return;
+        const prospect = toModule6ProspectContext(state.prospectContext);
         const selectedAngle = state.personalizationAngles.find((a) => a.selected);
-
-        const drafts = generateDrafts(
-          serviceId, nicheKey, prospectName, visibleProblem,
-          reasonToContact, assetName, goalType, goalLabel,
-          selectedTone, selectedAngle, isSampleData,
-        );
+        const ctx = buildGeneratorContext(upstream, prospect, state.outreachGoal, selectedAngle);
+        const drafts = generateMessageDraftsPure(ctx);
         set({ messageDrafts: drafts, selectedMessageDraftId: null });
       },
 
@@ -851,16 +456,12 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
 
       generateFollowUpSequence() {
         const state = get();
-        const serviceId = state.phase5Service;
-        const niche = state.phase5Niche ?? '';
-        const nicheKey = getNicheKey(niche);
-        const prospectName = state.prospectContext?.prospectName ?? 'there';
-        const visibleProblem = state.prospectContext?.visibleProblem ?? '';
-        const assetName = state.prospectContext?.recommendedAsset ?? state.phase5PortfolioAsset ?? '';
-        const selectedTone = state.outreachGoal?.selectedTone;
-        const isSampleData = state.prospectContext?.isSampleProspect ?? false;
-
-        const seq = generateFollowUpSequence(serviceId, nicheKey, prospectName, visibleProblem, assetName, selectedTone, isSampleData);
+        const upstream = state.upstreamContext;
+        if (!upstream) return;
+        const prospect = toModule6ProspectContext(state.prospectContext);
+        const selectedAngle = state.personalizationAngles.find((a) => a.selected);
+        const ctx = buildGeneratorContext(upstream, prospect, state.outreachGoal, selectedAngle);
+        const seq = generateFollowUpSequencePure(ctx);
         set({ followUpSequence: seq, selectedFollowUpId: null });
       },
 
@@ -878,16 +479,12 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
 
       generateObjectionReplies() {
         const state = get();
-        const serviceId = state.phase5Service;
-        const niche = state.phase5Niche ?? '';
-        const nicheKey = getNicheKey(niche);
-        const prospectName = state.prospectContext?.prospectName ?? 'there';
-        const visibleProblem = state.prospectContext?.visibleProblem ?? '';
-        const assetName = state.prospectContext?.recommendedAsset ?? state.phase5PortfolioAsset ?? '';
-        const isSampleData = state.prospectContext?.isSampleProspect ?? false;
-        const offerName = state.phase5OfferName;
-
-        const replies = generateObjectionReplies(serviceId, nicheKey, prospectName, visibleProblem, assetName, isSampleData, offerName);
+        const upstream = state.upstreamContext;
+        if (!upstream) return;
+        const prospect = toModule6ProspectContext(state.prospectContext);
+        const selectedAngle = state.personalizationAngles.find((a) => a.selected);
+        const ctx = buildGeneratorContext(upstream, prospect, state.outreachGoal, selectedAngle);
+        const replies = generateObjectionRepliesPure(ctx);
         set({ objectionReplies: replies });
       },
 

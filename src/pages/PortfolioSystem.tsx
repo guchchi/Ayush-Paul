@@ -128,6 +128,36 @@ export function PortfolioSystemPage() {
   const legacyService = useAuthoritySystemStore((s) => s.phase2Service);
   const initialized = useRef(false);
 
+  /* ── Stable fingerprint of all M3→M4 bridge fields ── */
+  const m3BridgeFingerprint = useModule3Store(
+    (s) => {
+      const bridge = s.getModule4Context();
+      const pa = s.proofAssets;
+      const pc = s.portfolioCopy;
+      return [
+        s.mod1ServiceId,
+        s.mod1MarketId,
+        s.mod1NicheId,
+        s.mod1Positioning,
+        s.mod2OfferType,
+        s.mod2Deliverables.join(','),
+        s.mod2UniqueMechanism,
+        s.mod2ValueAmplifier ?? '',
+        bridge.authorityPosition,
+        bridge.coreTrustPromise,
+        bridge.proofPriorities.map((p) => `${p.id}|${p.gapTitle}|${p.recommendedFormat}`).join(','),
+        bridge.proofAssets.map((a) => `${a.id}|${a.title}|${a.assetType}|${a.credibilityGap}|${a.completionStatus}`).join(','),
+        bridge.professionalHeadline,
+        bridge.offerStatement,
+        bridge.proofReferenceLine,
+        bridge.ctaLine,
+        bridge.portfolioCta,
+        pa.map((a) => `${a.id}|${a.assetType}|${JSON.stringify(a.portfolioCopy)}|${JSON.stringify(a.presentationStructure)}|${JSON.stringify(a.deliverables)}|${JSON.stringify(a.completionChecklist)}`).join(','),
+        pc.sections.map((s) => `${s.type}|${s.heading}|${s.body}|${JSON.stringify(s.bullets)}`).join(','),
+      ].join('‖');
+    },
+  );
+
   useEffect(() => {
     if (initialized.current) return;
 
@@ -150,7 +180,7 @@ export function PortfolioSystemPage() {
     const fresh = buildUpstreamFromModule3();
     if (!fresh) return;
     setPhase3Context(fresh);
-  }, [m3ServiceId]);
+  }, [m3BridgeFingerprint]);
 
   const handleStart = useCallback(() => {
     setModuleStarted(true);

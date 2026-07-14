@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import {
   Clock,
@@ -7,103 +8,123 @@ import {
   ArrowRight,
   ArrowLeft,
   Zap,
-  Shield,
-  Target,
-  Layers,
-  CheckCircle2,
+  ClipboardList,
+  CheckCircle,
+  Send,
+  MessageSquare,
+  Settings,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
-import { useOfferEngineeringStore } from '../../lib/offer-engineering';
-import { useModule3Store, MODULE3_STEPS } from '../../lib/module3';
-import { useMemo } from 'react';
+import {
+  useDeliverySystemStore,
+  DELIVERY_SYSTEM_STEPS,
+} from '../../lib/delivery-system';
 
-interface Module3IntroPageProps {
+interface DeliverySystemIntroPageProps {
   onStart: () => void;
   onBackToBlueprint: () => void;
 }
 
 const threeOutcomes = [
   {
-    icon: <Shield className="text-[#0058be]" size={20} />,
-    title: 'Authority Position',
-    text: 'Choose how you will honestly earn trust with a clear credibility stance.',
+    icon: <ClipboardList className="text-[#0058be]" size={20} />,
+    title: 'Locked Scope & Success Criteria',
+    text: 'Define exactly what you are delivering, what success looks like, and how scope changes are handled.',
   },
   {
-    icon: <Target className="text-[#0058be]" size={20} />,
-    title: 'Proof Strategy + Assets',
-    text: 'Identify the three credibility gaps buyers need answered and build honest demonstration projects.',
+    icon: <CheckCircle className="text-[#0058be]" size={20} />,
+    title: 'Execution Workflow & Milestones',
+    text: 'Build a step-by-step delivery plan with review points, client actions, and quality checks.',
   },
   {
-    icon: <Layers className="text-[#0058be]" size={20} />,
-    title: 'Profile, Portfolio & Authority Pack',
-    text: 'Turn your proof into buyer-facing copy, portfolio structure, and one execution-ready pack.',
+    icon: <Send className="text-[#0058be]" size={20} />,
+    title: 'Communication Plan & Handoff Pack',
+    text: 'Automate client updates, feedback rounds, revision tracking, and a no-surprise closeout.',
   },
 ];
 
 const stepDescriptions: Record<string, { title: string; desc: string }> = {
-  authority_position: {
-    title: 'Authority Position',
-    desc: 'Choose the credibility stance that honestly matches your experience level.',
+  project_intake: {
+    title: 'Project Intake',
+    desc: 'Capture client details, goals, and what you need to start.',
   },
-  proof_strategy: {
-    title: 'Proof Strategy',
-    desc: 'Identify the three credibility gaps buyers need answered before they trust you.',
+  scope_success: {
+    title: 'Scope & Success',
+    desc: 'Lock in what you will deliver and how success is measured.',
   },
-  proof_asset_builder: {
-    title: 'Proof Asset Builder',
-    desc: 'Build three execution-ready demonstration projects that fill each gap.',
+  delivery_plan: {
+    title: 'Delivery Plan',
+    desc: 'Map milestones, review points, and client action deadlines.',
   },
-  profile_portfolio: {
-    title: 'Profile & Portfolio Authority',
-    desc: 'Turn your proof into buyer-facing copy and a structured portfolio.',
+  execution_workspace: {
+    title: 'Execution',
+    desc: 'Run your workflow with task tracking and blocker management.',
   },
-  authority_pack: {
-    title: 'Authority Pack',
-    desc: 'Compile everything into one system — ready for Module 4.',
+  communication_updates: {
+    title: 'Communication',
+    desc: 'Set cadence, templates, and escalation for client updates.',
+  },
+  feedback_revision: {
+    title: 'Feedback & Revisions',
+    desc: 'Manage revision rounds, scope changes, and quality checks.',
+  },
+  handoff_closeout: {
+    title: 'Handoff & Closeout',
+    desc: 'Deliver final assets, request testimonials, and plan repeat work.',
   },
 };
 
-function offerTypeLabel(type: string | null): string {
-  if (!type) return '';
-  const map: Record<string, string> = {
-    retainer: 'Retainer',
-    one_time_project: 'One-Time Project',
-    milestone_based: 'Milestone-Based',
-  };
-  return map[type] || type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const SERVICE_LABELS: Record<string, string> = {
+  video_editor: 'Video Editing',
+  short_form_editor: 'Short-Form Editing',
+  youtube_editor: 'YouTube Editing',
+  podcast_clip_editor: 'Podcast Clip Editing',
+  ad_creative_editor: 'Ad Creative Editing',
+  wordpress_developer: 'WordPress Development',
+  landing_page_developer: 'Landing Page Development',
+  no_code_developer: 'No-Code Development',
+  frontend_developer: 'Frontend Development',
+  automation_developer: 'Automation Development',
+  ui_ux_designer: 'UI/UX Design',
+  landing_page_designer: 'Landing Page Design',
+  brand_designer: 'Brand Design',
+  social_media_designer: 'Social Media Design',
+  presentation_designer: 'Presentation Design',
+};
+
+function personalizedIntro(serviceId: string | null, marketLabel: string | null, nicheLabel: string | null): string {
+  if (!serviceId) return '';
+  const svc = SERVICE_LABELS[serviceId] || serviceId.replace(/_/g, ' ');
+  const audience = nicheLabel || marketLabel || 'your clients';
+  const m = /^(a|e|i|o|u)/i.test(svc) ? 'n' : '';
+  return `Your delivery system should help ${audience} experience a predictable, professional ${svc} process — from kickoff to closeout.`;
 }
 
-export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPageProps) {
+export function DeliverySystemIntroPage({ onStart, onBackToBlueprint }: DeliverySystemIntroPageProps) {
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
   const marketLabel = useOpportunityMapStore((s) => s.marketLabel);
   const nicheLabel = useOpportunityMapStore((s) => s.nicheLabel);
   const positioning = useOpportunityMapStore((s) => s.positioning);
 
-  const m2OfferType = useOfferEngineeringStore((s) => s.offerType);
-  const m2Deliverables = useOfferEngineeringStore((s) => s.deliverables);
-  const m2UniqueMechanism = useOfferEngineeringStore((s) => s.uniqueMechanism);
-  const m2ValueAmplifier = useOfferEngineeringStore((s) => s.valueAmplifier);
-  const m2OfferBlueprint = useOfferEngineeringStore((s) => s.offerBlueprint);
-  const m2CompletedSteps = useOfferEngineeringStore((s) => s.completedSteps);
-  const m2IsComplete = m2CompletedSteps.includes('offer_blueprint');
-
-  const completedSteps = useModule3Store((s) => s.completedSteps);
-  const isCompleted = useModule3Store((s) => s.isCompleted);
+  const completedSteps = useDeliverySystemStore((s) => s.completedSteps);
+  const isCompleted = useDeliverySystemStore((s) => s.isCompleted);
+  const upstream = useDeliverySystemStore((s) => s.upstream);
+  const staleSince = useDeliverySystemStore((s) => s.staleSince);
 
   const completedStepsCount = completedSteps.length;
-  const totalSteps = MODULE3_STEPS.length;
+  const totalSteps = DELIVERY_SYSTEM_STEPS.length;
   const currentProgress = Math.round((completedStepsCount / totalSteps) * 100);
   const alreadyStarted = completedStepsCount > 0 || isCompleted;
 
   const stepsData = useMemo(
     () =>
-      MODULE3_STEPS.map((step) => {
+      DELIVERY_SYSTEM_STEPS.map((step) => {
         const info = stepDescriptions[step];
         const isStepCompleted = completedSteps.includes(step);
         const isActive = step === completedSteps[completedSteps.length - 1] || (!isStepCompleted && !isCompleted);
         return {
-          num: MODULE3_STEPS.indexOf(step) + 1,
+          num: DELIVERY_SYSTEM_STEPS.indexOf(step) + 1,
           title: info.title,
           desc: info.desc,
           isCompleted: isStepCompleted,
@@ -113,9 +134,7 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
     [completedSteps, isCompleted],
   );
 
-  const serviceLabel = serviceId
-    ? serviceId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-    : 'Not selected';
+  const serviceLabel = serviceId ? SERVICE_LABELS[serviceId] || serviceId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : null;
 
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden">
@@ -138,26 +157,32 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
           <div className="grid lg:grid-cols-[1fr_390px] gap-10 xl:gap-16 items-start mb-12 md:mb-20">
             <div className="space-y-6">
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[11px] font-bold uppercase tracking-widest">
-                <Zap size={12} className="text-[#0058be]" aria-hidden="true" /> Module 3
+                <Zap size={12} className="text-[#0058be]" aria-hidden="true" /> Module 7
               </span>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0b1c30] leading-[1.1]">
                 Build Your <br />
-                <span className="text-[#0058be]">Authority System</span>
+                <span className="text-[#0058be]">Client Delivery System</span>
               </h1>
 
               <p className="text-base sm:text-lg text-neutral-500 leading-relaxed max-w-2xl">
-                Turn your offer into proof buyers can trust. You already know who you serve and
-                what you offer. Now build an honest credibility system using demonstration projects,
-                profile copy, and portfolio authority.
+                Turn your scope, offer, and authority into a repeatable delivery process your clients will
+                love. Your service definition, offer mechanism, and proof are ready. Now build the system
+                that delivers predictable results — every time.
               </p>
+
+              {serviceId && (
+                <p className="text-sm text-[#0058be] font-semibold leading-relaxed">
+                  {personalizedIntro(serviceId, marketLabel, nicheLabel)}
+                </p>
+              )}
 
               <div className="flex flex-wrap gap-2.5 pt-2" role="list" aria-label="Module details">
                 {[
                   { icon: <Clock size={14} className="text-neutral-500" aria-hidden="true" />, label: '30–40 min' },
-                  { icon: <Star size={14} className="text-neutral-500" aria-hidden="true" />, label: 'Proof Focused' },
-                  { icon: <ChevronRight size={14} className="text-neutral-500" aria-hidden="true" />, label: '5 Steps' },
-                  { icon: <FileText size={14} className="text-[#0b1c30]" aria-hidden="true" />, label: 'Output: Authority Pack', accent: true },
+                  { icon: <Star size={14} className="text-neutral-500" aria-hidden="true" />, label: 'Delivery Design' },
+                  { icon: <ChevronRight size={14} className="text-neutral-500" aria-hidden="true" />, label: '7 Steps' },
+                  { icon: <FileText size={14} className="text-[#0b1c30]" aria-hidden="true" />, label: 'Output: Client Delivery Pack', accent: true },
                 ].map((chip, i) => (
                   <div
                     key={i}
@@ -183,23 +208,24 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
                   className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#0058be] text-white font-bold text-base transition-colors shadow-[0_8px_24px_rgba(0,88,190,0.2)] focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2 cursor-pointer"
                 >
                   {isCompleted
-                    ? 'View Authority Pack'
+                    ? 'View Client Delivery Pack'
                     : alreadyStarted
-                    ? 'Resume Authority System'
-                    : 'Start Authority System'}
+                    ? 'Resume Delivery System'
+                    : 'Start Delivery System'}
                   <ArrowRight size={18} aria-hidden="true" />
                 </motion.button>
               </div>
 
               <p className="text-xs text-neutral-400 font-medium">
-                Build proof without pretending you already have clients. Use demonstration projects,
-                audits, teardowns, and process evidence — never fake testimonials or results.
+                Your scope and offer are already defined. The Delivery System uses your service, offer
+                mechanism, and authority strategy from Modules 2 and 3. It guides you to build a
+                repeatable delivery process, not to guess deliverables from scratch.
               </p>
             </div>
 
             <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-xl space-y-6">
               <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-3">
-                Module 3 Overview
+                Module 7 Overview
               </h2>
 
               <div className="space-y-3">
@@ -218,73 +244,55 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
                 </p>
               </div>
 
+              {staleSince && (
+                <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 space-y-1">
+                  <p className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Context Changed</p>
+                  <p className="text-[11px] text-amber-600 leading-relaxed">
+                    Your upstream context has changed. Resume to review and update your delivery system.
+                  </p>
+                </div>
+              )}
+
               <div className="p-4 rounded-2xl bg-[#eff4ff]/60 border border-[#eff4ff] space-y-3">
                 <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                  Carried From Modules 1 & 2
+                  Carried From Upstream
                 </h3>
 
                 <div className="space-y-2 text-xs">
-                  <div>
-                    <span className="block text-[8px] font-bold text-neutral-400 uppercase">Service</span>
-                    <span className="font-semibold text-[#0b1c30]">{serviceLabel}</span>
-                  </div>
+                  {serviceLabel && (
+                    <div>
+                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Service</span>
+                      <span className="font-semibold text-[#0b1c30]">{serviceLabel}</span>
+                    </div>
+                  )}
                   {(marketLabel || nicheLabel) && (
                     <div>
                       <span className="block text-[8px] font-bold text-neutral-400 uppercase">Target Niche</span>
                       <span className="font-semibold text-[#0b1c30]">{nicheLabel || marketLabel}</span>
                     </div>
                   )}
+                  {upstream?.offerName && (
+                    <div>
+                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Offer</span>
+                      <span className="font-semibold text-[#0b1c30]">{upstream.offerName}</span>
+                    </div>
+                  )}
+                  {upstream?.uniqueMechanism && (
+                    <div>
+                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Unique Mechanism</span>
+                      <span className="font-semibold text-[#0b1c30]">{upstream.uniqueMechanism}</span>
+                    </div>
+                  )}
+                  {upstream?.authorityPosition && (
+                    <div>
+                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Authority Position</span>
+                      <span className="font-semibold text-[#0b1c30] capitalize">{upstream.authorityPosition}</span>
+                    </div>
+                  )}
                   {positioning && (
                     <div>
                       <span className="block text-[8px] font-bold text-neutral-400 uppercase">Positioning</span>
                       <p className="italic text-neutral-600 mt-0.5 leading-relaxed">&ldquo;{positioning}&rdquo;</p>
-                    </div>
-                  )}
-
-                  <hr className="border-t border-[#dce6f5] my-2" />
-
-                  {m2OfferType && (
-                    <div>
-                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Offer Type</span>
-                      <span className="font-semibold text-[#0b1c30]">{offerTypeLabel(m2OfferType)}</span>
-                    </div>
-                  )}
-
-                  {m2UniqueMechanism && (
-                    <div>
-                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Unique Mechanism</span>
-                      <p className="text-[11px] text-neutral-600 leading-relaxed mt-0.5">{m2UniqueMechanism}</p>
-                    </div>
-                  )}
-
-                  {m2ValueAmplifier && (
-                    <div>
-                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Value Amplifier</span>
-                      <span className="font-semibold text-[#0b1c30]">{m2ValueAmplifier}</span>
-                    </div>
-                  )}
-
-                  {m2Deliverables.length > 0 && (
-                    <div>
-                      <span className="block text-[8px] font-bold text-neutral-400 uppercase">Deliverables</span>
-                      <ul className="mt-1 space-y-0.5">
-                        {m2Deliverables.slice(0, 4).map((d, i) => (
-                          <li key={i} className="text-[11px] text-neutral-600 flex items-start gap-1.5">
-                            <span className="text-[#0058be] mt-0.5 shrink-0">&#8226;</span>
-                            {d}
-                          </li>
-                        ))}
-                        {m2Deliverables.length > 4 && (
-                          <li className="text-[10px] text-neutral-400 italic">+{m2Deliverables.length - 4} more</li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-
-                  {m2IsComplete && (
-                    <div className="flex items-center gap-1.5 pt-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                      <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Module 2 completed</span>
                     </div>
                   )}
                 </div>
@@ -294,13 +302,13 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
 
           <div className="space-y-6 mb-12 md:mb-20">
             <div>
-              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">The 5 Steps of the Authority System</h2>
+              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">The 7 Steps of the Delivery System</h2>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                Work through these phases to build demonstrable proof, profile authority, and a portfolio-ready system.
+                Work through these phases to create a complete, repeatable client delivery process.
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
               {stepsData.map((step) => {
                 const statusText = step.isCompleted
                   ? 'Completed'
@@ -367,9 +375,9 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
 
           <div className="bg-[#eff4ff]/60 border border-[#eff4ff] rounded-3xl p-6 sm:p-8 mb-12 md:mb-20 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">What You’ll Build</h2>
+              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">What You&rsquo;ll Build</h2>
               <p className="text-sm text-neutral-500 leading-relaxed">
-                By the end of this module, you will have a complete credibility system ready for your portfolio.
+                By the end of this module, you will have a complete client delivery pack — from intake through closeout.
               </p>
             </div>
 
@@ -393,11 +401,11 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
 
             <div className="space-y-2 text-center md:text-left z-10">
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Ready to build your authority?
+                Ready to build your delivery system?
               </h2>
               <p className="text-neutral-300 text-sm sm:text-base max-w-xl leading-relaxed">
-                Step into Module 3 to define your position, build proof assets, create profile copy,
-                and compile your Authority Pack.
+                Step into Module 7 to define project intake, lock scope, plan delivery, set
+                communication, manage revisions, and create your handoff pack.
               </p>
             </div>
 
@@ -407,10 +415,10 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
                 className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0b1c30] font-bold text-sm sm:text-base transition-colors focus:outline-none cursor-pointer"
               >
                 {isCompleted
-                  ? 'View Authority Pack'
+                  ? 'View Client Delivery Pack'
                   : alreadyStarted
-                  ? 'Resume Authority System'
-                  : 'Start Authority System'}
+                  ? 'Resume Delivery System'
+                  : 'Start Delivery System'}
                 <ArrowRight size={16} />
               </button>
               <button

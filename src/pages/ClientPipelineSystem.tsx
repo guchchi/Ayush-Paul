@@ -13,6 +13,7 @@ export function ClientPipelineSystemPage() {
   const phase4Service = useClientPipelineStore((s) => s.phase4Service);
   const upstreamFingerprint = useClientPipelineStore((s) => s.upstreamFingerprint);
   const bridgeState = useClientPipelineStore((s) => s.bridgeState);
+  const setUpstreamFingerprint = useClientPipelineStore((s) => s.setUpstreamFingerprint);
   const reset = useClientPipelineStore((s) => s.reset);
 
   const upstream = usePortfolioSystemStore((s) => s.upstream);
@@ -23,68 +24,6 @@ export function ClientPipelineSystemPage() {
   // Build bridge context from Module 4 build pack
   const bridge = useMemo(() => buildModule5Bridge(buildPack), [buildPack]);
 
-  useEffect(() => {
-    if (!upstream?.mod1ServiceId) return;
-    const service = upstream.mod1ServiceId;
-    const ctxChanged = phase4Service !== null && phase4Service !== service;
-    if (ctxChanged) reset();
-
-    setPhase4Context({
-      service,
-      serviceLabel: service.replace(/_/g, ' '),
-      market: upstream.mod1MarketId || '',
-      niche: upstream.mod1NicheId || '',
-      positioning: upstream.mod1Positioning || '',
-      offerName: upstream.mod3ProfileCopy.professionalHeadline || service || '',
-      offerType: upstream.mod2OfferType || '',
-      deliverables: upstream.mod2Deliverables ?? [],
-      uniqueMechanism: upstream.mod2UniqueMechanism || '',
-      pricing: '',
-      timeline: '',
-      scopeDetails: '',
-      authorityAngle: upstream.mod3AuthorityPosition || '',
-      proofAssets: upstream.mod3ProofAssets.map((a) => ({ title: a.title, type: a.assetType })),
-      portfolioAssets: [],
-      trustBuilderChecklist: [],
-      contentAssets: [],
-      authorityProfile: {
-        oneLinePositioning: upstream.mod3ProfileCopy.professionalHeadline || '',
-        shortBio: upstream.mod3ProfileCopy.shortBio || '',
-        trustBullets: upstream.mod3ProfileCopy.credibilityBullets || [],
-        ctaLine: upstream.mod3ProfileCopy.ctaLine || '',
-      },
-      portfolioGoal: {
-        goals: [],
-        statement: portfolioDirection?.portfolioPromise || '',
-      },
-      selectedAssets: [],
-      caseStudy: { projectTitle: '', clientNicheType: '' },
-      sampleProject: { projectName: '', goal: '' },
-      portfolioCopy: {
-        headline: portfolioCopy?.headline || '',
-        shortIntro: portfolioCopy?.shortIntro || '',
-      },
-      portfolioReport: null,
-    });
-
-    // Set bridge state from Module 4
-    setBridgeState({
-      portfolioReady: bridge.portfolioReady,
-      portfolioDestination: bridge.portfolioDestination,
-      portfolioUrl: bridge.portfolioUrl || '',
-      featuredProofAssetId: bridge.featuredProofAssetId,
-      featuredProofTitle: bridge.featuredProofTitle,
-      featuredProofUrl: bridge.featuredProofUrl || '',
-      portfolioCta: bridge.portfolioCta,
-      portfolioHeadline: bridge.portfolioHeadline,
-    });
-  }, [
-    upstream, portfolioDirection, portfolioCopy, buildPack, bridge,
-    setPhase4Context, setBridgeState, phase4Service, reset,
-  ]);
-
-  // Compute upstream fingerprint for stale-context detection
-  // and recompose pipeline pack when context changes
   useEffect(() => {
     if (!upstream?.mod1ServiceId) return;
     const service = upstream.mod1ServiceId;
@@ -112,8 +51,61 @@ export function ClientPipelineSystemPage() {
       },
     );
 
-    // Only recompose if fingerprint changed (avoids unnecessary recomposition on unrelated updates)
+    // Only update and recompose if fingerprint changed
     if (newFingerprint !== upstreamFingerprint) {
+      const ctxChanged = phase4Service !== null && phase4Service !== service;
+      if (ctxChanged) reset();
+
+      setPhase4Context({
+        service,
+        serviceLabel: service.replace(/_/g, ' '),
+        market: upstream.mod1MarketId || '',
+        niche: upstream.mod1NicheId || '',
+        positioning: upstream.mod1Positioning || '',
+        offerName: upstream.mod3ProfileCopy.professionalHeadline || service || '',
+        offerType: upstream.mod2OfferType || '',
+        deliverables: upstream.mod2Deliverables ?? [],
+        uniqueMechanism: upstream.mod2UniqueMechanism || '',
+        pricing: '',
+        timeline: '',
+        scopeDetails: '',
+        authorityAngle: upstream.mod3AuthorityPosition || '',
+        proofAssets: upstream.mod3ProofAssets.map((a) => ({ title: a.title, type: a.assetType })),
+        portfolioAssets: [],
+        trustBuilderChecklist: [],
+        contentAssets: [],
+        authorityProfile: {
+          oneLinePositioning: upstream.mod3ProfileCopy.professionalHeadline || '',
+          shortBio: upstream.mod3ProfileCopy.shortBio || '',
+          trustBullets: upstream.mod3ProfileCopy.credibilityBullets || [],
+          ctaLine: upstream.mod3ProfileCopy.ctaLine || '',
+        },
+        portfolioGoal: {
+          goals: [],
+          statement: portfolioDirection?.portfolioPromise || '',
+        },
+        selectedAssets: [],
+        caseStudy: { projectTitle: '', clientNicheType: '' },
+        sampleProject: { projectName: '', goal: '' },
+        portfolioCopy: {
+          headline: portfolioCopy?.headline || '',
+          shortIntro: portfolioCopy?.shortIntro || '',
+        },
+        portfolioReport: null,
+      });
+
+      // Set bridge state from Module 4
+      setBridgeState({
+        portfolioReady: bridge.portfolioReady,
+        portfolioDestination: bridge.portfolioDestination,
+        portfolioUrl: bridge.portfolioUrl || '',
+        featuredProofAssetId: bridge.featuredProofAssetId,
+        featuredProofTitle: bridge.featuredProofTitle,
+        featuredProofUrl: bridge.featuredProofUrl || '',
+        portfolioCta: bridge.portfolioCta,
+        portfolioHeadline: bridge.portfolioHeadline,
+      });
+
       // Build normalized context
       const m5ctx = normalizeModule5Context(
         service,
@@ -148,10 +140,14 @@ export function ClientPipelineSystemPage() {
       // Compose pipeline pack
       const pack = composeClientPipelinePack(m5ctx);
       setPipelinePack(pack);
+
+      // Update fingerprint atomically after successful composition
+      setUpstreamFingerprint(newFingerprint);
     }
   }, [
-    upstream, bridge, upstreamFingerprint,
-    setPipelinePack,
+    upstream, portfolioDirection, portfolioCopy, buildPack, bridge,
+    setPhase4Context, setBridgeState, setPipelinePack, setUpstreamFingerprint,
+    phase4Service, reset, upstreamFingerprint,
   ]);
 
   return (
