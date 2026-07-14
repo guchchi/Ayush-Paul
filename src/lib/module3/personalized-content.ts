@@ -286,23 +286,25 @@ function composeSectionHelpers(ctx: PersonalizationContext): Record<string, stri
     : null;
   const nicheProofEmphasis = nicheMeta?.metadata?.proofEmphasis;
 
+  const service = ctx.m1.serviceLabel || 'your service';
+
   return {
     proof_objective: nicheProofEmphasis
       ? `Define who this asset speaks to and what problem it solves. ${buyer} respond best to evidence of ${nicheProofEmphasis.slice(0, 2).join(' and ')}.`
-      : `Define who this asset speaks to and what business problem it solves. Be specific about the audience and the pain point.`,
+      : `Define who this asset speaks to and what business problem it solves as a ${service}. Be specific about the audience for ${buyer} and the pain point.`,
     project_brief: buyer
-      ? `Describe the project scenario, starting materials, and key deliverables. Frame it in terms ${buyer} will recognize from their own context.`
-      : `Describe the project scenario, starting materials, and what you delivered. Be concrete and detailed.`,
+      ? `Describe the project scenario, starting materials, and key deliverables for a ${service}. Frame it in terms ${buyer} will recognize from their own context.`
+      : `Describe the project scenario, starting materials, and what you delivered as a ${service}. Be concrete and detailed.`,
     execution_plan: buyer
-      ? `Lay out the order of operations. ${buyer} value clarity on how work gets done — show your process step by step.`
-      : `Lay out the order of operations. Show your process with clear, sequential steps.`,
+      ? `Lay out the order of operations as a ${service}. ${buyer} value clarity on how work gets done — show your process step by step.`
+      : `Lay out the order of operations for your ${service}. Show your process with clear, sequential steps.`,
     evidence: nicheProofEmphasis
-      ? `Document what proves the outcome and how you captured it. ${buyer} trust evidence of ${nicheProofEmphasis.slice(0, 2).join(' and ')}.`
-      : `Document what proves the result and how you captured the process. Specific evidence builds credibility.`,
+      ? `Document what proves the outcome and how you captured it. ${buyer} trust evidence of ${nicheProofEmphasis.slice(0, 2).join(' and ')} from a ${service}.`
+      : `Document what proves the result and how you captured the process as a ${service}. Specific evidence builds credibility.`,
     presentation: buyer
-      ? `Structure how this project is presented. ${buyer} appreciate organized, scannable proof of capability.`
-      : `Structure the presentation to tell a clear story — problem, approach, result.`,
-    completion: `Track everything needed to consider this proof asset complete and ready to publish.`,
+      ? `Structure how this ${service} project is presented. ${buyer} appreciate organized, scannable proof of capability.`
+      : `Structure the presentation to tell a clear story about your ${service} — problem, approach, result.`,
+    completion: `Track everything needed to consider this ${service} proof asset complete and ready to publish.`,
   };
 }
 
@@ -311,22 +313,22 @@ function composeFieldPlaceholders(ctx: PersonalizationContext): Record<string, s
   const service = ctx.m1.serviceLabel || 'this service';
 
   return {
-    target_audience: `Who is the specific audience for this project? (e.g., ${buyer})`,
-    business_problem: `What specific problem did this project solve for ${buyer}?`,
-    title: `A clear, descriptive title for this proof asset`,
-    scenario: `Describe the context and situation. What led to this project with ${buyer}?`,
-    starting_material: `What raw materials or inputs did you start with?`,
-    deliverables: `What specific deliverables did you produce?`,
-    execution_steps: `List the key execution steps in order`,
-    evidence_to_capture: `What evidence demonstrates success?`,
-    process_to_document: `What parts of the process should be documented?`,
-    what_not_to_claim: `What claims should you avoid for ${buyer}?`,
-    presentation_structure: `How should this proof asset be structured?`,
-    completion_checklist: `What needs to be done to finish this asset?`,
-    portfolio_headline: `A headline that ${buyer} would find compelling`,
-    project_description: `Brief project description highlighting what matters to ${buyer}`,
-    proof_statement: `State clearly what was achieved and how it was measured`,
-    cta: `What should ${buyer} do after seeing this?`,
+    target_audience: `Who is the specific audience for this ${service} project? (e.g., ${buyer})`,
+    business_problem: `What specific problem did this ${service} project solve for ${buyer}?`,
+    title: `A clear, descriptive title for this ${service} proof asset`,
+    scenario: `Describe the context and situation. What led to this ${service} project with ${buyer}?`,
+    starting_material: `What raw materials or inputs did you start with for this ${service} project?`,
+    deliverables: `What specific ${service} deliverables did you produce?`,
+    execution_steps: `List the key ${service} execution steps in order`,
+    evidence_to_capture: `What evidence demonstrates success in this ${service} context?`,
+    process_to_document: `What parts of the ${service} process should be documented?`,
+    what_not_to_claim: `What claims should you avoid for ${buyer} as a ${service}?`,
+    presentation_structure: `How should this ${service} proof asset be structured?`,
+    completion_checklist: `What needs to be done to finish this ${service} asset?`,
+    portfolio_headline: `A headline that ${buyer} would find compelling from a ${service}`,
+    project_description: `Brief ${service} project description highlighting what matters to ${buyer}`,
+    proof_statement: `State clearly what was achieved and how it was measured as a ${service}`,
+    cta: `What should ${buyer} do after seeing this ${service} work?`,
   };
 }
 

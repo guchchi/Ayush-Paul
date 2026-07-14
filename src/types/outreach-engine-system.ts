@@ -217,6 +217,11 @@ export interface OutreachEngineState {
   phase5Priority: string;
   phase5ReasonToContactLater: string;
 
+  /** Canonical upstream context from Module 5 */
+  upstreamContext: Module6UpstreamContext | null;
+  /** Deterministic fingerprint for stale-context detection */
+  upstreamFingerprint: string;
+
   outreachGoal: OutreachGoal | null;
   prospectContext: ProspectContext | null;
   personalizationAngles: PersonalizationAngle[];
@@ -293,6 +298,9 @@ export interface OutreachEngineState {
   jumpToStep(step: OutreachEngineStep): void;
   reset(): void;
   seedDevSampleContext(optionIndex: number): void;
+
+  /** Set canonical upstream context (derives legacy phase5* fields internally) */
+  setUpstreamContext(context: Module6UpstreamContext, fingerprint: string): void;
 }
 
 export function getStepIndex(step: OutreachEngineStep): number {
@@ -312,4 +320,74 @@ export function canNavigateTo(target: OutreachEngineStep, completedSteps: Outrea
   const requiredStep = OUTREACH_ENGINE_STEPS[requiredIdx];
   const isUnlocked = completedSteps.includes(requiredStep);
   return { unlocked: isUnlocked, reason: isUnlocked ? undefined : `Complete "${requiredStep.replace(/_/g, ' ')}" first` };
+}
+
+/* ──────────────────────────────────────────────
+   Module 6 Upstream Context — consumed from M5
+   ────────────────────────────────────────────── */
+
+export interface Module6ProspectContext {
+  id: string;
+  prospectName: string;
+  platform: string;
+  websiteUrl: string;
+  nicheFit: string;
+  visibleProblem: string;
+  score: number;
+  priority: 'high' | 'medium' | 'low';
+  contactAvailable: boolean;
+  notes: string;
+  status: string;
+}
+
+export interface Module6UpstreamContext {
+  strategy: {
+    serviceId?: string;
+    serviceLabel?: string;
+    market?: string;
+    niche?: string;
+    positioning?: string;
+    offerName?: string;
+    offerType?: string;
+    deliverables: string[];
+    uniqueMechanism?: string;
+    authorityPosition?: string;
+    idealProspectProfile: {
+      title: string;
+      description: string;
+      characteristics: string[];
+      evidenceOfFit: string[];
+    };
+    buyingSignals: Array<{
+      signal: string;
+      whyItMatters: string;
+      howToDetect: string;
+    }>;
+    targetChannels: Array<{
+      platform: string;
+      channelType: string;
+      priority: 'high' | 'medium' | 'low';
+      expectedSignal: string;
+    }>;
+  };
+  proof: {
+    available: boolean;
+    portfolioUrl?: string;
+    portfolioHeadline?: string;
+    portfolioCta?: string;
+    featuredProofId?: string;
+    featuredProofTitle?: string;
+    featuredProofUrl?: string;
+    destination?: string;
+  };
+  prospecting: {
+    readiness: 'ready' | 'limited' | 'blocked';
+    readinessReasons: string[];
+    priorityRules: Array<{
+      factor: string;
+      weight: number;
+      reason: string;
+    }>;
+  };
+  prospects: Module6ProspectContext[];
 }

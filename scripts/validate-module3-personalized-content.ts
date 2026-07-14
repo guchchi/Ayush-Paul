@@ -146,7 +146,7 @@ let passed = 0;
 let failed = 0;
 const failures: string[] = [];
 
-function check(label: string, condition: boolean, detail?: string) {
+function check(condition: boolean, label: string, detail?: string) {
   if (condition) {
     passed++;
   } else {
@@ -158,21 +158,21 @@ function check(label: string, condition: boolean, detail?: string) {
 function checkNoForbidden(value: string, label: string) {
   for (const pat of FORBIDDEN_PATTERNS) {
     if (pat.test(value)) {
-      check(`[FORBIDDEN] ${label}`, false, `matched "${pat}" in "${value.slice(0, 80)}..."`);
+      check(false, `[FORBIDDEN] ${label}`, `matched "${pat}" in "${value.slice(0, 80)}..."`);
       return;
     }
   }
-  check(`[CLEAN] ${label}`, true);
+  check(true, `[CLEAN] ${label}`);
 }
 
 function checkNoClaims(value: string, label: string) {
   for (const pat of FORBIDDEN_CLAIMS) {
     if (pat.test(value)) {
-      check(`[CLAIM] ${label}`, false, `matched "${pat}" in "${value.slice(0, 80)}..."`);
+      check(false, `[CLAIM] ${label}`, `matched "${pat}" in "${value.slice(0, 80)}..."`);
       return;
     }
   }
-  check(`[NO_CLAIM] ${label}`, true);
+  check(true, `[NO_CLAIM] ${label}`);
 }
 
 /* ──────────────────────────────────────────────
@@ -255,8 +255,10 @@ for (const niche of NICHES.slice(0, 10)) {
     `Niche "${niche}" referenced in content`,
   );
 
-  // No raw IDs
-  check(!niche.includes('_') || nicheTests > 0, `Niche "${niche}" has readable form`, );
+  // Output doesn't use raw snake_case IDs (niches with underscores must be converted)
+  if (niche.includes('_')) {
+    check(!allText.includes(niche), `Niche "${niche}" not as raw snake_case in output`);
+  }
   nicheTests++;
 }
 
