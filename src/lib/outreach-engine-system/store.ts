@@ -4,6 +4,7 @@ import type {
   OutreachEngineState, OutreachEngineStep, OutreachGoal, ProspectContext,
   PersonalizationAngle, MessageDraft, FollowUpMessage, ObjectionReply,
   OutreachTrackerEntry, OutreachReport, AngleType, MessageChannel,
+  Module6UpstreamContext,
 } from '../../types/outreach-engine-system';
 import { OUTREACH_ENGINE_STEPS, canNavigateTo, getStepIndex } from '../../types/outreach-engine-system';
 import { resolveBlueprintContext } from '../blueprint-content/blueprint-context';
@@ -520,6 +521,9 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
       phase5Priority: '',
       phase5ReasonToContactLater: '',
 
+      upstreamContext: null,
+      upstreamFingerprint: '',
+
       outreachGoal: null,
       prospectContext: null,
       personalizationAngles: [],
@@ -552,6 +556,76 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
           phase5SampleProject: ctx.sampleProject,
           phase5PipelineProspects: ctx.pipelineProspects,
         });
+      },
+
+      setUpstreamContext(context, fingerprint) {
+        const state = get();
+        const upstreamChanged = state.upstreamFingerprint !== fingerprint;
+
+        // Store canonical context
+        const updates: Record<string, unknown> = {
+          upstreamContext: context,
+          upstreamFingerprint: fingerprint,
+        };
+
+        // Clear stale generated strategy when upstream materially changed
+        if (upstreamChanged) {
+          updates.personalizationAngles = [];
+          updates.selectedAngleId = null;
+          updates.messageDrafts = [];
+          updates.selectedMessageDraftId = null;
+          updates.followUpSequence = [];
+          updates.selectedFollowUpId = null;
+          updates.objectionReplies = [];
+          updates.outreachReport = null;
+        }
+
+        // Derive legacy phase5* compatibility fields from canonical context
+        const s = context.strategy;
+        const p = context.proof;
+
+        updates.phase5Service = s.serviceId ?? null;
+        updates.phase5ServiceLabel = s.serviceLabel ?? null;
+        updates.phase5Market = s.market ?? null;
+        updates.phase5Niche = s.niche ?? null;
+        updates.phase5Positioning = s.positioning ?? '';
+        updates.phase5OfferName = s.offerName ?? '';
+        updates.phase5OfferType = s.offerType ?? null;
+        updates.phase5Deliverables = s.deliverables;
+        updates.phase5CorePromise = s.uniqueMechanism ?? '';
+        updates.phase5AuthorityAngle = s.authorityPosition ?? '';
+
+        // Proof source of truth: use real proof when available, never invent
+        updates.phase5PortfolioAsset = p.available && p.featuredProofTitle ? p.featuredProofTitle : '';
+
+        // Sample project: derive from proof when available
+        updates.phase5SampleProject = {
+          projectName: p.available && p.featuredProofTitle ? p.featuredProofTitle : '',
+          goal: '',
+        };
+
+        // Pipeline prospects: full non-lossy mapping to legacy shape
+        updates.phase5PipelineProspects = context.prospects.map((pr) => ({
+          prospectName: pr.prospectName,
+          visibleProblem: pr.visibleProblem,
+          score: pr.score,
+          priority: pr.priority,
+          platform: pr.platform,
+        }));
+
+        // If selected prospect still exists in new list, keep it; otherwise clear
+        const selectedId = state.phase5SelectedProspect?.prospectName ?? null;
+        if (selectedId) {
+          const stillExists = context.prospects.some((pr) => pr.prospectName === selectedId);
+          if (!stillExists) {
+            updates.phase5SelectedProspect = null;
+            updates.phase5VisibleProblem = '';
+            updates.phase5LeadScore = 0;
+            updates.phase5Priority = '';
+          }
+        }
+
+        set(updates as Partial<OutreachEngineState>);
       },
 
       setSelectedProspect(prospect) {
@@ -1112,6 +1186,8 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
           phase5LeadScore: 0,
           phase5Priority: '',
           phase5ReasonToContactLater: '',
+          upstreamContext: null,
+          upstreamFingerprint: '',
           outreachGoal: null,
           prospectContext: null,
           personalizationAngles: [],
@@ -1160,6 +1236,8 @@ export const useOutreachEngineStore = create<OutreachEngineState>()(
         phase5LeadScore: state.phase5LeadScore,
         phase5Priority: state.phase5Priority,
         phase5ReasonToContactLater: state.phase5ReasonToContactLater,
+        upstreamContext: state.upstreamContext,
+        upstreamFingerprint: state.upstreamFingerprint,
         outreachGoal: state.outreachGoal,
         prospectContext: state.prospectContext,
         personalizationAngles: state.personalizationAngles,

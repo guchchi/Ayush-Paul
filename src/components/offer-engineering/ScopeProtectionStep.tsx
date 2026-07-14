@@ -1,16 +1,21 @@
 import { useMemo } from 'react';
 import { Shield, Clock, Edit3, MessageSquare, Hash, RefreshCw } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent, scopeDefaultsToScopeLimits } from '../../lib/offer-engineering';
-import { getServiceCategory } from '../../lib/blueprint-content';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
+import { composeStep4Content } from '../../lib/offer-engineering/personalized-content';
 import type { ScopeLimits } from '../../types/offer-engineering';
 
 export function ScopeProtectionStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const scopeLimits = useOfferEngineeringStore((s) => s.scopeLimits);
   const setScopeLimits = useOfferEngineeringStore((s) => s.setScopeLimits);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
+  const { pathContent, engineeringData } = useModule2ResolvedContent();
 
   const pathScopeDefaults = pathContent?.content.scopeDefaults;
 
@@ -21,12 +26,16 @@ export function ScopeProtectionStep() {
     return engineeringData?.scopeLimitsDefaults;
   }, [pathScopeDefaults, engineeringData]);
 
-  const cat = getServiceCategory(serviceId);
-  const scopeExplanation = {
-    video: 'Scope creep kills profit margins in video editing. Locking batch sizes, revision limits, caption rounds, and turnaround SLAs upfront protects your schedule and ensures every clip meets quality standards without endless revisions.',
-    wordpress: 'Scope creep kills profit margins in WordPress development. Locking page counts, plugin limits, integration scope, and support windows upfront protects your build timeline and prevents feature bloat during development.',
-    design: 'Scope creep kills profit margins in design. Locking screen counts, feedback rounds, brand asset scope, and handoff boundaries upfront protects your design process and ensures predictable delivery without unlimited revision cycles.',
-  }[cat];
+  const personalized = useMemo(
+    () => composeStep4Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      scopeLimits,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, scopeLimits],
+  );
 
   const isEmpty =
     scopeLimits.revisionCount <= 0 ||
@@ -56,46 +65,46 @@ export function ScopeProtectionStep() {
       key: 'deliveryTime',
       icon: Clock,
       label: 'Delivery Time',
-      placeholder: defaults?.deliveryTime || 'e.g. 48 hours',
+      placeholder: defaults?.deliveryTime || personalized.fieldPlaceholders.deliveryTime || 'e.g. 48 hours',
       type: 'text',
       value: scopeLimits.deliveryTime,
-      hint: 'Timeline per deliverable.',
+      hint: personalized.fieldHelpers.deliveryTime || 'Timeline per deliverable.',
     },
     {
       key: 'revisionCount',
       icon: Edit3,
       label: 'Revision Count',
-      placeholder: 'e.g. 2',
+      placeholder: personalized.fieldPlaceholders.revisionCount || 'e.g. 2',
       type: 'number',
       value: scopeLimits.revisionCount,
-      hint: 'Revisions allowed per item.',
+      hint: personalized.fieldHelpers.revisionCount || 'Revisions allowed per item.',
     },
     {
       key: 'includedRounds',
       icon: RefreshCw,
       label: 'Included Rounds',
-      placeholder: 'e.g. 2',
+      placeholder: personalized.fieldPlaceholders.includedRounds || 'e.g. 2',
       type: 'number',
       value: scopeLimits.includedRounds,
-      hint: 'Rounds of structural feedback.',
+      hint: personalized.fieldHelpers.includedRounds || 'Rounds of structural feedback.',
     },
     {
       key: 'communicationMethod',
       icon: MessageSquare,
       label: 'Communication Channel',
-      placeholder: defaults?.communicationMethod || 'e.g. Async via Slack',
+      placeholder: defaults?.communicationMethod || personalized.fieldPlaceholders.communicationMethod || 'e.g. Async via Slack',
       type: 'text',
       value: scopeLimits.communicationMethod,
-      hint: 'Where collaboration happens.',
+      hint: personalized.fieldHelpers.communicationMethod || 'Where collaboration happens.',
     },
     {
       key: 'responseTime',
       icon: Hash,
       label: 'Response SLA',
-      placeholder: defaults?.responseTime || 'e.g. Within 24 hours',
+      placeholder: defaults?.responseTime || personalized.fieldPlaceholders.responseTime || 'e.g. Within 24 hours',
       type: 'text',
       value: scopeLimits.responseTime,
-      hint: 'How fast you reply.',
+      hint: personalized.fieldHelpers.responseTime || 'How fast you reply.',
     },
   ];
 
@@ -107,7 +116,7 @@ export function ScopeProtectionStep() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Set Scope Boundaries</h2>
         <p className="text-neutral-500 text-sm leading-relaxed">
-          Protect your time. Define strict boundaries so clients know exactly how you operate.
+          {personalized.emptyGuidance}
         </p>
       </div>
 
@@ -118,7 +127,7 @@ export function ScopeProtectionStep() {
         </span>
         <div className="space-y-1">
           <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-            {scopeExplanation}
+            {personalized.loadDefaultsExplanation}
           </p>
         </div>
       </div>
@@ -129,7 +138,7 @@ export function ScopeProtectionStep() {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="space-y-0.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Scope Configuration</span>
-            <p className="text-[10px] text-neutral-400">Set the working rules for this offer.</p>
+            <p className="text-[10px] text-neutral-400">{personalized.emptyGuidance}</p>
           </div>
           {defaults && (
             <button

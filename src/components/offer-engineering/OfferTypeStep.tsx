@@ -5,6 +5,7 @@ import { useOfferEngineeringStore, getEngineeringDataForService } from '../../li
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
 import { DURATION } from '../../lib/motion-presets';
+import { composeStep1Content } from '../../lib/offer-engineering/personalized-content';
 import type { OfferType } from '../../types/offer-engineering';
 
 interface OfferTypeMeta {
@@ -111,10 +112,24 @@ function getOfferExample(serviceId: string | null, offerType: OfferType): string
 }
 
 export function OfferTypeStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const offerType = useOfferEngineeringStore((s) => s.offerType);
   const setOfferType = useOfferEngineeringStore((s) => s.setOfferType);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
+
+  const personalized = useMemo(
+    () => composeStep1Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      offerType,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, offerType],
+  );
 
   const resolvedExample = useMemo(
     () => (offerType ? getOfferExample(serviceId, offerType) : ''),
@@ -150,7 +165,7 @@ export function OfferTypeStep() {
         </span>
         <h1 className="text-3xl font-bold text-[#0b1c30] mb-2">Choose Your Offer Type</h1>
         <p className="text-neutral-500 text-sm leading-relaxed">
-          Select the engagement model that best fits how you want to deliver value to your clients.
+          {personalized.recommendationRationale}
         </p>
       </div>
 
@@ -261,7 +276,7 @@ export function OfferTypeStep() {
                     <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
                       What it means
                     </span>
-                    <p className="text-neutral-600 font-medium">{selectedMeta.whatItMeans}</p>
+                    <p className="text-neutral-600 font-medium">{personalized.helperText}</p>
                   </div>
                 )}
                 {selectedMeta.bestFor && (
@@ -272,16 +287,14 @@ export function OfferTypeStep() {
                     <p className="text-neutral-600 font-medium">{selectedMeta.bestFor}</p>
                   </div>
                 )}
-                {resolvedExample && (
-                  <div className="md:col-span-2 xl:col-span-4">
-                    <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
-                      Example
-                    </span>
-                    <p className="italic font-medium text-[#0b1c30] bg-white p-3 rounded-xl border border-neutral-100 mt-1 shadow-sm break-words">
-                      &ldquo;{resolvedExample}&rdquo;
-                    </p>
-                  </div>
-                )}
+                <div className="md:col-span-2 xl:col-span-4">
+                  <span className="block text-[9px] font-bold uppercase tracking-widest text-neutral-400 mb-1">
+                    Example
+                  </span>
+                  <p className="italic font-medium text-[#0b1c30] bg-white p-3 rounded-xl border border-neutral-100 mt-1 shadow-sm break-words">
+                    &ldquo;{personalized.offerTypeExamples[offerType ?? ''] || resolvedExample || 'Select a type to see an example'}&rdquo;
+                  </p>
+                </div>
               </div>
             </motion.div>
           ) : (

@@ -1,8 +1,10 @@
 import React, { useMemo, useEffect, useState, useCallback, useRef } from 'react';
 import { Package, Shuffle, ArrowRight } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
 import { getServiceCategory, getAudienceLabel, generateProposalVariations } from '../../lib/blueprint-content';
+import { composeStep7Content } from '../../lib/offer-engineering/personalized-content';
 
 type StringField = 'headline' | 'problem' | 'solution' | 'timeline' | 'pricing' | 'nextSteps';
 
@@ -46,6 +48,10 @@ const AutoResizingTextarea = React.forwardRef<HTMLTextAreaElement, React.Textare
 AutoResizingTextarea.displayName = 'AutoResizingTextarea';
 
 export function ProposalSummaryStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const service = useOfferEngineeringStore((s) => s.service);
   const market = useOfferEngineeringStore((s) => s.market);
   const niche = useOfferEngineeringStore((s) => s.niche);
@@ -64,7 +70,23 @@ export function ProposalSummaryStep() {
   const [variantIndex, setVariantIndex] = useState(0);
   const baselines = useRef<Record<string, string>>({});
 
-  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
+  const { pathContent, engineeringData } = useModule2ResolvedContent();
+
+  const personalized = useMemo(
+    () => composeStep7Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      offerType,
+      deliverables,
+      uniqueMechanism,
+      scopeLimits,
+      pricingModel,
+      finalPrice,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, offerType, deliverables, uniqueMechanism, scopeLimits, pricingModel, finalPrice],
+  );
 
   const proposalAngle = pathContent?.content.proposalAngle;
 
@@ -288,6 +310,20 @@ export function ProposalSummaryStep() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Personalized review guidance */}
+      <div className="rounded-2xl border border-[#eff4ff] bg-[#eff4ff]/60 p-4 space-y-2">
+        <span className="block text-[9px] font-bold uppercase tracking-wider text-[#0058be]">Review Guidance</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] text-neutral-600">
+          <div><span className="font-bold">Headline:</span> {personalized.reviewGuidance.headline}</div>
+          <div><span className="font-bold">Problem:</span> {personalized.reviewGuidance.problem}</div>
+          <div><span className="font-bold">Solution:</span> {personalized.reviewGuidance.solution}</div>
+          <div><span className="font-bold">Timeline:</span> {personalized.reviewGuidance.timeline}</div>
+          <div><span className="font-bold">Pricing:</span> {personalized.reviewGuidance.pricing}</div>
+          <div><span className="font-bold">Next Step:</span> {personalized.reviewGuidance.nextSteps}</div>
+        </div>
+        <p className="text-[11px] text-neutral-500 mt-1">{personalized.nextActionGuidance}</p>
       </div>
 
       {/* Action Footer */}

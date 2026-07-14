@@ -1,16 +1,34 @@
 import { useMemo, useState } from 'react';
 import { Lightbulb, Check, PencilLine } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
+import { composeStep3Content } from '../../lib/offer-engineering/personalized-content';
 
 export function UniqueMechanismStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const uniqueMechanism = useOfferEngineeringStore((s) => s.uniqueMechanism);
   const setUniqueMechanism = useOfferEngineeringStore((s) => s.setUniqueMechanism);
+  const offerType = useOfferEngineeringStore((s) => s.offerType);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
 
   const { pathContent, engineeringData, nicheId } = useModule2ResolvedContent();
+
+  const personalized = useMemo(
+    () => composeStep3Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      offerType,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, offerType],
+  );
 
   const pathMechanisms = pathContent?.content.uniqueMechanisms;
 
@@ -51,7 +69,7 @@ export function UniqueMechanismStep() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Name Your Unique Mechanism</h2>
         <p className="text-neutral-500 text-sm leading-relaxed">
-          Don&rsquo;t sell a generic service. Sell a proprietary system. Give your methodology a unique name.
+          {personalized.helperText}
         </p>
       </div>
 
@@ -62,8 +80,20 @@ export function UniqueMechanismStep() {
         </span>
         <div className="space-y-1">
           <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-            A named system differentiates you from typical freelancers. Instead of &ldquo;video editing,&rdquo; you offer a proprietary <span className="text-[#0058be] font-bold">&ldquo;Retention Growth System.&rdquo;</span> Same execution, premium client perception.
+            {personalized.mechanismRationale}
           </p>
+          {personalized.namingExamples.length > 0 && (
+            <div className="pt-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Examples</span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {personalized.namingExamples.map((ex, i) => (
+                  <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-lg bg-white border border-neutral-200 text-[10px] font-semibold text-neutral-500">
+                    {ex}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -132,7 +162,7 @@ export function UniqueMechanismStep() {
           type="text"
           value={uniqueMechanism}
           onChange={(e) => handleCustomChange(e.target.value)}
-          placeholder="e.g. Authority Acceleration Framework..."
+          placeholder={`e.g. ${personalized.namingExamples[0] || 'Authority Acceleration Framework'}...`}
           className="w-full h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
         />
       </div>

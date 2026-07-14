@@ -2,12 +2,18 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, X, Package, Sparkles } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
+import { composeStep2Content } from '../../lib/offer-engineering/personalized-content';
 import type { Transition } from 'motion/react';
 
 const POP_LAYOUT_TRANSITION: Transition = { duration: 0.15 };
 
 export function DeliverablesStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const deliverables = useOfferEngineeringStore((s) => s.deliverables);
   const addDeliverable = useOfferEngineeringStore((s) => s.addDeliverable);
   const removeDeliverable = useOfferEngineeringStore((s) => s.removeDeliverable);
@@ -16,6 +22,17 @@ export function DeliverablesStep() {
   const [inputValue, setInputValue] = useState('');
 
   const { pathContent, engineeringData, nicheId } = useModule2ResolvedContent();
+
+  const personalized = useMemo(
+    () => composeStep2Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      deliverables,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, deliverables],
+  );
 
   const pathDeliverables = pathContent?.content.deliverables;
 
@@ -65,10 +82,10 @@ export function DeliverablesStep() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Define Your Deliverables</h2>
         <p className="text-neutral-500 text-sm leading-relaxed">
-          Choose from the suggested deliverables for your service, or add your own custom items.
+          {personalized.suggestionRationale}
         </p>
         <p className="text-xs text-neutral-400 leading-relaxed italic">
-          Aim for 3&ndash;5 deliverables to build a complete, compelling package. Too few feels thin; too many dilutes focus.
+          {personalized.helperText}
         </p>
       </div>
 
@@ -116,7 +133,7 @@ export function DeliverablesStep() {
             <Package size={24} className="text-neutral-300 mb-2" />
             <p className="text-xs text-neutral-500 font-semibold">No deliverables added yet.</p>
             <p className="text-[11px] text-neutral-400 max-w-[280px] mt-1 leading-relaxed">
-              Select suggested deliverables above or add custom ones below to define your offer scope.
+              {personalized.exampleGuidance}
             </p>
           </div>
         ) : (
@@ -167,7 +184,7 @@ export function DeliverablesStep() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 2 rounds of revisions, source files included..."
+            placeholder={personalized.placeholderHint}
             className="flex-1 h-10 px-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
           />
           <button

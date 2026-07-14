@@ -1,14 +1,36 @@
 import { useMemo } from 'react';
 import { Zap, Check } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
+import { composeStep5Content } from '../../lib/offer-engineering/personalized-content';
 
 export function ValueAmplifierStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const valueAmplifier = useOfferEngineeringStore((s) => s.valueAmplifier);
   const setValueAmplifier = useOfferEngineeringStore((s) => s.setValueAmplifier);
+  const offerType = useOfferEngineeringStore((s) => s.offerType);
+  const deliverables = useOfferEngineeringStore((s) => s.deliverables);
+  const uniqueMechanism = useOfferEngineeringStore((s) => s.uniqueMechanism);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
   const { pathContent, engineeringData } = useModule2ResolvedContent();
+
+  const personalized = useMemo(
+    () => composeStep5Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      offerType,
+      deliverables,
+      uniqueMechanism,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, offerType, deliverables, uniqueMechanism],
+  );
 
   const pathAmplifiers = pathContent?.content.valueAmplifiers;
 
@@ -37,7 +59,7 @@ export function ValueAmplifierStep() {
         </span>
         <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Choose a Value Amplifier</h2>
         <p className="text-neutral-500 text-sm leading-relaxed">
-          Add a premium bonus that makes your offer irresistible. Pick one amplifier to differentiate your service.
+          {personalized.amplifierRationale}
         </p>
       </div>
 
@@ -47,8 +69,18 @@ export function ValueAmplifierStep() {
         </span>
         <div className="space-y-1">
           <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-            A value amplifier is a bonus deliverable or asset that increases perceived value without adding high cost. Think of it as your &ldquo;cherry on top.&rdquo;
+            {personalized.emptyGuidance}
           </p>
+          {personalized.examples.length > 0 && (
+            <div className="pt-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Examples</span>
+              <ul className="mt-1 space-y-0.5">
+                {personalized.examples.map((ex, i) => (
+                  <li key={i} className="text-[11px] text-neutral-500">\u2022 {ex}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 

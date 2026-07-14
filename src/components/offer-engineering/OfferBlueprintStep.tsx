@@ -11,6 +11,7 @@ import { exportBlueprintPDF, polishedOfferTitle } from '../../lib/offer-engineer
 import { cn } from '../../lib/utils';
 import type { OfferBlueprint } from '../../types/offer-engineering';
 import { getServiceCategory, getAudienceLabel, generateWhoItIsFor, generateProblemItSolves, generateCorePromise, generateWhyThisWorks, generateNextStepCTA, generateNicheValueAmplifier } from '../../lib/blueprint-content';
+import { composeStep8Content } from '../../lib/offer-engineering/personalized-content';
 
 function buildMarkdown(bp: OfferBlueprint): string {
   const lines: string[] = [
@@ -88,6 +89,9 @@ function p(v: number | null): string { return v !== null && v > 0 ? `$${v}` : 'T
 
 export function OfferBlueprintStep() {
   const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const service = useOfferEngineeringStore((s) => s.service);
   const market = useOfferEngineeringStore((s) => s.market);
   const niche = useOfferEngineeringStore((s) => s.niche);
@@ -112,6 +116,23 @@ export function OfferBlueprintStep() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [showFullDetail, setShowFullDetail] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
+
+  const personalized = useMemo(
+    () => composeStep8Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      offerType,
+      deliverables,
+      uniqueMechanism,
+      scopeLimits,
+      valueAmplifier,
+      pricingModel,
+      finalPrice,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, offerType, deliverables, uniqueMechanism, scopeLimits, valueAmplifier, pricingModel, finalPrice],
+  );
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -269,7 +290,7 @@ export function OfferBlueprintStep() {
           </span>
           <div className="space-y-1">
             <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-              Review your draft details and compile the final blueprint sheet. Once created, you can customize the copy manually or export directly to PDF/Markdown.
+              {personalized.executionGuidance}
             </p>
           </div>
         </div>
@@ -415,18 +436,25 @@ export function OfferBlueprintStep() {
         </div>
 
         {!editing && (
-          <div className="pt-4 border-t border-neutral-200">
-            <button
-              onClick={() => navigate('/workspace/authority-system')}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-sm uppercase tracking-wider shadow-md transition-colors cursor-pointer"
-            >
-              Continue to Authority System
-              <ArrowRight size={14} />
-            </button>
-            <p className="text-[10px] text-neutral-500 text-center mt-1.5 leading-relaxed">
-              Next: Build proof assets and authority signals.
-            </p>
-          </div>
+          <>
+            <div className="rounded-2xl border border-[#eff4ff] bg-[#eff4ff]/60 p-4 space-y-1">
+              <span className="block text-[9px] font-bold uppercase tracking-wider text-[#0058be]">Next Step</span>
+              <p className="text-xs text-neutral-600 font-medium">{personalized.reviewGuidance}</p>
+              <p className="text-[11px] text-neutral-500 mt-0.5">{personalized.nextActionHelper}</p>
+            </div>
+            <div className="pt-4 border-t border-neutral-200">
+              <button
+                onClick={() => navigate('/workspace/authority-system')}
+                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-sm uppercase tracking-wider shadow-md transition-colors cursor-pointer"
+              >
+                Continue to Authority System
+                <ArrowRight size={14} />
+              </button>
+              <p className="text-[10px] text-neutral-500 text-center mt-1.5 leading-relaxed">
+                Next: Build proof assets and authority signals.
+              </p>
+            </div>
+          </>
         )}
       </div>
 

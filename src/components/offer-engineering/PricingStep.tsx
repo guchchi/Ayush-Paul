@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DollarSign, Check, TrendingUp, Layers, Target } from 'lucide-react';
 import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
+import { composeStep6Content } from '../../lib/offer-engineering/personalized-content';
 import type { PricingModel } from '../../types/offer-engineering';
 
 const PRICING_META: Record<PricingModel, { label: string; description: string; icon: typeof DollarSign }> = {
@@ -37,6 +39,10 @@ const PRICING_CONTEXT: Record<string, string> = {
 };
 
 export function PricingStep() {
+  const careerTrackId = useOpportunityMapStore((s) => s.careerTrackId);
+  const serviceId = useOpportunityMapStore((s) => s.serviceId);
+  const marketId = useOpportunityMapStore((s) => s.marketId);
+  const nicheId_ = useOpportunityMapStore((s) => s.nicheId);
   const pricingModel = useOfferEngineeringStore((s) => s.pricingModel);
   const finalPrice = useOfferEngineeringStore((s) => s.finalPrice);
   const tieredPricing = useOfferEngineeringStore((s) => s.tieredPricing);
@@ -47,7 +53,19 @@ export function PricingStep() {
   const setValueBasedPricing = useOfferEngineeringStore((s) => s.setValueBasedPricing);
   const nextStep = useOfferEngineeringStore((s) => s.nextStep);
 
-  const { pathContent, engineeringData, serviceId } = useModule2ResolvedContent();
+  const { pathContent, engineeringData } = useModule2ResolvedContent();
+
+  const personalized = useMemo(
+    () => composeStep6Content({
+      careerTrackId,
+      serviceId,
+      marketId,
+      nicheId: nicheId_,
+      pricingModel,
+      finalPrice,
+    }),
+    [careerTrackId, serviceId, marketId, nicheId_, pricingModel, finalPrice],
+  );
 
   const pricingGuidance = pathContent?.content.pricingGuidance;
 
@@ -171,7 +189,7 @@ export function PricingStep() {
                 className="w-full h-10 pl-8 pr-4 rounded-xl outline-none text-xs text-[#0b1c30] placeholder:text-neutral-400 bg-white border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] transition-colors"
               />
             </div>
-            <p className="text-xs text-neutral-400">A clear, single-price invoice for the entire mapped deliverables.</p>
+            <p className="text-xs text-neutral-400">{personalized.flatRateHelper}</p>
           </motion.div>
         )}
 
@@ -218,6 +236,7 @@ export function PricingStep() {
                 </div>
               ))}
             </div>
+            <p className="text-xs text-neutral-400">{personalized.tieredHelper}</p>
           </motion.div>
         )}
 
@@ -296,6 +315,7 @@ export function PricingStep() {
                 </div>
               </div>
             </div>
+            <p className="text-xs text-neutral-400">{personalized.valueBasedHelper}</p>
           </motion.div>
         )}
       </AnimatePresence>

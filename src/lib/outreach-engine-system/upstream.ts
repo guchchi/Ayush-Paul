@@ -38,6 +38,13 @@ function buildProspectContext(entry: PipelineEntry): Module6ProspectContext {
 export function buildModule6UpstreamContext(
   pipelinePack: ClientPipelinePack | null,
   pipelineList: PipelineEntry[],
+  identity: {
+    serviceId?: string | null;
+    serviceLabel?: string | null;
+    market?: string | null;
+    niche?: string | null;
+    offerName?: string | null;
+  },
 ): Module6UpstreamContext {
   const handoff = pipelinePack?.module6HandoffContext;
 
@@ -50,12 +57,12 @@ export function buildModule6UpstreamContext(
   const leadAsset = pipelinePack?.portfolioLeadAsset;
 
   const strategy = {
-    serviceId: handoff?.authorityPosition ? undefined : undefined,
-    serviceLabel: undefined as string | undefined,
-    market: undefined as string | undefined,
-    niche: undefined as string | undefined,
-    positioning: handoff?.positioning || undefined,
-    offerName: undefined as string | undefined,
+    serviceId: identity.serviceId ?? undefined,
+    serviceLabel: identity.serviceLabel ?? undefined,
+    market: identity.market ?? undefined,
+    niche: identity.niche ?? undefined,
+    positioning: handoff?.positioning ?? identity.niche ?? undefined,
+    offerName: identity.offerName ?? handoff?.positioning ?? undefined,
     offerType: handoff?.offerType || undefined,
     deliverables: handoff?.deliverables ?? [],
     uniqueMechanism: handoff?.uniqueMechanism || undefined,
