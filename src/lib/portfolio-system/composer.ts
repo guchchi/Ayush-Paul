@@ -999,7 +999,7 @@ export function generateNextActions(ctx: UpstreamContext, destination: PlatformR
   actions.push({ id: `na-${id++}`, label: `Set up your platform: ${destination.primaryRecommendation}`, source: 'module4' });
 
   if (destination.destination === 'personal_site') {
-    actions.push({ id: `na-${id++}`, label: 'Register a domain name for your portfolio', source: 'module4' });
+    actions.push({ id: `na-${id}`, label: 'Register a domain name for your portfolio', source: 'module4' });
   }
 
   return actions;

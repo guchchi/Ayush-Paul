@@ -141,7 +141,7 @@ export function Step5AuthorityPack() {
       await navigator.clipboard.writeText(text);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch {}
+    } catch { /* clipboard unavailable */ }
   }, []);
 
   const handleExport = useCallback(() => {
