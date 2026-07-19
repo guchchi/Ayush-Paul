@@ -804,11 +804,11 @@ function getNicheAdaptiveGuidance(
   }
 
   // 3. Track/Service customization (React vs Shopify vs WordPress, YouTube vs Wedding vs Gaming, UI/UX vs Graphic, Copywriter, etc.)
-  let customMaterials: string[] = [];
-  let customSteps: string[] = [];
-  let customDeliverables: string[] = [];
-  let dependencies: string[] = [];
-  let realWorldExample = '';
+  let customMaterials: string[];
+  let customSteps: string[];
+  let customDeliverables: string[];
+  let dependencies: string[];
+  let realWorldExample: string;
 
   const normalService = serviceId.toLowerCase();
   
@@ -1001,7 +1001,7 @@ function getNicheAdaptiveGuidance(
   }
 
   // 4. Asset-Specific Validation Checklist
-  let completionChecklist: string[] = [];
+  let completionChecklist: string[];
   if (formatId === 'case_study' || formatId === 'process_walkthrough') {
     completionChecklist = [
       'Verify target client objections are preempted in the text',

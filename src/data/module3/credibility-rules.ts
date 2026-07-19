@@ -664,7 +664,7 @@ export function evaluateCredibilityProfile(
   // 5. Gap Prioritization & Backfilling Logic
   let finalGaps = [...selectedGaps];
   if (finalGaps.length < 3) {
-    let priorityPool: string[] = [];
+    let priorityPool: string[];
     if (track === 'developer' || ctx.authorityPosition === 'builder') {
       priorityPool = ['live_website', 'github_code', 'case_studies', 'code_walkthrough', 'performance_metrics', 'testimonials'];
     } else if (ctx.authorityPosition === 'auditor') {

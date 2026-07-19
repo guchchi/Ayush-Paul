@@ -42,7 +42,7 @@ export function generateProofAssetStrategyForProfile(ctx: ProofAssetStrategyCont
   const position = ctx.authorityProfile.position;
   
   // 1. Trust Requirement
-  let trustRequirement = '';
+  let trustRequirement: string;
   if (position === 'builder') {
     trustRequirement = `As a Builder, your primary trust requirement is proving execution quality. ${buyer} need to see undeniable evidence that your deliverables meet their standards before they commit.`;
   } else if (position === 'auditor') {

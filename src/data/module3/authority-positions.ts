@@ -637,10 +637,10 @@ export function generateAuthorityProfile(position: AuthorityPosition, ctx: Posit
   const coreTrustPromise = generateCoreTrustPromise(position, ctx, 0);
   const rationale = generatePositionRationale(position, ctx);
 
-  let startDoing: string[] = [];
-  let continueDoing: string[] = [];
-  let avoidDoing: string[] = [];
-  let clientPerspective = '';
+  let startDoing: string[];
+  let continueDoing: string[];
+  let avoidDoing: string[];
+  let clientPerspective: string;
 
   const buyer = getBuyerLabel(ctx.marketId);
 
