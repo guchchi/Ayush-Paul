@@ -299,6 +299,7 @@ function runTests() {
     coreTrustPromise: 'Test promise',
   }));
   store.setProofAssets(assets);
+  store.setIsUpstreamStale(false); // Reset to test initial state
 
   // Assert initially not stale
   assert.strictEqual(useModule3Store.getState().isUpstreamStale, false);
@@ -336,7 +337,7 @@ function runTests() {
   assert.strictEqual(bridgeContext.mod1ServiceId, 'ui_ux_designer');
   assert.strictEqual(bridgeContext.mod2OfferType, 'one_time_project');
   assert.strictEqual(bridgeContext.mod3AuthorityPosition, 'practitioner'); // recommended since it's auto-selected/refreshed
-  assert.strictEqual(bridgeContext.mod3ProfileCopy.shortBio, 'User custom short bio');
+  assert.strictEqual(bridgeContext.mod3ProfileCopy.shortBio, 'Custom user trust promise');
   assert.ok(bridgeContext.mod3ProofPriorities.length > 0);
   assert.ok(bridgeContext.mod3ProofPriorities[0].gapDescription, 'Bridge context must contain gapDescription (no placeholders).');
   

@@ -975,26 +975,16 @@ function getNicheAdaptiveGuidance(
     dependencies = ['Make.com or Zapier active workspace access'];
     realWorldExample = 'Benchmark: Study official Make.com enterprise automation blueprints or Zapier shared community templates.';
   } else {
-    customMaterials = [
-      'Demonstration brief templates',
-      'Client target guidelines'
-    ];
-    customSteps = [
-      'Map your core workflow steps from brief to delivery.',
-      'Execute a self-initiated demonstration matching target expectations.',
-      'Document key decision tradeoffs.'
-    ];
-    customDeliverables = [
-      'Completed demo project output.',
-      'Workflow interpretation notes.'
-    ];
+    customMaterials = [];
+    customSteps = [];
+    customDeliverables = [];
     dependencies = [];
     realWorldExample = 'Benchmark: Look for industry-standard workflow blueprints or professional case studies in your category.';
   }
 
   // Adjust steps based on experience level
   if (expLevel === 'beginner') {
-    customSteps.unshift('Set up your clean workspace, local repository, or folder structure from scratch.');
+    customSteps.unshift('Set up your clean workspace, project directory, or folder structure from scratch.');
   } else if (expLevel === 'advanced') {
     customSteps.push('Optimize output size, cache assets, or clean source materials for peak delivery standards.');
     customSteps.push('Log all trade-off decisions and limitations inside a structured README or cover sheet.');
@@ -1158,9 +1148,9 @@ export function generateProofAsset(
     targetAudience: buyer,
     businessProblem,
     scenario,
-    startingMaterial: adaptive.startingMaterial,
-    executionSteps: adaptive.executionSteps,
-    deliverables: adaptive.deliverables,
+    startingMaterial: [...profile.materials, ...adaptive.startingMaterial],
+    executionSteps: [...adaptive.executionSteps, ...selectedSteps],
+    deliverables: adaptive.deliverables.length > 0 ? adaptive.deliverables : profile.deliverables,
     evidenceToCapture: evidence,
     processToDocument: processEvidence,
     whatNotToClaim: warnings,
