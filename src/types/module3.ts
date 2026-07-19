@@ -9,7 +9,6 @@ import type {
 
 export const MODULE3_STEPS = [
   'authority_position',
-  'proof_strategy',
   'proof_asset_builder',
   'profile_portfolio',
   'authority_pack',
@@ -31,12 +30,78 @@ export type Module3Step = typeof MODULE3_STEPS[number];
 
 export type AuthorityPosition = 'builder' | 'auditor' | 'deconstructor' | 'practitioner';
 
+export interface AuthorityProfile {
+  version: number;
+  position: AuthorityPosition;
+  summary: string;
+  strategicExplanation: string;
+  whyThisFitsYou: string;
+  coreTrustPromise: string;
+  reinforcementPlan: {
+    startDoing: string[];
+    continueDoing: string[];
+    avoidDoing: string[];
+  };
+  clientPerspective: string;
+  report: string;
+}
+
 export interface ProofPriority {
   id: string;
   gapTitle: string;
   gapDescription: string;
   recommendedFormat: ProofFormat;
   isCustom: boolean;
+}
+
+
+export interface ProofCategory {
+  id: string;
+  name: string;
+  purpose: string;
+  trustObjective: string;
+}
+
+export interface StrategyProofAsset {
+  id: string;
+  name: string;
+  category: string;
+  recommendationReason: string;
+  trustImpact: string;
+  executionPriority: string;
+}
+
+export interface ProofGapAnalysis {
+  existingStrengths: string[];
+  missingTrustSignals: string[];
+  recommendedImprovements: string[];
+}
+
+export interface ProofCreationAction {
+  category: 'start_doing' | 'continue_doing' | 'avoid' | 'next_steps';
+  action: string;
+  rationale: string;
+  expectedTrustImpact: string;
+}
+
+export interface TrustConnection {
+  proofAssetId: string;
+  supportedBelief: string;
+  explanation: string;
+}
+
+export interface ProofAssetStrategy {
+  strategyVersion: number;
+  authorityProfileVersion: number;
+  trustRequirement: string;
+  requiredProofCategories: ProofCategory[];
+  priorityProofAssets: StrategyProofAsset[];
+  proofGapAnalysis: ProofGapAnalysis;
+  proofCreationPlan: ProofCreationAction[];
+  trustConnection: TrustConnection[];
+  selectedExecutionPriority?: string;
+  confidence: 'Strong' | 'Moderate' | 'Limited';
+  status: 'draft' | 'approved' | 'stale';
 }
 
 export interface ProofAssetPortfolioCopy {
@@ -67,6 +132,11 @@ export interface ProofAsset {
   sourcePriorityFingerprint: string;
   isCustom: boolean;
   isAccepted: boolean;
+  difficulty?: string;
+  estimatedEffort?: string;
+  expectedImpact?: string;
+  dependencies?: string[];
+  realWorldExample?: string;
 }
 
 export interface ProfileCopy {
@@ -120,20 +190,111 @@ export type Module2Context = {
   proposalSummary: ProposalSummary;
 };
 
+export interface ReadingJourneyStep {
+  sectionId: string;
+  stepIndex: number;
+  phase: string;
+  whatClientSees: string;
+  whyTheySeeIt: string;
+  trustEstablished: string;
+  whatComesNext: string;
+}
+
+export interface PortfolioSectionStrategy {
+  sectionId: string;
+  sectionName: string;
+  purpose: string;
+  authorityRelation: string;
+  order: number;
+  proofAssetIds: string[];
+}
+
+export interface EvidencePlacement {
+  sectionId: string;
+  proofAssetId: string;
+  authorityClaim: string;
+  placementReason: string;
+  expectedTrustOutcome: string;
+}
+
+export interface ProfilePortfolioStrategy {
+  version: number;
+  
+  upstreamVersions: {
+    authorityProfile: number;
+    proofAssetStrategy: number;
+    offerBlueprint: number;
+    marketContext: number;
+  };
+  
+  presentationStrategy: {
+    primaryGoal: string;
+    communicationApproach: string;
+    authorityEmphasis: string;
+    navigationPrinciple: string;
+  };
+  
+  sectionPriorities: {
+    sectionId: string;
+    priority: number;
+    rationale: string;
+  }[];
+  
+  authorityReinforcement: {
+    primaryAuthoritySignal: string;
+    supportingEvidenceFocus: string;
+    expectedClientPerception: string;
+  };
+  
+  readingJourney: ReadingJourneyStep[];
+  portfolioStructure: PortfolioSectionStrategy[];
+  evidencePlacement: EvidencePlacement[];
+  
+  status: 'draft' | 'approved' | 'stale';
+  confidence: 'Strong' | 'Moderate' | 'Limited';
+  generatedAt: string;
+  approvedAt?: string;
+}
+
+export type ProvenanceSource = 'auto_generated' | 'user_selected' | 'user_edited';
+
+export interface Provenance {
+  source: ProvenanceSource;
+  generatorVersion: number;
+  upstreamContextHash: string;
+}
+
+export interface Module3FieldProvenance {
+  coreTrustPromise: 'auto_generated' | 'user_edited';
+}
+
 export interface Module3State {
+  provenance: Provenance;
+  fieldProvenance: Module3FieldProvenance;
+  promiseVariationIndex: number;
+  staleDecision: 'keep' | 'refresh' | null;
+
+  authorityProfile: AuthorityProfile | null;
+  pendingProfile: AuthorityProfile | null;
+
   authorityPosition: AuthorityPosition | null;
   coreTrustPromise: string;
   authorityPositionRationale: string;
+
+  availableAssets: string[];
+  strongestAsset: string | null;
+  missingAssets: string[];
 
   proofPriorities: ProofPriority[];
 
   proofAssets: ProofAsset[];
 
-  profileCopy: ProfileCopy;
-  portfolioCopy: PortfolioCopy;
+  existingProofInventory: string;
+  pendingProofAssetStrategy: ProofAssetStrategy | null;
+  proofAssetStrategy: ProofAssetStrategy | null;
 
-  isProfileCopyCustom: boolean;
-  isPortfolioCopyCustom: boolean;
+  pendingProfilePortfolioStrategy: ProfilePortfolioStrategy | null;
+  profilePortfolioStrategy: ProfilePortfolioStrategy | null;
 
   checklist: ChecklistItem[];
 
@@ -142,6 +303,7 @@ export interface Module3State {
   lastUpdated: number;
   upstreamFingerprint: string;
   version: number;
+  contentGeneratorVersion: number;
 
   mod1CareerTrackId: string | null;
   mod1ServiceId: string | null;
@@ -167,19 +329,31 @@ export interface Module3State {
   setPhase1Context(ctx: Module1Context): void;
   setPhase2Context(ctx: Module2Context): void;
 
+  setAuthorityProfile(profile: AuthorityProfile | null): void;
+  setPendingProfile(profile: AuthorityProfile | null): void;
   setAuthorityPosition(value: AuthorityPosition): void;
   setCoreTrustPromise(value: string): void;
   setAuthorityPositionRationale(value: string): void;
+  setAvailableAssets(assets: string[]): void;
+  setStrongestAsset(asset: string | null): void;
+  setMissingAssets(assets: string[]): void;
   setProofPriorities(value: ProofPriority[]): void;
   setProofAssets(value: ProofAsset[]): void;
   updateProofAsset(id: string, updates: Partial<ProofAsset>): void;
   replaceProofAsset(id: string, newAsset: ProofAsset): void;
-  setProfileCopy(value: ProfileCopy): void;
-  setPortfolioCopy(value: PortfolioCopy): void;
-  replaceGeneratedProfileCopy(value: ProfileCopy): void;
-  replaceGeneratedPortfolioCopy(value: PortfolioCopy): void;
-  updateProfileCopy(value: Partial<ProfileCopy>): void;
-  updatePortfolioCopy(value: Partial<PortfolioCopy>): void;
+  
+  setExistingProofInventory(value: string): void;
+  setPendingProofAssetStrategy(value: ProofAssetStrategy | null): void;
+  setProofAssetStrategy(value: ProofAssetStrategy | null): void;
+  generateProofAssetStrategy(): void;
+  selectExecutionPriority(priority: 'immediate' | 'short_term' | 'long_term'): void;
+  approveProofAssetStrategy(): void;
+
+  setPendingProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
+  setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
+  generateProfilePortfolioStrategy(): void;
+  approveProfilePortfolioStrategy(): void;
+
   setChecklist(value: ChecklistItem[]): void;
   updateChecklistItem(id: string, updates: Partial<ChecklistItem>): void;
   getModule4Context(): Module4BridgeContext;
@@ -193,28 +367,53 @@ export interface Module3State {
   previousStep(): void;
   jumpToStep(step: Module3Step): void;
   reset(): void;
+
+  dismissStaleContext(): void;
+  refreshStaleContext(): void;
 }
 
 export interface Module4BridgeContext {
-  authorityPosition: string;
-  coreTrustPromise: string;
-  proofPriorities: { id: string; gapTitle: string; recommendedFormat: string }[];
-  proofAssets: {
+  mod1CareerTrackId: string | null;
+  mod1ServiceId: string | null;
+  mod1MarketId: string | null;
+  mod1NicheId: string | null;
+  mod1OfferId: string | null;
+  mod1Positioning: string;
+  mod2OfferType: string | null;
+  mod2Deliverables: string[];
+  mod2UniqueMechanism: string;
+  mod2ScopeLimits: Record<string, any>;
+  mod2ValueAmplifier: string;
+  mod2PricingModel: string | null;
+  mod2ProposalSummary: Record<string, any>;
+  mod3AuthorityPosition: string;
+  mod3CoreTrustPromise: string;
+  mod3ProofPriorities: { id: string; gapTitle: string; gapDescription: string; recommendedFormat: string }[];
+  mod3ProofAssets: {
     id: string;
+    priorityId: string;
     title: string;
     assetType: string;
-    credibilityGap: string;
-    completionStatus: boolean;
-    link?: string;
+    credibilityGapProved: string;
+    portfolioCopy: { headline: string; description: string; proofStatement: string; cta: string };
+    presentationStructure: string[];
+    isAccepted: boolean;
+    deliverables?: string[];
+    completionChecklist?: string[];
   }[];
-  authorityReadiness: boolean;
-  professionalHeadline: string;
-  offerStatement: string;
-  proofReferenceLine: string;
-  ctaLine: string;
-  portfolioCta: string;
-  profileUrl?: string;
-  portfolioUrl?: string;
+  mod3ProfileCopy: {
+    professionalHeadline: string;
+    shortBio: string;
+    longBio: string;
+    offerStatement: string;
+    credibilityBullets: string[];
+    proofReferenceLine: string;
+    ctaLine: string;
+  };
+  mod3PortfolioCopy: {
+    portfolioCta: string;
+    sections: { type: string; heading: string; body: string; bullets?: string[] }[];
+  };
 }
 
 export interface StepAccess {

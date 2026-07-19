@@ -1444,7 +1444,7 @@ const LANDING_PAGE_DEVELOPER_COURSE_CREATORS: OfferEngineeringPathContent = {
         description:
           'Dynamic countdown timers for cart close deadline, limited-availability badges for early-bird pricing tiers, social proof counters showing "X students enrolled this week," and live notification pop-ups showing recent purchases -- all built to trigger during the launch window.',
         whyItMatters:
-          'Urgency and scarcity are the psychological drivers of launch conversions. Dynamic elements that create real-time FOMO (fear of missing out) can increase launch conversion rates by 30-60% compared to static pricing pages.',
+          'Urgency and scarcity are the psychological drivers of launch conversions. Dynamic elements that create real-time FOMO (fear of missing out) create a stronger reason for prospects to act now rather than delay their purchase decision.',
       },
       {
         label: 'Post-Launch Evergreen Variant',
@@ -4054,7 +4054,7 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       whoItIsFor: 'Course creators whose launch pages have solid content but poor visual hierarchy -- prospects read the page but do not enrol because the information order does not match their buying decision journey.',
       problemItSolves: 'Most course landing pages list information in the order the creator thought of it rather than in the order the prospect needs to make a purchase decision. The visual hierarchy fights the buyer psychology, resulting in high page views but low enrolment rates.',
       corePromise: 'A course launch page design with a buyer-decision visual hierarchy: transformation promise, curriculum proof, social proof, objection handling, and urgency -- presented in the order that converts curiosity into enrolment.',
-      whyThisWorks: 'Course creators whose landing pages follow a buyer-decision visual hierarchy see 30-60% higher enrolment rates from the same traffic, because the page answers each question the prospect has exactly when they need it, rather than making them hunt for information.',
+      whyThisWorks: 'Course creators whose landing pages follow a buyer-decision visual hierarchy convert more visitors into enrolments, because the page answers each question the prospect has exactly when they need it, rather than making them hunt for information.',
       nextStepCTA: 'Share this with course creators whose launch pages get lots of traffic but low conversion. Offer a free visual hierarchy audit that identifies the 3 biggest information ordering problems on their current page.',
     },
     deliverables: [
@@ -5187,55 +5187,55 @@ export const OFFER_ENGINEERING_PATH_CONTENT: OfferEngineeringPathContentMap = {
       nextStep: 'Share your product, current trial-to-paid conversion metrics, and a screen recording of a new user going through onboarding. I will produce a UX audit identifying the 5 biggest activation blockers with specific redesign recommendations.',
     },
     blueprintAngle: {
-      whoItIsFor: 'SaaS startups whose trial-to-paid conversion rates are below industry benchmarks -- users sign up but do not reach the aha moment or convert within the trial period.',
+      whoItIsFor: 'SaaS startups whose trial users sign up but do not reach the aha moment or convert within the trial period.',
       problemItSolves: 'Most SaaS products are designed for feature completeness rather than activation speed. Users sign up, encounter confusing onboarding, fail to discover key workflows, and leave before experiencing the product\'s core value. The result is high trial traffic but low paid conversion.',
       corePromise: 'A SaaS product UX redesign focused on activation metrics: onboarding flow optimisation, workflow efficiency, feature discovery patterns, and reduced time-to-value -- delivering measurable improvement in trial-to-paid conversion.',
-      whyThisWorks: 'SaaS companies that invest in activation-focused UX redesign see 30-60% improvements in trial-to-paid conversion rates within 2 months, because reducing friction in the first experience directly removes the barriers between signup and purchase decision.',
-      nextStepCTA: 'Share this with SaaS founders whose trial conversion rates are below 5% and onboarding drop-off exceeds 60%. Offer a free activation audit that includes a screen-recording analysis of a new user\'s onboarding experience.',
+      whyThisWorks: 'SaaS companies that invest in activation-focused UX redesign see improvements in trial-to-paid conversion when they reduce friction in the first experience, because that friction directly blocks the path from signup to purchase decision.',
+      nextStepCTA: 'Share this with SaaS founders whose trial conversion is low and onboarding drop-off is high. Offer a free activation audit that includes a screen-recording analysis of a new user\'s onboarding experience.',
     },
     deliverables: [
       {
         label: 'Activation Journey Mapping',
-        description: 'A sequenced UX design deliverable covering the full onboarding-to-activation flow: signup screen, setup wizard, first workflow, aha moment, and post-activation engagement loop designed to minimise time-to-value and maximise feature discovery',
+        description: 'A sequenced UX design deliverable covering the full onboarding-to-activation flow: signup screen, setup wizard, first workflow, aha moment, and post-activation engagement loop designed to minimise time-to-value and maximise feature discovery — including AI-specific onboarding patterns like model setup, prompt configuration, and first-result generation',
         whyItMatters: 'SaaS products lose 40-60% of trial users before they reach the aha moment. Mapping the full activation journey reveals the exact points where users stall, enabling targeted intervention at the most critical drop-off points.',
       },
       {
         label: 'Onboarding Flow Redesign',
-        description: 'A UX redesign of the product onboarding experience including user onboarding wizard, progressive feature reveal, in-app guidance tooltips, sample data integration, and first-workflow templates that get new users to value in their first session',
+        description: 'A UX redesign of the product onboarding experience including user onboarding wizard, progressive feature reveal, in-app guidance tooltips, sample data integration, and first-workflow templates that get new users to value in their first session — with AI-specific patterns for loading states, streaming responses, and trust-building explainability cues',
         whyItMatters: 'The first session determines whether a trial user continues or churns. An onboarding flow that delivers value in the first visit creates the momentum needed to carry the user through the rest of the trial period.',
       },
       {
         label: 'Workflow Efficiency Design',
-        description: 'UX design for core product workflows (dashboard, key task flows, settings) focused on reducing task completion time, minimising steps, and eliminating cognitive load through thoughtful information architecture and interaction patterns',
+        description: 'UX design for core product workflows (dashboard, key task flows, settings, prompt input, human-in-the-loop review) focused on reducing task completion time, minimising steps, and eliminating cognitive load through thoughtful information architecture and interaction patterns',
         whyItMatters: 'Users who complete key workflows efficiently are more likely to adopt the product as a daily tool. Every unnecessary step in a workflow increases the likelihood that users abandon the task and the product.',
       },
       {
         label: 'Feature Discovery System',
-        description: 'A UX pattern design for feature discovery: empty states with guided actions, contextual feature suggestions, analytics-triggered tooltips, what\'s-new announcements, and progressive disclosure that surfaces advanced features at the right moment',
+        description: 'A UX pattern design for feature discovery: empty states with guided actions, contextual feature suggestions, analytics-triggered tooltips, what\'s-new announcements, and progressive disclosure that surfaces advanced features at the right moment — including AI capability discovery and confidence indicator explanations',
         whyItMatters: 'SaaS products lose retention value when users never discover advanced features that deepen product stickiness. A structured discovery system ensures users graduate from basic to advanced usage without overwhelming them early on.',
       },
       {
         label: 'Retention Loop Design',
-        description: 'UX design for post-activation engagement including milestone celebrations, progress tracking, usage streak rewards, feature adoption nudges, and re-engagement prompts that extend the user journey beyond the initial aha moment into ongoing habit formation',
+        description: 'UX design for post-activation engagement including milestone celebrations, progress tracking, usage streak rewards, feature adoption nudges, correction flow patterns for AI outputs, and re-engagement prompts that extend the user journey beyond the initial aha moment into ongoing habit formation',
         whyItMatters: 'Acquiring a paying user is expensive; losing them to churn erodes LTV. Retention loop design builds the habitual usage patterns that reduce churn and turn one-time purchasers into long-term subscribers.',
       },
     ],
     uniqueMechanisms: UIUX_MECHANISMS,
     valueAmplifiers: [
       {
-        label: 'User Testing and Validation',
-        description: 'Conduct moderated user testing sessions with 5--8 target users on redesigned flows, producing a findings report with usability issue severity ratings, task completion rates, behavioural observations, and specific design iteration recommendations',
-        whyItWorks: 'UX design decisions based on assumptions rather than user behaviour risk creating new friction points. Moderated testing validates that the redesign actually improves activation metrics before engineering resources are committed to implementation.',
+        label: 'Developer Handoff Checklist',
+        description: 'A structured annotation and specification checklist covering all screen states (loading, empty, error, edge case), responsive breakpoints, interaction specifications, and component documentation organised for direct developer implementation',
+        whyItWorks: 'SaaS engineering teams lose time interpreting ambiguous design specs. A delivery-ready checklist eliminates back-and-forth between design and development, preserving design fidelity and reducing build time.',
       },
       {
-        label: 'Design System for Product Screens',
-        description: 'Create a product design system with reusable UI components, interaction patterns, and screen templates specifically for the product\'s workflow screens, ensuring consistent UX across the entire product experience beyond the marketing pages',
-        whyItWorks: 'SaaS products grow through feature additions that often fragment the user experience. A product-focused design system maintains UX consistency as the product scales, preventing the activation friction that grows with every new feature.',
+        label: 'Recorded UX Walkthrough',
+        description: 'A Loom-style video walkthrough of the redesigned flows explaining the UX decisions, interaction patterns, and user psychology behind each design choice — delivered alongside the design files',
+        whyItWorks: 'Stakeholders who understand the reasoning behind design decisions approve faster and advocate for the design during development. A recorded walkthrough ensures the design intent survives the handoff.',
       },
       {
-        label: 'Analytics Event Taxonomy Design',
-        description: 'Define a structured analytics event taxonomy aligned to activation metrics: onboarding step completion events, feature discovery events, time-to-first-action tracking, funnel conversion events, and retention signals with implementation guidance for the engineering team',
-        whyItWorks: 'Without structured event tracking, the startup cannot measure whether UX changes actually improve activation. A deliberate taxonomy ensures every redesign iteration produces measurable data on its impact on trial-to-paid conversion.',
+        label: 'Post-Launch Usability Review',
+        description: 'A 30-day post-launch review comparing actual user behaviour (session recordings, funnel drop-off, heatmaps) against the design intentions, with actionable recommendations for the next iteration',
+        whyItWorks: 'No UX design survives first contact with real users unchanged. A structured review 30 days post-launch turns early usage data into an iterative improvement cycle, making the next design round smarter.',
       },
     ],
   }),

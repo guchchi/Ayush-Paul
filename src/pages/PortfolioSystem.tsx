@@ -15,58 +15,7 @@ function buildUpstreamFromModule3(): UpstreamContext | null {
   const m3 = useModule3Store.getState();
   if (!m3.isCompleted || !m3.mod1ServiceId) return null;
 
-  const bridge = m3.getModule4Context();
-
-  return {
-    mod1CareerTrackId: m3.mod1CareerTrackId,
-    mod1ServiceId: m3.mod1ServiceId,
-    mod1MarketId: m3.mod1MarketId,
-    mod1NicheId: m3.mod1NicheId,
-    mod1OfferId: m3.mod1OfferId,
-    mod1Positioning: m3.mod1Positioning,
-    mod2OfferType: m3.mod2OfferType,
-    mod2Deliverables: m3.mod2Deliverables,
-    mod2UniqueMechanism: m3.mod2UniqueMechanism,
-    mod2ScopeLimits: m3.mod2ScopeLimits as unknown as Record<string, unknown>,
-    mod2ValueAmplifier: m3.mod2ValueAmplifier,
-    mod2PricingModel: m3.mod2PricingModel,
-    mod2ProposalSummary: m3.mod2ProposalSummary as unknown as Record<string, unknown>,
-    mod3AuthorityPosition: bridge.authorityPosition,
-    mod3CoreTrustPromise: bridge.coreTrustPromise,
-    mod3ProofPriorities: bridge.proofPriorities.map((p) => ({
-      id: p.id, gapTitle: p.gapTitle,
-      gapDescription: '',
-      recommendedFormat: p.recommendedFormat,
-    })),
-    mod3ProofAssets: bridge.proofAssets.map((a) => {
-      const full = m3.proofAssets.find((fa) => fa.id === a.id);
-      return {
-        id: a.id, priorityId: '',
-        title: a.title, assetType: a.assetType,
-        credibilityGapProved: a.credibilityGap,
-        portfolioCopy: full?.portfolioCopy ?? { headline: '', description: '', proofStatement: '', cta: '' },
-        presentationStructure: full?.presentationStructure ?? [],
-        isAccepted: a.completionStatus,
-        deliverables: full?.deliverables,
-        completionChecklist: full?.completionChecklist,
-      };
-    }),
-    mod3ProfileCopy: {
-      professionalHeadline: bridge.professionalHeadline,
-      shortBio: '',
-      longBio: '',
-      offerStatement: bridge.offerStatement,
-      credibilityBullets: [],
-      proofReferenceLine: bridge.proofReferenceLine,
-      ctaLine: bridge.ctaLine,
-    },
-    mod3PortfolioCopy: {
-      portfolioCta: bridge.portfolioCta,
-      sections: m3.portfolioCopy.sections.map((s) => ({
-        type: s.type, heading: s.heading, body: s.body, bullets: s.bullets,
-      })),
-    },
-  };
+  return m3.getModule4Context() as UpstreamContext;
 }
 
 function buildUpstreamFromLegacy(): UpstreamContext | null {
@@ -133,7 +82,6 @@ export function PortfolioSystemPage() {
     (s) => {
       const bridge = s.getModule4Context();
       const pa = s.proofAssets;
-      const pc = s.portfolioCopy;
       return [
         s.mod1ServiceId,
         s.mod1MarketId,
@@ -143,17 +91,17 @@ export function PortfolioSystemPage() {
         s.mod2Deliverables.join(','),
         s.mod2UniqueMechanism,
         s.mod2ValueAmplifier ?? '',
-        bridge.authorityPosition,
-        bridge.coreTrustPromise,
-        bridge.proofPriorities.map((p) => `${p.id}|${p.gapTitle}|${p.recommendedFormat}`).join(','),
-        bridge.proofAssets.map((a) => `${a.id}|${a.title}|${a.assetType}|${a.credibilityGap}|${a.completionStatus}`).join(','),
-        bridge.professionalHeadline,
-        bridge.offerStatement,
-        bridge.proofReferenceLine,
-        bridge.ctaLine,
-        bridge.portfolioCta,
+        bridge.mod3AuthorityPosition,
+        bridge.mod3CoreTrustPromise,
+        bridge.mod3ProofPriorities.map((p) => `${p.id}|${p.gapTitle}|${p.recommendedFormat}`).join(','),
+        bridge.mod3ProofAssets.map((a) => `${a.id}|${a.title}|${a.assetType}|${a.credibilityGapProved}|${a.isAccepted}`).join(','),
+        bridge.mod3ProfileCopy.professionalHeadline,
+        bridge.mod3ProfileCopy.offerStatement,
+        bridge.mod3ProfileCopy.proofReferenceLine,
+        bridge.mod3ProfileCopy.ctaLine,
+        bridge.mod3PortfolioCopy.portfolioCta,
         pa.map((a) => `${a.id}|${a.assetType}|${JSON.stringify(a.portfolioCopy)}|${JSON.stringify(a.presentationStructure)}|${JSON.stringify(a.deliverables)}|${JSON.stringify(a.completionChecklist)}`).join(','),
-        pc.sections.map((s) => `${s.type}|${s.heading}|${s.body}|${JSON.stringify(s.bullets)}`).join(','),
+        bridge.mod3PortfolioCopy.sections.map((s) => `${s.type}|${s.heading}|${s.body}|${JSON.stringify(s.bullets)}`).join(','),
       ].join('‖');
     },
   );

@@ -66,7 +66,25 @@ export interface OfferBlueprint {
   proposalSummary: ProposalSummary;
 }
 
+export type ProvenanceSource = 'auto_generated' | 'user_selected' | 'user_edited';
+
+export interface FieldProvenance {
+  source: ProvenanceSource;
+  generatorVersion: number;
+}
+
+export interface FieldProvenanceMap {
+  uniqueMechanism: FieldProvenance;
+  valueAmplifier: FieldProvenance;
+  finalPrice: FieldProvenance;
+  deliveryTime: FieldProvenance;
+  deliverables: FieldProvenance;
+  offerBlueprint: FieldProvenance;
+}
+
 export interface OfferEngineeringState {
+  fieldProvenance: FieldProvenanceMap;
+  contentGeneratorVersion: number;
   offerId: string | null;
   phase1OfferId: string | null;
   service: string | null;
@@ -106,7 +124,7 @@ export interface OfferEngineeringState {
   setTieredPricing(value: TieredPricing): void;
   setValueBasedPricing(value: ValueBasedPricing): void;
   setProposalSummary(value: ProposalSummary): void;
-  setOfferBlueprint(value: OfferBlueprint): void;
+  setOfferBlueprint(value: OfferBlueprint | null, source?: ProvenanceSource): void;
   nextStep(): void;
   previousStep(): void;
   confirmStep(): void;

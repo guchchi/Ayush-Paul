@@ -9,6 +9,7 @@ import type {
   OfferBlueprint,
   TieredPricing,
   ValueBasedPricing,
+  FieldProvenanceMap,
 } from '../../types/offer-engineering';
 import {
   OFFER_ENGINEERING_STEPS,
@@ -137,11 +138,28 @@ function defaultValueBasedPricing(): ValueBasedPricing {
   return { estimatedClientValue: null, impactLevel: '', suggestedPriceRange: '' };
 }
 
+function defaultFieldProvenanceMap(): FieldProvenanceMap {
+  return {
+    uniqueMechanism: { source: 'auto_generated', generatorVersion: 3 },
+    valueAmplifier: { source: 'auto_generated', generatorVersion: 3 },
+    finalPrice: { source: 'auto_generated', generatorVersion: 3 },
+    deliveryTime: { source: 'auto_generated', generatorVersion: 3 },
+    deliverables: { source: 'auto_generated', generatorVersion: 3 },
+    offerBlueprint: { source: 'auto_generated', generatorVersion: 3 },
+  };
+}
+
 /* ── Store ── */
 
 export const useOfferEngineeringStore = create<OfferEngineeringState>()(
   persist(
     (set, get) => ({
+      /* ── Per-field provenance ── */
+      fieldProvenance: defaultFieldProvenanceMap(),
+
+      /* ── Content generator version ── */
+      contentGeneratorVersion: 3,
+
       /* ── Phase 1 input ── */
       offerId: null,
       phase1OfferId: null,
@@ -166,8 +184,6 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
       /* ── workflow state ── */
       currentStep: 'offer_type',
       completedSteps: [],
-
-      /* ── actions ── */
 
       /* ── actions ── */
 
@@ -200,25 +216,53 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
       },
 
       addDeliverable(value: string) {
-        set((s) => ({ deliverables: [...s.deliverables, value] }));
+        set((s) => ({
+          deliverables: [...s.deliverables, value],
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            deliverables: { source: 'user_selected', generatorVersion: 3 },
+          },
+        }));
       },
 
       removeDeliverable(index: number) {
         set((s) => ({
           deliverables: s.deliverables.filter((_, i) => i !== index),
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            deliverables: { source: 'user_selected', generatorVersion: 3 },
+          },
         }));
       },
 
       setUniqueMechanism(value: string) {
-        set({ uniqueMechanism: value });
+        set((s) => ({
+          uniqueMechanism: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            uniqueMechanism: { source: 'user_selected', generatorVersion: 3 },
+          },
+        }));
       },
 
       setScopeLimits(value: ScopeLimits) {
-        set({ scopeLimits: value });
+        set((s) => ({
+          scopeLimits: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            deliveryTime: { source: 'user_edited', generatorVersion: 3 },
+          },
+        }));
       },
 
       setValueAmplifier(value: string) {
-        set({ valueAmplifier: value });
+        set((s) => ({
+          valueAmplifier: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            valueAmplifier: { source: 'user_selected', generatorVersion: 3 },
+          },
+        }));
       },
 
       setPricingModel(value: OfferEngineeringState['pricingModel']) {
@@ -226,7 +270,13 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
       },
 
       setFinalPrice(value: number | null) {
-        set({ finalPrice: value });
+        set((s) => ({
+          finalPrice: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            finalPrice: { source: 'user_edited', generatorVersion: 3 },
+          },
+        }));
       },
 
       setTieredPricing(value: TieredPricing) {
@@ -241,8 +291,13 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
         set({ proposalSummary: value });
       },
 
-      setOfferBlueprint(value: OfferBlueprint) {
-        set({ offerBlueprint: value });
+      setOfferBlueprint(value: OfferBlueprint | null, source: 'user_selected' | 'user_edited' = 'user_selected') {
+        set((s) => ({
+          offerBlueprint: value,
+          fieldProvenance: value
+            ? { ...s.fieldProvenance, offerBlueprint: { source, generatorVersion: 3 } }
+            : s.fieldProvenance,
+        }));
       },
 
       confirmStep() {
@@ -324,6 +379,8 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
 
       reset() {
         set({
+          fieldProvenance: defaultFieldProvenanceMap(),
+          contentGeneratorVersion: 3,
           offerId: null,
           phase1OfferId: null,
           service: null,
@@ -348,33 +405,114 @@ export const useOfferEngineeringStore = create<OfferEngineeringState>()(
     }),
     {
       name: 'offer-engineering-progress',
-      version: 1,
+      version: 3,
       migrate(persisted, version) {
-        if (version === 0) {
+        // v0→v1: migrate from old format
+        if (version < 2) {
           const old = persisted as Record<string, unknown>;
           const proposalSummary = old.proposalSummary as Record<string, unknown> | undefined;
           return {
-            ...(old as Record<string, unknown>),
-            offerBlueprint: old.offerBlueprint ?? null,
-            completedSteps: Array.isArray(old.completedSteps) ? old.completedSteps : [],
-            currentStep: typeof old.currentStep === 'string' ? old.currentStep : 'offer_type',
+            contentGeneratorVersion: 3,
+            offerId: null,
+            phase1OfferId: null,
+            service: null,
+            market: null,
+            niche: null,
+            positioning: '',
+            offerType: (old as any).offerType ?? null,
+            deliverables: Array.isArray((old as any).deliverables) ? (old as any).deliverables : [],
+            uniqueMechanism: typeof (old as any).uniqueMechanism === 'string' ? (old as any).uniqueMechanism : '',
             scopeLimits: old.scopeLimits && typeof old.scopeLimits === 'object'
               ? { ...defaultScopeLimits(), ...(old.scopeLimits as Record<string, unknown>) }
               : defaultScopeLimits(),
-            proposalSummary: proposalSummary && typeof proposalSummary === 'object'
-              ? { ...defaultProposalSummary(), ...proposalSummary }
-              : defaultProposalSummary(),
+            valueAmplifier: typeof (old as any).valueAmplifier === 'string' ? (old as any).valueAmplifier : '',
+            pricingModel: (old as any).pricingModel ?? null,
+            finalPrice: (old as any).finalPrice ?? null,
             tieredPricing: old.tieredPricing && typeof old.tieredPricing === 'object'
               ? { ...defaultTieredPricing(), ...(old.tieredPricing as Record<string, unknown>) }
               : defaultTieredPricing(),
             valueBasedPricing: old.valueBasedPricing && typeof old.valueBasedPricing === 'object'
               ? { ...defaultValueBasedPricing(), ...(old.valueBasedPricing as Record<string, unknown>) }
               : defaultValueBasedPricing(),
+            proposalSummary: proposalSummary && typeof proposalSummary === 'object'
+              ? { ...defaultProposalSummary(), ...proposalSummary }
+              : defaultProposalSummary(),
+            offerBlueprint: null,
+            currentStep: typeof old.currentStep === 'string' ? old.currentStep : 'offer_type',
+            completedSteps: Array.isArray(old.completedSteps) ? old.completedSteps : [],
+            fieldProvenance: defaultFieldProvenanceMap(),
+          } as OfferEngineeringState;
+        }
+        // v2→v3: per-field provenance with obsolete-default detection
+        if (version < 3) {
+          const old = persisted as any;
+
+          const oldDeliveryTime = old.scopeLimits?.deliveryTime ?? '';
+          const mechanismObsolete = old.uniqueMechanism === 'User-First Information Architecture';
+          const amplifierObsolete = old.valueAmplifier === 'User Testing and Validation';
+          const priceObsolete = old.finalPrice === 50;
+          const deliveryObsolete = typeof oldDeliveryTime === 'string' && (
+            oldDeliveryTime.includes('3-4 weeks')
+            || oldDeliveryTime.includes('3\u20134 weeks')
+            || oldDeliveryTime.includes('full website design')
+          );
+
+          return {
+            contentGeneratorVersion: 3,
+            offerId: old.offerId ?? null,
+            phase1OfferId: old.phase1OfferId ?? null,
+            service: null,
+            market: null,
+            niche: null,
+            positioning: '',
+            offerType: old.offerType ?? null,
+            deliverables: Array.isArray(old.deliverables) ? old.deliverables : [],
+            uniqueMechanism: mechanismObsolete ? '' : (typeof old.uniqueMechanism === 'string' ? old.uniqueMechanism : ''),
+            scopeLimits: old.scopeLimits && typeof old.scopeLimits === 'object'
+              ? { ...defaultScopeLimits(), ...old.scopeLimits, deliveryTime: deliveryObsolete ? '' : oldDeliveryTime }
+              : defaultScopeLimits(),
+            valueAmplifier: amplifierObsolete ? '' : (typeof old.valueAmplifier === 'string' ? old.valueAmplifier : ''),
+            pricingModel: old.pricingModel ?? null,
+            finalPrice: priceObsolete ? null : (typeof old.finalPrice === 'number' ? old.finalPrice : null),
+            tieredPricing: old.tieredPricing && typeof old.tieredPricing === 'object'
+              ? { ...defaultTieredPricing(), ...old.tieredPricing }
+              : defaultTieredPricing(),
+            valueBasedPricing: old.valueBasedPricing && typeof old.valueBasedPricing === 'object'
+              ? { ...defaultValueBasedPricing(), ...old.valueBasedPricing }
+              : defaultValueBasedPricing(),
+            proposalSummary: old.proposalSummary && typeof old.proposalSummary === 'object'
+              ? { ...defaultProposalSummary(), ...old.proposalSummary }
+              : defaultProposalSummary(),
+            offerBlueprint: null,
+            currentStep: typeof old.currentStep === 'string' ? old.currentStep : 'offer_type',
+            completedSteps: Array.isArray(old.completedSteps) ? old.completedSteps : [],
+            fieldProvenance: {
+              uniqueMechanism: {
+                source: mechanismObsolete ? 'auto_generated' : 'user_selected',
+                generatorVersion: 3,
+              },
+              valueAmplifier: {
+                source: amplifierObsolete ? 'auto_generated' : 'user_selected',
+                generatorVersion: 3,
+              },
+              finalPrice: {
+                source: priceObsolete ? 'auto_generated' : 'user_edited',
+                generatorVersion: 3,
+              },
+              deliveryTime: {
+                source: deliveryObsolete ? 'auto_generated' : 'user_edited',
+                generatorVersion: 3,
+              },
+              deliverables: { source: 'user_selected', generatorVersion: 3 },
+              offerBlueprint: { source: 'auto_generated', generatorVersion: 3 },
+            },
           } as OfferEngineeringState;
         }
         return persisted as OfferEngineeringState;
       },
       partialize: (state) => ({
+        fieldProvenance: state.fieldProvenance,
+        contentGeneratorVersion: state.contentGeneratorVersion,
         phase1OfferId: state.phase1OfferId,
         offerId: state.offerId,
         service: state.service,

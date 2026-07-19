@@ -197,7 +197,7 @@ export function OfferBlueprintStep() {
   const bp = offerBlueprint ?? generatedBlueprint;
 
   const handleGenerate = () => {
-    setOfferBlueprint(generatedBlueprint);
+    setOfferBlueprint(generatedBlueprint, 'auto_generated');
     setEditDraft(null);
     confirmStep();
   };
@@ -209,7 +209,7 @@ export function OfferBlueprintStep() {
 
   const saveEdits = () => {
     if (editDraft) {
-      setOfferBlueprint(editDraft);
+      setOfferBlueprint(editDraft, 'user_edited');
     }
     setEditing(false);
     showToast('Blueprint updated');

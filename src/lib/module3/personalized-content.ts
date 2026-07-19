@@ -27,6 +27,8 @@ import {
   getServiceLabel,
   getAudienceLabel,
   getBuyerTerm,
+  getCategory,
+  getTrack,
 } from '../personalization/context';
 import type { AuthorityPosition, ProofFormat } from '../../types/module3';
 
@@ -176,8 +178,8 @@ export function buildPersonalizationContext(args: {
     derived: {
       audienceLabel: getAudienceLabel(args.marketId, args.serviceId),
       buyerTerm: getBuyerTerm(args.marketId, args.nicheId),
-      category: 'design',
-      track: 'designer',
+      category: getCategory(args.serviceId),
+      track: getTrack(args.serviceId),
     },
   };
 }

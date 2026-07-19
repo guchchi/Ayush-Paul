@@ -7,12 +7,13 @@ import type {
   AuthorityPosition,
   ProofPriority,
   ProofAsset,
-  ProfileCopy,
-  PortfolioCopy,
-  PortfolioSection,
+  ProofAssetStrategy,
+  ProfilePortfolioStrategy,
   ChecklistItem,
   Module1Context,
   Module2Context,
+  Module4BridgeContext,
+  Module3FieldProvenance,
 } from '../../types/module3';
 import type {
   ScopeLimits,
@@ -25,6 +26,14 @@ import {
   canNavigateTo,
   getStepIndex,
 } from '../../types/module3';
+
+import { resolveRecommendedPosition, generatePositionRationale, generateCoreTrustPromise } from '../../data/module3/authority-positions';
+import { resolveProofPriorities, PriorityContext } from '../../data/module3/proof-priorities';
+import { generateProofAsset } from '../../data/module3/proof-assets';
+import { evaluateCredibilityProfile } from '../../data/module3/credibility-rules';
+import { generateProofAssetStrategyForProfile } from '../../data/module3/proof-asset-strategy';
+import { generateProfilePortfolioStrategy } from '../../data/module3/profile-portfolio-strategy';
+import { Module4BridgeAdapter } from './module4-bridge';
 
 export { canNavigateTo, getStepIndex, MODULE3_STEPS };
 
@@ -58,22 +67,11 @@ function defaultProposalSummary(): ProposalSummary {
   };
 }
 
-function defaultProfileCopy(): ProfileCopy {
-  return {
-    professionalHeadline: '',
-    shortBio: '',
-    longBio: '',
-    offerStatement: '',
-    credibilityBullets: [],
-    proofReferenceLine: '',
-    ctaLine: '',
-  };
-}
 
-function defaultPortfolioCopy(): PortfolioCopy {
+
+function defaultFieldProvenanceMap(): Module3FieldProvenance {
   return {
-    portfolioCta: '',
-    sections: [],
+    coreTrustPromise: 'auto_generated',
   };
 }
 
@@ -128,27 +126,45 @@ const INITIAL_CONTEXT: Pick<Module3State,
 export const useModule3Store = create<Module3State>()(
   persist(
     (set, get) => ({
+      provenance: {
+        source: 'auto_generated',
+        generatorVersion: 2,
+        upstreamContextHash: '',
+      },
+      fieldProvenance: defaultFieldProvenanceMap(),
+      promiseVariationIndex: 0,
+      staleDecision: null,
+      contentGeneratorVersion: 2,
+
+      authorityProfile: null,
+      pendingProfile: null,
+
       authorityPosition: null,
       coreTrustPromise: '',
       authorityPositionRationale: '',
 
+      availableAssets: [],
+      strongestAsset: null,
+      missingAssets: [],
+
       proofPriorities: [],
+      
+      existingProofInventory: '',
+      pendingProofAssetStrategy: null,
+      proofAssetStrategy: null,
 
       proofAssets: [],
 
-      profileCopy: defaultProfileCopy(),
-      portfolioCopy: defaultPortfolioCopy(),
+      pendingProfilePortfolioStrategy: null,
+      profilePortfolioStrategy: null,
 
       checklist: [],
-
-      isProfileCopyCustom: false,
-      isPortfolioCopyCustom: false,
 
       isCompleted: false,
       isUpstreamStale: false,
       lastUpdated: Date.now(),
       upstreamFingerprint: '',
-      version: 4,
+      version: 7,
 
       ...INITIAL_CONTEXT,
 
@@ -172,6 +188,9 @@ export const useModule3Store = create<Module3State>()(
           mod1NicheId: ctx.nicheId,
           mod1OfferId: ctx.offerId,
           mod1Positioning: ctx.positioning,
+          isUpstreamStale: true,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
+          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: 'stale' } } : {}),
           lastUpdated: Date.now(),
         });
       },
@@ -201,8 +220,25 @@ export const useModule3Store = create<Module3State>()(
           mod2TieredPricing: ctx.tieredPricing,
           mod2ValueBasedPricing: ctx.valueBasedPricing,
           mod2ProposalSummary: ctx.proposalSummary,
+          isUpstreamStale: true,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
           lastUpdated: Date.now(),
         });
+      },
+
+      setAuthorityProfile(profile) {
+        const current = get();
+        set({ 
+          authorityProfile: profile, 
+          isUpstreamStale: true,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
+          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: 'stale' } } : {}),
+          lastUpdated: Date.now() 
+        });
+      },
+
+      setPendingProfile(profile) {
+        set({ pendingProfile: profile, lastUpdated: Date.now() });
       },
 
       setAuthorityPosition(value: AuthorityPosition) {
@@ -210,11 +246,30 @@ export const useModule3Store = create<Module3State>()(
       },
 
       setCoreTrustPromise(value: string) {
-        set({ coreTrustPromise: value, lastUpdated: Date.now() });
+        set((s) => ({
+          coreTrustPromise: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            coreTrustPromise: 'user_edited',
+          },
+          lastUpdated: Date.now(),
+        }));
       },
 
       setAuthorityPositionRationale(value: string) {
         set({ authorityPositionRationale: value, lastUpdated: Date.now() });
+      },
+
+      setAvailableAssets(value: string[]) {
+        set({ availableAssets: value, lastUpdated: Date.now() });
+      },
+
+      setStrongestAsset(value: string | null) {
+        set({ strongestAsset: value, lastUpdated: Date.now() });
+      },
+
+      setMissingAssets(value: string[]) {
+        set({ missingAssets: value, lastUpdated: Date.now() });
       },
 
       setProofPriorities(value: ProofPriority[]) {
@@ -244,41 +299,129 @@ export const useModule3Store = create<Module3State>()(
           proofAssets: state.proofAssets.map((asset) => 
             asset.id === id ? newAsset : asset
           ),
-          lastUpdated: Date.now()
         }));
       },
 
-      setProfileCopy(value: ProfileCopy) {
-        set({ profileCopy: value, lastUpdated: Date.now() });
+      setExistingProofInventory(value: string) {
+        set({ existingProofInventory: value, lastUpdated: Date.now() });
       },
 
-      setPortfolioCopy(value: PortfolioCopy) {
-        set({ portfolioCopy: value, lastUpdated: Date.now() });
+      setPendingProofAssetStrategy(value: ProofAssetStrategy | null) {
+        set({ pendingProofAssetStrategy: value, lastUpdated: Date.now() });
       },
 
-      replaceGeneratedProfileCopy(value: ProfileCopy) {
-        set({ profileCopy: value, isProfileCopyCustom: false, lastUpdated: Date.now() });
+      setProofAssetStrategy(value: ProofAssetStrategy | null) {
+        set({ proofAssetStrategy: value, lastUpdated: Date.now() });
       },
 
-      replaceGeneratedPortfolioCopy(value: PortfolioCopy) {
-        set({ portfolioCopy: value, isPortfolioCopyCustom: false, lastUpdated: Date.now() });
+      generateProofAssetStrategy() {
+        const state = get();
+        try {
+          const strategy = generateProofAssetStrategyForProfile({
+            authorityProfile: state.authorityProfile,
+            mod1ServiceId: state.mod1ServiceId,
+            mod1MarketId: state.mod1MarketId,
+            mod1NicheId: state.mod1NicheId,
+            mod2OfferType: state.mod2OfferType,
+            mod2Deliverables: state.mod2Deliverables,
+            existingProofInventory: state.existingProofInventory,
+          });
+          
+          if (state.pendingProofAssetStrategy?.selectedExecutionPriority) {
+            strategy.selectedExecutionPriority = state.pendingProofAssetStrategy.selectedExecutionPriority;
+          } else if (state.proofAssetStrategy?.selectedExecutionPriority) {
+            strategy.selectedExecutionPriority = state.proofAssetStrategy.selectedExecutionPriority;
+          }
+          
+          set({ pendingProofAssetStrategy: strategy, lastUpdated: Date.now() });
+        } catch (error) {
+          console.error('[Module3] Failed to generate Proof Asset Strategy:', error);
+        }
       },
 
-      updateProfileCopy(value: Partial<ProfileCopy>) {
+      selectExecutionPriority(priority: 'immediate' | 'short_term' | 'long_term') {
+        const state = get();
+        if (state.pendingProofAssetStrategy) {
+          set({
+            pendingProofAssetStrategy: {
+              ...state.pendingProofAssetStrategy,
+              selectedExecutionPriority: priority,
+            },
+            lastUpdated: Date.now(),
+          });
+        }
+      },
+
+      approveProofAssetStrategy() {
+        const state = get();
+        if (state.pendingProofAssetStrategy && state.pendingProofAssetStrategy.selectedExecutionPriority) {
+          const newVersion = state.proofAssetStrategy ? state.proofAssetStrategy.strategyVersion + 1 : 1;
+          set({
+            proofAssetStrategy: {
+              ...state.pendingProofAssetStrategy,
+              strategyVersion: newVersion,
+              status: 'approved',
+            },
+            pendingProofAssetStrategy: null,
+            lastUpdated: Date.now(),
+          });
+        }
+      },
+
+      setPendingProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null) {
+        set({ pendingProfilePortfolioStrategy: value, lastUpdated: Date.now() });
+      },
+
+      setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null) {
+        set({ profilePortfolioStrategy: value, lastUpdated: Date.now() });
+      },
+
+      generateProfilePortfolioStrategy() {
+        const state = get();
+        try {
+          if (!state.authorityProfile || !state.proofAssetStrategy) {
+            console.warn('[Module3] Cannot generate ProfilePortfolioStrategy: Missing Authority Profile or Proof Asset Strategy');
+            return;
+          }
+          const strategy = generateProfilePortfolioStrategy({
+            authorityProfile: state.authorityProfile,
+            proofAssetStrategy: state.proofAssetStrategy,
+            mod1ServiceId: state.mod1ServiceId,
+            mod2OfferType: state.mod2OfferType,
+          });
+          set({ pendingProfilePortfolioStrategy: strategy, lastUpdated: Date.now() });
+        } catch (error) {
+          console.error('[Module3] Failed to generate Profile Portfolio Strategy:', error);
+        }
+      },
+
+      approveProfilePortfolioStrategy() {
+        const state = get();
+        if (state.pendingProfilePortfolioStrategy) {
+          set({
+            profilePortfolioStrategy: {
+              ...state.pendingProfilePortfolioStrategy,
+              status: 'approved',
+              approvedAt: new Date().toISOString(),
+            },
+            pendingProfilePortfolioStrategy: null,
+            lastUpdated: Date.now(),
+          });
+        }
+      },
+
+      replaceGeneratedCoreTrustPromise(value: string) {
         set((s) => ({
-          profileCopy: { ...s.profileCopy, ...value },
-          isProfileCopyCustom: true,
+          coreTrustPromise: value,
+          fieldProvenance: {
+            ...s.fieldProvenance,
+            coreTrustPromise: 'auto_generated',
+          },
           lastUpdated: Date.now(),
         }));
       },
 
-      updatePortfolioCopy(value: Partial<PortfolioCopy>) {
-        set((s) => ({
-          portfolioCopy: { ...s.portfolioCopy, ...value },
-          isPortfolioCopyCustom: true,
-          lastUpdated: Date.now(),
-        }));
-      },
+
 
       setChecklist(value: ChecklistItem[]) {
         set({ checklist: value, lastUpdated: Date.now() });
@@ -293,33 +436,9 @@ export const useModule3Store = create<Module3State>()(
         }));
       },
 
-      getModule4Context() {
+      getModule4Context(): Module4BridgeContext {
         const state = get();
-        return {
-          authorityPosition: state.authorityPosition || 'builder',
-          coreTrustPromise: state.coreTrustPromise,
-          proofPriorities: state.proofPriorities.map((p) => ({
-            id: p.id,
-            gapTitle: p.gapTitle,
-            recommendedFormat: p.recommendedFormat,
-          })),
-          proofAssets: state.proofAssets.map((a) => ({
-            id: a.id,
-            title: a.title,
-            assetType: a.assetType,
-            credibilityGap: a.credibilityGapProved,
-            completionStatus: a.isAccepted,
-            link: undefined,
-          })),
-          authorityReadiness: state.isCompleted,
-          professionalHeadline: state.profileCopy.professionalHeadline,
-          offerStatement: state.profileCopy.offerStatement,
-          proofReferenceLine: state.profileCopy.proofReferenceLine,
-          ctaLine: state.profileCopy.ctaLine,
-          portfolioCta: state.portfolioCopy.portfolioCta,
-          profileUrl: undefined,
-          portfolioUrl: undefined,
-        };
+        return Module4BridgeAdapter.generateContext(state);
       },
 
       setIsCompleted(value: boolean) {
@@ -340,15 +459,30 @@ export const useModule3Store = create<Module3State>()(
 
       clearModule3Data() {
         set({
+          provenance: {
+            source: 'auto_generated',
+            generatorVersion: 2,
+            upstreamContextHash: '',
+          },
+          fieldProvenance: defaultFieldProvenanceMap(),
+          promiseVariationIndex: 0,
+          staleDecision: null,
+          contentGeneratorVersion: 2,
+          authorityProfile: null,
+          pendingProfile: null,
           authorityPosition: null,
           coreTrustPromise: '',
           authorityPositionRationale: '',
+          availableAssets: [],
+          strongestAsset: null,
+          missingAssets: [],
+          existingProofInventory: '',
+          pendingProofAssetStrategy: null,
+          proofAssetStrategy: null,
           proofPriorities: [],
           proofAssets: [],
-          profileCopy: defaultProfileCopy(),
-          portfolioCopy: defaultPortfolioCopy(),
-          isProfileCopyCustom: false,
-          isPortfolioCopyCustom: false,
+          pendingProfilePortfolioStrategy: null,
+          profilePortfolioStrategy: null,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
@@ -356,14 +490,39 @@ export const useModule3Store = create<Module3State>()(
           currentStep: 'authority_position',
           completedSteps: [],
           lastUpdated: Date.now(),
-          version: 4,
+          version: 7,
         });
       },
 
       confirmStep() {
         const state = get();
         const step = state.currentStep;
+        let extraSet: Partial<Module3State> = {};
+        if (step === 'proof_asset_builder') {
+          const ctx = {
+            serviceId: state.mod1ServiceId,
+            marketId: state.mod1MarketId,
+            nicheId: state.mod1NicheId,
+            positioning: state.mod1Positioning,
+            offerType: state.mod2OfferType,
+            authorityPosition: state.authorityPosition,
+          };
+          const evalRes = evaluateCredibilityProfile(
+            state.availableAssets,
+            state.strongestAsset,
+            state.missingAssets,
+            ctx
+          );
+          extraSet.proofPriorities = evalRes.gapPriorities.slice(0, 3).map((gp) => ({
+            id: gp.id,
+            gapTitle: gp.label,
+            gapDescription: gp.reason,
+            recommendedFormat: gp.format as any,
+            isCustom: true,
+          }));
+        }
         set((s) => ({
+          ...extraSet,
           completedSteps: s.completedSteps.includes(step)
             ? s.completedSteps
             : [...s.completedSteps, step],
@@ -377,7 +536,32 @@ export const useModule3Store = create<Module3State>()(
         const nextIdx = Math.min(currentIdx + 1, MODULE3_STEPS.length - 1);
         const nextStep = MODULE3_STEPS[nextIdx];
         const step = state.currentStep;
+        let extraSet: Partial<Module3State> = {};
+        if (step === 'proof_asset_builder') {
+          const ctx = {
+            serviceId: state.mod1ServiceId,
+            marketId: state.mod1MarketId,
+            nicheId: state.mod1NicheId,
+            positioning: state.mod1Positioning,
+            offerType: state.mod2OfferType,
+            authorityPosition: state.authorityPosition,
+          };
+          const evalRes = evaluateCredibilityProfile(
+            state.availableAssets,
+            state.strongestAsset,
+            state.missingAssets,
+            ctx
+          );
+          extraSet.proofPriorities = evalRes.gapPriorities.slice(0, 3).map((gp) => ({
+            id: gp.id,
+            gapTitle: gp.label,
+            gapDescription: gp.reason,
+            recommendedFormat: gp.format as any,
+            isCustom: true,
+          }));
+        }
         set((s) => ({
+          ...extraSet,
           currentStep: nextStep,
           completedSteps: s.completedSteps.includes(step)
             ? s.completedSteps
@@ -412,94 +596,203 @@ export const useModule3Store = create<Module3State>()(
 
       reset() {
         set({
+          provenance: {
+            source: 'auto_generated',
+            generatorVersion: 2,
+            upstreamContextHash: '',
+          },
+          fieldProvenance: defaultFieldProvenanceMap(),
+          promiseVariationIndex: 0,
+          staleDecision: null,
+          contentGeneratorVersion: 2,
+          authorityProfile: null,
+          pendingProfile: null,
           authorityPosition: null,
           coreTrustPromise: '',
           authorityPositionRationale: '',
+          availableAssets: [],
+          strongestAsset: null,
+          missingAssets: [],
           proofPriorities: [],
           proofAssets: [],
-          profileCopy: defaultProfileCopy(),
-          portfolioCopy: defaultPortfolioCopy(),
-          isProfileCopyCustom: false,
-          isPortfolioCopyCustom: false,
+          pendingProfilePortfolioStrategy: null,
+          profilePortfolioStrategy: null,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
           lastUpdated: Date.now(),
-          version: 4,
+          version: 7,
           ...INITIAL_CONTEXT,
           currentStep: 'authority_position',
           completedSteps: [],
         });
       },
+
+      dismissStaleContext() {
+        set({
+          isUpstreamStale: false,
+          staleDecision: 'keep',
+          lastUpdated: Date.now(),
+        });
+      },
+
+      refreshStaleContext() {
+        const state = get();
+        const ctxM1 = {
+          careerTrackId: state.mod1CareerTrackId,
+          serviceId: state.mod1ServiceId,
+          marketId: state.mod1MarketId,
+          nicheId: state.mod1NicheId,
+          offerId: state.mod1OfferId,
+          positioning: state.mod1Positioning,
+        };
+        const ctxM2 = {
+          offerType: state.mod2OfferType,
+          deliverables: state.mod2Deliverables,
+          uniqueMechanism: state.mod2UniqueMechanism,
+          scopeLimits: state.mod2ScopeLimits,
+          valueAmplifier: state.mod2ValueAmplifier,
+          pricingModel: state.mod2PricingModel,
+          finalPrice: state.mod2FinalPrice,
+          tieredPricing: state.mod2TieredPricing,
+          valueBasedPricing: state.mod2ValueBasedPricing,
+          proposalSummary: state.mod2ProposalSummary,
+        };
+
+        const tempCtx = {
+          ...ctxM1,
+          offerType: state.mod2OfferType,
+          deliverables: state.mod2Deliverables,
+          uniqueMechanism: state.mod2UniqueMechanism,
+          valueAmplifier: state.mod2ValueAmplifier,
+        };
+
+        // 1. Re-evaluate position recommendation
+        const newRecommended = resolveRecommendedPosition(tempCtx as any);
+        let position = state.authorityPosition || newRecommended;
+        let rationale = state.authorityPositionRationale;
+        if (!rationale || !state.authorityPosition) {
+          rationale = generatePositionRationale(position, { ...tempCtx, authorityPosition: position } as any);
+        }
+        let promise = state.coreTrustPromise;
+        if (!promise || state.fieldProvenance.coreTrustPromise === 'auto_generated') {
+          promise = generateCoreTrustPromise(position, { ...tempCtx, authorityPosition: position } as any, state.promiseVariationIndex);
+        }
+
+        // Complete, typed PriorityContext
+        const ctxCombined: PriorityContext = {
+          ...tempCtx,
+          authorityPosition: position,
+          coreTrustPromise: promise,
+        };
+
+        // 2. Re-resolve proof priorities (for those not customized)
+        const freshPriorities = resolveProofPriorities(ctxCombined);
+        const updatedPriorities = state.proofPriorities.map((existing) => {
+          if (existing.isCustom) return existing;
+          const fresh = freshPriorities.find((fp) => fp.id === existing.id);
+          return fresh ? { ...fresh, isCustom: false } : existing;
+        });
+
+        // 3. Re-generate proof assets (for those not customized)
+        const updatedAssets = state.proofAssets.map((existing) => {
+          if (existing.isCustom) return existing;
+          const priority = updatedPriorities.find((p) => p.id === existing.priorityId);
+          if (priority) {
+            const fresh = generateProofAsset(priority, ctxCombined);
+            return { ...fresh, isCustom: false, isAccepted: existing.isAccepted };
+          }
+          return existing;
+        });
+
+        set({
+          authorityPosition: position,
+          authorityPositionRationale: rationale,
+          coreTrustPromise: promise,
+          proofPriorities: updatedPriorities,
+          proofAssets: updatedAssets,
+          // Profile and Portfolio copy refresh is no longer relevant for the Strategy data structure.
+          isUpstreamStale: false,
+          staleDecision: 'refresh',
+          lastUpdated: Date.now(),
+        });
+      },
     }),
     {
       name: 'module-3-progress',
-      version: 4,
+      version: 7,
       migrate(persisted, version) {
-        if (version === 0 || version === 1) {
-          return {
+        let state = persisted as any;
+        if (version < 6) {
+          state = {
+            provenance: {
+              source: 'auto_generated',
+              generatorVersion: 2,
+              upstreamContextHash: '',
+            },
+            fieldProvenance: defaultFieldProvenanceMap(),
+            promiseVariationIndex: 0,
+            staleDecision: null,
+            contentGeneratorVersion: 2,
             authorityPosition: null,
             coreTrustPromise: '',
             authorityPositionRationale: '',
+            availableAssets: [],
+            strongestAsset: null,
+            missingAssets: [],
             proofPriorities: [],
             proofAssets: [],
-            profileCopy: defaultProfileCopy(),
-            portfolioCopy: defaultPortfolioCopy(),
-            isProfileCopyCustom: false,
-            isPortfolioCopyCustom: false,
+            pendingProfilePortfolioStrategy: null,
+            profilePortfolioStrategy: null,
             checklist: [],
             isCompleted: false,
             isUpstreamStale: false,
+            existingProofInventory: '',
+            pendingProofAssetStrategy: null,
+            proofAssetStrategy: null,
             lastUpdated: Date.now(),
             upstreamFingerprint: '',
-            version: 4,
+            version: 7,
             ...INITIAL_CONTEXT,
             currentStep: 'authority_position',
             completedSteps: [],
-          } as Module3State;
+          };
         }
-        if (version === 2) {
-          const completedSteps = ((persisted as any).completedSteps || []) as string[];
-          const filteredCompletedSteps = completedSteps.filter(
-            (step) => step !== 'proof_asset_builder' && step !== 'profile_portfolio' && step !== 'authority_pack'
-          );
-
-          let currentStep = (persisted as any).currentStep;
-          if (currentStep === 'proof_asset_builder' || currentStep === 'profile_portfolio' || currentStep === 'authority_pack') {
-            currentStep = 'proof_asset_builder';
-          }
-
-          return {
-            ...(persisted as any),
-            proofAssets: [],
-            completedSteps: filteredCompletedSteps,
-            currentStep,
-            isCompleted: false,
-            isProfileCopyCustom: false,
-            isPortfolioCopyCustom: false,
-            version: 4,
-          } as unknown as Module3State;
+        if (version < 7) {
+          state = {
+            ...state,
+            availableAssets: state.availableAssets ?? [],
+            strongestAsset: state.strongestAsset ?? null,
+            missingAssets: state.missingAssets ?? [],
+            existingProofInventory: state.existingProofInventory ?? '',
+            pendingProofAssetStrategy: state.pendingProofAssetStrategy ?? null,
+            proofAssetStrategy: state.proofAssetStrategy ?? null,
+            version: 7,
+          };
         }
-        if (version === 3) {
-          return {
-            ...(persisted as any),
-            isProfileCopyCustom: false,
-            isPortfolioCopyCustom: false,
-            version: 4,
-          } as Module3State;
-        }
-        return persisted as Module3State;
+        return state as Module3State;
       },
       partialize: (state) => ({
+        provenance: state.provenance,
+        fieldProvenance: state.fieldProvenance,
+        promiseVariationIndex: state.promiseVariationIndex,
+        staleDecision: state.staleDecision,
+        contentGeneratorVersion: state.contentGeneratorVersion,
+        authorityProfile: state.authorityProfile,
+        pendingProfile: state.pendingProfile,
         authorityPosition: state.authorityPosition,
         coreTrustPromise: state.coreTrustPromise,
         authorityPositionRationale: state.authorityPositionRationale,
+        availableAssets: state.availableAssets,
+        strongestAsset: state.strongestAsset,
+        missingAssets: state.missingAssets,
         proofPriorities: state.proofPriorities,
         proofAssets: state.proofAssets,
-        profileCopy: state.profileCopy,
-        portfolioCopy: state.portfolioCopy,
-        isProfileCopyCustom: state.isProfileCopyCustom,
-        isPortfolioCopyCustom: state.isPortfolioCopyCustom,
+        existingProofInventory: state.existingProofInventory,
+        pendingProofAssetStrategy: state.pendingProofAssetStrategy,
+        proofAssetStrategy: state.proofAssetStrategy,
+        pendingProfilePortfolioStrategy: state.pendingProfilePortfolioStrategy,
+        profilePortfolioStrategy: state.profilePortfolioStrategy,
         checklist: state.checklist,
         isCompleted: state.isCompleted,
         isUpstreamStale: state.isUpstreamStale,

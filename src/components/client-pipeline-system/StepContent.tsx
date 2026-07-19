@@ -8,6 +8,7 @@ import { LeadQualificationScoreStep } from './LeadQualificationScoreStep';
 import { PipelineListBuilderStep } from './PipelineListBuilderStep';
 import { PriorityPlanStep } from './PriorityPlanStep';
 import { ClientPipelineReportStep } from './ClientPipelineReportStep';
+import { DynamicRoadmap } from '../workspace/DynamicRoadmap';
 
 const STEP_COMPONENTS: Partial<Record<ClientPipelineStep, React.FC>> = {
   client_source_map: ClientSourceMapStep,
@@ -30,5 +31,10 @@ export function StepContent() {
       </div>
     );
   }
-  return <Component />;
+  return (
+    <div className="space-y-6">
+      <DynamicRoadmap activeMilestone="authority" />
+      <Component />
+    </div>
+  );
 }

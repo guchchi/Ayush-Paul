@@ -6,6 +6,7 @@ import { ProjectArrangementStep } from './ProjectArrangementStep';
 import { ProjectPresentationsStep } from './ProjectPresentationsStep';
 import { PortfolioCopyCTAStep } from './PortfolioCopyCTAStep';
 import { PortfolioBuildPackStep } from './PortfolioBuildPackStep';
+import { DynamicRoadmap } from '../workspace/DynamicRoadmap';
 
 const STEP_COMPONENTS: Partial<Record<PortfolioSystemStep, React.FC>> = {
   portfolio_direction: PortfolioDirectionStep,
@@ -32,5 +33,10 @@ export function StepContent() {
     );
   }
 
-  return <Component />;
+  return (
+    <div className="space-y-6">
+      <DynamicRoadmap activeMilestone="portfolio" />
+      <Component />
+    </div>
+  );
 }

@@ -1,4 +1,4 @@
-import type { Module3State, ChecklistItem } from '../../types/module3';
+import type { Module3State, ChecklistItem, ProfilePortfolioStrategy } from '../../types/module3';
 
 export interface CompiledProofAsset {
   id: string;
@@ -19,21 +19,8 @@ export interface CompiledAuthorityPack {
   coreTrustPromise: string;
   proofPriorities: { gapTitle: string; recommendedFormat: string }[];
   proofAssets: CompiledProofAsset[];
-  profileCopy: {
-    professionalHeadline: string;
-    shortBio: string;
-    longBio: string;
-    offerStatement: string;
-    credibilityBullets: string[];
-    proofReferenceLine: string;
-    ctaLine: string;
-  };
-  portfolioCopy: {
-    portfolioCta: string;
-    sections: { type: string; heading: string; body: string; bullets?: string[] }[];
-  };
+  profilePortfolioStrategy: ProfilePortfolioStrategy | null;
   checklistItems: { id: string; category: string; task: string; isCompleted: boolean }[];
-  masterCta: string;
 }
 
 export function compileAuthorityPack(state: Module3State): CompiledAuthorityPack {
@@ -57,31 +44,13 @@ export function compileAuthorityPack(state: Module3State): CompiledAuthorityPack
       completionChecklist: a.completionChecklist,
       isAccepted: a.isAccepted,
     })),
-    profileCopy: {
-      professionalHeadline: state.profileCopy.professionalHeadline,
-      shortBio: state.profileCopy.shortBio,
-      longBio: state.profileCopy.longBio,
-      offerStatement: state.profileCopy.offerStatement,
-      credibilityBullets: state.profileCopy.credibilityBullets,
-      proofReferenceLine: state.profileCopy.proofReferenceLine,
-      ctaLine: state.profileCopy.ctaLine,
-    },
-    portfolioCopy: {
-      portfolioCta: state.portfolioCopy.portfolioCta,
-      sections: state.portfolioCopy.sections.map((s) => ({
-        type: s.type,
-        heading: s.heading,
-        body: s.body,
-        bullets: s.bullets,
-      })),
-    },
+    profilePortfolioStrategy: state.profilePortfolioStrategy,
     checklistItems: state.checklist.map((c) => ({
       id: c.id,
       category: c.category,
       task: c.task,
       isCompleted: c.isCompleted,
     })),
-    masterCta: state.profileCopy.ctaLine,
   };
 }
 
@@ -123,27 +92,31 @@ export function compileMarkdown(pack: CompiledAuthorityPack): string {
     lines.push('');
   });
 
-  lines.push('## Profile Copy');
-  lines.push(`- **Professional Headline:** ${pack.profileCopy.professionalHeadline}`);
-  lines.push(`- **Short Bio:** ${pack.profileCopy.shortBio}`);
-  lines.push(`- **Long Bio:** ${pack.profileCopy.longBio}`);
-  lines.push(`- **Offer Statement:** ${pack.profileCopy.offerStatement}`);
-  lines.push(`- **Credibility Bullets:**`);
-  pack.profileCopy.credibilityBullets.forEach((b) => lines.push(`  - ${b}`));
-  lines.push(`- **Proof Reference Line:** ${pack.profileCopy.proofReferenceLine}`);
-  lines.push(`- **CTA Line:** ${pack.profileCopy.ctaLine}`);
-  lines.push('');
+  if (pack.profilePortfolioStrategy) {
+    lines.push('## Profile & Portfolio Strategy');
+    lines.push(`- **Primary Goal:** ${pack.profilePortfolioStrategy.presentationStrategy.primaryGoal}`);
+    lines.push(`- **Communication Approach:** ${pack.profilePortfolioStrategy.presentationStrategy.communicationApproach}`);
+    lines.push(`- **Authority Emphasis:** ${pack.profilePortfolioStrategy.presentationStrategy.authorityEmphasis}`);
+    lines.push(`- **Navigation Principle:** ${pack.profilePortfolioStrategy.presentationStrategy.navigationPrinciple}`);
+    lines.push('');
 
-  lines.push('## Portfolio');
-  lines.push(`- **Portfolio CTA:** ${pack.portfolioCopy.portfolioCta}`);
-  pack.portfolioCopy.sections.forEach((s) => {
-    lines.push(`- **${s.heading}** (${s.type})`);
-    lines.push(`  ${s.body}`);
-    if (s.bullets && s.bullets.length > 0) {
-      s.bullets.forEach((b) => lines.push(`  - ${b}`));
-    }
-  });
-  lines.push('');
+    lines.push('### Reading Journey');
+    pack.profilePortfolioStrategy.readingJourney.forEach((r) => {
+      lines.push(`- **Step ${r.stepIndex} (${r.phase}):** ${r.whatClientSees} (${r.whyTheySeeIt}) -> Trust: ${r.trustEstablished}`);
+    });
+    lines.push('');
+
+    lines.push('### Portfolio Structure');
+    pack.profilePortfolioStrategy.portfolioStructure.forEach((s) => {
+      lines.push(`#### ${s.sectionName}`);
+      lines.push(`${s.purpose}`);
+      s.proofAssetIds.forEach((id) => {
+        const placement = pack.profilePortfolioStrategy?.evidencePlacement.find(e => e.proofAssetId === id);
+        lines.push(`- **Asset:** ${id.replace(/_/g, ' ')} (${placement?.placementReason || ''})`);
+      });
+      lines.push('');
+    });
+  }
 
   lines.push('## Publish Checklist');
   if (pack.checklistItems.length > 0) {

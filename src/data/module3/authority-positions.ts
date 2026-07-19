@@ -1,4 +1,5 @@
-import type { AuthorityPosition } from '../../types/module3';
+import type { AuthorityPosition, AuthorityProfile } from '../../types/module3';
+import { classifyService } from './service-taxonomy';
 
 export interface AuthorityPositionInfo {
   id: AuthorityPosition;
@@ -56,6 +57,7 @@ const SERVICE_LABELS: Record<string, string> = {
   landing_page_developer: 'Landing Page Developer',
   frontend_developer: 'Frontend Developer',
   no_code_developer: 'No-Code Developer',
+  custom_theme_development: 'Custom Theme Developer',
   ui_ux_designer: 'UI/UX Designer',
   landing_page_designer: 'Landing Page Designer',
   brand_designer: 'Brand Designer',
@@ -67,27 +69,9 @@ const SERVICE_LABELS: Record<string, string> = {
   designer: 'Designer',
 };
 
-const SERVICE_TO_TRACK: Record<string, string> = {
-  video_editor: 'editor',
-  short_form_editor: 'editor',
-  youtube_editor: 'editor',
-  podcast_clip_editor: 'editor',
-  ad_creative_editor: 'editor',
-  wordpress_developer: 'developer',
-  landing_page_developer: 'developer',
-  frontend_developer: 'developer',
-  no_code_developer: 'developer',
-  ui_ux_designer: 'designer',
-  landing_page_designer: 'designer',
-  brand_designer: 'designer',
-  social_media_designer: 'designer',
-  presentation_designer: 'designer',
-  automation_developer: 'developer',
-};
-
 export function getServiceLabel(serviceId: string | null): string {
   if (!serviceId) return 'professional';
-  return SERVICE_LABELS[serviceId] ?? serviceId.replace(/_/g, ' ');
+  return classifyService(serviceId).label;
 }
 
 function indefiniteArticle(serviceLabel: string): string {
@@ -95,6 +79,17 @@ function indefiniteArticle(serviceLabel: string): string {
   if (serviceLabel.startsWith('UI')) return 'a';
   if ('aeiou'.includes(first)) return 'an';
   return 'a';
+}
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function clampToTwoSentences(text: string): string {
+  const sentences = text.match(/[^.!?\n]+[.!?]/g);
+  if (!sentences) return text;
+  const result = sentences.slice(0, 2).join(' ').trim();
+  return result.endsWith('.') ? result : result + '.';
 }
 
 const BUYER_LABELS: Record<string, string> = {
@@ -188,18 +183,18 @@ function normalise(value: string): string {
 function scoreBuilder(ctx: PositionContext): number {
   let score = 0;
   const service = ctx.serviceId ?? '';
-  const track = SERVICE_TO_TRACK[service] ?? '';
+  const track = classifyService(service).family;
   const mechanism = normalise(ctx.uniqueMechanism);
   const deliverables = ctx.deliverables.map(normalise).join(' ');
 
-  if (track === 'editor') score += 6;
-  if (track === 'developer') score += 5;
-  if (track === 'designer') score += 5;
+  if (track === 'editor') score += 4;
+  if (track === 'developer') score += 4;
+  if (track === 'designer') score += 3;
 
   if (
-    service.includes('editor') ||
-    service.includes('developer') ||
-    service.includes('designer')
+    track === 'editor' ||
+    track === 'developer' ||
+    track === 'designer'
   ) {
     score += 2;
   }
@@ -212,7 +207,7 @@ function scoreBuilder(ctx: PositionContext): number {
     score += 2;
   }
 
-  if (mechanism.includes('audit') || mechanism.includes('analyse') || mechanism.includes('analyse') || mechanism.includes('measure') || mechanism.includes('optimise') || mechanism.includes('optimize')) {
+  if (mechanism.includes('audit') || mechanism.includes('analyse') || mechanism.includes('measure') || mechanism.includes('optimise') || mechanism.includes('optimize')) {
     score -= 2;
   }
 
@@ -255,20 +250,15 @@ function scoreDeconstructor(ctx: PositionContext): number {
   const deliverables = ctx.deliverables.map(normalise).join(' ');
   const positioning = normalise(ctx.positioning);
 
-  if (mechanism.includes('deconstruct') || mechanism.includes('framework') || mechanism.includes('system') || mechanism.includes('strategy') || mechanism.includes('analyse') || mechanism.includes('analyse') || mechanism.includes('explain') || mechanism.includes('study') || mechanism.includes('research') || mechanism.includes('break down') || mechanism.includes('methodology')) {
+  if (mechanism.includes('deconstruct') || mechanism.includes('analyse') || mechanism.includes('analyse') || mechanism.includes('explain') || mechanism.includes('study') || mechanism.includes('research') || mechanism.includes('break down')) {
     score += 4;
   }
 
-  if (positioning.includes('framework') || positioning.includes('system') || positioning.includes('strategy') || positioning.includes('methodolog') || positioning.includes('deconstruct') || positioning.includes('explain') || positioning.includes('analyse')) {
+  if (positioning.includes('deconstruct') || positioning.includes('explain') || positioning.includes('analyse') || positioning.includes('research')) {
     score += 2;
   }
 
-  if (deliverables.includes('framework') || deliverables.includes('strategy') || deliverables.includes('research') || deliverables.includes('analysis') || deliverables.includes('methodology') || deliverables.includes('system') || deliverables.includes('blueprint') || deliverables.includes('playbook') || deliverables.includes('guide')) {
-    score += 2;
-  }
-
-  const service = ctx.serviceId ?? '';
-  if ((service === 'presentation_designer' || service === 'brand_designer' || service === 'ui_ux_designer') && (mechanism.includes('framework') || mechanism.includes('system') || mechanism.includes('strategy') || mechanism.includes('design system') || mechanism.includes('methodolog'))) {
+  if (deliverables.includes('research') || deliverables.includes('analysis') || deliverables.includes('playbook') || deliverables.includes('guide')) {
     score += 2;
   }
 
@@ -280,23 +270,45 @@ function scorePractitioner(ctx: PositionContext): number {
   const service = ctx.serviceId ?? '';
   const mechanism = normalise(ctx.uniqueMechanism);
   const deliverables = ctx.deliverables.map(normalise).join(' ');
+  const track = classifyService(service).family;
 
-  if (service === 'automation_developer') score += 6;
+  if (track === 'automation') score += 6;
 
-  if (mechanism.includes('automation') || mechanism.includes('workflow') || mechanism.includes('process') || mechanism.includes('system') || mechanism.includes('operation') || mechanism.includes('pipeline') || mechanism.includes('template') || mechanism.includes('repeat') || mechanism.includes('scale') || mechanism.includes('execute') || mechanism.includes('implement')) {
+  if (track === 'designer') score += 5;
+  if (track === 'editor') score += 4;
+  if (track === 'developer') score += 3;
+
+  if (
+    track === 'editor' ||
+    track === 'developer' ||
+    track === 'designer' ||
+    track === 'automation'
+  ) {
+    score += 2;
+  }
+
+  if (mechanism.includes('automation') || mechanism.includes('workflow') || mechanism.includes('process') || mechanism.includes('operation') || mechanism.includes('pipeline') || mechanism.includes('template') || mechanism.includes('repeat') || mechanism.includes('scale') || mechanism.includes('execute') || mechanism.includes('implement')) {
     score += 3;
   }
 
-  if (deliverables.includes('automation') || deliverables.includes('workflow') || deliverables.includes('process') || deliverables.includes('system') || deliverables.includes('template') || deliverables.includes('pipeline') || deliverables.includes('operation') || deliverables.includes('integration')) {
+  if (mechanism.includes('design') || mechanism.includes('edit') || mechanism.includes('build') || mechanism.includes('develop') || mechanism.includes('create') || mechanism.includes('implement')) {
+    score += 2; // Active execution/creation verbs for practitioners
+  }
+
+  if (deliverables.includes('automation') || deliverables.includes('workflow') || deliverables.includes('process') || deliverables.includes('template') || deliverables.includes('pipeline') || deliverables.includes('operation') || deliverables.includes('integration')) {
     score += 2;
+  }
+
+  if (deliverables.includes('design') || deliverables.includes('interface') || deliverables.includes('mockup') || deliverables.includes('prototype') || deliverables.includes('wireframe')) {
+    score += 2;
+  }
+
+  if (ctx.offerType === 'one_time_project' || ctx.offerType === 'retainer') {
+    score += 1; // Direct execution fits standard project/retainer delivery
   }
 
   if (ctx.valueAmplifier.toLowerCase().includes('automation') || ctx.valueAmplifier.toLowerCase().includes('workflow') || ctx.valueAmplifier.toLowerCase().includes('process') || ctx.valueAmplifier.toLowerCase().includes('efficiency') || ctx.valueAmplifier.toLowerCase().includes('scale')) {
     score += 1;
-  }
-
-  if (!mechanism.includes('automation') && !mechanism.includes('workflow') && !mechanism.includes('process') && !mechanism.includes('operation')) {
-    score -= 1;
   }
 
   return score;
@@ -332,31 +344,50 @@ function generateScoreExplanation(
   const serviceLabel = getServiceLabel(ctx.serviceId);
   const buyerProblem = resolveBuyerProblem(ctx.marketId);
   const mechanism = ctx.uniqueMechanism.trim();
+  const buyerLabel = getBuyerLabel(ctx.marketId);
+
+  function reason(text: string): string {
+    return `• ${text}`;
+  }
 
   switch (position) {
     case 'builder': {
+      const parts: string[] = [];
+      parts.push(reason(`You are a ${serviceLabel} — your work is tangible and prospects can evaluate it directly.`));
       if (mechanism) {
-        return `As a ${serviceLabel}, your strength is in the quality of what you produce. Your "${mechanism}" approach focuses on creating output that speaks for itself. The Builder position lets prospects trust you based on your craft — the actual work you deliver, not past client names. This works because ${buyerProblem}.`;
+        parts.push(reason(`Your "${mechanism}" method produces output that speaks for itself, so trust is earned through the quality of what you deliver to ${buyerLabel}.`));
+      } else {
+        parts.push(reason(`Prospects trust you because they can see the quality in every piece of work you produce for ${buyerLabel}.`));
       }
-      return `As a ${serviceLabel}, your strength is in the quality of what you produce. The Builder position lets prospects trust you based on your craft — the actual work you deliver, not past client names. This works because ${buyerProblem}.`;
+      parts.push(reason(`This position works because ${buyerProblem}.`));
+      return parts.join('\n');
     }
     case 'auditor': {
-      const phrase = mechanism
-        ? `Your "${mechanism}" approach is well-suited to the Auditor position`
-        : 'The Auditor position';
-      return `${phrase}, which lets prospects trust you because you can find what is broken, measure what matters, and show a clear improvement path. This works because ${buyerProblem}.`;
+      const parts: string[] = [];
+      parts.push(reason(`As a ${serviceLabel}, you find what is broken and show how to fix it — ${buyerLabel} need that measurable clarity.`));
+      if (mechanism) {
+        parts.push(reason(`Your "${mechanism}" gives ${buyerLabel} a clear, data-backed path to improvement.`));
+      }
+      parts.push(reason(`This position works because ${buyerProblem}.`));
+      return parts.join('\n');
     }
     case 'deconstructor': {
-      const phrase = mechanism
-        ? `Your "${mechanism}" approach fits the Deconstructor position naturally`
-        : 'The Deconstructor position';
-      return `${phrase}, which lets prospects trust you because you can break down complex problems into clear, actionable insights. This works because ${buyerProblem}.`;
+      const parts: string[] = [];
+      parts.push(reason(`You break down why effective work succeeds, which helps ${buyerLabel} understand the strategy behind the execution.`));
+      if (mechanism) {
+        parts.push(reason(`Your "${mechanism}" framework translates complex challenges into clear, actionable insights for ${buyerLabel}.`));
+      }
+      parts.push(reason(`This position works because ${buyerProblem}.`));
+      return parts.join('\n');
     }
     case 'practitioner': {
-      const phrase = mechanism
-        ? `Your "${mechanism}" approach is built on real execution`
-        : 'You are positioned as a hands-on executor';
-      return `${phrase}. The Practitioner position lets prospects trust you because you do the work yourself every day — not just talk about it. This works because ${buyerProblem}.`;
+      const parts: string[] = [];
+      parts.push(reason(`You do the work yourself as a ${serviceLabel} — no theory, no delegation, just real execution for ${buyerLabel}.`));
+      if (mechanism) {
+        parts.push(reason(`Your "${mechanism}" is built on hands-on experience, which is what ${buyerLabel} need to trust.`));
+      }
+      parts.push(reason(`This position works because ${buyerProblem}.`));
+      return parts.join('\n');
     }
   }
 }
@@ -439,9 +470,60 @@ function mechanismLead(mechanismText: string): string {
   return `Using ${article} ${mechanismText}`;
 }
 
+function buildTrustPromise(
+  sentence1: string,
+  sentence2: string,
+): string {
+  let s1 = sentence1.trim();
+  if (!s1.endsWith('.')) s1 += '.';
+  let s2 = sentence2.trim();
+  if (!s2.endsWith('.')) s2 += '.';
+
+  let text = `${s1} ${s2}`;
+  let count = wordCount(text);
+
+  if (count >= 35 && count <= 55) {
+    return text;
+  }
+
+  if (count < 35) {
+    const s2Clean = s2.replace(/\.$/, '');
+    const tail = ' to establish high-converting credibility without unnecessary overhead.';
+    s2 = `${s2Clean}${tail}`;
+    text = `${s1} ${s2}`;
+    count = wordCount(text);
+    if (count >= 35 && count <= 55) {
+      return text;
+    }
+  }
+
+  if (count > 55) {
+    const words = text.split(/\s+/);
+    const s1Words = s1.split(/\s+/);
+    const s1Count = s1Words.length;
+    const remaining = 54 - s1Count;
+    if (remaining > 5) {
+      const s2Words = s2.split(/\s+/);
+      const s2Truncated = s2Words.slice(0, remaining).join(' ') + '.';
+      text = `${s1} ${s2Truncated}`;
+    } else {
+      const truncatedS1 = s1Words.slice(0, 30).join(' ') + '.';
+      const dummyS2 = 'I deliver results consistently.';
+      text = `${truncatedS1} ${dummyS2}`;
+    }
+  }
+
+  const sentences = text.match(/[^.!?\n]+[.!?]/g);
+  if (sentences && sentences.length >= 2) {
+    text = `${sentences[0].trim()} ${sentences[1].trim()}`;
+  }
+  return text;
+}
+
 export function generateCoreTrustPromise(
   position: AuthorityPosition,
   ctx: PositionContext,
+  variation?: number,
 ): string {
   const serviceLabel = getServiceLabel(ctx.serviceId);
   const article = indefiniteArticle(serviceLabel);
@@ -449,37 +531,92 @@ export function generateCoreTrustPromise(
   const problemClause = resolveBuyerProblemClause(ctx.marketId);
 
   const positioning = ctx.positioning.trim();
-  const roleWithPositioning = positioning
-    ? `${article} ${serviceLabel} specialising in ${positioning}`
-    : `${article} ${serviceLabel}`;
+  const rolePart = positioning
+    ? `${serviceLabel} focused on ${buyer}`
+    : `${serviceLabel}`;
 
   const deliverables = ctx.deliverables;
   const mechanism = ctx.uniqueMechanism.trim();
+  const v = variation ?? 0;
 
   switch (position) {
     case 'builder': {
       const process = describeProcess(deliverables, mechanism, ctx.serviceId);
-      if (mechanism) {
-        return `As ${roleWithPositioning}, I prove my expertise through the quality of what I produce. ${mechanismLead(process.text)}, I show ${buyer} that I understand how ${problemClause}. This is the standard of work they can expect.`;
+      const method = mechanism
+        ? `${mechanismLead(process.text)}`
+        : `By ${process.text}`;
+      
+      const mod = v % 3;
+      if (mod === 0) {
+        const opening = `I am ${article} ${rolePart} who proves expertise through the quality of what I produce.`;
+        const explanation = `${method}, I deliver work that shows ${buyer} how ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else if (mod === 1) {
+        const opening = `As ${article} ${rolePart}, I let my work speak for itself.`;
+        const explanation = `${method}, I give ${buyer} the quality they need because I understand that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else {
+        const opening = `I am ${article} ${rolePart} who designs and crafts every project to the highest standards.`;
+        const explanation = `${method}, I help ${buyer} solve the problem that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
       }
-      return `As ${roleWithPositioning}, I prove my expertise through the quality of what I produce. By ${process.text}, I show ${buyer} that I understand how ${problemClause}. This is the standard of work they can expect.`;
     }
 
     case 'auditor': {
       const method = mechanism || 'structured analysis';
-      return `As ${roleWithPositioning}, I prove my expertise by finding what is broken and showing how to fix it. My ${method} gives ${buyer} a clear, measurable path to better results, because I understand that ${problemClause}.`;
+      const mod = v % 3;
+      if (mod === 0) {
+        const opening = `I am ${article} ${rolePart} who earns trust by finding what is broken and showing how to fix it.`;
+        const explanation = `My ${method} gives ${buyer} a clear path to better results, because I understand that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else if (mod === 1) {
+        const opening = `I am ${article} ${rolePart} who helps ${buyer} by identifying what is not working and how to improve it.`;
+        const explanation = `Through ${method}, I provide a measurable path forward because I understand that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else {
+        const opening = `As ${article} ${rolePart}, I audit and measure existing setups to reveal performance bottlenecks.`;
+        const explanation = `Using ${method}, I ensure ${buyer} gets optimal efficiency because ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      }
     }
 
     case 'deconstructor': {
       const framework = mechanism || 'structured analysis';
-      return `As ${roleWithPositioning}, I prove my expertise by breaking down why effective work succeeds. My ${framework} framework helps ${buyer} see exactly how to solve the challenge that ${problemClause}.`;
+      const mod = v % 3;
+      if (mod === 0) {
+        const opening = `I am ${article} ${rolePart} who earns trust by breaking down what works and making it actionable.`;
+        const explanation = `My ${framework} approach helps ${buyer} see exactly how to solve the problem that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else if (mod === 1) {
+        const opening = `I am ${article} ${rolePart} who earns trust by studying what works and turning it into a repeatable approach.`;
+        const explanation = `${framework} is how I help ${buyer} solve the challenge that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else {
+        const opening = `As ${article} ${rolePart}, I analyze industry benchmarks and dissect successful patterns.`;
+        const explanation = `Using ${framework}, I show ${buyer} exactly why their competitors succeed and how ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      }
     }
 
     case 'practitioner': {
       const action = mechanism
         ? `applying ${mechanism} every day`
         : `delivering ${describeDeliverableSet(deliverables, ctx.serviceId)} myself`;
-      return `As ${roleWithPositioning}, I prove my expertise by doing the work myself, every day. I help ${buyer} by ${action}, which means I understand first-hand that ${problemClause}.`;
+      
+      const mod = v % 3;
+      if (mod === 0) {
+        const opening = `I am ${article} ${rolePart} who earns trust by doing the work myself, every day.`;
+        const explanation = `I help ${buyer} by ${action}, which means I understand first-hand that ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else if (mod === 1) {
+        const opening = `I am ${article} ${rolePart} who earns trust through hands-on execution, not theory.`;
+        const explanation = `By ${action}, I show ${buyer} that I understand first-hand how ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      } else {
+        const opening = `As ${article} ${rolePart}, I stay in the trenches delivering results without layers of delegation.`;
+        const explanation = `Through ${action}, I guarantee ${buyer} that I know exactly how ${problemClause}.`;
+        return buildTrustPromise(opening, explanation);
+      }
     }
   }
 }
@@ -488,5 +625,73 @@ export function generateGeneratedPromise(
   position: AuthorityPosition,
   ctx: PositionContext,
 ): string {
-  return generateCoreTrustPromise(position, ctx);
+  return generateCoreTrustPromise(position, ctx, 0);
+}
+
+function getPositionInfo(position: AuthorityPosition) {
+  return AUTHORITY_POSITIONS.find((p) => p.id === position) || AUTHORITY_POSITIONS[0];
+}
+
+export function generateAuthorityProfile(position: AuthorityPosition, ctx: PositionContext): AuthorityProfile {
+  const info = getPositionInfo(position);
+  const coreTrustPromise = generateCoreTrustPromise(position, ctx, 0);
+  const rationale = generatePositionRationale(position, ctx);
+
+  let startDoing: string[] = [];
+  let continueDoing: string[] = [];
+  let avoidDoing: string[] = [];
+  let clientPerspective = '';
+
+  const buyer = getBuyerLabel(ctx.marketId);
+
+  if (position === 'builder') {
+    startDoing = ['Documenting the raw process of creation', 'Showcasing unpolished "before" states'];
+    continueDoing = ['Delivering high-quality final outputs', 'Maintaining your current standards'];
+    avoidDoing = ['Giving theoretical advice without showing the work', 'Hiding behind jargon'];
+    clientPerspective = `As a ${buyer}, I trust you because I can see the undeniable quality of what you produce. I don't care about your philosophy; I care that you can build the thing I need.`;
+  } else if (position === 'auditor') {
+    startDoing = ['Sharing diagnostic tools and checklists', 'Highlighting common failure patterns'];
+    continueDoing = ['Being meticulous with data and measurement', 'Providing clear improvement paths'];
+    avoidDoing = ['Making subjective claims without data', 'Focusing only on execution without strategy'];
+    clientPerspective = `As a ${buyer}, I trust you because you can see exactly where my current setup is failing. Your objective measurement gives me confidence that we are fixing the right problems.`;
+  } else if (position === 'deconstructor') {
+    startDoing = ['Writing teardowns of successful examples', 'Creating visual frameworks'];
+    continueDoing = ['Making complex concepts simple', 'Focusing on the "why" behind the "what"'];
+    avoidDoing = ['Keeping your insights to yourself', 'Overcomplicating the solution'];
+    clientPerspective = `As a ${buyer}, I trust you because you make the complex seem simple. Your frameworks give me clarity and a mental model I can actually use.`;
+  } else {
+    startDoing = ['Sharing daily learnings from the trenches', 'Showing the messy reality of the work'];
+    continueDoing = ['Executing at a high level', 'Staying close to the actual work'];
+    avoidDoing = ['Positioning yourself as a detached guru', 'Delegating the core value delivery'];
+    clientPerspective = `As a ${buyer}, I trust you because you actually do the work. You aren't just an advisor—you're in the trenches every day, which means your advice is grounded in reality.`;
+  }
+
+  const report = `Authority Strategy Report
+---
+Position: ${info.label}
+Focus: ${ctx.deliverables.join(', ') || 'Your core service'}
+Audience: ${buyer}
+
+Your strategic advantage lies in ${info.howTrustIsEarned.toLowerCase()} This means your entire presence should reflect the reality of your work, rather than relying on standard marketing claims.`;
+
+  return {
+    version: 1,
+    position,
+    summary: info.label,
+    strategicExplanation: info.howTrustIsEarned,
+    whyThisFitsYou: rationale,
+    coreTrustPromise,
+    reinforcementPlan: {
+      startDoing,
+      continueDoing,
+      avoidDoing,
+    },
+    clientPerspective,
+    report,
+  };
+}
+
+export function analyzeAuthorityStrategy(ctx: PositionContext): AuthorityProfile {
+  const recommendedPosition = resolveRecommendedPosition(ctx);
+  return generateAuthorityProfile(recommendedPosition, ctx);
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   CheckCircle2, Circle, Lock, ArrowLeft, Menu, X,
@@ -121,6 +121,21 @@ export function Module1V2() {
   }, []);
 
   const showSidebar = viewport === 'desktop';
+  const stepContentRef = useRef<HTMLDivElement>(null);
+
+  /* ── Smooth scroll to step heading on step change ── */
+  useEffect(() => {
+    const el = stepContentRef.current;
+    if (!el) return;
+    const heading = el.querySelector('h2');
+    const target = heading || el;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({
+      behavior: prefersReducedMotion ? 'instant' : 'smooth',
+      block: 'start',
+    });
+    if (heading) heading.focus({ preventScroll: true });
+  }, [currentStep]);
 
   /* ── Derived state ── */
 
@@ -656,7 +671,7 @@ export function Module1V2() {
           showSidebar && 'ml-[280px] xl:ml-[320px]',
         )}
       >
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 lg:py-16">
+        <div ref={stepContentRef} className="max-w-3xl mx-auto px-5 sm:px-8 py-10 lg:py-16">
           {/* Step header badge */}
           <div className="mb-8">
             <div

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { AlertCircle, ArrowLeft, RefreshCw, AlertTriangle } from 'lucide-react';
 import { Module3Shell } from '../components/module3/Module3Shell';
 import { Module3IntroPage } from '../components/module3/Module3IntroPage';
 import { StepContent } from '../components/module3/StepContent';
@@ -87,12 +87,12 @@ export function AuthoritySystem() {
     }
 
     if (storedFP !== currentFP) {
+      // ALWAYS overwrite Module 3's context with live Module 1/2 values
+      setPhase1Context(mod1Ctx);
+      setPhase2Context(mod2Ctx);
+      setUpstreamFingerprint(currentFP);
       if (hasProgress) {
         setIsUpstreamStale(true);
-      } else {
-        setPhase1Context(mod1Ctx);
-        setPhase2Context(mod2Ctx);
-        setUpstreamFingerprint(currentFP);
       }
     }
   }, [storedFP, currentFP, serviceId, hasProgress]);
@@ -174,45 +174,56 @@ export function AuthoritySystem() {
     );
   }
 
-  if (isStale) {
-    return (
-      <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
-        <div className="max-w-md text-center space-y-8">
-          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto">
-            <AlertCircle size={28} className="text-amber-500" />
-          </div>
-          <div className="space-y-3">
-            <h1 className="text-xl font-bold tracking-tight">Your Context Changed</h1>
-            <p className="text-sm text-neutral-500 leading-relaxed">
-              Your offer or target context changed. Your Authority System needs to be
-              rebuilt from the updated context.
-            </p>
-          </div>
-          <button
-            onClick={handleRebuild}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:opacity-90 cursor-pointer"
-          >
-            <RefreshCw size={14} />
-            Reset and Rebuild Authority System
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!moduleStarted) {
-    return (
-      <Module3IntroPage
-        onStart={handleStart}
-        onBackToBlueprint={handleBackToBlueprint}
-      />
-    );
-  }
-
   return (
-    <Module3Shell onBack={handleBackToOverview}>
-      <StepContent />
-    </Module3Shell>
+    <div className="relative flex flex-col min-h-screen bg-[#f8f9ff]">
+      {isStale && (
+        <div className="bg-amber-50 border-b border-amber-200 p-4 text-[#0b1c30] z-50">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="text-amber-600 flex-shrink-0 animate-pulse" size={20} />
+              <div className="text-left">
+                <p className="text-sm font-semibold">Upstream context has changed</p>
+                <p className="text-xs text-neutral-500">Your Module 1 or 2 settings have been modified. Choose how to handle your existing work:</p>
+              </div>
+            </div>
+            <div className="flex gap-2 text-xs font-semibold">
+              <button
+                onClick={() => useModule3Store.getState().dismissStaleContext()}
+                className="px-3 py-1.5 rounded-lg bg-neutral-200 hover:bg-neutral-300 text-neutral-700 transition cursor-pointer"
+              >
+                Keep Current Work
+              </button>
+              <button
+                onClick={() => useModule3Store.getState().refreshStaleContext()}
+                className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white transition cursor-pointer"
+              >
+                Refresh Unmodified Fields
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm("Are you sure you want to reset all Module 3 data? This will delete all your edits.")) {
+                    handleRebuild();
+                  }
+                }}
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white transition cursor-pointer"
+              >
+                Reset Module
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {!moduleStarted ? (
+        <Module3IntroPage
+          onStart={handleStart}
+          onBackToBlueprint={handleBackToBlueprint}
+        />
+      ) : (
+        <Module3Shell onBack={handleBackToOverview}>
+          <StepContent />
+        </Module3Shell>
+      )}
+    </div>
   );
 }
 

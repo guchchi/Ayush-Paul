@@ -14,6 +14,7 @@ import type { ChecklistItem } from '../../types/module3';
 import { composeStep5Content, buildPersonalizationContext } from '../../lib/module3/personalized-content';
 import { StepHeader } from '../workspace/StepHeader';
 import { ModuleButton } from '../workspace/ModuleButton';
+import { DynamicRoadmap } from '../workspace/DynamicRoadmap';
 
 const CHECKLIST_TEMPLATES: { id: string; category: ChecklistItem['category']; task: string }[] = [
   { id: 'build_1', category: 'build', task: 'Create proof asset #1 from its brief' },
@@ -73,8 +74,7 @@ export function Step5AuthorityPack() {
       coreTrustPromise: state.coreTrustPromise,
       proofPriorities: state.proofPriorities,
       proofAssets: state.proofAssets,
-      profileCopy: state.profileCopy,
-      portfolioCopy: state.portfolioCopy,
+      profilePortfolioStrategy: state.profilePortfolioStrategy,
       checklist: state.checklist,
     }))
   );
@@ -91,7 +91,7 @@ export function Step5AuthorityPack() {
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const hasProfile = useModule3Store((s) => !!s.profileCopy.professionalHeadline);
+  const hasStrategy = useModule3Store((s) => !!s.profilePortfolioStrategy);
 
   const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
   const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
@@ -177,8 +177,7 @@ export function Step5AuthorityPack() {
       case 'position': return `# Authority Position\n\n${compiled.authorityPosition}\n\n## Core Trust Promise\n\n${compiled.coreTrustPromise}`;
       case 'priorities': return `# Proof Priorities\n\n${compiled.proofPriorities.map((p, i) => `${i+1}. ${p.gapTitle} — ${p.recommendedFormat}`).join('\n')}`;
       case 'assets': return compiled.proofAssets.map((a) => `## ${a.title}\n- **Format:** ${a.assetType}\n- **Headline:** ${a.headline}\n- **Description:** ${a.description}\n- **Proof Statement:** ${a.proofStatement}\n- **CTA:** ${a.cta}`).join('\n\n');
-      case 'profile': return `# Profile Copy\n\n- **Headline:** ${compiled.profileCopy.professionalHeadline}\n- **Short Bio:** ${compiled.profileCopy.shortBio}\n- **Long Bio:** ${compiled.profileCopy.longBio}\n- **Offer:** ${compiled.profileCopy.offerStatement}\n- **Bullets:** ${compiled.profileCopy.credibilityBullets.join(', ')}\n- **Proof Ref:** ${compiled.profileCopy.proofReferenceLine}\n- **CTA:** ${compiled.profileCopy.ctaLine}`;
-      case 'portfolio': return `# Portfolio\n\n**CTA:** ${compiled.portfolioCopy.portfolioCta}\n\n${compiled.portfolioCopy.sections.map((s) => `## ${s.heading}\n${s.body}`).join('\n\n')}`;
+      case 'strategy': return `# Profile & Portfolio Strategy\n\n- **Primary Goal:** ${compiled.profilePortfolioStrategy?.presentationStrategy.primaryGoal}`;
       default: return '';
     }
   }, []);
@@ -190,7 +189,7 @@ export function Step5AuthorityPack() {
     handleCopy(md, 'full');
   }, [handleCopy]);
 
-  if (!hasProfile) {
+  if (!hasStrategy) {
     return (
       <div className="space-y-6">
         <StepHeader
@@ -211,6 +210,9 @@ export function Step5AuthorityPack() {
 
   return (
     <div className="space-y-8">
+      {/* Downstream Roadmap Progression Path */}
+      <DynamicRoadmap activeMilestone="authority" />
+
       <div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3 border border-emerald-200">
           <Sparkles size={10} />
@@ -225,8 +227,8 @@ export function Step5AuthorityPack() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <ReadinessCard label="Authority Position" ready={!!pack.authorityPosition} />
         <ReadinessCard label="3 Proof Assets" ready={pack.proofAssets.length === 3} />
-        <ReadinessCard label="Profile Copy" ready={!!pack.profileCopy.professionalHeadline} />
-        <ReadinessCard label="Portfolio Structure" ready={pack.portfolioCopy.sections.length > 0} />
+        <ReadinessCard label="Strategy Generated" ready={!!pack.profilePortfolioStrategy} />
+        <ReadinessCard label="Reading Journey" ready={!!pack.profilePortfolioStrategy?.readingJourney.length} />
       </div>
 
       <div className="space-y-4">
@@ -282,30 +284,20 @@ export function Step5AuthorityPack() {
         </SectionCard>
 
         <SectionCard
-          title="Profile Copy"
-          onCopy={() => handleCopy(sectionCopy('profile'), 'profile')}
-          copied={copiedId === 'profile'}
+          title="Profile & Portfolio Strategy"
+          onCopy={() => handleCopy(sectionCopy('strategy'), 'strategy')}
+          copied={copiedId === 'strategy'}
         >
           <div className="space-y-2">
-            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Headline:</span> {pack.profileCopy.professionalHeadline}</p>
-            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Bio:</span> {pack.profileCopy.shortBio}</p>
-            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Offer:</span> {pack.profileCopy.offerStatement}</p>
-            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">CTA:</span> {pack.profileCopy.ctaLine}</p>
-          </div>
-        </SectionCard>
-
-        <SectionCard
-          title="Portfolio Structure"
-          onCopy={() => handleCopy(sectionCopy('portfolio'), 'portfolio')}
-          copied={copiedId === 'portfolio'}
-        >
-          <div className="space-y-2">
-            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">CTA:</span> {pack.portfolioCopy.portfolioCta}</p>
+            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Primary Goal:</span> {pack.profilePortfolioStrategy?.presentationStrategy.primaryGoal}</p>
+            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Communication:</span> {pack.profilePortfolioStrategy?.presentationStrategy.communicationApproach}</p>
+            <p className="text-[11px] text-neutral-500"><span className="text-neutral-400 font-medium">Emphasis:</span> {pack.profilePortfolioStrategy?.presentationStrategy.authorityEmphasis}</p>
             <div className="space-y-1 mt-2">
-              {pack.portfolioCopy.sections.map((s, i) => (
+              <span className="text-[10px] font-bold text-neutral-400">Reading Journey</span>
+              {pack.profilePortfolioStrategy?.readingJourney.map((s, i) => (
                 <div key={i} className="flex items-center gap-2 text-[10px]">
-                  <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-neutral-100 text-neutral-500">{s.type.replace(/_/g, ' ')}</span>
-                  <span className="text-neutral-600">{s.heading}</span>
+                  <span className="text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-neutral-100 text-neutral-500">{s.phase}</span>
+                  <span className="text-neutral-600">{s.whatClientSees}</span>
                 </div>
               ))}
             </div>

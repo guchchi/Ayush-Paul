@@ -12,6 +12,7 @@ export function getServiceLabel(serviceId: string | null): string {
     landing_page_developer: 'Landing Page Developer',
     no_code_developer: 'No-Code Developer',
     frontend_developer: 'Frontend Developer',
+    custom_theme_development: 'Custom Theme Developer',
     automation_developer: 'Automation Developer',
     ui_ux_designer: 'UI/UX Designer',
     landing_page_designer: 'Landing Page Designer',
@@ -34,7 +35,7 @@ export function getBuyerTerm(marketId: string | null, nicheId: string | null): s
 
 export function getCategory(serviceId: string | null): 'video' | 'wordpress' | 'design' {
   const video = ['video_editor', 'short_form_editor', 'youtube_editor', 'podcast_clip_editor', 'ad_creative_editor'];
-  const wp = ['wordpress_developer', 'landing_page_developer', 'no_code_developer', 'frontend_developer', 'automation_developer'];
+  const wp = ['wordpress_developer', 'landing_page_developer', 'no_code_developer', 'frontend_developer', 'automation_developer', 'custom_theme_development'];
   if (video.includes(serviceId ?? '')) return 'video';
   if (wp.includes(serviceId ?? '')) return 'wordpress';
   return 'design';
@@ -42,7 +43,7 @@ export function getCategory(serviceId: string | null): 'video' | 'wordpress' | '
 
 export function getTrack(serviceId: string | null): 'editor' | 'developer' | 'designer' {
   const editor = ['video_editor', 'short_form_editor', 'youtube_editor', 'podcast_clip_editor', 'ad_creative_editor'];
-  const dev = ['wordpress_developer', 'landing_page_developer', 'no_code_developer', 'frontend_developer', 'automation_developer'];
+  const dev = ['wordpress_developer', 'landing_page_developer', 'no_code_developer', 'frontend_developer', 'automation_developer', 'custom_theme_development'];
   if (editor.includes(serviceId ?? '')) return 'editor';
   if (dev.includes(serviceId ?? '')) return 'developer';
   return 'designer';

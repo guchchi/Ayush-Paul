@@ -62,21 +62,10 @@ interface ServiceProfile {
   proofNarrative: string;
 }
 
-type ServiceKey = 'short_form_editor' | 'video_editor' | 'ui_ux_designer' | 'brand_designer' | 'frontend_developer' | 'no_code_developer' | 'automation_developer';
+import { classifyService } from './service-taxonomy';
+import type { ProofProfileKey } from './service-taxonomy';
 
-function serviceKey(serviceId: string | null): ServiceKey {
-  const s = serviceId ?? '';
-  if (s === 'short_form_editor') return 'short_form_editor';
-  if (s === 'video_editor' || s === 'youtube_editor') return 'video_editor';
-  if (s === 'ui_ux_designer') return 'ui_ux_designer';
-  if (s === 'brand_designer') return 'brand_designer';
-  if (s === 'frontend_developer') return 'frontend_developer';
-  if (s === 'no_code_developer') return 'no_code_developer';
-  if (s === 'automation_developer') return 'automation_developer';
-  return 'frontend_developer';
-}
-
-const SERVICE_PROFILES: Record<ServiceKey, ServiceProfile> = {
+const SERVICE_PROFILES: Record<ProofProfileKey, ServiceProfile> = {
   short_form_editor: {
     briefContext: ['source recording', 'candidate teaching moments'],
     materials: [
@@ -121,6 +110,48 @@ const SERVICE_PROFILES: Record<ServiceKey, ServiceProfile> = {
     headlineBase: 'Long-Form Video Edit',
     proofNarrative: 'long-form horizontal editing from source to structured sequence',
   },
+  podcast_clip_editor: {
+    briefContext: ['raw episode audio/video', 'voice leveling targets', 'caption placement'],
+    materials: [
+      'One raw audio/video podcast episode recording (15–60 minutes)',
+      'A selection criteria sheet defining pacing, voice levels, and captions styling',
+    ],
+    baseSteps: [
+      'Identify and log three highly engaging, standalone discussion clips (30–90 seconds each)',
+      'Trim clip starts and ends to eliminate intro filler and trailing silence',
+      'Apply dynamic caption styling with custom typography and word-by-word active highlighting',
+      'Normalize audio tracks to industry standard loudness (-16 LUFS for stereo, -19 LUFS for mono)',
+      'Place text overlays and speaker badges in the safe visual zones (avoiding platform UI overlaps)',
+      'Review transitions and export vertical MP4 clips at 1080x1920',
+    ],
+    deliverables: [
+      'Three polished vertical podcast clips (9:16 vertical MP4)',
+      'Loudness normalization log and caption style presets',
+    ],
+    headlineBase: 'Podcast Highlights Clip Pack',
+    proofNarrative: 'podcast highlights editing from episode raw to vertical clips',
+  },
+  ad_creative_editor: {
+    briefContext: ['direct response brief', 'hook variations', 'call-to-action cards'],
+    materials: [
+      'Raw product footage, product features list, and customer testimonial quotes',
+      'An ad creative storyboard with three distinct hook variations',
+    ],
+    baseSteps: [
+      'Edit three alternative 3-second opening hook clips to test different entry angles',
+      'Align product value proposition callouts with high-energy visual jumps',
+      'Integrate direct-response testimonial graphics with clear text hierarchy',
+      'Construct a high-retention mid-body explaining the unique mechanism',
+      'Add a prominent end-card call-to-action with clear target instruction',
+      'Export three vertical ad creative files (9:16 vertical and 1:1 square versions)',
+    ],
+    deliverables: [
+      'Three vertical video ad creatives with alternative hooks',
+      'Direct-response storyboard and hook variation log',
+    ],
+    headlineBase: 'Direct-Response Video Ad Creative',
+    proofNarrative: 'ad creative video editing from storyboard to multi-hook outputs',
+  },
   ui_ux_designer: {
     briefContext: ['product brief', 'user objective', 'activation path'],
     materials: [
@@ -142,6 +173,28 @@ const SERVICE_PROFILES: Record<ServiceKey, ServiceProfile> = {
     ],
     headlineBase: 'SaaS Onboarding Flow',
     proofNarrative: 'UI/UX design from product brief to interactive prototype',
+  },
+  landing_page_designer: {
+    briefContext: ['conversion layout requirements', 'responsive wireframes', 'visual style sheet'],
+    materials: [
+      'A landing page copy deck and a defined visual brand kit',
+      'A blank design workspace with 12-column desktop and 4-column mobile grids',
+    ],
+    baseSteps: [
+      'Deconstruct the landing page copy deck into high-converting structural sections',
+      'Create low-fidelity wireframes for desktop and mobile screen layouts',
+      'Establish a clear visual hierarchy prioritizing the primary value proposition and call-to-action',
+      'Design high-fidelity desktop mockups (1440px) with custom graphics and buttons',
+      'Design high-fidelity mobile mockups (375px) ensuring proportional tap target sizing',
+      'Define typography styles, color palette parameters, and responsive grid layouts',
+      'Assemble components into an interactive landing page prototype',
+    ],
+    deliverables: [
+      'High-fidelity landing page mockup and interactive prototype (desktop & mobile)',
+      'Component style guide (buttons, typography sizing, colors, grid specs)',
+    ],
+    headlineBase: 'Conversion-Optimized Landing Page Design',
+    proofNarrative: 'landing page design from copy deck to high-fidelity prototype',
   },
   brand_designer: {
     briefContext: ['brand brief', 'buyer audience traits', 'positioning traits'],
@@ -165,6 +218,50 @@ const SERVICE_PROFILES: Record<ServiceKey, ServiceProfile> = {
     ],
     headlineBase: 'Coach Identity System',
     proofNarrative: 'brand design from brief to identity presentation',
+  },
+  social_media_designer: {
+    briefContext: ['brand assets', 'feed grid layout', 'social post templates'],
+    materials: [
+      'Brand guidelines containing logos, fonts, colors, and key messaging templates',
+      'A social media content plan and assets for a 9-post grid campaign',
+    ],
+    baseSteps: [
+      'Develop a 9-post cohesive social media grid layout campaign',
+      'Design 3 reusable carousel post templates (cover, body, call-to-action slides)',
+      'Establish typographic hierarchy for readable, high-contrast headline text overlay',
+      'Create consistent graphic accents, background treatments, and image frames',
+      'Apply brand color rules to ensure maximum contrast and visual interest',
+      'Verify templates maintain brand alignment across feed grid and detail view',
+      'Export editable source file templates and a visual guide of the grid structure',
+    ],
+    deliverables: [
+      'Editable social media design template pack (Figma, Canva, or equivalent)',
+      'Visual grid preview and design template usage guide',
+    ],
+    headlineBase: 'Social Media Template System',
+    proofNarrative: 'social media design from campaign guidelines to editable template pack',
+  },
+  presentation_designer: {
+    briefContext: ['deck narrative outline', 'custom slide layouts', 'data visualization layouts'],
+    materials: [
+      'A raw pitch deck text script and raw business metrics data',
+      'Brand colors, typography choices, and target client personas',
+    ],
+    baseSteps: [
+      'Structure the pitch deck script into a 10-slide visual narrative outline',
+      'Design a slide layout system with high-contrast text and whitespace',
+      'Create custom visual diagrams explaining the core mechanism and service process',
+      'Transform raw metrics into readable data visualization slides',
+      'Design custom mockup slides showcasing application screens or client deliverables',
+      'Verify visual and typographic consistency across all slides',
+      'Export clean vector presentation files and slide-by-slide presenter notes',
+    ],
+    deliverables: [
+      'High-fidelity vector presentation deck (PDF/PPTX/Figma)',
+      'Custom visual assets pack and slide style guide',
+    ],
+    headlineBase: 'High-Stakes Pitch Deck Design',
+    proofNarrative: 'presentation design from script to vector pitch deck',
   },
   frontend_developer: {
     briefContext: ['requirements', 'page structure', 'mobile-first layout'],
@@ -235,7 +332,32 @@ const SERVICE_PROFILES: Record<ServiceKey, ServiceProfile> = {
     headlineBase: 'Automated Workflow Build',
     proofNarrative: 'automation development from workflow specification to run evidence',
   },
+  other_fallback: {
+    briefContext: ['operational workflow requirements', 'deliverables checklist', 'process documentation'],
+    materials: [
+      'A self-written description of your professional service workflow and process',
+      'A checklist of quality and delivery standards for your service output',
+    ],
+    baseSteps: [
+      'Map out your service delivery process from project kickoff to client handoff',
+      'Deconstruct the process into specific phases, milestones, and deliverables',
+      'Draft a detailed operational guide outlining steps for each delivery phase',
+      'Create a client-facing deliverables checklist with quality standards',
+      'Design a clean document layout representing the process flow and delivery guide',
+      'Export the final guide in PDF/document format with clean styling',
+    ],
+    deliverables: [
+      'Service Delivery & Process Blueprint (PDF/Document)',
+      'Quality Assurance & Deliverables Checklist',
+    ],
+    headlineBase: 'Service Delivery Blueprint',
+    proofNarrative: 'professional service blueprint from workflow mapping to quality checklist',
+  },
 };
+
+function serviceKey(serviceId: string | null): ProofProfileKey {
+  return classifyService(serviceId).proofProfileKey;
+}
 
 function formatPresentationStructure(formatId: ProofFormat, position: string): string[] {
   switch (formatId) {
@@ -566,7 +688,7 @@ function buildChecklist(
   steps: string[],
   evidence: string[],
   formatId: ProofFormat,
-  serviceKey: ServiceKey,
+  serviceKey: ProofProfileKey,
   theme: string,
 ): string[] {
   const items: string[] = [];
@@ -642,6 +764,296 @@ function buildChecklist(
   }
 
   return items.slice(0, 14);
+}
+
+function getNicheAdaptiveGuidance(
+  ctx: PriorityContext,
+  priority: { id: string; gapTitle: string; gapDescription: string; recommendedFormat: ProofFormat },
+  formatId: ProofFormat,
+  theme: string
+) {
+  const serviceId = ctx.serviceId || 'unknown';
+  const availableCount = ctx.availableAssets ? ctx.availableAssets.length : 0;
+  
+  // Determine experience level
+  let expLevel: 'beginner' | 'intermediate' | 'advanced' = 'intermediate';
+  if (availableCount <= 1) expLevel = 'beginner';
+  else if (availableCount >= 3) expLevel = 'advanced';
+
+  // 1. Difficulty & Effort
+  let difficulty = 'Medium';
+  let estimatedEffort = '4-6 hours';
+  if (expLevel === 'beginner') {
+    difficulty = 'Easy - Medium';
+    estimatedEffort = '3-5 hours';
+  } else if (expLevel === 'advanced') {
+    difficulty = 'Hard';
+    estimatedEffort = '6-12 hours';
+  }
+
+  // 2. Expected Impact (based on theme or gap title)
+  let expectedImpact = 'Directly addresses client trust concerns.';
+  if (theme === 'saas_metrics') {
+    expectedImpact = 'High Impact: Proves you can drive metric activation for SaaS founders.';
+  } else if (theme === 'recurring_consistency') {
+    expectedImpact = 'High Impact: Establishes Reliability by proving consistent delivery across cycles.';
+  } else if (theme === 'attention_retention') {
+    expectedImpact = 'High Impact: Verifies you can capture and keep viewer attention in the creator niche.';
+  } else if (theme === 'mechanism_proof') {
+    expectedImpact = 'High Impact: Proves your unique execution mechanism works on real-world briefs.';
+  }
+
+  // 3. Track/Service customization (React vs Shopify vs WordPress, YouTube vs Wedding vs Gaming, UI/UX vs Graphic, Copywriter, etc.)
+  let customMaterials: string[] = [];
+  let customSteps: string[] = [];
+  let customDeliverables: string[] = [];
+  let dependencies: string[] = [];
+  let realWorldExample = '';
+
+  const normalService = serviceId.toLowerCase();
+  
+  if (normalService.includes('react') || normalService.includes('frontend')) {
+    customMaterials = [
+      'React Vite template structure',
+      'API mock data endpoints configured for niche expectations',
+      'Component mockups or UI specifications'
+    ];
+    customSteps = [
+      'Scaffold React application using Vite and strict TypeScript guidelines.',
+      'Construct responsive layouts and grids matching 320px to 1440px widths.',
+      'Deploy the working application to Vercel or Netlify for instant link sharing.',
+      'Verify clean state rendering and accessibility elements.'
+    ];
+    customDeliverables = [
+      'Deployed application link with accessible source code repository.',
+      'Component inventory documentation sheet.'
+    ];
+    dependencies = ['Setup public GitHub account', 'Vercel or Netlify free tier setup'];
+    realWorldExample = 'Benchmark: Read through Cal.com’s public monorepo or standard Radix UI library architectures for clean React setups.';
+  } else if (normalService.includes('shopify')) {
+    customMaterials = [
+      'Shopify Partner sandbox developer store access',
+      'CSV file product catalog with placeholder e-commerce inventory',
+      'Figma e-commerce detail page layouts'
+    ];
+    customSteps = [
+      'Set up a new Shopify Development Store inside your Shopify Partner portal.',
+      'Write custom Liquid blocks or section modifications to style the product template pages.',
+      'Optimize the store checkout flow and remove unnecessary scripts to lower response latency.',
+      'Run a Google PageSpeed audit and target scores above 90 on mobile devices.'
+    ];
+    customDeliverables = [
+      'Live Shopify Development store preview link (with password protection disabled).',
+      'Lighthouse audit score screenshot and speed optimization logs.'
+    ];
+    dependencies = ['Shopify Partner portal account activation'];
+    realWorldExample = 'Benchmark: Review Gymshark’s clean Shopify page speed load metrics or the official open-source Shopify Dawn theme layout patterns.';
+  } else if (normalService.includes('wordpress')) {
+    customMaterials = [
+      'Local WordPress installation environment (LocalWP / Docker)',
+      'Starter Gutenberg theme block patterns',
+      'Target client style guides'
+    ];
+    customSteps = [
+      'Launch a local WordPress site and create a lightweight custom child theme.',
+      'Map custom Gutenberg block structures using clean PHP or template files.',
+      'Configure ACF (Advanced Custom Fields) to keep user inputs separated from structural code.',
+      'Run responsive layout checking tools on various viewports.'
+    ];
+    customDeliverables = [
+      'Lightweight child theme zip folder and local site export blueprint.',
+      'Setup guidelines README documentation.'
+    ];
+    dependencies = ['Local WordPress environment installed'];
+    realWorldExample = 'Benchmark: Inspect default block theme layouts or WordPress VIP developer guidelines for clean Gutenberg setups.';
+  } else if (normalService.includes('youtube')) {
+    customMaterials = [
+      'Raw creator vertical video footage (5-10 minutes)',
+      'High-energy sound effects library (swooshes, pops)',
+      'Trending caption font packs'
+    ];
+    customSteps = [
+      'Review raw files and identify the highest hook potential moment in the first 30 seconds.',
+      'Add zoom-ins, jumps, and visual pattern interrupts every 3 seconds to preserve watch pacing.',
+      'Mix background music levels at -15db with vocal normalization.',
+      'Generate captions using high-contrast highlight colors mapped to keywords.'
+    ];
+    customDeliverables = [
+      'High-bitrate vertical video clip (1080p, 60fps) exported as MP4.',
+      'Caption style guideline sheet.'
+    ];
+    dependencies = ['Premiere Pro or Resolve workspace setup'];
+    realWorldExample = 'Benchmark: Check MrBeast’s pacing breakdown videos or Hayden Hillier-Smith’s creator retention audits on YouTube.';
+  } else if (normalService.includes('wedding')) {
+    customMaterials = [
+      'Multicam raw wedding ceremony clips (1080p or 4K)',
+      'Cinematic acoustic or orchestral backing music tracks',
+      'LUT (Look-Up Table) color grade file templates'
+    ];
+    customSteps = [
+      'Align multicam ceremony tracks and synchronize audio feeds.',
+      'Apply warm LUT color grading to match romantic aesthetics.',
+      'Structure the video to transition seamlessly alongside vocal emotional spikes.',
+      'Compile a 3-minute cinematic highlight trailer.'
+    ];
+    customDeliverables = [
+      'Cinematic wedding trailer (1080p) hosted on Vimeo or Google Drive.',
+      'Color grading LUT specification notes.'
+    ];
+    dependencies = ['High-bitrate rendering workstation setup'];
+    realWorldExample = 'Benchmark: Browse award-winning wedding filmmakers on Vimeo or cinematic portfolio highlight reels.';
+  } else if (normalService.includes('gaming')) {
+    customMaterials = [
+      'Raw high-FPS stream gameplay recordings',
+      'Discord team audio tracks',
+      'Meme or reaction visual overlay packs'
+    ];
+    customSteps = [
+      'Identify high-action highlight moments in gameplay records.',
+      'Apply zoom tracking on character health indicators and mini-maps.',
+      'Overlay discord audio spikes synced directly with game actions.',
+      'Overlay kinetic captions for funny dialogue moments.'
+    ];
+    customDeliverables = [
+      'Gaming montage clip (1080p, 60fps) exported and hosted on YouTube.',
+      'Visual asset overlay pack guide.'
+    ];
+    dependencies = ['OBS or high-fidelity game recording library access'];
+    realWorldExample = 'Benchmark: Study high-retention gaming channels on YouTube showing active zoom pacing and sound effect syncing.';
+  } else if (normalService.includes('design') && (normalService.includes('ui') || normalService.includes('ux') || normalService.includes('web'))) {
+    customMaterials = [
+      'Figma community layout style libraries',
+      'Wireframe layout drafts and user flow diagrams',
+      'Target client brand assets and guidelines'
+    ];
+    customSteps = [
+      'Draft the conversion user flow pointing out potential navigation friction points.',
+      'Set up Figma desktop (1440px) and mobile (375px) responsive layouts.',
+      'Construct system UI buttons, inputs, and cards using Figma Auto Layout.',
+      'Link design frames with smart-animations to build clickable user tests.'
+    ];
+    customDeliverables = [
+      'Interactive Figma prototype link with presentation access.',
+      'UI System style guide page.'
+    ];
+    dependencies = ['Figma account setup'];
+    realWorldExample = 'Benchmark: Examine linear.app’s product detail user flow layouts or standard Figma community design system packages.';
+  } else if (normalService.includes('copywriting') || normalService.includes('copy')) {
+    customMaterials = [
+      'Competitor copy swipe collections',
+      'Niche target audience psychographics profiles',
+      'Brand messaging voice rules'
+    ];
+    customSteps = [
+      'Create three hook variations addressing the target avatar’s immediate pain.',
+      'Compose the primary landing page or email benefits copy block.',
+      'Draft objection preemption blocks addressing pricing and onboarding doubts.',
+      'Create clear, single-action CTAs (Call to Actions).'
+    ];
+    customDeliverables = [
+      'Copy brief hosted on Notion or Google Docs with conversion notes.',
+      'Headline options sheet.'
+    ];
+    dependencies = ['Notion or Google Drive shared folder access'];
+    realWorldExample = 'Benchmark: Study Julian Shapiro’s Copywriting Guide or Harry Dry’s marketingexamples.com structures.';
+  } else if (normalService.includes('automation') || normalService.includes('system')) {
+    customMaterials = [
+      'Make.com or Zapier developer sandbox workspaces',
+      'Target SaaS application API documentation',
+      'Mock webhook trigger data files'
+    ];
+    customSteps = [
+      'Establish the incoming webhook trigger payload inside Make.com or Zapier.',
+      'Set up data parsing and routing logic across secondary application steps.',
+      'Incorporate error-catching paths to prevent silent workflow crashes.',
+      'Log system throughput metrics and compile documentation.'
+    ];
+    customDeliverables = [
+      'Make.com workflow blueprint JSON file and schematic workflow diagram.',
+      'API payload mapping sheets.'
+    ];
+    dependencies = ['Make.com or Zapier active workspace access'];
+    realWorldExample = 'Benchmark: Study official Make.com enterprise automation blueprints or Zapier shared community templates.';
+  } else {
+    customMaterials = [
+      'Demonstration brief templates',
+      'Client target guidelines'
+    ];
+    customSteps = [
+      'Map your core workflow steps from brief to delivery.',
+      'Execute a self-initiated demonstration matching target expectations.',
+      'Document key decision tradeoffs.'
+    ];
+    customDeliverables = [
+      'Completed demo project output.',
+      'Workflow interpretation notes.'
+    ];
+    dependencies = [];
+    realWorldExample = 'Benchmark: Look for industry-standard workflow blueprints or professional case studies in your category.';
+  }
+
+  // Adjust steps based on experience level
+  if (expLevel === 'beginner') {
+    customSteps.unshift('Set up your clean workspace, local repository, or folder structure from scratch.');
+  } else if (expLevel === 'advanced') {
+    customSteps.push('Optimize output size, cache assets, or clean source materials for peak delivery standards.');
+    customSteps.push('Log all trade-off decisions and limitations inside a structured README or cover sheet.');
+  }
+
+  // 4. Asset-Specific Validation Checklist
+  let completionChecklist: string[] = [];
+  if (formatId === 'case_study' || formatId === 'process_walkthrough') {
+    completionChecklist = [
+      'Verify target client objections are preempted in the text',
+      'Proofread and remove all raw template markers',
+      'Highlight unique mechanism clearly in description',
+      'Include side-by-side or stage-by-stage evidence'
+    ];
+  } else if (formatId === 'demo_video' || formatId === 'explainer') {
+    completionChecklist = [
+      'Verify first 5 seconds contains hook matching niche problem',
+      'Audio levels normalized with zero background hum',
+      'Captions do not overlap critical interface or branding elements',
+      'Resolution set to 1080p minimum with high-bitrate encoding'
+    ];
+  } else if (formatId === 'before_after' || formatId === 'comparison') {
+    completionChecklist = [
+      'Ensure identical viewports and framing for before/after comparison',
+      'Explicitly label Baseline vs. Optimized outputs',
+      'Verify no false business outcomes or metrics are claimed'
+    ];
+  } else {
+    completionChecklist = [
+      'Verify formatting is clear and clean on mobile screens',
+      'Target niche keyword included in main heading',
+      'CTA link works and opens in a new tab'
+    ];
+  }
+
+  if (normalService.includes('react') || normalService.includes('frontend')) {
+    completionChecklist.push('Lighthouse page speed audit score exceeds 90');
+    completionChecklist.push('Responsive design tested down to 320px viewport');
+  } else if (normalService.includes('design')) {
+    completionChecklist.push('Figma Auto Layout responsive behavior verified');
+    completionChecklist.push('Contrast ratio passes WCAG AA guidelines');
+  } else if (normalService.includes('copywriting') || normalService.includes('copy')) {
+    completionChecklist.push('Readability grade is at or below 8th grade levels');
+    completionChecklist.push('Preempted objections section is highlighted');
+  } else if (normalService.includes('youtube')) {
+    completionChecklist.push('Retention-cut jumps verified every 3 seconds');
+  }
+
+  return {
+    difficulty,
+    estimatedEffort,
+    expectedImpact,
+    dependencies,
+    realWorldExample,
+    startingMaterial: customMaterials,
+    executionSteps: customSteps,
+    deliverables: customDeliverables,
+    completionChecklist
+  };
 }
 
 export function generateProofAsset(
@@ -732,9 +1144,10 @@ export function generateProofAsset(
   const scenario = scenarioParts.join(' ');
 
   const portfolio = buildPortfolioCopy(profile, formatId, theme, priority.gapTitle, buyer, position);
-  const checklist = buildChecklist(selectedSteps, evidence, formatId, svcKey, theme);
 
   const businessProblem = priority.gapDescription;
+
+  const adaptive = getNicheAdaptiveGuidance(ctx, priority, formatId, theme);
 
   return {
     id: `asset_${priority.id}`,
@@ -745,9 +1158,9 @@ export function generateProofAsset(
     targetAudience: buyer,
     businessProblem,
     scenario,
-    startingMaterial: [...profile.materials],
-    executionSteps: selectedSteps,
-    deliverables: [...profile.deliverables],
+    startingMaterial: adaptive.startingMaterial,
+    executionSteps: adaptive.executionSteps,
+    deliverables: adaptive.deliverables,
     evidenceToCapture: evidence,
     processToDocument: processEvidence,
     whatNotToClaim: warnings,
@@ -758,9 +1171,14 @@ export function generateProofAsset(
       proofStatement: portfolio.proofStatement,
       cta: portfolio.cta,
     },
-    completionChecklist: checklist,
+    completionChecklist: adaptive.completionChecklist,
     sourcePriorityFingerprint: calculatePriorityFingerprint(priority),
     isCustom: false,
     isAccepted: false,
+    difficulty: adaptive.difficulty,
+    estimatedEffort: adaptive.estimatedEffort,
+    expectedImpact: adaptive.expectedImpact,
+    dependencies: adaptive.dependencies,
+    realWorldExample: adaptive.realWorldExample,
   };
 }

@@ -303,25 +303,25 @@ export const FRONTEND_DEV_MECHANISMS: PathContentMechanism[] = [
 /* ── UI/UX Designer ── */
 export const UIUX_MECHANISMS: PathContentMechanism[] = [
   {
-    name: 'User-First Information Architecture',
+    name: 'Activation-First Onboarding Architecture',
     description:
-      'A page or product structure designed to establish confidence before presenting key actions: entry point communicates value, next section demonstrates credibility, next shows proof, then the primary action is presented — always preceded by enough context-building that the action feels earned rather than premature.',
+      'A structured UX process for mapping the full user journey from signup to first value moment, then designing each step to minimize time-to-activation. Stage 1: activation journey mapping across every entry point. Stage 2: friction point identification through session recording analysis. Stage 3: onboarding flow redesign with progressive feature reveal. Stage 4: activation metric tracking and iteration.',
     bestFor:
-      'Clients whose current interfaces lead with their ask and wonder why users bounce — the trust or value foundation was never laid before the action was requested.',
+      'Clients whose trial users sign up but stall before reaching the aha moment — the onboarding flow presents features rather than delivering value in the first session.',
   },
   {
-    name: 'User Journey Mapping',
+    name: 'Feature Adoption Sequencing Protocol',
     description:
-      'A pre-design workshop where the client\'s ideal user journey is mapped across every possible entry point and the interface UX is designed to match each entry point with the appropriate experience and CTA — rather than sending all traffic to a generic welcome screen.',
+      'A repeatable design framework for introducing product capabilities in a sequence that matches user readiness and usage patterns. Stage 1: feature hierarchy analysis and user segmentation. Stage 2: progressive disclosure design for each feature tier. Stage 3: in-context guidance and empty state activation. Stage 4: adoption measurement and flow optimization.',
     bestFor:
-      'Clients who drive traffic from multiple sources and send everyone to the same interface, resulting in mismatched expectations and low conversion from specific channels.',
+      'Clients whose products have deep feature sets that users never discover — retention suffers because users stay at basic usage levels and never experience advanced capabilities.',
   },
   {
-    name: 'Post-Conversion Experience Design',
+    name: 'Trust-Building Interface Pattern Kit',
     description:
-      'The UX scope extends beyond the conversion point to include the post-conversion experience: what the user sees after signing up, completing a flow, or making a purchase — ensuring the trust and momentum built during the conversion carries through to the next interaction.',
+      'A collection of UX interaction patterns that communicate reliability, transparency, and user control throughout the product experience. Stage 1: trust touchpoint audit across the user journey. Stage 2: feedback and transparency pattern selection for loading, empty, and error states. Stage 3: user control and explainability integration for critical decision points. Stage 4: validation through user testing.',
     bestFor:
-      'Clients whose conversion completion rate is high but whose activation or retention rates are low — the post-conversion experience fails to maintain the momentum created by the interface design.',
+      'Clients whose products handle sensitive user data or AI-driven decisions — users hesitate to engage because the interface does not explain what is happening or why.',
   },
 ];
 

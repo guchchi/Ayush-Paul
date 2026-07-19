@@ -76,7 +76,7 @@ export function ValueAmplifierStep() {
               <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Examples</span>
               <ul className="mt-1 space-y-0.5">
                 {personalized.examples.map((ex, i) => (
-                  <li key={i} className="text-[11px] text-neutral-500">\u2022 {ex}</li>
+                  <li key={i} className="text-[11px] text-neutral-500">{'\u2022'} {ex}</li>
                 ))}
               </ul>
             </div>

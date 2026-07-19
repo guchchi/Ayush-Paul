@@ -24,6 +24,9 @@ export interface PriorityContext {
   valueAmplifier: string;
   authorityPosition: AuthorityPosition | null;
   coreTrustPromise: string;
+  availableAssets?: string[];
+  strongestAsset?: string | null;
+  missingAssets?: string[];
 }
 
 interface CandidateGap {
@@ -90,13 +93,10 @@ function getBuyerAudience(marketId: string | null): string {
   return BUYER_AUDIENCE[marketId] ?? marketId.replace(/_/g, ' ');
 }
 
+import { classifyService } from './service-taxonomy';
+
 function getServiceTrack(serviceId: string | null): 'editor' | 'developer' | 'designer' | 'automation' | 'other' {
-  const s = serviceId ?? '';
-  if (s === 'automation_developer') return 'automation';
-  if (s.includes('editor')) return 'editor';
-  if (s.includes('developer')) return 'developer';
-  if (s.includes('designer')) return 'designer';
-  return 'other';
+  return classifyService(serviceId).family;
 }
 
 function pickTopDeliverables(deliverables: string[], maxCount: number = 2): string[] {
