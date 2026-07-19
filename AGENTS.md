@@ -59,3 +59,6 @@ All under `/workspace/` routes in `src/App.tsx`:
 - No Prettier config. No test framework.
 - When generating deterministic copy (no LLM calls), use context-driven string templates. LLM calls use `@google/generative-ai`.
 - Stale-context detection: upstream fingerprint comparison on mount in each module's page component.
+
+## Git Workflow
+- Always automatically commit and push all changes to GitHub after completing a task or making significant modifications.
