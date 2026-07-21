@@ -1,6 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info, Edit2, Search } from 'lucide-react';
+import { 
+  Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info, Edit2, Search,
+  Video, Film, Scissors, Tv, Play, Code, Cpu, Zap, Globe, Layers, GitBranch, BookOpen, MessageSquare, Folder, LineChart, TrendingUp, PenTool,
+  RotateCcw, ShieldCheck, Filter, Bookmark
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
@@ -47,6 +51,37 @@ const getAssetLabel = (id: string): string => {
   return labels[id] || id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 };
 
+const materialIcons: Record<string, any> = {
+  showreel: Video,
+  before_after_edits: Scissors,
+  youtube_videos: Tv,
+  instagram_reels: Play,
+  motion_graphics: Sparkles,
+  editing_breakdown: Film,
+  retention_results: LineChart,
+  client_work: Folder,
+  client_testimonials: MessageSquare,
+  testimonials: MessageSquare,
+  github_code: Code,
+  live_website: Globe,
+  figma_portfolio: Layers,
+  design_system: Layers,
+  design_case_study: FileText,
+  case_studies: FileText,
+  metrics_results: TrendingUp,
+  conversion_metrics: TrendingUp,
+  live_automation: Zap,
+  workflow_diagram: GitBranch,
+  automation_code: Code,
+  process_walkthrough: BookOpen,
+  landing_pages: Layout,
+  email_sequence: FileText,
+  sales_page: Layout,
+  ad_copies: PenTool,
+  swipe_file: Bookmark,
+  content_samples: FileText,
+};
+
 const archetypeColors = {
   builder: {
     theme: '#0058be',
@@ -80,6 +115,20 @@ const archetypeColors = {
     iconBg: 'bg-amber-100/60',
     icon: CheckCircle2
   }
+};
+
+const getCategoryStyle = (category: string) => {
+  const cat = category.toUpperCase();
+  if (cat === 'CRAFT') {
+    return 'bg-blue-50 text-blue-600 border-blue-100/50';
+  }
+  if (cat === 'RELIABILITY') {
+    return 'bg-emerald-50 text-emerald-600 border-emerald-100/50';
+  }
+  if (cat === 'IMPACT') {
+    return 'bg-violet-50 text-violet-600 border-violet-100/50';
+  }
+  return 'bg-neutral-50 text-neutral-600 border-neutral-100/50';
 };
 
 export function Step2ProofAssetBuilder() {
@@ -120,6 +169,9 @@ export function Step2ProofAssetBuilder() {
     (pendingStrategy?.selectedExecutionPriority || currentStrategy?.selectedExecutionPriority) as any || null
   );
 
+  // Gamified filters for RPG inventory style selection
+  const [activeFilter, setActiveFilter] = useState<'all' | 'craft' | 'reliability' | 'impact'>('all');
+
   const serviceTrack = useMemo(() => {
     if (!mod1ServiceId) return 'other';
     return classifyService(mod1ServiceId).family;
@@ -128,6 +180,11 @@ export function Step2ProofAssetBuilder() {
   const templates = useMemo(() => {
     return AVAILABLE_TEMPLATES[serviceTrack] || AVAILABLE_TEMPLATES.other;
   }, [serviceTrack]);
+
+  const filteredTemplates = useMemo(() => {
+    if (activeFilter === 'all') return templates;
+    return templates.filter(t => t.category.toLowerCase() === activeFilter);
+  }, [templates, activeFilter]);
 
   const ctxCombined = useMemo(() => {
     return {
@@ -186,6 +243,12 @@ export function Step2ProofAssetBuilder() {
     useModule3Store.setState({ existingProofInventory: inventoryString });
 
     // Regenerate strategy automatically in real-time
+    generateProofAssetStrategy();
+  };
+
+  const handleClearInventory = () => {
+    setAvailableAssets([]);
+    useModule3Store.setState({ existingProofInventory: '' });
     generateProofAssetStrategy();
   };
 
@@ -263,6 +326,19 @@ export function Step2ProofAssetBuilder() {
       return part;
     });
   };
+
+  // Inventory HUD calibration variables
+  const totalAvailable = templates.length;
+  const selectedCount = availableAssets.length;
+  const calibrationPercent = totalAvailable > 0 
+    ? Math.round((selectedCount / totalAvailable) * 100) 
+    : 0;
+
+  const calibrationStatus = useMemo(() => {
+    if (selectedCount === 0) return { label: 'Raw Potential', desc: 'Maximum trust gaps mapped. Ready to start building.', color: 'text-amber-600', border: 'border-amber-200', bg: 'bg-amber-500' };
+    if (selectedCount <= 2) return { label: 'Hybrid Authority', desc: 'Moderate gaps identified. Gaps balanced by existing items.', color: 'text-blue-600', border: 'border-blue-200', bg: 'bg-blue-600' };
+    return { label: 'Omni Authority', desc: 'Minimal gaps. High level of matched proof assets.', color: 'text-emerald-600', border: 'border-emerald-200', bg: 'bg-emerald-500' };
+  }, [selectedCount]);
 
   if (!authorityProfile) {
     return (
@@ -402,48 +478,172 @@ export function Step2ProofAssetBuilder() {
         </p>
       </div>
 
-      {/* Starting materials Checkbox block */}
-      <section className="p-6 rounded-2xl border border-neutral-200 bg-white shadow-sm space-y-4">
-        <div>
-          <h3 className="text-sm font-extrabold text-[#0b1c30] flex items-center gap-1.5">
-            <CheckCircle2 size={16} className="text-[#0058be]" />
-            What Starting Materials Do You Have?
-          </h3>
-          <p className="text-xs text-neutral-500 mt-0.5">
-            Check the items you already have. We will adapt your proof projects to build on top of these.
-          </p>
+      {/* Gamified Starting materials Checkbox block */}
+      <section className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-sm space-y-6">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-neutral-100 pb-5">
+          <div className="space-y-1">
+            <h3 className="text-sm font-extrabold text-[#0b1c30] flex items-center gap-1.5 uppercase tracking-wide">
+              <CheckCircle2 size={16} className="text-[#0058be]" />
+              Scan & Inventory Your Starting Materials
+            </h3>
+            <p className="text-xs text-neutral-500 leading-relaxed max-w-xl">
+              Equip the proof assets you already have in your inventory. The system will automatically calibrate your remaining trust gaps.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleClearInventory}
+              disabled={selectedCount === 0}
+              className="text-[11px] text-neutral-400 hover:text-neutral-600 disabled:opacity-30 disabled:pointer-events-none font-bold flex items-center gap-1 cursor-pointer border-none bg-transparent min-h-[32px] px-2 rounded hover:bg-neutral-50 transition-colors"
+            >
+              <RotateCcw size={12} />
+              Reset Bag
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          {templates.map((tmpl) => {
-            const isChecked = availableAssets.includes(tmpl.id);
+        {/* Gamified Inventory HUD dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center p-5 rounded-2xl bg-neutral-50/50 border border-neutral-100">
+          <div>
+            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+              Inventory Status
+            </span>
+            <span className={cn("text-xs font-black mt-1 block uppercase tracking-wider", calibrationStatus.color)}>
+              {calibrationStatus.label}
+            </span>
+          </div>
+
+          <div className="md:col-span-2 space-y-1.5">
+            <div className="flex justify-between items-center text-[10px] font-bold text-[#0b1c30]/75">
+              <span>Calibration Progress ({selectedCount} of {totalAvailable} Equipped)</span>
+              <span>{calibrationPercent}%</span>
+            </div>
+            <div className="w-full bg-neutral-200 h-2 rounded-full overflow-hidden relative shadow-inner">
+              <motion.div
+                className={cn("h-full rounded-full", calibrationStatus.bg)}
+                initial={{ width: 0 }}
+                animate={{ width: `${calibrationPercent}%` }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          {[
+            { id: 'all', label: 'All Items', icon: Filter },
+            { id: 'craft', label: 'Craft Assets', icon: PenTool },
+            { id: 'reliability', label: 'Reliability Proofs', icon: ShieldCheck },
+            { id: 'impact', label: 'Impact Metrics', icon: LineChart }
+          ].map(pill => {
+            const isActive = activeFilter === pill.id;
+            const Icon = pill.icon;
             return (
-              <label
-                key={tmpl.id}
+              <motion.button
+                key={pill.id}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveFilter(pill.id as any)}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-xl border cursor-pointer select-none transition-all hover:bg-neutral-50",
-                  isChecked
-                    ? "border-[#0058be] bg-[#0058be]/5"
-                    : "border-neutral-200 bg-white"
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all shrink-0",
+                  isActive
+                    ? "bg-[#0058be] text-white border-[#0058be] shadow-sm shadow-[#0058be]/10"
+                    : "bg-white text-neutral-500 border-neutral-200 hover:border-neutral-300"
                 )}
               >
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={(e) => handleAssetCheckboxChange(tmpl.id, e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0058be] border-neutral-300 focus:ring-[#0058be] mt-0.5 shrink-0"
-                />
-                <div>
-                  <span className="text-xs font-bold text-[#0b1c30] block">
-                    {getAssetLabel(tmpl.id)}
-                  </span>
-                  <span className="text-[10px] text-neutral-400 uppercase tracking-wider">
-                    {tmpl.category}
-                  </span>
-                </div>
-              </label>
+                <Icon size={12} />
+                {pill.label}
+              </motion.button>
             );
           })}
+        </div>
+
+        {/* Gamified Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filteredTemplates.map((tmpl) => {
+              const isChecked = availableAssets.includes(tmpl.id);
+              const AssetIcon = materialIcons[tmpl.id] || FileText;
+              const catStyle = getCategoryStyle(tmpl.category);
+              
+              return (
+                <motion.div
+                  key={tmpl.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  whileHover={{ 
+                    y: -4, 
+                    scale: 1.01,
+                    boxShadow: isChecked
+                      ? '0 10px 25px -5px rgba(0, 88, 190, 0.12), 0 8px 10px -6px rgba(0, 88, 190, 0.12)'
+                      : '0 8px 15px -4px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02)'
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleAssetCheckboxChange(tmpl.id, !isChecked)}
+                  className={cn(
+                    "flex flex-col justify-between p-4 rounded-2xl border cursor-pointer select-none transition-all relative overflow-hidden group min-h-[110px]",
+                    isChecked
+                      ? "border-[#0058be] bg-[#0058be]/5 ring-1 ring-[#0058be]/30"
+                      : "border-neutral-200 bg-white hover:border-neutral-300"
+                  )}
+                >
+                  <div className="flex items-start justify-between gap-3 w-full">
+                    {/* Icon + Label */}
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
+                        isChecked 
+                          ? "bg-[#0058be]/15 text-[#0058be]" 
+                          : "bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200/60"
+                      )}>
+                        <AssetIcon className="w-4.5 h-4.5" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-black text-[#0b1c30] leading-snug block">
+                          {getAssetLabel(tmpl.id)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Custom Snaapy Spring Checkbox */}
+                    <div className={cn(
+                      "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 shrink-0",
+                      isChecked 
+                        ? "border-[#0058be] bg-[#0058be] text-white" 
+                        : "border-neutral-300 bg-white"
+                    )}>
+                      {isChecked && (
+                        <motion.svg
+                          initial={{ scale: 0, rotate: -45 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                          className="w-3 h-3 stroke-[3]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </motion.svg>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-dashed border-neutral-100/60 flex items-center justify-between">
+                    <span className={cn("text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 border rounded-full", catStyle)}>
+                      {tmpl.category}
+                    </span>
+                    <span className="text-[10px] text-neutral-400 font-medium group-hover:text-[#0058be]/75 transition-colors">
+                      {isChecked ? 'Equipped' : 'Equip item'}
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </section>
 
