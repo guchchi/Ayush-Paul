@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info, Edit2, Search,
   Video, Film, Scissors, Tv, Play, Code, Cpu, Zap, Globe, Layers, GitBranch, BookOpen, MessageSquare, Folder, LineChart, TrendingUp, PenTool,
-  RotateCcw, ShieldCheck, Filter, Bookmark, Laptop, HelpCircle, CheckCircle, Shield
+  RotateCcw, ShieldCheck, Filter, Bookmark, Laptop, HelpCircle, CheckCircle, Shield, Lock, Eye, AlertCircle
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -172,55 +172,82 @@ const getMetricOptions = (track: string) => {
   ];
 };
 
-const getBlueprintMetadata = (format: string, track: string) => {
+const getBlueprintMetadata = (format: string) => {
   const fmt = format.toLowerCase();
   if (fmt.includes('video') || fmt.includes('reel') || fmt.includes('showreel') || fmt.includes('clips')) {
     return {
-      goal: "Prove pacing & visual retention capability.",
-      deliverable: "90-second structured video edit showcase.",
+      goal: "Prove narrative pacing & viewer retention capability.",
       difficulty: "Medium",
       time: "2 Hours",
-      evidence: "Pacing hooks, sound design quality, timing cuts",
-      trustImpact: "High"
+      roi: 5,
+      impact: "95",
+      trustImpact: "High",
+      whyMatters: "Buyers review pacing hooks first; a walkthrough holds attention better than a raw resume link.",
+      mistakes: "Using long graphic intros or neglecting audio normalization levels.",
+      outcome: "Client stays engaged through the critical first 30 seconds of your pitch.",
+      criteria: [
+        "Video length stays between 2-3 minutes max",
+        "Pattern interrupt hook in the first 5 seconds",
+        "Shows timeline workflow cuts directly in video editor",
+        "Audio is fully normalized with zero volume spikes",
+        "Hosted on a public platform (YouTube/Vimeo/Drive)"
+      ]
     };
   }
   if (fmt.includes('before') || fmt.includes('comparison')) {
     return {
-      goal: "Demonstrate direct improvement metrics & strategic problem-solving.",
-      deliverable: "Before/After timeline comparison showcase.",
+      goal: "Demonstrate direct problem-solving & objective outcome changes.",
       difficulty: "Medium",
       time: "3 Hours",
-      evidence: "Pacing optimization, conversion enhancement",
-      trustImpact: "Very High"
+      roi: 4,
+      impact: "88",
+      trustImpact: "Very High",
+      whyMatters: "Clients need to see the difference between raw assets and your optimized deliverables.",
+      mistakes: "Not labeling baseline vs. optimized version or using mock metrics without logical proof.",
+      outcome: "Buyer instantly recognizes the visual and metric speedups of your work.",
+      criteria: [
+        "Clear baseline vs. optimized split-screen comparison",
+        "Explains decision process in text overlays or narration",
+        "Details target metric improvements explicitly in title",
+        "Matches ideal client market format standard"
+      ]
     };
   }
   if (fmt.includes('website') || fmt.includes('code') || fmt.includes('automation')) {
     return {
-      goal: "Prove production-ready code structures or sync configurations.",
-      deliverable: "Public repository or live webhook diagram.",
+      goal: "Prove backend sync architecture and production reliability.",
       difficulty: "Hard",
       time: "4 Hours",
-      evidence: "Error-handling syncs, load testing speed, uptime",
-      trustImpact: "High"
-    };
-  }
-  if (fmt.includes('case_study') || fmt.includes('portfolio') || fmt.includes('design')) {
-    return {
-      goal: "Establish structural design system standards & components.",
-      deliverable: "Figma project system & UX prototype blueprint.",
-      difficulty: "Easy",
-      time: "2 Hours",
-      evidence: "UI component reuse, user flow paths, polish",
-      trustImpact: "High"
+      roi: 4,
+      impact: "84",
+      trustImpact: "High",
+      whyMatters: "Proves that your structures will not trigger service crashes under real commercial load.",
+      mistakes: "Lack of repository documentation or leaving secrets/API keys exposed.",
+      outcome: "Engineering teams approve your integration and fast-track hiring.",
+      criteria: [
+        "Publicly accessible codebase or logic flow link",
+        "Structured README detailing component architecture",
+        "Features automated error handling path",
+        "Secrets and private keys fully parameterized"
+      ]
     };
   }
   return {
-    goal: "Verify target buyer copy response and headline hook CTR.",
-    deliverable: "Direct-response copywriting layout.",
+    goal: "Verify target buyer copy response & click-through rates.",
     difficulty: "Easy",
     time: "1.5 Hours",
-    evidence: "Headline hook strength, CTA click flow, target voice",
-    trustImpact: "Medium"
+    roi: 3,
+    impact: "70",
+    trustImpact: "Medium",
+    whyMatters: "Copywriters must prove they can match brand voice and design persuasive call-to-actions.",
+    mistakes: "Writing generic template lines without local context or market positioning.",
+    outcome: "Client reads your cold copy draft and books a discovery call.",
+    criteria: [
+      "Direct headline hook targeting local market skepticism",
+      "Persuasive call-to-action layout optimized for clicks",
+      "Short, readable paragraphs with bold highlights",
+      "Matches target voice archetype exactly"
+    ]
   };
 };
 
@@ -339,12 +366,15 @@ export function Step2ProofAssetBuilder() {
     (pendingStrategy?.selectedExecutionPriority || currentStrategy?.selectedExecutionPriority) as any || null
   );
 
-  // Gamified filters for RPG inventory style selection
-  const [activeFilter, setActiveFilter] = useState<'all' | 'craft' | 'reliability' | 'impact'>('all');
-
-  // Custom title and metric overrides
+  // Custom blueprint title overrides
   const [customTitles, setCustomTitles] = useState<Record<string, string>>({});
   const [customMetrics, setCustomMetrics] = useState<Record<string, string>>({});
+
+  // Active definition-of-done criteria checklist (Local simulation state)
+  const [completedCriteria, setCompletedCriteria] = useState<Record<string, string[]>>({});
+
+  // RPG category filters
+  const [activeFilter, setActiveFilter] = useState<'all' | 'craft' | 'reliability' | 'impact'>('all');
 
   const serviceClass = useMemo(() => {
     if (!mod1ServiceId) return { label: 'Professional', family: 'other' };
@@ -461,6 +491,46 @@ export function Step2ProofAssetBuilder() {
     useModule3Store.setState({ proofAssets: updatedAssets });
   };
 
+  const toggleCriteria = (assetId: string, criterion: string) => {
+    setCompletedCriteria(prev => {
+      const currentList = prev[assetId] || [];
+      const updated = currentList.includes(criterion)
+        ? currentList.filter(c => c !== criterion)
+        : [...currentList, criterion];
+      return { ...prev, [assetId]: updated };
+    });
+  };
+
+  const isProjectCompleted = (asset: any) => {
+    const meta = getBlueprintMetadata(asset.assetType);
+    const completed = completedCriteria[asset.id] || [];
+    return meta.criteria.length > 0 && meta.criteria.every(c => completed.includes(c));
+  };
+
+  const projectStates = useMemo(() => {
+    const states: Record<string, { isUnlocked: boolean; isCompleted: boolean }> = {};
+    if (assets.length > 0) {
+      // Priority #1 is always unlocked
+      const p1Completed = isProjectCompleted(assets[0]);
+      states[assets[0].id] = { isUnlocked: true, isCompleted: p1Completed };
+
+      // Priority #2 requires Priority #1 completed
+      if (assets.length > 1) {
+        const p2Unlocked = p1Completed;
+        const p2Completed = isProjectCompleted(assets[1]);
+        states[assets[1].id] = { isUnlocked: p2Unlocked, isCompleted: p2Completed };
+
+        // Priority #3 requires Priority #2 completed
+        if (assets.length > 2) {
+          const p3Unlocked = p2Completed;
+          const p3Completed = isProjectCompleted(assets[2]);
+          states[assets[2].id] = { isUnlocked: p3Unlocked, isCompleted: p3Completed };
+        }
+      }
+    }
+    return states;
+  }, [assets, completedCriteria]);
+
   const handleApprove = () => {
     if (activeStrategy && activePriority) {
       const finalAssets = assets.map(a => ({
@@ -488,44 +558,18 @@ export function Step2ProofAssetBuilder() {
     }
   };
 
-  // Dynamic styling of variables inside promise text
-  const highlightPromiseText = (text: string) => {
-    if (!text) return '';
-    const serviceLabel = serviceClass.label;
-    const marketLabel = mod1MarketId ? mod1MarketId.replace(/_/g, ' ') : '';
-    
-    const keywords = [
-      serviceLabel,
-      marketLabel,
-      "trust", "expert", "expertise", "proves", "prove",
-      "results", "earn", "earns", "performance", "consistent",
-      "quality", "diagnostic", "diagnostics", "blueprint",
-      "deliver", "workflow", "workforce", "audit", "build", "playbook"
-    ].filter(Boolean);
+  // Gap analysis lists
+  const currentProofList = useMemo(() => {
+    return availableAssets.map(id => ({ id, label: getAssetLabel(id) }));
+  }, [availableAssets]);
 
-    let regexStr = keywords
-      .map(w => w.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
-      .join('|');
-    
-    if (!regexStr) return text;
-    
-    const regex = new RegExp(`\\b(${regexStr})\\b`, 'gi');
-    const parts = text.split(regex);
-    
-    return parts.map((part, i) => {
-      const isMatch = keywords.some(w => w.toLowerCase() === part.toLowerCase());
-      if (isMatch) {
-        return (
-          <span key={i} className="text-[#0058be] font-extrabold border-b border-[#0058be]/20 bg-[#0058be]/5 px-1 py-0.5 rounded">
-            {part}
-          </span>
-        );
-      }
-      return part;
-    });
-  };
+  const missingProofList = useMemo(() => {
+    return templates
+      .filter(t => !availableAssets.includes(t.id))
+      .map(t => ({ id: t.id, label: getAssetLabel(t.id) }));
+  }, [templates, availableAssets]);
 
-  // Inventory HUD calibration variables
+  // Calibration progress
   const totalAvailable = templates.length;
   const selectedCount = availableAssets.length;
   const calibrationPercent = totalAvailable > 0 
@@ -538,21 +582,48 @@ export function Step2ProofAssetBuilder() {
     return { label: 'Omni Authority', desc: 'Minimal gaps. High level of matched proof assets.', color: 'text-emerald-600', border: 'border-emerald-200', bg: 'bg-emerald-500' };
   }, [selectedCount]);
 
-  // Gap analysis lists
-  const currentProofList = useMemo(() => {
-    return availableAssets.map(id => ({ id, label: getAssetLabel(id) }));
-  }, [availableAssets]);
+  // Real-time client readiness score
+  const clientReadinessScore = useMemo(() => {
+    let score = calibrationPercent * 0.35; // base from scan
+    if (assets.length > 0 && projectStates[assets[0].id]?.isCompleted) score += 20;
+    if (assets.length > 1 && projectStates[assets[1].id]?.isCompleted) score += 20;
+    if (assets.length > 2 && projectStates[assets[2].id]?.isCompleted) score += 25;
+    return Math.min(Math.round(score), 100);
+  }, [calibrationPercent, assets, projectStates]);
 
-  const missingProofList = useMemo(() => {
-    return templates
-      .filter(t => !availableAssets.includes(t.id))
-      .map(t => ({ id: t.id, label: getAssetLabel(t.id) }));
-  }, [templates, availableAssets]);
+  const buyerQuestionCoverage = useMemo(() => {
+    const hasShowreel = availableAssets.some(id => ['showreel', 'youtube_videos', 'figma_portfolio', 'github_code'].includes(id));
+    const hasCaseStudy = availableAssets.some(id => ['design_case_study', 'case_studies', 'client_work'].includes(id));
+    const hasTestimonials = availableAssets.some(id => ['testimonials', 'client_testimonials'].includes(id));
+    const hasResults = availableAssets.some(id => ['before_after_edits', 'metrics_results', 'conversion_metrics'].includes(id));
+
+    return [
+      { q: "Can you do the work?", satisfied: hasShowreel || (assets.length > 0 && projectStates[assets[0].id]?.isCompleted) },
+      { q: "Have you done it before?", satisfied: hasCaseStudy || (assets.length > 1 && projectStates[assets[1].id]?.isCompleted) },
+      { q: "Can I trust you?", satisfied: hasTestimonials },
+      { q: "Will I get results?", satisfied: hasResults || (assets.length > 2 && projectStates[assets[2].id]?.isCompleted) }
+    ];
+  }, [availableAssets, assets, projectStates]);
 
   // Coverage statistics
   const coverageMetrics = useMemo(() => {
-    return calculateCoverage(availableAssets);
-  }, [availableAssets]);
+    const base = calculateCoverage(availableAssets);
+    
+    // Add completed projects weights
+    if (assets.length > 0 && projectStates[assets[0].id]?.isCompleted) {
+      base.skill = Math.min(base.skill + 20, 100);
+      base.trust = Math.min(base.trust + 10, 100);
+    }
+    if (assets.length > 1 && projectStates[assets[1].id]?.isCompleted) {
+      base.results = Math.min(base.results + 30, 100);
+      base.trust = Math.min(base.trust + 15, 100);
+    }
+    if (assets.length > 2 && projectStates[assets[2].id]?.isCompleted) {
+      base.socialProof = Math.min(base.socialProof + 35, 100);
+      base.authority = Math.min(base.authority + 15, 100);
+    }
+    return base;
+  }, [availableAssets, assets, projectStates]);
 
   const weakDimensions = useMemo(() => {
     const list = [
@@ -577,93 +648,26 @@ export function Step2ProofAssetBuilder() {
         title="Proof Strategy Blueprint" 
         description="Select what starting proof materials you already have. We'll automatically identify your trust gaps and custom-build your proof recipe blueprint."
       />
-      
-      {isStale && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-start gap-3">
-          <AlertTriangle size={16} className="text-amber-700 shrink-0 mt-2" aria-hidden="true" />
-          <div className="flex-1">
-            <p className="text-xs font-bold text-amber-800">Your Authority Profile changed</p>
-            <p className="text-xs text-amber-700 mt-0.5">Your positioning has been updated since this strategy was built. Update your proof roadmap:</p>
-          </div>
-          <button 
-            onClick={() => generateProofAssetStrategy()}
-            className="text-[11px] font-bold text-[#0b1c30] uppercase tracking-wider px-4 py-2 min-h-[44px] bg-amber-200/50 hover:bg-amber-200 rounded-md transition-colors border-none cursor-pointer"
-          >
-            Update Roadmap
-          </button>
+
+      {/* Strategic Foundation Card */}
+      <div className="p-6 rounded-3xl border border-neutral-200/80 bg-white shadow-sm space-y-4">
+        <div className="flex items-center gap-2 border-b border-neutral-100 pb-3">
+          <Award className="w-5 h-5 text-[#0058be]" />
+          <h4 className="text-xs font-black uppercase tracking-wider text-[#0b1c30]">
+            Strategic Positioning Foundation
+          </h4>
         </div>
-      )}
-
-      {/* Premium Strategic Foundation Card */}
-      <div className="p-6 rounded-3xl border border-neutral-200/80 bg-white shadow-sm space-y-5 relative overflow-hidden">
-        <div 
-          className="absolute -right-20 -top-20 w-44 h-44 rounded-full filter blur-3xl opacity-20 pointer-events-none"
-          style={{ backgroundColor: (archetypeColors[authorityProfile.position] || archetypeColors.builder).theme }}
-        />
-
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#0058be]" />
-            <h4 className="text-xs font-black uppercase tracking-wider text-[#0b1c30]">
-              Strategic Positioning Foundation
-            </h4>
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <div className="bg-[#0058be]/10 text-[#0058be] text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border border-[#0058be]/20 shrink-0">
+            {authorityProfile.position} positioning
           </div>
-          <button
-            onClick={() => useModule3Store.getState().jumpToStep('authority_position')}
-            className="text-xs text-[#0058be] hover:text-[#0058be]/80 font-extrabold flex items-center gap-1.5 min-h-[36px] px-3.5 rounded-xl border border-[#0058be]/20 bg-white shadow-sm hover:shadow transition-all duration-200 cursor-pointer"
-          >
-            <Edit2 size={13} className="text-[#0058be]" />
-            Adjust Archetype
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-          {(() => {
-            const colors = archetypeColors[authorityProfile.position] || archetypeColors.builder;
-            const IconComponent = colors.icon;
-            return (
-              <div className={cn(
-                "md:col-span-1 p-5 rounded-2xl border flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-all duration-300",
-                colors.bg,
-                colors.border
-              )}>
-                <div 
-                  className="absolute top-0 inset-x-0 h-1" 
-                  style={{ backgroundColor: colors.theme }}
-                />
-                
-                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center mb-3", colors.iconBg, colors.text)}>
-                  <IconComponent className="w-5 h-5" />
-                </div>
-
-                <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                  Archetype
-                </span>
-                <span className={cn("text-xs font-black mt-1 uppercase tracking-wider", colors.text)}>
-                  {authorityProfile.position}
-                </span>
-                <p className="text-[10px] text-neutral-500 mt-2 leading-relaxed font-medium">
-                  {authorityProfile.position === 'builder' ? 'Proves skill through finished builds.' : 
-                   authorityProfile.position === 'auditor' ? 'Proves skill through diagnostic audits.' :
-                   authorityProfile.position === 'deconstructor' ? 'Proves skill through breakdowns.' :
-                   'Proves skill through daily work logs.'}
-                </p>
-              </div>
-            );
-          })()}
-
-          <div className="md:col-span-3 space-y-2">
-            <span className="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest block">
-              Your Active Trust Promise (Locked):
-            </span>
-            <blockquote className="text-sm font-semibold text-[#0b1c30] leading-relaxed italic pl-4 border-l-2 border-[#0058be]/40">
-              "{highlightPromiseText(authorityProfile.coreTrustPromise)}"
-            </blockquote>
-          </div>
+          <p className="text-sm font-semibold text-[#0b1c30] leading-relaxed italic">
+            "{authorityProfile.coreTrustPromise}"
+          </p>
         </div>
       </div>
 
-      {/* SECTION 2: SCAN & INVENTORY YOUR STARTING MATERIALS (REPLAYING OLD CHIPS GRID!) */}
+      {/* SECTION 2: SCAN & INVENTORY YOUR STARTING MATERIALS */}
       <section className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-sm space-y-6">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-neutral-100 pb-5">
           <div className="space-y-1">
@@ -688,7 +692,7 @@ export function Step2ProofAssetBuilder() {
           </div>
         </div>
 
-        {/* Gamified Inventory HUD dashboard */}
+        {/* HUD calibration progress bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center p-5 rounded-2xl bg-neutral-50/50 border border-neutral-100">
           <div>
             <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
@@ -715,7 +719,7 @@ export function Step2ProofAssetBuilder() {
           </div>
         </div>
 
-        {/* Filter Pills */}
+        {/* Category Filters */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {[
             { id: 'all', label: 'All Items', icon: Filter },
@@ -744,7 +748,7 @@ export function Step2ProofAssetBuilder() {
           })}
         </div>
 
-        {/* Gamified Cards Grid */}
+        {/* Checkbox cards grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <AnimatePresence mode="popLayout">
             {filteredTemplates.map((tmpl) => {
@@ -830,331 +834,350 @@ export function Step2ProofAssetBuilder() {
         </div>
       </section>
 
-      {/* SECTION 3: BUILD YOUR PROOF BLUEPRINT (STRATEGIC WIDGETS DECK) */}
-      <section className="space-y-6">
+      {/* SECTION 3: PROOF EXECUTION INTELLIGENCE (STRATEGY ENGINE) */}
+      <section className="space-y-8">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-[#0058be]" />
           <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">
-            Build Your Proof Blueprint
+            Proof Execution Intelligence
           </h3>
         </div>
 
-        {/* Part 1: Proof Gap Analysis side-by-side display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-5 rounded-3xl bg-[#f8f9ff]/50 border border-neutral-200 space-y-3">
-            <span className="text-[10px] font-black text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full uppercase tracking-wider w-max block">
-              ✔ Current Proof ({currentProofList.length})
-            </span>
-            {currentProofList.length === 0 ? (
-              <span className="text-xs text-neutral-400 italic block pl-1">No proof equipped in inventory scan.</span>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {currentProofList.map(item => (
-                  <div key={item.id} className="text-[11px] font-semibold text-emerald-800 flex items-center gap-1.5 p-2 bg-white rounded-lg border border-emerald-100">
-                    <Check size={11} strokeWidth={3} className="text-emerald-500" />
-                    <span>{item.label}</span>
-                  </div>
-                ))}
+        {/* ROW 1: TRUST SCORES & CLIENT READINESS HUD METERS */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Client Readiness gauge (Arc style) */}
+          <div className="md:col-span-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between items-center text-center space-y-4">
+            <div className="w-full">
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                Primary indicator
+              </span>
+              <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide">
+                Client Readiness Score
+              </h4>
+            </div>
+
+            {/* Circular score gauge */}
+            <div className="relative w-32 h-32 flex items-center justify-center">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="8" fill="transparent" />
+                <motion.circle 
+                  cx="50" cy="50" r="40" stroke="#0058be" strokeWidth="8" fill="transparent" 
+                  strokeDasharray="251.2"
+                  animate={{ strokeDashoffset: 251.2 - (251.2 * clientReadinessScore) / 100 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                />
+              </svg>
+              <div className="absolute flex flex-col items-center">
+                <span className="text-2xl font-black text-[#0b1c30]">{clientReadinessScore}%</span>
+                <span className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest">Confidence</span>
               </div>
-            )}
+            </div>
+
+            {/* Buyer confidence question checks */}
+            <div className="w-full text-left space-y-2 pt-3 border-t border-neutral-100">
+              <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block mb-1">
+                Buyer Psychological Coverage:
+              </span>
+              {buyerQuestionCoverage.map((item, idx) => (
+                <div key={idx} className="flex items-center justify-between text-[11px] font-semibold">
+                  <span className="text-neutral-600">{item.q}</span>
+                  <span className={cn(
+                    "text-[9px] font-black uppercase tracking-wider",
+                    item.satisfied ? "text-emerald-600" : "text-amber-600"
+                  )}>
+                    {item.satisfied ? '✓ Proved' : '✗ Gap'}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="p-5 rounded-3xl bg-[#f8f9ff]/50 border border-neutral-200 space-y-3">
-            <span className="text-[10px] font-black text-amber-700 bg-amber-100/60 px-2.5 py-1 rounded-full uppercase tracking-wider w-max block">
-              ✖ Required Gaps ({missingProofList.length})
-            </span>
-            {missingProofList.length === 0 ? (
-              <span className="text-xs text-neutral-400 italic block pl-1">All trust requirements matched!</span>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {missingProofList.map(item => (
-                  <div key={item.id} className="text-[11px] font-semibold text-amber-800 flex items-center gap-1.5 p-2 bg-white rounded-lg border border-amber-100">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    <span>{item.label}</span>
+          {/* Trust Score Heatmap grid */}
+          <div className="md:col-span-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+            <div>
+              <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                Trust Heatmap
+              </span>
+              <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide">
+                Trust Dimension Coverage
+              </h4>
+            </div>
+
+            <div className="space-y-3.5 flex-1 justify-center flex flex-col">
+              {[
+                { name: 'Skill', value: coverageMetrics.skill, desc: 'Technical execution proof' },
+                { name: 'Trust', value: coverageMetrics.trust, desc: 'Reliability & standards' },
+                { name: 'Results', value: coverageMetrics.results, desc: 'Measurable client ROI' },
+                { name: 'Authority', value: coverageMetrics.authority, desc: 'Mechanism positioning' },
+                { name: 'Social Proof', value: coverageMetrics.socialProof, desc: 'Testimonials coverage' },
+              ].map(dim => (
+                <div key={dim.name} className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-bold text-[#0b1c30]">
+                    <span>{dim.name}</span>
+                    <span>{dim.value}%</span>
                   </div>
-                ))}
+                  <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden">
+                    <motion.div 
+                      className={cn(
+                        "h-full rounded-full",
+                        dim.value > 70 ? "bg-emerald-500" : dim.value > 40 ? "bg-blue-500" : "bg-amber-500"
+                      )}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${dim.value}%` }}
+                      transition={{ duration: 0.4, ease: 'easeOut' }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Strategic Coach & Opportunity Cost */}
+          <div className="md:col-span-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+            <div className="space-y-3">
+              <div>
+                <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                  AI Strategic Advisor
+                </span>
+                <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide">
+                  Opportunity Cost Analysis
+                </h4>
               </div>
+
+              {/* Opportunity Cost comparison card */}
+              <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-100/50 space-y-2">
+                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                  Efficiency Comparison:
+                </span>
+                <div className="flex justify-between text-[10px] font-bold border-b border-neutral-200 pb-1.5">
+                  <div className="text-neutral-500">Website: <span className="text-[#0b1c30]">10h (+7% trust)</span></div>
+                  <div className="text-neutral-500">Walkthrough: <span className="text-emerald-600">3h (+24% trust)</span></div>
+                </div>
+                <p className="text-[10px] text-neutral-500 leading-relaxed font-semibold">
+                  💡 <span className="text-[#0058be]">Recommendation:</span> Build your Walkthrough Video first. It provides 3.4x higher trust return per hour spent.
+                </p>
+              </div>
+
+              {/* Cost penalty description */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-100/50 flex items-start gap-2 text-amber-800">
+                <AlertCircle size={14} className="shrink-0 mt-0.5" />
+                <div className="text-[10px] font-semibold leading-relaxed">
+                  <span className="font-extrabold uppercase">Skipping Testimonials:</span>
+                  <div className="grid grid-cols-3 gap-1 mt-1 text-[9px] font-black">
+                    <span className="text-red-700">Trust -18%</span>
+                    <span className="text-red-700">Replies -12%</span>
+                    <span className="text-red-700">Close -9%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {weakDimensions.length > 0 && (
+              <span className="text-[9px] text-neutral-400 font-semibold block leading-relaxed pt-2 border-t border-neutral-100">
+                ⚠️ You are weak in <span className="underline">{weakDimensions.join(', ')}</span>. The recommended progression path below balances these dimensions.
+              </span>
             )}
           </div>
         </div>
 
-        {/* Part 2 & 3: Recommended Projects & Blueprint Details (Side-by-side dashboard) */}
+        {/* ROW 2: SYMMETRICAL 3-COLUMN PROGRESSION MAP (UNLOCK SYSTEM) */}
         {assets.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            
-            {/* Recommended projects Priority stack */}
-            <div className="lg:col-span-5 bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div>
-                  <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                    Priority Recommended Roadmap
-                  </span>
-                  <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide">
-                    Top 3 Recommended Projects
-                  </h4>
-                </div>
+          <div className="space-y-4">
+            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+              Ecosystem progression map
+            </span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+              {assets.map((asset, idx) => {
+                const state = projectStates[asset.id] || { isUnlocked: false, isCompleted: false };
+                const meta = getBlueprintMetadata(asset.assetType);
+                const warnings = getPersonalizedWarnings(asset.assetType, authorityProfile.position);
 
-                <div className="space-y-2">
-                  {assets.map((asset, idx) => {
-                    const isActive = activeProjectIdx === idx;
-                    return (
-                      <button
-                        key={asset.id}
-                        onClick={() => setActiveProjectIdx(idx)}
-                        className={cn(
-                          "w-full text-left p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3",
-                          isActive 
-                            ? "border-[#0058be] bg-[#0058be]/5 ring-1 ring-[#0058be]/20" 
-                            : "border-neutral-100 bg-neutral-50/50 hover:bg-neutral-50"
-                        )}
-                      >
-                        <div className={cn(
-                          "w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-black",
-                          isActive ? "bg-[#0058be] text-white" : "bg-neutral-200 text-neutral-500"
-                        )}>
-                          {idx + 1}
-                        </div>
-                        <div className="min-w-0">
-                          <span className="text-[9px] font-extrabold text-[#0058be] uppercase tracking-wider block">
+                return (
+                  <div 
+                    key={asset.id}
+                    className={cn(
+                      "bg-white border rounded-3xl p-5 flex flex-col justify-between space-y-5 transition-all relative overflow-hidden",
+                      state.isUnlocked 
+                        ? state.isCompleted
+                          ? "border-emerald-200 bg-emerald-50/10 shadow-sm"
+                          : "border-neutral-200 bg-white shadow-sm"
+                        : "border-neutral-100 bg-neutral-50/30 opacity-70"
+                    )}
+                  >
+                    {/* Locked/Completed Overlay screen */}
+                    {!state.isUnlocked && (
+                      <div className="absolute inset-0 bg-neutral-900/5 backdrop-blur-[1px] flex flex-col items-center justify-center text-center p-4 z-10 select-none">
+                        <Lock className="w-8 h-8 text-neutral-400 mb-2" />
+                        <span className="text-xs font-black text-neutral-500 uppercase tracking-wider">Project Locked</span>
+                        <span className="text-[10px] text-neutral-400 max-w-[200px] leading-relaxed mt-1 font-semibold">
+                          Complete Priority #{idx} quality criteria first.
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="space-y-4 flex-grow">
+                      {/* Priority title & score */}
+                      <div className="flex justify-between items-start gap-2 border-b border-neutral-100 pb-3">
+                        <div>
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
                             Priority #{idx + 1}
                           </span>
-                          <span className="text-xs font-bold text-[#0b1c30] block truncate">
+                          <span className="text-xs font-black text-[#0b1c30] block mt-0.5">
                             {customTitles[asset.id] || asset.title}
                           </span>
                         </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
 
-            {/* Active blueprint details spec panel (No Execution Course Checklist) */}
-            {(() => {
-              const activeAsset = assets[activeProjectIdx];
-              const meta = getBlueprintMetadata(activeAsset.assetType, serviceTrack);
-              const warnings = getPersonalizedWarnings(activeAsset.assetType, authorityProfile.position);
+                        {/* ROI Score */}
+                        <div className="text-right shrink-0">
+                          <span className="text-[9px] font-extrabold text-neutral-400 block uppercase tracking-widest">ROI</span>
+                          <div className="flex items-center gap-0.5 text-amber-500 mt-0.5">
+                            {Array.from({ length: meta.roi }).map((_, i) => (
+                              <Sparkles key={i} size={8} fill="currentColor" />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
 
-              return (
-                <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-5">
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-neutral-100 pb-3">
-                      <div>
+                      {/* Goal & Time stats */}
+                      <div className="grid grid-cols-2 gap-2 text-[10px] font-bold text-neutral-500">
+                        <div>Time: <span className="text-[#0b1c30]">{meta.time}</span></div>
+                        <div>Difficulty: <span className="text-[#0b1c30]">{meta.difficulty}</span></div>
+                        <div className="col-span-2 mt-1">Goal: <span className="text-neutral-600 font-semibold">{meta.goal}</span></div>
+                      </div>
+
+                      {/* Definition of Done criteria list */}
+                      <div className="space-y-2 pt-2">
                         <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                          Project Blueprint Specs
+                          Definition of Done:
                         </span>
-                        <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide">
-                          {customTitles[activeAsset.id] || activeAsset.title}
-                        </h4>
+                        <div className="space-y-1.5">
+                          {meta.criteria.map((c, cIdx) => {
+                            const isChecked = completedCriteria[asset.id]?.includes(c) || false;
+                            return (
+                              <motion.button
+                                key={cIdx}
+                                whileTap={{ scale: 0.99 }}
+                                disabled={!state.isUnlocked}
+                                onClick={() => toggleCriteria(asset.id, c)}
+                                className={cn(
+                                  "w-full text-left flex items-start gap-2 p-2 rounded-xl border text-[11px] font-semibold transition-colors cursor-pointer",
+                                  isChecked 
+                                    ? "border-emerald-200 bg-emerald-500/5 text-emerald-800" 
+                                    : "border-neutral-100 bg-neutral-50 hover:bg-neutral-100"
+                                )}
+                              >
+                                <div className={cn(
+                                  "w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 mt-0.5",
+                                  isChecked ? "bg-emerald-500 border-emerald-500 text-white" : "border-neutral-300 bg-white"
+                                )}>
+                                  {isChecked && <Check size={8} strokeWidth={3} />}
+                                </div>
+                                <span>{c}</span>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
                       </div>
 
-                      <span className="text-[9px] font-black text-[#0058be] bg-[#0058be]/10 px-2.5 py-1 rounded-full uppercase tracking-wider block shrink-0">
-                        {activeAsset.assetType.replace(/_/g, ' ')}
-                      </span>
+                      {/* AI Strategic Coach card info */}
+                      <div className="p-3 bg-neutral-50/80 border border-neutral-100/50 rounded-2xl space-y-1.5 text-[10px] text-neutral-500">
+                        <div>
+                          <span className="font-black uppercase tracking-wider text-[#0b1c30] block mb-0.5">Why it matters:</span>
+                          <p className="leading-relaxed font-semibold">{meta.whyMatters}</p>
+                        </div>
+                        <div>
+                          <span className="font-black uppercase tracking-wider text-red-600 block mb-0.5">Common mistake:</span>
+                          <p className="leading-relaxed font-semibold">{meta.mistakes}</p>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Customize titles & metrics */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                          Case Study Title:
-                        </label>
-                        <input
-                          type="text"
-                          value={customTitles[activeAsset.id] || ''}
-                          onChange={(e) => handleUpdateAssetTitle(activeAsset.id, e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-xl outline-none text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be]/10 focus:bg-white transition-all font-semibold"
-                          placeholder="Customize project title..."
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                          Target Metric:
-                        </label>
-                        <select
-                          value={customMetrics[activeAsset.id] || ''}
-                          onChange={(e) => handleUpdateAssetMetric(activeAsset.id, e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-xl outline-none text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be]/10 focus:bg-white transition-all font-semibold cursor-pointer"
-                        >
-                          {getMetricOptions(serviceTrack).map(m => (
-                            <option key={m} value={m}>{m}</option>
+                    {/* Guardrails (What NOT to Claim) */}
+                    {warnings.length > 0 && (
+                      <div className="p-3 rounded-2xl bg-amber-50/50 border border-amber-100/50 space-y-1 mt-auto">
+                        <span className="text-[8px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1">
+                          <ShieldAlert size={10} className="text-amber-700" />
+                          What NOT to Claim
+                        </span>
+                        <ul className="space-y-1">
+                          {warnings.map((item, idx) => (
+                            <li key={idx} className="text-[10px] text-amber-800/90 leading-relaxed font-semibold flex items-start gap-1">
+                              <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                              <span>{item}</span>
+                            </li>
                           ))}
-                        </select>
+                        </ul>
                       </div>
-                    </div>
-
-                    {/* Blueprint Details */}
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      <div className="space-y-0.5">
-                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Goal</span>
-                        <span className="text-xs font-semibold text-neutral-700">{meta.goal}</span>
-                      </div>
-                      <div className="space-y-0.5">
-                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Audience Focus</span>
-                        <span className="text-xs font-semibold text-neutral-700">{buyerText}</span>
-                      </div>
-                      <div className="space-y-0.5 col-span-2">
-                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Target Deliverable</span>
-                        <span className="text-xs font-semibold text-neutral-700">{meta.deliverable}</span>
-                      </div>
-                      <div className="space-y-0.5 col-span-2">
-                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Evidence Demonstrated</span>
-                        <span className="text-xs font-semibold text-neutral-700">{meta.evidence}</span>
-                      </div>
-                    </div>
-
-                    {/* Badges metadata row */}
-                    <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-neutral-100">
-                      <div className="p-2 rounded-xl bg-neutral-50 border border-neutral-100/50 text-center">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Estimated Time</span>
-                        <span className="text-xs font-black text-[#0b1c30] mt-0.5 block">{meta.time}</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-neutral-50 border border-neutral-100/50 text-center">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Difficulty</span>
-                        <span className="text-xs font-black text-[#0b1c30] mt-0.5 block">{meta.difficulty}</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-neutral-50 border border-neutral-100/50 text-center">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Trust Impact</span>
-                        <span className="text-xs font-black text-emerald-600 mt-0.5 block">{meta.trustImpact}</span>
-                      </div>
-                    </div>
+                    )}
                   </div>
-
-                  {/* Guardrails Warnings alert */}
-                  {warnings.length > 0 && (
-                    <div className="p-3 rounded-2xl bg-amber-50/50 border border-amber-100/50 space-y-1 mt-auto">
-                      <span className="text-[9px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1">
-                        <ShieldAlert size={12} className="text-amber-700" />
-                        What NOT to Claim
-                      </span>
-                      <ul className="space-y-1">
-                        {warnings.map((item, idx) => (
-                          <li key={idx} className="text-[10px] text-amber-800/90 leading-relaxed font-semibold flex items-start gap-1">
-                            <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
+                );
+              })}
+            </div>
           </div>
         )}
+      </section>
 
-        {/* Part 4: Coverage & Trust Analysis progress dashboard */}
-        <div className="p-6 bg-white border border-neutral-200 rounded-3xl shadow-sm space-y-4">
-          <div>
-            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-              Statistics
-            </span>
-            <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-wide">
-              Proof Coverage Analysis
+      {/* PART 5: PROOF STRATEGY SUMMARY & APPROVAL */}
+      {activeStrategy && (
+        <section className="bg-[#0b1c30] rounded-3xl p-6 shadow-md border border-[#0b1c30] space-y-6">
+          <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+            <ShieldCheck size={18} className="text-blue-400" />
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+              Proof Strategy Summary
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            {[
-              { label: 'Technical Skill', val: coverageMetrics.skill, desc: 'Proves capability to execute.' },
-              { label: 'Client Trust', val: coverageMetrics.trust, desc: 'Proves reliable professional process.' },
-              { label: 'Business Results', val: coverageMetrics.results, desc: 'Proves conversion/measurable outcomes.' },
-              { label: 'Market Authority', val: coverageMetrics.authority, desc: 'Proves strategic positioning.' },
-              { label: 'Social Proof', val: coverageMetrics.socialProof, desc: 'Proves customer feedback.' },
-            ].map(dim => (
-              <div key={dim.label} className="p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 space-y-2">
-                <span className="text-[10px] font-extrabold text-neutral-500 uppercase tracking-wider block">
-                  {dim.label}
-                </span>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-lg font-black text-[#0b1c30]">{dim.val}%</span>
-                </div>
-                <div className="w-full bg-neutral-200 h-1.5 rounded-full overflow-hidden">
-                  <div 
-                    className={cn(
-                      "h-full rounded-full transition-all duration-300", 
-                      dim.val > 70 ? "bg-emerald-500" : dim.val > 40 ? "bg-blue-500" : "bg-amber-500"
-                    )} 
-                    style={{ width: `${dim.val}%` }} 
-                  />
-                </div>
-                <span className="text-[9px] text-neutral-400 block font-semibold">{dim.desc}</span>
-              </div>
-            ))}
-          </div>
-
-          {weakDimensions.length > 0 && (
-            <div className="p-3 rounded-xl bg-amber-50/50 border border-amber-100/50 flex items-start gap-2.5">
-              <Info size={14} className="text-amber-700 shrink-0 mt-0.5" />
-              <span className="text-xs text-amber-800 font-semibold leading-relaxed">
-                Strategic Insight: You are weak in <span className="underline">{weakDimensions.join(', ')}</span>. The recommended Priority #2 project will help balance your authority profile.
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+            <div className="md:col-span-2 space-y-3 text-white">
+              <span className="text-[9px] font-black text-white/50 uppercase tracking-widest block">
+                Roadmap Summary
               </span>
-            </div>
-          )}
-        </div>
-
-        {/* Part 5: Proof Strategy Summary & Approvals */}
-        {activeStrategy && (
-          <section className="bg-[#0b1c30] rounded-3xl p-6 shadow-md border border-[#0b1c30] space-y-6">
-            <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-              <ShieldCheck size={18} className="text-blue-400" />
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                Proof Strategy Summary
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-              <div className="md:col-span-2 space-y-3 text-white">
-                <span className="text-[9px] font-black text-white/50 uppercase tracking-widest block">
-                  Roadmap Goals
-                </span>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2.5 text-xs">
-                    <Check className="text-blue-400 w-4 h-4 shrink-0" strokeWidth={3} />
-                    <span>Build 3 Recommended Case Study Projects</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 text-xs">
-                    <Check className="text-blue-400 w-4 h-4 shrink-0" strokeWidth={3} />
-                    <span>Establish verified positioning credentials</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 text-xs text-white/70">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                    <span>Remaining gaps: Client Testimonials</span>
-                  </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2.5 text-xs">
+                  <Check className="text-blue-400 w-4 h-4 shrink-0" strokeWidth={3} />
+                  <span>Build 3 Priority Projects to fill trust gaps</span>
                 </div>
-              </div>
-
-              {/* Urgency selection deck */}
-              <div className="md:col-span-2 space-y-2">
-                <span className="text-[9px] font-black text-white/50 uppercase tracking-widest block mb-1">
-                  Choose Strategy Urgency
-                </span>
-                <div className="flex flex-col gap-2">
-                  {[
-                    { id: 'immediate', title: 'Sprint (14 Days)' },
-                    { id: 'short_term', title: 'Steady Rollout (30-90 Days)' },
-                    { id: 'long_term', title: 'Organic' }
-                  ].map(opt => (
-                    <button
-                      key={opt.id}
-                      onClick={() => handlePrioritySelect(opt.id as any)}
-                      className={cn(
-                        "w-full px-4 py-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer",
-                        activePriority === opt.id 
-                          ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/10" 
-                          : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
-                      )}
-                    >
-                      {opt.title}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-2.5 text-xs">
+                  <Check className="text-blue-400 w-4 h-4 shrink-0" strokeWidth={3} />
+                  <span>Verify pacing, quality standard, and outcome metrics</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs text-white/70">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                  <span>Remaining gaps: Client Testimonials</span>
                 </div>
               </div>
             </div>
-          </section>
-        )}
-      </section>
+
+            {/* Urgency selection deck */}
+            <div className="md:col-span-2 space-y-2">
+              <span className="text-[9px] font-black text-white/50 uppercase tracking-widest block mb-1">
+                Choose Strategy Urgency
+              </span>
+              <div className="flex flex-col gap-2">
+                {[
+                  { id: 'immediate', title: 'Sprint (14 Days)' },
+                  { id: 'short_term', title: 'Steady Rollout (30-90 Days)' },
+                  { id: 'long_term', title: 'Organic' }
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handlePrioritySelect(opt.id as any)}
+                    className={cn(
+                      "w-full px-4 py-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer",
+                      activePriority === opt.id 
+                        ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/10" 
+                        : "bg-white/5 border-white/10 text-white/80 hover:bg-white/10"
+                    )}
+                  >
+                    {opt.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {isCompleted && !pendingStrategy && (
         <motion.div 
