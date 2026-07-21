@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info } from 'lucide-react';
+import { Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info, Edit2, Search } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
@@ -45,6 +45,41 @@ const getAssetLabel = (id: string): string => {
     content_samples: "Writing Samples",
   };
   return labels[id] || id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+};
+
+const archetypeColors = {
+  builder: {
+    theme: '#0058be',
+    bg: 'bg-blue-50/50',
+    border: 'border-blue-100',
+    text: 'text-blue-700',
+    iconBg: 'bg-blue-100/60',
+    icon: Sparkles
+  },
+  auditor: {
+    theme: '#7c3aed',
+    bg: 'bg-violet-50/50',
+    border: 'border-violet-100',
+    text: 'text-violet-700',
+    iconBg: 'bg-violet-100/60',
+    icon: Search
+  },
+  deconstructor: {
+    theme: '#059669',
+    bg: 'bg-emerald-50/50',
+    border: 'border-emerald-100',
+    text: 'text-emerald-700',
+    iconBg: 'bg-emerald-100/60',
+    icon: FileText
+  },
+  practitioner: {
+    theme: '#d97706',
+    bg: 'bg-amber-50/50',
+    border: 'border-amber-100',
+    text: 'text-amber-700',
+    iconBg: 'bg-amber-100/60',
+    icon: CheckCircle2
+  }
 };
 
 export function Step2ProofAssetBuilder() {
@@ -290,8 +325,14 @@ export function Step2ProofAssetBuilder() {
       )}
 
       {/* Premium Strategic Foundation Card */}
-      <div className="p-6 rounded-3xl border border-[#0058be]/20 bg-gradient-to-br from-[#0058be]/5 to-transparent shadow-sm space-y-4 relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+      <div className="p-6 rounded-3xl border border-neutral-200/80 bg-white shadow-sm space-y-5 relative overflow-hidden">
+        {/* Subtle background glow depending on active archetype */}
+        <div 
+          className="absolute -right-20 -top-20 w-44 h-44 rounded-full filter blur-3xl opacity-20 pointer-events-none"
+          style={{ backgroundColor: (archetypeColors[authorityProfile.position] || archetypeColors.builder).theme }}
+        />
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-4">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-[#0058be]" />
             <h4 className="text-xs font-black uppercase tracking-wider text-[#0b1c30]">
@@ -300,39 +341,62 @@ export function Step2ProofAssetBuilder() {
           </div>
           <button
             onClick={() => useModule3Store.getState().jumpToStep('authority_position')}
-            className="text-xs text-[#0058be] hover:underline font-bold flex items-center gap-1 min-h-[32px] cursor-pointer border-none bg-transparent"
+            className="text-xs text-[#0058be] hover:text-[#0058be]/80 font-extrabold flex items-center gap-1.5 min-h-[36px] px-3.5 rounded-xl border border-[#0058be]/20 bg-white shadow-sm hover:shadow transition-all duration-200 cursor-pointer"
           >
-            ✏️ Adjust Archetype
+            <Edit2 size={13} className="text-[#0058be]" />
+            Adjust Archetype
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-          <div className="md:col-span-1 p-3 rounded-xl bg-white border border-neutral-200 shadow-sm flex flex-col justify-center">
-            <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">
-              Selected Archetype:
-            </span>
-            <span className="text-xs font-extrabold text-[#0058be] mt-0.5 uppercase tracking-wide">
-              {authorityProfile.position}
-            </span>
-            <p className="text-[10px] text-neutral-400 mt-1 leading-normal">
-              {authorityProfile.position === 'builder' ? 'Proves skill through finished builds.' : 
-               authorityProfile.position === 'auditor' ? 'Proves skill through diagnostic audits.' :
-               authorityProfile.position === 'deconstructor' ? 'Proves skill through breakdowns.' :
-               'Proves skill through daily work logs.'}
-            </p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+          {/* Enhanced Capsule Archetype Badge */}
+          {(() => {
+            const colors = archetypeColors[authorityProfile.position] || archetypeColors.builder;
+            const IconComponent = colors.icon;
+            return (
+              <div className={cn(
+                "md:col-span-1 p-5 rounded-2xl border flex flex-col items-center text-center relative overflow-hidden group hover:shadow-md transition-all duration-300",
+                colors.bg,
+                colors.border
+              )}>
+                {/* Top color line indicator */}
+                <div 
+                  className="absolute top-0 inset-x-0 h-1" 
+                  style={{ backgroundColor: colors.theme }}
+                />
+                
+                {/* Icon Container */}
+                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center mb-3", colors.iconBg, colors.text)}>
+                  <IconComponent className="w-5 h-5" />
+                </div>
 
-          <div className="md:col-span-3 space-y-1">
-            <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">
+                <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                  Archetype
+                </span>
+                <span className={cn("text-xs font-black mt-1 uppercase tracking-wider", colors.text)}>
+                  {authorityProfile.position}
+                </span>
+                <p className="text-[10px] text-neutral-500 mt-2 leading-relaxed font-medium">
+                  {authorityProfile.position === 'builder' ? 'Proves skill through finished builds.' : 
+                   authorityProfile.position === 'auditor' ? 'Proves skill through diagnostic audits.' :
+                   authorityProfile.position === 'deconstructor' ? 'Proves skill through breakdowns.' :
+                   'Proves skill through daily work logs.'}
+                </p>
+              </div>
+            );
+          })()}
+
+          <div className="md:col-span-3 space-y-2">
+            <span className="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest block">
               Your Active Trust Promise (Locked):
             </span>
-            <blockquote className="text-xs font-semibold text-[#0b1c30] leading-relaxed italic pl-3 border-l-2 border-[#0058be]/40">
+            <blockquote className="text-sm font-semibold text-[#0b1c30] leading-relaxed italic pl-4 border-l-2 border-[#0058be]/40">
               "{highlightPromiseText(authorityProfile.coreTrustPromise)}"
             </blockquote>
           </div>
         </div>
         
-        <p className="text-[10px] text-neutral-400 leading-normal flex items-center gap-1.5 pt-1">
+        <p className="text-[10px] text-neutral-400 leading-normal flex items-center gap-1.5 pt-2 border-t border-neutral-100/60">
           <Info size={11} className="text-[#0058be]" />
           This promise was verified in Step 1. The playbooks below are dynamically customized to prove this pledge to your buyers.
         </p>

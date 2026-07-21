@@ -81,7 +81,36 @@ export function classifyService(serviceId: string | null): ServiceClassification
   }
 
   // Clean format label from snake_case
-  const label = serviceId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  let label = serviceId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+  // Grammatical persona suffix correction if it doesn't already contain a persona noun
+  const lowerLabel = label.toLowerCase();
+  const hasPersonaNoun = 
+    lowerLabel.includes('editor') || 
+    lowerLabel.includes('developer') || 
+    lowerLabel.includes('designer') || 
+    lowerLabel.includes('creator') || 
+    lowerLabel.includes('engineer') || 
+    lowerLabel.includes('writer') || 
+    lowerLabel.includes('specialist') || 
+    lowerLabel.includes('strategist') || 
+    lowerLabel.includes('producer') || 
+    lowerLabel.includes('hacker') || 
+    lowerLabel.includes('consultant');
+
+  if (!hasPersonaNoun) {
+    if (family === 'editor') {
+      label += ' Editor';
+    } else if (family === 'developer') {
+      label += ' Developer';
+    } else if (family === 'designer') {
+      label += ' Designer';
+    } else if (family === 'automation') {
+      label += ' Engineer';
+    } else if (family === 'other') {
+      label += ' Specialist';
+    }
+  }
 
   return {
     id: serviceId,
