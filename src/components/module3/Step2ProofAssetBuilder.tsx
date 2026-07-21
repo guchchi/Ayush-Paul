@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, Target, CheckCircle2, ShieldAlert, Award, FileText, Info, Edit2, Search,
   Video, Film, Scissors, Tv, Play, Code, Cpu, Zap, Globe, Layers, GitBranch, BookOpen, MessageSquare, Folder, LineChart, TrendingUp, PenTool,
-  RotateCcw, ShieldCheck, Filter, Bookmark
+  RotateCcw, ShieldCheck, Filter, Bookmark, Laptop, HelpCircle
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -131,9 +131,83 @@ const getCategoryStyle = (category: string) => {
   return 'bg-neutral-50 text-neutral-600 border-neutral-100/50';
 };
 
+const getMetricOptions = (track: string) => {
+  if (track === 'editor') {
+    return [
+      '+45% Avg Watch Time',
+      '+15% Hook Retention',
+      '3.2x CTR on Thumbnails',
+      '+50% Viewer Conversion'
+    ];
+  }
+  if (track === 'developer') {
+    return [
+      '99 Lighthouse Score',
+      '-40% Loading Latency',
+      '100% Security Audited',
+      '2.5x Server Speedup'
+    ];
+  }
+  if (track === 'designer') {
+    return [
+      '+24% Signup Conversion',
+      '-35% User Drop-off Rate',
+      '95% Accessibility Rating',
+      '1.8x Task Completion'
+    ];
+  }
+  if (track === 'automation') {
+    return [
+      '15+ Hours Saved Weekly',
+      '0% Sync Failures',
+      '99.9% Sync Accuracy',
+      '-50% Operational Costs'
+    ];
+  }
+  return [
+    '+18% Email Open Rate',
+    '+35% Landing Page CTR',
+    '2.2x Sales Conversion',
+    '-20% Ad CPA Reduction'
+  ];
+};
+
+function getPersonalizedWarnings(format: string, position: string) {
+  const base = [
+    'Do not imply this was paid commercial client work',
+    'Do not manufacture fake revenue or sales numbers',
+  ];
+
+  const fmt = format.toLowerCase();
+  if (fmt.includes('video') || fmt.includes('reel') || fmt.includes('showreel')) {
+    return [
+      ...base,
+      "Do not claim this demo video was published on the client's official live channel",
+      "Do not use third-party media assets without marking them as demo placements"
+    ];
+  }
+  if (fmt.includes('before') || fmt.includes('comparison')) {
+    return [
+      ...base,
+      "Do not claim the 'Before' version was built by an agency partner unless confirmed",
+      "State the narrative or timing improvements with objective time indicators"
+    ];
+  }
+  if (position === 'auditor') {
+    return [
+      ...base,
+      "Do not claim access to private analytics or back-end databases of live brands",
+      "Specify that all optimization points are derived from public heuristic audits"
+    ];
+  }
+  return [
+    ...base,
+    "Do not claim this was built for a live commercial brand"
+  ];
+}
+
 export function Step2ProofAssetBuilder() {
   const authorityProfile = useModule3Store((s) => s.authorityProfile);
-  const mod1CareerTrackId = useModule3Store((s) => s.mod1CareerTrackId);
   const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
   const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
   const mod1NicheId = useModule3Store((s) => s.mod1NicheId);
@@ -172,16 +246,16 @@ export function Step2ProofAssetBuilder() {
   // Gamified filters for RPG inventory style selection
   const [activeFilter, setActiveFilter] = useState<'all' | 'craft' | 'reliability' | 'impact'>('all');
 
-  const [activePlaybookTab, setActivePlaybookTab] = useState<'roadmap' | 'checklist' | 'compliance'>('roadmap');
+  // Custom blueprint title and metric selections
+  const [customTitles, setCustomTitles] = useState<Record<string, string>>({});
+  const [customMetrics, setCustomMetrics] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    setActivePlaybookTab('roadmap');
-  }, [selectedAssetId]);
-
-  const serviceTrack = useMemo(() => {
-    if (!mod1ServiceId) return 'other';
-    return classifyService(mod1ServiceId).family;
+  const serviceClass = useMemo(() => {
+    if (!mod1ServiceId) return { label: 'Professional', family: 'other' };
+    return classifyService(mod1ServiceId);
   }, [mod1ServiceId]);
+
+  const serviceTrack = serviceClass.family;
 
   const templates = useMemo(() => {
     return AVAILABLE_TEMPLATES[serviceTrack] || AVAILABLE_TEMPLATES.other;
@@ -226,6 +300,20 @@ export function Step2ProofAssetBuilder() {
     }
   }, [assets, selectedAssetId]);
 
+  // Load initial custom values if already in store
+  useEffect(() => {
+    if (assets.length > 0) {
+      const titles: Record<string, string> = {};
+      const metrics: Record<string, string> = {};
+      assets.forEach(a => {
+        titles[a.id] = a.title;
+        metrics[a.id] = a.realWorldExample || getMetricOptions(serviceTrack)[0];
+      });
+      setCustomTitles(prev => ({ ...titles, ...prev }));
+      setCustomMetrics(prev => ({ ...metrics, ...prev }));
+    }
+  }, [assets, serviceTrack]);
+
   // Auto-generate strategy on mount if missing
   useEffect(() => {
     if (!pendingStrategy && !currentStrategy && !isGenerating && authorityProfile && mod1MarketId) {
@@ -263,15 +351,46 @@ export function Step2ProofAssetBuilder() {
     selectExecutionPriority(priority);
   };
 
+  const handleUpdateAssetTitle = (assetId: string, title: string) => {
+    setCustomTitles(prev => ({ ...prev, [assetId]: title }));
+    
+    // Update store proofAssets array dynamically so Module 4 can read it
+    const updatedAssets = assets.map(a => {
+      const customTitle = a.id === assetId ? title : (customTitles[a.id] || a.title);
+      const customMetric = customMetrics[a.id] || a.realWorldExample || '';
+      return { ...a, title: customTitle, realWorldExample: customMetric };
+    });
+    useModule3Store.setState({ proofAssets: updatedAssets });
+  };
+
+  const handleUpdateAssetMetric = (assetId: string, metric: string) => {
+    setCustomMetrics(prev => ({ ...prev, [assetId]: metric }));
+    
+    // Update store proofAssets array dynamically so Module 4 can read it
+    const updatedAssets = assets.map(a => {
+      const customTitle = customTitles[a.id] || a.title;
+      const customMetric = a.id === assetId ? metric : (customMetrics[a.id] || a.realWorldExample || '');
+      return { ...a, title: customTitle, realWorldExample: customMetric };
+    });
+    useModule3Store.setState({ proofAssets: updatedAssets });
+  };
+
   const handleApprove = () => {
     if (activeStrategy && activePriority) {
+      // Sync final customized values to store array
+      const finalAssets = assets.map(a => ({
+        ...a,
+        title: customTitles[a.id] || a.title,
+        realWorldExample: customMetrics[a.id] || a.realWorldExample || ''
+      }));
+
       // Approve strategy
       approveProofAssetStrategy();
       
       // Ensure all priorities and proof assets are synced to store for Module 4
       const state = useModule3Store.getState();
       state.setProofPriorities(priorities);
-      state.setProofAssets(assets);
+      state.setProofAssets(finalAssets);
 
       confirmStep();
       nextStep();
@@ -299,7 +418,7 @@ export function Step2ProofAssetBuilder() {
   // Dynamic styling of variables inside promise text
   const highlightPromiseText = (text: string) => {
     if (!text) return '';
-    const serviceLabel = classifyService(mod1ServiceId).label;
+    const serviceLabel = serviceClass.label;
     const marketLabel = mod1MarketId ? mod1MarketId.replace(/_/g, ' ') : '';
     
     const keywords = [
@@ -346,34 +465,12 @@ export function Step2ProofAssetBuilder() {
     return { label: 'Omni Authority', desc: 'Minimal gaps. High level of matched proof assets.', color: 'text-emerald-600', border: 'border-emerald-200', bg: 'bg-emerald-500' };
   }, [selectedCount]);
 
-  if (!authorityProfile) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-neutral-200 bg-neutral-50/50 border-dashed">
-        <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
-          <Layout className="w-5 h-5 text-neutral-400" aria-hidden="true" />
-        </div>
-        <h3 className="text-sm font-bold text-[#0b1c30]">Missing Authority Profile</h3>
-        <p className="text-sm text-neutral-500 max-w-sm mt-1 mb-6">An approved Authority Profile is required before building a Proof Strategy.</p>
-        <ModuleButton variant="secondary" onClick={previousStep}>
-          <ArrowLeft size={16} aria-hidden="true" /> Go Back to Step 1
-        </ModuleButton>
-      </div>
-    );
-  }
-  
-  if (!mod2OfferType || !mod1MarketId) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-neutral-200 bg-neutral-50/50 border-dashed">
-        <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
-          <AlertTriangle className="w-5 h-5 text-amber-500" aria-hidden="true" />
-        </div>
-        <h3 className="text-sm font-bold text-[#0b1c30]">Missing Offer details</h3>
-        <p className="text-sm text-neutral-500 max-w-sm mt-1 mb-6">Offer and Niche context from Module 2 are required to map credibility gaps. Please complete previous modules first.</p>
-      </div>
-    );
-  }
-
   const selectedAsset = assets.find(a => a.id === selectedAssetId) || assets[0];
+
+  const personalizedWarnings = useMemo(() => {
+    if (!selectedAsset) return [];
+    return getPersonalizedWarnings(selectedAsset.assetType, authorityProfile.position);
+  }, [selectedAsset, authorityProfile.position]);
 
   return (
     <motion.div
@@ -537,7 +634,7 @@ export function Step2ProofAssetBuilder() {
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {[
             { id: 'all', label: 'All Items', icon: Filter },
             { id: 'craft', label: 'Craft Assets', icon: PenTool },
@@ -598,7 +695,6 @@ export function Step2ProofAssetBuilder() {
                   )}
                 >
                   <div className="flex items-start justify-between gap-3 w-full">
-                    {/* Icon + Label */}
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
@@ -615,7 +711,6 @@ export function Step2ProofAssetBuilder() {
                       </div>
                     </div>
 
-                    {/* Custom Snaapy Spring Checkbox */}
                     <div className={cn(
                       "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 shrink-0",
                       isChecked 
@@ -653,259 +748,284 @@ export function Step2ProofAssetBuilder() {
         </div>
       </section>
 
-      {/* Interactive double panel roadmap section */}
+      {/* Gamified Case Study Stepper & Blueprint Dashboard Builder */}
       {assets.length > 0 && selectedAsset && (
-        <div className="space-y-4">
-          {/* Onboarding narrative callout */}
-          <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/50 flex gap-3 text-xs text-blue-800 leading-relaxed font-medium">
-            <Info className="w-5 h-5 text-[#0058be] shrink-0 mt-0.5" />
-            <div>
-              <span className="font-extrabold uppercase tracking-wider block mb-0.5 text-[9px] text-[#0058be]">
-                How to Build Your Authority Proof Strategy
-              </span>
-              Select each of the 3 required projects on the left. The playbook panel on the right will load its custom recipe. Execute the checklist items and mark your progress. Once all 3 projects are fully constructed, your Authority Roadmap is complete.
+        <section className="space-y-6">
+          <div className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-[#0058be]" />
+            <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">
+              Verify Required Proof Case Studies
+            </h3>
+          </div>
+
+          {/* Stepper Progress Bar (Highly Discoverable RPG Step Indicator) */}
+          <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+              {assets.map((asset, idx) => {
+                const isSelected = selectedAssetId === asset.id;
+                const completedCount = checkedDeliverables[asset.id]?.length || 0;
+                const isFinished = completedCount === asset.completionChecklist.length && asset.completionChecklist.length > 0;
+                
+                return (
+                  <button
+                    key={asset.id}
+                    onClick={() => setSelectedAssetId(asset.id)}
+                    className={cn(
+                      "flex-1 flex items-center gap-3 w-full text-left p-3 rounded-xl border transition-all cursor-pointer",
+                      isSelected
+                        ? "border-[#0058be] bg-[#0058be]/5 ring-1 ring-[#0058be]/20"
+                        : "border-neutral-100 bg-neutral-50/50 hover:bg-neutral-50"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-extrabold text-xs transition-all",
+                      isFinished 
+                        ? "bg-emerald-500 text-white" 
+                        : isSelected 
+                          ? "bg-[#0058be] text-white" 
+                          : "bg-neutral-200 text-neutral-500"
+                    )}>
+                      {isFinished ? <Check size={14} strokeWidth={3} /> : idx + 1}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                        Case Study #{idx + 1}
+                      </span>
+                      <span className="text-xs font-bold text-[#0b1c30] block truncate">
+                        {customTitles[asset.id] || asset.title}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left panel: Gap cards */}
-            <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
-              <div className="space-y-3 flex-1">
-                {assets.map((asset, index) => {
-                  const isSelected = selectedAssetId === asset.id;
-                  const completedCount = checkedDeliverables[asset.id]?.length || 0;
-                  const progress = asset.completionChecklist.length > 0
-                    ? Math.round((completedCount / asset.completionChecklist.length) * 100)
-                    : 0;
+          {/* Symmetrical columns split dashboard */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Column: Blueprint Builder specs & Checklist */}
+            <div className="lg:col-span-6 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                    Blueprint Config
+                  </span>
+                  <h4 className="text-sm font-black text-[#0b1c30] uppercase tracking-wide">
+                    Configure Case Study specs
+                  </h4>
+                </div>
 
-                  return (
-                    <motion.button
-                      key={asset.id}
-                      whileHover={{ scale: 1.01, y: -2 }}
-                      whileTap={{ scale: 0.99 }}
-                      onClick={() => setSelectedAssetId(asset.id)}
-                      className={cn(
-                        "w-full text-left p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/40 relative overflow-hidden",
-                        isSelected
-                          ? "border-[#0058be] bg-[#0058be]/5 shadow-sm"
-                          : "border-neutral-200 bg-white hover:border-neutral-300"
-                      )}
-                    >
-                      {/* Left blue active indicator line */}
-                      {isSelected && (
-                        <div className="absolute left-0 inset-y-0 w-1 bg-[#0058be]" />
-                      )}
+                {/* Input: Custom Title */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">
+                    Case Study Title:
+                  </label>
+                  <input
+                    type="text"
+                    value={customTitles[selectedAsset.id] || ''}
+                    onChange={(e) => handleUpdateAssetTitle(selectedAsset.id, e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl outline-none text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 focus:bg-white transition-all font-semibold"
+                    placeholder="Customize your showcase project title..."
+                  />
+                </div>
 
-                      <div className="flex items-start justify-between gap-2 w-full">
-                        <div>
-                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                            Project #{index + 1}
-                          </span>
-                          <h4 className="text-xs font-black text-[#0b1c30] mt-0.5 leading-snug">
-                            {asset.title}
-                          </h4>
-                        </div>
-                        <span className={cn(
-                          "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded shrink-0",
-                          asset.expectedImpact === 'High' ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
-                        )}>
-                          {asset.assetType.replace(/_/g, ' ')}
-                        </span>
-                      </div>
+                {/* Dropdown: Custom Metric */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">
+                    Target Metric to Prove:
+                  </label>
+                  <select
+                    value={customMetrics[selectedAsset.id] || ''}
+                    onChange={(e) => handleUpdateAssetMetric(selectedAsset.id, e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl outline-none text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 focus:bg-white transition-all font-semibold cursor-pointer"
+                  >
+                    {getMetricOptions(serviceTrack).map(m => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </div>
 
-                      <p className="text-[11px] text-neutral-500 leading-relaxed line-clamp-2">
-                        {asset.credibilityGapProved}
-                      </p>
-
-                      {/* Satisfying progress indicator */}
-                      <div className="mt-2 pt-2.5 border-t border-dashed border-neutral-100/60 flex items-center justify-between gap-4 w-full">
-                        <div className="flex-1 bg-neutral-100 h-1.5 rounded-full overflow-hidden">
-                          <div
-                            className="bg-[#0058be] h-full transition-all duration-300"
-                            style={{ width: `${progress}%` }}
+                {/* Dynamic Checklist */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">
+                    Project Roadmap Deliverables:
+                  </label>
+                  <div className="space-y-2">
+                    {selectedAsset.completionChecklist.map((item, idx) => {
+                      const isChecked = checkedDeliverables[selectedAsset.id]?.includes(item) || false;
+                      return (
+                        <motion.div
+                          key={idx}
+                          whileTap={{ scale: 0.99 }}
+                          onClick={() => toggleDeliverable(selectedAsset.id, item)}
+                          className={cn(
+                            "flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer select-none transition-all",
+                            isChecked ? "border-[#0058be] bg-[#0058be]/5" : "border-neutral-100 bg-neutral-50/50 hover:bg-neutral-50"
+                          )}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            readOnly
+                            className="w-3.5 h-3.5 rounded text-[#0058be] border-neutral-300 focus:ring-[#0058be] mt-0.5 shrink-0"
                           />
-                        </div>
-                        <span className="text-[10px] text-neutral-400 font-black shrink-0 uppercase tracking-wider">
-                          {progress}% Built
-                        </span>
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Right panel: Project Recipe Playbook with internal tabs for symmetry */}
-            <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[380px]">
-              <div className="space-y-5">
-                {/* Heading & Metadata */}
-                <div className="flex items-start justify-between gap-4 border-b border-neutral-100 pb-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[9px] font-black text-[#0058be] bg-[#0058be]/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        {selectedAsset.assetType.replace(/_/g, ' ')}
-                      </span>
-                      <span className="text-[9px] font-black text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        Difficulty: {selectedAsset.difficulty || 'Medium'}
-                      </span>
-                      <span className="text-[9px] font-black text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        Effort: {selectedAsset.estimatedEffort || '1-3 days'}
-                      </span>
-                    </div>
-                    <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide pt-1">
-                      {selectedAsset.title}
-                    </h3>
+                          <span className="text-[11px] text-neutral-600 leading-normal font-semibold">
+                            {item}
+                          </span>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
+              </div>
 
-                {/* Sub-Tabs selectors */}
-                <div className="flex border-b border-neutral-100 pb-2 gap-1 overflow-x-auto scrollbar-none">
-                  {[
-                    { id: 'roadmap', label: 'Action Roadmap', icon: GitBranch },
-                    { id: 'checklist', label: 'Checklist', icon: CheckCircle2 },
-                    { id: 'compliance', label: 'Guardrails', icon: ShieldAlert }
-                  ].map(tab => {
-                    const TabIcon = tab.icon;
-                    const isTabActive = activePlaybookTab === tab.id;
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActivePlaybookTab(tab.id as any)}
-                        className={cn(
-                          "flex items-center gap-1.5 px-3 py-2 text-[10px] font-extrabold uppercase tracking-wider border-b-2 -mb-2.5 transition-all cursor-pointer bg-transparent outline-none",
-                          isTabActive
-                            ? "border-[#0058be] text-[#0058be]"
-                            : "border-transparent text-neutral-400 hover:text-neutral-600"
-                        )}
-                      >
-                        <TabIcon size={12} />
-                        {tab.label}
-                      </button>
-                    );
-                  })}
+              {/* Warnings / Claims Compliance */}
+              {personalizedWarnings.length > 0 && (
+                <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-100/50 space-y-2">
+                  <span className="text-[10px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
+                    <ShieldAlert size={14} className="text-amber-700" />
+                    Ethics Guardrails (What NOT to Claim)
+                  </span>
+                  <ul className="space-y-1.5">
+                    {personalizedWarnings.map((item, idx) => (
+                      <li key={idx} className="text-[10px] text-amber-800/90 leading-relaxed font-semibold flex items-start gap-1.5 pl-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column: Premium live Portfolio Case Study Card Mockup Preview (The Value Output!) */}
+            <div className="lg:col-span-6 bg-[#f8f9ff]/40 border-2 border-dashed border-neutral-200 rounded-3xl p-6 shadow-inner flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                  </div>
+                  <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">
+                    Live Portfolio Card Preview
+                  </span>
                 </div>
 
-                {/* Tab content space */}
-                <div className="min-h-[220px] flex flex-col justify-start">
-                  <AnimatePresence mode="wait">
-                    {activePlaybookTab === 'roadmap' && (
-                      <motion.div
-                        key="roadmap"
-                        initial={{ opacity: 0, x: -5 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 5 }}
-                        className="space-y-4"
-                      >
-                        {/* Target objective */}
-                        <div className="bg-[#f8f9ff] border border-[#0058be]/20 rounded-xl p-4">
-                          <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block mb-0.5">Trust Goal</span>
-                          <p className="text-xs text-[#0b1c30]/90 leading-relaxed font-semibold">
-                            {selectedAsset.credibilityGapProved}
-                          </p>
+                {/* Dynamic Visual Mockup representation depending on career family */}
+                {(() => {
+                  const activeMetric = customMetrics[selectedAsset.id] || getMetricOptions(serviceTrack)[0];
+                  
+                  return (
+                    <div className="w-full aspect-video rounded-2xl bg-neutral-900 flex flex-col items-center justify-center relative overflow-hidden group shadow-md border border-neutral-800">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+                      
+                      {/* Dynamic track layout indicators */}
+                      {serviceTrack === 'editor' ? (
+                        /* Mock Video Player */
+                        <div className="w-12 h-12 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur-sm shadow-lg">
+                          <Play className="w-6 h-6 fill-white" />
                         </div>
-
-                        {/* Steps list */}
-                        <div className="space-y-3">
-                          <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">Action steps</span>
-                          <div className="relative border-l border-neutral-100 ml-2.5 pl-4 space-y-3.5 py-1">
-                            {selectedAsset.executionSteps.map((step, idx) => (
-                              <div key={idx} className="relative">
-                                <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full border border-[#0058be] bg-white flex items-center justify-center">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
-                                </div>
-                                <span className="text-[11px] text-neutral-600 font-medium block leading-relaxed pl-1">
-                                  {step}
-                                </span>
-                              </div>
-                            ))}
+                      ) : serviceTrack === 'developer' || serviceTrack === 'designer' ? (
+                        /* Mock Browser layout */
+                        <div className="absolute inset-x-4 top-12 bottom-12 border border-white/20 rounded-xl bg-white/5 backdrop-blur-sm p-3 flex flex-col justify-between">
+                          <div className="w-1/3 h-2 bg-white/30 rounded" />
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="h-8 bg-white/10 rounded" />
+                            <div className="h-8 bg-white/10 rounded" />
+                            <div className="h-8 bg-[#0058be]/30 rounded border border-[#0058be]/40 flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5 text-blue-200" />
+                            </div>
                           </div>
                         </div>
-                      </motion.div>
+                      ) : serviceTrack === 'automation' ? (
+                        /* Mock Flow Nodes Schema */
+                        <div className="flex items-center gap-3 backdrop-blur-sm bg-white/5 border border-white/10 p-3 rounded-2xl">
+                          <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-[10px] font-mono border border-blue-500/30">In</div>
+                          <div className="w-5 h-0.5 bg-white/20" />
+                          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-500/30"><Zap size={14} /></div>
+                        </div>
+                      ) : (
+                        /* Mock Copy Sheets paper layout */
+                        <div className="absolute inset-x-8 top-8 bottom-8 border border-white/15 rounded-lg bg-white/5 p-4 flex flex-col justify-between text-left">
+                          <div className="w-1/4 h-1.5 bg-white/25 rounded" />
+                          <div className="w-full h-2 bg-white/10 rounded" />
+                          <div className="w-5/6 h-2 bg-white/10 rounded" />
+                          <div className="w-1/3 h-4 bg-[#0058be]/30 border border-[#0058be]/40 rounded" />
+                        </div>
+                      )}
+
+                      <span className="absolute bottom-3 left-4 text-[9px] text-white/50 font-black tracking-widest uppercase">
+                        {serviceClass.label} Showcase
+                      </span>
+                      
+                      {/* Floating Metric Badge */}
+                      <div className="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-emerald-400">
+                        📈 {activeMetric}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Case Study Title (Live updates) */}
+                <div className="space-y-1.5 text-left">
+                  <span className="text-[8px] font-black text-[#0058be] bg-[#0058be]/10 px-2 py-0.5 rounded uppercase tracking-wider">
+                    Portfolio Headline
+                  </span>
+                  <h4 className="text-sm font-black text-neutral-900 leading-snug">
+                    {customTitles[selectedAsset.id] || selectedAsset.title}
+                  </h4>
+                  <p className="text-[11px] text-neutral-500 leading-relaxed">
+                    This case study proves my capacity to solve credibility gaps for {mod1MarketId ? mod1MarketId.replace(/_/g, ' ') : 'target buyers'} by delivering high-quality {serviceClass.label} solutions.
+                  </p>
+                </div>
+
+                {/* Live checklist feedback inside mockup card! */}
+                <div className="space-y-2 text-left pt-2 border-t border-neutral-100">
+                  <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                    Verified Credibility Signals:
+                  </span>
+                  <div className="space-y-1.5">
+                    {checkedDeliverables[selectedAsset.id]?.length === 0 ? (
+                      <span className="text-[10px] text-neutral-400 italic block pl-1">
+                        No checkmarks completed. Complete deliverables on the left to verify this proof case study.
+                      </span>
+                    ) : (
+                      checkedDeliverables[selectedAsset.id]?.map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 text-[10px] text-[#0b1c30] font-semibold">
+                          <CheckCircle2 size={12} className="text-emerald-500 shrink-0" />
+                          <span>{item}</span>
+                        </div>
+                      ))
                     )}
-
-                    {activePlaybookTab === 'checklist' && (
-                      <motion.div
-                        key="checklist"
-                        initial={{ opacity: 0, x: -5 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 5 }}
-                        className="space-y-4"
-                      >
-                        <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">Mark deliverables as done</span>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {selectedAsset.completionChecklist.map((item, idx) => {
-                            const isChecked = checkedDeliverables[selectedAsset.id]?.includes(item) || false;
-                            return (
-                              <motion.label
-                                key={idx}
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.99 }}
-                                className={cn(
-                                  "flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer select-none transition-all",
-                                  isChecked ? "border-[#0058be] bg-[#0058be]/5" : "border-neutral-100 bg-neutral-50/50 hover:bg-neutral-50"
-                                )}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => toggleDeliverable(selectedAsset.id, item)}
-                                  className="w-3.5 h-3.5 rounded text-[#0058be] border-neutral-300 focus:ring-[#0058be] mt-0.5 shrink-0"
-                                />
-                                <span className="text-[11px] text-neutral-600 leading-normal font-semibold">
-                                  {item}
-                                </span>
-                              </motion.label>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {activePlaybookTab === 'compliance' && (
-                      <motion.div
-                        key="compliance"
-                        initial={{ opacity: 0, x: -5 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 5 }}
-                        className="space-y-4"
-                      >
-                        {/* Target Context */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 space-y-1">
-                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Target Client</span>
-                            <span className="text-xs font-bold text-[#0b1c30]">{selectedAsset.targetAudience}</span>
-                          </div>
-                          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 space-y-1">
-                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Business Case</span>
-                            <span className="text-xs font-bold text-[#0b1c30] line-clamp-2">{selectedAsset.businessProblem}</span>
-                          </div>
-                        </div>
-
-                        {/* What not to claim warnings */}
-                        {selectedAsset.whatNotToClaim && selectedAsset.whatNotToClaim.length > 0 && (
-                          <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-100/50 space-y-2">
-                            <span className="text-[10px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
-                              <ShieldAlert size={14} className="text-amber-700" />
-                              What NOT to Claim
-                            </span>
-                            <ul className="space-y-1.5">
-                              {selectedAsset.whatNotToClaim.map((item, idx) => (
-                                <li key={idx} className="text-[11px] text-amber-800/90 leading-relaxed font-semibold flex items-start gap-1.5 pl-0.5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                                  <span>{item}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  </div>
                 </div>
               </div>
+
+              {/* Symmetrical locked active badge */}
+              <div className="pt-4 mt-4 border-t border-neutral-100 flex items-center justify-between">
+                <span className="text-[9px] font-extrabold text-neutral-400 uppercase tracking-widest">
+                  Blueprint Status:
+                </span>
+                {(() => {
+                  const completedCount = checkedDeliverables[selectedAsset.id]?.length || 0;
+                  const isFinished = completedCount === selectedAsset.completionChecklist.length && selectedAsset.completionChecklist.length > 0;
+                  
+                  return (
+                    <span className={cn(
+                      "text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border",
+                      isFinished 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-blue-50 text-[#0058be] border-blue-200"
+                    )}>
+                      {isFinished ? 'Ready to Publish' : `${completedCount}/${selectedAsset.completionChecklist.length} Milestones`}
+                    </span>
+                  );
+                })()}
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       )}
 
       {/* Execution Priority Selection Card Deck */}
