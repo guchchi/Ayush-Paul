@@ -66,7 +66,7 @@ export function classifyService(serviceId: string | null): ServiceClassification
   let family: ServiceFamily = 'other';
   let proofProfileKey: ProofProfileKey = 'other_fallback';
 
-  if (clean.includes('editor')) {
+  if (clean.includes('editor') || clean.includes('video') || clean.includes('clips') || clean.includes('production') || clean === 'long_form_content') {
     family = 'editor';
     proofProfileKey = clean.includes('short') ? 'short_form_editor' : 'video_editor';
   } else if (clean.includes('designer')) {

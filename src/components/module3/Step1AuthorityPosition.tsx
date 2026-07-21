@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, ChevronDown, ChevronUp, FileText, Info, Award, HelpCircle, Edit2, CheckCircle, RotateCcw } from 'lucide-react';
+import { Sparkles, ArrowLeft, ArrowRight, Check, AlertTriangle, Layout, ChevronDown, ChevronUp, Award, HelpCircle, Edit2, CheckCircle, RotateCcw, Info } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
@@ -41,67 +41,301 @@ function generatePersonalizedGuidelines(
   const serviceClass = classifyService(ctx.serviceId);
   const serviceLabel = serviceClass.label;
   const marketLabel = ctx.marketId ? ctx.marketId.replace(/_/g, ' ') : 'target market';
+  const track = serviceClass.family;
 
   const data = {
     builder: {
-      startDoing: [
-        `Publish visual, walk-through case studies showing the complete source-files or Figma layers of your ${serviceLabel} builds.`,
-        `Design concrete prototype models demonstrating how your builds directly solve business pain points for ${marketLabel}.`
-      ],
-      continueDoing: [
-        `Showcasing tangible final deliverables instead of talking about abstract ${serviceLabel} methodologies.`,
-        `Using high-fidelity visuals or live demos to let ${marketLabel} experience your output directly.`
-      ],
-      avoidDoing: [
-        `Making broad claims about your ${serviceLabel} expertise without attaching a screenshot, demo link, or codebase.`,
-        `Wasting client meetings on slide decks; show live working prototypes instead.`
-      ]
+      editor: {
+        startDoing: [
+          `Publish visual walkthroughs or timeline guides showing your pacing techniques, raw-to-cut transitions, and video assets.`,
+          `Create short teaser sequences demonstrating how you handle engagement hook transitions for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Showing finished edited videos or high-impact showreels instead of discussing editing theories.`,
+          `Using high-fidelity visual cuts to let ${marketLabel} experience your pacing quality directly.`
+        ],
+        avoidDoing: [
+          `Vague claims of 'better editing' without providing a video demo link or a visual before/after cut.`,
+          `Wasting client meetings discussing narrative structure; show them completed, polished video cuts instead.`
+        ]
+      },
+      developer: {
+        startDoing: [
+          `Publish walk-through guides showing the clean folder structure, code files, and features of your active builds.`,
+          `Design concrete working prototypes demonstrating how your builds solve business pain points for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Showcasing working web products or interactive live links instead of discussing abstract code frameworks.`,
+          `Using live, interactive sandboxes to let ${marketLabel} experience your coding quality directly.`
+        ],
+        avoidDoing: [
+          `Making broad claims about your expertise without attaching a repository link or a running sandbox.`,
+          `Wasting client meetings discussing coding theory; show them active working software instead.`
+        ]
+      },
+      designer: {
+        startDoing: [
+          `Publish Figma layout walk-throughs showing your auto-layout grids, design system components, and styles.`,
+          `Design prototype layouts demonstrating how your interface styles solve business pain points for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Showcasing clickable interactive prototypes or design files instead of talking about abstract visual methodologies.`,
+          `Using high-fidelity Figma canvases to let ${marketLabel} experience your layout quality directly.`
+        ],
+        avoidDoing: [
+          `Claiming to be a design expert without sharing a Figma link, Behance showcase, or design files.`,
+          `Wasting client meetings on static slide decks; show interactive, clickable layouts instead.`
+        ]
+      },
+      automation: {
+        startDoing: [
+          `Publish workflow blueprints showing your Make/n8n scenario maps, API configurations, and database integrations.`,
+          `Design workflow prototypes demonstrating how your integrations solve business pain points for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Showcasing active, running automation runs instead of explaining workflow logic in text.`,
+          `Using live workflow runs to let ${marketLabel} experience your automation quality directly.`
+        ],
+        avoidDoing: [
+          `Pitching automation solutions without sharing a visual blueprint layout or a walk-through video.`,
+          `Wasting client meetings on text-heavy proposals; show visual Make/n8n diagrams instead.`
+        ]
+      },
+      other: {
+        startDoing: [
+          `Publish breakdown guides showing your copywriting wireframes, draft iterations, and swipe file collections.`,
+          `Write draft copies demonstrating how your copy angles solve conversion bottlenecks for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Showcasing final, live copy structures (emails, landing pages) instead of discussing abstract marketing theories.`,
+          `Using clean Google Docs drafts to let ${marketLabel} review your writing quality directly.`
+        ],
+        avoidDoing: [
+          `Pitching writing services without sharing a PDF copy sample, live link, or draft copy folder.`,
+          `Wasting client meetings on general marketing strategy; show targeted, written sales drafts instead.`
+        ]
+      }
     },
     auditor: {
-      startDoing: [
-        `Offer free or rapid audit checklist diagnostics analyzing the current ${serviceLabel} bottlenecks of ${marketLabel}.`,
-        `Build spreadsheets or tracking scorecards showing exact load times, retention drops, or conversion gaps.`
-      ],
-      continueDoing: [
-        `Presenting clear, quantitative benchmark scores (e.g. Lighthouse, retention charts) to prove your findings.`,
-        `Framing your ${serviceLabel} work as a measurable ROI boost rather than a manual editing or coding service.`
-      ],
-      avoidDoing: [
-        `Pitching ${serviceLabel} improvements to ${marketLabel} without first running a diagnostic scan to show what is broken.`,
-        `Using vague, subjective adjectives like 'better' or 'cleaner' instead of hard metrics.`
-      ]
+      editor: {
+        startDoing: [
+          `Offer free retention diagnostics or video audits looking at pacing drops, audio glitches, and graphic hook errors.`,
+          `Build spreadsheet breakdowns tracking viewer drop-off percentages or average watch times for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Presenting metrics-driven results (like average watch time improvements) to prove your video editing value.`,
+          `Framing your work as a retention optimization rather than just a manual cutting or editing service.`
+        ],
+        avoidDoing: [
+          `Suggesting video edits without first running a retention drop-off audit to prove where viewers leave.`,
+          `Using vague, subjective adjectives like 'better pacing' instead of showing specific video timeline timestamp flaws.`
+        ]
+      },
+      developer: {
+        startDoing: [
+          `Offer free page-speed or security audits identifying memory leaks, slow queries, or package vulnerabilities.`,
+          `Build performance scorecards tracking Lighthouse results, mobile load times, or server response times for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Presenting hard benchmarks (like Lighthouse scores or API latency reductions) to prove optimization results.`,
+          `Framing your work as a speed and security optimization rather than just manual coding or bug-fixing.`
+        ],
+        avoidDoing: [
+          `Pitching refactoring or code cleanup without first showing a diagnostic report of what is broken.`,
+          `Using vague, subjective adjectives like 'cleaner code' instead of showing specific performance metrics.`
+        ]
+      },
+      designer: {
+        startDoing: [
+          `Offer free UX audits or usability reviews highlighting conversion bottlenecks, layout glitches, and accessibility issues.`,
+          `Build usability scorecards tracking conversion drop-offs, navigation loops, or mobile responsiveness gaps for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Presenting usability metrics (like signup rate increases or task completion times) to validate your UI designs.`,
+          `Framing your work as a conversion rate optimization rather than just drawing layouts or choosing colors.`
+        ],
+        avoidDoing: [
+          `Proposing redesigns without showing a visual UX report or heuristic teardown of their current app.`,
+          `Using vague, subjective adjectives like 'nicer UI' instead of showing specific design pattern issues.`
+        ]
+      },
+      automation: {
+        startDoing: [
+          `Offer free workflow health checks identifying slow tasks, runtime errors, or redundant manual steps.`,
+          `Build bottleneck scorecards tracking task usage, webhook response delays, or API call failures for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Presenting hard system metrics (like operations saved or error rate reductions) to prove efficiency.`,
+          `Framing your work as an operations cost reduction rather than just connecting third-party apps.`
+        ],
+        avoidDoing: [
+          `Pitching system migrations without a diagnostic audit showing where their current flow breaks or wastes money.`,
+          `Using vague, subjective adjectives like 'better flows' instead of showing specific task-leak errors.`
+        ]
+      },
+      other: {
+        startDoing: [
+          `Offer free copy audits showing readability issues, vague headlines, or SEO optimization gaps.`,
+          `Build conversion scorecards tracking CTRs, opt-in rates, or search ranking drops for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Presenting conversion metrics (like CTR or opt-in improvements) to validate your copywriting upgrades.`,
+          `Framing your work as a customer conversion rate optimizer rather than just writing blog posts or emails.`
+        ],
+        avoidDoing: [
+          `Pitching copywriting or marketing services without first showing a tear-down of their current copy flaws.`,
+          `Using vague, subjective adjectives like 'better copy' instead of showing specific copy conversion gaps.`
+        ]
+      }
     },
     deconstructor: {
-      startDoing: [
-        `Publish step-by-step breakdown playbooks showing how industry-leading companies solve their ${serviceLabel} challenges.`,
-        `Create annotated blueprints showing why a specific ${serviceLabel} layout or cut works so well.`
-      ],
-      continueDoing: [
-        `Positioning yourself as a strategic consultant who understands the 'why' behind ${serviceLabel} success.`,
-        `Teaching ${marketLabel} the principles of effective design or code patterns to build authority.`
-      ],
-      avoidDoing: [
-        `Starting work for ${marketLabel} without a pre-written, detailed execution blueprint or playbook.`,
-        `Selling yourself as just a hand-to-hire executor; position as the consulting architect.`
-      ]
+      editor: {
+        startDoing: [
+          `Create visual breakdown analyses showing why trending videos or viral pacing hooks in ${marketLabel}'s niche work so well.`,
+          `Create annotated scripts detailing the narrative structure, hook timing, and visual pattern interrupts of viral creators.`
+        ],
+        continueDoing: [
+          `Positioning yourself as a content strategist who understands how to hold viewer attention and drive conversions.`,
+          `Teaching ${marketLabel} the principles of audience retention loops and visual pacing.`
+        ],
+        avoidDoing: [
+          `Starting editing work without a pre-written pacing blueprint, script structure, or retention storyboard.`,
+          `Selling yourself as just a hand-to-hire video editor; position as the creative editor architect.`
+        ]
+      },
+      developer: {
+        startDoing: [
+          `Publish step-by-step code playbooks explaining how successful tech products handle complex system integrations.`,
+          `Create system blueprints explaining the API contracts, data flows, and database schemas of high-performance apps.`
+        ],
+        continueDoing: [
+          `Positioning yourself as a technical architect who designs clean, repeatable system structures.`,
+          `Teaching ${marketLabel} the principles of scalable system design and data efficiency.`
+        ],
+        avoidDoing: [
+          `Starting development without a pre-written technical spec sheet, API contract, or system flow diagram.`,
+          `Selling yourself as just a hand-to-hire coder; position as the software consulting architect.`
+        ]
+      },
+      designer: {
+        startDoing: [
+          `Publish visual design teardowns deconstructing the UI patterns and visual systems of leading products in ${marketLabel}'s niche.`,
+          `Create design system guidelines explaining the grid systems, font scales, and spacing rules of conversion-focused UI.`
+        ],
+        continueDoing: [
+          `Positioning yourself as a UX architect who designs intuitive user journeys and scalable UI kits.`,
+          `Teaching ${marketLabel} the principles of design systems, accessibility, and cognitive load.`
+        ],
+        avoidDoing: [
+          `Creating high-fidelity UI without first aligning on wireframes, user flows, and spacing guidelines.`,
+          `Selling yourself as just a screen decorator; position as the product design consultant.`
+        ]
+      },
+      automation: {
+        startDoing: [
+          `Publish system blueprints deconstructing how leading companies automate their operations pipelines.`,
+          `Create integration playbooks explaining API triggers, data transformations, and error handling of complex workflows.`
+        ],
+        continueDoing: [
+          `Positioning yourself as an operations architect who designs clean, reliable database pipelines.`,
+          `Teaching ${marketLabel} the principles of data centralization, webhooks, and process automation.`
+        ],
+        avoidDoing: [
+          `Setting up scenarios or databases without first drawing a visual system schema or flow diagram.`,
+          `Selling yourself as just an API connector; position as the operations consulting architect.`
+        ]
+      },
+      other: {
+        startDoing: [
+          `Publish copywriting teardowns analyzing the emotional hooks and sales angles of top-converting campaigns in ${marketLabel}'s niche.`,
+          `Create writing guidelines detailing the voice, tone, and formatting rules of high-conversion copy.`
+        ],
+        continueDoing: [
+          `Positioning yourself as a messaging strategist who maps target audience psychological triggers.`,
+          `Teaching ${marketLabel} the principles of direct-response copy structure and buyer psychology.`
+        ],
+        avoidDoing: [
+          `Writing copy drafts without first aligning on a copy roadmap, outline, or core hook strategy.`,
+          `Selling yourself as just a content writer; position as the customer conversion copy consultant.`
+        ]
+      }
     },
     practitioner: {
-      startDoing: [
-        `Document your daily, in-the-trenches ${serviceLabel} workflow logs or screen recording snippets.`,
-        `Create retrospective case-logs detailing how you fixed active, real-world problems for your clients.`
-      ],
-      continueDoing: [
-        `Emphasizing your hands-on execution speed and reliability under tight timelines.`,
-        `Showing active work sessions or live collaborative boards (like Slack, Figma, GitHub) to demonstrate transparency.`
-      ],
-      avoidDoing: [
-        `Hiding your workflow from ${marketLabel}; let them see the raw, honest process behind your ${serviceLabel} delivery.`,
-        `Pretending to have a large agency setup when clients are buying your direct personal dedication.`
-      ]
+      editor: {
+        startDoing: [
+          `Document your daily, behind-the-scenes editing workflow, timeline pacing setups, or raw timeline logs.`,
+          `Create retrospective timeline logs detailing how you solved pacing glitches or audio edits for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Emphasizing your hands-on execution speed, reliable revision rounds, and direct collaboration on content.`,
+          `Showing active work sessions or live project boards to keep video creation transparent.`
+        ],
+        avoidDoing: [
+          `Hiding your editing timeline or raw pacing layers; invite creators to collaborate closely.`,
+          `Pretending to have a large agency setup when creators are buying your direct personal dedication.`
+        ]
+      },
+      developer: {
+        startDoing: [
+          `Share daily dev logs, terminal workflow screen-grabs, or active repository commits.`,
+          `Create retrospective code logs detailing how you fixed active, real-world bugs or deploy glitches for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Emphasizing your hands-on coding speed, quick bug-fixing cycles, and direct developer support.`,
+          `Showing active code sessions or open pull requests to keep development transparent.`
+        ],
+        avoidDoing: [
+          `Hiding your progress; keep active pull requests open and invite teams to review code early.`,
+          `Pretending to have a large development agency when clients are buying your direct personal developer dedication.`
+        ]
+      },
+      designer: {
+        startDoing: [
+          `Share daily design logs, Figma multiplayer sessions, or visual component drafts.`,
+          `Create design sprint logs detailing how you iterated and updated layouts for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Emphasizing your layout speed, collaborative style sessions, and quick design revisions.`,
+          `Working transparently in Figma multiplayer canvas to keep design reviews collaborative.`
+        ],
+        avoidDoing: [
+          `Working in isolation; invite client teams directly to your active Figma canvas to collaborate.`,
+          `Pretending to have a large design agency when clients are buying your direct personal designer dedication.`
+        ]
+      },
+      automation: {
+        startDoing: [
+          `Share active Make/n8n workspace screenshots or logs detailing custom trigger fixes.`,
+          `Create workflow setup logs detailing how you automated data transfers or fixed connection bugs for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Emphasizing your rapid scenario testing, system uptime monitoring, and active error response.`,
+          `Showing active workflow configurations transparently to keep automation setups clear.`
+        ],
+        avoidDoing: [
+          `Hiding your backend configurations; explain active integrations clearly to client teams.`,
+          `Pretending to have a large IT agency when clients are buying your direct personal automation dedication.`
+        ]
+      },
+      other: {
+        startDoing: [
+          `Share daily copywriting drafts, headline brainstorm logs, or copy swipe updates.`,
+          `Create copy sprint logs detailing how you tested headlines or revised newsletter copy for ${marketLabel}.`
+        ],
+        continueDoing: [
+          `Emphasizing your writing speed, quick copy edits, and close alignment with brand voices.`,
+          `Showing raw copywriting iterations transparently to keep messaging reviews collaborative.`
+        ],
+        avoidDoing: [
+          `Working in a silo; share raw copy drafts early to iterate with the performance team.`,
+          `Pretending to have a large copywriting agency when clients are buying your direct personal writing dedication.`
+        ]
+      }
     }
   };
 
-  return data[position] || data.builder;
+  const posData = data[position] || data.builder;
+  return posData[track] || posData.other;
 }
 
 export function Step1AuthorityPosition() {
@@ -141,122 +375,36 @@ export function Step1AuthorityPosition() {
   const [quizAnswers, setQuizAnswers] = useState<string[]>([]);
   const [quizMatchedPosition, setQuizMatchedPosition] = useState<string | null>(null);
 
-  // Dynamic quiz content personalized by career track
-  const quizQuestions = useMemo(() => {
-    const track = serviceTrack as 'developer' | 'designer' | 'editor' | 'automation' | 'other';
-    const questions = [
-      {
-        title: "What is your primary focus when starting a project?",
-        options: {
-          developer: [
-            { val: 'builder', text: "Writing custom code, building features, or shipping new architectures from scratch" },
-            { val: 'auditor', text: "Debugging, analyzing codebases, optimization, and auditing performance logs" },
-            { val: 'deconstructor', text: "Studying open-source codebases, explaining complexity, and writing code blueprints" },
-            { val: 'practitioner', text: "Coding in the trenches daily, handling hotfixes, and working closely with dev teams" }
-          ],
-          designer: [
-            { val: 'builder', text: "Designing custom UI components, building wireframes, or creating visual design systems from scratch" },
-            { val: 'auditor', text: "Conducting design reviews, identifying UX flaws, and auditing usability metrics" },
-            { val: 'deconstructor', text: "Deconstructing UI trends, writing design guidelines, and explaining visual hierarchies" },
-            { val: 'practitioner', text: "Designing interactive screens, wireframing in Figma, and working directly on design layouts" }
-          ],
-          editor: [
-            { val: 'builder', text: "Editing fresh raw footage, assembling pacings, or creating video cuts from scratch" },
-            { val: 'auditor', text: "Analyzing retention drops, finding pacing errors, and auditing editing files" },
-            { val: 'deconstructor', text: "Analyzing viral hooks, writing editing breakdowns, and deconstructing popular styles" },
-            { val: 'practitioner', text: "Cutting and pacing clips daily, aligning audio tracks, and editing in the timeline" }
-          ],
-          automation: [
-            { val: 'builder', text: "Creating custom workflows, integrating APIs, or building active automation pipelines from scratch" },
-            { val: 'auditor', text: "Analyzing workflow logs, identifying system failures, and auditing error logs" },
-            { val: 'deconstructor', text: "Deconstructing automation blueprints, documenting APIs, and explaining connection steps" },
-            { val: 'practitioner', text: "Mapping active webhook triggers daily, fixing broken runs, and managing system connections" }
-          ],
-          other: [
-            { val: 'builder', text: "Writing custom landing pages, drafting email sequences, or creating marketing copy from scratch" },
-            { val: 'auditor', text: "Analyzing copy conversions, identifying drop-off zones, and auditing search rankings" },
-            { val: 'deconstructor', text: "Analyzing high-converting sales copies, explaining psychological triggers, and writing swipe guides" },
-            { val: 'practitioner', text: "Drafting copy drafts daily, testing subject lines, and collaborating directly with marketing teams" }
-          ]
-        }
-      },
-      {
-        title: "How do you prefer to demonstrate your value to clients?",
-        options: {
-          developer: [
-            { val: 'builder', text: "Show them a polished, working product or interactive live website" },
-            { val: 'auditor', text: "Present them with a detailed performance audit or Lighthouse report" },
-            { val: 'deconstructor', text: "Share a technical code review or a system architecture breakdown" },
-            { val: 'practitioner', text: "Walk them through my git commits, active pull requests, or terminal workflow" }
-          ],
-          designer: [
-            { val: 'builder', text: "Show them a clean Figma canvas or clickable interactive prototypes" },
-            { val: 'auditor', text: "Present them with a detailed UX audit report or conversion breakdown" },
-            { val: 'deconstructor', text: "Share a design system breakdown or a visual layout anatomy guide" },
-            { val: 'practitioner', text: "Walk them through my Figma components, design sprints, or design workspaces" }
-          ],
-          editor: [
-            { val: 'builder', text: "Show them a high-impact, finished showreel or edited compilation" },
-            { val: 'auditor', text: "Present them with a detailed pacing report or retention audit logs" },
-            { val: 'deconstructor', text: "Share an editing breakdown video or pacing analysis guide" },
-            { val: 'practitioner', text: "Walk them through my editing timeline layers, pacing guides, or Premiere workspace" }
-          ],
-          automation: [
-            { val: 'builder', text: "Show them a live, running Make or n8n workflow diagram" },
-            { val: 'auditor', text: "Present them with an error rate audit or system bottleneck report" },
-            { val: 'deconstructor', text: "Share an API integration playbook or system connection breakdown" },
-            { val: 'practitioner', text: "Walk them through my active webhooks, API mapping, or Make scenario workspace" }
-          ],
-          other: [
-            { val: 'builder', text: "Show them a high-converting sales page or draft copy folder" },
-            { val: 'auditor', text: "Present them with a CTR / conversion audit report or SEO scorecard" },
-            { val: 'deconstructor', text: "Share a copy analysis case study or writing swipe file playbook" },
-            { val: 'practitioner', text: "Walk them through my copy iterations, subject line variants, or writing workspace" }
-          ]
-        }
-      },
-      {
-        title: "What kind of feedback makes you feel most accomplished?",
-        options: {
-          developer: [
-            { val: 'builder', text: "'This codebase compiles perfectly, the features work flawlessly, and it is highly scalable!'" },
-            { val: 'auditor', text: "'You resolved our memory leak and optimized page load speeds by 40%!'" },
-            { val: 'deconstructor', text: "'This technical breakdown made our complex API integrations super simple to grasp!'" },
-            { val: 'practitioner', text: "'You resolved the bugs alongside our team under tight deadlines without fuss!'" }
-          ],
-          designer: [
-            { val: 'builder', text: "'This UI is gorgeous, follows auto-layout rules, and looks incredibly premium!'" },
-            { val: 'auditor', text: "'You found 12 critical usability flaws and helped us increase signups by 25%!'" },
-            { val: 'deconstructor', text: "'This design system playbook makes it extremely clear how to structure our product layout!'" },
-            { val: 'practitioner', text: "'You iterated with our product team daily and designed exactly the screens we needed!'" }
-          ],
-          editor: [
-            { val: 'builder', text: "'This video cut is extremely engaging, the pacing is perfect, and hooks are amazing!'" },
-            { val: 'auditor', text: "'You fixed our retention drop and kept viewers hooked for 40% longer!'" },
-            { val: 'deconstructor', text: "'This breakdown of viral pacing styles made it super clear how we should edit next!'" },
-            { val: 'practitioner', text: "'You delivered clean edits and revised clips daily with our creative team!'" }
-          ],
-          automation: [
-            { val: 'builder', text: "'This integration works seamlessly, trigger delays are gone, and it saves us hours!'" },
-            { val: 'auditor', text: "'You identified 4 critical loop holes in our flows and saved us 30% in task costs!'" },
-            { val: 'deconstructor', text: "'This database schema playbook made it super easy to understand our data structure!'" },
-            { val: 'practitioner', text: "'You fixed our webhook bugs and maintained our active workflows under pressure!'" }
-          ],
-          other: [
-            { val: 'builder', text: "'This copy is incredibly engaging, readable, and captures our brand voice perfectly!'" },
-            { val: 'auditor', text: "'You boosted our email open rates by 30% and increased sales page conversions by 15%!'" },
-            { val: 'deconstructor', text: "'This writing playbook explained how to trigger user interest in an extremely clear way!'" },
-            { val: 'practitioner', text: "'You wrote and optimized copy variants with our performance team under tight deadlines!'" }
-          ]
-        }
-      }
-    ];
-
-    return questions.map(q => ({
-      title: q.title,
-      options: q.options[track] || q.options.other
-    }));
-  }, [serviceTrack]);
+  // Simplified, Universal, Easy-to-Understand Quiz Questions (relatable for all tracks)
+  const quizQuestions = [
+    {
+      title: "What type of work makes you lose track of time?",
+      options: [
+        { val: 'builder', text: "Creating something new (e.g. writing code, designing layouts, cutting video clips)." },
+        { val: 'auditor', text: "Analyzing and optimizing (e.g. finding bugs, checking speed metrics, identifying pacing drops)." },
+        { val: 'deconstructor', text: "Studying and explaining (e.g. drafting playbooks, templates, or strategic how-to guides)." },
+        { val: 'practitioner', text: "Executing day-to-day tasks (e.g. fixing quick glitches, making rapid revisions directly)." }
+      ]
+    },
+    {
+      title: "What do you prefer to show a client to prove your worth?",
+      options: [
+        { val: 'builder', text: "A finished, polished product, design, or video." },
+        { val: 'auditor', text: "An audit report pointing out exact performance flaws or gaps." },
+        { val: 'deconstructor', text: "A step-by-step strategy blueprint or structural guide." },
+        { val: 'practitioner', text: "A walkthrough of my daily workspace, logs, and work speed." }
+      ]
+    },
+    {
+      title: "What is your favorite kind of compliment from a client?",
+      options: [
+        { val: 'builder', text: "'This looks and works beautifully!'" },
+        { val: 'auditor', text: "'You fixed our problems and improved our results!'" },
+        { val: 'deconstructor', text: "'This makes so much sense, thank you for explaining it!'" },
+        { val: 'practitioner', text: "'You are super reliable and got the job done fast!'" }
+      ]
+    }
+  ];
 
   // Dynamically resolve what the AI recommends independently
   const aiRecommendedPosition = useMemo(() => {
@@ -437,7 +585,7 @@ export function Step1AuthorityPosition() {
       <StepHeader
         step={{ current: 1, total: 5 }}
         title="Find Your Authority Type"
-        description="Every freelancer has a natural superpower for winning client trust. Take our quick, track-specific personality quiz or select your archetype below."
+        description="Every freelancer has a natural superpower for winning client trust. Take our quick, simplified personality quiz or select your archetype below."
       />
 
       {isUpstreamStale && (
@@ -521,7 +669,7 @@ export function Step1AuthorityPosition() {
               onClick={handleRestartQuiz}
               className="text-xs text-[#0058be] hover:underline font-bold flex items-center gap-1 min-h-[32px] px-2 rounded hover:bg-[#0058be]/5 cursor-pointer border-none bg-transparent"
             >
-              <RotateCcw size={12} /> Retake Personality Quiz
+              <RotateCcw size={12} /> Take Personality Quiz
             </button>
           </div>
 
