@@ -172,6 +172,12 @@ export function Step2ProofAssetBuilder() {
   // Gamified filters for RPG inventory style selection
   const [activeFilter, setActiveFilter] = useState<'all' | 'craft' | 'reliability' | 'impact'>('all');
 
+  const [activePlaybookTab, setActivePlaybookTab] = useState<'roadmap' | 'checklist' | 'compliance'>('roadmap');
+
+  useEffect(() => {
+    setActivePlaybookTab('roadmap');
+  }, [selectedAssetId]);
+
   const serviceTrack = useMemo(() => {
     if (!mod1ServiceId) return 'other';
     return classifyService(mod1ServiceId).family;
@@ -649,169 +655,257 @@ export function Step2ProofAssetBuilder() {
 
       {/* Interactive double panel roadmap section */}
       {assets.length > 0 && selectedAsset && (
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left panel: Gap cards */}
-          <div className="lg:col-span-5 space-y-4">
-            <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">
-              3 Required Proof Projects
-            </h3>
-            <div className="space-y-3">
-              {assets.map((asset, index) => {
-                const isSelected = selectedAssetId === asset.id;
-                const completedCount = checkedDeliverables[asset.id]?.length || 0;
-                const progress = asset.completionChecklist.length > 0
-                  ? Math.round((completedCount / asset.completionChecklist.length) * 100)
-                  : 0;
-
-                return (
-                  <button
-                    key={asset.id}
-                    onClick={() => setSelectedAssetId(asset.id)}
-                    className={cn(
-                      "w-full text-left p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col gap-2 focus:outline-none focus:ring-2 focus:ring-[#0058be]/40",
-                      isSelected
-                        ? "border-[#0058be] bg-[#0058be]/5 shadow-sm"
-                        : "border-neutral-200 bg-white hover:border-neutral-300"
-                    )}
-                  >
-                    <div className="flex items-start justify-between gap-2 w-full">
-                      <div>
-                        <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider block">
-                          Project #{index + 1}
-                        </span>
-                        <h4 className="text-xs font-extrabold text-[#0b1c30] mt-0.5">
-                          {asset.title}
-                        </h4>
-                      </div>
-                      <span className={cn(
-                        "text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded",
-                        asset.expectedImpact === 'High' ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
-                      )}>
-                        {asset.assetType.replace(/_/g, ' ')}
-                      </span>
-                    </div>
-
-                    <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">
-                      {asset.credibilityGapProved}
-                    </p>
-
-                    {/* Satisfying progress indicator */}
-                    <div className="mt-2 pt-2 border-t border-dashed border-neutral-100 flex items-center justify-between gap-4 w-full">
-                      <div className="flex-1 bg-neutral-100 h-1.5 rounded-full overflow-hidden">
-                        <div
-                          className="bg-[#0058be] h-full transition-all duration-300"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                      <span className="text-[10px] text-neutral-400 font-bold shrink-0">
-                        {progress}% Built
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
+        <div className="space-y-4">
+          {/* Onboarding narrative callout */}
+          <div className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/50 flex gap-3 text-xs text-blue-800 leading-relaxed font-medium">
+            <Info className="w-5 h-5 text-[#0058be] shrink-0 mt-0.5" />
+            <div>
+              <span className="font-extrabold uppercase tracking-wider block mb-0.5 text-[9px] text-[#0058be]">
+                How to Build Your Authority Proof Strategy
+              </span>
+              Select each of the 3 required projects on the left. The playbook panel on the right will load its custom recipe. Execute the checklist items and mark your progress. Once all 3 projects are fully constructed, your Authority Roadmap is complete.
             </div>
           </div>
 
-          {/* Right panel: Project Recipe Playbook */}
-          <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm space-y-6">
-            <div className="border-b border-neutral-100 pb-5">
-              <div className="flex items-center gap-2 flex-wrap mb-2">
-                <span className="text-[9px] font-bold text-[#0058be] bg-[#0058be]/10 px-2 py-1 rounded uppercase tracking-wider">
-                  {selectedAsset.assetType.replace(/_/g, ' ')}
-                </span>
-                <span className="text-[9px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded uppercase tracking-wider">
-                  Difficulty: {selectedAsset.difficulty || 'Medium'}
-                </span>
-                <span className="text-[9px] font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded uppercase tracking-wider">
-                  Effort: {selectedAsset.estimatedEffort || '1-3 days'}
-                </span>
-              </div>
-              <h3 className="text-base font-extrabold text-[#0b1c30]">
-                {selectedAsset.title}
-              </h3>
-              <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">
-                {selectedAsset.scenario}
-              </p>
-            </div>
+          <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left panel: Gap cards */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-3 flex-1">
+                {assets.map((asset, index) => {
+                  const isSelected = selectedAssetId === asset.id;
+                  const completedCount = checkedDeliverables[asset.id]?.length || 0;
+                  const progress = asset.completionChecklist.length > 0
+                    ? Math.round((completedCount / asset.completionChecklist.length) * 100)
+                    : 0;
 
-            {/* Target objective */}
-            <div className="bg-[#f8f9ff] border border-[#0058be]/20 rounded-xl p-4 space-y-1">
-              <span className="text-[10px] font-bold text-[#0058be] uppercase tracking-wider block">Trust Goal:</span>
-              <p className="text-xs text-[#0b1c30] leading-relaxed">
-                {selectedAsset.credibilityGapProved}
-              </p>
-            </div>
-
-            {/* Timeline execution steps */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#0b1c30] uppercase tracking-wider flex items-center gap-1.5">
-                <FileText size={14} className="text-[#0058be]" />
-                Action Roadmap
-              </h4>
-              <div className="relative border-l-2 border-neutral-100 ml-3 pl-5 space-y-4 py-1">
-                {selectedAsset.executionSteps.map((step, idx) => (
-                  <div key={idx} className="relative">
-                    <div className="absolute -left-[27px] top-0.5 w-3.5 h-3.5 rounded-full border-2 border-[#0058be] bg-white flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
-                    </div>
-                    <span className="text-xs text-neutral-600 font-medium block leading-relaxed">
-                      {step}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Checklist deliverables */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold text-[#0b1c30] uppercase tracking-wider">
-                Completion Checklist
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {selectedAsset.completionChecklist.map((item, idx) => {
-                  const isChecked = checkedDeliverables[selectedAsset.id]?.includes(item) || false;
                   return (
-                    <label
-                      key={idx}
+                    <motion.button
+                      key={asset.id}
+                      whileHover={{ scale: 1.01, y: -2 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => setSelectedAssetId(asset.id)}
                       className={cn(
-                        "flex items-start gap-2.5 p-2.5 rounded-lg border cursor-pointer select-none transition-all hover:bg-neutral-50",
-                        isChecked ? "border-[#0058be] bg-[#0058be]/5" : "border-neutral-100 bg-white"
+                        "w-full text-left p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col gap-2.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/40 relative overflow-hidden",
+                        isSelected
+                          ? "border-[#0058be] bg-[#0058be]/5 shadow-sm"
+                          : "border-neutral-200 bg-white hover:border-neutral-300"
                       )}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => toggleDeliverable(selectedAsset.id, item)}
-                        className="w-3.5 h-3.5 rounded text-[#0058be] border-neutral-300 focus:ring-[#0058be] mt-0.5"
-                      />
-                      <span className="text-[11px] text-neutral-600 leading-normal font-medium">
-                        {item}
-                      </span>
-                    </label>
+                      {/* Left blue active indicator line */}
+                      {isSelected && (
+                        <div className="absolute left-0 inset-y-0 w-1 bg-[#0058be]" />
+                      )}
+
+                      <div className="flex items-start justify-between gap-2 w-full">
+                        <div>
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                            Project #{index + 1}
+                          </span>
+                          <h4 className="text-xs font-black text-[#0b1c30] mt-0.5 leading-snug">
+                            {asset.title}
+                          </h4>
+                        </div>
+                        <span className={cn(
+                          "text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded shrink-0",
+                          asset.expectedImpact === 'High' ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
+                        )}>
+                          {asset.assetType.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-neutral-500 leading-relaxed line-clamp-2">
+                        {asset.credibilityGapProved}
+                      </p>
+
+                      {/* Satisfying progress indicator */}
+                      <div className="mt-2 pt-2.5 border-t border-dashed border-neutral-100/60 flex items-center justify-between gap-4 w-full">
+                        <div className="flex-1 bg-neutral-100 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className="bg-[#0058be] h-full transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] text-neutral-400 font-black shrink-0 uppercase tracking-wider">
+                          {progress}% Built
+                        </span>
+                      </div>
+                    </motion.button>
                   );
                 })}
               </div>
             </div>
 
-            {/* What not to claim warning card */}
-            {selectedAsset.whatNotToClaim && selectedAsset.whatNotToClaim.length > 0 && (
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-100/50 space-y-2">
-                <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <ShieldAlert size={14} className="text-amber-700" />
-                  What NOT to Claim
-                </span>
-                <ul className="space-y-1">
-                  {selectedAsset.whatNotToClaim.map((item, idx) => (
-                    <li key={idx} className="text-xs text-amber-700 list-disc list-inside leading-relaxed pl-1 font-medium">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+            {/* Right panel: Project Recipe Playbook with internal tabs for symmetry */}
+            <div className="lg:col-span-7 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between min-h-[380px]">
+              <div className="space-y-5">
+                {/* Heading & Metadata */}
+                <div className="flex items-start justify-between gap-4 border-b border-neutral-100 pb-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[9px] font-black text-[#0058be] bg-[#0058be]/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        {selectedAsset.assetType.replace(/_/g, ' ')}
+                      </span>
+                      <span className="text-[9px] font-black text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Difficulty: {selectedAsset.difficulty || 'Medium'}
+                      </span>
+                      <span className="text-[9px] font-black text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Effort: {selectedAsset.estimatedEffort || '1-3 days'}
+                      </span>
+                    </div>
+                    <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wide pt-1">
+                      {selectedAsset.title}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Sub-Tabs selectors */}
+                <div className="flex border-b border-neutral-100 pb-2 gap-1 overflow-x-auto scrollbar-none">
+                  {[
+                    { id: 'roadmap', label: 'Action Roadmap', icon: GitBranch },
+                    { id: 'checklist', label: 'Checklist', icon: CheckCircle2 },
+                    { id: 'compliance', label: 'Guardrails', icon: ShieldAlert }
+                  ].map(tab => {
+                    const TabIcon = tab.icon;
+                    const isTabActive = activePlaybookTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActivePlaybookTab(tab.id as any)}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-2 text-[10px] font-extrabold uppercase tracking-wider border-b-2 -mb-2.5 transition-all cursor-pointer bg-transparent outline-none",
+                          isTabActive
+                            ? "border-[#0058be] text-[#0058be]"
+                            : "border-transparent text-neutral-400 hover:text-neutral-600"
+                        )}
+                      >
+                        <TabIcon size={12} />
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Tab content space */}
+                <div className="min-h-[220px] flex flex-col justify-start">
+                  <AnimatePresence mode="wait">
+                    {activePlaybookTab === 'roadmap' && (
+                      <motion.div
+                        key="roadmap"
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 5 }}
+                        className="space-y-4"
+                      >
+                        {/* Target objective */}
+                        <div className="bg-[#f8f9ff] border border-[#0058be]/20 rounded-xl p-4">
+                          <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block mb-0.5">Trust Goal</span>
+                          <p className="text-xs text-[#0b1c30]/90 leading-relaxed font-semibold">
+                            {selectedAsset.credibilityGapProved}
+                          </p>
+                        </div>
+
+                        {/* Steps list */}
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">Action steps</span>
+                          <div className="relative border-l border-neutral-100 ml-2.5 pl-4 space-y-3.5 py-1">
+                            {selectedAsset.executionSteps.map((step, idx) => (
+                              <div key={idx} className="relative">
+                                <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full border border-[#0058be] bg-white flex items-center justify-center">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
+                                </div>
+                                <span className="text-[11px] text-neutral-600 font-medium block leading-relaxed pl-1">
+                                  {step}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activePlaybookTab === 'checklist' && (
+                      <motion.div
+                        key="checklist"
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 5 }}
+                        className="space-y-4"
+                      >
+                        <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block">Mark deliverables as done</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {selectedAsset.completionChecklist.map((item, idx) => {
+                            const isChecked = checkedDeliverables[selectedAsset.id]?.includes(item) || false;
+                            return (
+                              <motion.label
+                                key={idx}
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                className={cn(
+                                  "flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer select-none transition-all",
+                                  isChecked ? "border-[#0058be] bg-[#0058be]/5" : "border-neutral-100 bg-neutral-50/50 hover:bg-neutral-50"
+                                )}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => toggleDeliverable(selectedAsset.id, item)}
+                                  className="w-3.5 h-3.5 rounded text-[#0058be] border-neutral-300 focus:ring-[#0058be] mt-0.5 shrink-0"
+                                />
+                                <span className="text-[11px] text-neutral-600 leading-normal font-semibold">
+                                  {item}
+                                </span>
+                              </motion.label>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activePlaybookTab === 'compliance' && (
+                      <motion.div
+                        key="compliance"
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 5 }}
+                        className="space-y-4"
+                      >
+                        {/* Target Context */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 space-y-1">
+                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Target Client</span>
+                            <span className="text-xs font-bold text-[#0b1c30]">{selectedAsset.targetAudience}</span>
+                          </div>
+                          <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-100 space-y-1">
+                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Business Case</span>
+                            <span className="text-xs font-bold text-[#0b1c30] line-clamp-2">{selectedAsset.businessProblem}</span>
+                          </div>
+                        </div>
+
+                        {/* What not to claim warnings */}
+                        {selectedAsset.whatNotToClaim && selectedAsset.whatNotToClaim.length > 0 && (
+                          <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-100/50 space-y-2">
+                            <span className="text-[10px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
+                              <ShieldAlert size={14} className="text-amber-700" />
+                              What NOT to Claim
+                            </span>
+                            <ul className="space-y-1.5">
+                              {selectedAsset.whatNotToClaim.map((item, idx) => (
+                                <li key={idx} className="text-[11px] text-amber-800/90 leading-relaxed font-semibold flex items-start gap-1.5 pl-0.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
       )}
 
       {/* Execution Priority Selection Card Deck */}
