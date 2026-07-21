@@ -109,7 +109,7 @@ export const CREDIBILITY_RULES: CredibilityRules = {
 };
 
 // 1. MASTER DIRECTORY OF AVAILABLE ASSETS TEMPLATES BY TRACK
-const AVAILABLE_TEMPLATES: Record<string, Omit<CredibilityAssetItem, 'label' | 'description' | 'doubtSolved'>[]> = {
+export const AVAILABLE_TEMPLATES: Record<string, Omit<CredibilityAssetItem, 'label' | 'description' | 'doubtSolved'>[]> = {
   editor: [
     { id: 'showreel', category: 'craft', weight: { craft: 35, reliability: 5, impact: 10 }, platforms: ['YouTube', 'Vimeo', 'Frame.io'] },
     { id: 'portfolio_projects', category: 'craft', weight: { craft: 25, reliability: 10, impact: 15 }, platforms: ['Google Drive', 'Personal Website', 'Dropbox'] },
