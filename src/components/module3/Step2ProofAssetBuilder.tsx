@@ -192,6 +192,43 @@ export function Step2ProofAssetBuilder() {
     });
   };
 
+  // Dynamic styling of variables inside promise text
+  const highlightPromiseText = (text: string) => {
+    if (!text) return '';
+    const serviceLabel = classifyService(mod1ServiceId).label;
+    const marketLabel = mod1MarketId ? mod1MarketId.replace(/_/g, ' ') : '';
+    
+    const keywords = [
+      serviceLabel,
+      marketLabel,
+      "trust", "expert", "expertise", "proves", "prove",
+      "results", "earn", "earns", "performance", "consistent",
+      "quality", "diagnostic", "diagnostics", "blueprint",
+      "deliver", "workflow", "workforce", "audit", "build", "playbook"
+    ].filter(Boolean);
+
+    let regexStr = keywords
+      .map(w => w.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+      .join('|');
+    
+    if (!regexStr) return text;
+    
+    const regex = new RegExp(`\\b(${regexStr})\\b`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, i) => {
+      const isMatch = keywords.some(w => w.toLowerCase() === part.toLowerCase());
+      if (isMatch) {
+        return (
+          <span key={i} className="text-[#0058be] font-extrabold border-b border-[#0058be]/20 bg-[#0058be]/5 px-1 py-0.5 rounded">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
   if (!authorityProfile) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-neutral-200 bg-neutral-50/50 border-dashed">
@@ -252,16 +289,53 @@ export function Step2ProofAssetBuilder() {
         </div>
       )}
 
-      {/* Selected Authority Summary banner */}
-      <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Positioning Mode:</span>
-          <h4 className="text-xs font-extrabold text-[#0b1c30]">{authorityProfile.position.toUpperCase()}</h4>
+      {/* Premium Strategic Foundation Card */}
+      <div className="p-6 rounded-3xl border border-[#0058be]/20 bg-gradient-to-br from-[#0058be]/5 to-transparent shadow-sm space-y-4 relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+          <div className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-[#0058be]" />
+            <h4 className="text-xs font-black uppercase tracking-wider text-[#0b1c30]">
+              Strategic Positioning Foundation
+            </h4>
+          </div>
+          <button
+            onClick={() => useModule3Store.getState().jumpToStep('authority_position')}
+            className="text-xs text-[#0058be] hover:underline font-bold flex items-center gap-1 min-h-[32px] cursor-pointer border-none bg-transparent"
+          >
+            ✏️ Adjust Archetype
+          </button>
         </div>
-        <div className="max-w-xl">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Pledge:</span>
-          <p className="text-xs text-neutral-600 italic">"{authorityProfile.coreTrustPromise}"</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+          <div className="md:col-span-1 p-3 rounded-xl bg-white border border-neutral-200 shadow-sm flex flex-col justify-center">
+            <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">
+              Selected Archetype:
+            </span>
+            <span className="text-xs font-extrabold text-[#0058be] mt-0.5 uppercase tracking-wide">
+              {authorityProfile.position}
+            </span>
+            <p className="text-[10px] text-neutral-400 mt-1 leading-normal">
+              {authorityProfile.position === 'builder' ? 'Proves skill through finished builds.' : 
+               authorityProfile.position === 'auditor' ? 'Proves skill through diagnostic audits.' :
+               authorityProfile.position === 'deconstructor' ? 'Proves skill through breakdowns.' :
+               'Proves skill through daily work logs.'}
+            </p>
+          </div>
+
+          <div className="md:col-span-3 space-y-1">
+            <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">
+              Your Active Trust Promise (Locked):
+            </span>
+            <blockquote className="text-xs font-semibold text-[#0b1c30] leading-relaxed italic pl-3 border-l-2 border-[#0058be]/40">
+              "{highlightPromiseText(authorityProfile.coreTrustPromise)}"
+            </blockquote>
+          </div>
         </div>
+        
+        <p className="text-[10px] text-neutral-400 leading-normal flex items-center gap-1.5 pt-1">
+          <Info size={11} className="text-[#0058be]" />
+          This promise was verified in Step 1. The playbooks below are dynamically customized to prove this pledge to your buyers.
+        </p>
       </div>
 
       {/* Starting materials Checkbox block */}
@@ -480,7 +554,7 @@ export function Step2ProofAssetBuilder() {
       {activeStrategy && (
         <section className="bg-[#0b1c30] rounded-2xl p-6 shadow-md border border-[#0b1c30]">
           <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-            <Award size={18} className="text-blue-400 animate-pulse" />
+            <Award size={18} className="text-blue-400" />
             Choose Strategy Urgency
           </h3>
           <p className="text-sm text-white/70 mb-6 max-w-2xl leading-relaxed">
