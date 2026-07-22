@@ -896,8 +896,7 @@ export function Step2ProofAssetBuilder() {
 
               return (
                 <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
-                  
-                  {/* Lock transparent cover for locked projects */}
+                        {/* Lock transparent cover for locked projects */}
                   {!state.isUnlocked && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-[1.5px] z-20 flex flex-col items-center justify-center p-8 text-center select-none">
                       <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 mb-3 border border-neutral-200">
@@ -915,7 +914,7 @@ export function Step2ProofAssetBuilder() {
 
                   {/* Header detail */}
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 border-b border-neutral-100 pb-4">
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-left">
                       <div className="flex items-center gap-2">
                         <h4 className="text-sm font-black text-[#0b1c30]">
                           {getAssetLabel(activeProject.id)}
@@ -960,61 +959,100 @@ export function Step2ProofAssetBuilder() {
                         <span className="text-neutral-500 font-semibold">{meta.trustGap}</span>
                       </div>
                       <div>
-                        <span className="font-extrabold text-emerald-600 block">Expected Outcome:</span>
+                        <span className="font-extrabold text-emerald-600 block">Expected Benefit:</span>
                         <span className="text-neutral-500 font-semibold">{meta.outcome}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* AI Prompt Hero Card */}
-                  <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-3.5 relative overflow-hidden group">
-                    <div className="flex justify-between items-center border-b border-neutral-800 pb-2.5">
-                      <div className="flex items-center gap-1.5 text-[9px] font-black text-neutral-400 uppercase tracking-widest">
-                        <Code size={12} className="text-[#0058be]" />
-                        Generate This Proof Asset
-                      </div>
-                      <button
-                        onClick={() => handleCopyPrompt(res.prompt, activeProject.id)}
-                        className="bg-[#0058be] hover:bg-blue-600 text-white px-3.5 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer border-none flex items-center gap-1 transition-colors"
-                      >
-                        {copiedPromptId === activeProject.id ? (
-                          <>
-                            <Check size={10} strokeWidth={3} />
-                            Copied!
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={10} />
-                            Copy Prompt
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-[11.5px] leading-relaxed font-semibold italic text-neutral-300">
-                      "{res.prompt}"
-                    </p>
-                  </div>
-
-                  {/* Resources Stack (Hierarchy) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-left">
+                  {/* STEP-BY-STEP EXECUTION BLUEPRINT */}
+                  <div className="space-y-8 text-left">
+                    
+                    {/* STEP 1: PLAN WITH AI */}
                     <div className="space-y-3">
-                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-100 pb-1">
-                        Quick Start & Templates
-                      </span>
-                      <div className="space-y-2">
-                        <a
-                          href={res.quickStartUrl}
-                          className="flex items-center justify-between p-2 rounded-xl bg-blue-50/30 hover:bg-blue-50/60 border border-blue-100/50 text-[#0058be] text-[10px] font-black uppercase tracking-wider transition-colors"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Layers size={12} />
-                            {res.quickStart}
+                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">1</span>
+                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 1: Plan Script & Layout with AI</h5>
+                      </div>
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Copy this optimized system prompt and paste it into <span className="text-[#0058be] underline">ChatGPT</span>, <span className="text-[#0058be] underline">Claude</span>, or <span className="text-[#0058be] underline">Gemini</span>. It will generate a custom outline tailored to your positioning:
+                      </p>
+
+                      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-3.5 relative overflow-hidden group">
+                        <div className="flex justify-between items-center border-b border-neutral-800 pb-2">
+                          <span className="text-[8px] font-black text-neutral-500 uppercase tracking-widest flex items-center gap-1">
+                            <Code size={10} />
+                            AI Co-Pilot Script Prompt
                           </span>
-                          <ArrowUpRight size={12} />
-                        </a>
-                        <div className="text-[10px] text-neutral-500 font-semibold space-y-1.5">
-                          <span className="font-extrabold uppercase tracking-wide text-neutral-400 block text-[8px] mb-1">Supporting tools:</span>
-                          <div className="flex flex-wrap gap-1">
+                          <button
+                            onClick={() => handleCopyPrompt(res.prompt, activeProject.id)}
+                            className="bg-[#0058be] hover:bg-blue-600 text-white px-3.5 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer border-none flex items-center gap-1 transition-colors"
+                          >
+                            {copiedPromptId === activeProject.id ? (
+                              <>
+                                <Check size={10} strokeWidth={3} />
+                                Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy size={10} />
+                                Copy Prompt
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <p className="text-[11.5px] leading-relaxed font-semibold italic text-neutral-300">
+                          "{res.prompt}"
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* STEP 2: BUILD THE ASSET */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">2</span>
+                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 2: Build & Edit Your Deliverables</h5>
+                      </div>
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Use the checklist below along with recommended templates, tutorials, and inspiration examples to build this asset:
+                      </p>
+
+                      {/* Dynamic checklist from Resolution Engine */}
+                      {activeProject.executionSteps && activeProject.executionSteps.length > 0 && (
+                        <div className="p-4 bg-neutral-50/50 border border-neutral-100 rounded-2xl space-y-2">
+                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                            Execution Checklist:
+                          </span>
+                          <ul className="space-y-1.5 text-[11px] text-neutral-600 font-semibold">
+                            {activeProject.executionSteps.map((step, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                                  {idx + 1}
+                                </span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Templates & Guides Link Rows */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div className="space-y-2">
+                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                            Templates & Tools:
+                          </span>
+                          <a
+                            href={res.quickStartUrl}
+                            className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/30 hover:bg-blue-50/60 border border-blue-100/50 text-[#0058be] text-[10px] font-black uppercase tracking-wider transition-colors"
+                          >
+                            <span className="flex items-center gap-1.5">
+                              <Layers size={12} />
+                              {res.quickStart}
+                            </span>
+                            <ArrowUpRight size={12} />
+                          </a>
+                          <div className="flex flex-wrap gap-1 pt-1">
                             {res.tools.map((t, idx) => (
                               <span key={idx} className="bg-neutral-50 border border-neutral-200 text-[#0b1c30] text-[9px] font-black uppercase px-2 py-0.5 rounded">
                                 {t}
@@ -1022,163 +1060,165 @@ export function Step2ProofAssetBuilder() {
                             ))}
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="space-y-3">
-                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-100 pb-1">
-                        Video Tutorials & Guides
-                      </span>
-                      <div className="space-y-2">
-                        <a
-                          href={res.tutorial}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-2 rounded-xl bg-red-50/30 hover:bg-red-50/60 border border-red-100/50 text-red-600 text-[10px] font-black uppercase tracking-wider transition-colors"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Play size={10} fill="currentColor" />
-                            Watch YouTube Guide
+                        <div className="space-y-2">
+                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                            Video Guides & Rules:
                           </span>
-                          <ExternalLink size={10} />
-                        </a>
-                        <div className="text-[10px] text-neutral-500 font-semibold">
-                          <span className="font-extrabold uppercase tracking-wide text-neutral-400 block text-[8px] mb-1">Pacing Cheat Sheet:</span>
-                          <p className="leading-relaxed font-semibold">{res.cheatSheet}</p>
+                          <a
+                            href={res.tutorial}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center justify-between p-2.5 rounded-xl bg-red-50/30 hover:bg-red-50/60 border border-red-100/50 text-red-600 text-[10px] font-black uppercase tracking-wider transition-colors"
+                          >
+                            <span className="flex items-center gap-1.5">
+                              <Play size={10} fill="currentColor" />
+                              Watch YouTube Tutorial
+                            </span>
+                            <ExternalLink size={10} />
+                          </a>
+                          <p className="text-[10px] text-neutral-500 leading-relaxed font-semibold pt-1">
+                            💡 <span className="font-extrabold text-[#0b1c30] uppercase text-[8px]">Standard:</span> {res.cheatSheet}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Reference Gallery */}
+                      <div className="space-y-2">
+                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                          Inspiration Gallery (Visual Examples):
+                        </span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {res.examples.map((ex, idx) => (
+                            <a
+                              key={idx}
+                              href={ex.url}
+                              className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 bg-white text-[10px] font-bold text-neutral-600 hover:text-[#0b1c30] transition-colors"
+                            >
+                              <span className="truncate">{ex.name}</span>
+                              <ArrowUpRight size={10} className="text-neutral-400 shrink-0 ml-1" />
+                            </a>
+                          ))}
                         </div>
                       </div>
                     </div>
 
-                    {/* Reference Gallery */}
-                    <div className="md:col-span-2 space-y-2.5">
-                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-100 pb-1">
-                        Reference Gallery (Visual Examples)
-                      </span>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {res.examples.map((ex, idx) => (
-                          <a
-                            key={idx}
-                            href={ex.url}
-                            className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 bg-white text-[10px] font-bold text-neutral-600 hover:text-[#0b1c30] transition-colors"
+                    {/* STEP 3: HOST & VERIFY */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
+                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">3</span>
+                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 3: Host & Verify Work</h5>
+                      </div>
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Host your completed project on a public platform (e.g. YouTube, Vimeo, Framer, GitHub) and paste the URL link below to scan it:
+                      </p>
+
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={verificationUrl}
+                            onChange={(e) => setVerificationUrl(e.target.value)}
+                            placeholder="Paste your public project link here"
+                            className="flex-1 min-h-[42px] px-3.5 rounded-xl border border-neutral-200 text-xs font-semibold focus:outline-none focus:border-[#0058be] transition-colors"
+                          />
+                          <button
+                            onClick={handleRunVerification}
+                            disabled={verificationProgress === 'scanning' || !verificationUrl}
+                            className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[42px] px-5 rounded-xl text-xs font-bold cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5"
                           >
-                            <span className="truncate">{ex.name}</span>
-                            <ArrowUpRight size={10} className="text-neutral-400 shrink-0 ml-1" />
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                            {verificationProgress === 'scanning' ? (
+                              <>
+                                <RefreshCw size={12} className="animate-spin" />
+                                Analyzing Link...
+                              </>
+                            ) : (
+                              <>
+                                <ShieldCheck size={12} />
+                                Verify Link
+                              </>
+                            )}
+                          </button>
+                        </div>
 
-                  {/* Verification Engine Input & Dopamine loop feedback */}
-                  <div className="border-t border-neutral-100 pt-5 space-y-4 text-left">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block mb-1">
-                        Submit URL Link to Verify Asset
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={verificationUrl}
-                          onChange={(e) => setVerificationUrl(e.target.value)}
-                          placeholder="Paste Framer URL, Drive link, or GitHub repository URL"
-                          className="flex-1 min-h-[42px] px-3.5 rounded-xl border border-neutral-200 text-xs font-semibold focus:outline-none focus:border-[#0058be] transition-colors"
-                        />
-                        <button
-                          onClick={handleRunVerification}
-                          disabled={verificationProgress === 'scanning' || !verificationUrl}
-                          className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[42px] px-5 rounded-xl text-xs font-bold cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5"
-                        >
-                          {verificationProgress === 'scanning' ? (
-                            <>
-                              <RefreshCw size={12} className="animate-spin" />
-                              Verifying...
-                            </>
-                          ) : (
-                            <>
-                              <ShieldCheck size={12} />
-                              Run AI Audit
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
+                        {/* Verification outputs */}
+                        {verificationProgress === 'done' && auditResult && (
+                          <div className="p-4 rounded-2xl border border-neutral-200 bg-neutral-50/60 space-y-3 animate-fade-in">
+                            {auditResult.isValid ? (
+                              <div className="space-y-3">
+                                <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
+                                  <span className="text-emerald-700 text-xs font-black uppercase tracking-wider flex items-center gap-1">
+                                    <CheckCircle size={14} fill="currentColor" className="text-white" />
+                                    Audit Passed Successfully
+                                  </span>
+                                  <div className="flex items-center gap-1.5 text-amber-500">
+                                    <span className="text-[11px] font-black text-neutral-400">Score: {auditResult.score}</span>
+                                    <div className="flex items-center gap-0.5">
+                                      {Array.from({ length: 5 }).map((_, i) => (
+                                        <Sparkles key={i} size={10} fill="currentColor" />
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
 
-                    {/* Verification result with dopamine feedback HUD */}
-                    {verificationProgress === 'done' && auditResult && (
-                      <div className="p-4 rounded-2xl border border-neutral-200 bg-neutral-50/60 space-y-3 animate-fade-in">
-                        {auditResult.isValid ? (
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
-                              <span className="text-emerald-700 text-xs font-black uppercase tracking-wider flex items-center gap-1">
-                                <CheckCircle size={14} fill="currentColor" className="text-white" />
-                                Audit Passed Successfully
-                              </span>
-                              <div className="flex items-center gap-1.5 text-amber-500">
-                                <span className="text-[11px] font-black text-neutral-400">Score: {auditResult.score}</span>
-                                <div className="flex items-center gap-0.5">
-                                  {Array.from({ length: 5 }).map((_, i) => (
-                                    <Sparkles key={i} size={10} fill="currentColor" />
-                                  ))}
+                                <div className="text-[10px] text-neutral-500 font-semibold leading-relaxed">
+                                  <span className="font-extrabold uppercase text-neutral-400 block text-[8px] mb-1">Recommended Adjustments:</span>
+                                  <ul className="space-y-1">
+                                    {auditResult.improvements.map((imp: string, idx: number) => (
+                                      <li key={idx} className="flex items-start gap-1">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#0058be] mt-1.5 shrink-0" />
+                                        <span>{imp}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                {/* Dopamine Loop Verification Overlay */}
+                                <AnimatePresence>
+                                  {showDopamineFeedback && readinessDelta && (
+                                    <motion.div 
+                                      initial={{ opacity: 0, scale: 0.95 }}
+                                      animate={{ opacity: 1, scale: 1 }}
+                                      className="p-4 rounded-xl bg-emerald-500 text-white space-y-2 shadow-md relative overflow-hidden"
+                                    >
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5">
+                                          <ShieldCheck size={16} />
+                                          {meta.achievementLabel}
+                                        </span>
+                                        <span className="text-xs font-black bg-white/20 px-2 py-0.5 rounded">
+                                          Trust +{meta.impact}%
+                                        </span>
+                                      </div>
+                                      <div className="text-[11px] font-bold">
+                                        Client Readiness progressed: {readinessDelta.from}% → <span className="underline font-black">{readinessDelta.to}% Readiness</span>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+
+                                {!showDopamineFeedback && (
+                                  <button
+                                    onClick={handleAcceptAudit}
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white min-h-[38px] rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors mt-2"
+                                  >
+                                    Accept Audit & Lock in Readiness Increase
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-start gap-2 text-red-700">
+                                <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                                <div className="text-[10px] font-bold">
+                                  <span className="block uppercase tracking-wider">Verification Error:</span>
+                                  <p className="font-semibold text-neutral-500 mt-1">{auditResult.improvements[0]}</p>
                                 </div>
                               </div>
-                            </div>
-
-                            <div className="text-[10px] text-neutral-500 font-semibold leading-relaxed">
-                              <span className="font-extrabold uppercase text-neutral-400 block text-[8px] mb-1">Recommended Adjustments:</span>
-                              <ul className="space-y-1">
-                                {auditResult.improvements.map((imp: string, idx: number) => (
-                                  <li key={idx} className="flex items-start gap-1">
-                                    <span className="w-1 h-1 rounded-full bg-[#0058be] mt-1.5 shrink-0" />
-                                    <span>{imp}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-
-                            {/* Dopamine Loop Verification Overlay */}
-                            <AnimatePresence>
-                              {showDopamineFeedback && readinessDelta && (
-                                <motion.div 
-                                  initial={{ opacity: 0, scale: 0.95 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  className="p-4 rounded-xl bg-emerald-500 text-white space-y-2 shadow-md relative overflow-hidden"
-                                >
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5">
-                                      <ShieldCheck size={16} />
-                                      {meta.achievementLabel}
-                                    </span>
-                                    <span className="text-xs font-black bg-white/20 px-2 py-0.5 rounded">
-                                      Trust +{meta.impact}%
-                                    </span>
-                                  </div>
-                                  <div className="text-[11px] font-bold">
-                                    Client Readiness progressed: {readinessDelta.from}% → <span className="underline font-black">{readinessDelta.to}% Readiness</span>
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-
-                            {!showDopamineFeedback && (
-                              <button
-                                onClick={handleAcceptAudit}
-                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white min-h-[38px] rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors mt-2"
-                              >
-                                Accept Audit & Lock in Readiness Increase
-                              </button>
                             )}
-                          </div>
-                        ) : (
-                          <div className="flex items-start gap-2 text-red-700">
-                            <ShieldAlert size={14} className="shrink-0 mt-0.5" />
-                            <div className="text-[10px] font-bold">
-                              <span className="block uppercase tracking-wider">Verification Error:</span>
-                              <p className="font-semibold text-neutral-500 mt-1">{auditResult.improvements[0]}</p>
-                            </div>
                           </div>
                         )}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               );
