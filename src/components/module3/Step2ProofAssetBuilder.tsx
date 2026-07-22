@@ -107,7 +107,7 @@ const getBlueprintMetadata = (format: string) => {
       impact: "25",
       buyerProblem: "Client is skeptical that you can hold viewer attention for longer than 10 seconds.",
       trustGap: "Requires direct attention validation proof rather than a static text portfolio.",
-      whyMatters: "SaaS founders and agents review pacing hooks first; a walk-through video holds attention better than static image slides.",
+      whyMatters: "SaaS founders and agents review pacing hooks first; a walkthrough video holds attention better than static image slides.",
       mistakes: "Using long graphic intros or neglecting audio normalization levels.",
       outcome: "Client stays engaged through the critical first 30 seconds of your pitch.",
       achievementLabel: "Showreel Pacing Verified ✓",
@@ -133,8 +133,8 @@ const getBlueprintMetadata = (format: string) => {
       whyMatters: "Clients need to see the difference between raw assets and your optimized deliverables.",
       mistakes: "Not labeling baseline vs. optimized version or using mock metrics without logical proof.",
       outcome: "Buyer instantly recognizes the visual and metric speedups of your work.",
-      achievementLabel: "Split-Screen pacing Verified ✓",
-      prereqLabel: "Requires: Before/After breakdown check",
+      achievementLabel: "Split-Screen Pacing Verified ✓",
+      prereqLabel: "Requires: Before/After Breakdown Check",
       criteria: [
         "Clear baseline vs. optimized split-screen comparison",
         "Explains decision process in text overlays or narration",
@@ -176,8 +176,8 @@ const getBlueprintMetadata = (format: string) => {
     whyMatters: "Copywriters must prove they can match brand voice and design persuasive call-to-actions.",
     mistakes: "Writing generic template lines without local context or market positioning.",
     outcome: "Client reads your cold copy draft and books a discovery call.",
-    achievementLabel: "Objection copy Approved ✓",
-    prereqLabel: "Requires: Custom objection hook verify",
+    achievementLabel: "Objection Copy Approved ✓",
+    prereqLabel: "Requires: Custom Objection Hook Verify",
     criteria: [
       "Direct headline hook targeting local market skepticism",
       "Persuasive call-to-action layout optimized for clicks",
@@ -198,7 +198,7 @@ const getHubResources = (assetId: string) => {
     cheatSheet: "Ensure key client objections are addressed in the first paragraph.",
     examples: [
       { name: "Sample Case Study Structure", url: "#" },
-      { name: "objection-Buster Layout Blueprint", url: "#" }
+      { name: "Objection-Buster Layout Blueprint", url: "#" }
     ]
   };
 
@@ -213,7 +213,7 @@ const getHubResources = (assetId: string) => {
       cheatSheet: "Pacing hooks: cut every 1.5 seconds during the intro. Add zoom maps to maintain attention.",
       examples: [
         { name: "Example 1: Real Estate Walkthrough (3.2x Pacing)", url: "#" },
-        { name: "Example 2: Commercial Ad Pacing Breakdown", url: "#" },
+        { name: "Example 2: Commercial Pacing Breakdown", url: "#" },
         { name: "Example 3: Reel Retention Optimization Edit", url: "#" }
       ]
     };
@@ -392,53 +392,44 @@ export function Step2ProofAssetBuilder() {
     return priorities.map(p => generateProofAsset(p, ctxCombined as any));
   }, [priorities, authorityProfile, mod1MarketId, ctxCombined]);
 
-  // Project unlock and status logic
+  // Section 3 displays ONLY missing assets!
+  const missingAssets = useMemo(() => {
+    return assets.filter(a => !availableAssets.includes(a.id));
+  }, [assets, availableAssets]);
+
+  // Project unlock and status logic for missing assets
   const projectStates = useMemo(() => {
     const states: Record<string, { isUnlocked: boolean; isCompleted: boolean; prereqName?: string }> = {};
-    if (assets.length > 0) {
-      // Project 1 is always unlocked
-      const p1Completed = availableAssets.includes(assets[0].id);
-      states[assets[0].id] = { isUnlocked: true, isCompleted: p1Completed };
+    if (missingAssets.length > 0) {
+      // First missing asset is always unlocked (Next Best Action)
+      states[missingAssets[0].id] = { isUnlocked: true, isCompleted: false };
 
-      // Project 2 requires Project 1 completed
-      if (assets.length > 1) {
-        const p2Unlocked = p1Completed;
-        const p2Completed = availableAssets.includes(assets[1].id);
-        states[assets[1].id] = { 
-          isUnlocked: p2Unlocked, 
-          isCompleted: p2Completed, 
-          prereqName: getAssetLabel(assets[0].id) 
+      // Subsequent missing assets are locked behind preceding missing assets
+      for (let i = 1; i < missingAssets.length; i++) {
+        states[missingAssets[i].id] = { 
+          isUnlocked: false, 
+          isCompleted: false, 
+          prereqName: getAssetLabel(missingAssets[i - 1].id) 
         };
-
-        // Project 3 requires Project 2 completed
-        if (assets.length > 2) {
-          const p3Unlocked = p2Completed;
-          const p3Completed = availableAssets.includes(assets[2].id);
-          states[assets[2].id] = { 
-            isUnlocked: p3Unlocked, 
-            isCompleted: p3Completed, 
-            prereqName: getAssetLabel(assets[1].id) 
-          };
-        }
       }
     }
     return states;
-  }, [assets, availableAssets]);
+  }, [missingAssets]);
 
-  // Currently focused project ID in Right Panel workspace
+  // Currently focused project ID in Section 3
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
 
   const activeProject = useMemo(() => {
-    if (assets.length === 0) return null;
-    return assets.find(a => a.id === selectedAssetId) || assets[0];
-  }, [assets, selectedAssetId]);
+    if (missingAssets.length === 0) return null;
+    return missingAssets.find(a => a.id === selectedAssetId) || missingAssets[0];
+  }, [missingAssets, selectedAssetId]);
 
-  // Synchronize selection
+  // Synchronize selection when missing list updates
   useEffect(() => {
-    if (assets.length > 0 && !selectedAssetId) {
-      setSelectedAssetId(assets[0].id);
+    if (missingAssets.length > 0 && !missingAssets.some(a => a.id === selectedAssetId)) {
+      setSelectedAssetId(missingAssets[0].id);
     }
-  }, [assets, selectedAssetId]);
+  }, [missingAssets, selectedAssetId]);
 
   const handleAssetCheckboxChange = (assetId: string, checked: boolean) => {
     const nextAvailable = checked
@@ -447,7 +438,7 @@ export function Step2ProofAssetBuilder() {
     
     setAvailableAssets(nextAvailable);
 
-    // Save inventory string format if required by other parts
+    // Save inventory string format
     const inventoryString = nextAvailable.map(getAssetLabel).join(', ');
     useModule3Store.setState({ existingProofInventory: inventoryString });
 
@@ -508,10 +499,6 @@ export function Step2ProofAssetBuilder() {
   const projectsCompletePercent = assets.length > 0 
     ? Math.round((completedProjectsCount / assets.length) * 100) 
     : 0;
-
-  const nextActionProject = useMemo(() => {
-    return assets.find(a => !availableAssets.includes(a.id));
-  }, [assets, availableAssets]);
 
   // Goal gradient effect callout
   const goalGradientCallout = useMemo(() => {
@@ -757,15 +744,61 @@ export function Step2ProofAssetBuilder() {
       </section>
 
       {/* SECTION 3: PROOF EXECUTION HUB */}
-      {assets.length > 0 && (
-        <section className="space-y-6">
-          <div className="flex items-center gap-2 border-b border-neutral-100 pb-3">
-            <Zap className="w-5 h-5 text-[#0058be]" />
-            <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">
-              Section 3 - Proof Execution Hub
-            </h3>
-          </div>
+      <section className="space-y-6">
+        <div className="flex items-center gap-2 border-b border-neutral-100 pb-3">
+          <Zap className="w-5 h-5 text-[#0058be]" />
+          <h3 className="text-sm font-extrabold text-[#0b1c30] uppercase tracking-wider">
+            Section 3 - Proof Completion Hub
+          </h3>
+        </div>
 
+        {missingAssets.length === 0 ? (
+          /* CELEBRATION SCREEN: Client Readiness at 100% */
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full p-8 rounded-3xl border border-emerald-200 bg-emerald-500/[0.03] text-center space-y-6 shadow-sm"
+          >
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200/50">
+              <CheckCircle className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-xl font-black text-[#0b1c30] tracking-wide">
+                Professional Proof Profile Ready ✓
+              </h4>
+              <p className="text-sm text-neutral-500 max-w-xl mx-auto leading-relaxed font-semibold">
+                Your proof assets fully cover all target buyer trust requirements. Your Client Readiness score is at <span className="text-emerald-600 font-black">100%</span>.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-1 text-amber-500">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Sparkles key={i} size={16} fill="currentColor" />
+              ))}
+            </div>
+
+            <div className="p-4 bg-white border border-neutral-200 rounded-2xl max-w-md mx-auto space-y-2 text-left">
+              <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                Verification Summary:
+              </span>
+              <div className="text-xs text-neutral-600 font-semibold leading-relaxed space-y-1">
+                <div>✓ Client Readiness calibrated to maximum</div>
+                <div>✓ High-retention visual pacing verified</div>
+                <div>✓ 0 trust gaps remain for SaaS startup positioning</div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[44px] px-8 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md inline-flex items-center gap-1.5"
+            >
+              Proceed to Portfolio Workspace
+              <ArrowRight size={14} />
+            </button>
+          </motion.div>
+        ) : (
+          /* REGULAR PROGRESSION SCREEN */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
             {/* LEFT COLUMN: STATUS HUD & PROJECTS LIST (col-span-4) */}
@@ -801,31 +834,30 @@ export function Step2ProofAssetBuilder() {
               {/* Progress Progression list */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
-                  <span>Proof Projects</span>
+                  <span>Missing Projects Queue</span>
                   <span>{completedProjectsCount} of {assets.length} Ready ({projectsCompletePercent}%)</span>
                 </div>
 
                 <div className="space-y-2">
-                  {assets.map((item, idx) => {
+                  {missingAssets.map((item, idx) => {
                     const state = projectStates[item.id] || { isUnlocked: false, isCompleted: false };
                     const isSelected = activeProject?.id === item.id;
-                    const meta = getBlueprintMetadata(item.assetType);
                     
                     return (
                       <div
                         key={item.id}
-                        onClick={() => setSelectedAssetId(item.id)}
+                        onClick={() => {
+                          if (state.isUnlocked) {
+                            setSelectedAssetId(item.id);
+                          }
+                        }}
                         className={cn(
                           "w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between select-none relative overflow-hidden group",
-                          state.isCompleted
-                            ? isSelected
-                              ? "border-emerald-500 bg-emerald-50/20 text-emerald-800"
-                              : "border-neutral-200 bg-emerald-50/5 text-emerald-800/80 hover:bg-emerald-50/10"
-                            : !state.isUnlocked
-                              ? "opacity-60 bg-neutral-50/50 border-neutral-100"
-                              : isSelected
-                                ? "border-[#0058be] bg-[#0058be]/5 text-[#0058be]"
-                                : "border-neutral-200 bg-white hover:border-neutral-300 text-neutral-600"
+                          !state.isUnlocked
+                            ? "opacity-60 bg-neutral-50/50 border-neutral-100 cursor-not-allowed"
+                            : isSelected
+                              ? "border-[#0058be] bg-[#0058be]/5 text-[#0058be]"
+                              : "border-neutral-200 bg-white hover:border-neutral-300 text-neutral-600"
                         )}
                       >
                         <div className="flex items-center gap-2">
@@ -838,11 +870,7 @@ export function Step2ProofAssetBuilder() {
                         </div>
 
                         <div className="shrink-0 flex items-center gap-1.5">
-                          {state.isCompleted ? (
-                            <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">
-                              ✓ Ready
-                            </span>
-                          ) : !state.isUnlocked ? (
+                          {!state.isUnlocked ? (
                             <div className="flex items-center gap-1 text-[9px] text-neutral-400 font-extrabold uppercase">
                               <Lock size={10} />
                               Locked
@@ -866,23 +894,18 @@ export function Step2ProofAssetBuilder() {
                     <Sparkles size={12} className="shrink-0 mt-0.5 text-blue-600" />
                     <span>{goalGradientCallout}</span>
                   </div>
-                ) : nextActionProject ? (
+                ) : (
                   <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-2">
                     <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
                       Next Best Action:
                     </span>
                     <div className="text-xs font-black text-[#0b1c30] leading-tight">
-                      Build {getAssetLabel(nextActionProject.id)}
+                      Build {getAssetLabel(missingAssets[0].id)}
                     </div>
                     <div className="flex gap-4 text-[9px] font-bold text-neutral-500">
-                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(nextActionProject.assetType).impact}%</span></div>
-                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(nextActionProject.assetType).time}</span></div>
+                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(missingAssets[0].assetType).impact}%</span></div>
+                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(missingAssets[0].assetType).time}</span></div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 text-[10px] font-bold text-emerald-800 leading-normal flex items-start gap-1.5">
-                    <CheckCircle2 size={12} className="shrink-0 mt-0.5 text-emerald-600" />
-                    <span>All recommended proof projects successfully verified!</span>
                   </div>
                 )}
               </div>
@@ -896,7 +919,8 @@ export function Step2ProofAssetBuilder() {
 
               return (
                 <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
-                        {/* Lock transparent cover for locked projects */}
+                  
+                  {/* Lock transparent cover for locked projects */}
                   {!state.isUnlocked && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-[1.5px] z-20 flex flex-col items-center justify-center p-8 text-center select-none">
                       <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 mb-3 border border-neutral-200">
@@ -1224,8 +1248,8 @@ export function Step2ProofAssetBuilder() {
               );
             })()}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {isCompleted && (
         <motion.div 
