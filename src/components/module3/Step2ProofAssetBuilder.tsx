@@ -382,20 +382,14 @@ export function Step2ProofAssetBuilder() {
     };
   }, [mod1ServiceId, mod1MarketId, mod1NicheId, mod1Positioning, mod2OfferType, mod2Deliverables, mod2UniqueMechanism, mod2ValueAmplifier, authorityProfile, availableAssets]);
 
-  const priorities = useMemo(() => {
-    if (!authorityProfile || !mod1MarketId) return [];
-    return resolveProofPriorities(ctxCombined as any);
-  }, [authorityProfile, mod1MarketId, ctxCombined]);
-
   const assets = useMemo(() => {
-    if (!authorityProfile || !mod1MarketId || priorities.length === 0) return [];
-    return priorities.map(p => generateProofAsset(p, ctxCombined as any));
-  }, [priorities, authorityProfile, mod1MarketId, ctxCombined]);
+    return templates;
+  }, [templates]);
 
-  // Section 3 displays ONLY missing assets!
+  // Section 3 displays ONLY missing (unselected) templates!
   const missingAssets = useMemo(() => {
-    return assets.filter(a => !availableAssets.includes(a.id));
-  }, [assets, availableAssets]);
+    return templates.filter(t => !availableAssets.includes(t.id));
+  }, [templates, availableAssets]);
 
   // Project unlock and status logic for missing assets
   const projectStates = useMemo(() => {
@@ -903,8 +897,8 @@ export function Step2ProofAssetBuilder() {
                       Build {getAssetLabel(missingAssets[0].id)}
                     </div>
                     <div className="flex gap-4 text-[9px] font-bold text-neutral-500">
-                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(missingAssets[0].assetType).impact}%</span></div>
-                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(missingAssets[0].assetType).time}</span></div>
+                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(missingAssets[0].id).impact}%</span></div>
+                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(missingAssets[0].id).time}</span></div>
                     </div>
                   </div>
                 )}
@@ -913,7 +907,7 @@ export function Step2ProofAssetBuilder() {
 
             {/* RIGHT COLUMN: WORKSPACE TERMINAL (col-span-8) */}
             {activeProject && (() => {
-              const meta = getBlueprintMetadata(activeProject.assetType);
+              const meta = getBlueprintMetadata(activeProject.id);
               const res = getHubResources(activeProject.id);
               const state = projectStates[activeProject.id] || { isUnlocked: false, isCompleted: false };
 
@@ -1042,13 +1036,13 @@ export function Step2ProofAssetBuilder() {
                       </p>
 
                       {/* Dynamic checklist from Resolution Engine */}
-                      {activeProject.executionSteps && activeProject.executionSteps.length > 0 && (
+                      {meta.criteria && meta.criteria.length > 0 && (
                         <div className="p-4 bg-neutral-50/50 border border-neutral-100 rounded-2xl space-y-2">
                           <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
                             Execution Checklist:
                           </span>
                           <ul className="space-y-1.5 text-[11px] text-neutral-600 font-semibold">
-                            {activeProject.executionSteps.map((step, idx) => (
+                            {meta.criteria.map((step, idx) => (
                               <li key={idx} className="flex items-start gap-2">
                                 <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
                                   {idx + 1}
