@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, ArrowLeft, ArrowRight, CheckCircle2, Award, FileText, Check, Copy, ExternalLink,
   Video, Film, Scissors, Tv, Play, Code, Zap, Globe, Layers, GitBranch, BookOpen, MessageSquare, Folder, LineChart, TrendingUp, PenTool,
-  RotateCcw, ShieldCheck, Filter, Bookmark, Layout, AlertCircle, RefreshCw, Upload, CheckCircle, ShieldAlert, Lock, ArrowUpRight
+  RotateCcw, ShieldCheck, Filter, Bookmark, Layout, AlertCircle, RefreshCw, Upload, CheckCircle, ShieldAlert, Lock, ArrowUpRight,
+  X, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -459,17 +460,34 @@ export function Step2ProofAssetBuilder() {
     }
   }, [activeQueue, skippedQueue, selectedAssetId]);
 
+  const [activeWorkspaceAssetId, setActiveWorkspaceAssetId] = useState<string | null>(null);
+  const [wizardPage, setWizardPage] = useState<number>(0);
+
+  const handleOpenWorkspace = (assetId: string) => {
+    setSelectedAssetId(assetId);
+    setActiveWorkspaceAssetId(assetId);
+    setWizardPage(0);
+    setVerificationUrl('');
+    setVerificationProgress('idle');
+    setAuditResult(null);
+    setShowDopamineFeedback(false);
+    setIsSkipping(false);
+  };
+
   const handleSkipProject = (assetId: string) => {
     setSkippedAssetIds(prev => [...prev, assetId]);
     setIsSkipping(false);
     setVerificationUrl('');
     setVerificationProgress('idle');
     setAuditResult(null);
+    setActiveWorkspaceAssetId(null);
   };
 
   const handleRevisitProject = (assetId: string) => {
     setSkippedAssetIds(prev => prev.filter(id => id !== assetId));
     setSelectedAssetId(assetId);
+    setActiveWorkspaceAssetId(assetId);
+    setWizardPage(0);
     setIsSkipping(false);
     setVerificationUrl('');
     setVerificationProgress('idle');
@@ -579,6 +597,7 @@ export function Step2ProofAssetBuilder() {
     const nextReadiness = getReadinessScore([...availableAssets, activeProject.id]);
     setReadinessDelta({ from: prevReadiness, to: nextReadiness });
     setShowDopamineFeedback(true);
+    setActiveWorkspaceAssetId(null);
   };
 
   const handleNext = () => {
@@ -845,19 +864,100 @@ export function Step2ProofAssetBuilder() {
             </button>
           </motion.div>
         ) : (
-          /* REGULAR PROGRESSION SCREEN */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          /* REGULAR PROGRESSION SCREEN: Horizontal Gaps Grid & Workspace Launcher */
+          <div className="space-y-8">
             
-            {/* LEFT COLUMN: STATUS HUD & PROJECTS LIST (col-span-4) */}
-            <div className="lg:col-span-4 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6">
-              
-              {/* Client Readiness Circular HUD */}
-              <div className="flex flex-col items-center text-center p-4 bg-neutral-50/50 rounded-2xl border border-neutral-100 space-y-3">
-                <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
-                  Client Readiness
-                </span>
-                
-                <div className="relative w-28 h-28 flex items-center justify-center">
+            {/* Horizontal Grid of Gaps */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {missingAssets.map((item, idx) => {
+                const meta = getBlueprintMetadata(item.id);
+                const state = projectStates[item.id] || { isUnlocked: false, isCompleted: false };
+                const isSkipped = skippedAssetIds.includes(item.id);
+
+                return (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      "bg-white border p-5 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-neutral-300 transition-all duration-300 relative overflow-hidden",
+                      isSkipped ? "border-dashed border-amber-300 bg-amber-50/10" : "border-neutral-200"
+                    )}
+                  >
+                    <div className="space-y-4">
+                      {/* Top Header Row in Card */}
+                      <div className="flex justify-between items-start">
+                        <span className={cn(
+                          "text-[9px] font-black uppercase px-2 py-0.5 rounded",
+                          !state.isUnlocked 
+                            ? "bg-neutral-100 text-neutral-400" 
+                            : isSkipped 
+                              ? "bg-amber-100 text-amber-600" 
+                              : "bg-blue-100 text-blue-600"
+                        )}>
+                          {!state.isUnlocked 
+                            ? "Locked" 
+                            : isSkipped 
+                              ? "Skipped" 
+                              : `Rec #${idx + 1}`}
+                        </span>
+
+                        <span className="text-[10px] font-black text-emerald-600">
+                          +{meta.impact}% Trust
+                        </span>
+                      </div>
+
+                      {/* Middle Details */}
+                      <div className="space-y-1.5 text-left">
+                        <h4 className="text-sm font-black text-[#0b1c30] flex items-center gap-1">
+                          {!state.isUnlocked && <Lock size={12} className="text-neutral-400 shrink-0" />}
+                          {getAssetLabel(item.id)}
+                        </h4>
+                        <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+                          Est. Time: {meta.time} | Diff: {meta.difficulty}
+                        </p>
+                        <p className="text-xs text-neutral-500 font-semibold leading-relaxed line-clamp-2">
+                          {isSkipped 
+                            ? `Skipping leaves objection: "${meta.buyerProblem}"` 
+                            : meta.goal}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bottom CTA Button inside Card */}
+                    <div className="pt-4 mt-4 border-t border-neutral-100">
+                      {!state.isUnlocked ? (
+                        <button
+                          disabled
+                          className="w-full bg-neutral-50 border border-neutral-100 text-neutral-400 py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-not-allowed flex items-center justify-center gap-1"
+                        >
+                          <Lock size={10} />
+                          Locked: Complete Prereqs
+                        </button>
+                      ) : isSkipped ? (
+                        <button
+                          onClick={() => handleRevisitProject(item.id)}
+                          className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors flex items-center justify-center gap-1"
+                        >
+                          Revisit & Build
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleOpenWorkspace(item.id)}
+                          className="w-full bg-[#0058be] hover:bg-blue-700 text-white py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                        >
+                          Build Asset 🚀
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Bottom Dashboard: Circular HUD gauge & Next Best Action info */}
+            <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                {/* Circular Gauge */}
+                <div className="relative w-20 h-20 flex items-center justify-center shrink-0">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="40" stroke="#f1f5f9" strokeWidth="8" fill="transparent" />
                     <motion.circle 
@@ -868,601 +968,476 @@ export function Step2ProofAssetBuilder() {
                     />
                   </svg>
                   <div className="absolute flex flex-col items-center">
-                    <span className="text-xl font-black text-[#0b1c30]">{currentReadiness}%</span>
-                    <span className="text-[7px] font-black text-neutral-400 uppercase tracking-widest">Readiness</span>
+                    <span className="text-sm font-black text-[#0b1c30]">{currentReadiness}%</span>
+                    <span className="text-[6px] font-black text-neutral-400 uppercase tracking-widest">Readiness</span>
                   </div>
                 </div>
 
-                <div className="text-[10px] text-neutral-500 font-bold">
-                  Current Proof Assets: <span className="text-[#0b1c30]">{selectedCount} / {totalAvailable}</span>
+                <div className="space-y-1 text-left">
+                  <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Client Readiness score</h4>
+                  <p className="text-[11px] text-neutral-500 font-semibold">
+                    Equipped Proof Assets: <strong className="text-[#0b1c30]">{selectedCount} of {totalAvailable}</strong>
+                  </p>
                 </div>
               </div>
 
-              {/* Progress Progression list */}
-              <div className="space-y-4">
-                {/* Active Queue */}
-                {activeQueue.length > 0 && (
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
-                      <span>Prioritized Gaps</span>
-                      <span>{activeQueue.length} Left</span>
-                    </div>
-
-                    <div className="space-y-2">
-                      {activeQueue.map((item, idx) => {
-                        const state = projectStates[item.id] || { isUnlocked: false, isCompleted: false };
-                        const isSelected = activeProject?.id === item.id;
-                        
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => {
-                              if (state.isUnlocked) {
-                                setSelectedAssetId(item.id);
-                                setIsSkipping(false);
-                              }
-                            }}
-                            className={cn(
-                              "w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between select-none relative overflow-hidden group",
-                              !state.isUnlocked
-                                ? "opacity-60 bg-neutral-50/50 border-neutral-100 cursor-not-allowed"
-                                : isSelected
-                                  ? "border-[#0058be] bg-[#0058be]/5 text-[#0058be]"
-                                  : "border-neutral-200 bg-white hover:border-neutral-300 text-neutral-600"
-                            )}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="text-[10px] font-black text-neutral-400 group-hover:text-[#0058be]/75 transition-colors">
-                                #{idx + 1}
-                              </span>
-                              <span className="text-xs font-bold leading-tight">
-                                {getAssetLabel(item.id)}
-                              </span>
-                            </div>
-
-                            <div className="shrink-0 flex items-center gap-1.5">
-                              {!state.isUnlocked ? (
-                                <div className="flex items-center gap-1 text-[9px] text-neutral-400 font-extrabold uppercase">
-                                  <Lock size={10} />
-                                  Locked
-                                </div>
-                              ) : (
-                                <span className="text-[9px] font-black uppercase text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
-                                  🎯 Active
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Skipped Queue Area */}
-                {skippedQueue.length > 0 && (
-                  <div className="space-y-3 pt-2">
-                    <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
-                      <span>Skipped Assets</span>
-                      <span>{skippedQueue.length} Skipped</span>
-                    </div>
-
-                    <div className="space-y-2">
-                      {skippedQueue.map((item) => (
-                        <div
-                          key={item.id}
-                          className="w-full text-left p-3 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/60 flex items-center justify-between text-neutral-500"
-                        >
-                          <span className="text-xs font-semibold truncate max-w-[140px]">
-                            {getAssetLabel(item.id)}
-                          </span>
-
-                          <button
-                            onClick={() => handleRevisitProject(item.id)}
-                            className="bg-[#0058be]/10 hover:bg-[#0058be]/20 text-[#0058be] border-none px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider cursor-pointer transition-colors"
-                          >
-                            Revisit
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Goal gradient or Next action card */}
-              <div className="pt-2 border-t border-neutral-100 text-left">
+              {/* Goal gradient Callout or Next recommended action */}
+              <div className="flex-1 max-w-lg text-left p-4 bg-neutral-50/80 border border-neutral-100 rounded-2xl">
                 {goalGradientCallout ? (
-                  <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-100 text-[10px] font-bold text-[#0058be] leading-normal flex items-start gap-1.5">
-                    <Sparkles size={12} className="shrink-0 mt-0.5 text-blue-600" />
+                  <div className="text-[11px] font-bold text-[#0058be] leading-relaxed flex items-start gap-1.5">
+                    <Sparkles size={14} className="shrink-0 mt-0.5 text-blue-600" />
                     <span>{goalGradientCallout}</span>
                   </div>
                 ) : activeQueue.length > 0 ? (
-                  <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-2">
+                  <div className="space-y-1">
                     <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                      Next Recommended Asset:
+                      Next Best Action (Highest ROI Gap):
                     </span>
-                    <div className="text-xs font-black text-[#0b1c30] leading-tight">
-                      Build {getAssetLabel(activeQueue[0].id)}
-                    </div>
-                    <div className="flex gap-4 text-[9px] font-bold text-neutral-500">
-                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(activeQueue[0].id).impact}%</span></div>
-                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(activeQueue[0].id).time}</span></div>
+                    <div className="text-xs font-black text-[#0b1c30]">
+                      Build {getAssetLabel(activeQueue[0].id)} for a <span className="text-emerald-600">+{getBlueprintMetadata(activeQueue[0].id).impact}%</span> trust gain.
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 text-[10px] font-bold text-emerald-800 leading-normal flex items-start gap-1.5">
-                    <CheckCircle2 size={12} className="shrink-0 mt-0.5 text-emerald-600" />
-                    <span>Active queue completed!</span>
+                  <div className="text-[11px] font-bold text-emerald-800 leading-normal flex items-start gap-1.5">
+                    <CheckCircle2 size={14} className="shrink-0 mt-0.5 text-emerald-600" />
+                    <span>All prioritized gaps verified! Revisit any skipped assets or continue.</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* RIGHT COLUMN: WORKSPACE TERMINAL (col-span-8) */}
-            {(() => {
-              if (activeQueue.length === 0 && skippedQueue.length > 0) {
-                // Skips completed panel
-                return (
-                  <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-8 shadow-sm flex flex-col justify-between text-center space-y-6">
-                    <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-500 border border-amber-200 flex items-center justify-center mx-auto">
-                      <AlertCircle className="w-6 h-6" />
-                    </div>
+          </div>
+        )}
+      </section>
 
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-black text-[#0b1c30] uppercase tracking-wider">
-                        Priority Checklist Completed with Skips
-                      </h4>
-                      <p className="text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed font-semibold">
-                        You have verified all main proof requirements, but skipped some optional gaps. Your readiness score is at <span className="underline font-black">{currentReadiness}%</span>.
+      {/* Immersive Fullscreen Workspace Wizard Modal */}
+      <AnimatePresence>
+        {activeWorkspaceAssetId && (() => {
+          const workspaceProject = templates.find(t => t.id === activeWorkspaceAssetId);
+          if (!workspaceProject) return null;
+
+          const meta = getBlueprintMetadata(workspaceProject.id);
+          const res = getHubResources(workspaceProject.id);
+          const isSkipped = skippedAssetIds.includes(workspaceProject.id);
+
+          return (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-[#0b1c30]/70 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.95, y: 30 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 30 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="bg-white rounded-3xl w-full max-w-4xl shadow-2xl border border-neutral-200 overflow-hidden flex flex-col max-h-[90vh]"
+              >
+                {/* Modal Header */}
+                <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0058be]/10 border border-[#0058be]/20 text-[#0058be]">
+                      <Zap size={14} />
+                    </span>
+                    <div className="text-left">
+                      <h3 className="text-sm font-black text-[#0b1c30]">
+                        {getAssetLabel(workspaceProject.id)} Workspace
+                      </h3>
+                      <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+                        Est. Time: {meta.time} | Difficulty: {meta.difficulty}
                       </p>
                     </div>
-
-                    <div className="p-4 bg-amber-50/30 border border-amber-100 rounded-2xl max-w-md mx-auto text-left space-y-2">
-                      <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest block">
-                        Skipped Objections:
-                      </span>
-                      <ul className="text-[10px] text-neutral-500 font-semibold space-y-1">
-                        {skippedQueue.map(item => (
-                          <li key={item.id} className="flex items-start gap-1">
-                            <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
-                            <span>Skipping <strong className="text-neutral-700">{getAssetLabel(item.id)}</strong> leaves: "{getBlueprintMetadata(item.id).buyerProblem}"</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-                      <button
-                        onClick={() => handleRevisitProject(skippedQueue[0].id)}
-                        className="bg-neutral-100 hover:bg-neutral-200 text-neutral-600 min-h-[38px] px-6 rounded-xl text-xs font-bold transition-all cursor-pointer border border-neutral-200"
-                      >
-                        Revisit Skipped Projects
-                      </button>
-                      <button
-                        onClick={handleNext}
-                        className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[38px] px-6 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                      >
-                        Proceed to Portfolio
-                      </button>
-                    </div>
                   </div>
-                );
-              }
 
-              if (!activeProject) return null;
+                  <button
+                    onClick={() => setActiveWorkspaceAssetId(null)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
 
-              const meta = getBlueprintMetadata(activeProject.id);
-              const res = getHubResources(activeProject.id);
-              const state = projectStates[activeProject.id] || { isUnlocked: false, isCompleted: false };
+                {/* Progress Tabs bar at the top */}
+                <div className="px-6 py-3 border-b border-neutral-100 flex items-center justify-between bg-white text-[11px] font-black uppercase tracking-wider text-neutral-400">
+                  {["01. Strategy Alignment", "02. AI Co-Pilot Script", "03. Build & Guides", "04. Verify & Publish"].map((label, idx) => {
+                    const isActive = wizardPage === idx;
+                    const isCompleted = wizardPage > idx;
 
-              if (isSkipping) {
-                // Skip warning alert screen
-                return (
-                  <div className="lg:col-span-8 bg-white border border-amber-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden animate-fade-in">
-                    <div className="space-y-4 text-left">
-                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-3 text-amber-600">
-                        <AlertCircle size={16} />
-                        <h4 className="text-xs font-black uppercase tracking-wider">
-                          Warning: Skipping {getAssetLabel(activeProject.id)}
-                        </h4>
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setWizardPage(idx)}
+                        className={cn(
+                          "flex items-center gap-1.5 border-b-2 pb-2 px-2 transition-all cursor-pointer border-transparent",
+                          isActive 
+                            ? "text-[#0058be] border-[#0058be]" 
+                            : isCompleted 
+                              ? "text-emerald-600 hover:text-emerald-700" 
+                              : "hover:text-[#0b1c30]"
+                        )}
+                      >
+                        {isCompleted ? <Check size={12} strokeWidth={3} /> : null}
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Page Content (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 text-left">
+                  
+                  {/* Page 0: Strategy Alignment */}
+                  {wizardPage === 0 && (
+                    <div className="space-y-6 animate-fade-in">
+                      <div className="space-y-1">
+                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">Objective</span>
+                        <h4 className="text-base font-black text-[#0b1c30]">{meta.goal}</h4>
                       </div>
 
-                      <div className="p-4 bg-amber-50/40 border border-amber-100 rounded-2xl space-y-3">
-                        <p className="text-xs text-neutral-600 font-semibold leading-relaxed">
-                          Skipping this asset leaves a critical closing-rate trust gap. Clients in your target market will object:
-                        </p>
-                        <p className="text-xs font-bold text-neutral-800 bg-white border border-neutral-200 p-3 rounded-xl italic">
-                          "{meta.buyerProblem}"
-                        </p>
-                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-5 rounded-2xl border border-red-100 bg-red-500/[0.01] space-y-2">
+                          <span className="text-[8px] font-black text-red-500 uppercase tracking-widest block flex items-center gap-1">
+                            <AlertCircle size={10} />
+                            Target Buyer Objection:
+                          </span>
+                          <p className="text-xs font-bold text-neutral-800 leading-relaxed italic">
+                            "{meta.buyerProblem}"
+                          </p>
+                        </div>
 
-                      <div className="space-y-2">
-                        <h5 className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">
-                          AI Recommendations Before You Skip:
-                        </h5>
-                        <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                          Building this takes only <strong className="text-neutral-700">{meta.time}</strong>. We strongly recommend using the co-pilot prompt below and matching video tutorials to compile it quickly:
-                        </p>
-                        
-                        {/* Quick Prompt clip inside warning */}
-                        <div className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl text-[10px] text-neutral-300 italic font-semibold flex justify-between items-center">
-                          <span className="truncate max-w-[320px]">"{res.prompt}"</span>
-                          <button
-                            onClick={() => handleCopyPrompt(res.prompt, activeProject.id)}
-                            className="bg-[#0058be] hover:bg-blue-600 text-white px-2.5 py-1 rounded text-[8px] font-black uppercase tracking-wider cursor-pointer border-none flex items-center gap-0.5 shrink-0"
-                          >
-                            {copiedPromptId === activeProject.id ? "Copied!" : "Copy"}
-                          </button>
+                        <div className="p-5 rounded-2xl border border-blue-100 bg-blue-500/[0.01] space-y-2">
+                          <span className="text-[8px] font-black text-[#0058be] uppercase tracking-widest block flex items-center gap-1">
+                            <ShieldCheck size={10} />
+                            AI Recommended Strategy:
+                          </span>
+                          <p className="text-xs font-semibold text-neutral-600 leading-relaxed">
+                            {meta.trustGap}
+                          </p>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-neutral-100">
-                      <button
-                        onClick={() => setIsSkipping(false)}
-                        className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[38px] px-6 rounded-xl text-xs font-bold cursor-pointer transition-colors"
-                      >
-                        Cancel & Use AI Blueprint
-                      </button>
-                      <button
-                        onClick={() => handleSkipProject(activeProject.id)}
-                        className="bg-white hover:bg-neutral-50 text-red-600 border border-neutral-200 min-h-[38px] px-6 rounded-xl text-xs font-bold cursor-pointer transition-colors"
-                      >
-                        Skip Anyway & Move Next
-                      </button>
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
-                <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
-                  
-                  {/* Lock transparent cover for locked projects */}
-                  {!state.isUnlocked && (
-                    <div className="absolute inset-0 bg-white/95 backdrop-blur-[1.5px] z-20 flex flex-col items-center justify-center p-8 text-center select-none">
-                      <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 mb-3 border border-neutral-200">
-                        <Lock size={20} />
-                      </div>
-                      <h4 className="text-sm font-black text-[#0b1c30] uppercase tracking-wide">Project Locked</h4>
-                      <p className="text-xs text-neutral-500 max-w-sm leading-relaxed mt-1 font-semibold">
-                        To unlock this resource workspace, please complete verification on the prerequisite asset:
-                      </p>
-                      <div className="mt-3 bg-neutral-50 border border-neutral-200 text-[#0b1c30] px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider">
-                        {state.prereqName}
+                      <div className="p-5 rounded-2xl bg-emerald-500/[0.02] border border-emerald-100/60 space-y-2">
+                        <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest block">
+                          Expected Outcome & Benefit:
+                        </span>
+                        <p className="text-xs font-semibold text-emerald-800 leading-relaxed">
+                          {meta.outcome}
+                        </p>
                       </div>
                     </div>
                   )}
 
-                  {/* Header detail */}
-                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 border-b border-neutral-100 pb-4">
-                    <div className="space-y-1 text-left">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-black text-[#0b1c30]">
-                          {getAssetLabel(activeProject.id)}
-                        </h4>
-                        <span className="text-[9px] font-black text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded uppercase tracking-wider">
-                          Priority Rank
-                        </span>
-                      </div>
-                      <p className="text-xs text-neutral-500 leading-normal font-semibold">
-                        {meta.goal}
-                      </p>
-                    </div>
-
-                    <div className="flex gap-3 text-[10px] font-black uppercase tracking-wider text-right shrink-0">
-                      <div>
-                        <span className="text-[8px] font-extrabold text-neutral-400 block tracking-widest">Time</span>
-                        <span className="text-[#0b1c30]">{meta.time}</span>
-                      </div>
-                      <div>
-                        <span className="text-[8px] font-extrabold text-neutral-400 block tracking-widest">Difficulty</span>
-                        <span className="text-[#0b1c30]">{meta.difficulty}</span>
-                      </div>
-                      <div>
-                        <span className="text-[8px] font-extrabold text-neutral-400 block tracking-widest">Trust Gain</span>
-                        <span className="text-emerald-600">+{meta.impact}%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Why AI Recommended This (Linear Style) */}
-                  <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/50 space-y-2.5 text-left">
-                    <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                      Why AI Recommended This:
-                    </span>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[11px] leading-relaxed">
-                      <div>
-                        <span className="font-extrabold text-[#0b1c30] block">Buyer Objection:</span>
-                        <span className="text-neutral-500 font-semibold">{meta.buyerProblem}</span>
-                      </div>
-                      <div>
-                        <span className="font-extrabold text-[#0b1c30] block">Target Trust Gap:</span>
-                        <span className="text-neutral-500 font-semibold">{meta.trustGap}</span>
-                      </div>
-                      <div>
-                        <span className="font-extrabold text-emerald-600 block">Expected Benefit:</span>
-                        <span className="text-neutral-500 font-semibold">{meta.outcome}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* STEP-BY-STEP EXECUTION BLUEPRINT */}
-                  <div className="space-y-8 text-left">
-                    
-                    {/* STEP 1: PLAN WITH AI */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">1</span>
-                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 1: Plan Script & Layout with AI</h5>
-                      </div>
-                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
-                        Copy this optimized system prompt and paste it into <span className="text-[#0058be] underline">ChatGPT</span>, <span className="text-[#0058be] underline">Claude</span>, or <span className="text-[#0058be] underline">Gemini</span>. It will generate a custom outline tailored to your positioning:
+                  {/* Page 1: AI Co-Pilot Script */}
+                  {wizardPage === 1 && (
+                    <div className="space-y-5 animate-fade-in">
+                      <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                        Copy this system prompt and paste it into any LLM chatbot (Claude, Gemini, or ChatGPT) to quickly plan out the structure, layout, and script details for this deliverable:
                       </p>
 
-                      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-3.5 relative overflow-hidden group">
-                        <div className="flex justify-between items-center border-b border-neutral-800 pb-2">
-                          <span className="text-[8px] font-black text-neutral-500 uppercase tracking-widest flex items-center gap-1">
-                            <Code size={10} />
-                            AI Co-Pilot Script Prompt
+                      <div className="p-5 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-4 relative overflow-hidden">
+                        <div className="flex justify-between items-center border-b border-neutral-800 pb-3">
+                          <span className="text-[9px] font-black text-neutral-500 uppercase tracking-widest flex items-center gap-1">
+                            <Code size={11} />
+                            AI Copilot Prompt Script
                           </span>
                           <button
-                            onClick={() => handleCopyPrompt(res.prompt, activeProject.id)}
-                            className="bg-[#0058be] hover:bg-blue-600 text-white px-3.5 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer border-none flex items-center gap-1 transition-colors"
+                            onClick={() => handleCopyPrompt(res.prompt, workspaceProject.id)}
+                            className="bg-[#0058be] hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer border-none flex items-center gap-1 transition-colors"
                           >
-                            {copiedPromptId === activeProject.id ? (
+                            {copiedPromptId === workspaceProject.id ? (
                               <>
-                                <Check size={10} strokeWidth={3} />
+                                <Check size={11} strokeWidth={3} />
                                 Copied!
                               </>
                             ) : (
                               <>
-                                <Copy size={10} />
+                                <Copy size={11} />
                                 Copy Prompt
                               </>
                             )}
                           </button>
                         </div>
-                        <p className="text-[11.5px] leading-relaxed font-semibold italic text-neutral-300">
+                        <p className="text-xs leading-relaxed font-semibold italic text-neutral-300">
                           "{res.prompt}"
                         </p>
                       </div>
-                    </div>
 
-                    {/* STEP 2: BUILD THE ASSET */}
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">2</span>
-                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 2: Build & Edit Your Deliverables</h5>
+                      <div className="flex items-center gap-3 pt-2">
+                        <a
+                          href="https://claude.ai"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          Open Claude.ai
+                        </a>
+                        <a
+                          href="https://chat.openai.com"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          Open ChatGPT
+                        </a>
                       </div>
-                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
-                        Use the checklist below along with recommended templates, tutorials, and inspiration examples to build this asset:
-                      </p>
+                    </div>
+                  )}
 
-                      {/* Dynamic checklist from Resolution Engine */}
-                      {meta.criteria && meta.criteria.length > 0 && (
-                        <div className="p-4 bg-neutral-50/50 border border-neutral-100 rounded-2xl space-y-2">
-                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                            Execution Checklist:
-                          </span>
-                          <ul className="space-y-1.5 text-[11px] text-neutral-600 font-semibold">
-                            {meta.criteria.map((step, idx) => (
-                              <li key={idx} className="flex items-start gap-2">
-                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
-                                  {idx + 1}
-                                </span>
-                                <span>{step}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                  {/* Page 2: Build & Templates */}
+                  {wizardPage === 2 && (
+                    <div className="space-y-6 animate-fade-in">
+                      <div className="p-5 bg-neutral-50 border border-neutral-200/50 rounded-2xl space-y-3">
+                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                          Asset Requirements Checklist:
+                        </span>
+                        <ul className="space-y-2 text-xs text-neutral-600 font-semibold">
+                          {meta.criteria.map((step, idx) => (
+                            <li key={idx} className="flex items-start gap-2.5">
+                              <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                                {idx + 1}
+                              </span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-                      {/* Templates & Guides Link Rows */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                        <div className="space-y-2">
-                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2.5">
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
                             Templates & Tools:
                           </span>
                           <a
                             href={res.quickStartUrl}
-                            className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/30 hover:bg-blue-50/60 border border-blue-100/50 text-[#0058be] text-[10px] font-black uppercase tracking-wider transition-colors"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 hover:bg-blue-50/80 border border-blue-100/50 text-[#0058be] text-[10px] font-black uppercase tracking-wider transition-colors"
                           >
-                            <span className="flex items-center gap-1.5">
-                              <Layers size={12} />
+                            <span className="flex items-center gap-2">
+                              <Layers size={13} />
                               {res.quickStart}
                             </span>
-                            <ArrowUpRight size={12} />
+                            <ArrowUpRight size={13} />
                           </a>
-                          <div className="flex flex-wrap gap-1 pt-1">
+                          <div className="flex flex-wrap gap-1.5 pt-1">
                             {res.tools.map((t, idx) => (
-                              <span key={idx} className="bg-neutral-50 border border-neutral-200 text-[#0b1c30] text-[9px] font-black uppercase px-2 py-0.5 rounded">
+                              <span key={idx} className="bg-neutral-50 border border-neutral-200 text-[#0b1c30] text-[9px] font-black uppercase px-2 py-1 rounded">
                                 {t}
                               </span>
                             ))}
                           </div>
                         </div>
 
-                        <div className="space-y-2">
-                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                            Video Guides & Rules:
+                        <div className="space-y-2.5">
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                            YouTube Video Tutorial:
                           </span>
                           <a
                             href={res.tutorial}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex items-center justify-between p-2.5 rounded-xl bg-red-50/30 hover:bg-red-50/60 border border-red-100/50 text-red-600 text-[10px] font-black uppercase tracking-wider transition-colors"
+                            className="flex items-center justify-between p-3 rounded-xl bg-red-50/50 hover:bg-red-50/80 border border-red-100/50 text-red-600 text-[10px] font-black uppercase tracking-wider transition-colors"
                           >
                             <span className="flex items-center gap-1.5">
-                              <Play size={10} fill="currentColor" />
-                              Watch YouTube Tutorial
+                              <Play size={12} fill="currentColor" />
+                              Watch YouTube Guide
                             </span>
-                            <ExternalLink size={10} />
+                            <ExternalLink size={12} />
                           </a>
                           <p className="text-[10px] text-neutral-500 leading-relaxed font-semibold pt-1">
-                            💡 <span className="font-extrabold text-[#0b1c30] uppercase text-[8px]">Standard:</span> {res.cheatSheet}
+                            💡 <span className="font-extrabold text-[#0b1c30] uppercase text-[9px]">Build Standard:</span> {res.cheatSheet}
                           </p>
                         </div>
                       </div>
 
-                      {/* Reference Gallery */}
-                      <div className="space-y-2">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                          Inspiration Gallery (Visual Examples):
+                      {/* Inspiration Examples */}
+                      <div className="space-y-2.5 pt-2">
+                        <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block">
+                          Visual Reference Examples:
                         </span>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                           {res.examples.map((ex, idx) => (
                             <a
                               key={idx}
                               href={ex.url}
-                              className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 hover:border-neutral-300 bg-white text-[10px] font-bold text-neutral-600 hover:text-[#0b1c30] transition-colors"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center justify-between p-3 rounded-xl border border-neutral-200 hover:border-neutral-300 bg-white text-[10px] font-bold text-neutral-600 hover:text-[#0b1c30] transition-colors"
                             >
                               <span className="truncate">{ex.name}</span>
-                              <ArrowUpRight size={10} className="text-neutral-400 shrink-0 ml-1" />
+                              <ArrowUpRight size={11} className="text-neutral-400 shrink-0 ml-1" />
                             </a>
                           ))}
                         </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* STEP 3: HOST & VERIFY */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-1.5">
-                        <span className="w-5 h-5 rounded-full bg-[#0058be] text-white text-xs font-black flex items-center justify-center">3</span>
-                        <h5 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Step 3: Host & Verify Work</h5>
-                      </div>
-                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
-                        Host your completed project on a public platform (e.g. YouTube, Vimeo, Framer, GitHub) and paste the URL link below to scan it:
-                      </p>
-
-                      <div className="space-y-3">
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={verificationUrl}
-                            onChange={(e) => setVerificationUrl(e.target.value)}
-                            placeholder="Paste your public project link here"
-                            className="flex-1 min-h-[42px] px-3.5 rounded-xl border border-neutral-200 text-xs font-semibold focus:outline-none focus:border-[#0058be] transition-colors"
-                          />
-                          <button
-                            onClick={handleRunVerification}
-                            disabled={verificationProgress === 'scanning' || !verificationUrl}
-                            className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[42px] px-5 rounded-xl text-xs font-bold cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5"
-                          >
-                            {verificationProgress === 'scanning' ? (
-                              <>
-                                <RefreshCw size={12} className="animate-spin" />
-                                Analyzing Link...
-                              </>
-                            ) : (
-                              <>
-                                <ShieldCheck size={12} />
-                                Verify Link
-                              </>
-                            )}
-                          </button>
+                  {/* Page 3: Verify & Publish */}
+                  {wizardPage === 3 && (
+                    <div className="space-y-6 animate-fade-in">
+                      {isSkipping ? (
+                        /* Inner Skip Warning inside page 3 */
+                        <div className="p-5 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-4">
+                          <div className="flex items-center gap-2 text-amber-700">
+                            <AlertCircle size={16} />
+                            <h5 className="text-xs font-black uppercase tracking-wider">Objection Warning</h5>
+                          </div>
+                          <p className="text-xs text-neutral-600 font-semibold leading-relaxed">
+                            Skipping this leaves a critical gap. Clients in your target market will object:
+                          </p>
+                          <p className="text-xs font-bold text-neutral-800 bg-white border border-neutral-200 p-3 rounded-xl italic">
+                            "{meta.buyerProblem}"
+                          </p>
+                          <div className="flex items-center gap-3 pt-2">
+                            <button
+                              onClick={() => setIsSkipping(false)}
+                              className="bg-[#0058be] hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                            >
+                              Go Back & Build
+                            </button>
+                            <button
+                              onClick={() => handleSkipProject(workspaceProject.id)}
+                              className="bg-white hover:bg-neutral-50 text-red-600 border border-neutral-200 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                            >
+                              Skip Anyway
+                            </button>
+                          </div>
                         </div>
+                      ) : (
+                        <div className="space-y-5">
+                          <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                            Host your completed asset publicly (e.g. YouTube, Github, Framer, Vercel) and paste the live URL below to run the AI Verification Audit:
+                          </p>
 
-                        {/* Muted Skip Button Area */}
-                        <div className="flex justify-between items-center pt-2">
-                          <span className="text-[10px] text-neutral-400 font-semibold">
-                            Unable to build this project right now?
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setIsSkipping(true)}
-                            className="text-red-500 hover:text-red-600 bg-transparent border-none text-[10px] font-black uppercase tracking-wider cursor-pointer hover:underline"
-                          >
-                            Skip Project
-                          </button>
-                        </div>
+                          <div className="flex gap-3">
+                            <input
+                              type="text"
+                              value={verificationUrl}
+                              onChange={(e) => setVerificationUrl(e.target.value)}
+                              placeholder="Paste public link here (e.g. github.com/...)"
+                              className="flex-1 min-h-[44px] px-4 rounded-xl border border-neutral-200 text-xs font-semibold focus:outline-none focus:border-[#0058be] transition-colors"
+                            />
+                            <button
+                              onClick={handleRunVerification}
+                              disabled={verificationProgress === 'scanning' || !verificationUrl}
+                              className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[44px] px-6 rounded-xl text-xs font-bold cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5"
+                            >
+                              {verificationProgress === 'scanning' ? (
+                                <>
+                                  <RefreshCw size={14} className="animate-spin" />
+                                  Analyzing Link...
+                                </>
+                              ) : (
+                                <>
+                                  <ShieldCheck size={14} />
+                                  Verify Link
+                                </>
+                              )}
+                            </button>
+                          </div>
 
-                        {/* Verification outputs */}
-                        {verificationProgress === 'done' && auditResult && (
-                          <div className="p-4 rounded-2xl border border-neutral-200 bg-neutral-50/60 space-y-3 animate-fade-in">
-                            {auditResult.isValid ? (
-                              <div className="space-y-3">
-                                <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
-                                  <span className="text-emerald-700 text-xs font-black uppercase tracking-wider flex items-center gap-1">
-                                    <CheckCircle size={14} fill="currentColor" className="text-white" />
-                                    Audit Passed Successfully
-                                  </span>
-                                  <div className="flex items-center gap-1.5 text-amber-500">
-                                    <span className="text-[11px] font-black text-neutral-400">Score: {auditResult.score}</span>
-                                    <div className="flex items-center gap-0.5">
-                                      {Array.from({ length: 5 }).map((_, i) => (
-                                        <Sparkles key={i} size={10} fill="currentColor" />
-                                      ))}
+                          {/* Verification Results Panel */}
+                          {verificationProgress === 'done' && auditResult && (
+                            <div className="p-5 rounded-2xl border border-neutral-200 bg-neutral-50/60 space-y-4 animate-fade-in">
+                              {auditResult.isValid ? (
+                                <div className="space-y-4">
+                                  <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
+                                    <span className="text-emerald-700 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                                      <CheckCircle size={16} fill="currentColor" className="text-white" />
+                                      Audit Passed Successfully
+                                    </span>
+                                    <div className="flex items-center gap-1 text-amber-500">
+                                      <span className="text-[11px] font-black text-neutral-400">Score: {auditResult.score}</span>
+                                      <div className="flex items-center gap-0.5">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                          <Sparkles key={i} size={10} fill="currentColor" />
+                                        ))}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
 
-                                <div className="text-[10px] text-neutral-500 font-semibold leading-relaxed">
-                                  <span className="font-extrabold uppercase text-neutral-400 block text-[8px] mb-1">Recommended Adjustments:</span>
-                                  <ul className="space-y-1">
-                                    {auditResult.improvements.map((imp: string, idx: number) => (
-                                      <li key={idx} className="flex items-start gap-1">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#0058be] mt-1.5 shrink-0" />
-                                        <span>{imp}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                                  <div className="text-[10px] text-neutral-500 font-semibold leading-relaxed">
+                                    <span className="font-extrabold uppercase text-neutral-400 block text-[8px] mb-1.5">Recommended Adjustments:</span>
+                                    <ul className="space-y-1">
+                                      {auditResult.improvements.map((imp: string, idx: number) => (
+                                        <li key={idx} className="flex items-start gap-1">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-[#0058be] mt-1.5 shrink-0" />
+                                          <span>{imp}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
 
-                                {/* Dopamine Loop Verification Overlay */}
-                                <AnimatePresence>
-                                  {showDopamineFeedback && readinessDelta && (
-                                    <motion.div 
-                                      initial={{ opacity: 0, scale: 0.95 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      className="p-4 rounded-xl bg-emerald-500 text-white space-y-2 shadow-md relative overflow-hidden"
-                                    >
-                                      <div className="flex justify-between items-center">
-                                        <span className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5">
-                                          <ShieldCheck size={16} />
-                                          {meta.achievementLabel}
-                                        </span>
-                                        <span className="text-xs font-black bg-white/20 px-2 py-0.5 rounded">
-                                          Trust +{meta.impact}%
-                                        </span>
-                                      </div>
-                                      <div className="text-[11px] font-bold">
-                                        Client Readiness progressed: {readinessDelta.from}% → <span className="underline font-black">{readinessDelta.to}% Readiness</span>
-                                      </div>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-
-                                {!showDopamineFeedback && (
                                   <button
                                     onClick={handleAcceptAudit}
-                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white min-h-[38px] rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors mt-2"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white min-h-[40px] rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-colors mt-2"
                                   >
-                                    Accept Audit & Lock in Readiness Increase
+                                    Accept Audit & Add to Inventory
                                   </button>
-                                )}
-                              </div>
-                            ) : (
-                              <div className="flex items-start gap-2 text-red-700">
-                                <ShieldAlert size={14} className="shrink-0 mt-0.5" />
-                                <div className="text-[10px] font-bold">
-                                  <span className="block uppercase tracking-wider">Verification Error:</span>
-                                  <p className="font-semibold text-neutral-500 mt-1">{auditResult.improvements[0]}</p>
                                 </div>
-                              </div>
-                            )}
+                              ) : (
+                                <div className="flex items-start gap-2.5 text-red-700">
+                                  <ShieldAlert size={16} className="shrink-0 mt-0.5" />
+                                  <div className="text-xs font-bold">
+                                    <span className="block uppercase tracking-wider">Verification Audit Error:</span>
+                                    <p className="font-semibold text-neutral-500 mt-1.5">{auditResult.improvements[0]}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="flex justify-between items-center pt-4 border-t border-neutral-100">
+                            <span className="text-[10px] text-neutral-400 font-semibold">
+                              Want to skip this asset?
+                            </span>
+                            <button
+                              onClick={() => setIsSkipping(true)}
+                              className="text-red-500 hover:text-red-600 bg-transparent border-none text-[10px] font-black uppercase tracking-wider cursor-pointer hover:underline"
+                            >
+                              Skip Project & Warning
+                            </button>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
+
                 </div>
-              );
-            })()}
-          </div>
-        )}
-      </section>
+
+                {/* Modal Footer (Bottom Nav) */}
+                <div className="px-6 py-4 border-t border-neutral-100 bg-neutral-50 flex items-center justify-between">
+                  <button
+                    disabled={wizardPage === 0}
+                    onClick={() => setWizardPage(prev => Math.max(prev - 1, 0))}
+                    className="px-4 py-2 rounded-xl text-neutral-500 hover:text-neutral-800 disabled:opacity-40 disabled:pointer-events-none text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1 border-none bg-transparent"
+                  >
+                    <ChevronLeft size={14} />
+                    Back
+                  </button>
+
+                  <div className="text-[10px] text-neutral-400 font-black uppercase tracking-wider">
+                    Page {wizardPage + 1} of 4
+                  </div>
+
+                  <button
+                    disabled={wizardPage === 3}
+                    onClick={() => setWizardPage(prev => Math.min(prev + 1, 3))}
+                    className="px-4 py-2 rounded-xl text-[#0058be] hover:text-blue-700 disabled:opacity-40 disabled:pointer-events-none text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1 border-none bg-transparent"
+                  >
+                    Next
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
 
       {isCompleted && (
         <motion.div 
