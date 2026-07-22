@@ -382,48 +382,99 @@ export function Step2ProofAssetBuilder() {
     };
   }, [mod1ServiceId, mod1MarketId, mod1NicheId, mod1Positioning, mod2OfferType, mod2Deliverables, mod2UniqueMechanism, mod2ValueAmplifier, authorityProfile, availableAssets]);
 
+  const [skippedAssetIds, setSkippedAssetIds] = useState<string[]>([]);
+  const [isSkipping, setIsSkipping] = useState(false);
+
+  // activeQueue: Missing assets that are NOT skipped.
+  // Sort them by trust gain / impact descending (highest impact first!).
+  const activeQueue = useMemo(() => {
+    const unfiltered = templates.filter(t => !availableAssets.includes(t.id) && !skippedAssetIds.includes(t.id));
+    return [...unfiltered].sort((a, b) => {
+      const aMeta = getBlueprintMetadata(a.id);
+      const bMeta = getBlueprintMetadata(b.id);
+      return parseInt(bMeta.impact) - parseInt(aMeta.impact);
+    });
+  }, [templates, availableAssets, skippedAssetIds]);
+
+  // skippedQueue: Missing assets that have been skipped.
+  const skippedQueue = useMemo(() => {
+    return templates.filter(t => !availableAssets.includes(t.id) && skippedAssetIds.includes(t.id));
+  }, [templates, availableAssets, skippedAssetIds]);
+
+  // Backward-compatible computed missing assets list
+  const missingAssets = useMemo(() => {
+    return [...activeQueue, ...skippedQueue];
+  }, [activeQueue, skippedQueue]);
+
   const assets = useMemo(() => {
     return templates;
   }, [templates]);
 
-  // Section 3 displays ONLY missing (unselected) templates!
-  const missingAssets = useMemo(() => {
-    return templates.filter(t => !availableAssets.includes(t.id));
-  }, [templates, availableAssets]);
-
   // Project unlock and status logic for missing assets
   const projectStates = useMemo(() => {
     const states: Record<string, { isUnlocked: boolean; isCompleted: boolean; prereqName?: string }> = {};
-    if (missingAssets.length > 0) {
-      // First missing asset is always unlocked (Next Best Action)
-      states[missingAssets[0].id] = { isUnlocked: true, isCompleted: false };
+    if (activeQueue.length > 0) {
+      // First active missing asset is always unlocked
+      states[activeQueue[0].id] = { isUnlocked: true, isCompleted: false };
 
-      // Subsequent missing assets are locked behind preceding missing assets
-      for (let i = 1; i < missingAssets.length; i++) {
-        states[missingAssets[i].id] = { 
+      // Subsequent active missing assets are locked in sequence
+      for (let i = 1; i < activeQueue.length; i++) {
+        states[activeQueue[i].id] = { 
           isUnlocked: false, 
           isCompleted: false, 
-          prereqName: getAssetLabel(missingAssets[i - 1].id) 
+          prereqName: getAssetLabel(activeQueue[i - 1].id) 
         };
       }
     }
+    // Skipped items are marked unlocked so they can be selected directly on click
+    skippedQueue.forEach(item => {
+      states[item.id] = { isUnlocked: true, isCompleted: false };
+    });
     return states;
-  }, [missingAssets]);
+  }, [activeQueue, skippedQueue]);
 
   // Currently focused project ID in Section 3
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
 
   const activeProject = useMemo(() => {
-    if (missingAssets.length === 0) return null;
-    return missingAssets.find(a => a.id === selectedAssetId) || missingAssets[0];
-  }, [missingAssets, selectedAssetId]);
-
-  // Synchronize selection when missing list updates
-  useEffect(() => {
-    if (missingAssets.length > 0 && !missingAssets.some(a => a.id === selectedAssetId)) {
-      setSelectedAssetId(missingAssets[0].id);
+    if (activeQueue.length === 0) {
+      if (skippedQueue.length > 0) {
+        return skippedQueue.find(a => a.id === selectedAssetId) || null;
+      }
+      return null;
     }
-  }, [missingAssets, selectedAssetId]);
+    return activeQueue.find(a => a.id === selectedAssetId) || activeQueue[0];
+  }, [activeQueue, skippedQueue, selectedAssetId]);
+
+  // Synchronize selection when active queue updates
+  useEffect(() => {
+    if (activeQueue.length > 0) {
+      if (!activeQueue.some(a => a.id === selectedAssetId)) {
+        setSelectedAssetId(activeQueue[0].id);
+      }
+    } else if (skippedQueue.length > 0) {
+      if (!skippedQueue.some(a => a.id === selectedAssetId)) {
+        setSelectedAssetId(null);
+      }
+    }
+  }, [activeQueue, skippedQueue, selectedAssetId]);
+
+  const handleSkipProject = (assetId: string) => {
+    setSkippedAssetIds(prev => [...prev, assetId]);
+    setIsSkipping(false);
+    setVerificationUrl('');
+    setVerificationProgress('idle');
+    setAuditResult(null);
+  };
+
+  const handleRevisitProject = (assetId: string) => {
+    setSkippedAssetIds(prev => prev.filter(id => id !== assetId));
+    setSelectedAssetId(assetId);
+    setIsSkipping(false);
+    setVerificationUrl('');
+    setVerificationProgress('idle');
+    setAuditResult(null);
+  };
 
   const handleAssetCheckboxChange = (assetId: string, checked: boolean) => {
     const nextAvailable = checked
@@ -448,6 +499,8 @@ export function Step2ProofAssetBuilder() {
 
   const handleClearInventory = () => {
     setAvailableAssets([]);
+    setSkippedAssetIds([]);
+    setIsSkipping(false);
     useModule3Store.setState({ existingProofInventory: '' });
     generateProofAssetStrategy();
   };
@@ -751,7 +804,7 @@ export function Step2ProofAssetBuilder() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full p-8 rounded-3xl border border-emerald-200 bg-emerald-500/[0.03] text-center space-y-6 shadow-sm"
+            className="w-full p-8 rounded-3xl border border-emerald-255 bg-emerald-500/[0.03] text-center space-y-6 shadow-sm"
           >
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200/50">
               <CheckCircle className="w-8 h-8" />
@@ -826,59 +879,95 @@ export function Step2ProofAssetBuilder() {
               </div>
 
               {/* Progress Progression list */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
-                  <span>Missing Projects Queue</span>
-                  <span>{completedProjectsCount} of {assets.length} Ready ({projectsCompletePercent}%)</span>
-                </div>
+              <div className="space-y-4">
+                {/* Active Queue */}
+                {activeQueue.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
+                      <span>Prioritized Gaps</span>
+                      <span>{activeQueue.length} Left</span>
+                    </div>
 
-                <div className="space-y-2">
-                  {missingAssets.map((item, idx) => {
-                    const state = projectStates[item.id] || { isUnlocked: false, isCompleted: false };
-                    const isSelected = activeProject?.id === item.id;
-                    
-                    return (
-                      <div
-                        key={item.id}
-                        onClick={() => {
-                          if (state.isUnlocked) {
-                            setSelectedAssetId(item.id);
-                          }
-                        }}
-                        className={cn(
-                          "w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between select-none relative overflow-hidden group",
-                          !state.isUnlocked
-                            ? "opacity-60 bg-neutral-50/50 border-neutral-100 cursor-not-allowed"
-                            : isSelected
-                              ? "border-[#0058be] bg-[#0058be]/5 text-[#0058be]"
-                              : "border-neutral-200 bg-white hover:border-neutral-300 text-neutral-600"
-                        )}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black text-neutral-400 group-hover:text-[#0058be]/75 transition-colors">
-                            #{idx + 1}
-                          </span>
-                          <span className="text-xs font-bold leading-tight">
+                    <div className="space-y-2">
+                      {activeQueue.map((item, idx) => {
+                        const state = projectStates[item.id] || { isUnlocked: false, isCompleted: false };
+                        const isSelected = activeProject?.id === item.id;
+                        
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => {
+                              if (state.isUnlocked) {
+                                setSelectedAssetId(item.id);
+                                setIsSkipping(false);
+                              }
+                            }}
+                            className={cn(
+                              "w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between select-none relative overflow-hidden group",
+                              !state.isUnlocked
+                                ? "opacity-60 bg-neutral-50/50 border-neutral-100 cursor-not-allowed"
+                                : isSelected
+                                  ? "border-[#0058be] bg-[#0058be]/5 text-[#0058be]"
+                                  : "border-neutral-200 bg-white hover:border-neutral-300 text-neutral-600"
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-black text-neutral-400 group-hover:text-[#0058be]/75 transition-colors">
+                                #{idx + 1}
+                              </span>
+                              <span className="text-xs font-bold leading-tight">
+                                {getAssetLabel(item.id)}
+                              </span>
+                            </div>
+
+                            <div className="shrink-0 flex items-center gap-1.5">
+                              {!state.isUnlocked ? (
+                                <div className="flex items-center gap-1 text-[9px] text-neutral-400 font-extrabold uppercase">
+                                  <Lock size={10} />
+                                  Locked
+                                </div>
+                              ) : (
+                                <span className="text-[9px] font-black uppercase text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
+                                  🎯 Active
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Skipped Queue Area */}
+                {skippedQueue.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex justify-between items-center text-[9px] font-black text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-1.5">
+                      <span>Skipped Assets</span>
+                      <span>{skippedQueue.length} Skipped</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {skippedQueue.map((item) => (
+                        <div
+                          key={item.id}
+                          className="w-full text-left p-3 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/60 flex items-center justify-between text-neutral-500"
+                        >
+                          <span className="text-xs font-semibold truncate max-w-[140px]">
                             {getAssetLabel(item.id)}
                           </span>
-                        </div>
 
-                        <div className="shrink-0 flex items-center gap-1.5">
-                          {!state.isUnlocked ? (
-                            <div className="flex items-center gap-1 text-[9px] text-neutral-400 font-extrabold uppercase">
-                              <Lock size={10} />
-                              Locked
-                            </div>
-                          ) : (
-                            <span className="text-[9px] font-black uppercase text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
-                              🎯 Active
-                            </span>
-                          )}
+                          <button
+                            onClick={() => handleRevisitProject(item.id)}
+                            className="bg-[#0058be]/10 hover:bg-[#0058be]/20 text-[#0058be] border-none px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider cursor-pointer transition-colors"
+                          >
+                            Revisit
+                          </button>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Goal gradient or Next action card */}
@@ -888,28 +977,144 @@ export function Step2ProofAssetBuilder() {
                     <Sparkles size={12} className="shrink-0 mt-0.5 text-blue-600" />
                     <span>{goalGradientCallout}</span>
                   </div>
-                ) : (
+                ) : activeQueue.length > 0 ? (
                   <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-2">
                     <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                      Next Best Action:
+                      Next Recommended Asset:
                     </span>
                     <div className="text-xs font-black text-[#0b1c30] leading-tight">
-                      Build {getAssetLabel(missingAssets[0].id)}
+                      Build {getAssetLabel(activeQueue[0].id)}
                     </div>
                     <div className="flex gap-4 text-[9px] font-bold text-neutral-500">
-                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(missingAssets[0].id).impact}%</span></div>
-                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(missingAssets[0].id).time}</span></div>
+                      <div>Gain: <span className="text-emerald-600">+{getBlueprintMetadata(activeQueue[0].id).impact}%</span></div>
+                      <div>Time: <span className="text-[#0b1c30]">{getBlueprintMetadata(activeQueue[0].id).time}</span></div>
                     </div>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 text-[10px] font-bold text-emerald-800 leading-normal flex items-start gap-1.5">
+                    <CheckCircle2 size={12} className="shrink-0 mt-0.5 text-emerald-600" />
+                    <span>Active queue completed!</span>
                   </div>
                 )}
               </div>
             </div>
 
             {/* RIGHT COLUMN: WORKSPACE TERMINAL (col-span-8) */}
-            {activeProject && (() => {
+            {(() => {
+              if (activeQueue.length === 0 && skippedQueue.length > 0) {
+                // Skips completed panel
+                return (
+                  <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-8 shadow-sm flex flex-col justify-between text-center space-y-6">
+                    <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-500 border border-amber-200 flex items-center justify-center mx-auto">
+                      <AlertCircle className="w-6 h-6" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-black text-[#0b1c30] uppercase tracking-wider">
+                        Priority Checklist Completed with Skips
+                      </h4>
+                      <p className="text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed font-semibold">
+                        You have verified all main proof requirements, but skipped some optional gaps. Your readiness score is at <span className="underline font-black">{currentReadiness}%</span>.
+                      </p>
+                    </div>
+
+                    <div className="p-4 bg-amber-50/30 border border-amber-100 rounded-2xl max-w-md mx-auto text-left space-y-2">
+                      <span className="text-[8px] font-black text-amber-600 uppercase tracking-widest block">
+                        Skipped Objections:
+                      </span>
+                      <ul className="text-[10px] text-neutral-500 font-semibold space-y-1">
+                        {skippedQueue.map(item => (
+                          <li key={item.id} className="flex items-start gap-1">
+                            <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                            <span>Skipping <strong className="text-neutral-700">{getAssetLabel(item.id)}</strong> leaves: "{getBlueprintMetadata(item.id).buyerProblem}"</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                      <button
+                        onClick={() => handleRevisitProject(skippedQueue[0].id)}
+                        className="bg-neutral-100 hover:bg-neutral-200 text-neutral-600 min-h-[38px] px-6 rounded-xl text-xs font-bold transition-all cursor-pointer border border-neutral-200"
+                      >
+                        Revisit Skipped Projects
+                      </button>
+                      <button
+                        onClick={handleNext}
+                        className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[38px] px-6 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                      >
+                        Proceed to Portfolio
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (!activeProject) return null;
+
               const meta = getBlueprintMetadata(activeProject.id);
               const res = getHubResources(activeProject.id);
               const state = projectStates[activeProject.id] || { isUnlocked: false, isCompleted: false };
+
+              if (isSkipping) {
+                // Skip warning alert screen
+                return (
+                  <div className="lg:col-span-8 bg-white border border-amber-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden animate-fade-in">
+                    <div className="space-y-4 text-left">
+                      <div className="flex items-center gap-2 border-b border-neutral-100 pb-3 text-amber-600">
+                        <AlertCircle size={16} />
+                        <h4 className="text-xs font-black uppercase tracking-wider">
+                          Warning: Skipping {getAssetLabel(activeProject.id)}
+                        </h4>
+                      </div>
+
+                      <div className="p-4 bg-amber-50/40 border border-amber-100 rounded-2xl space-y-3">
+                        <p className="text-xs text-neutral-600 font-semibold leading-relaxed">
+                          Skipping this asset leaves a critical closing-rate trust gap. Clients in your target market will object:
+                        </p>
+                        <p className="text-xs font-bold text-neutral-800 bg-white border border-neutral-200 p-3 rounded-xl italic">
+                          "{meta.buyerProblem}"
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h5 className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">
+                          AI Recommendations Before You Skip:
+                        </h5>
+                        <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                          Building this takes only <strong className="text-neutral-700">{meta.time}</strong>. We strongly recommend using the co-pilot prompt below and matching video tutorials to compile it quickly:
+                        </p>
+                        
+                        {/* Quick Prompt clip inside warning */}
+                        <div className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl text-[10px] text-neutral-300 italic font-semibold flex justify-between items-center">
+                          <span className="truncate max-w-[320px]">"{res.prompt}"</span>
+                          <button
+                            onClick={() => handleCopyPrompt(res.prompt, activeProject.id)}
+                            className="bg-[#0058be] hover:bg-blue-600 text-white px-2.5 py-1 rounded text-[8px] font-black uppercase tracking-wider cursor-pointer border-none flex items-center gap-0.5 shrink-0"
+                          >
+                            {copiedPromptId === activeProject.id ? "Copied!" : "Copy"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-neutral-100">
+                      <button
+                        onClick={() => setIsSkipping(false)}
+                        className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[38px] px-6 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        Cancel & Use AI Blueprint
+                      </button>
+                      <button
+                        onClick={() => handleSkipProject(activeProject.id)}
+                        className="bg-white hover:bg-neutral-50 text-red-600 border border-neutral-200 min-h-[38px] px-6 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        Skip Anyway & Move Next
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
 
               return (
                 <div className="lg:col-span-8 bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
@@ -1156,6 +1361,20 @@ export function Step2ProofAssetBuilder() {
                                 Verify Link
                               </>
                             )}
+                          </button>
+                        </div>
+
+                        {/* Muted Skip Button Area */}
+                        <div className="flex justify-between items-center pt-2">
+                          <span className="text-[10px] text-neutral-400 font-semibold">
+                            Unable to build this project right now?
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setIsSkipping(true)}
+                            className="text-red-500 hover:text-red-600 bg-transparent border-none text-[10px] font-black uppercase tracking-wider cursor-pointer hover:underline"
+                          >
+                            Skip Project
                           </button>
                         </div>
 
