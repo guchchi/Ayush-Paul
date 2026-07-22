@@ -573,7 +573,7 @@ export function OfferEngineeringShell({
 
         {/* Workspace content scroll container */}
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto w-full max-w-[720px] px-5 sm:px-8 py-8 md:py-12">
+          <div className="mx-auto w-full max-w-[720px] lg:max-w-[1024px] xl:max-w-[1280px] px-5 sm:px-8 py-8 md:py-12">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}

@@ -95,7 +95,7 @@ export function BlueprintLayout({
           <span className="ml-auto text-caption text-brand-primary">{Math.round(overallProgress)}%</span>
         </div>
 
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 py-6 lg:py-16">
+        <div className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-6 lg:py-16">
           {children}
         </div>
       </main>

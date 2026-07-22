@@ -399,7 +399,7 @@ export function DeliverySystemShell({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto w-full max-w-3xl px-5 sm:px-10 py-8 lg:py-12">
+          <div className="mx-auto w-full max-w-3xl lg:max-w-5xl xl:max-w-7xl px-5 sm:px-10 py-8 lg:py-12">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}

@@ -671,7 +671,7 @@ export function Module1V2() {
           showSidebar && 'ml-[280px] xl:ml-[320px]',
         )}
       >
-        <div ref={stepContentRef} className="max-w-3xl mx-auto px-5 sm:px-8 py-10 lg:py-16">
+        <div ref={stepContentRef} className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-10 lg:py-16">
           {/* Step header badge */}
           <div className="mb-8">
             <div

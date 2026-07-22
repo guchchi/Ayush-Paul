@@ -106,7 +106,7 @@ export function WorkspaceShell({
 
         {/* Center Workspace */}
         <main className="flex-1 min-w-0 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto w-full max-w-4xl px-6 sm:px-10 py-8 lg:py-12">
+          <div className="mx-auto w-full max-w-4xl lg:max-w-5xl xl:max-w-7xl px-6 sm:px-10 py-8 lg:py-12">
             <motion.div
               key={activeSection}
               initial={{ opacity: 0, y: 12 }}

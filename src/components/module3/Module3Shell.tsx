@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { Shield } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -63,6 +63,20 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
 
   const activeIndex = MODULE3_STEPS.indexOf(currentStep);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sidebar_collapsed') === 'true';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleToggle = () => {
+      setSidebarCollapsed(localStorage.getItem('sidebar_collapsed') === 'true');
+    };
+    window.addEventListener('sidebar-toggle', handleToggle);
+    return () => window.removeEventListener('sidebar-toggle', handleToggle);
+  }, []);
 
   const steps: StepItem[] = MODULE3_STEPS.map((step) => ({
     id: step,
@@ -92,10 +106,10 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
       </ModuleSidebar>
 
       <main className={cn(
-        'flex-1 min-w-0 transition-all',
-        'lg:ml-[280px]',
+        'flex-1 min-w-0 transition-all duration-300',
+        sidebarCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[280px]',
       )}>
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">
+        <div className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">
           <motion.div
             key={currentStep}
             initial={{ opacity: 0, y: 15 }}

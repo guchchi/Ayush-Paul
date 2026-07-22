@@ -188,7 +188,7 @@ export function Module1Layout({
         "flex-1 min-w-0 transition-all",
         showSidebar && "ml-[280px] xl:ml-[320px]"
       )}>
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">
+        <div className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">
           <motion.div
             key={activeStep}
             initial={{ opacity: 0, y: 15 }}
