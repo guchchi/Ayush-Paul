@@ -583,7 +583,7 @@ export function Step1AuthorityPosition() {
   return (
     <div className="space-y-8">
       <StepHeader
-        step={{ current: 1, total: 5 }}
+        step={{ current: 1, total: 4 }}
         title="Find Your Authority Type"
         description="Every freelancer has a natural superpower for winning client trust. Take our quick, simplified personality quiz or select your archetype below."
       />

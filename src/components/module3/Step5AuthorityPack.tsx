@@ -193,7 +193,7 @@ export function Step5AuthorityPack() {
     return (
       <div className="space-y-6">
         <StepHeader
-          step={{ current: 5, total: 5 }}
+          step={{ current: 4, total: 4 }}
           title="Authority Pack"
           description="Compile all outputs and prepare to publish for your market."
         />
@@ -201,7 +201,7 @@ export function Step5AuthorityPack() {
           <AlertTriangle size={24} className="mx-auto text-amber-700" />
           <p className="text-sm text-neutral-600">{personalized.emptyStateGuidance}</p>
           <ModuleButton variant="primary" onClick={() => jumpToStep('profile_portfolio')}>
-            Go to Step 4
+            Go to Step 3
           </ModuleButton>
         </div>
       </div>

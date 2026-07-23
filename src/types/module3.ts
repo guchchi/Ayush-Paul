@@ -353,6 +353,11 @@ export interface Module3State {
   setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
   generateProfilePortfolioStrategy(): void;
   approveProfilePortfolioStrategy(): void;
+  updatePresentationStrategy(key: keyof ProfilePortfolioStrategy['presentationStrategy'], value: string): void;
+  regeneratePresentationStrategyField(key: keyof ProfilePortfolioStrategy['presentationStrategy']): void;
+  resetPresentationStrategyField(key: keyof ProfilePortfolioStrategy['presentationStrategy']): void;
+  updateReadingJourneyStep(sectionId: string, updates: Partial<ReadingJourneyStep>): void;
+  updatePortfolioStructureSection(sectionId: string, updates: Partial<PortfolioSectionStrategy>): void;
 
   setChecklist(value: ChecklistItem[]): void;
   updateChecklistItem(id: string, updates: Partial<ChecklistItem>): void;

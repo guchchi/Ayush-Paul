@@ -32,7 +32,7 @@ import { resolveProofPriorities, PriorityContext } from '../../data/module3/proo
 import { generateProofAsset } from '../../data/module3/proof-assets';
 import { evaluateCredibilityProfile } from '../../data/module3/credibility-rules';
 import { generateProofAssetStrategyForProfile } from '../../data/module3/proof-asset-strategy';
-import { generateProfilePortfolioStrategy } from '../../data/module3/profile-portfolio-strategy';
+import { generateProfilePortfolioStrategy, getPresentationStrategyVariants } from '../../data/module3/profile-portfolio-strategy';
 import { Module4BridgeAdapter } from './module4-bridge';
 
 export { canNavigateTo, getStepIndex, MODULE3_STEPS };
@@ -408,6 +408,82 @@ export const useModule3Store = create<Module3State>()(
             lastUpdated: Date.now(),
           });
         }
+      },
+
+      updatePresentationStrategy(key, value) {
+        set((state) => {
+          const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+          if (!current) return {};
+          const updated = {
+            ...current,
+            presentationStrategy: {
+              ...current.presentationStrategy,
+              [key]: value,
+            },
+            lastUpdated: Date.now(),
+          };
+          return state.pendingProfilePortfolioStrategy
+            ? { pendingProfilePortfolioStrategy: updated }
+            : { profilePortfolioStrategy: updated };
+        });
+      },
+
+      regeneratePresentationStrategyField(key) {
+        const state = get();
+        const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+        if (!current) return;
+        const position = state.authorityPosition || 'builder';
+        const promise = state.coreTrustPromise || '';
+        const variants = getPresentationStrategyVariants(position, promise)[key];
+        if (!variants || variants.length === 0) return;
+        const currentVal = current.presentationStrategy[key];
+        const idx = variants.indexOf(currentVal);
+        const nextIdx = (idx + 1) % variants.length;
+        const newVal = variants[nextIdx];
+        state.updatePresentationStrategy(key, newVal);
+      },
+
+      resetPresentationStrategyField(key) {
+        const state = get();
+        const position = state.authorityPosition || 'builder';
+        const promise = state.coreTrustPromise || '';
+        const variants = getPresentationStrategyVariants(position, promise)[key];
+        if (!variants || variants.length === 0) return;
+        state.updatePresentationStrategy(key, variants[0]);
+      },
+
+      updateReadingJourneyStep(sectionId, updates) {
+        set((state) => {
+          const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+          if (!current) return {};
+          const updated = {
+            ...current,
+            readingJourney: current.readingJourney.map((step) =>
+              step.sectionId === sectionId ? { ...step, ...updates } : step
+            ),
+            lastUpdated: Date.now(),
+          };
+          return state.pendingProfilePortfolioStrategy
+            ? { pendingProfilePortfolioStrategy: updated }
+            : { profilePortfolioStrategy: updated };
+        });
+      },
+
+      updatePortfolioStructureSection(sectionId, updates) {
+        set((state) => {
+          const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+          if (!current) return {};
+          const updated = {
+            ...current,
+            portfolioStructure: current.portfolioStructure.map((section) =>
+              section.sectionId === sectionId ? { ...section, ...updates } : section
+            ),
+            lastUpdated: Date.now(),
+          };
+          return state.pendingProfilePortfolioStrategy
+            ? { pendingProfilePortfolioStrategy: updated }
+            : { profilePortfolioStrategy: updated };
+        });
       },
 
       replaceGeneratedCoreTrustPromise(value: string) {

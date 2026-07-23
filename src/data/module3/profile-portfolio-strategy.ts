@@ -1,5 +1,6 @@
 import type {
   AuthorityProfile,
+  AuthorityPosition,
   ProofAssetStrategy,
   ProfilePortfolioStrategy,
   ReadingJourneyStep,
@@ -118,4 +119,100 @@ export function generateProfilePortfolioStrategy(ctx: {
     confidence: 'Strong',
     generatedAt: new Date().toISOString()
   };
+}
+
+export function getPresentationStrategyVariants(position: AuthorityPosition, coreTrustPromise: string): {
+  primaryGoal: string[];
+  communicationApproach: string[];
+  authorityEmphasis: string[];
+  navigationPrinciple: string[];
+} {
+  const defaults = {
+    authorityEmphasis: [
+      coreTrustPromise,
+      "Proven delivery reliability and execution metrics",
+      "Systematic risk mitigation and methodology alignment",
+      "Hands-on execution capability and visual asset outputs"
+    ]
+  };
+
+  switch (position) {
+    case 'builder':
+      return {
+        primaryGoal: [
+          "Establish undeniable authority through visual project execution capabilities",
+          "Demonstrate high-fidelity execution capabilities through actual project builds",
+          "Win client confidence by showcasing ready-to-run systems and assets"
+        ],
+        communicationApproach: [
+          "Technical, transparent, and direct",
+          "Builder-led, show-dont-tell, and structural",
+          "Product-focused and execution-oriented"
+        ],
+        authorityEmphasis: defaults.authorityEmphasis,
+        navigationPrinciple: [
+          "Lead with the built product, support with blueprints",
+          "Show the raw project first, detail the features below",
+          "Zero fluff: demo sandbox first, case studies next"
+        ]
+      };
+    case 'auditor':
+      return {
+        primaryGoal: [
+          "Uncover hidden performance leaks and showcase strategic solutions",
+          "Establish diagnostic authority through deep performance analysis",
+          "Highlight structural bottlenecks and clear pathways to resolve them"
+        ],
+        communicationApproach: [
+          "Analytical, diagnostic, and risk-aware",
+          "Objective, metric-driven, and consultative",
+          "Evaluative and performance-focused"
+        ],
+        authorityEmphasis: defaults.authorityEmphasis,
+        navigationPrinciple: [
+          "Lead with audit findings, support with action recipes",
+          "Show identified bottlenecks first, suggest fixes next",
+          "Problem first: gap identification first, proof case studies next"
+        ]
+      };
+    case 'deconstructor':
+      return {
+        primaryGoal: [
+          "Deconstruct industry standards and present optimal blueprints",
+          "Establish structural authority by simplifying complex frameworks",
+          "Showcase conceptual mastery through clear process breakdowns"
+        ],
+        communicationApproach: [
+          "Educational, system-oriented, and structured",
+          "Deconstruction-led, simplified, and framework-first",
+          "Conceptual and blueprint-focused"
+        ],
+        authorityEmphasis: defaults.authorityEmphasis,
+        navigationPrinciple: [
+          "Lead with the methodology map, support with asset templates",
+          "Show process frameworks first, detail proof points next",
+          "Structure first: system blueprint first, concrete assets next"
+        ]
+      };
+    case 'practitioner':
+    default:
+      return {
+        primaryGoal: [
+          "Establish operational mastery and hands-on delivery credentials",
+          "Prove execution reliability by showing real-world workflow success",
+          "Highlight deep practical experience to minimize delivery risk"
+        ],
+        communicationApproach: [
+          "Pragmatic, detailed, and results-focused",
+          "Action-oriented and delivery-centered",
+          "Direct, realistic, and case-based"
+        ],
+        authorityEmphasis: defaults.authorityEmphasis,
+        navigationPrinciple: [
+          "Lead with live client results, support with workflows",
+          "Show project outcomes first, detail the timeline below",
+          "Outcome first: client case study first, execution plan next"
+        ]
+      };
+  }
 }
