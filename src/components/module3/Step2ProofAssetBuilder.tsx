@@ -4,7 +4,7 @@ import {
   Sparkles, ArrowLeft, ArrowRight, CheckCircle2, Award, FileText, Check, Copy, ExternalLink,
   Video, Film, Scissors, Tv, Play, Code, Zap, Globe, Layers, GitBranch, BookOpen, MessageSquare, Folder, LineChart, TrendingUp, PenTool,
   RotateCcw, ShieldCheck, Filter, Bookmark, Layout, AlertCircle, RefreshCw, Upload, CheckCircle, ShieldAlert, Lock, ArrowUpRight,
-  X, ChevronLeft, ChevronRight
+  X, ChevronLeft, ChevronRight, Clock
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -462,11 +462,13 @@ export function Step2ProofAssetBuilder() {
 
   const [activeWorkspaceAssetId, setActiveWorkspaceAssetId] = useState<string | null>(null);
   const [workspaceTab, setWorkspaceTab] = useState<'prompt' | 'verify'>('prompt');
+  const [modalPage, setModalPage] = useState<1 | 2>(1);
 
   const handleOpenWorkspace = (assetId: string) => {
     setSelectedAssetId(assetId);
     setActiveWorkspaceAssetId(assetId);
     setWorkspaceTab('prompt');
+    setModalPage(1);
     setVerificationUrl('');
     setVerificationProgress('idle');
     setAuditResult(null);
@@ -488,6 +490,7 @@ export function Step2ProofAssetBuilder() {
     setSelectedAssetId(assetId);
     setActiveWorkspaceAssetId(assetId);
     setWorkspaceTab('prompt');
+    setModalPage(1);
     setIsSkipping(false);
     setVerificationUrl('');
     setVerificationProgress('idle');
@@ -1025,440 +1028,156 @@ export function Step2ProofAssetBuilder() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xl flex items-center justify-center p-4 md:p-6"
+              className="fixed inset-0 z-50 bg-[#0b1c30]/65 backdrop-blur-md flex items-center justify-center p-4 md:p-6"
             >
               <motion.div
                 initial={{ scale: 0.95, y: 30 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 30 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="bg-white rounded-3xl w-full max-w-6xl h-[88vh] shadow-[0_32px_128px_rgba(11,28,48,0.35)] border border-neutral-200/60 overflow-hidden flex flex-col"
+                className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] shadow-[0_32px_128px_rgba(11,28,48,0.25)] border border-neutral-200/60 overflow-hidden flex flex-col"
               >
-                {/* Modal Header */}
-                <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0058be]/10 border border-[#0058be]/20 text-[#0058be]">
-                      <Zap size={14} />
-                    </span>
-                    <div className="text-left">
-                      <h3 className="text-sm font-black text-[#0b1c30]">
-                        {getAssetLabel(workspaceProject.id)} Workspace
-                      </h3>
-                      <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
-                        Est. Time: {meta.time} | Difficulty: {meta.difficulty}
-                      </p>
+                {modalPage === 1 ? (
+                  /* PAGE 1: Strategic Brief (Most Important Knowledge) */
+                  <div className="flex-1 flex flex-col justify-between p-8 md:p-10 text-left overflow-y-auto">
+                    {/* Top Row: Heading and Close */}
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block">
+                          Step 1 of 2: Alignment Brief
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-black text-[#0b1c30] tracking-tight">
+                          Build: {getAssetLabel(workspaceProject.id)}
+                        </h2>
+                      </div>
+                      <button
+                        onClick={() => setActiveWorkspaceAssetId(null)}
+                        className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
+                      >
+                        <X size={20} />
+                      </button>
                     </div>
-                  </div>
 
-                  <button
-                    onClick={() => setActiveWorkspaceAssetId(null)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-
-                {/* Modal Split Body */}
-                <div className="flex-1 flex overflow-hidden">
-                  
-                  {/* Left Column: Strategic AI Blueprint & Resource Context (Width: 380px) */}
-                  <div className="w-[380px] bg-neutral-50/50 border-r border-neutral-200/60 overflow-y-auto p-6 space-y-6 flex flex-col shrink-0 text-left">
-                    
-                    {/* Strategy Block */}
-                    <div className="space-y-4">
-                      <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-200 pb-1.5">
-                        Strategic AI Blueprint
+                    {/* Metadata Pill Row */}
+                    <div className="flex flex-wrap gap-3 mb-8">
+                      <span className="bg-blue-50 text-[#0058be] text-[10px] font-black uppercase px-3 py-1 rounded-full border border-blue-100/50 flex items-center gap-1">
+                        <Clock size={12} />
+                        Est. Time: {meta.time}
                       </span>
-                      
-                      <div className="space-y-3.5">
-                        <div className="space-y-1">
-                          <h4 className="text-xs font-black text-[#0b1c30] uppercase">Core Objective</h4>
-                          <p className="text-xs font-semibold text-neutral-600 leading-relaxed">{meta.goal}</p>
-                        </div>
+                      <span className="bg-neutral-50 text-neutral-600 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-neutral-200 flex items-center gap-1">
+                        <AlertCircle size={12} />
+                        Difficulty: {meta.difficulty}
+                      </span>
+                      <span className="bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-emerald-100/50 flex items-center gap-1">
+                        <TrendingUp size={12} />
+                        +{meta.impact}% Client Readiness
+                      </span>
+                    </div>
 
-                        <div className="p-3.5 rounded-xl border border-red-100 bg-red-500/[0.01] space-y-1.5">
-                          <span className="text-[8px] font-black text-red-500 uppercase tracking-widest block flex items-center gap-1">
-                            <AlertCircle size={9} />
-                            Target Buyer Objection:
-                          </span>
-                          <p className="text-[11px] font-bold text-neutral-800 leading-relaxed italic">
+                    {/* Core Knowledge Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                      {/* Objectives Card */}
+                      <div className="bg-blue-50/20 border border-blue-100/60 p-6 rounded-2xl space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#0058be] flex items-center justify-center">
+                            <BookOpen size={18} />
+                          </div>
+                          <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                            Core Objective
+                          </h3>
+                          <p className="text-xs font-semibold text-neutral-600 leading-relaxed">
+                            {meta.goal}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Objections Card */}
+                      <div className="bg-amber-50/20 border border-amber-100 p-6 rounded-2xl space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                            <AlertCircle size={18} />
+                          </div>
+                          <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                            Buyer Objection
+                          </h3>
+                          <p className="text-xs font-bold text-neutral-800 leading-relaxed italic">
                             "{meta.buyerProblem}"
                           </p>
                         </div>
+                      </div>
 
-                        <div className="p-3.5 rounded-xl border border-blue-100 bg-blue-500/[0.01] space-y-1.5">
-                          <span className="text-[8px] font-black text-[#0058be] uppercase tracking-widest block flex items-center gap-1">
-                            <ShieldCheck size={9} />
-                            AI Recommended Strategy:
-                          </span>
-                          <p className="text-[11px] font-semibold text-neutral-600 leading-relaxed">
+                      {/* Strategy Card */}
+                      <div className="bg-emerald-50/20 border border-emerald-100/60 p-6 rounded-2xl space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <Sparkles size={18} />
+                          </div>
+                          <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                            AI Strategy
+                          </h3>
+                          <p className="text-xs font-semibold text-neutral-600 leading-relaxed">
                             {meta.trustGap}
                           </p>
                         </div>
-
-                        <div className="p-3.5 rounded-xl bg-emerald-500/[0.02] border border-emerald-100/60 space-y-1">
-                          <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest block">
-                            Expected Outcome & Benefit:
-                          </span>
-                          <p className="text-[11px] font-semibold text-emerald-800 leading-relaxed">
-                            {meta.outcome}
-                          </p>
-                        </div>
                       </div>
                     </div>
 
-                    {/* Requirements Checklist */}
-                    <div className="space-y-3">
-                      <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-200 pb-1.5">
-                        Asset Requirements
-                      </span>
-                      <ul className="space-y-2 text-[11.5px] text-neutral-600 font-semibold">
-                        {meta.criteria.map((step, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">
-                              {idx + 1}
-                            </span>
-                            <span>{step}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    {/* Bottom CTA Action Bar */}
+                    <div className="border-t border-neutral-100 pt-6 flex justify-end">
+                      <button
+                        onClick={() => setModalPage(2)}
+                        className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[46px] px-8 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                      >
+                        Choose Execution Path
+                        <ArrowRight size={14} />
+                      </button>
                     </div>
-
-                    {/* Templates & Reference Gallery */}
-                    <div className="space-y-4">
-                      <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest block border-b border-neutral-200 pb-1.5">
-                        Templates & Guides
-                      </span>
-                      
-                      <div className="space-y-2">
-                        <a
-                          href={res.quickStartUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/50 hover:bg-blue-50/80 border border-blue-100/50 text-[#0058be] text-[10px] font-black uppercase tracking-wider transition-colors"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Layers size={12} />
-                            {res.quickStart}
-                          </span>
-                          <ArrowUpRight size={12} />
-                        </a>
-
-                        <a
-                          href={res.tutorial}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-red-50/50 hover:bg-red-50/80 border border-red-100/50 text-red-600 text-[10px] font-black uppercase tracking-wider transition-colors"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <Play size={11} fill="currentColor" />
-                            Watch YouTube Guide
-                          </span>
-                          <ExternalLink size={12} />
-                        </a>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {res.tools.map((t, idx) => (
-                          <span key={idx} className="bg-neutral-100 text-[#0b1c30] text-[8.5px] font-black uppercase px-2 py-0.5 rounded border border-neutral-200/60">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="space-y-2 pt-1">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">
-                          Visual Reference Examples:
-                        </span>
-                        <div className="space-y-1.5">
-                          {res.examples.map((ex, idx) => (
-                            <a
-                              key={idx}
-                              href={ex.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="flex items-center justify-between p-2 rounded-lg border border-neutral-200/80 hover:border-neutral-300 bg-white text-[10px] font-bold text-neutral-500 hover:text-[#0b1c30] transition-colors"
-                            >
-                              <span className="truncate max-w-[280px]">{ex.name}</span>
-                              <ArrowUpRight size={10} className="text-neutral-400 shrink-0 ml-1" />
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
                   </div>
-
-                  {/* Right Column: Interactive Workspace Panel (Width: Flex) */}
-                  <div className="flex-1 bg-white overflow-y-auto p-8 flex flex-col justify-between text-left">
-                    
-                    <div>
-                      {/* Premium Stepper Tabs */}
-                      <div className="flex bg-neutral-100 p-1 rounded-xl w-fit mb-6">
-                        <button
-                          onClick={() => {
-                            setWorkspaceTab('prompt');
-                            setIsSkipping(false);
-                          }}
-                          className={cn(
-                            "px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5",
-                            workspaceTab === 'prompt' 
-                              ? "bg-white text-[#0058be] shadow-sm" 
-                              : "text-neutral-500 hover:text-[#0b1c30]"
-                          )}
-                        >
-                          <Sparkles size={12} />
-                          01. Co-Pilot Prompt
-                        </button>
-                        <button
-                          onClick={() => {
-                            setWorkspaceTab('verify');
-                            setIsSkipping(false);
-                          }}
-                          className={cn(
-                            "px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1.5",
-                            workspaceTab === 'verify' 
-                              ? "bg-white text-[#0058be] shadow-sm" 
-                              : "text-neutral-500 hover:text-[#0b1c30]"
-                          )}
-                        >
-                          <ShieldCheck size={12} />
-                          02. Verification Audit
-                        </button>
+                ) : (
+                  /* PAGE 2: Execution Path Selection Placeholder */
+                  <div className="flex-1 flex flex-col justify-between p-8 md:p-10 text-left overflow-y-auto">
+                    {/* Top Row: Heading and Close */}
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block">
+                          Step 2 of 2: Path Selection
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-black text-[#0b1c30] tracking-tight">
+                          Choose Path: {getAssetLabel(workspaceProject.id)}
+                        </h2>
                       </div>
-
-                      {/* Tab Contents */}
-                      <div className="space-y-6">
-                        
-                        {workspaceTab === 'prompt' && (
-                          <div className="space-y-6 animate-fade-in">
-                            <div className="space-y-1">
-                              <h4 className="text-sm font-black text-[#0b1c30] uppercase">Plan & Script with AI Copilot</h4>
-                              <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                                Copy this customized blueprint script prompt and paste it into Claude, ChatGPT, or Gemini. It contains context about your positioning, positioning mechanism, and core values to construct a client-attracting asset outline:
-                              </p>
-                            </div>
-
-                            {/* Luxurious IDE editor box */}
-                            <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4 relative overflow-hidden shadow-inner">
-                              <div className="flex justify-between items-center border-b border-slate-900 pb-3">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1 font-mono">
-                                  <Code size={11} className="text-slate-500" />
-                                  system_prompt.txt
-                                </span>
-                                <button
-                                  onClick={() => handleCopyPrompt(res.prompt, workspaceProject.id)}
-                                  className="bg-[#0058be] hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer border-none flex items-center gap-1 transition-colors"
-                                >
-                                  {copiedPromptId === workspaceProject.id ? (
-                                    <>
-                                      <Check size={11} strokeWidth={3} />
-                                      Copied!
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Copy size={11} />
-                                      Copy Prompt
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                              <p className="text-xs leading-relaxed font-semibold italic text-slate-300 font-mono select-all">
-                                "{res.prompt}"
-                              </p>
-                            </div>
-
-                            <div className="flex items-center gap-3 pt-2">
-                              <a
-                                href="https://claude.ai"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-colors"
-                              >
-                                <ExternalLink size={12} />
-                                Launch Claude.ai
-                              </a>
-                              <a
-                                href="https://chat.openai.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#0b1c30] text-xs font-black uppercase tracking-wider flex items-center gap-1.5 transition-colors"
-                              >
-                                <ExternalLink size={12} />
-                                Launch ChatGPT
-                              </a>
-                            </div>
-                          </div>
-                        )}
-
-                        {workspaceTab === 'verify' && (
-                          <div className="space-y-6 animate-fade-in">
-                            {isSkipping ? (
-                              /* Inner Skip warning section */
-                              <div className="p-6 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-4">
-                                <div className="flex items-center gap-2 text-amber-700">
-                                  <AlertCircle size={16} />
-                                  <h5 className="text-xs font-black uppercase tracking-wider">Objection Risk Warning</h5>
-                                </div>
-                                <p className="text-xs text-neutral-600 font-semibold leading-relaxed">
-                                  Skipping this proof item leaves a gap in your marketing structure. Live clients will object:
-                                </p>
-                                <p className="text-xs font-bold text-neutral-800 bg-white border border-neutral-200 p-4 rounded-xl italic">
-                                  "{meta.buyerProblem}"
-                                </p>
-                                <div className="flex items-center gap-3 pt-2">
-                                  <button
-                                    onClick={() => setIsSkipping(false)}
-                                    className="bg-[#0058be] hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-colors"
-                                  >
-                                    Revert & Build Deliverable
-                                  </button>
-                                  <button
-                                    onClick={() => handleSkipProject(workspaceProject.id)}
-                                    className="bg-white hover:bg-neutral-50 text-red-650 border border-neutral-200 px-5 py-2.5 rounded-xl text-xs font-bold cursor-pointer transition-colors"
-                                  >
-                                    Skip Project & Warning
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="space-y-5">
-                                <div className="space-y-1">
-                                  <h4 className="text-sm font-black text-[#0b1c30] uppercase">Verify Live Deliverable</h4>
-                                  <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                                    Publish your completed deliverable (e.g. paste your YouTube showreel link, your GitHub repository link, or your live Framer site) below to run the AI Verification scanner:
-                                  </p>
-                                </div>
-
-                                <div className="flex gap-3">
-                                  <input
-                                    type="text"
-                                    value={verificationUrl}
-                                    onChange={(e) => setVerificationUrl(e.target.value)}
-                                    placeholder="Paste live URL link here (e.g., https://github.com/...)"
-                                    className="flex-1 min-h-[46px] px-4 rounded-xl border border-neutral-200 text-xs font-semibold focus:outline-none focus:border-[#0058be] focus:ring-1 focus:ring-[#0058be] bg-white transition-all"
-                                  />
-                                  <button
-                                    onClick={handleRunVerification}
-                                    disabled={verificationProgress === 'scanning' || !verificationUrl}
-                                    className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[46px] px-6 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-colors disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1.5 shrink-0"
-                                  >
-                                    {verificationProgress === 'scanning' ? (
-                                      <>
-                                        <RefreshCw size={14} className="animate-spin" />
-                                        Scanning...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <ShieldCheck size={14} />
-                                        Verify Link
-                                      </>
-                                    )}
-                                  </button>
-                                </div>
-
-                                {/* Verification result details */}
-                                {verificationProgress === 'done' && auditResult && (
-                                  <div className="p-5 rounded-2xl border border-neutral-200 bg-neutral-50/60 space-y-4 animate-fade-in">
-                                    {auditResult.isValid ? (
-                                      <div className="space-y-4">
-                                        <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
-                                          <span className="text-emerald-700 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                                            <CheckCircle size={16} fill="currentColor" className="text-white" />
-                                            Verification Audit Passed
-                                          </span>
-                                          <div className="flex items-center gap-1 text-amber-500">
-                                            <span className="text-[11px] font-black text-neutral-400 font-mono">Score: {auditResult.score}/100</span>
-                                            <div className="flex items-center gap-0.5">
-                                              {Array.from({ length: 5 }).map((_, i) => (
-                                                <Sparkles key={i} size={10} fill="currentColor" />
-                                              ))}
-                                            </div>
-                                          </div>
-                                        </div>
-
-                                        <div className="text-[10px] text-neutral-500 font-semibold leading-relaxed">
-                                          <span className="font-extrabold uppercase text-neutral-400 block text-[8px] mb-1.5">Scanner Optimization Recommendations:</span>
-                                          <ul className="space-y-1">
-                                            {auditResult.improvements.map((imp: string, idx: number) => (
-                                              <li key={idx} className="flex items-start gap-1">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-[#0058be] mt-1.5 shrink-0" />
-                                                <span>{imp}</span>
-                                              </li>
-                                            ))}
-                                          </ul>
-                                        </div>
-
-                                        <button
-                                          onClick={handleAcceptAudit}
-                                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white min-h-[42px] rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-colors mt-2"
-                                        >
-                                          Accept Audit & Lock in Client Readiness Increase
-                                        </button>
-                                      </div>
-                                    ) : (
-                                      <div className="flex items-start gap-2.5 text-red-750">
-                                        <ShieldAlert size={16} className="shrink-0 mt-0.5" />
-                                        <div className="text-xs font-bold">
-                                          <span className="block uppercase tracking-wider">Verification Audit Error:</span>
-                                          <p className="font-semibold text-neutral-500 mt-1.5">{auditResult.improvements[0]}</p>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                <div className="flex justify-between items-center pt-4 border-t border-neutral-100">
-                                  <span className="text-[10px] text-neutral-400 font-semibold">
-                                    Not ready to complete this asset?
-                                  </span>
-                                  <button
-                                    onClick={() => setIsSkipping(true)}
-                                    className="text-red-500 hover:text-red-650 bg-transparent border-none text-[10px] font-black uppercase tracking-wider cursor-pointer hover:underline"
-                                  >
-                                    Skip Project & View Warning
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                      </div>
-                    </div>
-
-                    {/* Bottom footer controls */}
-                    <div className="px-1.5 pt-4 border-t border-neutral-100 flex items-center justify-between text-neutral-400 text-xs">
                       <button
                         onClick={() => setActiveWorkspaceAssetId(null)}
-                        className="px-4 py-2 rounded-xl text-neutral-400 hover:text-neutral-700 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors border-none bg-transparent"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
                       >
-                        Cancel Workspace
+                        <X size={20} />
                       </button>
-
-                      {workspaceTab === 'prompt' ? (
-                        <button
-                          onClick={() => setWorkspaceTab('verify')}
-                          className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-black uppercase tracking-wider cursor-pointer transition-all flex items-center gap-1"
-                        >
-                          Next: Verify Asset
-                          <ChevronRight size={14} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setWorkspaceTab('prompt')}
-                          className="px-5 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#0b1c30] text-xs font-black uppercase tracking-wider cursor-pointer transition-all flex items-center gap-1"
-                        >
-                          <ChevronLeft size={14} />
-                          Back to Prompt
-                        </button>
-                      )}
                     </div>
 
+                    <div className="flex-1 flex flex-col items-center justify-center py-10 text-center space-y-4">
+                      <div className="w-16 h-16 rounded-full bg-blue-50 text-[#0058be] flex items-center justify-center border border-blue-100">
+                        <Layers size={28} />
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-black text-[#0b1c30] uppercase">Execution Cards Placeholder</h4>
+                        <p className="text-xs text-neutral-500 font-semibold max-w-md">
+                          We will build the 4 option cards (Continue with AI, Watch tutorials, Tools, Templates & Docs) here in the next step.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bottom Action Bar */}
+                    <div className="border-t border-neutral-100 pt-6 flex justify-between">
+                      <button
+                        onClick={() => setModalPage(1)}
+                        className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1"
+                      >
+                        <ArrowLeft size={14} />
+                        Back to Brief
+                      </button>
+                    </div>
                   </div>
-
-                </div>
-
+                )}
               </motion.div>
             </motion.div>
           );
