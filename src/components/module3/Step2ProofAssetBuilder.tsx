@@ -463,12 +463,14 @@ export function Step2ProofAssetBuilder() {
   const [activeWorkspaceAssetId, setActiveWorkspaceAssetId] = useState<string | null>(null);
   const [workspaceTab, setWorkspaceTab] = useState<'prompt' | 'verify'>('prompt');
   const [modalPage, setModalPage] = useState<1 | 2>(1);
+  const [selectedPath, setSelectedPath] = useState<null | 'ai' | 'tutorial' | 'tools' | 'templates'>(null);
 
   const handleOpenWorkspace = (assetId: string) => {
     setSelectedAssetId(assetId);
     setActiveWorkspaceAssetId(assetId);
     setWorkspaceTab('prompt');
     setModalPage(1);
+    setSelectedPath(null);
     setVerificationUrl('');
     setVerificationProgress('idle');
     setAuditResult(null);
@@ -491,6 +493,7 @@ export function Step2ProofAssetBuilder() {
     setActiveWorkspaceAssetId(assetId);
     setWorkspaceTab('prompt');
     setModalPage(1);
+    setSelectedPath(null);
     setIsSkipping(false);
     setVerificationUrl('');
     setVerificationProgress('idle');
@@ -1134,49 +1137,288 @@ export function Step2ProofAssetBuilder() {
                     </div>
                   </div>
                 ) : (
-                  /* PAGE 2: Execution Path Selection Placeholder */
-                  <div className="flex-1 flex flex-col justify-between p-8 md:p-10 text-left overflow-y-auto">
-                    {/* Top Row: Heading and Close */}
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block">
-                          Step 2 of 2: Path Selection
-                        </span>
-                        <h2 className="text-2xl md:text-3xl font-black text-[#0b1c30] tracking-tight">
-                          Choose Path: {getAssetLabel(workspaceProject.id)}
-                        </h2>
+                  /* PAGE 2: Path Selection & Detailed Actions */
+                  selectedPath === null ? (
+                    <div className="flex-1 flex flex-col justify-between p-8 md:p-10 text-left overflow-y-auto">
+                      {/* Top Row: Heading and Close */}
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-black text-[#0058be] uppercase tracking-widest block">
+                            Step 2 of 2: Path Selection
+                          </span>
+                          <h2 className="text-2xl md:text-3xl font-black text-[#0b1c30] tracking-tight">
+                            Choose Path: {getAssetLabel(workspaceProject.id)}
+                          </h2>
+                          <p className="text-xs text-neutral-500 font-semibold mt-1">
+                            Select your preferred way to build and verify this proof asset.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setActiveWorkspaceAssetId(null)}
+                          className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
+                        >
+                          <X size={20} />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => setActiveWorkspaceAssetId(null)}
-                        className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
-                      >
-                        <X size={20} />
-                      </button>
-                    </div>
 
-                    <div className="flex-1 flex flex-col items-center justify-center py-10 text-center space-y-4">
-                      <div className="w-16 h-16 rounded-full bg-blue-50 text-[#0058be] flex items-center justify-center border border-blue-100">
-                        <Layers size={28} />
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="text-sm font-black text-[#0b1c30] uppercase">Execution Cards Placeholder</h4>
-                        <p className="text-xs text-neutral-500 font-semibold max-w-md">
-                          We will build the 4 option cards (Continue with AI, Watch tutorials, Tools, Templates & Docs) here in the next step.
-                        </p>
-                      </div>
-                    </div>
+                      {/* 4 Cards Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto py-4">
+                        {/* AI Card */}
+                        <button
+                          onClick={() => setSelectedPath('ai')}
+                          className="group p-6 rounded-2xl border border-blue-100 bg-blue-50/20 hover:bg-blue-50/50 hover:border-blue-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-blue-100 text-[#0058be] flex items-center justify-center shrink-0">
+                            <Sparkles size={22} />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Continue with AI</h4>
+                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                              Generate tailored asset copy and blueprints using customized AI prompts.
+                            </p>
+                          </div>
+                        </button>
 
-                    {/* Bottom Action Bar */}
-                    <div className="border-t border-neutral-100 pt-6 flex justify-between">
-                      <button
-                        onClick={() => setModalPage(1)}
-                        className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1"
-                      >
-                        <ArrowLeft size={14} />
-                        Back to Brief
-                      </button>
+                        {/* Tutorial Card */}
+                        <button
+                          onClick={() => setSelectedPath('tutorial')}
+                          className="group p-6 rounded-2xl border border-red-100 bg-red-50/20 hover:bg-red-50/50 hover:border-red-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+                            <Play size={22} fill="currentColor" />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-red-600 transition-colors">Watch Tutorials</h4>
+                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                              Step-by-step video guides and walkthroughs for this asset niche.
+                            </p>
+                          </div>
+                        </button>
+
+                        {/* Tools Card */}
+                        <button
+                          onClick={() => setSelectedPath('tools')}
+                          className="group p-6 rounded-2xl border border-emerald-100 bg-emerald-50/20 hover:bg-emerald-50/50 hover:border-emerald-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                            <Code size={22} />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-emerald-600 transition-colors">Online Tools</h4>
+                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                              Access recommended software, web editors, and hosting platforms.
+                            </p>
+                          </div>
+                        </button>
+
+                        {/* Templates Card */}
+                        <button
+                          onClick={() => setSelectedPath('templates')}
+                          className="group p-6 rounded-2xl border border-amber-100 bg-amber-50/20 hover:bg-amber-50/50 hover:border-amber-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                            <FileText size={22} />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-amber-700 transition-colors">Templates & Docs</h4>
+                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                              Quick-start templates, outlines, cheat sheets, and examples.
+                            </p>
+                          </div>
+                        </button>
+                      </div>
+
+                      {/* Bottom Action Bar */}
+                      <div className="border-t border-neutral-100 pt-6 flex justify-between">
+                        <button
+                          onClick={() => setModalPage(1)}
+                          className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1"
+                        >
+                          <ArrowLeft size={14} />
+                          Back to Brief
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex-1 flex flex-col justify-between p-8 md:p-10 text-left overflow-y-auto">
+                      {/* Top Row: Heading and Close */}
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => setSelectedPath(null)}
+                            className="text-xs font-black text-[#0058be] hover:underline flex items-center gap-1 bg-transparent border-none cursor-pointer mb-1 p-0"
+                          >
+                            <ArrowLeft size={12} />
+                            Back to Options
+                          </button>
+                          <h2 className="text-2xl md:text-3xl font-black text-[#0b1c30] tracking-tight">
+                            {selectedPath === 'ai' && 'AI Copilot Launcher'}
+                            {selectedPath === 'tutorial' && 'Video Tutorials'}
+                            {selectedPath === 'tools' && 'Online Tools'}
+                            {selectedPath === 'templates' && 'Templates & Documentation'}
+                          </h2>
+                          <p className="text-xs text-neutral-500 font-semibold mt-1">
+                            {selectedPath === 'ai' && 'Launch an AI agent with your personalized strategy context.'}
+                            {selectedPath === 'tutorial' && 'Curated guides for building this exact asset type.'}
+                            {selectedPath === 'tools' && 'The best software for this specific asset.'}
+                            {selectedPath === 'templates' && 'Direct blueprints and structural outlines for fast execution.'}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setActiveWorkspaceAssetId(null)}
+                          className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 transition-colors border-none bg-transparent cursor-pointer"
+                        >
+                          <X size={20} />
+                        </button>
+                      </div>
+
+                      {/* Detail Contents */}
+                      <div className="flex-1 my-auto py-4">
+                        {selectedPath === 'ai' && (
+                          <div className="space-y-6">
+                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm text-center space-y-4">
+                              <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-widest">Select AI Copilot</h3>
+                              <p className="text-xs text-neutral-500 max-w-md mx-auto">Your personalized prompt will automatically be copied to your clipboard. Just paste it and start generating.</p>
+                              
+                              {copiedPromptId === workspaceProject.id && (
+                                <div className="bg-emerald-50 text-emerald-600 text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-2 animate-in slide-in-from-top-2">
+                                  <CheckCircle2 size={14} /> Prompt copied to clipboard!
+                                </div>
+                              )}
+
+                              <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+                                <button 
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(res.prompt);
+                                    setCopiedPromptId(workspaceProject.id);
+                                    setTimeout(() => setCopiedPromptId(null), 2000);
+                                    window.open('https://chat.openai.com', '_blank');
+                                  }} 
+                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer"
+                                >
+                                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" className="w-7 h-7" />
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(res.prompt);
+                                    setCopiedPromptId(workspaceProject.id);
+                                    setTimeout(() => setCopiedPromptId(null), 2000);
+                                    window.open('https://claude.ai', '_blank');
+                                  }} 
+                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer font-serif font-black text-xl text-[#0b1c30]"
+                                >
+                                  C
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(res.prompt);
+                                    setCopiedPromptId(workspaceProject.id);
+                                    setTimeout(() => setCopiedPromptId(null), 2000);
+                                    window.open('https://gemini.google.com', '_blank');
+                                  }} 
+                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer"
+                                >
+                                  <Sparkles size={24} className="text-blue-500" />
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(res.prompt);
+                                    setCopiedPromptId(workspaceProject.id);
+                                    setTimeout(() => setCopiedPromptId(null), 2000);
+                                    window.open('https://perplexity.ai', '_blank');
+                                  }} 
+                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer font-black text-xl text-teal-650"
+                                >
+                                  P
+                                </button>
+                              </div>
+                              
+                              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-left mt-6">
+                                <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mb-2">Prompt Preview:</div>
+                                <p className="text-xs font-semibold text-neutral-600 italic select-all leading-relaxed">"{res.prompt}"</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedPath === 'tutorial' && (
+                          <div className="bg-neutral-50 p-8 rounded-2xl border border-neutral-200 flex flex-col items-center justify-center min-h-[250px] text-center">
+                            <div className="w-16 h-16 rounded-full bg-red-100 text-red-500 flex items-center justify-center mb-4">
+                              <Play size={28} className="ml-1" />
+                            </div>
+                            <h3 className="text-lg font-black text-[#0b1c30] mb-2">Curated YouTube Search</h3>
+                            <p className="text-xs text-neutral-500 mb-6 font-semibold max-w-sm">We've pre-filled the perfect search query to find high-quality tutorials for your specific niche.</p>
+                            <button 
+                              onClick={() => window.open(res.tutorial, '_blank')} 
+                              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-black tracking-wider uppercase flex items-center gap-2 transition-colors cursor-pointer border-none shadow-sm animate-pulse"
+                            >
+                              Open YouTube <ExternalLink size={14}/>
+                            </button>
+                          </div>
+                        )}
+
+                        {selectedPath === 'tools' && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {res.tools.map((t, i) => (
+                              <div key={i} className="p-5 bg-white border border-neutral-200 rounded-2xl flex items-center gap-3 hover:border-neutral-300 transition-colors shadow-sm cursor-pointer">
+                                <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                  <Code size={18} />
+                                </div>
+                                <span className="text-sm font-black text-[#0b1c30]">{t}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {selectedPath === 'templates' && (
+                          <div className="space-y-4">
+                            <div className="bg-amber-50 p-5 rounded-2xl border border-amber-100 text-left">
+                              <h4 className="text-xs font-black text-amber-800 uppercase tracking-widest flex items-center gap-2 mb-2">
+                                <Sparkles size={14} /> Pro-Tip Cheat Sheet
+                              </h4>
+                              <p className="text-sm font-medium text-amber-900/80">{res.cheatSheet}</p>
+                            </div>
+
+                            <div className="bg-white p-5 rounded-2xl border border-neutral-200 text-left">
+                              <h4 className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-4">Quick Start Outlines</h4>
+                              <ul className="space-y-3">
+                                {res.templates.map((t, i) => (
+                                  <li key={i} className="flex items-center justify-between p-3 bg-neutral-50 hover:bg-neutral-100 rounded-xl border border-neutral-100 cursor-pointer transition-colors">
+                                    <div className="flex items-center gap-3">
+                                      <FileText size={16} className="text-[#0058be]" />
+                                      <span className="text-sm font-bold text-[#0b1c30]">{t}</span>
+                                    </div>
+                                    <ArrowRight size={14} className="text-neutral-400" />
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Bottom Action Bar */}
+                      <div className="border-t border-neutral-100 pt-6 flex justify-between">
+                        <button
+                          onClick={() => setSelectedPath(null)}
+                          className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors"
+                        >
+                          Change Path
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            handleAssetCheckboxChange(workspaceProject.id, true);
+                            setActiveWorkspaceAssetId(null);
+                          }}
+                          className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[46px] px-8 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                        >
+                          <CheckCircle2 size={14} />
+                          Mark as Complete
+                        </button>
+                      </div>
+                    </div>
+                  )
                 )}
               </motion.div>
             </motion.div>
