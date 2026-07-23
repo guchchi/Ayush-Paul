@@ -387,6 +387,7 @@ export function Step2ProofAssetBuilder() {
 
   const [skippedAssetIds, setSkippedAssetIds] = useState<string[]>([]);
   const [isSkipping, setIsSkipping] = useState(false);
+  const [showReminder, setShowReminder] = useState(false);
 
   // activeQueue: Missing assets that are NOT skipped.
   // Sort them by trust gain / impact descending (highest impact first!).
@@ -609,6 +610,28 @@ export function Step2ProofAssetBuilder() {
   };
 
   const handleNext = () => {
+    setIsGenerating(true);
+    generateProofAssetStrategy();
+    approveProofAssetStrategy();
+    confirmStep();
+    setIsGenerating(false);
+    nextStep();
+  };
+
+  const handleNextClick = () => {
+    if (activeQueue.length > 0) {
+      setShowReminder(true);
+    } else {
+      handleNext();
+    }
+  };
+
+  const handleSkipAndProceed = () => {
+    const activeIds = activeQueue.map(a => a.id);
+    setSkippedAssetIds(prev => [...prev, ...activeIds]);
+    setShowReminder(false);
+    
+    // Proceed directly to prevent state dependency lag
     setIsGenerating(true);
     generateProofAssetStrategy();
     approveProofAssetStrategy();
@@ -864,7 +887,7 @@ export function Step2ProofAssetBuilder() {
             </div>
 
             <button
-              onClick={handleNext}
+              onClick={handleNextClick}
               className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[44px] px-8 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md inline-flex items-center gap-1.5"
             >
               Proceed to Portfolio Workspace
@@ -1559,6 +1582,75 @@ export function Step2ProofAssetBuilder() {
         })()}
       </AnimatePresence>
 
+      {/* Uncompleted Assets Reminder Modal */}
+      <AnimatePresence>
+        {showReminder && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-[#0b1c30]/65 backdrop-blur-md flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-neutral-200/80 space-y-6 text-center"
+            >
+              {/* Glowing Icon */}
+              <div className="w-16 h-16 rounded-full bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center mx-auto relative group">
+                <Sparkles className="w-7 h-7 animate-pulse text-[#0058be]" />
+                <span className="absolute inset-0 rounded-full border border-blue-400/30 animate-ping opacity-75" />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-black text-[#0b1c30] tracking-tight">Refine Your Authority?</h3>
+                <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                  You have <strong className="text-[#0b1c30]">{activeQueue.length} proof asset{activeQueue.length > 1 ? 's' : ''}</strong> remaining to build. Completing them increases client readiness and authority positioning.
+                </p>
+              </div>
+
+              {/* Missing Assets List */}
+              <div className="bg-neutral-50 border border-neutral-100 rounded-2xl p-4 max-h-[140px] overflow-y-auto space-y-2.5 text-left">
+                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block mb-1">
+                  Remaining Gaps to Verify:
+                </span>
+                {activeQueue.map(item => {
+                  const meta = getBlueprintMetadata(item.id);
+                  return (
+                    <div key={item.id} className="flex items-start gap-2.5 text-xs font-semibold text-neutral-600 leading-normal">
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />
+                      <div>
+                        <div className="font-bold text-[#0b1c30]">{getAssetLabel(item.id)}</div>
+                        <div className="text-[10px] text-neutral-400">Objection: "{meta.buyerProblem}"</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button
+                  onClick={() => setShowReminder(false)}
+                  className="flex-1 bg-[#0058be] hover:bg-blue-700 text-white min-h-[44px] px-6 rounded-xl text-xs font-black uppercase tracking-wider transition-colors shadow-md cursor-pointer flex items-center justify-center border-none"
+                >
+                  Stay & Build
+                </button>
+                <button
+                  onClick={handleSkipAndProceed}
+                  className="flex-1 bg-transparent hover:bg-neutral-50 text-neutral-500 border border-neutral-200 min-h-[44px] px-6 rounded-xl text-xs font-black uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center"
+                >
+                  Skip & Continue
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {isCompleted && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -1587,7 +1679,7 @@ export function Step2ProofAssetBuilder() {
 
         <ModuleButton
           variant="primary"
-          onClick={handleNext}
+          onClick={handleNextClick}
           disabled={isGenerating}
         >
           Continue to Portfolio
