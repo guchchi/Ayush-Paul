@@ -948,12 +948,21 @@ export function Step2ProofAssetBuilder() {
                           Revisit & Build
                         </button>
                       ) : (
-                        <button
-                          onClick={() => handleOpenWorkspace(item.id)}
-                          className="w-full bg-[#0058be] hover:bg-blue-700 text-white py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-                        >
-                          Build Asset 🚀
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleOpenWorkspace(item.id)}
+                            className="flex-1 bg-[#0058be] hover:bg-blue-700 text-white py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                          >
+                            Build Asset 🚀
+                          </button>
+                          <button
+                            onClick={() => handleSkipProject(item.id)}
+                            className="px-3.5 border border-neutral-200 hover:bg-neutral-50 text-neutral-500 py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-colors flex items-center justify-center gap-1"
+                            title="Skip this asset for now"
+                          >
+                            Skip
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1128,7 +1137,16 @@ export function Step2ProofAssetBuilder() {
                     </div>
 
                     {/* Bottom CTA Action Bar */}
-                    <div className="border-t border-neutral-100 pt-6 flex justify-end">
+                    <div className="border-t border-neutral-100 pt-6 flex justify-between items-center">
+                      <button
+                        onClick={() => {
+                          handleSkipProject(workspaceProject.id);
+                          setActiveWorkspaceAssetId(null);
+                        }}
+                        className="px-5 py-2.5 rounded-xl border border-neutral-200 text-neutral-500 hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1.5"
+                      >
+                        Skip for Now
+                      </button>
                       <button
                         onClick={() => setModalPage(2)}
                         className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[46px] px-8 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1.5"
@@ -1259,13 +1277,22 @@ export function Step2ProofAssetBuilder() {
                       </div>
 
                       {/* Bottom Action Bar */}
-                      <div className="border-t border-neutral-100 pt-6 flex justify-between">
+                      <div className="border-t border-neutral-100 pt-6 flex justify-between items-center">
                         <button
                           onClick={() => setModalPage(1)}
                           className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1"
                         >
                           <ArrowLeft size={14} />
                           Back to Brief
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleSkipProject(workspaceProject.id);
+                            setActiveWorkspaceAssetId(null);
+                          }}
+                          className="px-6 py-2.5 rounded-xl border border-neutral-200 text-neutral-500 hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors flex items-center gap-1.5"
+                        >
+                          Skip Asset
                         </button>
                       </div>
                     </div>
