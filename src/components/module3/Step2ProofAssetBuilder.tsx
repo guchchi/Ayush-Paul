@@ -1328,7 +1328,7 @@ export function Step2ProofAssetBuilder() {
                                     }} 
                                     className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" className="w-5 h-5 select-none" />
+                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" alt="ChatGPT" className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Claude */}
@@ -1339,9 +1339,9 @@ export function Step2ProofAssetBuilder() {
                                       setTimeout(() => setCopiedPromptId(null), 2000);
                                       window.open('https://claude.ai', '_blank');
                                     }} 
-                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors font-serif font-black text-lg text-[#0b1c30] select-none"
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    C
+                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/claude.svg" alt="Claude" className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Gemini */}
@@ -1352,9 +1352,9 @@ export function Step2ProofAssetBuilder() {
                                       setTimeout(() => setCopiedPromptId(null), 2000);
                                       window.open('https://gemini.google.com', '_blank');
                                     }} 
-                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors flex items-center justify-center select-none"
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <Sparkles size={18} className="text-blue-500 fill-blue-50" />
+                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini.svg" alt="Gemini" className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Perplexity */}
@@ -1365,9 +1365,9 @@ export function Step2ProofAssetBuilder() {
                                       setTimeout(() => setCopiedPromptId(null), 2000);
                                       window.open('https://perplexity.ai', '_blank');
                                     }} 
-                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors font-black text-lg text-teal-650 select-none"
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    P
+                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg" alt="Perplexity" className="w-6 h-6 select-none" />
                                   </DockIcon>
                                 </Dock>
                               </div>
