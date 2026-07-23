@@ -1306,18 +1306,63 @@ export function Step2ProofAssetBuilder() {
                       <div className="flex-1 my-auto py-4">
                         {selectedPath === 'ai' && (
                           <div className="space-y-6">
-                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm text-center space-y-4">
-                              <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-widest">Select AI Copilot</h3>
-                              <p className="text-xs text-neutral-500 max-w-md mx-auto">Your personalized prompt will automatically be copied to your clipboard. Just paste it and start generating.</p>
-                              
+                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-6">
+                              {/* Title / Description */}
+                              <div className="text-center space-y-1">
+                                <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-widest">AI Workspace Flow</h3>
+                                <p className="text-xs text-neutral-500 max-w-md mx-auto font-semibold">Generate your assets with our custom strategic prompt in 3 simple steps.</p>
+                              </div>
+
+                              {/* Graphical Steps Flow */}
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative py-2">
+                                {/* Connecting dashed line on desktop */}
+                                <div className="hidden md:block absolute top-10 left-[15%] right-[15%] h-0.5 border-t-2 border-dashed border-neutral-200/80 -z-10" />
+
+                                {/* Step 1: Copy Prompt */}
+                                <div className="flex flex-col items-center text-center space-y-3 group">
+                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                                    1
+                                  </div>
+                                  <div className="space-y-1">
+                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Copy Prompt</h4>
+                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Click the copy button below to save your custom prompt.</p>
+                                  </div>
+                                </div>
+
+                                {/* Step 2: Launch AI */}
+                                <div className="flex flex-col items-center text-center space-y-3 group">
+                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                                    2
+                                  </div>
+                                  <div className="space-y-1">
+                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Select & Launch</h4>
+                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Hover & select an AI model in the Dock to launch their workspace.</p>
+                                  </div>
+                                </div>
+
+                                {/* Step 3: Paste & Build */}
+                                <div className="flex flex-col items-center text-center space-y-3 group">
+                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                                    3
+                                  </div>
+                                  <div className="space-y-1">
+                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Generate & Complete</h4>
+                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Paste the prompt to generate your asset, then mark as complete!</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Copied Success Toast */}
                               {copiedPromptId === workspaceProject.id && (
-                                <div className="bg-emerald-50 text-emerald-600 text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-2 animate-in slide-in-from-top-2">
+                                <div className="bg-emerald-50 text-emerald-600 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 animate-in slide-in-from-top-2 border border-emerald-100 max-w-sm mx-auto shadow-sm">
                                   <CheckCircle2 size={14} /> Prompt copied to clipboard!
                                 </div>
                               )}
 
-                              <div className="flex justify-center py-2">
-                                <Dock direction="middle" className="bg-[#f8f9ff]/80 border-neutral-200/80 shadow-sm mt-2 mb-2">
+                              {/* Dock Section */}
+                              <div className="flex flex-col items-center justify-center pt-4 border-t border-neutral-100">
+                                <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mb-2">Step 2: Choose AI & Open</div>
+                                <Dock direction="middle" className="bg-[#f8f9ff]/80 border-neutral-200/80 shadow-sm">
                                   {/* ChatGPT */}
                                   <DockIcon 
                                     onClick={() => {
@@ -1372,9 +1417,22 @@ export function Step2ProofAssetBuilder() {
                                 </Dock>
                               </div>
                               
-                              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-left mt-6">
-                                <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mb-2">Prompt Preview:</div>
-                                <p className="text-xs font-semibold text-neutral-600 italic select-all leading-relaxed">"{res.prompt}"</p>
+                              {/* Prompt Display */}
+                              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-left relative group">
+                                <div className="flex justify-between items-center mb-2">
+                                  <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Step 1: Your Custom Prompt</div>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(res.prompt);
+                                      setCopiedPromptId(workspaceProject.id);
+                                      setTimeout(() => setCopiedPromptId(null), 2000);
+                                    }}
+                                    className="text-[10px] font-black uppercase tracking-wider text-[#0058be] hover:underline flex items-center gap-1 bg-transparent border-none cursor-pointer"
+                                  >
+                                    <Copy size={12} /> Copy
+                                  </button>
+                                </div>
+                                <p className="text-xs font-semibold text-neutral-600 italic select-all leading-relaxed pr-10">"{res.prompt}"</p>
                               </div>
                             </div>
                           </div>
