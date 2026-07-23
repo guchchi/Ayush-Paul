@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Pointer } from '../magicui/pointer';
+import { Dock, DockIcon } from '../magicui/dock';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
 import { classifyService } from '../../data/module3/service-taxonomy';
@@ -1315,51 +1316,60 @@ export function Step2ProofAssetBuilder() {
                                 </div>
                               )}
 
-                              <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-                                <button 
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(res.prompt);
-                                    setCopiedPromptId(workspaceProject.id);
-                                    setTimeout(() => setCopiedPromptId(null), 2000);
-                                    window.open('https://chat.openai.com', '_blank');
-                                  }} 
-                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-                                >
-                                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" className="w-7 h-7" />
-                                </button>
-                                <button 
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(res.prompt);
-                                    setCopiedPromptId(workspaceProject.id);
-                                    setTimeout(() => setCopiedPromptId(null), 2000);
-                                    window.open('https://claude.ai', '_blank');
-                                  }} 
-                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer font-serif font-black text-xl text-[#0b1c30]"
-                                >
-                                  C
-                                </button>
-                                <button 
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(res.prompt);
-                                    setCopiedPromptId(workspaceProject.id);
-                                    setTimeout(() => setCopiedPromptId(null), 2000);
-                                    window.open('https://gemini.google.com', '_blank');
-                                  }} 
-                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer"
-                                >
-                                  <Sparkles size={24} className="text-blue-500" />
-                                </button>
-                                <button 
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(res.prompt);
-                                    setCopiedPromptId(workspaceProject.id);
-                                    setTimeout(() => setCopiedPromptId(null), 2000);
-                                    window.open('https://perplexity.ai', '_blank');
-                                  }} 
-                                  className="w-14 h-14 bg-neutral-50 hover:bg-white hover:scale-105 border border-neutral-200 hover:border-[#0058be] hover:shadow-lg rounded-2xl flex items-center justify-center transition-all cursor-pointer font-black text-xl text-teal-650"
-                                >
-                                  P
-                                </button>
+                              <div className="flex justify-center py-2">
+                                <Dock direction="middle" className="bg-[#f8f9ff]/80 border-neutral-200/80 shadow-sm mt-2 mb-2">
+                                  {/* ChatGPT */}
+                                  <DockIcon 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(res.prompt);
+                                      setCopiedPromptId(workspaceProject.id);
+                                      setTimeout(() => setCopiedPromptId(null), 2000);
+                                      window.open('https://chatgpt.com', '_blank');
+                                    }} 
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
+                                  >
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" alt="ChatGPT" className="w-5 h-5 select-none" />
+                                  </DockIcon>
+
+                                  {/* Claude */}
+                                  <DockIcon 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(res.prompt);
+                                      setCopiedPromptId(workspaceProject.id);
+                                      setTimeout(() => setCopiedPromptId(null), 2000);
+                                      window.open('https://claude.ai', '_blank');
+                                    }} 
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors font-serif font-black text-lg text-[#0b1c30] select-none"
+                                  >
+                                    C
+                                  </DockIcon>
+
+                                  {/* Gemini */}
+                                  <DockIcon 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(res.prompt);
+                                      setCopiedPromptId(workspaceProject.id);
+                                      setTimeout(() => setCopiedPromptId(null), 2000);
+                                      window.open('https://gemini.google.com', '_blank');
+                                    }} 
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors flex items-center justify-center select-none"
+                                  >
+                                    <Sparkles size={18} className="text-blue-500 fill-blue-50" />
+                                  </DockIcon>
+
+                                  {/* Perplexity */}
+                                  <DockIcon 
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(res.prompt);
+                                      setCopiedPromptId(workspaceProject.id);
+                                      setTimeout(() => setCopiedPromptId(null), 2000);
+                                      window.open('https://perplexity.ai', '_blank');
+                                    }} 
+                                    className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors font-black text-lg text-teal-650 select-none"
+                                  >
+                                    P
+                                  </DockIcon>
+                                </Dock>
                               </div>
                               
                               <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-left mt-6">
