@@ -1306,62 +1306,55 @@ export function Step2ProofAssetBuilder() {
                       <div className="flex-1 my-auto py-4">
                         {selectedPath === 'ai' && (
                           <div className="space-y-6">
-                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-6">
-                              {/* Title / Description */}
-                              <div className="text-center space-y-1">
-                                <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-widest">AI Workspace Flow</h3>
-                                <p className="text-xs text-neutral-500 max-w-md mx-auto font-semibold">Generate your assets with our custom strategic prompt in 3 simple steps.</p>
+                            {/* Explanatory Header Box */}
+                            <div className="bg-[#f8f9ff]/80 border border-blue-100/50 rounded-2xl p-5 text-left flex items-start gap-4 shadow-sm">
+                              <div className="w-10 h-10 rounded-xl bg-blue-100/80 text-[#0058be] flex items-center justify-center shrink-0">
+                                <Sparkles size={20} />
                               </div>
-
-                              {/* Graphical Steps Flow */}
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative py-2">
-                                {/* Connecting dashed line on desktop */}
-                                <div className="hidden md:block absolute top-10 left-[15%] right-[15%] h-0.5 border-t-2 border-dashed border-neutral-200/80 -z-10" />
-
-                                {/* Step 1: Copy Prompt */}
-                                <div className="flex flex-col items-center text-center space-y-3 group">
-                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                                    1
-                                  </div>
-                                  <div className="space-y-1">
-                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Copy Prompt</h4>
-                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Click the copy button below to save your custom prompt.</p>
-                                  </div>
-                                </div>
-
-                                {/* Step 2: Launch AI */}
-                                <div className="flex flex-col items-center text-center space-y-3 group">
-                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                                    2
-                                  </div>
-                                  <div className="space-y-1">
-                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Select & Launch</h4>
-                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Hover & select an AI model in the Dock to launch their workspace.</p>
-                                  </div>
-                                </div>
-
-                                {/* Step 3: Paste & Build */}
-                                <div className="flex flex-col items-center text-center space-y-3 group">
-                                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#0058be] border border-blue-100 flex items-center justify-center font-black text-sm group-hover:scale-105 transition-transform duration-300 shadow-sm">
-                                    3
-                                  </div>
-                                  <div className="space-y-1">
-                                    <h4 className="text-xs font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Generate & Complete</h4>
-                                    <p className="text-[10px] text-neutral-400 font-semibold max-w-[150px] mx-auto leading-relaxed">Paste the prompt to generate your asset, then mark as complete!</p>
-                                  </div>
-                                </div>
+                              <div className="space-y-1">
+                                <h3 className="text-sm font-black text-[#0b1c30] uppercase tracking-wider">AI Execution Workflow</h3>
+                                <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                                  Generate your proof assets using our expert tailored prompt. Follow the step-by-step instructions below.
+                                </p>
                               </div>
+                            </div>
 
-                              {/* Copied Success Toast */}
-                              {copiedPromptId === workspaceProject.id && (
-                                <div className="bg-emerald-50 text-emerald-600 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 animate-in slide-in-from-top-2 border border-emerald-100 max-w-sm mx-auto shadow-sm">
-                                  <CheckCircle2 size={14} /> Prompt copied to clipboard!
+                            {/* STEP 1 CARD: Get & Copy Prompt */}
+                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4 text-left">
+                              <div className="flex justify-between items-center pb-3 border-b border-neutral-100">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 rounded-lg bg-blue-50 text-[#0058be] flex items-center justify-center text-xs font-black">1</span>
+                                  <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Copy Strategic Prompt</h4>
                                 </div>
-                              )}
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(res.prompt);
+                                    setCopiedPromptId(workspaceProject.id);
+                                    setTimeout(() => setCopiedPromptId(null), 2000);
+                                  }}
+                                  className="text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#0058be] hover:bg-[#0058be] hover:text-white px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 border-none cursor-pointer"
+                                >
+                                  <Copy size={12} />
+                                  Copy to Clipboard
+                                </button>
+                              </div>
+                              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/80 relative">
+                                <p className="text-xs font-semibold text-neutral-600 italic select-all leading-relaxed">
+                                  "{res.prompt}"
+                                </p>
+                              </div>
+                            </div>
 
-                              {/* Dock Section */}
-                              <div className="flex flex-col items-center justify-center pt-4 border-t border-neutral-100">
-                                <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mb-2">Step 2: Choose AI & Open</div>
+                            {/* STEP 2 CARD: Launch AI Platform */}
+                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm space-y-4 text-left">
+                              <div className="flex items-center gap-2 pb-3 border-b border-neutral-100">
+                                <span className="w-6 h-6 rounded-lg bg-blue-50 text-[#0058be] flex items-center justify-center text-xs font-black">2</span>
+                                <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Choose AI Platform & Paste</h4>
+                              </div>
+                              <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                                Choose an AI workspace below. Clicking will open the platform and copy the prompt automatically.
+                              </p>
+                              <div className="flex justify-center py-2 bg-neutral-50/50 rounded-xl border border-neutral-200">
                                 <Dock direction="middle" className="bg-[#f8f9ff]/80 border-neutral-200/80 shadow-sm">
                                   {/* ChatGPT */}
                                   <DockIcon 
@@ -1416,25 +1409,41 @@ export function Step2ProofAssetBuilder() {
                                   </DockIcon>
                                 </Dock>
                               </div>
-                              
-                              {/* Prompt Display */}
-                              <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200 text-left relative group">
-                                <div className="flex justify-between items-center mb-2">
-                                  <div className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Step 1: Your Custom Prompt</div>
-                                  <button
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(res.prompt);
-                                      setCopiedPromptId(workspaceProject.id);
-                                      setTimeout(() => setCopiedPromptId(null), 2000);
-                                    }}
-                                    className="text-[10px] font-black uppercase tracking-wider text-[#0058be] hover:underline flex items-center gap-1 bg-transparent border-none cursor-pointer"
-                                  >
-                                    <Copy size={12} /> Copy
-                                  </button>
-                                </div>
-                                <p className="text-xs font-semibold text-neutral-600 italic select-all leading-relaxed pr-10">"{res.prompt}"</p>
-                              </div>
                             </div>
+
+                            {/* STEP 3 CARD: Complete Asset */}
+                            <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-6 h-6 rounded-lg bg-blue-50 text-[#0058be] flex items-center justify-center text-xs font-black">3</span>
+                                  <h4 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">Complete Verification</h4>
+                                </div>
+                                <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                                  Once you generate your asset using the copied prompt, click below to mark it completed.
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const prevReadiness = currentReadiness;
+                                  handleAssetCheckboxChange(workspaceProject.id, true);
+                                  const nextReadiness = getReadinessScore([...availableAssets, workspaceProject.id]);
+                                  setReadinessDelta({ from: prevReadiness, to: nextReadiness });
+                                  setShowDopamineFeedback(true);
+                                  setActiveWorkspaceAssetId(null);
+                                }}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white min-h-[42px] px-6 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1.5 self-stretch sm:self-auto justify-center"
+                              >
+                                <CheckCircle2 size={14} />
+                                Mark as Complete
+                              </button>
+                            </div>
+
+                            {/* Copied Success Toast */}
+                            {copiedPromptId === workspaceProject.id && (
+                              <div className="bg-emerald-50 text-emerald-600 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 animate-in slide-in-from-top-2 border border-emerald-100 max-w-sm mx-auto shadow-sm w-full">
+                                <CheckCircle2 size={14} /> Prompt copied to clipboard!
+                              </div>
+                            )}
                           </div>
                         )}
 
