@@ -7,6 +7,7 @@ import {
   X, ChevronLeft, ChevronRight, Clock
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Pointer } from '../magicui/pointer';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { useModule3Store } from '../../lib/module3';
 import { classifyService } from '../../data/module3/service-taxonomy';
@@ -1164,68 +1165,96 @@ export function Step2ProofAssetBuilder() {
                       {/* 4 Cards Grid */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto py-4">
                         {/* AI Card */}
-                        <button
-                          onClick={() => setSelectedPath('ai')}
-                          className="group p-6 rounded-2xl border border-blue-100 bg-blue-50/20 hover:bg-blue-50/50 hover:border-blue-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-blue-100 text-[#0058be] flex items-center justify-center shrink-0">
-                            <Sparkles size={22} />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Continue with AI</h4>
-                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                              Generate tailored asset copy and blueprints using customized AI prompts.
-                            </p>
-                          </div>
-                        </button>
+                        <div className="relative overflow-hidden rounded-2xl">
+                          <button
+                            onClick={() => setSelectedPath('ai')}
+                            className="group w-full h-full p-6 rounded-2xl border border-blue-100 bg-blue-50/20 hover:bg-blue-50/50 hover:border-blue-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-blue-100 text-[#0058be] flex items-center justify-center shrink-0">
+                              <Sparkles size={22} />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-[#0058be] transition-colors">Continue with AI</h4>
+                              <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                                Generate tailored asset copy and blueprints using customized AI prompts.
+                              </p>
+                            </div>
+                          </button>
+                          <Pointer>
+                            <div className="flex items-center gap-1 bg-[#0058be] text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg border border-blue-400">
+                              <Sparkles size={10} /> AI
+                            </div>
+                          </Pointer>
+                        </div>
 
                         {/* Tutorial Card */}
-                        <button
-                          onClick={() => setSelectedPath('tutorial')}
-                          className="group p-6 rounded-2xl border border-red-100 bg-red-50/20 hover:bg-red-50/50 hover:border-red-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
-                            <Play size={22} fill="currentColor" />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-red-600 transition-colors">Watch Tutorials</h4>
-                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                              Step-by-step video guides and walkthroughs for this asset niche.
-                            </p>
-                          </div>
-                        </button>
+                        <div className="relative overflow-hidden rounded-2xl">
+                          <button
+                            onClick={() => setSelectedPath('tutorial')}
+                            className="group w-full h-full p-6 rounded-2xl border border-red-100 bg-red-50/20 hover:bg-red-50/50 hover:border-red-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+                              <Play size={22} fill="currentColor" />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-red-650 transition-colors">Watch Tutorials</h4>
+                              <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                                Step-by-step video guides and walkthroughs for this asset niche.
+                              </p>
+                            </div>
+                          </button>
+                          <Pointer>
+                            <div className="flex items-center gap-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg border border-red-400">
+                              <Play size={10} fill="currentColor" /> Play
+                            </div>
+                          </Pointer>
+                        </div>
 
                         {/* Tools Card */}
-                        <button
-                          onClick={() => setSelectedPath('tools')}
-                          className="group p-6 rounded-2xl border border-emerald-100 bg-emerald-50/20 hover:bg-emerald-50/50 hover:border-emerald-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                            <Code size={22} />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-emerald-600 transition-colors">Online Tools</h4>
-                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                              Access recommended software, web editors, and hosting platforms.
-                            </p>
-                          </div>
-                        </button>
+                        <div className="relative overflow-hidden rounded-2xl">
+                          <button
+                            onClick={() => setSelectedPath('tools')}
+                            className="group w-full h-full p-6 rounded-2xl border border-emerald-100 bg-emerald-50/20 hover:bg-emerald-50/50 hover:border-emerald-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                              <Code size={22} />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-emerald-650 transition-colors">Online Tools</h4>
+                              <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                                Access recommended software, web editors, and hosting platforms.
+                              </p>
+                            </div>
+                          </button>
+                          <Pointer>
+                            <div className="flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg border border-emerald-400">
+                              <Code size={10} /> Build
+                            </div>
+                          </Pointer>
+                        </div>
 
                         {/* Templates Card */}
-                        <button
-                          onClick={() => setSelectedPath('templates')}
-                          className="group p-6 rounded-2xl border border-amber-100 bg-amber-50/20 hover:bg-amber-50/50 hover:border-amber-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
-                        >
-                          <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                            <FileText size={22} />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-amber-700 transition-colors">Templates & Docs</h4>
-                            <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-                              Quick-start templates, outlines, cheat sheets, and examples.
-                            </p>
-                          </div>
-                        </button>
+                        <div className="relative overflow-hidden rounded-2xl">
+                          <button
+                            onClick={() => setSelectedPath('templates')}
+                            className="group w-full h-full p-6 rounded-2xl border border-amber-100 bg-amber-50/20 hover:bg-amber-50/50 hover:border-amber-300 hover:shadow-md transition-all text-left flex items-start gap-4 cursor-pointer"
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                              <FileText size={22} />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-black text-[#0b1c30] group-hover:text-amber-750 transition-colors">Templates & Docs</h4>
+                              <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
+                                Quick-start templates, outlines, cheat sheets, and examples.
+                              </p>
+                            </div>
+                          </button>
+                          <Pointer>
+                            <div className="flex items-center gap-1 bg-amber-700 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg border border-amber-500">
+                              <FileText size={10} /> Outline
+                            </div>
+                          </Pointer>
+                        </div>
                       </div>
 
                       {/* Bottom Action Bar */}
