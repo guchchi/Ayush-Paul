@@ -548,7 +548,7 @@ export function Step1AuthorityPosition() {
     ].filter(Boolean);
 
     let regexStr = keywords
-      .map(w => w.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+      .map(w => w.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'))
       .join('|');
     
     if (!regexStr) return text;
