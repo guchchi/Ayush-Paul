@@ -4,7 +4,8 @@ import {
   FileText, Navigation, Layout, Search, AlignLeft, ShieldCheck, PlayCircle,
   Target, MessageSquare, Award, Compass, Layers, Sparkles, ArrowLeft, ArrowRight,
   Edit2, RotateCw, RotateCcw, Check, Eye, EyeOff, ExternalLink, Shield, Info, AlertCircle,
-  CheckCircle2, Circle, HelpCircle, User, Briefcase, Zap, HelpCircle as QuestionIcon
+  CheckCircle2, Circle, HelpCircle, User, Briefcase, Zap, HelpCircle as QuestionIcon,
+  ChevronRight, CalendarCheck, FileSpreadsheet, Lock
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -32,7 +33,6 @@ export function Step3ProfilePortfolio() {
   const previousStep = useModule3Store((s) => s.previousStep);
   const nextStep = useModule3Store((s) => s.nextStep);
   const confirmStep = useModule3Store((s) => s.confirmStep);
-  const completedSteps = useModule3Store((s) => s.completedSteps);
 
   // Store actions
   const updatePresentationStrategy = useModule3Store((s) => s.updatePresentationStrategy);
@@ -47,12 +47,13 @@ export function Step3ProfilePortfolio() {
   const authorityPosition = useModule3Store((s) => s.authorityPosition) || 'builder';
   const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
 
-  // Local state
+  // Local UX state
   const [viewMode, setViewMode] = useState<'blueprint' | 'preview' | 'examples'>('blueprint');
   const [selectedExampleTier, setSelectedExampleTier] = useState<'beginner' | 'intermediate' | 'expert'>('beginner');
   const [draggedAssetId, setDraggedAssetId] = useState<string | null>(null);
   const [selectedAssetForClickSwap, setSelectedAssetForClickSwap] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<{ sectionId: string; text: string } | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(true); // Collapsed by default for clean canvas view
 
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
@@ -84,7 +85,7 @@ export function Step3ProfilePortfolio() {
     if (eyeTrackerStep > 0 && eyeTrackerStep <= 4) {
       const timer = setTimeout(() => {
         setEyeTrackerStep((prev) => prev + 1);
-      }, 3500);
+      }, 4000);
       return () => clearTimeout(timer);
     } else if (eyeTrackerStep > 4) {
       setIsEyeTrackerPlaying(false);
@@ -145,7 +146,8 @@ export function Step3ProfilePortfolio() {
 
     // Update in store
     updatePortfolioStructureSection(sectionId, { proofAssetIds: updatedSections.find(s => s.sectionId === sectionId)?.proofAssetIds || [] });
-    // Also update the other sections to clear the asset
+    
+    // Update the other sections to clear the asset
     const otherSection = updatedSections.find(s => s.sectionId !== sectionId);
     if (otherSection) {
       updatePortfolioStructureSection(otherSection.sectionId, { proofAssetIds: otherSection.proofAssetIds });
@@ -155,9 +157,9 @@ export function Step3ProfilePortfolio() {
     const assetObj = proofAssets.find(a => a.id === assetId);
     let explanation = "Asset placed successfully.";
     if (sectionId === 'foundational') {
-      explanation = `Placed in Foundational Proof: This answers the client's core query: "Can they deliver this mechanism?" by proving your primary process.`;
+      explanation = `🎯 Primary Proof: Validates your core positioning mechanism to answer: "Can you actually solve my main bottleneck?"`;
     } else if (sectionId === 'supporting') {
-      explanation = `Placed in Supporting Evidence: This answers the client's doubt: "Is this a one-time fluke?" by showing additional context and scenarios.`;
+      explanation = `🛡️ Supporting Proof: Confirms scope depth and repeatability so the client knows this is not a one-time fluke.`;
     }
 
     setFeedbackMessage({ sectionId, text: explanation });
@@ -171,18 +173,24 @@ export function Step3ProfilePortfolio() {
     return displayStrategy.portfolioStructure.reduce((acc, curr) => acc + curr.proofAssetIds.length, 0);
   }, [displayStrategy]);
 
-  const buyerStage = useMemo(() => {
-    if (mappedAssetsCount === 0) return { label: 'Noticed 👀', desc: 'Prospect lands on your page, evaluating the initial visual promise.', color: 'text-blue-600 bg-blue-50 border-blue-100' };
-    if (mappedAssetsCount === 1) return { label: 'Interested ⚡', desc: 'Prospect sees a matching proof asset, wanting to know more.', color: 'text-indigo-600 bg-indigo-50 border-indigo-100' };
-    if (mappedAssetsCount === 2) return { label: 'Convinced 🛡️', desc: 'Prospect validates the credentials, neutralizing primary objections.', color: 'text-purple-600 bg-purple-50 border-purple-100' };
-    return { label: 'Ready to Book 🤝', desc: 'Trust loop complete. Prospect is ready to click CTA and discuss pricing.', color: 'text-emerald-600 bg-emerald-50 border-emerald-100' };
+  // Visual Buyer Trust Stages mapping
+  const buyerStages = [
+    { id: 'noticed', label: '👀 Noticed', threshold: 0, desc: 'Visitor scans headline & core promise.' },
+    { id: 'interested', label: '⚡ Interested', threshold: 1, desc: 'Value proposition triggers interest.' },
+    { id: 'convinced', label: '🛡️ Convinced', threshold: 2, desc: 'Primary proof validates credentials.' },
+    { id: 'ready', label: '🤝 Books Call', threshold: 3, desc: 'Trust loop locked. Ready to schedule audit.' }
+  ];
+
+  const activeStageIndex = useMemo(() => {
+    if (mappedAssetsCount >= 3) return 3;
+    return mappedAssetsCount;
   }, [mappedAssetsCount]);
 
   // Freelancer portfolio examples
   const freelancerExamples: Record<'beginner' | 'intermediate' | 'expert', FreelancerExample> = {
     beginner: {
-      tier: 'Beginner Freelancer',
-      headline: 'Full-Stack Developer for Hire',
+      tier: 'Beginner Freelancer (Standard Generalist)',
+      headline: 'Full-Stack Developer for Hire | React & Node.js',
       assetsDescription: 'Simple project screenshot with a link to generic code repositories.',
       whyItWorks: [
         'Clear statement of service (headline matches search keywords).',
@@ -192,10 +200,10 @@ export function Step3ProfilePortfolio() {
         'Zero authority framing (looks like a commodity contractor).',
         'No objections handled (client wonders: "Will they communicate?", "Have they solved my business problem?")'
       ],
-      lesson: 'Visual: Focuses only on technical skills, not on client problems. Good for low-ticket work, but fails to build premium trust.'
+      lesson: 'Visual Focus: Concentrates only on generic technical skills. Good for low-ticket projects, but fails to build premium trust.'
     },
     intermediate: {
-      tier: 'Intermediate Specialist',
+      tier: 'Intermediate Specialist (Niche Focus)',
       headline: 'React Specialist building SaaS Dashboards for Fintech Startups',
       assetsDescription: 'High-fidelity dashboard code walk-through video + case study document.',
       whyItWorks: [
@@ -206,10 +214,10 @@ export function Step3ProfilePortfolio() {
         'Testimonials are missing or simple quote text (lacks high authority verification).',
         'Fails to connect the code structure to client business outcomes.'
       ],
-      lesson: 'Visual: Targets a specific niche with proof of execution. Validates trust quickly, but struggles to command top-tier pricing.'
+      lesson: 'Visual Focus: Targets a specific niche with proof of execution. Validates trust quickly, but struggles to command top-tier pricing.'
     },
     expert: {
-      tier: 'Top 1% Strategic Partner',
+      tier: 'Top 1% Strategic Partner (Diagnostic Authority)',
       headline: 'Diagnostic Developer: Securing fintech payment integrations to prevent customer checkout drops',
       assetsDescription: 'Interactive diagnostic process map + case study showing a 14% drop reduction.',
       whyItWorks: [
@@ -220,7 +228,7 @@ export function Step3ProfilePortfolio() {
       weakness: [
         'Requires continuous update of active metrics.'
       ],
-      lesson: 'Visual: The portfolio behaves as a diagnostic trust funnel. Shows absolute strategic authority, allowing premium positioning.'
+      lesson: 'Visual Focus: The portfolio behaves as a diagnostic trust funnel. Shows absolute strategic authority, allowing premium positioning.'
     }
   };
 
@@ -238,32 +246,32 @@ export function Step3ProfilePortfolio() {
   }
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto text-left pb-24">
+    <div className="space-y-8 max-w-6xl mx-auto text-left pb-24 px-4 sm:px-6">
       
-      {/* Visual Roadmap Sequence (Minimal top flow) */}
-      <div className="flex items-center justify-center gap-2 text-[10px] font-black text-neutral-400 uppercase tracking-widest bg-white border border-neutral-200/80 rounded-2xl py-3 px-6 shadow-sm max-w-xl mx-auto">
-        <span className="flex items-center gap-1"><User size={12}/> Authority</span>
+      {/* Top Visual Journey */}
+      <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest bg-white border border-neutral-200/80 rounded-2xl py-3 px-4 sm:px-6 shadow-sm max-w-lg mx-auto">
+        <span className="flex items-center gap-1"><User size={11}/> Authority</span>
         <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1"><Briefcase size={12}/> Proof</span>
+        <span className="flex items-center gap-1"><Briefcase size={11}/> Proof</span>
         <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1 text-[#0058be] bg-blue-50 px-2 py-0.5 rounded border border-blue-100"><Layers size={12}/> 🌟 Portfolio Strategy</span>
+        <span className="flex items-center gap-1 text-[#0058be] bg-blue-50 px-2 py-0.5 rounded border border-blue-100"><Layers size={11}/> 🌟 Portfolio</span>
         <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1"><Zap size={12}/> Clients</span>
+        <span className="flex items-center gap-1"><Zap size={11}/> Clients</span>
       </div>
 
       {/* Hero Header Section */}
       <div className="text-center space-y-2 max-w-xl mx-auto">
-        <h2 className="text-2xl font-black text-[#0b1c30] tracking-tight">Organize Your Authority Story</h2>
-        <p className="text-xs text-neutral-500 font-semibold leading-relaxed">
-          Arrange your authority hook and proof assets into a layout designed to convert visitors into clients.
+        <h2 className="text-2xl sm:text-3xl font-black text-[#0b1c30] tracking-tight">Organize Your Authority Story</h2>
+        <p className="text-xs sm:text-sm text-neutral-500 font-semibold leading-relaxed">
+          Arrange your authority hook and proof assets into a client-ready sequence.
         </p>
       </div>
 
       {/* Mode Switcher Tabs */}
-      <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
-        <div className="flex items-center gap-1.5 bg-neutral-100 p-1 rounded-xl border border-neutral-200/60 shadow-inner">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-neutral-200 pb-3">
+        <div className="flex items-center bg-neutral-100 p-1 rounded-xl border border-neutral-200/60 shadow-inner overflow-x-auto max-w-full">
           {[
-            { id: 'blueprint', label: '1. Blueprint Layout', icon: Layers },
+            { id: 'blueprint', label: '1. Strategy Layout', icon: Layers },
             { id: 'preview', label: '2. Client Preview', icon: Eye },
             { id: 'examples', label: '3. Live Examples', icon: FileText }
           ].map((mode) => {
@@ -273,7 +281,7 @@ export function Step3ProfilePortfolio() {
                 key={mode.id}
                 onClick={() => setViewMode(mode.id as any)}
                 className={cn(
-                  "px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all flex items-center gap-1.5 border-none",
+                  "px-3 py-1.5 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all flex items-center gap-1.5 border-none shrink-0",
                   viewMode === mode.id
                     ? "bg-white text-[#0b1c30] shadow-sm"
                     : "text-neutral-500 hover:text-neutral-700 bg-transparent"
@@ -286,38 +294,54 @@ export function Step3ProfilePortfolio() {
           })}
         </div>
 
-        {/* Eye Tracker Replay Button */}
-        {viewMode === 'blueprint' && (
-          <button
-            onClick={startEyeTracker}
-            disabled={isEyeTrackerPlaying}
-            className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider text-[#0058be] hover:text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <PlayCircle size={12} />
-            {isEyeTrackerPlaying ? 'Replaying Journey...' : 'Replay Client Gaze Flow'}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {/* Sidebar Toggle for Draggable Assets */}
+          {viewMode === 'blueprint' && (
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className={cn(
+                "flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider border px-3 py-1.5 rounded-xl transition-all cursor-pointer",
+                isSidebarCollapsed 
+                  ? "bg-white hover:bg-neutral-50 text-neutral-600 border-neutral-200" 
+                  : "bg-blue-50 text-[#0058be] border-blue-200"
+              )}
+            >
+              <Briefcase size={12} />
+              {isSidebarCollapsed ? 'Show Assets Shelf' : 'Hide Assets Shelf'}
+            </button>
+          )}
+
+          {/* Eye Tracker Replay Button */}
+          {viewMode === 'blueprint' && (
+            <button
+              onClick={startEyeTracker}
+              disabled={isEyeTrackerPlaying}
+              className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-[#0058be] hover:text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            >
+              <PlayCircle size={12} />
+              {isEyeTrackerPlaying ? 'Playing Gaze...' : 'Test Gaze Flow'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="grid gap-8 lg:grid-cols-12 items-start">
+      <div className="space-y-6">
         
-        {/* SIDEBAR / CONTROLS PANEL */}
-        <div className="lg:col-span-4 space-y-6">
-          
-          {/* Blueprint Mode Options & Drag Items */}
-          {viewMode === 'blueprint' && (
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-sm space-y-4">
-              <div className="flex items-center gap-1.5 border-b border-neutral-100 pb-2.5">
-                <Layers size={14} className="text-[#0058be]" />
-                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Proof Placement Assets</span>
+        {/* HORIZONTAL ASSET DRAWER / SHELF (If not collapsed) */}
+        <AnimatePresence>
+          {viewMode === 'blueprint' && !isSidebarCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm space-y-3 overflow-hidden text-left"
+            >
+              <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
+                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Available Proof Assets</span>
+                <span className="text-[9px] text-neutral-400 font-bold uppercase">Drag into target zones or click to place</span>
               </div>
-              <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                Drag any asset or click to place it into your portfolio sections. AI pre-places them as default.
-              </p>
-
-              {/* Draggable Chips List */}
-              <div className="space-y-2">
+              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
                 {proofAssets.map((asset) => {
                   const isSelected = selectedAssetForClickSwap === asset.id;
                   const isReady = availableAssets.includes(asset.id);
@@ -328,7 +352,7 @@ export function Step3ProfilePortfolio() {
                       onDragStart={(e) => handleDragStart(e, asset.id)}
                       onClick={() => setSelectedAssetForClickSwap(isSelected ? null : asset.id)}
                       className={cn(
-                        "p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing text-left space-y-1 select-none",
+                        "p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing text-left space-y-1.5 select-none relative group",
                         isSelected
                           ? "border-blue-500 bg-blue-50/50 shadow-sm"
                           : "border-neutral-200 hover:border-neutral-300 bg-white"
@@ -350,371 +374,371 @@ export function Step3ProfilePortfolio() {
                   );
                 })}
               </div>
-
-              {/* Click instruction */}
               {selectedAssetForClickSwap && (
                 <div className="bg-blue-50 border border-blue-200/60 rounded-xl p-3 text-[10px] font-bold text-[#0058be] animate-pulse">
-                  Now click on a dropzone on the right to place "{proofAssets.find(a => a.id === selectedAssetForClickSwap)?.title}".
+                  Now click on a target section in the blueprint mockup to place this asset.
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
+        </AnimatePresence>
 
-          {/* Client Psychology Meter / Buyer State Panel */}
-          {viewMode === 'blueprint' && (
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-sm space-y-4">
-              <div className="flex items-center gap-1.5 border-b border-neutral-100 pb-2.5">
-                <Target size={14} className="text-[#0058be]" />
-                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Buyer Trust Stage</span>
-              </div>
-              
-              <div className="space-y-4">
-                {/* Active Stage Indicator */}
-                <div className={cn("p-4 rounded-xl border space-y-1.5 transition-all duration-300", buyerStage.color)}>
-                  <span className="text-[9px] font-black uppercase tracking-widest block">Prospect Gaze State</span>
-                  <h4 className="text-sm font-black">{buyerStage.label}</h4>
-                  <p className="text-[10px] font-semibold leading-relaxed opacity-90">{buyerStage.desc}</p>
-                </div>
-
-                {/* Progress Indicators */}
-                <div className="space-y-2 text-[10px] font-bold text-neutral-400">
-                  <div className="flex justify-between items-center">
-                    <span>Evidence Density</span>
-                    <span className="text-[#0b1c30]">{mappedAssetsCount} placed</span>
-                  </div>
-                  <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
-                      style={{ width: `${Math.min((mappedAssetsCount / 3) * 100, 100)}%` }} 
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Example Tiers Panel */}
-          {viewMode === 'examples' && (
-            <div className="bg-white border border-neutral-200/80 rounded-2xl p-5 shadow-sm space-y-4">
-              <div className="flex items-center gap-1.5 border-b border-neutral-100 pb-2.5">
-                <MessageSquare size={14} className="text-[#0058be]" />
-                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Freelancer Archetypes</span>
-              </div>
-              <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                Analyze how different tiers present proof and handle client psychology.
-              </p>
-
-              <div className="flex flex-col gap-2">
-                {[
-                  { id: 'beginner' as const, label: 'Beginner Freelancer' },
-                  { id: 'intermediate' as const, label: 'Intermediate Specialist' },
-                  { id: 'expert' as const, label: 'Top 1% Strategic Partner' }
-                ].map((tier) => (
-                  <button
-                    key={tier.id}
-                    onClick={() => setSelectedExampleTier(tier.id)}
-                    className={cn(
-                      "w-full text-left px-4 py-3 rounded-xl border text-xs font-black uppercase tracking-wider cursor-pointer transition-all border-none",
-                      selectedExampleTier === tier.id
-                        ? "bg-[#0b1c30] text-white shadow-sm"
-                        : "bg-neutral-50 text-neutral-500 hover:bg-neutral-100"
-                    )}
-                  >
-                    {tier.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* PRIMARY VIEWING CANVAS (DOMINANT FOCAL POINT) */}
-        <div className="lg:col-span-8">
+        {/* MOCKUP CONTAINER */}
+        <div className="grid gap-6 lg:grid-cols-12 items-start">
           
-          {/* 1. BLUEPRINT MODE OR CLIENT PREVIEW */}
-          {(viewMode === 'blueprint' || viewMode === 'preview') && (
-            <div className="space-y-4">
+          {/* LEFT: Buyer Psychology Gaze States */}
+          {viewMode === 'blueprint' && (
+            <div className="lg:col-span-3 bg-white border border-neutral-200/80 rounded-3xl p-5 shadow-sm space-y-4 text-left">
+              <div className="flex items-center gap-1.5 border-b border-[#f1f5f9] pb-2.5">
+                <Target size={14} className="text-[#0058be]" />
+                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Buyer Psychology Path</span>
+              </div>
               
-              {/* Safari Style Mock Browser Window */}
-              <div className="border border-neutral-200 rounded-3xl bg-white shadow-lg overflow-hidden flex flex-col relative">
+              {/* Vertical timeline of stages */}
+              <div className="space-y-4">
+                {buyerStages.map((stage, idx) => {
+                  const isActive = idx === activeStageIndex;
+                  const isCompletedStage = idx < activeStageIndex;
+                  return (
+                    <div 
+                      key={stage.id} 
+                      className={cn(
+                        "p-3.5 rounded-2xl border transition-all duration-300 text-left space-y-1 relative",
+                        isActive 
+                          ? "border-[#0058be] bg-blue-50/50 shadow-sm" 
+                          : isCompletedStage 
+                            ? "border-emerald-200 bg-emerald-50/[0.15]" 
+                            : "border-neutral-100 bg-neutral-50/50 opacity-60"
+                      )}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black text-[#0b1c30]">{stage.label}</span>
+                        {isCompletedStage && <CheckCircle2 size={12} className="text-emerald-500" />}
+                      </div>
+                      <p className="text-[9px] text-neutral-500 font-semibold leading-relaxed mt-0.5">{stage.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* MAIN PREVIEW CANVAS */}
+          <div className={cn("w-full transition-all duration-300", viewMode === 'blueprint' ? "lg:col-span-9" : "lg:col-span-12")}>
+            
+            {/* Blueprint Mode / Client Preview */}
+            {(viewMode === 'blueprint' || viewMode === 'preview') && (
+              <div className="space-y-4">
                 
-                {/* Browser address bar */}
-                <div className="bg-[#f8f9ff]/80 border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-400 block shrink-0" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 block shrink-0" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-green-400 block shrink-0" />
-                  </div>
-                  <div className="bg-neutral-100 border border-neutral-200/60 text-[9px] font-semibold text-neutral-400 py-1 px-8 rounded-lg max-w-xs w-full text-center truncate select-none">
-                    {viewMode === 'blueprint' ? 'layout-blueprint-canvas' : 'prospect-preview-mode'}
-                  </div>
-                  <div className="w-12 shrink-0" />
-                </div>
-
-                {/* Animated Eye Tracker Thought Bubble Overlay */}
-                {viewMode === 'blueprint' && isEyeTrackerPlaying && (
-                  <div 
-                    className="absolute z-30 bg-[#0058be] text-white font-bold text-[10px] py-1.5 px-3 rounded-xl shadow-md border border-blue-400 flex items-center gap-1.5 transition-all duration-500"
-                    style={{
-                      top: eyeTrackerStep === 1 ? '110px' : eyeTrackerStep === 2 ? '220px' : eyeTrackerStep === 3 ? '370px' : '480px',
-                      left: '20px',
-                      transform: 'translateY(-50%)'
-                    }}
-                  >
-                    <span>👀</span>
-                    <span>
-                      {eyeTrackerStep === 1 && "Interesting headline... tell me what problem you solve."}
-                      {eyeTrackerStep === 2 && "But can they actually deliver this payment mechanism?"}
-                      {eyeTrackerStep === 3 && "Is this checkout drop reduction a fluke or repeatable?"}
-                      {eyeTrackerStep === 4 && "Okay, I trust this. I will click to discuss checkouts."}
-                    </span>
-                  </div>
-                )}
-
-                {/* Browser Content */}
-                <div className="p-6 sm:p-8 space-y-6 bg-neutral-50/40 min-h-[500px]">
+                {/* Safari Browser Canvas Wrapper */}
+                <div className="border border-neutral-200 rounded-3xl bg-white shadow-lg overflow-hidden flex flex-col relative max-w-full">
                   
-                  {/* HERO PROPOSITION DROPZONE */}
-                  <div
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, 'hero')}
-                    onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'hero')}
-                    className={cn(
-                      "p-6 rounded-2xl border transition-all relative text-left space-y-3",
-                      viewMode === 'blueprint'
-                        ? (eyeTrackerStep === 1 ? "bg-blue-50/60 border-blue-500 shadow-md ring-2 ring-blue-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                        : "bg-[#0b1c30] text-white border-transparent shadow-sm"
-                    )}
-                  >
-                    {/* Gaze tracking flag */}
-                    {viewMode === 'blueprint' && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
-                          1. Hook & Eye Land
-                        </span>
-                        {eyeTrackerStep === 1 && <span className="animate-ping w-2.5 h-2.5 rounded-full bg-blue-500" />}
-                      </div>
-                    )}
-
-                    <h1 className="text-base sm:text-lg font-black tracking-tight leading-snug">
-                      {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
-                    </h1>
-                    <p className={cn("text-xs font-semibold leading-relaxed", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
-                      A structured value hook positioned as a {authorityPosition.toUpperCase()} archetype.
-                    </p>
+                  {/* Safari header */}
+                  <div className="bg-[#f8f9ff]/80 border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400 block shrink-0" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 block shrink-0" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-green-400 block shrink-0" />
+                    </div>
+                    
+                    {/* Visual Eye tracker path details */}
+                    <div className="bg-neutral-100 border border-neutral-200/60 text-[9px] font-semibold text-neutral-400 py-1 px-8 rounded-lg max-w-xs w-full text-center truncate select-none">
+                      {viewMode === 'blueprint' ? 'authority-story-blueprint' : 'client-gaze-preview'}
+                    </div>
+                    <div className="w-12 shrink-0" />
                   </div>
 
-                  {/* FOUNDATIONAL PROOF DROPZONE */}
-                  <div
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, 'foundational')}
-                    onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'foundational')}
-                    className={cn(
-                      "p-6 rounded-2xl border transition-all relative text-left space-y-4",
-                      viewMode === 'blueprint'
-                        ? (eyeTrackerStep === 2 ? "bg-indigo-50/60 border-indigo-500 shadow-md ring-2 ring-indigo-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                        : "bg-white border-neutral-200/80 shadow-sm"
-                    )}
-                  >
-                    {/* Gaze tracking flag */}
-                    {viewMode === 'blueprint' && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase tracking-widest">
-                          2. Primary Proof Placement
-                        </span>
-                        {eyeTrackerStep === 2 && <span className="animate-ping w-2.5 h-2.5 rounded-full bg-indigo-500" />}
-                      </div>
-                    )}
-
-                    <div className="space-y-1">
-                      <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
-                        {displayStrategy.portfolioStructure[0]?.sectionName || 'Foundational Proof'}
-                      </h3>
-                      <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                        {displayStrategy.portfolioStructure[0]?.purpose}
-                      </p>
+                  {/* Looping Eye tracker visual overlay */}
+                  {viewMode === 'blueprint' && isEyeTrackerPlaying && (
+                    <div 
+                      className="absolute z-30 bg-[#0b1c30] text-white font-bold text-[9px] sm:text-[10px] py-1.5 px-3 rounded-xl shadow-md border border-neutral-700 flex items-center gap-1.5 transition-all duration-500"
+                      style={{
+                        top: eyeTrackerStep === 1 ? '160px' : eyeTrackerStep === 2 ? '300px' : eyeTrackerStep === 3 ? '440px' : '580px',
+                        left: '24px',
+                        transform: 'translateY(-50%)'
+                      }}
+                    >
+                      <span className="animate-bounce">👀</span>
+                      <span>
+                        {eyeTrackerStep === 1 && "Noticed: Interesting hook... does this match my pain point?"}
+                        {eyeTrackerStep === 2 && "Interested: Let's see your core case study or project proof."}
+                        {eyeTrackerStep === 3 && "Convinced: Okay, they have additional evidence & reviews."}
+                        {eyeTrackerStep === 4 && "Books Call: This matches my needs. I will schedule a call."}
+                      </span>
                     </div>
+                  )}
 
-                    {/* Mapped Assets */}
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {displayStrategy.portfolioStructure[0]?.proofAssetIds.map(assetId => {
-                        const asset = proofAssets.find(a => a.id === assetId);
-                        return (
-                          <div key={assetId} className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200/60 space-y-1">
-                            <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
-                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">
-                              {asset?.assetType.replace(/_/g, ' ')}
+                  {/* Browser Content - RENDER AS A REAL PORTFOLIO PAGE */}
+                  <div className="p-4 sm:p-8 space-y-6 bg-neutral-50/50 min-h-[500px] text-left">
+                    
+                    {/* Realistic Profile Header (LinkedIn/Notion Layout style) */}
+                    <div className="bg-white border border-neutral-200 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-[#0058be] font-black text-sm sm:text-base border border-blue-200">
+                          {authorityPosition.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs sm:text-sm font-black text-[#0b1c30]">Ayush Paul</span>
+                            <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
+                              {authorityPosition} Archetype
                             </span>
                           </div>
-                        );
-                      })}
-                      {displayStrategy.portfolioStructure[0]?.proofAssetIds.length === 0 && (
-                        <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-6 text-center text-xs font-bold text-neutral-400 rounded-xl">
-                          Drop primary proof here or click to swap
+                          <p className="text-[10px] sm:text-xs text-neutral-400 font-semibold">Specialist Consultant & Developer</p>
+                        </div>
+                      </div>
+
+                      <div className="text-[10px] text-neutral-400 font-semibold bg-neutral-50 border border-neutral-100 rounded-xl px-3 py-1.5 max-w-xs">
+                        Platform: <span className="font-bold text-[#0b1c30]">LinkedIn & Custom Portfolio</span>
+                      </div>
+                    </div>
+
+                    {/* SECTION 1: HERO PROPOSITION DROPZONE */}
+                    <div
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, 'hero')}
+                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'hero')}
+                      className={cn(
+                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-3",
+                        viewMode === 'blueprint'
+                          ? (eyeTrackerStep === 1 ? "bg-blue-50/60 border-blue-500 shadow-md ring-2 ring-blue-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                          : "bg-[#0b1c30] text-white border-transparent shadow-sm"
+                      )}
+                    >
+                      {viewMode === 'blueprint' && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
+                            1. Authority hook (Client Lands)
+                          </span>
+                          {eyeTrackerStep === 1 && <span className="animate-ping w-2 h-2 rounded-full bg-blue-500" />}
+                        </div>
+                      )}
+
+                      <div className="space-y-1.5">
+                        <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-neutral-400" : "text-blue-400")}>
+                          Value Proposition
+                        </span>
+                        <h2 className="text-sm sm:text-base font-black leading-snug">
+                          {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                        </h2>
+                        <p className={cn("text-xs leading-relaxed", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
+                          We analyze checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: FOUNDATIONAL PROOF DROPZONE */}
+                    <div
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, 'foundational')}
+                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'foundational')}
+                      className={cn(
+                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-4",
+                        viewMode === 'blueprint'
+                          ? (eyeTrackerStep === 2 ? "bg-indigo-50/60 border-indigo-500 shadow-md ring-2 ring-indigo-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                          : "bg-white border border-neutral-200/80 shadow-sm"
+                      )}
+                    >
+                      {viewMode === 'blueprint' && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[8px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase tracking-widest">
+                            2. Foundational Proof (Primary Objections)
+                          </span>
+                          {eyeTrackerStep === 2 && <span className="animate-ping w-2 h-2 rounded-full bg-indigo-500" />}
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                          {displayStrategy.portfolioStructure[0]?.sectionName || 'Foundational Proof'}
+                        </h3>
+                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                          {displayStrategy.portfolioStructure[0]?.purpose}
+                        </p>
+                      </div>
+
+                      {/* Mapped Assets */}
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {displayStrategy.portfolioStructure[0]?.proofAssetIds.map(assetId => {
+                          const asset = proofAssets.find(a => a.id === assetId);
+                          return (
+                            <div key={assetId} className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2">
+                              <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest block">Primary Case Study</span>
+                              <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
+                              <p className="text-[10px] text-neutral-500 font-semibold leading-relaxed truncate">
+                                {asset?.portfolioCopy?.headline || 'Detailed walkthrough and process validation.'}
+                              </p>
+                            </div>
+                          );
+                        })}
+                        {displayStrategy.portfolioStructure[0]?.proofAssetIds.length === 0 && (
+                          <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-8 text-center text-xs font-bold text-neutral-400 rounded-xl">
+                            Drop Primary Case Study here or click to swap
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Feedback popover inside section */}
+                      {feedbackMessage && feedbackMessage.sectionId === 'foundational' && (
+                        <div className="bg-indigo-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in z-20">
+                          {feedbackMessage.text}
                         </div>
                       )}
                     </div>
 
-                    {/* Feedback popover inside section */}
-                    {feedbackMessage && feedbackMessage.sectionId === 'foundational' && (
-                      <div className="bg-indigo-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in">
-                        {feedbackMessage.text}
+                    {/* SECTION 3: SUPPORTING EVIDENCE DROPZONE */}
+                    <div
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, 'supporting')}
+                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'supporting')}
+                      className={cn(
+                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-4",
+                        viewMode === 'blueprint'
+                          ? (eyeTrackerStep === 3 ? "bg-purple-50/60 border-purple-500 shadow-md ring-2 ring-purple-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                          : "bg-white border border-neutral-200/80 shadow-sm"
+                      )}
+                    >
+                      {viewMode === 'blueprint' && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-[8px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100 uppercase tracking-widest">
+                            3. Supporting Validation (Repeatability)
+                          </span>
+                          {eyeTrackerStep === 3 && <span className="animate-ping w-2 h-2 rounded-full bg-purple-500" />}
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                          {displayStrategy.portfolioStructure[1]?.sectionName || 'Supporting Evidence'}
+                        </h3>
+                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                          {displayStrategy.portfolioStructure[1]?.purpose}
+                        </p>
                       </div>
-                    )}
-                  </div>
 
-                  {/* SUPPORTING EVIDENCE DROPZONE */}
-                  <div
-                    onDragOver={handleDragOver}
-                    onDrop={(e) => handleDrop(e, 'supporting')}
-                    onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'supporting')}
-                    className={cn(
-                      "p-6 rounded-2xl border transition-all relative text-left space-y-4",
-                      viewMode === 'blueprint'
-                        ? (eyeTrackerStep === 3 ? "bg-purple-50/60 border-purple-500 shadow-md ring-2 ring-purple-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                        : "bg-white border-neutral-200/80 shadow-sm"
-                    )}
-                  >
-                    {/* Gaze tracking flag */}
-                    {viewMode === 'blueprint' && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100 uppercase tracking-widest">
-                          3. Supporting Evidence
-                        </span>
-                        {eyeTrackerStep === 3 && <span className="animate-ping w-2.5 h-2.5 rounded-full bg-purple-500" />}
-                      </div>
-                    )}
-
-                    <div className="space-y-1">
-                      <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
-                        {displayStrategy.portfolioStructure[1]?.sectionName || 'Supporting Evidence'}
-                      </h3>
-                      <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                        {displayStrategy.portfolioStructure[1]?.purpose}
-                      </p>
-                    </div>
-
-                    {/* Mapped Assets */}
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {displayStrategy.portfolioStructure[1]?.proofAssetIds.map(assetId => {
-                        const asset = proofAssets.find(a => a.id === assetId);
-                        return (
-                          <div key={assetId} className="bg-neutral-50 p-3.5 rounded-xl border border-neutral-200/60 space-y-1">
-                            <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
-                            <span className="text-[9px] font-black text-neutral-400 uppercase tracking-widest">
-                              {asset?.assetType.replace(/_/g, ' ')}
-                            </span>
+                      {/* Mapped Assets */}
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {displayStrategy.portfolioStructure[1]?.proofAssetIds.map(assetId => {
+                          const asset = proofAssets.find(a => a.id === assetId);
+                          return (
+                            <div key={assetId} className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2">
+                              <span className="text-[8px] font-black text-indigo-600 uppercase tracking-widest block">Secondary Evidence</span>
+                              <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
+                              <p className="text-[10px] text-neutral-500 font-semibold leading-relaxed truncate">
+                                {asset?.portfolioCopy?.headline || 'Supporting statistics or testimonials.'}
+                              </p>
+                            </div>
+                          );
+                        })}
+                        {displayStrategy.portfolioStructure[1]?.proofAssetIds.length === 0 && (
+                          <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-8 text-center text-xs font-bold text-neutral-400 rounded-xl">
+                            Drop Supporting Evidence here or click to swap
                           </div>
-                        );
-                      })}
-                      {displayStrategy.portfolioStructure[1]?.proofAssetIds.length === 0 && (
-                        <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-6 text-center text-xs font-bold text-neutral-400 rounded-xl">
-                          Drop supporting proof here or click to swap
+                        )}
+                      </div>
+
+                      {/* Feedback popover inside section */}
+                      {feedbackMessage && feedbackMessage.sectionId === 'supporting' && (
+                        <div className="bg-purple-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in z-20">
+                          {feedbackMessage.text}
                         </div>
                       )}
                     </div>
 
-                    {/* Feedback popover inside section */}
-                    {feedbackMessage && feedbackMessage.sectionId === 'supporting' && (
-                      <div className="bg-purple-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in">
-                        {feedbackMessage.text}
-                      </div>
-                    )}
+                    {/* SECTION 4: CALL TO ACTION BUTTON WIREFRAME */}
+                    <div
+                      className={cn(
+                        "p-4 rounded-xl border text-center transition-all relative",
+                        viewMode === 'blueprint'
+                          ? (eyeTrackerStep === 4 ? "bg-emerald-50 border-emerald-500 shadow-md ring-2 ring-emerald-500/20" : "bg-white border-dashed border-neutral-300")
+                          : "bg-blue-600 text-white border-transparent font-bold cursor-pointer hover:bg-blue-700 shadow-sm"
+                      )}
+                    >
+                      {viewMode === 'blueprint' && (
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">
+                            4. Trust Lock & Conversion
+                          </span>
+                          {eyeTrackerStep === 4 && <span className="animate-ping w-2 h-2 rounded-full bg-emerald-500" />}
+                        </div>
+                      )}
+                      <span className="text-xs font-black uppercase tracking-wider">Book Strategy Audit</span>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* 2. LIVE EXAMPLES MODE (Freelancer Tiers Critique) */}
+            {viewMode === 'examples' && (
+              <div className="bg-white border border-neutral-200/80 rounded-3xl p-6 shadow-sm space-y-6">
+                
+                <div className="space-y-1.5 border-b border-neutral-100 pb-3">
+                  <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 uppercase tracking-widest">
+                    Freelancer Case Study
+                  </span>
+                  <h3 className="text-base font-black text-[#0b1c30]">
+                    {currentExample.tier}
+                  </h3>
+                </div>
+
+                {/* Headline preview */}
+                <div className="bg-neutral-50 border border-neutral-200/60 p-4 rounded-2xl space-y-2">
+                  <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Portfolio Headline:</span>
+                  <p className="text-xs font-bold text-[#0b1c30] leading-relaxed">
+                    "{currentExample.headline}"
+                  </p>
+                  <div className="pt-2 border-t border-neutral-200/40">
+                    <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Evidence Setup:</span>
+                    <p className="text-[11px] text-neutral-600 font-semibold">{currentExample.assetsDescription}</p>
+                  </div>
+                </div>
+
+                {/* Critique columns */}
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="bg-emerald-500/[0.02] border border-emerald-500/20 p-4 rounded-2xl space-y-2">
+                    <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Why It Works</span>
+                    <ul className="space-y-1">
+                      {currentExample.whyItWorks.map((w, idx) => (
+                        <li key={idx} className="text-xs font-semibold text-emerald-800 flex items-start gap-1.5 leading-relaxed">
+                          <span className="text-emerald-600 mt-0.5">✔</span>
+                          <span>{w}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* CALL TO ACTION BUTTON WIREFRAME */}
-                  <div
-                    className={cn(
-                      "p-4 rounded-xl border text-center transition-all relative",
-                      viewMode === 'blueprint'
-                        ? (eyeTrackerStep === 4 ? "bg-emerald-50 border-emerald-500 shadow-md ring-2 ring-emerald-500/20" : "bg-white border-dashed border-neutral-300")
-                        : "bg-blue-600 text-white border-transparent font-bold cursor-pointer hover:bg-blue-700 shadow-sm"
-                    )}
-                  >
-                    {/* Gaze tracking flag */}
-                    {viewMode === 'blueprint' && (
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">
-                          4. Trust Lock & Conversion
-                        </span>
-                        {eyeTrackerStep === 4 && <span className="animate-ping w-2.5 h-2.5 rounded-full bg-emerald-500" />}
-                      </div>
-                    )}
-                    <span className="text-xs font-black uppercase tracking-wider">Book Strategy Audit</span>
+                  <div className="bg-red-500/[0.02] border border-red-500/20 p-4 rounded-2xl space-y-2">
+                    <span className="text-[9px] font-black text-red-700 uppercase tracking-widest">Weakness & Risks</span>
+                    <ul className="space-y-1">
+                      {currentExample.weakness.map((w, idx) => (
+                        <li key={idx} className="text-xs font-semibold text-red-800 flex items-start gap-1.5 leading-relaxed">
+                          <span className="text-red-600 mt-0.5">✖</span>
+                          <span>{w}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-
-                </div>
-              </div>
-
-            </div>
-          )}
-
-          {/* 2. LIVE EXAMPLES MODE (WHY & CRITIQUE INTERACTIVE SHEET) */}
-          {viewMode === 'examples' && (
-            <div className="bg-white border border-neutral-200/80 rounded-3xl p-6 shadow-sm space-y-6">
-              
-              <div className="space-y-1.5 border-b border-neutral-100 pb-3">
-                <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 uppercase tracking-widest">
-                  Freelancer Case Study
-                </span>
-                <h3 className="text-base font-black text-[#0b1c30]">
-                  {currentExample.tier}
-                </h3>
-              </div>
-
-              {/* Visual mock of their headline */}
-              <div className="bg-neutral-50 border border-neutral-200/60 p-4 rounded-2xl space-y-2">
-                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Portfolio Headline:</span>
-                <p className="text-xs font-bold text-[#0b1c30] leading-relaxed">
-                  "{currentExample.headline}"
-                </p>
-                <div className="pt-2 border-t border-neutral-200/40">
-                  <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Evidence Setup:</span>
-                  <p className="text-[11px] text-neutral-600 font-semibold">{currentExample.assetsDescription}</p>
-                </div>
-              </div>
-
-              {/* Critique Analysis columns */}
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="bg-emerald-500/[0.02] border border-emerald-500/20 p-4 rounded-2xl space-y-2">
-                  <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Why It Works</span>
-                  <ul className="space-y-1">
-                    {currentExample.whyItWorks.map((w, idx) => (
-                      <li key={idx} className="text-xs font-semibold text-emerald-800 flex items-start gap-1.5 leading-relaxed">
-                        <span className="text-emerald-600 mt-0.5">✔</span>
-                        <span>{w}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
 
-                <div className="bg-red-500/[0.02] border border-red-500/20 p-4 rounded-2xl space-y-2">
-                  <span className="text-[9px] font-black text-red-700 uppercase tracking-widest">Weakness & Risks</span>
-                  <ul className="space-y-1">
-                    {currentExample.weakness.map((w, idx) => (
-                      <li key={idx} className="text-xs font-semibold text-red-800 flex items-start gap-1.5 leading-relaxed">
-                        <span className="text-red-600 mt-0.5">✖</span>
-                        <span>{w}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {/* Lesson */}
+                <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs font-bold text-[#0058be] leading-relaxed flex items-start gap-2">
+                  <Info size={14} className="shrink-0 mt-0.5" />
+                  <span>{currentExample.lesson}</span>
                 </div>
               </div>
+            )}
 
-              {/* Learning takeaway */}
-              <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs font-bold text-[#0058be] leading-relaxed flex items-start gap-2">
-                <Info size={14} className="shrink-0 mt-0.5" />
-                <span>{currentExample.lesson}</span>
-              </div>
-            </div>
-          )}
+          </div>
 
         </div>
 
       </div>
 
       {/* Visual Summary Completion Banner */}
-      <div className="max-w-3xl mx-auto bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 flex items-center justify-between text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+      <div className="max-w-3xl mx-auto bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 flex items-center justify-between text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest">
         <div className="flex items-center gap-1.5 text-emerald-600">
           <CheckCircle2 size={13} />
           <span>Archetype Set</span>
