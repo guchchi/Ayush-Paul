@@ -341,6 +341,40 @@ export function Step3ProfilePortfolio() {
                         </div>
                       </div>
 
+                      {/* Anatomy Breakdown */}
+                      <div className="space-y-2 border-t border-neutral-100 pt-3">
+                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Anatomy of Your Hook</span>
+                        
+                        <div className="space-y-1.5 text-[10px]">
+                          {/* Segment 1 */}
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-blue-50/40 border border-blue-100/60">
+                            <span className="text-[9px] font-black text-blue-600 bg-blue-100 px-1 py-0.5 rounded shrink-0">1. Outcome</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">"Preventing customer checkout drops..."</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Attracts client by addressing their direct revenue leakage.</p>
+                            </div>
+                          </div>
+
+                          {/* Segment 2 */}
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-purple-50/40 border border-purple-100/60">
+                            <span className="text-[9px] font-black text-purple-600 bg-purple-100 px-1 py-0.5 rounded shrink-0">2. Segment</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">"...for SaaS platforms"</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Targets context specifically, filtering out non-profitable leads.</p>
+                            </div>
+                          </div>
+
+                          {/* Segment 3 */}
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-indigo-50/40 border border-indigo-100/60">
+                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-100 px-1 py-0.5 rounded shrink-0">3. Method</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">"Analyzing checkout bottlenecks..."</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Answers how you solve it, setting you up as a diagnostic specialist.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
                         💡 Positioning Lesson: Clients don't buy your languages or toolsets—they buy their resolved business bottlenecks.
                       </div>
