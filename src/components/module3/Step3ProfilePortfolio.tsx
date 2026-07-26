@@ -56,7 +56,6 @@ export function Step3ProfilePortfolio() {
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
   const [isEyeTrackerPlaying, setIsEyeTrackerPlaying] = useState<boolean>(false);
-  const [heroUpgraded, setHeroUpgraded] = useState<boolean>(false);
 
   useEffect(() => {
     if (!pendingStrategy && !strategy && !isUpstreamStale) {
@@ -483,73 +482,48 @@ export function Step3ProfilePortfolio() {
                       </div>
                     )}
 
-                    <AnimatePresence mode="wait">
-                      {!heroUpgraded ? (
-                        <motion.div 
-                          key="weak-hook"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0, scale: 0.98 }}
-                          className="space-y-4"
-                        >
-                          <div className="space-y-1.5">
-                            <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-red-400" : "text-red-400")}>
-                              Generic Introduction (The Mistake)
-                            </span>
-                            <h2 className={cn("text-sm sm:text-base font-bold leading-snug", viewMode === 'blueprint' ? "text-neutral-400 line-through" : "text-white/50 line-through")}>
-                              "Hi, I'm a React Developer for hire."
-                            </h2>
-                            <p className={cn("text-xs leading-relaxed font-medium", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/40")}>
-                              I build fast, responsive websites using modern web technologies like Next.js and Tailwind CSS.
-                            </p>
-                          </div>
-                          
-                          <div className="flex items-center justify-between bg-red-50/50 border border-red-100 p-3 rounded-xl">
-                            <div className="text-[10px] text-red-700 font-semibold max-w-[75%] leading-relaxed">
-                              <span className="font-black">Client Perception:</span> "Just another commodity. I will negotiate this person's price down to the absolute minimum."
-                            </div>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); setHeroUpgraded(true); }}
-                              className="text-[10px] font-black uppercase tracking-wider bg-blue-600 text-white px-3 py-1.5 rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
-                            >
-                              Upgrade Hook
-                            </button>
-                          </div>
-                        </motion.div>
-                      ) : (
-                        <motion.div 
-                          key="strong-hook"
-                          initial={{ opacity: 0, scale: 0.98, y: 10 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                          className="space-y-4"
-                        >
-                          <div className="space-y-1.5">
-                            <span className={cn("text-[9px] font-black uppercase tracking-widest block text-blue-500")}>
-                              Outcome Positioning (The Solution)
-                            </span>
-                            <h2 className="text-sm sm:text-base font-black leading-snug text-[#0b1c30]">
-                              {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
-                            </h2>
-                            <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
-                              Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
-                            </p>
-                          </div>
+                    <div className="grid gap-4 sm:grid-cols-2 mt-4 relative">
+                      {/* Weak Hook (The Mistake) */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-red-50/50 border-red-200" : "bg-white/5 border-red-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>
+                            ❌ Generic Commodity
+                          </span>
+                          <h2 className={cn("text-sm font-bold leading-snug line-through", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/40")}>
+                            "Hi, I'm a React Developer for hire."
+                          </h2>
+                          <p className={cn("text-xs leading-relaxed font-medium mt-2", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/40")}>
+                            I build fast, responsive websites using modern web technologies like Next.js and Tailwind CSS.
+                          </p>
+                        </div>
+                        <div className={cn("text-[10px] font-semibold p-2.5 rounded-lg border mt-4", viewMode === 'blueprint' ? "bg-red-500/[0.05] border-red-100 text-red-700" : "bg-red-500/10 border-red-900/50 text-red-300")}>
+                          <span className="font-black block mb-0.5">Client Perception:</span> "Just another commodity. I will negotiate this price down."
+                        </div>
+                      </div>
 
-                          <div className="flex items-center justify-between bg-emerald-50/50 border border-emerald-100 p-3 rounded-xl">
-                            <div className="text-[10px] text-emerald-800 font-semibold leading-relaxed">
-                              <span className="font-black">Client Perception:</span> "A specialist who understands my expensive problem. An investment worth premium rates."
-                            </div>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); setHeroUpgraded(false); }}
-                              className="text-[10px] font-bold text-neutral-400 hover:text-neutral-600 transition-colors shrink-0"
-                            >
-                              Reset
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                      {/* Bridge Arrow (Desktop) */}
+                      <div className={cn("hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full items-center justify-center z-10 border shadow-sm", viewMode === 'blueprint' ? "bg-white border-neutral-200 text-neutral-400" : "bg-[#0b1c30] border-neutral-700 text-neutral-500")}>
+                        <ArrowRight size={14} />
+                      </div>
+
+                      {/* Strong Hook (The Solution) */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-emerald-50/50 border-emerald-200" : "bg-white/5 border-emerald-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>
+                            🟢 Upgraded Authority
+                          </span>
+                          <h2 className={cn("text-sm font-black leading-snug", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white")}>
+                            {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                          </h2>
+                          <p className={cn("text-xs leading-relaxed font-semibold mt-2", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/70")}>
+                            Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
+                          </p>
+                        </div>
+                        <div className={cn("text-[10px] font-semibold p-2.5 rounded-lg border mt-4", viewMode === 'blueprint' ? "bg-emerald-500/[0.05] border-emerald-100 text-emerald-800" : "bg-emerald-500/10 border-emerald-900/50 text-emerald-300")}>
+                          <span className="font-black block mb-0.5">Client Perception:</span> "A specialist who understands my problem. Worth premium rates."
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* SECTION 2: FOUNDATIONAL PROOF (Can you do the work?) */}
