@@ -53,6 +53,11 @@ export function Step3ProfilePortfolio() {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeInspectorToken, setActiveInspectorToken] = useState<'outcome' | 'audience' | 'mechanism' | null>('outcome');
+  
+  // Cognitive Learning Journey State: Observe -> Understand -> Compare -> Explore -> Edit -> Preview -> Approve
+  const [learningStage, setLearningStage] = useState<'observe' | 'understand' | 'compare' | 'explore' | 'edit' | 'preview' | 'approve'>('observe');
+  const [isEditingHook, setIsEditingHook] = useState<boolean>(false);
+  const [customHookText, setCustomHookText] = useState<string>('');
 
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
@@ -218,8 +223,95 @@ export function Step3ProfilePortfolio() {
       <div className="text-center space-y-2 max-w-xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-black text-[#0b1c30] tracking-tight">Organize Your Authority Story</h2>
         <p className="text-xs sm:text-sm text-neutral-500 font-semibold leading-relaxed">
-          Arrange your authority hook and proof assets into a client-ready sequence.
+          Follow the 7-stage learning journey from observing the hook to approving your portfolio strategy.
         </p>
+      </div>
+
+      {/* 🧠 Structured Cognitive Learning Journey Bar: Observe -> Understand -> Compare -> Explore -> Edit -> Preview -> Approve */}
+      <div className="bg-white border border-neutral-200/90 rounded-2xl p-3 sm:p-4 shadow-sm space-y-3 max-w-5xl mx-auto text-left">
+        <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
+          <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider flex items-center gap-1.5">
+            <Compass size={13} className="text-[#0058be]" />
+            Structured Cognitive Learning Flow
+          </span>
+          <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-wider">
+            Stage: {learningStage.toUpperCase()}
+          </span>
+        </div>
+
+        {/* 7 Interactive Stage Buttons */}
+        <div className="grid grid-cols-2 sm:grid-cols-7 gap-1.5">
+          {[
+            { id: 'observe', label: '1. Observe', sub: 'Read Hook', icon: Eye },
+            { id: 'understand', label: '2. Understand', sub: 'AI Logic', icon: Sparkles },
+            { id: 'compare', label: '3. Compare', sub: 'Bad vs Good', icon: Layers },
+            { id: 'explore', label: '4. Explore', sub: 'Inspect Roles', icon: Search },
+            { id: 'edit', label: '5. Edit', sub: 'Customize', icon: Edit2 },
+            { id: 'preview', label: '6. Preview', sub: 'Client View', icon: Layout },
+            { id: 'approve', label: '7. Approve', sub: 'Lock Strategy', icon: CheckCircle2 }
+          ].map((stage) => {
+            const Icon = stage.icon;
+            const isActive = learningStage === stage.id;
+            return (
+              <button
+                key={stage.id}
+                onClick={() => {
+                  setLearningStage(stage.id as any);
+                  if (stage.id === 'preview') setViewMode('preview');
+                  if (stage.id === 'compare' || stage.id === 'explore' || stage.id === 'observe' || stage.id === 'understand' || stage.id === 'edit') setViewMode('blueprint');
+                  if (stage.id === 'observe' || stage.id === 'understand') setActiveSectionId('hero');
+                  if (stage.id === 'edit') setIsEditingHook(true);
+                }}
+                className={cn(
+                  "p-2 rounded-xl border text-left transition-all cursor-pointer border-none flex flex-col justify-between",
+                  isActive 
+                    ? "bg-[#0b1c30] text-white shadow-md ring-2 ring-[#0b1c30]/30" 
+                    : "bg-neutral-50 text-neutral-600 hover:bg-neutral-100 border-neutral-200/60"
+                )}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <Icon size={11} className={isActive ? "text-blue-400" : "text-neutral-400"} />
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />}
+                </div>
+                <div className="mt-1">
+                  <span className="text-[9px] font-black uppercase tracking-wider block leading-tight">{stage.label}</span>
+                  <span className={cn("text-[8px] font-semibold block mt-0.5", isActive ? "text-neutral-300" : "text-neutral-400")}>{stage.sub}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Guided Stage Assistant Note */}
+        <div className="bg-blue-50/70 border border-blue-100 p-2.5 rounded-xl text-[10px] text-blue-900 font-bold flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Info size={13} className="text-blue-600 shrink-0" />
+            <span>
+              {learningStage === 'observe' && "1. Observe: Read the high-outcome hook statement generated by AI from your Module 1 & 2 diagnostic positioning."}
+              {learningStage === 'understand' && "2. Understand: Review the AI Strategic Reasoning Trace & Communication Audit score to see why this hook works."}
+              {learningStage === 'compare' && "3. Compare: Contrast generic freelancer commodity hooks against outcome-driven positioning statements."}
+              {learningStage === 'explore' && "4. Explore: Hover or click individual phrase tokens below to inspect how each part attracts attention or builds trust."}
+              {learningStage === 'edit' && "5. Edit: Optionally tweak the wording of your hook statement while keeping the core outcome intact."}
+              {learningStage === 'preview' && "6. Preview: Switch to Client Preview mode to experience how potential clients render your website layout."}
+              {learningStage === 'approve' && "7. Approve: Lock in your portfolio blueprint strategy and continue to Step 4 asset compilation."}
+            </span>
+          </div>
+          <button 
+            onClick={() => {
+              const stages: ('observe' | 'understand' | 'compare' | 'explore' | 'edit' | 'preview' | 'approve')[] = ['observe', 'understand', 'compare', 'explore', 'edit', 'preview', 'approve'];
+              const currentIndex = stages.indexOf(learningStage);
+              const nextStage = stages[(currentIndex + 1) % stages.length];
+              setLearningStage(nextStage);
+              if (nextStage === 'preview') setViewMode('preview');
+              if (nextStage === 'compare' || nextStage === 'explore' || nextStage === 'observe' || nextStage === 'understand' || nextStage === 'edit') setViewMode('blueprint');
+              if (nextStage === 'observe' || nextStage === 'understand') setActiveSectionId('hero');
+              if (nextStage === 'edit') setIsEditingHook(true);
+            }}
+            className="bg-blue-600 text-white font-black text-[9px] px-2.5 py-1 rounded-lg hover:bg-blue-700 transition-all cursor-pointer border-none shrink-0"
+          >
+            Next Stage ➔
+          </button>
+        </div>
       </div>
 
       {/* Mode Switcher Tabs */}
