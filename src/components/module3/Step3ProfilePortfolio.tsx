@@ -5,7 +5,7 @@ import {
   Target, MessageSquare, Award, Compass, Layers, Sparkles, ArrowLeft, ArrowRight,
   Edit2, RotateCw, RotateCcw, Check, Eye, EyeOff, ExternalLink, Shield, Info, AlertCircle,
   CheckCircle2, Circle, HelpCircle, User, Briefcase, Zap, HelpCircle as QuestionIcon,
-  ChevronRight, CalendarCheck, FileSpreadsheet, Lock
+  ChevronRight, CalendarCheck, FileSpreadsheet, Lock, Play, Star, Calendar, ArrowUpRight
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
@@ -50,10 +50,8 @@ export function Step3ProfilePortfolio() {
   // Local UX state
   const [viewMode, setViewMode] = useState<'blueprint' | 'preview' | 'examples'>('blueprint');
   const [selectedExampleTier, setSelectedExampleTier] = useState<'beginner' | 'intermediate' | 'expert'>('beginner');
-  const [draggedAssetId, setDraggedAssetId] = useState<string | null>(null);
-  const [selectedAssetForClickSwap, setSelectedAssetForClickSwap] = useState<string | null>(null);
-  const [feedbackMessage, setFeedbackMessage] = useState<{ sectionId: string; text: string } | null>(null);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(true); // Collapsed by default for clean canvas view
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
@@ -97,74 +95,6 @@ export function Step3ProfilePortfolio() {
     approveStrategy();
     confirmStep();
     nextStep();
-  };
-
-  // Drag and Drop implementation
-  const handleDragStart = (e: React.DragEvent, assetId: string) => {
-    e.dataTransfer.setData('text/plain', assetId);
-    setDraggedAssetId(assetId);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent, sectionId: string) => {
-    e.preventDefault();
-    const assetId = e.dataTransfer.getData('text/plain') || draggedAssetId;
-    if (assetId) {
-      placeAsset(assetId, sectionId);
-    }
-    setDraggedAssetId(null);
-  };
-
-  const placeAsset = (assetId: string, sectionId: string) => {
-    if (!displayStrategy) return;
-    
-    // Find section
-    const sectionIndex = displayStrategy.portfolioStructure.findIndex(s => s.sectionId === sectionId);
-    if (sectionIndex === -1) return;
-
-    const currentSection = displayStrategy.portfolioStructure[sectionIndex];
-    // Avoid duplicates
-    if (currentSection.proofAssetIds.includes(assetId)) return;
-
-    // Remove from other sections
-    const updatedSections = displayStrategy.portfolioStructure.map(sec => {
-      if (sec.sectionId === sectionId) {
-        return {
-          ...sec,
-          proofAssetIds: [...sec.proofAssetIds, assetId]
-        };
-      } else {
-        return {
-          ...sec,
-          proofAssetIds: sec.proofAssetIds.filter(id => id !== assetId)
-        };
-      }
-    });
-
-    // Update in store
-    updatePortfolioStructureSection(sectionId, { proofAssetIds: updatedSections.find(s => s.sectionId === sectionId)?.proofAssetIds || [] });
-    
-    // Update the other sections to clear the asset
-    const otherSection = updatedSections.find(s => s.sectionId !== sectionId);
-    if (otherSection) {
-      updatePortfolioStructureSection(otherSection.sectionId, { proofAssetIds: otherSection.proofAssetIds });
-    }
-
-    // Trigger educational feedback based on the dropped asset type
-    const assetObj = proofAssets.find(a => a.id === assetId);
-    let explanation = "Asset placed successfully.";
-    if (sectionId === 'foundational') {
-      explanation = `🎯 Primary Proof: Validates your core positioning mechanism to answer: "Can you actually solve my main bottleneck?"`;
-    } else if (sectionId === 'supporting') {
-      explanation = `🛡️ Supporting Proof: Confirms scope depth and repeatability so the client knows this is not a one-time fluke.`;
-    }
-
-    setFeedbackMessage({ sectionId, text: explanation });
-    setTimeout(() => setFeedbackMessage(null), 5000);
-    setSelectedAssetForClickSwap(null);
   };
 
   // Determine current buyer trust stage based on mapped assets count
@@ -234,16 +164,32 @@ export function Step3ProfilePortfolio() {
 
   const currentExample = freelancerExamples[selectedExampleTier];
 
-  if (!displayStrategy) {
-    return (
-      <div className="space-y-6 text-left">
-        <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-neutral-300 border-t-neutral-800 rounded-full animate-spin" />
-          <p className="text-sm text-neutral-500 font-semibold">Generating strategy...</p>
-        </div>
-      </div>
-    );
-  }
+  // Helper to resolve asset title
+  const getMappedAssetTitle = (sectionId: string, index: number) => {
+    if (!displayStrategy) return 'Unmapped Proof Asset';
+    const section = displayStrategy.portfolioStructure.find(s => s.sectionId === sectionId);
+    if (!section || !section.proofAssetIds[index]) return 'Placeholder Proof Project';
+    const assetId = section.proofAssetIds[index];
+    const assetObj = proofAssets.find(a => a.id === assetId);
+    return assetObj?.title || assetId.replace(/_/g, ' ');
+  };
+
+  const getMappedAssetHeadline = (sectionId: string, index: number) => {
+    if (!displayStrategy) return 'Detailed process walk-through & proof statements.';
+    const section = displayStrategy.portfolioStructure.find(s => s.sectionId === sectionId);
+    if (!section || !section.proofAssetIds[index]) return 'Detailed process walk-through & proof statements.';
+    const assetId = section.proofAssetIds[index];
+    const assetObj = proofAssets.find(a => a.id === assetId);
+    return assetObj?.portfolioCopy?.headline || 'Detailed process walk-through & proof statements.';
+  };
+
+  const isAssetReady = (sectionId: string, index: number) => {
+    if (!displayStrategy) return false;
+    const section = displayStrategy.portfolioStructure.find(s => s.sectionId === sectionId);
+    if (!section || !section.proofAssetIds[index]) return false;
+    const assetId = section.proofAssetIds[index];
+    return availableAssets.includes(assetId);
+  };
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto text-left pb-24 px-4 sm:px-6">
@@ -295,22 +241,6 @@ export function Step3ProfilePortfolio() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Sidebar Toggle for Draggable Assets */}
-          {viewMode === 'blueprint' && (
-            <button
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className={cn(
-                "flex items-center gap-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider border px-3 py-1.5 rounded-xl transition-all cursor-pointer",
-                isSidebarCollapsed 
-                  ? "bg-white hover:bg-neutral-50 text-neutral-600 border-neutral-200" 
-                  : "bg-blue-50 text-[#0058be] border-blue-200"
-              )}
-            >
-              <Briefcase size={12} />
-              {isSidebarCollapsed ? 'Show Assets Shelf' : 'Hide Assets Shelf'}
-            </button>
-          )}
-
           {/* Eye Tracker Replay Button */}
           {viewMode === 'blueprint' && (
             <button
@@ -326,418 +256,412 @@ export function Step3ProfilePortfolio() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-12 items-start">
         
-        {/* HORIZONTAL ASSET DRAWER / SHELF (If not collapsed) */}
-        <AnimatePresence>
-          {viewMode === 'blueprint' && !isSidebarCollapsed && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm space-y-3 overflow-hidden text-left"
-            >
-              <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
-                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Available Proof Assets</span>
-                <span className="text-[9px] text-neutral-400 font-bold uppercase">Drag into target zones or click to place</span>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                {proofAssets.map((asset) => {
-                  const isSelected = selectedAssetForClickSwap === asset.id;
-                  const isReady = availableAssets.includes(asset.id);
-                  return (
-                    <div
-                      key={asset.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, asset.id)}
-                      onClick={() => setSelectedAssetForClickSwap(isSelected ? null : asset.id)}
-                      className={cn(
-                        "p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing text-left space-y-1.5 select-none relative group",
-                        isSelected
-                          ? "border-blue-500 bg-blue-50/50 shadow-sm"
-                          : "border-neutral-200 hover:border-neutral-300 bg-white"
-                      )}
-                    >
-                      <div className="flex items-center justify-between gap-1.5">
-                        <span className="text-xs font-bold text-[#0b1c30] truncate">{asset.title}</span>
-                        <span className={cn(
-                          "text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md border",
-                          isReady ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-neutral-50 text-neutral-500 border-neutral-200"
-                        )}>
-                          {isReady ? 'Ready' : 'In Progress'}
-                        </span>
+        {/* LEFT: Buyer Psychology Gaze States & Educational Context Panel */}
+        <div className="lg:col-span-3 space-y-5">
+          {/* Buyer Trust Tracker */}
+          <div className="bg-white border border-neutral-200/80 rounded-3xl p-5 shadow-sm space-y-4 text-left">
+            <div className="flex items-center gap-1.5 border-b border-[#f1f5f9] pb-2.5">
+              <Target size={14} className="text-[#0058be]" />
+              <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Buyer Psychology Path</span>
+            </div>
+            
+            <div className="space-y-3">
+              {buyerStages.map((stage, idx) => {
+                const isActive = idx === activeStageIndex;
+                const isCompletedStage = idx < activeStageIndex;
+                return (
+                  <div 
+                    key={stage.id} 
+                    className={cn(
+                      "p-3 rounded-xl border transition-all duration-300 text-left space-y-1 relative",
+                      isActive 
+                        ? "border-[#0058be] bg-blue-50/50 shadow-sm" 
+                        : isCompletedStage 
+                          ? "border-emerald-200 bg-emerald-50/[0.15]" 
+                          : "border-neutral-100 bg-neutral-50/50 opacity-60"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black text-[#0b1c30]">{stage.label}</span>
+                      {isCompletedStage && <CheckCircle2 size={12} className="text-emerald-500 font-extrabold" />}
+                    </div>
+                    <p className="text-[9px] text-neutral-500 font-semibold leading-relaxed mt-0.5">{stage.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Interactive Tutorial Box */}
+          <div className="bg-white border border-neutral-200/80 rounded-3xl p-5 shadow-sm space-y-3 text-left">
+            <div className="flex items-center gap-1.5 border-b border-[#f1f5f9] pb-2.5">
+              <Sparkles size={14} className="text-[#0058be]" />
+              <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Strategic Principle</span>
+            </div>
+            <AnimatePresence mode="wait">
+              {activeSectionId ? (
+                <motion.div
+                  key={activeSectionId}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="space-y-2 text-xs"
+                >
+                  <h4 className="font-black text-[#0b1c30] uppercase tracking-wider text-[10px] text-blue-600">
+                    {activeSectionId === 'hero' && "Section 1: Hero Value Hook"}
+                    {activeSectionId === 'foundational' && "Section 2: Primary Proof"}
+                    {activeSectionId === 'supporting' && "Section 3: Supporting Gaps"}
+                    {activeSectionId === 'cta' && "Section 4: Call to Action"}
+                  </h4>
+                  <p className="text-neutral-600 font-medium leading-relaxed">
+                    {activeSectionId === 'hero' && "Answers: 'What problem do you solve for me?' Immediately filters target buyers and establishes positioning hook."}
+                    {activeSectionId === 'foundational' && "Answers: 'Can you actually deliver?' Demonstrates your unique mechanism in action using a video or text case study."}
+                    {activeSectionId === 'supporting' && "Answers: 'Is this a repeatable skill or a fluke?' Neutralizes remaining trust gaps through third-party metrics."}
+                    {activeSectionId === 'cta' && "Answers: 'How do I start?' Lowers conversion friction by offering a low-commitment diagnostic audit call."}
+                  </p>
+                </motion.div>
+              ) : (
+                <p className="text-[11px] text-neutral-400 font-semibold leading-relaxed">
+                  Click on any section of the browser mockup on the right to examine its role in the client's trust journey.
+                </p>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* CENTER: THE IMMERSIVE PORTFOLIO BLUEPRINT */}
+        <div className="lg:col-span-9 space-y-6">
+          
+          {/* Blueprint Mode / Client Preview */}
+          {(viewMode === 'blueprint' || viewMode === 'preview') && (
+            <div className="space-y-4">
+              
+              {/* Safari Mock Browser */}
+              <div className="border border-neutral-200 rounded-3xl bg-white shadow-xl overflow-hidden flex flex-col relative max-w-full">
+                
+                {/* Browser address bar */}
+                <div className="bg-[#f8f9ff]/90 border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400 block shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 block shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-green-400 block shrink-0" />
+                  </div>
+                  <div className="bg-neutral-100 border border-neutral-200/60 text-[9px] font-semibold text-neutral-400 py-1 px-8 rounded-lg max-w-xs w-full text-center truncate select-none">
+                    {viewMode === 'blueprint' ? 'layout-blueprint-active' : 'client-live-preview'}
+                  </div>
+                  <div className="w-12 shrink-0" />
+                </div>
+
+                {/* Animated Eye tracker thought bubble */}
+                {viewMode === 'blueprint' && isEyeTrackerPlaying && (
+                  <div 
+                    className="absolute z-30 bg-[#0b1c30] text-white font-bold text-[9px] sm:text-[10px] py-1.5 px-3 rounded-xl shadow-md border border-neutral-700 flex items-center gap-1.5 transition-all duration-500"
+                    style={{
+                      top: eyeTrackerStep === 1 ? '160px' : eyeTrackerStep === 2 ? '300px' : eyeTrackerStep === 3 ? '520px' : '680px',
+                      left: '24px',
+                      transform: 'translateY(-50%)'
+                    }}
+                  >
+                    <span className="animate-bounce">👀</span>
+                    <span>
+                      {eyeTrackerStep === 1 && "Noticed: Interesting hook... does this match my pain point?"}
+                      {eyeTrackerStep === 2 && "Interested: Let's see your core case study or project proof."}
+                      {eyeTrackerStep === 3 && "Convinced: Okay, they have additional evidence & reviews."}
+                      {eyeTrackerStep === 4 && "Books Call: This matches my needs. I will schedule a call."}
+                    </span>
+                  </div>
+                )}
+
+                {/* Real Portfolio Representation Page */}
+                <div className="p-4 sm:p-8 space-y-6 bg-neutral-50/50 min-h-[600px] text-left">
+                  
+                  {/* Notion/Website Style Profile Header banner */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-neutral-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0b1c30] text-white flex items-center justify-center font-black text-sm border border-neutral-200">
+                        {authorityPosition.slice(0, 2).toUpperCase()}
                       </div>
-                      <p className="text-[9px] text-neutral-400 font-semibold truncate">
-                        {asset.assetType.replace(/_/g, ' ')}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs sm:text-sm font-black text-[#0b1c30]">Ayush Paul</span>
+                          <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
+                            {authorityPosition} Strategy
+                          </span>
+                        </div>
+                        <p className="text-[9px] sm:text-[10px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">Specialist Consultant</p>
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-neutral-400 font-bold bg-white border border-neutral-100 rounded-xl px-3 py-1.5 shadow-sm">
+                      Target Objections: <span className="font-extrabold text-blue-600">Neutralized</span>
+                    </div>
+                  </div>
+
+                  {/* SECTION 1: HERO HOOK (What problem do you solve?) */}
+                  <div
+                    onClick={() => setActiveSectionId('hero')}
+                    className={cn(
+                      "p-6 rounded-2xl border transition-all relative text-left space-y-3 cursor-pointer",
+                      viewMode === 'blueprint'
+                        ? (activeSectionId === 'hero' ? "bg-blue-50/60 border-blue-500 shadow-md ring-2 ring-blue-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                        : "bg-[#0b1c30] text-white border-transparent shadow-sm"
+                    )}
+                  >
+                    {viewMode === 'blueprint' && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
+                          1. Hero Hook ➔ "What problem do you solve?"
+                        </span>
+                        {activeSectionId === 'hero' && <Sparkles size={11} className="text-blue-500" />}
+                      </div>
+                    )}
+
+                    <div className="space-y-1.5">
+                      <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-neutral-400" : "text-blue-400")}>
+                        Positioning Promise
+                      </span>
+                      <h2 className="text-sm sm:text-base font-black leading-snug">
+                        {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                      </h2>
+                      <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
+                        Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
                       </p>
                     </div>
-                  );
-                })}
-              </div>
-              {selectedAssetForClickSwap && (
-                <div className="bg-blue-50 border border-blue-200/60 rounded-xl p-3 text-[10px] font-bold text-[#0058be] animate-pulse">
-                  Now click on a target section in the blueprint mockup to place this asset.
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  </div>
 
-        {/* MOCKUP CONTAINER */}
-        <div className="grid gap-6 lg:grid-cols-12 items-start">
-          
-          {/* LEFT: Buyer Psychology Gaze States */}
-          {viewMode === 'blueprint' && (
-            <div className="lg:col-span-3 bg-white border border-neutral-200/80 rounded-3xl p-5 shadow-sm space-y-4 text-left">
-              <div className="flex items-center gap-1.5 border-b border-[#f1f5f9] pb-2.5">
-                <Target size={14} className="text-[#0058be]" />
-                <span className="text-[10px] font-black text-[#0b1c30] uppercase tracking-wider">Buyer Psychology Path</span>
-              </div>
-              
-              {/* Vertical timeline of stages */}
-              <div className="space-y-4">
-                {buyerStages.map((stage, idx) => {
-                  const isActive = idx === activeStageIndex;
-                  const isCompletedStage = idx < activeStageIndex;
-                  return (
-                    <div 
-                      key={stage.id} 
-                      className={cn(
-                        "p-3.5 rounded-2xl border transition-all duration-300 text-left space-y-1 relative",
-                        isActive 
-                          ? "border-[#0058be] bg-blue-50/50 shadow-sm" 
-                          : isCompletedStage 
-                            ? "border-emerald-200 bg-emerald-50/[0.15]" 
-                            : "border-neutral-100 bg-neutral-50/50 opacity-60"
-                      )}
-                    >
+                  {/* SECTION 2: FOUNDATIONAL PROOF (Can you do the work?) */}
+                  <div
+                    onClick={() => setActiveSectionId('foundational')}
+                    className={cn(
+                      "p-6 rounded-2xl border transition-all relative text-left space-y-4 cursor-pointer",
+                      viewMode === 'blueprint'
+                        ? (activeSectionId === 'foundational' ? "bg-indigo-50/60 border-indigo-500 shadow-md ring-2 ring-indigo-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                        : "bg-white border border-neutral-200/80 shadow-sm"
+                    )}
+                  >
+                    {viewMode === 'blueprint' && (
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black text-[#0b1c30]">{stage.label}</span>
-                        {isCompletedStage && <CheckCircle2 size={12} className="text-emerald-500" />}
+                        <span className="text-[8px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase tracking-widest">
+                          2. Primary Proof ➔ "Can you actually do the work?"
+                        </span>
+                        {activeSectionId === 'foundational' && <Sparkles size={11} className="text-indigo-500" />}
                       </div>
-                      <p className="text-[9px] text-neutral-500 font-semibold leading-relaxed mt-0.5">{stage.desc}</p>
+                    )}
+
+                    <div className="space-y-1">
+                      <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                        {displayStrategy.portfolioStructure[0]?.sectionName || 'Foundational Proof'}
+                      </h3>
+                      <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                        {displayStrategy.portfolioStructure[0]?.purpose}
+                      </p>
                     </div>
-                  );
-                })}
+
+                    {/* MOCK VIDEO CASE STUDY PLAYER */}
+                    <div className="bg-neutral-900 text-white rounded-xl p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between min-h-[140px] shadow-inner">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <span className="text-[8px] font-black uppercase bg-blue-600 text-white px-2 py-0.5 rounded">
+                            Video Walkthrough Demo
+                          </span>
+                          <h4 className="text-xs font-bold truncate pr-6 mt-1">
+                            {getMappedAssetTitle('foundational', 0)}
+                          </h4>
+                        </div>
+                        <PlayCircle size={28} className="text-blue-500 shrink-0 cursor-pointer hover:scale-105 transition-transform" />
+                      </div>
+
+                      <div className="space-y-2 mt-4">
+                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                          {getMappedAssetHeadline('foundational', 0)}
+                        </p>
+                        {/* Playback timeline slider bar */}
+                        <div className="flex items-center gap-2 text-[8px] text-neutral-500 font-semibold">
+                          <span>00:00</span>
+                          <div className="flex-1 bg-neutral-800 h-1 rounded-full overflow-hidden">
+                            <div className="bg-blue-500 h-full w-[40%]" />
+                          </div>
+                          <span>08:42</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Status Indicator */}
+                    <div className="flex items-center justify-between text-[9px] font-black text-neutral-400 border-t border-neutral-100 pt-3">
+                      <span>STATUS</span>
+                      <span className={cn(
+                        "uppercase tracking-widest px-2 py-0.5 rounded-md border",
+                        isAssetReady('foundational', 0) ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-neutral-50 text-neutral-500 border-neutral-200"
+                      )}>
+                        {isAssetReady('foundational', 0) ? 'Ready to Publish' : 'Drafting In Progress'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* SECTION 3: SUPPORTING EVIDENCE (Is it a fluke?) */}
+                  <div
+                    onClick={() => setActiveSectionId('supporting')}
+                    className={cn(
+                      "p-6 rounded-2xl border transition-all relative text-left space-y-4 cursor-pointer",
+                      viewMode === 'blueprint'
+                        ? (activeSectionId === 'supporting' ? "bg-purple-50/60 border-purple-500 shadow-md ring-2 ring-purple-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                        : "bg-white border border-neutral-200/80 shadow-sm"
+                    )}
+                  >
+                    {viewMode === 'blueprint' && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100 uppercase tracking-widest">
+                          3. Supporting Evidence ➔ "Is this repeatable?"
+                        </span>
+                        {activeSectionId === 'supporting' && <Sparkles size={11} className="text-purple-500" />}
+                      </div>
+                    )}
+
+                    <div className="space-y-1">
+                      <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
+                        {displayStrategy.portfolioStructure[1]?.sectionName || 'Supporting Evidence'}
+                      </h3>
+                      <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                        {displayStrategy.portfolioStructure[1]?.purpose}
+                      </p>
+                    </div>
+
+                    {/* TWO REALISTIC CARDS: Metric Box & Mock Testimonial */}
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {/* Card A: Case study detail */}
+                      <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2 text-left">
+                        <div className="flex items-center gap-1.5">
+                          <Star size={11} className="text-yellow-500 fill-yellow-500" />
+                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Methodology verified</span>
+                        </div>
+                        <h4 className="text-xs font-bold text-[#0b1c30] truncate">
+                          {getMappedAssetTitle('supporting', 0)}
+                        </h4>
+                        <p className="text-[9px] text-neutral-500 font-semibold leading-relaxed line-clamp-2">
+                          {getMappedAssetHeadline('supporting', 0)}
+                        </p>
+                      </div>
+
+                      {/* Card B: Client review quote */}
+                      <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2 text-left">
+                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Client Feedback Review</span>
+                        <p className="text-[10px] text-neutral-600 font-bold italic leading-relaxed">
+                          "Ayush structured checkout audits that resolved our primary latency drops within days."
+                        </p>
+                        <span className="text-[9px] font-bold text-[#0b1c30] block">➔ CTO, SaaS Fintech</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECTION 4: CALL TO ACTION (How to work with you?) */}
+                  <div
+                    onClick={() => setActiveSectionId('cta')}
+                    className={cn(
+                      "p-6 rounded-2xl border transition-all relative text-left space-y-4 cursor-pointer",
+                      viewMode === 'blueprint'
+                        ? (eyeTrackerStep === 4 ? "bg-emerald-50 border-emerald-500 shadow-md ring-2 ring-emerald-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
+                        : "bg-white border border-neutral-200/80 shadow-sm"
+                    )}
+                  >
+                    {viewMode === 'blueprint' && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">
+                          4. Trust Lock CTA ➔ "How do I work with you?"
+                        </span>
+                        {activeSectionId === 'cta' && <Sparkles size={11} className="text-emerald-500" />}
+                      </div>
+                    )}
+
+                    {/* Calendar Booking Mockup */}
+                    <div className="bg-[#f8f9ff] border border-blue-100 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-[#0058be] shrink-0">
+                          <Calendar size={18} />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-black text-[#0b1c30]">Schedule a 15-Minute Checkout Audit</h4>
+                          <p className="text-[10px] text-neutral-400 font-semibold mt-0.5">Let's map out your primary drop bottleneck.</p>
+                        </div>
+                      </div>
+                      <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-sm transition-all cursor-pointer border-none flex items-center gap-1">
+                        Book Diagnostic
+                        <ArrowUpRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
               </div>
+
             </div>
           )}
 
-          {/* MAIN PREVIEW CANVAS */}
-          <div className={cn("w-full transition-all duration-300", viewMode === 'blueprint' ? "lg:col-span-9" : "lg:col-span-12")}>
-            
-            {/* Blueprint Mode / Client Preview */}
-            {(viewMode === 'blueprint' || viewMode === 'preview') && (
-              <div className="space-y-4">
-                
-                {/* Safari Browser Canvas Wrapper */}
-                <div className="border border-neutral-200 rounded-3xl bg-white shadow-lg overflow-hidden flex flex-col relative max-w-full">
-                  
-                  {/* Safari header */}
-                  <div className="bg-[#f8f9ff]/80 border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-400 block shrink-0" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 block shrink-0" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-400 block shrink-0" />
-                    </div>
-                    
-                    {/* Visual Eye tracker path details */}
-                    <div className="bg-neutral-100 border border-neutral-200/60 text-[9px] font-semibold text-neutral-400 py-1 px-8 rounded-lg max-w-xs w-full text-center truncate select-none">
-                      {viewMode === 'blueprint' ? 'authority-story-blueprint' : 'client-gaze-preview'}
-                    </div>
-                    <div className="w-12 shrink-0" />
-                  </div>
-
-                  {/* Looping Eye tracker visual overlay */}
-                  {viewMode === 'blueprint' && isEyeTrackerPlaying && (
-                    <div 
-                      className="absolute z-30 bg-[#0b1c30] text-white font-bold text-[9px] sm:text-[10px] py-1.5 px-3 rounded-xl shadow-md border border-neutral-700 flex items-center gap-1.5 transition-all duration-500"
-                      style={{
-                        top: eyeTrackerStep === 1 ? '160px' : eyeTrackerStep === 2 ? '300px' : eyeTrackerStep === 3 ? '440px' : '580px',
-                        left: '24px',
-                        transform: 'translateY(-50%)'
-                      }}
-                    >
-                      <span className="animate-bounce">👀</span>
-                      <span>
-                        {eyeTrackerStep === 1 && "Noticed: Interesting hook... does this match my pain point?"}
-                        {eyeTrackerStep === 2 && "Interested: Let's see your core case study or project proof."}
-                        {eyeTrackerStep === 3 && "Convinced: Okay, they have additional evidence & reviews."}
-                        {eyeTrackerStep === 4 && "Books Call: This matches my needs. I will schedule a call."}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Browser Content - RENDER AS A REAL PORTFOLIO PAGE */}
-                  <div className="p-4 sm:p-8 space-y-6 bg-neutral-50/50 min-h-[500px] text-left">
-                    
-                    {/* Realistic Profile Header (LinkedIn/Notion Layout style) */}
-                    <div className="bg-white border border-neutral-200 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center text-[#0058be] font-black text-sm sm:text-base border border-blue-200">
-                          {authorityPosition.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs sm:text-sm font-black text-[#0b1c30]">Ayush Paul</span>
-                            <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
-                              {authorityPosition} Archetype
-                            </span>
-                          </div>
-                          <p className="text-[10px] sm:text-xs text-neutral-400 font-semibold">Specialist Consultant & Developer</p>
-                        </div>
-                      </div>
-
-                      <div className="text-[10px] text-neutral-400 font-semibold bg-neutral-50 border border-neutral-100 rounded-xl px-3 py-1.5 max-w-xs">
-                        Platform: <span className="font-bold text-[#0b1c30]">LinkedIn & Custom Portfolio</span>
-                      </div>
-                    </div>
-
-                    {/* SECTION 1: HERO PROPOSITION DROPZONE */}
-                    <div
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, 'hero')}
-                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'hero')}
-                      className={cn(
-                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-3",
-                        viewMode === 'blueprint'
-                          ? (eyeTrackerStep === 1 ? "bg-blue-50/60 border-blue-500 shadow-md ring-2 ring-blue-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                          : "bg-[#0b1c30] text-white border-transparent shadow-sm"
-                      )}
-                    >
-                      {viewMode === 'blueprint' && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
-                            1. Authority hook (Client Lands)
-                          </span>
-                          {eyeTrackerStep === 1 && <span className="animate-ping w-2 h-2 rounded-full bg-blue-500" />}
-                        </div>
-                      )}
-
-                      <div className="space-y-1.5">
-                        <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-neutral-400" : "text-blue-400")}>
-                          Value Proposition
-                        </span>
-                        <h2 className="text-sm sm:text-base font-black leading-snug">
-                          {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
-                        </h2>
-                        <p className={cn("text-xs leading-relaxed", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
-                          We analyze checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* SECTION 2: FOUNDATIONAL PROOF DROPZONE */}
-                    <div
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, 'foundational')}
-                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'foundational')}
-                      className={cn(
-                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-4",
-                        viewMode === 'blueprint'
-                          ? (eyeTrackerStep === 2 ? "bg-indigo-50/60 border-indigo-500 shadow-md ring-2 ring-indigo-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                          : "bg-white border border-neutral-200/80 shadow-sm"
-                      )}
-                    >
-                      {viewMode === 'blueprint' && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[8px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase tracking-widest">
-                            2. Foundational Proof (Primary Objections)
-                          </span>
-                          {eyeTrackerStep === 2 && <span className="animate-ping w-2 h-2 rounded-full bg-indigo-500" />}
-                        </div>
-                      )}
-
-                      <div className="space-y-1">
-                        <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
-                          {displayStrategy.portfolioStructure[0]?.sectionName || 'Foundational Proof'}
-                        </h3>
-                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                          {displayStrategy.portfolioStructure[0]?.purpose}
-                        </p>
-                      </div>
-
-                      {/* Mapped Assets */}
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {displayStrategy.portfolioStructure[0]?.proofAssetIds.map(assetId => {
-                          const asset = proofAssets.find(a => a.id === assetId);
-                          return (
-                            <div key={assetId} className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2">
-                              <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest block">Primary Case Study</span>
-                              <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
-                              <p className="text-[10px] text-neutral-500 font-semibold leading-relaxed truncate">
-                                {asset?.portfolioCopy?.headline || 'Detailed walkthrough and process validation.'}
-                              </p>
-                            </div>
-                          );
-                        })}
-                        {displayStrategy.portfolioStructure[0]?.proofAssetIds.length === 0 && (
-                          <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-8 text-center text-xs font-bold text-neutral-400 rounded-xl">
-                            Drop Primary Case Study here or click to swap
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Feedback popover inside section */}
-                      {feedbackMessage && feedbackMessage.sectionId === 'foundational' && (
-                        <div className="bg-indigo-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in z-20">
-                          {feedbackMessage.text}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* SECTION 3: SUPPORTING EVIDENCE DROPZONE */}
-                    <div
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, 'supporting')}
-                      onClick={() => selectedAssetForClickSwap && placeAsset(selectedAssetForClickSwap, 'supporting')}
-                      className={cn(
-                        "p-5 sm:p-6 rounded-2xl border transition-all relative space-y-4",
-                        viewMode === 'blueprint'
-                          ? (eyeTrackerStep === 3 ? "bg-purple-50/60 border-purple-500 shadow-md ring-2 ring-purple-500/20" : "bg-white border-dashed border-neutral-300 hover:border-neutral-400")
-                          : "bg-white border border-neutral-200/80 shadow-sm"
-                      )}
-                    >
-                      {viewMode === 'blueprint' && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-[8px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100 uppercase tracking-widest">
-                            3. Supporting Validation (Repeatability)
-                          </span>
-                          {eyeTrackerStep === 3 && <span className="animate-ping w-2 h-2 rounded-full bg-purple-500" />}
-                        </div>
-                      )}
-
-                      <div className="space-y-1">
-                        <h3 className="text-xs font-black text-[#0b1c30] uppercase tracking-wider">
-                          {displayStrategy.portfolioStructure[1]?.sectionName || 'Supporting Evidence'}
-                        </h3>
-                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                          {displayStrategy.portfolioStructure[1]?.purpose}
-                        </p>
-                      </div>
-
-                      {/* Mapped Assets */}
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {displayStrategy.portfolioStructure[1]?.proofAssetIds.map(assetId => {
-                          const asset = proofAssets.find(a => a.id === assetId);
-                          return (
-                            <div key={assetId} className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2">
-                              <span className="text-[8px] font-black text-indigo-600 uppercase tracking-widest block">Secondary Evidence</span>
-                              <span className="text-xs font-bold text-[#0b1c30] block">{asset?.title || assetId}</span>
-                              <p className="text-[10px] text-neutral-500 font-semibold leading-relaxed truncate">
-                                {asset?.portfolioCopy?.headline || 'Supporting statistics or testimonials.'}
-                              </p>
-                            </div>
-                          );
-                        })}
-                        {displayStrategy.portfolioStructure[1]?.proofAssetIds.length === 0 && (
-                          <div className="sm:col-span-2 border border-dashed border-neutral-200 bg-neutral-50/50 py-8 text-center text-xs font-bold text-neutral-400 rounded-xl">
-                            Drop Supporting Evidence here or click to swap
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Feedback popover inside section */}
-                      {feedbackMessage && feedbackMessage.sectionId === 'supporting' && (
-                        <div className="bg-purple-500 text-white font-bold text-[9px] p-2.5 rounded-xl shadow-md absolute bottom-3 right-3 animate-fade-in z-20">
-                          {feedbackMessage.text}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* SECTION 4: CALL TO ACTION BUTTON WIREFRAME */}
-                    <div
-                      className={cn(
-                        "p-4 rounded-xl border text-center transition-all relative",
-                        viewMode === 'blueprint'
-                          ? (eyeTrackerStep === 4 ? "bg-emerald-50 border-emerald-500 shadow-md ring-2 ring-emerald-500/20" : "bg-white border-dashed border-neutral-300")
-                          : "bg-blue-600 text-white border-transparent font-bold cursor-pointer hover:bg-blue-700 shadow-sm"
-                      )}
-                    >
-                      {viewMode === 'blueprint' && (
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">
-                            4. Trust Lock & Conversion
-                          </span>
-                          {eyeTrackerStep === 4 && <span className="animate-ping w-2 h-2 rounded-full bg-emerald-500" />}
-                        </div>
-                      )}
-                      <span className="text-xs font-black uppercase tracking-wider">Book Strategy Audit</span>
-                    </div>
-
-                  </div>
-                </div>
-
+          {/* Live Examples list */}
+          {viewMode === 'examples' && (
+            <div className="bg-white border border-neutral-200/80 rounded-3xl p-6 shadow-sm space-y-6">
+              
+              <div className="space-y-1.5 border-b border-neutral-100 pb-3">
+                <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 uppercase tracking-widest">
+                  Freelancer Case Study Analysis
+                </span>
+                <h3 className="text-base font-black text-[#0b1c30]">
+                  {currentExample.tier}
+                </h3>
               </div>
-            )}
 
-            {/* 2. LIVE EXAMPLES MODE (Freelancer Tiers Critique) */}
-            {viewMode === 'examples' && (
-              <div className="bg-white border border-neutral-200/80 rounded-3xl p-6 shadow-sm space-y-6">
-                
-                <div className="space-y-1.5 border-b border-neutral-100 pb-3">
-                  <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100 uppercase tracking-widest">
-                    Freelancer Case Study
-                  </span>
-                  <h3 className="text-base font-black text-[#0b1c30]">
-                    {currentExample.tier}
-                  </h3>
-                </div>
-
-                {/* Headline preview */}
-                <div className="bg-neutral-50 border border-neutral-200/60 p-4 rounded-2xl space-y-2">
-                  <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Portfolio Headline:</span>
-                  <p className="text-xs font-bold text-[#0b1c30] leading-relaxed">
-                    "{currentExample.headline}"
-                  </p>
-                  <div className="pt-2 border-t border-neutral-200/40">
-                    <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Evidence Setup:</span>
-                    <p className="text-[11px] text-neutral-600 font-semibold">{currentExample.assetsDescription}</p>
-                  </div>
-                </div>
-
-                {/* Critique columns */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div className="bg-emerald-500/[0.02] border border-emerald-500/20 p-4 rounded-2xl space-y-2">
-                    <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Why It Works</span>
-                    <ul className="space-y-1">
-                      {currentExample.whyItWorks.map((w, idx) => (
-                        <li key={idx} className="text-xs font-semibold text-emerald-800 flex items-start gap-1.5 leading-relaxed">
-                          <span className="text-emerald-600 mt-0.5">✔</span>
-                          <span>{w}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="bg-red-500/[0.02] border border-red-500/20 p-4 rounded-2xl space-y-2">
-                    <span className="text-[9px] font-black text-red-700 uppercase tracking-widest">Weakness & Risks</span>
-                    <ul className="space-y-1">
-                      {currentExample.weakness.map((w, idx) => (
-                        <li key={idx} className="text-xs font-semibold text-red-800 flex items-start gap-1.5 leading-relaxed">
-                          <span className="text-red-600 mt-0.5">✖</span>
-                          <span>{w}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Lesson */}
-                <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs font-bold text-[#0058be] leading-relaxed flex items-start gap-2">
-                  <Info size={14} className="shrink-0 mt-0.5" />
-                  <span>{currentExample.lesson}</span>
+              {/* Visual mock of their headline */}
+              <div className="bg-neutral-50 border border-neutral-200/60 p-4 rounded-2xl space-y-2">
+                <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Portfolio Headline:</span>
+                <p className="text-xs font-bold text-[#0b1c30] leading-relaxed">
+                  "{currentExample.headline}"
+                </p>
+                <div className="pt-2 border-t border-neutral-200/40">
+                  <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Evidence Setup:</span>
+                  <p className="text-[11px] text-neutral-600 font-semibold">{currentExample.assetsDescription}</p>
                 </div>
               </div>
-            )}
 
-          </div>
+              {/* Critique Analysis columns */}
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div className="bg-emerald-500/[0.02] border border-emerald-500/20 p-4 rounded-2xl space-y-2">
+                  <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Why It Works</span>
+                  <ul className="space-y-1">
+                    {currentExample.whyItWorks.map((w, idx) => (
+                      <li key={idx} className="text-xs font-semibold text-emerald-800 flex items-start gap-1.5 leading-relaxed">
+                        <span className="text-emerald-600 mt-0.5">✔</span>
+                        <span>{w}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-red-500/[0.02] border border-red-500/20 p-4 rounded-2xl space-y-2">
+                  <span className="text-[9px] font-black text-red-700 uppercase tracking-widest">Weakness & Risks</span>
+                  <ul className="space-y-1">
+                    {currentExample.weakness.map((w, idx) => (
+                      <li key={idx} className="text-xs font-semibold text-red-800 flex items-start gap-1.5 leading-relaxed">
+                        <span className="text-red-600 mt-0.5">✖</span>
+                        <span>{w}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* take-away */}
+              <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs font-bold text-[#0058be] leading-relaxed flex items-start gap-2">
+                <Info size={14} className="shrink-0 mt-0.5" />
+                <span>{currentExample.lesson}</span>
+              </div>
+            </div>
+          )}
 
         </div>
 
       </div>
 
-      {/* Visual Summary Completion Banner */}
+      {/* Visual Process Summary */}
       <div className="max-w-3xl mx-auto bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 flex items-center justify-between text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest">
         <div className="flex items-center gap-1.5 text-emerald-600">
           <CheckCircle2 size={13} />
