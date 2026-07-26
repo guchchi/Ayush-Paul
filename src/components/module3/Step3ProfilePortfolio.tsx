@@ -315,12 +315,43 @@ export function Step3ProfilePortfolio() {
                     {activeSectionId === 'supporting' && "Section 3: Supporting Gaps"}
                     {activeSectionId === 'cta' && "Section 4: Call to Action"}
                   </h4>
-                  <p className="text-neutral-600 font-medium leading-relaxed">
-                    {activeSectionId === 'hero' && "Answers: 'What problem do you solve for me?' Immediately filters target buyers and establishes positioning hook."}
-                    {activeSectionId === 'foundational' && "Answers: 'Can you actually deliver?' Demonstrates your unique mechanism in action using a video or text case study."}
-                    {activeSectionId === 'supporting' && "Answers: 'Is this a repeatable skill or a fluke?' Neutralizes remaining trust gaps through third-party metrics."}
-                    {activeSectionId === 'cta' && "Answers: 'How do I start?' Lowers conversion friction by offering a low-commitment diagnostic audit call."}
-                  </p>
+                  {activeSectionId === 'hero' ? (
+                    <div className="space-y-4 pt-1">
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Answers: <span className="text-[#0b1c30] font-bold">"What problem do you solve for me?"</span> Filters target buyers instantly.
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="p-3 rounded-xl border border-red-200 bg-red-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-red-600 uppercase tracking-widest block">❌ Generic Commodity Hook</span>
+                          <p className="text-xs font-bold text-neutral-400 italic mt-1">"React developer for hire" / "UI Designer"</p>
+                          <span className="text-[8px] text-neutral-400 font-semibold block mt-1">Focus: Selling your input tools. Devalues your pricing.</span>
+                        </div>
+
+                        <div className="flex justify-center text-neutral-300">
+                          <ChevronRight size={14} className="rotate-90" />
+                        </div>
+
+                        <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-emerald-700 uppercase tracking-widest block">🟢 Upgraded Authority Hook</span>
+                          <p className="text-xs font-black text-emerald-800 mt-1 leading-snug">
+                            "{useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}"
+                          </p>
+                          <span className="text-[8px] text-emerald-600 font-semibold block mt-1">Focus: Selling the client outcome. Justifies premium rates.</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
+                        💡 Positioning Lesson: Clients don't buy your languages or toolsets—they buy their resolved business bottlenecks.
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-neutral-600 font-medium leading-relaxed">
+                      {activeSectionId === 'foundational' && "Answers: 'Can you actually deliver?' Demonstrates your unique mechanism in action using a video or text case study."}
+                      {activeSectionId === 'supporting' && "Answers: 'Is this a repeatable skill or a fluke?' Neutralizes remaining trust gaps through third-party metrics."}
+                      {activeSectionId === 'cta' && "Answers: 'How do I start?' Lowers conversion friction by offering a low-commitment diagnostic audit call."}
+                    </p>
+                  )}
                 </motion.div>
               ) : (
                 <p className="text-[11px] text-neutral-400 font-semibold leading-relaxed">
