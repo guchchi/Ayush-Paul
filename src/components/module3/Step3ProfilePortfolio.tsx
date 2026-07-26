@@ -420,6 +420,17 @@ export function Step3ProfilePortfolio() {
                         </p>
                       </div>
 
+                      {/* AI Decision Reasoning - Unboxing the Black Box */}
+                      <div className="bg-white border border-neutral-200 p-3 rounded-2xl space-y-2 text-left shadow-xs">
+                        <span className="text-[9px] font-black text-[#0b1c30] uppercase tracking-wider flex items-center gap-1 border-b pb-1 border-neutral-100">
+                          <Compass size={12} className="text-blue-600" />
+                          AI Decision Rationale
+                        </span>
+                        <p className="text-[10px] text-neutral-600 font-semibold leading-relaxed">
+                          The AI evaluated 4 core parameters: <span className="font-bold text-[#0b1c30]">Outcome Urgency</span> (Checkout Drops), <span className="font-bold text-[#0b1c30]">Audience LTV</span> (SaaS/Fintech), <span className="font-bold text-[#0b1c30]">Positioning Angle</span> (Diagnostic Specialist), and <span className="font-bold text-[#0b1c30]">Psychology</span> (Loss Aversion).
+                        </p>
+                      </div>
+
                       <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
                         💡 Positioning Lesson: Clients don't buy your languages or toolsets—they buy their resolved business bottlenecks.
                       </div>
@@ -694,6 +705,45 @@ export function Step3ProfilePortfolio() {
                               <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/70")}>
                                 Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
                               </p>
+                            </div>
+                          </div>
+
+                          {/* 🧠 AI Strategic Reasoning Trace - Unboxing the AI Decision */}
+                          <div className={cn("border rounded-xl p-3 space-y-2 text-left shadow-xs transition-all", viewMode === 'blueprint' ? "bg-white/90 border-emerald-200" : "bg-white/10 border-white/20")}>
+                            <div className="flex items-center justify-between border-b pb-1.5 border-emerald-100/80">
+                              <span className={cn("text-[9px] font-black uppercase tracking-wider flex items-center gap-1", viewMode === 'blueprint' ? "text-emerald-800" : "text-emerald-300")}>
+                                <Compass size={12} className={viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400"} />
+                                🧠 AI Strategic Reasoning Trace
+                              </span>
+                              <span className={cn("text-[8px] font-bold px-1.5 py-0.5 rounded border", viewMode === 'blueprint' ? "text-emerald-700 bg-emerald-50 border-emerald-100" : "text-emerald-200 bg-emerald-900/40 border-emerald-800")}>
+                                Unboxing the AI Model
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[9px]">
+                              <div className={cn("p-2 rounded-lg border", viewMode === 'blueprint' ? "bg-emerald-50/60 border-emerald-100" : "bg-white/5 border-white/10")}>
+                                <span className={cn("font-black block text-[8px] uppercase tracking-wider", viewMode === 'blueprint' ? "text-emerald-800" : "text-emerald-300")}>1. Business Outcome</span>
+                                <p className={cn("font-bold mt-0.5", viewMode === 'blueprint' ? "text-neutral-800" : "text-white")}>Preventing Checkout Revenue Loss</p>
+                                <span className={cn("text-[8px] font-semibold leading-tight block mt-0.5", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/60")}>Highest financial urgency for B2B SaaS.</span>
+                              </div>
+
+                              <div className={cn("p-2 rounded-lg border", viewMode === 'blueprint' ? "bg-purple-50/60 border-purple-100" : "bg-white/5 border-white/10")}>
+                                <span className={cn("font-black block text-[8px] uppercase tracking-wider", viewMode === 'blueprint' ? "text-purple-800" : "text-purple-300")}>2. Target Audience</span>
+                                <span className={cn("font-bold mt-0.5 block", viewMode === 'blueprint' ? "text-neutral-800" : "text-white")}>SaaS & Fintech Founders</span>
+                                <span className={cn("text-[8px] font-semibold leading-tight block mt-0.5", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/60")}>High LTV customers worth solving.</span>
+                              </div>
+
+                              <div className={cn("p-2 rounded-lg border", viewMode === 'blueprint' ? "bg-indigo-50/60 border-indigo-100" : "bg-white/5 border-white/10")}>
+                                <span className={cn("font-black block text-[8px] uppercase tracking-wider", viewMode === 'blueprint' ? "text-indigo-800" : "text-indigo-300")}>3. Positioning Angle</span>
+                                <span className={cn("font-bold mt-0.5 block", viewMode === 'blueprint' ? "text-neutral-800" : "text-white")}>Diagnostic Specialist</span>
+                                <span className={cn("text-[8px] font-semibold leading-tight block mt-0.5", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/60")}>Commands 3x rate over commodity builders.</span>
+                              </div>
+
+                              <div className={cn("p-2 rounded-lg border", viewMode === 'blueprint' ? "bg-teal-50/60 border-teal-100" : "bg-white/5 border-white/10")}>
+                                <span className={cn("font-black block text-[8px] uppercase tracking-wider", viewMode === 'blueprint' ? "text-teal-800" : "text-teal-300")}>4. Psychology Principle</span>
+                                <span className={cn("font-bold mt-0.5 block", viewMode === 'blueprint' ? "text-neutral-800" : "text-white")}>Loss Aversion Effect</span>
+                                <span className={cn("text-[8px] font-semibold leading-tight block mt-0.5", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/60")}>Clients act 2.5x faster to stop revenue leaks.</span>
+                              </div>
                             </div>
                           </div>
 
