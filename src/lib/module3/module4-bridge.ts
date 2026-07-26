@@ -6,24 +6,21 @@ export const Module4BridgeAdapter = {
     const legacyProfileCopy: ProfileCopy = {
       professionalHeadline: state.authorityProfile?.position || state.authorityPosition || 'Expert',
       shortBio: state.authorityProfile?.coreTrustPromise || state.coreTrustPromise || '',
-      longBio: state.profilePortfolioStrategy?.presentationStrategy.primaryGoal || '',
-      offerStatement: state.profilePortfolioStrategy?.presentationStrategy.communicationApproach || '',
-      credibilityBullets: state.profilePortfolioStrategy?.authorityReinforcement.primaryAuthoritySignal ? [state.profilePortfolioStrategy.authorityReinforcement.primaryAuthoritySignal] : [],
-      proofReferenceLine: state.profilePortfolioStrategy?.authorityReinforcement.supportingEvidenceFocus || '',
-      ctaLine: 'View my work below.',
+      longBio: state.profilePortfolioStrategy?.profileStrategy.bio || '',
+      offerStatement: state.profilePortfolioStrategy?.profileStrategy.bannerConcept || '',
+      credibilityBullets: state.profilePortfolioStrategy?.trustStrategy.recommendedElements || [],
+      proofReferenceLine: state.profilePortfolioStrategy?.trustStrategy.priority || '',
+      ctaLine: state.profilePortfolioStrategy?.profileStrategy.callToAction || 'View my work below.',
     };
 
     // Generate legacy PortfolioCopy structure from the structural strategy
     const legacyPortfolioCopy: PortfolioCopy = {
       portfolioCta: 'Let\'s talk',
-      sections: state.profilePortfolioStrategy?.portfolioStructure.map(section => ({
-        type: section.sectionId,
-        heading: section.sectionName,
-        body: section.purpose,
-        bullets: section.proofAssetIds.map(id => {
-          const asset = state.proofAssets.find(a => a.id === id);
-          return asset ? asset.title : id;
-        }),
+      sections: state.profilePortfolioStrategy?.portfolioStrategy.recommendedStructure.map((section, idx) => ({
+        type: `section-${idx}`,
+        heading: section,
+        body: '',
+        bullets: [],
       })) || [],
     };
 

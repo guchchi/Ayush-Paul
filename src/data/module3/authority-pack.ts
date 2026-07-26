@@ -94,26 +94,18 @@ export function compileMarkdown(pack: CompiledAuthorityPack): string {
 
   if (pack.profilePortfolioStrategy) {
     lines.push('## Profile & Portfolio Strategy');
-    lines.push(`- **Primary Goal:** ${pack.profilePortfolioStrategy.presentationStrategy.primaryGoal}`);
-    lines.push(`- **Communication Approach:** ${pack.profilePortfolioStrategy.presentationStrategy.communicationApproach}`);
-    lines.push(`- **Authority Emphasis:** ${pack.profilePortfolioStrategy.presentationStrategy.authorityEmphasis}`);
-    lines.push(`- **Navigation Principle:** ${pack.profilePortfolioStrategy.presentationStrategy.navigationPrinciple}`);
+    lines.push('### Profile Strategy');
+    lines.push(`- **Headline:** ${pack.profilePortfolioStrategy.profileStrategy.headline}`);
+    lines.push(`- **Bio:** ${pack.profilePortfolioStrategy.profileStrategy.bio}`);
+    lines.push(`- **Banner Concept:** ${pack.profilePortfolioStrategy.profileStrategy.bannerConcept}`);
     lines.push('');
 
-    lines.push('### Reading Journey');
-    pack.profilePortfolioStrategy.readingJourney.forEach((r) => {
-      lines.push(`- **Step ${r.stepIndex} (${r.phase}):** ${r.whatClientSees} (${r.whyTheySeeIt}) -> Trust: ${r.trustEstablished}`);
-    });
+    lines.push('### Portfolio Strategy');
+    lines.push(`- **Hierarchy:** ${pack.profilePortfolioStrategy.portfolioStrategy.contentHierarchy}`);
     lines.push('');
-
-    lines.push('### Portfolio Structure');
-    pack.profilePortfolioStrategy.portfolioStructure.forEach((s) => {
-      lines.push(`#### ${s.sectionName}`);
-      lines.push(`${s.purpose}`);
-      s.proofAssetIds.forEach((id) => {
-        const placement = pack.profilePortfolioStrategy?.evidencePlacement.find(e => e.proofAssetId === id);
-        lines.push(`- **Asset:** ${id.replace(/_/g, ' ')} (${placement?.placementReason || ''})`);
-      });
+    lines.push('### Recommended Structure');
+    pack.profilePortfolioStrategy.portfolioStrategy.recommendedStructure.forEach((s) => {
+      lines.push(`#### ${s}`);
       lines.push('');
     });
   }

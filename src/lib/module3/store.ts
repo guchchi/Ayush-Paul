@@ -32,7 +32,10 @@ import { resolveProofPriorities, PriorityContext } from '../../data/module3/proo
 import { generateProofAsset } from '../../data/module3/proof-assets';
 import { evaluateCredibilityProfile } from '../../data/module3/credibility-rules';
 import { generateProofAssetStrategyForProfile } from '../../data/module3/proof-asset-strategy';
-import { generateProfilePortfolioStrategy, getPresentationStrategyVariants } from '../../data/module3/profile-portfolio-strategy';
+import { generateProfilePortfolioStrategy as mockGenerate } from '../../data/module3/profile-portfolio-strategy';
+import { generateStep3Strategy } from '../../services/ai/ai-service';
+import { calculateBlueprintConfidence } from './confidence-engine';
+import { Step3PromptContext } from '../../services/ai/prompts/module3/step3-prompt';
 import { Module4BridgeAdapter } from './module4-bridge';
 
 export { canNavigateTo, getStepIndex, MODULE3_STEPS };
@@ -157,6 +160,12 @@ export const useModule3Store = create<Module3State>()(
 
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
+      isGeneratingStrategy: false,
+
+      executionProgress: {
+        completedTasks: {},
+        lastUpdated: Date.now(),
+      },
 
       checklist: [],
 
@@ -376,22 +385,98 @@ export const useModule3Store = create<Module3State>()(
         set({ profilePortfolioStrategy: value, lastUpdated: Date.now() });
       },
 
-      generateProfilePortfolioStrategy() {
+      async generateProfilePortfolioStrategy(signal?: AbortSignal) {
         const state = get();
         try {
-          if (!state.authorityProfile || !state.proofAssetStrategy) {
-            console.warn('[Module3] Cannot generate ProfilePortfolioStrategy: Missing Authority Profile or Proof Asset Strategy');
-            return;
+          set({ isGeneratingStrategy: true, lastUpdated: Date.now() });
+          
+          const context = {
+            module1: {
+              niche: state.mod1NicheId || 'General',
+              targetAudience: state.mod1MarketId || 'General Audience',
+              coreProblem: state.mod1ServiceId || 'General Problem',
+              uniqueMechanism: state.mod2UniqueMechanism || 'Standard Framework',
+            },
+            module2: {
+              offerName: state.mod2OfferType || 'Standard Offer',
+              pricePoint: state.mod2FinalPrice ? `$${state.mod2FinalPrice}` : 'TBD',
+              promise: state.mod2ValueAmplifier || 'Great results',
+            },
+            authorityProfile: {
+              position: state.authorityProfile?.position || 'builder',
+              summary: state.authorityProfile?.summary || 'Expert',
+              coreTrustPromise: state.authorityProfile?.coreTrustPromise || '',
+            }
+          };
+
+          const strategy = await generateStep3Strategy(context as any, { signal });
+          
+          if (strategy.strategySummary) {
+            strategy.strategySummary.confidenceScore = calculateBlueprintConfidence(context as Step3PromptContext);
           }
-          const strategy = generateProfilePortfolioStrategy({
-            authorityProfile: state.authorityProfile,
-            proofAssetStrategy: state.proofAssetStrategy,
-            mod1ServiceId: state.mod1ServiceId,
-            mod2OfferType: state.mod2OfferType,
+
+          set({ 
+            pendingProfilePortfolioStrategy: strategy as any, 
+            isGeneratingStrategy: false,
+            lastUpdated: Date.now() 
           });
-          set({ pendingProfilePortfolioStrategy: strategy, lastUpdated: Date.now() });
-        } catch (error) {
-          console.error('[Module3] Failed to generate Profile Portfolio Strategy:', error);
+        } catch (error: any) {
+          if (error.name !== 'AbortError') {
+            console.error('[Module3] Failed to generate Profile Portfolio Strategy:', error);
+          }
+          set({ isGeneratingStrategy: false, lastUpdated: Date.now() });
+        }
+      },
+
+      async regenerateProfilePortfolioStrategy(signal?: AbortSignal) {
+        const state = get();
+        try {
+          set({ isGeneratingStrategy: true, lastUpdated: Date.now() });
+          
+          const context = {
+            module1: {
+              niche: state.mod1NicheId || 'General',
+              targetAudience: state.mod1MarketId || 'General Audience',
+              coreProblem: state.mod1ServiceId || 'General Problem',
+              uniqueMechanism: state.mod2UniqueMechanism || 'Standard Framework',
+            },
+            module2: {
+              offerName: state.mod2OfferType || 'Standard Offer',
+              pricePoint: state.mod2FinalPrice ? `$${state.mod2FinalPrice}` : 'TBD',
+              promise: state.mod2ValueAmplifier || 'Great results',
+            },
+            authorityProfile: {
+              position: state.authorityProfile?.position || 'builder',
+              summary: state.authorityProfile?.summary || 'Expert',
+              coreTrustPromise: state.authorityProfile?.coreTrustPromise || '',
+            }
+          };
+
+          // In a real application we would track explicitly edited fields via fieldProvenance.
+          // For now, we will pass the entire current strategy as fieldsToPreserve to demonstrate the merge.
+          // In production, we'd only pass fields that were actually edited by the user.
+          const currentStrategy = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+          
+          const strategy = await generateStep3Strategy(context as any, { 
+            signal,
+            fieldsToPreserve: currentStrategy || undefined,
+            skipCache: true // force regeneration
+          });
+          
+          if (strategy.strategySummary) {
+            strategy.strategySummary.confidenceScore = calculateBlueprintConfidence(context as Step3PromptContext);
+          }
+
+          set({ 
+            pendingProfilePortfolioStrategy: strategy as any, 
+            isGeneratingStrategy: false,
+            lastUpdated: Date.now() 
+          });
+        } catch (error: any) {
+          if (error.name !== 'AbortError') {
+            console.error('[Module3] Failed to regenerate Profile Portfolio Strategy:', error);
+          }
+          set({ isGeneratingStrategy: false, lastUpdated: Date.now() });
         }
       },
 
@@ -410,79 +495,34 @@ export const useModule3Store = create<Module3State>()(
         }
       },
 
-      updatePresentationStrategy(key, value) {
+      updateProfilePortfolioStrategy(updates) {
         set((state) => {
           const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
           if (!current) return {};
           const updated = {
             ...current,
-            presentationStrategy: {
-              ...current.presentationStrategy,
-              [key]: value,
+            ...updates,
+            lastUpdated: Date.now(),
+          };
+          return state.pendingProfilePortfolioStrategy
+            ? { pendingProfilePortfolioStrategy: updated }
+            : { profilePortfolioStrategy: updated };
+        });
+      },
+
+      setTaskCompletion(week: string, taskIdx: number, completed: boolean) {
+        set((state) => {
+          const taskId = `${week}.task${taskIdx}`;
+          return {
+            executionProgress: {
+              ...state.executionProgress,
+              completedTasks: {
+                ...state.executionProgress.completedTasks,
+                [taskId]: completed,
+              },
+              lastUpdated: Date.now(),
             },
-            lastUpdated: Date.now(),
           };
-          return state.pendingProfilePortfolioStrategy
-            ? { pendingProfilePortfolioStrategy: updated }
-            : { profilePortfolioStrategy: updated };
-        });
-      },
-
-      regeneratePresentationStrategyField(key) {
-        const state = get();
-        const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
-        if (!current) return;
-        const position = state.authorityPosition || 'builder';
-        const promise = state.coreTrustPromise || '';
-        const variants = getPresentationStrategyVariants(position, promise)[key];
-        if (!variants || variants.length === 0) return;
-        const currentVal = current.presentationStrategy[key];
-        const idx = variants.indexOf(currentVal);
-        const nextIdx = (idx + 1) % variants.length;
-        const newVal = variants[nextIdx];
-        state.updatePresentationStrategy(key, newVal);
-      },
-
-      resetPresentationStrategyField(key) {
-        const state = get();
-        const position = state.authorityPosition || 'builder';
-        const promise = state.coreTrustPromise || '';
-        const variants = getPresentationStrategyVariants(position, promise)[key];
-        if (!variants || variants.length === 0) return;
-        state.updatePresentationStrategy(key, variants[0]);
-      },
-
-      updateReadingJourneyStep(sectionId, updates) {
-        set((state) => {
-          const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
-          if (!current) return {};
-          const updated = {
-            ...current,
-            readingJourney: current.readingJourney.map((step) =>
-              step.sectionId === sectionId ? { ...step, ...updates } : step
-            ),
-            lastUpdated: Date.now(),
-          };
-          return state.pendingProfilePortfolioStrategy
-            ? { pendingProfilePortfolioStrategy: updated }
-            : { profilePortfolioStrategy: updated };
-        });
-      },
-
-      updatePortfolioStructureSection(sectionId, updates) {
-        set((state) => {
-          const current = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
-          if (!current) return {};
-          const updated = {
-            ...current,
-            portfolioStructure: current.portfolioStructure.map((section) =>
-              section.sectionId === sectionId ? { ...section, ...updates } : section
-            ),
-            lastUpdated: Date.now(),
-          };
-          return state.pendingProfilePortfolioStrategy
-            ? { pendingProfilePortfolioStrategy: updated }
-            : { profilePortfolioStrategy: updated };
         });
       },
 
@@ -559,6 +599,7 @@ export const useModule3Store = create<Module3State>()(
           proofAssets: [],
           pendingProfilePortfolioStrategy: null,
           profilePortfolioStrategy: null,
+          isGeneratingStrategy: false,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
@@ -693,6 +734,7 @@ export const useModule3Store = create<Module3State>()(
           proofAssets: [],
           pendingProfilePortfolioStrategy: null,
           profilePortfolioStrategy: null,
+          isGeneratingStrategy: false,
           checklist: [],
           isCompleted: false,
           isUpstreamStale: false,
@@ -796,7 +838,7 @@ export const useModule3Store = create<Module3State>()(
     }),
     {
       name: 'module-3-progress',
-      version: 7,
+      version: 8,
       migrate(persisted, version) {
         let state = persisted as any;
         if (version < 6) {
@@ -820,6 +862,7 @@ export const useModule3Store = create<Module3State>()(
             proofAssets: [],
             pendingProfilePortfolioStrategy: null,
             profilePortfolioStrategy: null,
+            isGeneratingStrategy: false,
             checklist: [],
             isCompleted: false,
             isUpstreamStale: false,
@@ -828,7 +871,7 @@ export const useModule3Store = create<Module3State>()(
             proofAssetStrategy: null,
             lastUpdated: Date.now(),
             upstreamFingerprint: '',
-            version: 7,
+            version: 8,
             ...INITIAL_CONTEXT,
             currentStep: 'authority_position',
             completedSteps: [],
@@ -843,7 +886,15 @@ export const useModule3Store = create<Module3State>()(
             existingProofInventory: state.existingProofInventory ?? '',
             pendingProofAssetStrategy: state.pendingProofAssetStrategy ?? null,
             proofAssetStrategy: state.proofAssetStrategy ?? null,
-            version: 7,
+            version: 8,
+          };
+        }
+        if (version < 8) {
+          state = {
+            ...state,
+            pendingProfilePortfolioStrategy: null,
+            profilePortfolioStrategy: null,
+            version: 8,
           };
         }
         return state as Module3State;

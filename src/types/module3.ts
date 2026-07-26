@@ -190,68 +190,125 @@ export type Module2Context = {
   proposalSummary: ProposalSummary;
 };
 
-export interface ReadingJourneyStep {
-  sectionId: string;
-  stepIndex: number;
-  phase: string;
-  whatClientSees: string;
-  whyTheySeeIt: string;
-  trustEstablished: string;
-  whatComesNext: string;
+export interface ConfidenceFactor {
+  label: string;
+  isMet: boolean;
+  impact: string;
 }
 
-export interface PortfolioSectionStrategy {
-  sectionId: string;
-  sectionName: string;
+export interface BlueprintConfidence {
+  level: 'Strong' | 'Moderate' | 'Limited';
+  factors: ConfidenceFactor[];
+}
+
+export interface StrategySummary {
+  primaryPlatform: string;
+  primaryGoal: string;
+  targetClient: string;
+  portfolioStyle: string;
+  contentStrategy: string;
+  confidenceScore?: BlueprintConfidence;
+}
+
+export interface EducationalBlock {
+  why: string;
+  commonMistake: string;
+  firstAction: string;
+  expectedResult: string;
+}
+
+export interface PlatformRecommendation {
+  platform: string;
+  priority: number;
   purpose: string;
-  authorityRelation: string;
-  order: number;
-  proofAssetIds: string[];
+  action: 'focus' | 'maintain' | 'ignore' | 'explore';
+  aiReasoning: string;
+  expectedRoi: string;
+  timeToResults: string;
+  difficulty: string;
 }
 
-export interface EvidencePlacement {
-  sectionId: string;
-  proofAssetId: string;
-  authorityClaim: string;
-  placementReason: string;
-  expectedTrustOutcome: string;
+export interface PlatformStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  recommendations: PlatformRecommendation[];
+}
+
+export interface ProfileStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  username: string;
+  displayName: string;
+  headline: string;
+  bio: string;
+  bannerConcept: string;
+  profileImageConcept: string;
+  callToAction: string;
+}
+
+export interface PortfolioStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  recommendedStructure: string[];
+  projectOrdering: string[];
+  navigation: string[];
+  contentHierarchy: string;
+}
+
+export interface TrustStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  recommendedElements: string[];
+  priority: string;
+}
+
+export interface ContentStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  contentTypes: string[];
+  publishingFrequency: string;
+  authorityBuildingIdeas: string[];
+}
+
+export interface BrandingStrategyParams {
+  personalizationNote: string;
+  educational: EducationalBlock;
+  visualConsistency: string;
+  typography: string;
+  colorUsage: string;
+  toneOfVoice: string;
+}
+
+export interface OptimizationRecommendation {
+  area: string;
+  suggestion: string;
+  impact: 'High' | 'Medium' | 'Low';
+}
+
+export interface PublishingRoadmapPhase {
+  week: string;
+  tasks: string[];
+}
+
+export interface ExecutionProgress {
+  completedTasks: Record<string, boolean>;
+  lastUpdated: number;
 }
 
 export interface ProfilePortfolioStrategy {
   version: number;
   
-  upstreamVersions: {
-    authorityProfile: number;
-    proofAssetStrategy: number;
-    offerBlueprint: number;
-    marketContext: number;
-  };
-  
-  presentationStrategy: {
-    primaryGoal: string;
-    communicationApproach: string;
-    authorityEmphasis: string;
-    navigationPrinciple: string;
-  };
-  
-  sectionPriorities: {
-    sectionId: string;
-    priority: number;
-    rationale: string;
-  }[];
-  
-  authorityReinforcement: {
-    primaryAuthoritySignal: string;
-    supportingEvidenceFocus: string;
-    expectedClientPerception: string;
-  };
-  
-  readingJourney: ReadingJourneyStep[];
-  portfolioStructure: PortfolioSectionStrategy[];
-  evidencePlacement: EvidencePlacement[];
-  
+  strategySummary: StrategySummary;
+  platformStrategy: PlatformStrategyParams;
+  profileStrategy: ProfileStrategyParams;
+  portfolioStrategy: PortfolioStrategyParams;
+  trustStrategy: TrustStrategyParams;
+  contentStrategy: ContentStrategyParams;
+  brandingStrategy: BrandingStrategyParams;
+  optimizationRecommendations: OptimizationRecommendation[];
+  publishingRoadmap: PublishingRoadmapPhase[];
+
   status: 'draft' | 'approved' | 'stale';
-  confidence: 'Strong' | 'Moderate' | 'Limited';
   generatedAt: string;
   approvedAt?: string;
 }
@@ -295,6 +352,9 @@ export interface Module3State {
 
   pendingProfilePortfolioStrategy: ProfilePortfolioStrategy | null;
   profilePortfolioStrategy: ProfilePortfolioStrategy | null;
+  isGeneratingStrategy: boolean;
+
+  executionProgress: ExecutionProgress;
 
   checklist: ChecklistItem[];
 
@@ -351,13 +411,12 @@ export interface Module3State {
 
   setPendingProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
   setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
-  generateProfilePortfolioStrategy(): void;
+  generateProfilePortfolioStrategy(signal?: AbortSignal): Promise<void>;
+  regenerateProfilePortfolioStrategy(signal?: AbortSignal): Promise<void>;
   approveProfilePortfolioStrategy(): void;
-  updatePresentationStrategy(key: keyof ProfilePortfolioStrategy['presentationStrategy'], value: string): void;
-  regeneratePresentationStrategyField(key: keyof ProfilePortfolioStrategy['presentationStrategy']): void;
-  resetPresentationStrategyField(key: keyof ProfilePortfolioStrategy['presentationStrategy']): void;
-  updateReadingJourneyStep(sectionId: string, updates: Partial<ReadingJourneyStep>): void;
-  updatePortfolioStructureSection(sectionId: string, updates: Partial<PortfolioSectionStrategy>): void;
+  updateProfilePortfolioStrategy(updates: Partial<ProfilePortfolioStrategy>): void;
+
+  setTaskCompletion(week: string, taskIdx: number, completed: boolean): void;
 
   setChecklist(value: ChecklistItem[]): void;
   updateChecklistItem(id: string, updates: Partial<ChecklistItem>): void;

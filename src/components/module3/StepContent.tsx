@@ -2,7 +2,7 @@ import { useModule3Store } from '../../lib/module3';
 import type { Module3Step } from '../../types/module3';
 import { Step1AuthorityPosition } from './Step1AuthorityPosition';
 import { Step2ProofAssetBuilder } from './Step2ProofAssetBuilder';
-import { Step3ProfilePortfolio } from './Step3ProfilePortfolio';
+import { Step3ProfilePortfolio } from './step3/Step3ProfilePortfolio';
 import { Step5AuthorityPack } from './Step5AuthorityPack';
 
 const STEP_COMPONENTS: Partial<Record<Module3Step, React.FC>> = {

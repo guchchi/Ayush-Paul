@@ -167,7 +167,7 @@ export function Step5AuthorityPack() {
       case 'assets': 
         return compiled.proofAssets.map((a) => `## ${a.title}\n- **Format:** ${a.assetType}\n- **Headline:** ${a.headline}\n- **Description:** ${a.description}\n- **Proof Statement:** ${a.proofStatement}\n- **CTA:** ${a.cta}`).join('\n\n');
       case 'strategy': 
-        return `# Profile & Portfolio Strategy\n\n- **Primary Goal:** ${compiled.profilePortfolioStrategy?.presentationStrategy.primaryGoal}\n- **Approach:** ${compiled.profilePortfolioStrategy?.presentationStrategy.communicationApproach}`;
+        return `# Profile & Portfolio Strategy\n\n- **Headline:** ${compiled.profilePortfolioStrategy?.profileStrategy.headline}\n- **Bio:** ${compiled.profilePortfolioStrategy?.profileStrategy.bio}`;
       default: 
         return '';
     }
@@ -355,25 +355,21 @@ export function Step5AuthorityPack() {
                 <div className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Primary Goal:</span>
-                      <p className="text-xs font-bold text-[#0b1c30] mt-1">{pack.profilePortfolioStrategy?.presentationStrategy.primaryGoal}</p>
+                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Headline:</span>
+                      <p className="text-xs font-bold text-[#0b1c30] mt-1">{pack.profilePortfolioStrategy?.profileStrategy.headline}</p>
                     </div>
                     <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-100">
-                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Communication Approach:</span>
-                      <p className="text-xs font-bold text-[#0b1c30] mt-1">{pack.profilePortfolioStrategy?.presentationStrategy.communicationApproach}</p>
+                      <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Hierarchy:</span>
+                      <p className="text-xs font-bold text-[#0b1c30] mt-1">{pack.profilePortfolioStrategy?.portfolioStrategy.contentHierarchy}</p>
                     </div>
                   </div>
 
                   <div className="space-y-2 pt-3 border-t border-neutral-100">
-                    <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Client Reading Sequence:</span>
+                    <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Recommended Structure:</span>
                     <div className="space-y-2">
-                      {pack.profilePortfolioStrategy?.readingJourney.map((s, i) => (
+                      {pack.profilePortfolioStrategy?.portfolioStrategy.recommendedStructure.map((s, i) => (
                         <div key={i} className="flex items-center gap-2.5 text-xs bg-neutral-50/50 p-2.5 rounded-xl border border-neutral-100">
-                          <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-200/80 text-neutral-600 shrink-0">
-                            {s.phase}
-                          </span>
-                          <span className="text-neutral-500 font-medium">Observe:</span>
-                          <span className="text-[#0b1c30] font-bold truncate">{s.whatClientSees}</span>
+                          <span className="text-[#0b1c30] font-bold truncate">{s}</span>
                         </div>
                       ))}
                     </div>
