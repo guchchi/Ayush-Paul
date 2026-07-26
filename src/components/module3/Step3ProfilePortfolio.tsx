@@ -341,35 +341,44 @@ export function Step3ProfilePortfolio() {
                         </div>
                       </div>
 
-                      {/* Anatomy Breakdown */}
+                      {/* Anatomy Breakdown - Matching Natural Reading Behavior */}
                       <div className="space-y-2 border-t border-neutral-100 pt-3">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Anatomy of Your Hook</span>
+                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Anatomy (Natural Reading Flow)</span>
                         
                         <div className="space-y-1.5 text-[10px]">
-                          {/* Segment 1 */}
+                          {/* 1. Value Promise */}
                           <div className="flex items-start gap-2 p-2 rounded-lg bg-blue-50/40 border border-blue-100/60">
-                            <span className="text-[9px] font-black text-blue-600 bg-blue-100 px-1 py-0.5 rounded shrink-0">1. Outcome</span>
+                            <span className="text-[9px] font-black text-blue-600 bg-blue-100 px-1 py-0.5 rounded shrink-0">1. Value Promise</span>
                             <div className="space-y-0.5 text-left">
                               <p className="font-bold text-neutral-700">"Preventing customer checkout drops..."</p>
-                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Attracts client by addressing their direct revenue leakage.</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Dominant visual element. First thing the client's eye scans.</p>
                             </div>
                           </div>
 
-                          {/* Segment 2 */}
+                          {/* 2. Target Audience */}
                           <div className="flex items-start gap-2 p-2 rounded-lg bg-purple-50/40 border border-purple-100/60">
-                            <span className="text-[9px] font-black text-purple-600 bg-purple-100 px-1 py-0.5 rounded shrink-0">2. Segment</span>
+                            <span className="text-[9px] font-black text-purple-600 bg-purple-100 px-1 py-0.5 rounded shrink-0">2. Target Audience</span>
                             <div className="space-y-0.5 text-left">
                               <p className="font-bold text-neutral-700">"...for SaaS platforms"</p>
-                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Targets context specifically, filtering out non-profitable leads.</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Immediately validates if the client is in the target context.</p>
                             </div>
                           </div>
 
-                          {/* Segment 3 */}
+                          {/* 3. Diagnostic Mechanism */}
                           <div className="flex items-start gap-2 p-2 rounded-lg bg-indigo-50/40 border border-indigo-100/60">
-                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-100 px-1 py-0.5 rounded shrink-0">3. Method</span>
+                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-100 px-1 py-0.5 rounded shrink-0">3. Mechanism</span>
                             <div className="space-y-0.5 text-left">
                               <p className="font-bold text-neutral-700">"Analyzing checkout bottlenecks..."</p>
-                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Answers how you solve it, setting you up as a diagnostic specialist.</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Explains the process that delivers the outcome.</p>
+                            </div>
+                          </div>
+
+                          {/* 4. Authority Badge */}
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-emerald-50/40 border border-emerald-100/60">
+                            <span className="text-[9px] font-black text-emerald-600 bg-emerald-100 px-1 py-0.5 rounded shrink-0">4. Authority Badge</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">"Builder Archetype Strategy"</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Secondary validation tag placed after promise is established.</p>
                             </div>
                           </div>
                         </div>
@@ -540,24 +549,27 @@ export function Step3ProfilePortfolio() {
                 {/* Real Portfolio Representation Page */}
                 <div className="p-4 sm:p-8 space-y-6 bg-neutral-50/50 min-h-[600px] text-left">
                   
-                  {/* Notion/Website Style Profile Header banner */}
+                  {/* Notion/Website Style Profile Header banner - Matching Natural Eye Movement */}
                   <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-neutral-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0b1c30] text-white flex items-center justify-center font-black text-sm border border-neutral-200">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#0b1c30] text-white flex items-center justify-center font-black text-sm border border-neutral-200 shrink-0">
                         {authorityPosition.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs sm:text-sm font-black text-[#0b1c30]">Ayush Paul</span>
+                        <h3 className="text-xs sm:text-sm font-black text-[#0b1c30] leading-snug">
+                          {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[11px] font-bold text-neutral-600">Ayush Paul</span>
+                          <span className="text-neutral-300">·</span>
                           <span className="text-[8px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 uppercase tracking-widest">
-                            {authorityPosition} Strategy
+                            {authorityPosition} Archetype Tag
                           </span>
                         </div>
-                        <p className="text-[9px] sm:text-[10px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">Specialist Consultant</p>
                       </div>
                     </div>
-                    <div className="text-[10px] text-neutral-400 font-bold bg-white border border-neutral-100 rounded-xl px-3 py-1.5 shadow-sm">
-                      Target Objections: <span className="font-extrabold text-blue-600">Neutralized</span>
+                    <div className="text-[10px] text-neutral-400 font-bold bg-white border border-neutral-100 rounded-xl px-3 py-1.5 shadow-sm shrink-0">
+                      Hierarchy: <span className="font-extrabold text-emerald-600">Outcome First ➔ Badge Last</span>
                     </div>
                   </div>
 
@@ -615,30 +627,51 @@ export function Step3ProfilePortfolio() {
                         <ArrowRight size={14} />
                       </div>
 
-                      {/* Strong Hook (The Solution) */}
+                      {/* Strong Hook (Reordered around Natural Eye Movement) */}
                       <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-emerald-50/50 border-emerald-200" : "bg-white/5 border-emerald-900/30")}>
-                        <div>
-                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>
-                            🟢 Upgraded Authority
-                          </span>
-                          <h2 className={cn("text-sm font-black leading-snug", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white")}>
-                            {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
-                          </h2>
-                          <p className={cn("text-xs leading-relaxed font-semibold mt-2", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/70")}>
-                            Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
-                          </p>
+                        <div className="space-y-3">
+                          {/* 1. Value Proposition / Outcome - Dominant visual element */}
+                          <div>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded mb-1 inline-block">1. Dominant Value Promise</span>
+                            <h2 className={cn("text-base font-black leading-snug tracking-tight", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white")}>
+                              {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                            </h2>
+                          </div>
+
+                          {/* 2. Target Audience & 3. Mechanism */}
+                          <div className="space-y-1.5 border-t border-emerald-100/60 pt-2">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[8px] font-bold uppercase tracking-wider text-purple-600 bg-purple-100/60 px-1.5 py-0.5 rounded">2. Audience</span>
+                              <span className={cn("text-xs font-bold", viewMode === 'blueprint' ? "text-neutral-700" : "text-white/90")}>SaaS & Fintech Platforms</span>
+                            </div>
+                            <div>
+                              <span className="text-[8px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-100/60 px-1.5 py-0.5 rounded mb-0.5 inline-block">3. Mechanism</span>
+                              <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/70")}>
+                                Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* 4. Authority Badge - Trailing secondary tag at bottom */}
+                          <div className="pt-2 border-t border-emerald-100/60 flex items-center justify-between">
+                            <span className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest">4. Identity Tag</span>
+                            <span className="text-[8px] font-black text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded border border-emerald-200 uppercase tracking-widest">
+                              🟢 Upgraded Authority Badge
+                            </span>
+                          </div>
                         </div>
+
                         <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-emerald-100/50" : "border-emerald-900/50")}>
-                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>Client Brain Simulator</span>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>Client Brain Simulator (Natural Flow)</span>
                            <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-emerald-50 border-emerald-100" : "bg-emerald-900/20 border-emerald-900/40")}>
                              <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-200/50 text-emerald-700" : "bg-emerald-800/40 text-emerald-300")}>
-                               <Search size={10} /> Curious
+                               <Search size={10} /> 1. Scans Promise
                              </div>
                              <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-300/50 text-emerald-800" : "bg-emerald-700/40 text-emerald-200")}>
-                               <Target size={10} /> Hooked
+                               <Target size={10} /> 2. Matches Pain
                              </div>
                              <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-500 text-white" : "bg-emerald-600 text-white")}>
-                               <ShieldCheck size={10} /> Confident
+                               <ShieldCheck size={10} /> 3. Validates Tag
                              </div>
                            </div>
                         </div>
