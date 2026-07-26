@@ -379,13 +379,111 @@ export function Step3ProfilePortfolio() {
                         💡 Positioning Lesson: Clients don't buy your languages or toolsets—they buy their resolved business bottlenecks.
                       </div>
                     </div>
-                  ) : (
-                    <p className="text-neutral-600 font-medium leading-relaxed">
-                      {activeSectionId === 'foundational' && "Answers: 'Can you actually deliver?' Demonstrates your unique mechanism in action using a video or text case study."}
-                      {activeSectionId === 'supporting' && "Answers: 'Is this a repeatable skill or a fluke?' Neutralizes remaining trust gaps through third-party metrics."}
-                      {activeSectionId === 'cta' && "Answers: 'How do I start?' Lowers conversion friction by offering a low-commitment diagnostic audit call."}
-                    </p>
-                  )}
+                  ) : activeSectionId === 'foundational' ? (
+                    <div className="space-y-4 pt-1">
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Answers: <span className="text-[#0b1c30] font-bold">"Can you actually deliver?"</span> Proves you have a repeatable system.
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="p-3 rounded-xl border border-red-200 bg-red-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-red-600 uppercase tracking-widest block">❌ Generic Commodity Proof</span>
+                          <p className="text-xs font-bold text-neutral-400 italic mt-1">"Here is my code repository." / "Here is a screenshot of the app."</p>
+                          <span className="text-[8px] text-neutral-400 font-semibold block mt-1">Focus: Showing off tools. Forces the client to guess the business value.</span>
+                        </div>
+                        <div className="flex justify-center text-neutral-300">
+                          <ChevronRight size={14} className="rotate-90" />
+                        </div>
+                        <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-emerald-700 uppercase tracking-widest block">🟢 Upgraded Authority Proof</span>
+                          <p className="text-xs font-black text-emerald-800 mt-1 leading-snug">
+                            "Diagnostic Video Walkthrough: How we solved X."
+                          </p>
+                          <span className="text-[8px] text-emerald-600 font-semibold block mt-1">Focus: Proving your process solves their specific bottleneck.</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 border-t border-neutral-100 pt-3">
+                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Anatomy of Your Proof</span>
+                        <div className="space-y-1.5 text-[10px]">
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-indigo-50/40 border border-indigo-100/60">
+                            <span className="text-[9px] font-black text-indigo-600 bg-indigo-100 px-1 py-0.5 rounded shrink-0">1. Context</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">The Business Problem</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Explain the high-stakes issue you were hired to solve.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2 p-2 rounded-lg bg-blue-50/40 border border-blue-100/60">
+                            <span className="text-[9px] font-black text-blue-600 bg-blue-100 px-1 py-0.5 rounded shrink-0">2. Mechanism</span>
+                            <div className="space-y-0.5 text-left">
+                              <p className="font-bold text-neutral-700">Your Unique Process</p>
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-snug">Show HOW you solved it, not just the final code.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
+                        💡 Positioning Lesson: Real authority translates code into business certainty. Don't expect clients to read code.
+                      </div>
+                    </div>
+                  ) : activeSectionId === 'supporting' ? (
+                    <div className="space-y-4 pt-1">
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Answers: <span className="text-[#0b1c30] font-bold">"Is this a repeatable skill or a fluke?"</span> Neutralizes remaining trust gaps.
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="p-3 rounded-xl border border-red-200 bg-red-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-red-600 uppercase tracking-widest block">❌ Generic Commodity Evidence</span>
+                          <p className="text-xs font-bold text-neutral-400 italic mt-1">"Ayush is a hard worker and good at React."</p>
+                          <span className="text-[8px] text-neutral-400 font-semibold block mt-1">Focus: Personality and generic skills. Lacks business validation.</span>
+                        </div>
+                        <div className="flex justify-center text-neutral-300">
+                          <ChevronRight size={14} className="rotate-90" />
+                        </div>
+                        <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-emerald-700 uppercase tracking-widest block">🟢 Upgraded Authority Evidence</span>
+                          <p className="text-xs font-black text-emerald-800 mt-1 leading-snug">
+                            "Ayush structured checkout audits that resolved our primary latency drops within days. - CTO, SaaS Fintech"
+                          </p>
+                          <span className="text-[8px] text-emerald-600 font-semibold block mt-1">Focus: Verified third-party endorsement of a specific business outcome.</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
+                        💡 Positioning Lesson: Social proof should neutralize specific objections, not just say "they are good."
+                      </div>
+                    </div>
+                  ) : activeSectionId === 'cta' ? (
+                    <div className="space-y-4 pt-1">
+                      <p className="text-[11px] text-neutral-500 font-semibold leading-relaxed">
+                        Answers: <span className="text-[#0b1c30] font-bold">"How do I start?"</span> Lowers conversion friction.
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="p-3 rounded-xl border border-red-200 bg-red-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-red-600 uppercase tracking-widest block">❌ Generic Commodity CTA</span>
+                          <p className="text-xs font-bold text-neutral-400 italic mt-1">"Contact Me" / "Hire Me"</p>
+                          <span className="text-[8px] text-neutral-400 font-semibold block mt-1">Focus: Desperation or high friction. Client doesn't know what happens next.</span>
+                        </div>
+                        <div className="flex justify-center text-neutral-300">
+                          <ChevronRight size={14} className="rotate-90" />
+                        </div>
+                        <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-500/[0.02] text-left">
+                          <span className="text-[8px] font-black text-emerald-700 uppercase tracking-widest block">🟢 Upgraded Authority CTA</span>
+                          <p className="text-xs font-black text-emerald-800 mt-1 leading-snug">
+                            "Schedule a 15-Minute Checkout Diagnostic"
+                          </p>
+                          <span className="text-[8px] text-emerald-600 font-semibold block mt-1">Focus: Low commitment, high value. Clearly sets expectations.</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
+                        💡 Positioning Lesson: Never ask a client to figure out the next step. Lead them with a specific, low-risk offer.
+                      </div>
+                    </div>
+                  ) : null}
                 </motion.div>
               ) : (
                 <p className="text-[11px] text-neutral-400 font-semibold leading-relaxed">
@@ -496,8 +594,19 @@ export function Step3ProfilePortfolio() {
                             I build fast, responsive websites using modern web technologies like Next.js and Tailwind CSS.
                           </p>
                         </div>
-                        <div className={cn("text-[10px] font-semibold p-2.5 rounded-lg border mt-4", viewMode === 'blueprint' ? "bg-red-500/[0.05] border-red-100 text-red-700" : "bg-red-500/10 border-red-900/50 text-red-300")}>
-                          <span className="font-black block mb-0.5">Client Perception:</span> "Just another commodity. I will negotiate this price down."
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-red-100/50" : "border-red-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-red-50 border-red-100" : "bg-red-900/20 border-red-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-200/50 text-red-700" : "bg-red-800/40 text-red-300")}>
+                               <HelpCircle size={10} /> Confused
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-300/50 text-red-800" : "bg-red-700/40 text-red-200")}>
+                               <Target size={10} /> Bored
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-500 text-white" : "bg-red-600 text-white")}>
+                               <ArrowRight size={10} /> Bounces
+                             </div>
+                           </div>
                         </div>
                       </div>
 
@@ -519,8 +628,19 @@ export function Step3ProfilePortfolio() {
                             Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
                           </p>
                         </div>
-                        <div className={cn("text-[10px] font-semibold p-2.5 rounded-lg border mt-4", viewMode === 'blueprint' ? "bg-emerald-500/[0.05] border-emerald-100 text-emerald-800" : "bg-emerald-500/10 border-emerald-900/50 text-emerald-300")}>
-                          <span className="font-black block mb-0.5">Client Perception:</span> "A specialist who understands my problem. Worth premium rates."
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-emerald-100/50" : "border-emerald-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-emerald-50 border-emerald-100" : "bg-emerald-900/20 border-emerald-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-200/50 text-emerald-700" : "bg-emerald-800/40 text-emerald-300")}>
+                               <Search size={10} /> Curious
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-300/50 text-emerald-800" : "bg-emerald-700/40 text-emerald-200")}>
+                               <Target size={10} /> Hooked
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-500 text-white" : "bg-emerald-600 text-white")}>
+                               <ShieldCheck size={10} /> Confident
+                             </div>
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -554,44 +674,84 @@ export function Step3ProfilePortfolio() {
                       </p>
                     </div>
 
-                    {/* MOCK VIDEO CASE STUDY PLAYER */}
-                    <div className="bg-neutral-900 text-white rounded-xl p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between min-h-[140px] shadow-inner">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <span className="text-[8px] font-black uppercase bg-blue-600 text-white px-2 py-0.5 rounded">
-                            Video Walkthrough Demo
+                    <div className="grid gap-4 sm:grid-cols-2 mt-4 relative">
+                      {/* Weak Proof */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-red-50/50 border-red-200" : "bg-white/5 border-red-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>
+                            ❌ Generic Commodity
                           </span>
-                          <h4 className="text-xs font-bold truncate pr-6 mt-1">
-                            {getMappedAssetTitle('foundational', 0)}
-                          </h4>
-                        </div>
-                        <PlayCircle size={28} className="text-blue-500 shrink-0 cursor-pointer hover:scale-105 transition-transform" />
-                      </div>
-
-                      <div className="space-y-2 mt-4">
-                        <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
-                          {getMappedAssetHeadline('foundational', 0)}
-                        </p>
-                        {/* Playback timeline slider bar */}
-                        <div className="flex items-center gap-2 text-[8px] text-neutral-500 font-semibold">
-                          <span>00:00</span>
-                          <div className="flex-1 bg-neutral-800 h-1 rounded-full overflow-hidden">
-                            <div className="bg-blue-500 h-full w-[40%]" />
+                          <div className="bg-white/50 border border-neutral-200 rounded-lg p-3 text-center mb-2">
+                             <Layout size={24} className="mx-auto text-neutral-300 mb-1" />
+                             <p className={cn("text-xs font-bold", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/40")}>Project Screenshot</p>
+                             <p className={cn("text-[9px]", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/30")}>github.com/ayush/project</p>
                           </div>
-                          <span>08:42</span>
+                        </div>
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-red-100/50" : "border-red-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-red-50 border-red-100" : "bg-red-900/20 border-red-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-200/50 text-red-700" : "bg-red-800/40 text-red-300")}>
+                               <HelpCircle size={10} /> Confused
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-500 text-white" : "bg-red-600 text-white")}>
+                               <ArrowRight size={10} /> Bounces
+                             </div>
+                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Status Indicator */}
-                    <div className="flex items-center justify-between text-[9px] font-black text-neutral-400 border-t border-neutral-100 pt-3">
-                      <span>STATUS</span>
-                      <span className={cn(
-                        "uppercase tracking-widest px-2 py-0.5 rounded-md border",
-                        isAssetReady('foundational', 0) ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-neutral-50 text-neutral-500 border-neutral-200"
-                      )}>
-                        {isAssetReady('foundational', 0) ? 'Ready to Publish' : 'Drafting In Progress'}
-                      </span>
+                      {/* Bridge Arrow */}
+                      <div className={cn("hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full items-center justify-center z-10 border shadow-sm", viewMode === 'blueprint' ? "bg-white border-neutral-200 text-neutral-400" : "bg-[#0b1c30] border-neutral-700 text-neutral-500")}>
+                        <ArrowRight size={14} />
+                      </div>
+
+                      {/* Strong Proof */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-indigo-50/50 border-indigo-200" : "bg-white/5 border-indigo-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-indigo-600" : "text-indigo-400")}>
+                            🟢 Upgraded Authority
+                          </span>
+                          
+                          {/* MOCK VIDEO CASE STUDY PLAYER */}
+                          <div className="bg-neutral-900 text-white rounded-xl p-3 sm:p-4 relative overflow-hidden flex flex-col justify-between shadow-inner">
+                            <div className="flex items-start justify-between">
+                              <div className="space-y-1">
+                                <span className="text-[8px] font-black uppercase bg-blue-600 text-white px-2 py-0.5 rounded">
+                                  Diagnostic Demo
+                                </span>
+                                <h4 className="text-xs font-bold truncate pr-4 mt-1">
+                                  {getMappedAssetTitle('foundational', 0)}
+                                </h4>
+                              </div>
+                              <PlayCircle size={24} className="text-blue-500 shrink-0 cursor-pointer hover:scale-105 transition-transform" />
+                            </div>
+
+                            <div className="space-y-2 mt-4">
+                              <p className="text-[9px] text-neutral-400 font-semibold leading-relaxed line-clamp-1">
+                                {getMappedAssetHeadline('foundational', 0)}
+                              </p>
+                              {/* Playback timeline slider bar */}
+                              <div className="flex items-center gap-2 text-[8px] text-neutral-500 font-semibold">
+                                <div className="flex-1 bg-neutral-800 h-1 rounded-full overflow-hidden">
+                                  <div className="bg-blue-500 h-full w-[40%]" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-indigo-100/50" : "border-indigo-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-indigo-600" : "text-indigo-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-indigo-50 border-indigo-100" : "bg-indigo-900/20 border-indigo-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-indigo-200/50 text-indigo-700" : "bg-indigo-800/40 text-indigo-300")}>
+                               <Play size={10} /> Engaged
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-indigo-500 text-white" : "bg-indigo-600 text-white")}>
+                               <ShieldCheck size={10} /> Validates
+                             </div>
+                           </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -623,29 +783,66 @@ export function Step3ProfilePortfolio() {
                       </p>
                     </div>
 
-                    {/* TWO REALISTIC CARDS: Metric Box & Mock Testimonial */}
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {/* Card A: Case study detail */}
-                      <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2 text-left">
-                        <div className="flex items-center gap-1.5">
-                          <Star size={11} className="text-yellow-500 fill-yellow-500" />
-                          <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Methodology verified</span>
+                    <div className="grid gap-4 sm:grid-cols-2 mt-4 relative">
+                      {/* Weak Supporting */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-red-50/50 border-red-200" : "bg-white/5 border-red-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>
+                            ❌ Generic Commodity
+                          </span>
+                          <div className="bg-white/50 border border-neutral-200 rounded-lg p-3 mb-2 italic text-neutral-500 text-xs">
+                             "Ayush is a very good developer and communicated well. 5/5 stars."
+                             <span className="block mt-2 text-[9px] text-neutral-400 font-bold not-italic">— Upwork Client</span>
+                          </div>
                         </div>
-                        <h4 className="text-xs font-bold text-[#0b1c30] truncate">
-                          {getMappedAssetTitle('supporting', 0)}
-                        </h4>
-                        <p className="text-[9px] text-neutral-500 font-semibold leading-relaxed line-clamp-2">
-                          {getMappedAssetHeadline('supporting', 0)}
-                        </p>
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-red-100/50" : "border-red-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-red-50 border-red-100" : "bg-red-900/20 border-red-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-200/50 text-red-700" : "bg-red-800/40 text-red-300")}>
+                               <HelpCircle size={10} /> Unsure
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-500 text-white" : "bg-red-600 text-white")}>
+                               <Target size={10} /> Doubts
+                             </div>
+                           </div>
+                        </div>
                       </div>
 
-                      {/* Card B: Client review quote */}
-                      <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-200/60 space-y-2 text-left">
-                        <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest block">Client Feedback Review</span>
-                        <p className="text-[10px] text-neutral-600 font-bold italic leading-relaxed">
-                          "Ayush structured checkout audits that resolved our primary latency drops within days."
-                        </p>
-                        <span className="text-[9px] font-bold text-[#0b1c30] block">➔ CTO, SaaS Fintech</span>
+                      {/* Bridge Arrow */}
+                      <div className={cn("hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full items-center justify-center z-10 border shadow-sm", viewMode === 'blueprint' ? "bg-white border-neutral-200 text-neutral-400" : "bg-[#0b1c30] border-neutral-700 text-neutral-500")}>
+                        <ArrowRight size={14} />
+                      </div>
+
+                      {/* Strong Supporting */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-purple-50/50 border-purple-200" : "bg-white/5 border-purple-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-purple-600" : "text-purple-400")}>
+                            🟢 Upgraded Authority
+                          </span>
+                          
+                          <div className={cn("p-3 rounded-xl border space-y-2 text-left", viewMode === 'blueprint' ? "bg-white border-purple-100/60" : "bg-white/5 border-purple-800/30")}>
+                            <div className="flex items-center gap-1.5">
+                              <Star size={11} className="text-yellow-500 fill-yellow-500" />
+                              <span className="text-[8px] font-black text-neutral-400 uppercase tracking-widest">Client Review</span>
+                            </div>
+                            <p className={cn("text-[10px] font-bold italic leading-relaxed", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/80")}>
+                              "Ayush structured checkout audits that resolved our primary latency drops within days."
+                            </p>
+                            <span className={cn("text-[9px] font-bold block", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white/90")}>➔ CTO, SaaS Fintech</span>
+                          </div>
+                        </div>
+                        
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-purple-100/50" : "border-purple-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-purple-600" : "text-purple-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-purple-50 border-purple-100" : "bg-purple-900/20 border-purple-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-purple-200/50 text-purple-700" : "bg-purple-800/40 text-purple-300")}>
+                               <Shield size={10} /> Relieved
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-purple-500 text-white" : "bg-purple-600 text-white")}>
+                               <CheckCircle2 size={10} /> Trusts
+                             </div>
+                           </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -669,21 +866,71 @@ export function Step3ProfilePortfolio() {
                       </div>
                     )}
 
-                    {/* Calendar Booking Mockup */}
-                    <div className="bg-[#f8f9ff] border border-blue-100 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-[#0058be] shrink-0">
-                          <Calendar size={18} />
-                        </div>
+                    <div className="grid gap-4 sm:grid-cols-2 mt-4 relative">
+                      {/* Weak CTA */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-red-50/50 border-red-200" : "bg-white/5 border-red-900/30")}>
                         <div>
-                          <h4 className="text-xs font-black text-[#0b1c30]">Schedule a 15-Minute Checkout Audit</h4>
-                          <p className="text-[10px] text-neutral-400 font-semibold mt-0.5">Let's map out your primary drop bottleneck.</p>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>
+                            ❌ Generic Commodity
+                          </span>
+                          <div className="bg-white/50 border border-neutral-200 rounded-lg p-3 mb-2 flex items-center justify-between">
+                            <span className="text-xs font-bold text-neutral-400">Contact Me</span>
+                            <div className="px-3 py-1 bg-neutral-200 rounded text-[9px] font-bold text-neutral-500">Send</div>
+                          </div>
+                        </div>
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-red-100/50" : "border-red-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-red-500" : "text-red-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-red-50 border-red-100" : "bg-red-900/20 border-red-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-200/50 text-red-700" : "bg-red-800/40 text-red-300")}>
+                               <AlertCircle size={10} /> High Friction
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-red-500 text-white" : "bg-red-600 text-white")}>
+                               <Target size={10} /> Procrastinates
+                             </div>
+                           </div>
                         </div>
                       </div>
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-xl shadow-sm transition-all cursor-pointer border-none flex items-center gap-1">
-                        Book Diagnostic
-                        <ArrowUpRight size={12} />
-                      </button>
+
+                      {/* Bridge Arrow */}
+                      <div className={cn("hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full items-center justify-center z-10 border shadow-sm", viewMode === 'blueprint' ? "bg-white border-neutral-200 text-neutral-400" : "bg-[#0b1c30] border-neutral-700 text-neutral-500")}>
+                        <ArrowRight size={14} />
+                      </div>
+
+                      {/* Strong CTA */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-emerald-50/50 border-emerald-200" : "bg-white/5 border-emerald-900/30")}>
+                        <div>
+                          <span className={cn("text-[9px] font-black uppercase tracking-widest block mb-2", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>
+                            🟢 Upgraded Authority
+                          </span>
+                          
+                          <div className={cn("p-3 rounded-xl border flex flex-col gap-3", viewMode === 'blueprint' ? "bg-[#f8f9ff] border-blue-100" : "bg-blue-900/20 border-blue-800/50")}>
+                            <div className="flex items-start gap-2">
+                              <div className="w-7 h-7 rounded bg-blue-500/10 flex items-center justify-center text-[#0058be] shrink-0 mt-0.5">
+                                <Calendar size={14} />
+                              </div>
+                              <div>
+                                <h4 className={cn("text-[11px] font-black", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white")}>Schedule 15-Min Audit</h4>
+                                <p className={cn("text-[9px] font-semibold mt-0.5", viewMode === 'blueprint' ? "text-neutral-500" : "text-neutral-400")}>Map out your drop bottleneck.</p>
+                              </div>
+                            </div>
+                            <button className="bg-blue-600 text-white font-bold text-[10px] py-1.5 px-3 rounded-lg shadow-sm border-none w-full text-center">
+                              Book Diagnostic
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className={cn("mt-4 pt-3 border-t", viewMode === 'blueprint' ? "border-emerald-100/50" : "border-emerald-900/50")}>
+                           <span className={cn("text-[8px] font-black uppercase tracking-widest mb-2 block", viewMode === 'blueprint' ? "text-emerald-600" : "text-emerald-400")}>Client Brain Simulator</span>
+                           <div className={cn("flex items-center gap-1 w-full rounded-full p-1 border", viewMode === 'blueprint' ? "bg-emerald-50 border-emerald-100" : "bg-emerald-900/20 border-emerald-900/40")}>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-bold flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-200/50 text-emerald-700" : "bg-emerald-800/40 text-emerald-300")}>
+                               <Zap size={10} /> Low Friction
+                             </div>
+                             <div className={cn("flex-1 text-center py-1 rounded-full text-[9px] font-black flex items-center justify-center gap-1 shadow-sm", viewMode === 'blueprint' ? "bg-emerald-500 text-white" : "bg-emerald-600 text-white")}>
+                               <CalendarCheck size={10} /> Books Call
+                             </div>
+                           </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
