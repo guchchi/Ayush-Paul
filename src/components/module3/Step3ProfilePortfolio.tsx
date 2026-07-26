@@ -56,6 +56,7 @@ export function Step3ProfilePortfolio() {
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
   const [isEyeTrackerPlaying, setIsEyeTrackerPlaying] = useState<boolean>(false);
+  const [heroUpgraded, setHeroUpgraded] = useState<boolean>(false);
 
   useEffect(() => {
     if (!pendingStrategy && !strategy && !isUpstreamStale) {
@@ -482,17 +483,73 @@ export function Step3ProfilePortfolio() {
                       </div>
                     )}
 
-                    <div className="space-y-1.5">
-                      <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-neutral-400" : "text-blue-400")}>
-                        Positioning Promise
-                      </span>
-                      <h2 className="text-sm sm:text-base font-black leading-snug">
-                        {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
-                      </h2>
-                      <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
-                        Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
-                      </p>
-                    </div>
+                    <AnimatePresence mode="wait">
+                      {!heroUpgraded ? (
+                        <motion.div 
+                          key="weak-hook"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
+                          className="space-y-4"
+                        >
+                          <div className="space-y-1.5">
+                            <span className={cn("text-[9px] font-black uppercase tracking-widest block", viewMode === 'blueprint' ? "text-red-400" : "text-red-400")}>
+                              Generic Introduction (The Mistake)
+                            </span>
+                            <h2 className={cn("text-sm sm:text-base font-bold leading-snug", viewMode === 'blueprint' ? "text-neutral-400 line-through" : "text-white/50 line-through")}>
+                              "Hi, I'm a React Developer for hire."
+                            </h2>
+                            <p className={cn("text-xs leading-relaxed font-medium", viewMode === 'blueprint' ? "text-neutral-400" : "text-white/40")}>
+                              I build fast, responsive websites using modern web technologies like Next.js and Tailwind CSS.
+                            </p>
+                          </div>
+                          
+                          <div className="flex items-center justify-between bg-red-50/50 border border-red-100 p-3 rounded-xl">
+                            <div className="text-[10px] text-red-700 font-semibold max-w-[75%] leading-relaxed">
+                              <span className="font-black">Client Perception:</span> "Just another commodity. I will negotiate this person's price down to the absolute minimum."
+                            </div>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); setHeroUpgraded(true); }}
+                              className="text-[10px] font-black uppercase tracking-wider bg-blue-600 text-white px-3 py-1.5 rounded-lg shadow-sm hover:bg-blue-700 transition-colors"
+                            >
+                              Upgrade Hook
+                            </button>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div 
+                          key="strong-hook"
+                          initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                          className="space-y-4"
+                        >
+                          <div className="space-y-1.5">
+                            <span className={cn("text-[9px] font-black uppercase tracking-widest block text-blue-500")}>
+                              Outcome Positioning (The Solution)
+                            </span>
+                            <h2 className="text-sm sm:text-base font-black leading-snug text-[#0b1c30]">
+                              {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                            </h2>
+                            <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-500" : "text-white/70")}>
+                              Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
+                            </p>
+                          </div>
+
+                          <div className="flex items-center justify-between bg-emerald-50/50 border border-emerald-100 p-3 rounded-xl">
+                            <div className="text-[10px] text-emerald-800 font-semibold leading-relaxed">
+                              <span className="font-black">Client Perception:</span> "A specialist who understands my expensive problem. An investment worth premium rates."
+                            </div>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); setHeroUpgraded(false); }}
+                              className="text-[10px] font-bold text-neutral-400 hover:text-neutral-600 transition-colors shrink-0"
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   {/* SECTION 2: FOUNDATIONAL PROOF (Can you do the work?) */}
