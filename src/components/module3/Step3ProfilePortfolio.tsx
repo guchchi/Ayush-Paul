@@ -52,6 +52,7 @@ export function Step3ProfilePortfolio() {
   const [selectedExampleTier, setSelectedExampleTier] = useState<'beginner' | 'intermediate' | 'expert'>('beginner');
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [activeInspectorToken, setActiveInspectorToken] = useState<'outcome' | 'audience' | 'mechanism' | null>('outcome');
 
   // Eye Tracker Animation States
   const [eyeTrackerStep, setEyeTrackerStep] = useState<number>(0); // 0 = idle, 1 = Hero, 2 = Foundational, 3 = Supporting, 4 = CTA
@@ -686,27 +687,121 @@ export function Step3ProfilePortfolio() {
                             <span className="bg-white/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider">98% Clarity Rating</span>
                           </div>
 
-                          {/* 1. Value Proposition / Outcome - Dominant visual element */}
-                          <div>
-                            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded mb-1 inline-block">1. Dominant Value Promise</span>
+                          {/* Interactive Strategic Inspector Banner */}
+                          <div className="flex items-center justify-between bg-blue-50/90 border border-blue-200/80 px-2.5 py-1.5 rounded-lg text-[9px] font-bold text-blue-900">
+                            <span className="flex items-center gap-1.5">
+                              <Sparkles size={11} className="text-blue-600 animate-pulse shrink-0" />
+                              <span>Interactive Inspector: Hover/click phrases to reveal strategic role</span>
+                            </span>
+                            <span className="text-[8px] font-black uppercase text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded shrink-0">
+                              Exploration Mode
+                            </span>
+                          </div>
+
+                          {/* 1. Value Proposition / Outcome - Interactive Phrase */}
+                          <div 
+                            onMouseEnter={() => setActiveInspectorToken('outcome')}
+                            onClick={() => setActiveInspectorToken('outcome')}
+                            className={cn(
+                              "p-2.5 rounded-xl transition-all border cursor-pointer relative group",
+                              activeInspectorToken === 'outcome' 
+                                ? "bg-blue-100/70 border-blue-400 shadow-xs ring-2 ring-blue-400/20" 
+                                : "bg-emerald-100/30 border-emerald-200/80 hover:border-emerald-400 hover:bg-emerald-100/60"
+                            )}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[8px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-200/80 px-1.5 py-0.5 rounded">
+                                1. Dominant Value Promise (Click/Hover to Inspect)
+                              </span>
+                              <span className="text-[8px] font-bold text-blue-600 bg-blue-50 px-1 py-0.5 rounded border border-blue-100">
+                                🎯 Attracts Attention
+                              </span>
+                            </div>
                             <h2 className={cn("text-base font-black leading-snug tracking-tight", viewMode === 'blueprint' ? "text-[#0b1c30]" : "text-white")}>
-                              {useModule3Store.getState().coreTrustPromise || 'Preventing customer checkout drops for SaaS platforms'}
+                              "Preventing customer checkout drops"
                             </h2>
                           </div>
 
-                          {/* 2. Target Audience & 3. Mechanism */}
-                          <div className="space-y-1.5 border-t border-emerald-100/60 pt-2">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-[8px] font-bold uppercase tracking-wider text-purple-600 bg-purple-100/60 px-1.5 py-0.5 rounded">2. Audience</span>
-                              <span className={cn("text-xs font-bold", viewMode === 'blueprint' ? "text-neutral-700" : "text-white/90")}>SaaS & Fintech Platforms</span>
+                          {/* 2. Target Audience & 3. Mechanism - Interactive Phrases */}
+                          <div className="space-y-2 border-t border-emerald-100/60 pt-2">
+                            {/* 2. Target Audience */}
+                            <div 
+                              onMouseEnter={() => setActiveInspectorToken('audience')}
+                              onClick={() => setActiveInspectorToken('audience')}
+                              className={cn(
+                                "p-2 rounded-xl transition-all border cursor-pointer group",
+                                activeInspectorToken === 'audience' 
+                                  ? "bg-purple-100/70 border-purple-400 shadow-xs ring-2 ring-purple-400/20" 
+                                  : "bg-purple-50/40 border-purple-200/80 hover:border-purple-300 hover:bg-purple-100/50"
+                              )}
+                            >
+                              <div className="flex items-center justify-between mb-0.5">
+                                <span className="text-[8px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">
+                                  2. Target Audience Filter (Click/Hover to Inspect)
+                                </span>
+                                <span className="text-[8px] font-bold text-purple-600 bg-purple-50 px-1 py-0.5 rounded border border-purple-100">
+                                  ⚡ Increases Relevance
+                                </span>
+                              </div>
+                              <span className={cn("text-xs font-bold block", viewMode === 'blueprint' ? "text-neutral-800" : "text-white")}>
+                                "for SaaS & Fintech Platforms"
+                              </span>
                             </div>
-                            <div>
-                              <span className="text-[8px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-100/60 px-1.5 py-0.5 rounded mb-0.5 inline-block">3. Mechanism</span>
-                              <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-600" : "text-white/70")}>
-                                Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue.
+
+                            {/* 3. Mechanism */}
+                            <div 
+                              onMouseEnter={() => setActiveInspectorToken('mechanism')}
+                              onClick={() => setActiveInspectorToken('mechanism')}
+                              className={cn(
+                                "p-2 rounded-xl transition-all border cursor-pointer group",
+                                activeInspectorToken === 'mechanism' 
+                                  ? "bg-indigo-100/70 border-indigo-400 shadow-xs ring-2 ring-indigo-400/20" 
+                                  : "bg-indigo-50/40 border-indigo-200/80 hover:border-indigo-300 hover:bg-indigo-100/50"
+                              )}
+                            >
+                              <div className="flex items-center justify-between mb-0.5">
+                                <span className="text-[8px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">
+                                  3. Diagnostic Mechanism (Click/Hover to Inspect)
+                                </span>
+                                <span className="text-[8px] font-bold text-indigo-600 bg-indigo-50 px-1 py-0.5 rounded border border-indigo-100">
+                                  🛡️ Establishes Credibility
+                                </span>
+                              </div>
+                              <p className={cn("text-xs leading-relaxed font-semibold", viewMode === 'blueprint' ? "text-neutral-700" : "text-white/80")}>
+                                "Analyzing checkout bottlenecks to secure integration endpoints, ensuring you retain customers and secure high-ticket revenue."
                               </p>
                             </div>
                           </div>
+
+                          {/* Dynamic Inspector Learning Popover */}
+                          <AnimatePresence mode="wait">
+                            {activeInspectorToken && (
+                              <motion.div
+                                key={activeInspectorToken}
+                                initial={{ opacity: 0, y: -4 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -4 }}
+                                className="p-3 rounded-xl border bg-[#0b1c30] text-white text-left space-y-1 mt-2 shadow-md"
+                              >
+                                <div className="flex items-center justify-between border-b border-neutral-700 pb-1">
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-blue-300 flex items-center gap-1">
+                                    <Info size={11} className="text-blue-400" />
+                                    {activeInspectorToken === 'outcome' && "🎯 Strategic Role: Attracting Client Attention"}
+                                    {activeInspectorToken === 'audience' && "⚡ Strategic Role: Increasing Context Relevance"}
+                                    {activeInspectorToken === 'mechanism' && "🛡️ Strategic Role: Establishing Diagnostic Credibility"}
+                                  </span>
+                                  <span className="text-[8px] text-emerald-400 font-black uppercase tracking-wider">
+                                    Exploration Insight
+                                  </span>
+                                </div>
+                                <p className="text-[10px] font-medium text-neutral-200 leading-relaxed">
+                                  {activeInspectorToken === 'outcome' && "Addresses active revenue leakage. Client CEOs evaluate financial risk in under 1.5 seconds—this headline hooks them instantly by promising a resolved bottleneck."}
+                                  {activeInspectorToken === 'audience' && "Filters out low-budget leads while reassuring high-LTV SaaS founders that you specialize exclusively in their business context."}
+                                  {activeInspectorToken === 'mechanism' && "Shows HOW you solve the problem. Proves you possess a diagnostic methodology rather than selling raw input hours like a commodity freelancer."}
+                                </p>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
                           {/* 🧠 AI Strategic Reasoning Trace - Unboxing the AI Decision */}
                           <div className={cn("border rounded-xl p-3 space-y-2 text-left shadow-xs transition-all", viewMode === 'blueprint' ? "bg-white/90 border-emerald-200" : "bg-white/10 border-white/20")}>
