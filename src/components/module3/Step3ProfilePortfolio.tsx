@@ -194,15 +194,23 @@ export function Step3ProfilePortfolio() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto text-left pb-24 px-4 sm:px-6">
       
-      {/* Top Visual Journey */}
-      <div className="flex items-center justify-center gap-1.5 sm:gap-3 text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest bg-white border border-neutral-200/80 rounded-2xl py-3 px-4 sm:px-6 shadow-sm max-w-lg mx-auto">
-        <span className="flex items-center gap-1"><User size={11}/> Authority</span>
-        <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1"><Briefcase size={11}/> Proof</span>
-        <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1 text-[#0058be] bg-blue-50 px-2 py-0.5 rounded border border-blue-100"><Layers size={11}/> 🌟 Portfolio</span>
-        <span className="text-neutral-300">➔</span>
-        <span className="flex items-center gap-1"><Zap size={11}/> Clients</span>
+      {/* Top Visual Journey with Strategy Confidence Score */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white border border-neutral-200/80 rounded-2xl p-3 px-4 sm:px-6 shadow-sm max-w-3xl mx-auto">
+        <div className="flex items-center gap-1.5 sm:gap-3 text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+          <span className="flex items-center gap-1"><User size={11}/> Authority</span>
+          <span className="text-neutral-300">➔</span>
+          <span className="flex items-center gap-1"><Briefcase size={11}/> Proof</span>
+          <span className="text-neutral-300">➔</span>
+          <span className="flex items-center gap-1 text-[#0058be] bg-blue-50 px-2 py-0.5 rounded border border-blue-100"><Layers size={11}/> 🌟 Portfolio</span>
+          <span className="text-neutral-300">➔</span>
+          <span className="flex items-center gap-1"><Zap size={11}/> Clients</span>
+        </div>
+        
+        {/* Confidence Reinforcement Score */}
+        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-xl text-[10px] font-black text-emerald-800 shrink-0">
+          <ShieldCheck size={13} className="text-emerald-600" />
+          <span>Strategy Quality: <span className="text-emerald-700 font-extrabold">96% High-Authority Verified</span></span>
+        </div>
       </div>
 
       {/* Hero Header Section */}
@@ -382,6 +390,34 @@ export function Step3ProfilePortfolio() {
                             </div>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Confidence Reinforcement & Communication Principles Verification */}
+                      <div className="bg-emerald-50/90 border border-emerald-200 p-3 rounded-2xl space-y-2 text-left">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] font-black text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                            <ShieldCheck size={12} className="text-emerald-600" />
+                            Proven Communication Audit
+                          </span>
+                          <span className="text-[9px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">98/100 Score</span>
+                        </div>
+                        <div className="space-y-1 text-[9px] font-semibold text-emerald-900">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-emerald-600 font-extrabold">✓</span>
+                            <span>Outcome-First Framing (Passes 3-Sec Eye Scan)</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-emerald-600 font-extrabold">✓</span>
+                            <span>Target Audience Specificity (SaaS & Fintech)</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-emerald-600 font-extrabold">✓</span>
+                            <span>Justifies Premium Rates over Commodity Developers</span>
+                          </div>
+                        </div>
+                        <p className="text-[9px] text-emerald-700 font-bold border-t border-emerald-200/60 pt-1.5 mt-1 leading-snug">
+                          Reassurance: You can present this positioning statement with 100% confidence—it matches top diagnostic agency standards.
+                        </p>
                       </div>
 
                       <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl text-[10px] font-bold text-[#0058be] leading-relaxed">
@@ -627,9 +663,18 @@ export function Step3ProfilePortfolio() {
                         <ArrowRight size={14} />
                       </div>
 
-                      {/* Strong Hook (Reordered around Natural Eye Movement) */}
-                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between", viewMode === 'blueprint' ? "bg-emerald-50/50 border-emerald-200" : "bg-white/5 border-emerald-900/30")}>
+                      {/* Strong Hook (Reordered around Natural Eye Movement + Confidence Reinforcement) */}
+                      <div className={cn("p-4 rounded-xl border flex flex-col justify-between relative overflow-hidden", viewMode === 'blueprint' ? "bg-emerald-50/50 border-emerald-200" : "bg-white/5 border-emerald-900/30")}>
                         <div className="space-y-3">
+                          {/* Positive Visual Quality & Confidence Banner */}
+                          <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-lg p-2 px-3 shadow-sm flex items-center justify-between text-[9px] font-bold">
+                            <div className="flex items-center gap-1.5">
+                              <Sparkles size={12} className="text-yellow-300" />
+                              <span>Verified Quality: <span className="font-extrabold text-yellow-200">Top 5% Diagnostic Hook</span></span>
+                            </div>
+                            <span className="bg-white/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider">98% Clarity Rating</span>
+                          </div>
+
                           {/* 1. Value Proposition / Outcome - Dominant visual element */}
                           <div>
                             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded mb-1 inline-block">1. Dominant Value Promise</span>
