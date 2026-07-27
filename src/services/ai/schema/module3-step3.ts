@@ -2,9 +2,19 @@ import { z } from 'zod';
 
 const educationalBlockSchema = z.object({
   why: z.string(),
+  principle: z.string(),
   commonMistake: z.string(),
+});
+
+const strategyMetadataSchema = z.object({
+  sectionId: z.string(),
+  impact: z.enum(['High', 'Medium', 'Low']),
+  difficulty: z.enum(['Hard', 'Medium', 'Easy']),
+  estimatedMinutes: z.number().int(),
+  expectedOutcome: z.string(),
   firstAction: z.string(),
-  expectedResult: z.string(),
+  recommendedAssets: z.array(z.string()).optional(),
+  nextStepDependencies: z.array(z.string()).optional(),
 });
 
 export const strategySummarySchema = z.object({
@@ -13,6 +23,7 @@ export const strategySummarySchema = z.object({
   targetClient: z.string(),
   portfolioStyle: z.string(),
   contentStrategy: z.string(),
+  biggestOpportunity: z.string(),
 });
 
 export const platformRecommendationSchema = z.object({
@@ -29,12 +40,14 @@ export const platformRecommendationSchema = z.object({
 export const platformStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   recommendations: z.array(platformRecommendationSchema),
 });
 
 export const profileStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   username: z.string(),
   displayName: z.string(),
   headline: z.string(),
@@ -47,6 +60,7 @@ export const profileStrategySchema = z.object({
 export const portfolioStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   recommendedStructure: z.array(z.string()),
   projectOrdering: z.array(z.string()),
   navigation: z.array(z.string()),
@@ -56,6 +70,7 @@ export const portfolioStrategySchema = z.object({
 export const trustStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   recommendedElements: z.array(z.string()),
   priority: z.string(),
 });
@@ -63,6 +78,7 @@ export const trustStrategySchema = z.object({
 export const contentStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   contentTypes: z.array(z.string()),
   publishingFrequency: z.string(),
   authorityBuildingIdeas: z.array(z.string()),
@@ -71,6 +87,7 @@ export const contentStrategySchema = z.object({
 export const brandingStrategySchema = z.object({
   personalizationNote: z.string(),
   educational: educationalBlockSchema,
+  metadata: strategyMetadataSchema,
   visualConsistency: z.string(),
   typography: z.string(),
   colorUsage: z.string(),

@@ -60,8 +60,11 @@ export function calculateBlueprintConfidence(context: Step3PromptContext): Bluep
     level = 'Moderate';
   }
 
+  const numericScore = Math.round(percentage * 100);
+
   return {
     level,
+    score: numericScore,
     factors
   };
 }

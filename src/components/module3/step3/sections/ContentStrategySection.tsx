@@ -2,6 +2,8 @@ import React from 'react';
 import { ContentStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
+import { RecommendationCard } from '../components/RecommendationCard';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
 import { FileText } from 'lucide-react';
 
 interface Props {
@@ -20,6 +22,9 @@ export const ContentStrategySection = React.memo(function ContentStrategySection
           personalizationNote={content.personalizationNote}
           educational={content.educational}
         />
+        {content.metadata && (
+          <StrategyActionPanel metadata={content.metadata} />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

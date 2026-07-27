@@ -27,9 +27,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'Focusing on LinkedIn will maximize visibility with B2B decision makers.',
       educational: {
         why: 'Consistency on one platform beats mediocrity on three.',
-        commonMistake: 'Spreading yourself too thin across multiple networks.',
-        firstAction: 'Optimize your LinkedIn headline and featured section.',
-        expectedResult: 'Higher connection acceptance and inbound inquiries.'
+        principle: 'Start small and dominate one channel before expanding.',
+        commonMistake: 'Spreading yourself too thin across multiple networks.'
+      },
+      metadata: {
+        sectionId: 'platform',
+        impact: 'High',
+        difficulty: 'Medium',
+        estimatedMinutes: 30,
+        expectedOutcome: 'Higher connection acceptance and inbound inquiries.',
+        firstAction: 'Optimize your LinkedIn headline and featured section.'
       },
       recommendations: [
         {
@@ -58,9 +65,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'Your profile must instantly communicate the ROI you deliver.',
       educational: {
         why: 'Your profile is your landing page.',
-        commonMistake: 'Using a resume-style headline instead of a value proposition.',
-        firstAction: 'Rewrite your headline to focus on client outcomes.',
-        expectedResult: 'Higher profile view-to-connection request ratio.'
+        principle: 'Always position yourself based on the problems you solve.',
+        commonMistake: 'Using a resume-style headline instead of a value proposition.'
+      },
+      metadata: {
+        sectionId: 'profile',
+        impact: 'High',
+        difficulty: 'Easy',
+        estimatedMinutes: 15,
+        expectedOutcome: 'Higher profile view-to-connection request ratio.',
+        firstAction: 'Rewrite your headline to focus on client outcomes.'
       },
       username: 'FirstLast',
       displayName: authorityProfile.position,
@@ -74,9 +88,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'Case studies should highlight revenue or efficiency gains.',
       educational: {
         why: 'Clients buy results, not services.',
-        commonMistake: 'Focusing on the deliverables instead of the business impact.',
-        firstAction: 'Structure your best case study using the STAR method.',
-        expectedResult: 'Increased trust and shortened sales cycles.'
+        principle: 'Showcase impact and transformation over deliverables.',
+        commonMistake: 'Focusing on the deliverables instead of the business impact.'
+      },
+      metadata: {
+        sectionId: 'portfolio',
+        impact: 'High',
+        difficulty: 'Hard',
+        estimatedMinutes: 120,
+        expectedOutcome: 'Increased trust and shortened sales cycles.',
+        firstAction: 'Structure your best case study using the STAR method.'
       },
       recommendedStructure: [
         'Hero Section (Value Proposition)',
@@ -98,9 +119,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'Social proof is critical for high-ticket sales.',
       educational: {
         why: 'Trust is the biggest barrier to high-ticket sales.',
-        commonMistake: 'Hiding testimonials on a separate page.',
-        firstAction: 'Add a video testimonial or logo strip above the fold.',
-        expectedResult: 'Immediate authority positioning.'
+        principle: 'Provide indisputable proof of your claims.',
+        commonMistake: 'Hiding testimonials on a separate page.'
+      },
+      metadata: {
+        sectionId: 'trust',
+        impact: 'High',
+        difficulty: 'Medium',
+        estimatedMinutes: 45,
+        expectedOutcome: 'Immediate authority positioning.',
+        firstAction: 'Add a video testimonial or logo strip above the fold.'
       },
       recommendedElements: proofAssetStrategy.priorityProofAssets.map(a => a.name),
       priority: 'High'
@@ -109,9 +137,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'Educate prospects on the strategic value of your offer.',
       educational: {
         why: 'Consistent content builds a parasocial relationship.',
-        commonMistake: 'Posting generic advice instead of unique viewpoints.',
-        firstAction: 'Draft one teardown of a popular strategy in your niche.',
-        expectedResult: 'Attracting inbound leads who value your expertise.'
+        principle: 'Share unique viewpoints and insights, not just facts.',
+        commonMistake: 'Posting generic advice instead of unique viewpoints.'
+      },
+      metadata: {
+        sectionId: 'content',
+        impact: 'Medium',
+        difficulty: 'Hard',
+        estimatedMinutes: 90,
+        expectedOutcome: 'Attracting inbound leads who value your expertise.',
+        firstAction: 'Draft one teardown of a popular strategy in your niche.'
       },
       contentTypes: [
         'Case Studies (Deep Dives)',
@@ -130,9 +165,16 @@ export function generateProfilePortfolioStrategy(ctx: {
       personalizationNote: 'A premium, minimalist brand signals high value.',
       educational: {
         why: 'Visual consistency implies operational consistency.',
-        commonMistake: 'Using too many colors or inconsistent fonts.',
-        firstAction: 'Select a core palette of 2 colors and stick to one font.',
-        expectedResult: 'A cohesive, professional brand presence.'
+        principle: 'Less is more; prioritize clean, readable design.',
+        commonMistake: 'Using too many colors or inconsistent fonts.'
+      },
+      metadata: {
+        sectionId: 'branding',
+        impact: 'Medium',
+        difficulty: 'Easy',
+        estimatedMinutes: 20,
+        expectedOutcome: 'A cohesive, professional brand presence.',
+        firstAction: 'Select a core palette of 2 colors and stick to one font.'
       },
       visualConsistency: 'Minimalist, clean, and professional',
       typography: 'Modern sans-serif (e.g., Inter, Roboto)',

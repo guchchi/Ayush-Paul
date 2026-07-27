@@ -2,7 +2,8 @@ import React from 'react';
 import { PortfolioStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
-import { Briefcase } from 'lucide-react';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
+import { Briefcase, FolderGit2 } from 'lucide-react';
 
 interface Props {
   portfolio: PortfolioStrategyParams;
@@ -20,6 +21,9 @@ export const PortfolioStrategySection = React.memo(function PortfolioStrategySec
           personalizationNote={portfolio.personalizationNote}
           educational={portfolio.educational}
         />
+        {portfolio.metadata && (
+          <StrategyActionPanel metadata={portfolio.metadata} />
+        )}
 
         <div>
           <h4 className="text-sm font-medium text-neutral-900 mb-3">Recommended Structure</h4>

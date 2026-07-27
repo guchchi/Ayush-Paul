@@ -198,6 +198,7 @@ export interface ConfidenceFactor {
 
 export interface BlueprintConfidence {
   level: 'Strong' | 'Moderate' | 'Limited';
+  score: number;
   factors: ConfidenceFactor[];
 }
 
@@ -208,13 +209,24 @@ export interface StrategySummary {
   portfolioStyle: string;
   contentStrategy: string;
   confidenceScore?: BlueprintConfidence;
+  biggestOpportunity?: string;
+}
+
+export interface StrategyMetadata {
+  sectionId: string;
+  impact: 'High' | 'Medium' | 'Low';
+  difficulty: 'Hard' | 'Medium' | 'Easy';
+  estimatedMinutes: number;
+  expectedOutcome: string;
+  firstAction: string;
+  recommendedAssets?: string[];
+  nextStepDependencies?: string[];
 }
 
 export interface EducationalBlock {
   why: string;
+  principle: string;
   commonMistake: string;
-  firstAction: string;
-  expectedResult: string;
 }
 
 export interface PlatformRecommendation {
@@ -231,12 +243,14 @@ export interface PlatformRecommendation {
 export interface PlatformStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   recommendations: PlatformRecommendation[];
 }
 
 export interface ProfileStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   username: string;
   displayName: string;
   headline: string;
@@ -249,6 +263,7 @@ export interface ProfileStrategyParams {
 export interface PortfolioStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   recommendedStructure: string[];
   projectOrdering: string[];
   navigation: string[];
@@ -258,6 +273,7 @@ export interface PortfolioStrategyParams {
 export interface TrustStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   recommendedElements: string[];
   priority: string;
 }
@@ -265,6 +281,7 @@ export interface TrustStrategyParams {
 export interface ContentStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   contentTypes: string[];
   publishingFrequency: string;
   authorityBuildingIdeas: string[];
@@ -273,6 +290,7 @@ export interface ContentStrategyParams {
 export interface BrandingStrategyParams {
   personalizationNote: string;
   educational: EducationalBlock;
+  metadata: StrategyMetadata;
   visualConsistency: string;
   typography: string;
   colorUsage: string;

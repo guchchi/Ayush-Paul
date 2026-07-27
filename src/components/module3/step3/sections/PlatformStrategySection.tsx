@@ -3,6 +3,7 @@ import { PlatformStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { RecommendationCard } from '../components/RecommendationCard';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
 import { LayoutGrid } from 'lucide-react';
 
 interface Props {
@@ -27,6 +28,9 @@ export const PlatformStrategySection = React.memo(function PlatformStrategySecti
           personalizationNote={platformStrategy.personalizationNote}
           educational={platformStrategy.educational}
         />
+        {platformStrategy.metadata && (
+          <StrategyActionPanel metadata={platformStrategy.metadata} />
+        )}
         {primaryPlatforms.length > 0 && (
           <div>
             <h4 className="text-sm font-medium text-neutral-900 mb-3">Primary Focus (Action: {primaryPlatforms[0].action})</h4>

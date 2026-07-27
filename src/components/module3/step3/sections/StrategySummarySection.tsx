@@ -56,16 +56,26 @@ export const StrategySummarySection = React.memo(function StrategySummarySection
         </div>
       </div>
 
+      {summary.biggestOpportunity && (
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-neutral-100 mb-6">
+          <div className="flex items-center space-x-2 mb-2">
+            <Target className="w-4 h-4 text-neutral-400" />
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Biggest Opportunity</h4>
+          </div>
+          <p className="text-sm font-medium text-neutral-900">{summary.biggestOpportunity}</p>
+        </div>
+      )}
+
       {summary.confidenceScore && (
         <div className="mt-6 pt-6 border-t border-indigo-100/50">
           <h4 className="text-sm font-semibold text-neutral-900 flex items-center mb-4">
-            Blueprint Confidence Score: 
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+            Authority Blueprint Score: 
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold ${
               summary.confidenceScore.level === 'Strong' ? 'bg-green-100 text-green-700' :
               summary.confidenceScore.level === 'Moderate' ? 'bg-yellow-100 text-yellow-700' :
               'bg-red-100 text-red-700'
             }`}>
-              {summary.confidenceScore.level}
+              {summary.confidenceScore.score} / 100 - {summary.confidenceScore.level} Foundation
             </span>
           </h4>
           

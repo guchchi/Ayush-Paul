@@ -2,6 +2,7 @@ import React from 'react';
 import { ProfileStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
 import { UserCircle } from 'lucide-react';
 
 interface Props {
@@ -20,6 +21,9 @@ export const ProfileStrategySection = React.memo(function ProfileStrategySection
           personalizationNote={profile.personalizationNote}
           educational={profile.educational}
         />
+        {profile.metadata && (
+          <StrategyActionPanel metadata={profile.metadata} />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">

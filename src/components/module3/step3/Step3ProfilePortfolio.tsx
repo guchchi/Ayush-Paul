@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useModule3Store } from '../../../lib/module3';
 import { StepHeader } from '../../workspace/StepHeader';
 import { StepActionArea } from '../../workspace/StepActionArea';
@@ -13,6 +13,7 @@ import { BrandingStrategySection } from './sections/BrandingStrategySection';
 import { OptimizationSection } from './sections/OptimizationSection';
 import { PublishingRoadmapSection } from './sections/PublishingRoadmapSection';
 import { StrategySummarySection } from './sections/StrategySummarySection';
+import { BeforeYouContinueChecklist } from './components/BeforeYouContinueChecklist';
 
 export function Step3ProfilePortfolio() {
   const pendingStrategy = useModule3Store((s) => s.pendingProfilePortfolioStrategy);
@@ -27,6 +28,7 @@ export function Step3ProfilePortfolio() {
   const previousStep = useModule3Store((s) => s.previousStep);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+  const [isChecklistComplete, setIsChecklistComplete] = useState(false);
 
   useEffect(() => {
     if (!pendingStrategy && !strategy && !isUpstreamStale && !isGeneratingStrategy) {
@@ -86,6 +88,8 @@ export function Step3ProfilePortfolio() {
           {displayStrategy.brandingStrategy && <BrandingStrategySection branding={displayStrategy.brandingStrategy} />}
           {displayStrategy.optimizationRecommendations && <OptimizationSection optimizations={displayStrategy.optimizationRecommendations} />}
           {displayStrategy.publishingRoadmap && <PublishingRoadmapSection roadmap={displayStrategy.publishingRoadmap} />}
+          
+          <BeforeYouContinueChecklist onAllChecked={setIsChecklistComplete} />
         </div>
       )}
 
@@ -111,10 +115,10 @@ export function Step3ProfilePortfolio() {
           </div>
           <ModuleButton
             onClick={handleApprove}
-            disabled={!displayStrategy || isGeneratingStrategy}
+            disabled={!displayStrategy || isGeneratingStrategy || !isChecklistComplete}
             className="w-full sm:w-auto justify-center mt-3 sm:mt-0"
           >
-            Confirm Strategy & Continue
+            Generate My Authority Pack →
           </ModuleButton>
         </StepActionArea>
       </div>

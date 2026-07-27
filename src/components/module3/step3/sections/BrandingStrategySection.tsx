@@ -2,6 +2,7 @@ import React from 'react';
 import { BrandingStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
 import { Palette } from 'lucide-react';
 
 interface Props {
@@ -20,6 +21,9 @@ export const BrandingStrategySection = React.memo(function BrandingStrategySecti
           personalizationNote={branding.personalizationNote}
           educational={branding.educational}
         />
+        {branding.metadata && (
+          <StrategyActionPanel metadata={branding.metadata} />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

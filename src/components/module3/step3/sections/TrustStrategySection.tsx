@@ -2,6 +2,7 @@ import React from 'react';
 import { TrustStrategyParams } from '../../../../types/module3';
 import { StrategyAccordion } from '../components/StrategyAccordion';
 import { StrategyMentorBlock } from '../components/StrategyMentorBlock';
+import { StrategyActionPanel } from '../components/StrategyActionPanel';
 import { ShieldCheck } from 'lucide-react';
 
 interface Props {
@@ -20,6 +21,9 @@ export const TrustStrategySection = React.memo(function TrustStrategySection({ t
           personalizationNote={trust.personalizationNote}
           educational={trust.educational}
         />
+        {trust.metadata && (
+          <StrategyActionPanel metadata={trust.metadata} />
+        )}
 
         <div>
           <h4 className="text-sm font-medium text-neutral-900 mb-3">Recommended Elements</h4>
