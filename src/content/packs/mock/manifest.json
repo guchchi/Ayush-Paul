@@ -1,0 +1,12 @@
+{
+  "name": "Blueprint Mock Pack",
+  "version": "1.0.0",
+  "compatibleEngine": ">=1.0.0",
+  "capabilities": 1,
+  "objects": {
+    "eio": 1,
+    "xio": 1,
+    "aio": 1,
+    "edo": 0
+  }
+}

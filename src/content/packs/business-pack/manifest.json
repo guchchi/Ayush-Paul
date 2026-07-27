@@ -1,0 +1,12 @@
+{
+  "name": "Blueprint Business Pack",
+  "version": "1.0.0",
+  "compatibleEngine": ">=1.0.0",
+  "capabilities": 6,
+  "objects": {
+    "eio": 5,
+    "xio": 5,
+    "aio": 5,
+    "edo": 5
+  }
+}
