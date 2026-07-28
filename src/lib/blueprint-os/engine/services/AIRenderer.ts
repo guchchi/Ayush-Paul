@@ -59,7 +59,7 @@ Generate the exact expected outputs tailored to this user context, applying the 
     try {
       result = await provider.generateJSON<T>(prompt, schemaDesc, signal);
     } catch (error: any) {
-      throw new Error(`AIRenderer Failed: ${error.message}`);
+      throw new Error(`AIRenderer Failed: ${error.message}`, { cause: error });
     }
 
     // 3. Return Raw Output

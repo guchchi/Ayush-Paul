@@ -1,7 +1,7 @@
 import { IEIO, IXIO, IAIO } from '../../../lib/blueprint-os/engine/types';
 import manifestJson from './manifest.json';
 
-const MOCK_EIO: IEIO = {
+const SAMPLE_EIO: IEIO = {
   id: "eio-mock-001",
   uuid: "00000000-0000-0000-0000-000000000001",
   type: "eio",
@@ -29,11 +29,11 @@ const MOCK_EIO: IEIO = {
   }
 };
 
-const MOCK_XIO: IXIO = {
+const SAMPLE_XIO: IXIO = {
   id: "xio-mock-001",
   uuid: "00000000-0000-0000-0000-000000000002",
   type: "xio",
-  linkedEioUuid: MOCK_EIO.uuid,
+  linkedEioUuid: SAMPLE_EIO.uuid,
   lifecycle: {
     status: "published",
     stability: "stable",
@@ -51,11 +51,11 @@ const MOCK_XIO: IXIO = {
   }
 };
 
-const MOCK_AIO: IAIO = {
+const SAMPLE_AIO: IAIO = {
   id: "aio-mock-001",
   uuid: "00000000-0000-0000-0000-000000000003",
   type: "aio",
-  linkedEioUuid: MOCK_EIO.uuid,
+  linkedEioUuid: SAMPLE_EIO.uuid,
   lifecycle: {
     status: "published",
     stability: "stable",
@@ -80,5 +80,5 @@ const MOCK_AIO: IAIO = {
 
 export const MockPack = {
   manifest: manifestJson,
-  objects: [MOCK_EIO, MOCK_XIO, MOCK_AIO]
+  objects: [SAMPLE_EIO, SAMPLE_XIO, SAMPLE_AIO]
 };

@@ -37,13 +37,13 @@ export class GeminiProvider implements AIProvider {
         const parsed = JSON.parse(responseText);
         return parsed as T;
       } catch (parseError) {
-        throw new Error(`Failed to parse Gemini response as JSON: ${responseText}`);
+        throw new Error(`Failed to parse Gemini response as JSON: ${responseText}`, { cause: parseError });
       }
     } catch (error: any) {
       if (error.name === 'AbortError') {
         throw error;
       }
-      throw new Error(`Gemini API error: ${error.message}`);
+      throw new Error(`Gemini API error: ${error.message}`, { cause: error });
     }
   }
 }
