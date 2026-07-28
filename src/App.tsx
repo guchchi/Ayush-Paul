@@ -56,7 +56,7 @@ import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
 import { CookieConsent } from "./components/ui/CookieConsent";
 import { BetaFeedbackButton } from "./components/ui/BetaFeedbackButton";
-import { BetaOnboardingOverlay } from "./components/ui/BetaOnboardingOverlay";
+
 import { getFirebaseStatus } from "./config/firebase-config";
 
 const RedirectWithSlug = () => {
@@ -175,7 +175,7 @@ export default function App() {
           <ScrollToTopButton />
           <CookieConsent />
           <BetaFeedbackButton />
-          <BetaOnboardingOverlay />
+
           {import.meta.env.DEV && <DevTestTools />}
         </div>
       </Router>
