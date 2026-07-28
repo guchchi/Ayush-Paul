@@ -392,7 +392,7 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
             <div className="absolute inset-0 bg-gradient-to-br from-[#0058be]/25 via-transparent to-[#d1f34d]/5 pointer-events-none" />
 
             <div className="space-y-2 text-center md:text-left z-10">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                 Ready to build your authority?
               </h2>
               <p className="text-neutral-300 text-sm sm:text-base max-w-xl leading-relaxed">
