@@ -4,7 +4,7 @@ import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { DeliverySystemShell } from '../components/delivery-system/DeliverySystemShell';
 import { DeliverySystemIntroPage } from '../components/delivery-system/DeliverySystemIntroPage';
 import { StepContent } from '../components/delivery-system/StepContent';
-import { PremiumComingSoon } from '../components/workspace/PremiumComingSoon';
+import { LockedModuleWorkspace } from '../components/workspace/LockedModuleWorkspace';
 import { useDeliverySystemStore } from '../lib/delivery-system';
 import { buildDeliveryUpstreamContext, computeDeliveryFingerprint } from '../lib/delivery-system/context';
 
@@ -81,30 +81,32 @@ export function DeliverySystemPage() {
   // }
 
   return (
-    <PremiumComingSoon 
-      config={{
-        moduleNumber: 7,
-        moduleName: "Client Delivery System",
-        tagline: "Currently in Development",
-        description: "We are crafting this module carefully to ensure it delivers the best learning experience.",
-        whyItMatters: "This module ensures you can consistently deliver on your promises, retaining clients and generating referrals.",
-        previewFeatures: [
-          { name: "Service Fulfillment SOPs", description: "Standard operating procedures for delivery." },
-          { name: "Client Onboarding Portals", description: "White-labeled dashboards for your clients." },
-          { name: "Automated Feedback Loops", description: "Collect testimonials on autopilot." },
-          { name: "Scope Creep Protection", description: "Frameworks to keep projects profitable." }
-        ],
-        developmentProgress: {
-          research: 'Active',
-          content: 'Pending',
-          design: 'Pending',
-          development: 'Pending',
-          testing: 'Pending'
-        },
-        estimatedRelease: "Planned for Version 1.0",
-        previousModulePath: "/workspace/outreach-engine"
-      }}
-    />
+    <DeliverySystemShell>
+      <LockedModuleWorkspace 
+        config={{
+          moduleNumber: 7,
+          moduleName: "Client Delivery System",
+          status: "In Development",
+          whyItMatters: "This module ensures you can deliver high-quality work without burning out.",
+          progress: 10,
+          unlockFeatures: [
+            { title: "Service Fulfillment SOPs", description: "Standard operating procedures for delivery." },
+            { title: "Client Onboarding Portals", description: "Seamless onboarding experiences." },
+            { title: "Automated Feedback Loops", description: "Gather client feedback automatically." },
+            { title: "Scope Creep Protection", description: "Contracts and boundaries to protect your time." }
+          ],
+          milestones: [
+            { title: "Research", status: "in-progress" },
+            { title: "Content", status: "pending" },
+            { title: "Design", status: "pending" },
+            { title: "Development", status: "pending" },
+            { title: "Testing", status: "pending" }
+          ],
+          previousModuleName: "Outreach Engine",
+          previousModulePath: "/workspace/outreach-engine"
+        }}
+      />
+    </DeliverySystemShell>
   );
 }
 

@@ -11,6 +11,7 @@ import { TemplateCard } from '../components/blueprint-engine/TemplateCard';
 import { ChecklistCard } from '../components/blueprint-engine/ChecklistCard';
 import { ResourceCard } from '../components/blueprint-engine/ResourceCard';
 import { CompletionCard } from '../components/blueprint-engine/CompletionCard';
+import { WorkspaceLoadingState } from '../components/workspace/WorkspaceLoadingState';
 import { getBlueprint } from '../content/blueprints';
 import { cn } from '../lib/utils';
 import type { BlueprintEngineData, BlueprintProgress } from '../types/blueprint-engine';
@@ -171,11 +172,7 @@ export function BlueprintEnginePage() {
   }, [activeModule, progress, saveProgress]);
 
   if (loading || contentLoading) {
-    return (
-      <div className="w-full min-h-screen bg-[#0a0a0b] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-brand-primary/25 border-t-brand-primary rounded-full animate-spin" />
-      </div>
-    );
+    return <WorkspaceLoadingState fullScreen message="Loading Engine..." />;
   }
 
   if (!data) {

@@ -34,6 +34,8 @@ import { cn } from '../lib/utils';
 import { Section } from '../components/ui/Section';
 import { useNavigate } from 'react-router-dom';
 import { VARIANTS } from '../lib/motion-presets';
+import { WorkspaceEmptyState } from '../components/workspace/WorkspaceEmptyState';
+import { WorkspaceLoadingState } from '../components/workspace/WorkspaceLoadingState';
 
 // --- Types ---
 
@@ -799,11 +801,7 @@ export const DashboardPage = () => {
     return () => unsubscribe();
   }, [navigate]);
 
-  if (loading) return (
-    <div className="h-screen w-full flex items-center justify-center bg-[#0A0A0A]">
-      <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (loading) return <WorkspaceLoadingState fullScreen message="Loading Dashboard..." />;
 
   return (
     <div className="bg-[#0A0A0A] text-white min-h-screen">
@@ -867,21 +865,39 @@ export const DashboardPage = () => {
         {activeTab === 'inbox' && <OpportunityInbox />}
         
         {activeTab === 'projects' && (
-           <div className="h-96 flex items-center justify-center text-white/20 font-bold uppercase tracking-widest">
-              Project Command Center Coming Soon
-           </div>
+           <WorkspaceEmptyState
+             icon={<Layers size={24} />}
+             title="Project Command Center"
+             description="Manage all active development initiatives from one place."
+             primaryAction={{
+               label: "Create First Project",
+               onClick: () => {}
+             }}
+           />
         )}
 
         {activeTab === 'content' && (
-           <div className="h-96 flex items-center justify-center text-white/20 font-bold uppercase tracking-widest">
-              Content Engine Module Coming Soon
-           </div>
+           <WorkspaceEmptyState
+             icon={<PenTool size={24} />}
+             title="Content Engine Module"
+             description="Automate and distribute content seamlessly across channels."
+             primaryAction={{
+               label: "Draft New Content",
+               onClick: () => {}
+             }}
+           />
         )}
 
         { activeTab === 'metrics' && (
-           <div className="h-96 flex items-center justify-center text-white/20 font-bold uppercase tracking-widest">
-              Advanced Metrics Coming Soon
-           </div>
+           <WorkspaceEmptyState
+             icon={<BarChart3 size={24} />}
+             title="Advanced Metrics"
+             description="Deep insights into your digital ecosystem's performance."
+             primaryAction={{
+               label: "Connect Data Sources",
+               onClick: () => {}
+             }}
+           />
         )}
 
         { activeTab === 'growth' && <GrowthMetrics /> }

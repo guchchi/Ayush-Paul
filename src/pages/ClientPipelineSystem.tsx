@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { ClientPipelineShell } from '../components/client-pipeline-system/ClientPipelineShell';
 import { StepContent } from '../components/client-pipeline-system/StepContent';
-import { PremiumComingSoon } from '../components/workspace/PremiumComingSoon';
+import { LockedModuleWorkspace } from '../components/workspace/LockedModuleWorkspace';
 import { useClientPipelineStore } from '../lib/client-pipeline-system';
 import { usePortfolioSystemStore } from '../lib/portfolio-system';
 import { buildModule5Bridge } from '../lib/portfolio-system/composer';
@@ -152,29 +152,31 @@ export function ClientPipelineSystemPage() {
   ]);
 
   return (
-    <PremiumComingSoon 
-      config={{
-        moduleNumber: 5,
-        moduleName: "Client Pipeline System",
-        tagline: "Currently in Development",
-        description: "We are crafting this module carefully to ensure it delivers the best learning experience.",
-        whyItMatters: "This module turns your portfolio into an active pipeline that captures, scores, and nurtures high-value leads.",
-        previewFeatures: [
-          { name: "Lead Scoring Algorithm", description: "Automatically qualify prospects based on intent." },
-          { name: "Pipeline Automations", description: "Set up frictionless intake sequences." },
-          { name: "CRM Templates", description: "Pre-built Notion/Airtable tracking systems." },
-          { name: "Qualification Workflows", description: "Scripts to weed out bad fit clients early." }
-        ],
-        developmentProgress: {
-          research: 'Near Complete',
-          content: 'In Progress',
-          design: 'Active',
-          development: 'Pending',
-          testing: 'Pending'
-        },
-        estimatedRelease: "Planned for Version 1.0",
-        previousModulePath: "/workspace/portfolio-system"
-      }}
-    />
+    <ClientPipelineShell>
+      <LockedModuleWorkspace 
+        config={{
+          moduleNumber: 5,
+          moduleName: "Client Pipeline System",
+          status: "In Development",
+          whyItMatters: "This module helps you map and track your leads through a systematic pipeline.",
+          progress: 54,
+          unlockFeatures: [
+            { title: "Lead Scoring Algorithm", description: "Automatically rank leads." },
+            { title: "Pipeline Automations", description: "Save time with automated follow-ups." },
+            { title: "CRM Templates", description: "Pre-built templates for managing contacts." },
+            { title: "Qualification Workflows", description: "Filter out bad fits quickly." }
+          ],
+          milestones: [
+            { title: "Research", status: "complete" },
+            { title: "Content", status: "in-progress" },
+            { title: "Design", status: "in-progress" },
+            { title: "Development", status: "pending" },
+            { title: "Testing", status: "pending" }
+          ],
+          previousModuleName: "Portfolio System",
+          previousModulePath: "/workspace/portfolio-system"
+        }}
+      />
+    </ClientPipelineShell>
   );
 }

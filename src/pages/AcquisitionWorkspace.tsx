@@ -13,6 +13,7 @@ import type { BlueprintStep } from '../types/opportunity-map';
 import { MASTER_TRACKS } from '../data/opportunity-map/master-data';
 import { Module1Layout, type StepItem } from '../components/module1/Module1Layout';
 import { Module1IntroPage } from '../components/module1/Module1IntroPage';
+import { WorkspaceErrorState } from '../components/workspace/WorkspaceErrorState';
 import {
   getAdapterPayload,
   getAdapterEntry,
@@ -1312,15 +1313,18 @@ export function AcquisitionWorkspace() {
 
               {/* Adapter error display */}
               {adapterError && (
-                <div
-                  className="flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200"
-                  role="alert"
-                >
-                  <AlertTriangle size={16} className="text-red-500 shrink-0 mt-0.5" aria-hidden="true" />
-                  <div className="text-left">
-                    <p className="text-sm font-semibold text-red-700 mb-0.5">Data Configuration Error</p>
-                    <p className="text-xs text-red-600 leading-relaxed">{adapterError}</p>
-                  </div>
+                <div className="mt-6">
+                  <WorkspaceErrorState 
+                    compact 
+                    title="Data Configuration Error" 
+                    message={adapterError} 
+                    onRetry={() => {
+                      // Optional: Reset selections on retry
+                      setTrackId(null);
+                      setMarketId(null);
+                      setNicheId(null);
+                    }}
+                  />
                 </div>
               )}
             </motion.div>
