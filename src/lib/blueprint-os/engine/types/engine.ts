@@ -1,4 +1,4 @@
-import { IEIO, IXIO, IAIO, IEDO } from './objects';
+import { IEIO, IXIO, IAIO, IEDO, IOsObject } from './objects';
 
 // Manifest definition for Domain Packs
 export interface IPluginManifest {
@@ -17,9 +17,9 @@ export interface IPluginManifest {
 
 // Core Engine Interfaces
 export interface IObjectRegistry {
-  registerPack(manifestPath: string, objects: any[]): void;
-  getObjectByUuid<T>(uuid: string): T | null;
-  getObjectsByCapability(capability: string): any[];
+  registerPack(manifest: IPluginManifest, objects: IOsObject[]): void;
+  getObjectByUuid<T extends IOsObject>(uuid: string): T | null;
+  getObjectsByCapability<T extends IOsObject>(capability: string): T[];
 }
 
 export interface IKnowledgeProvider {

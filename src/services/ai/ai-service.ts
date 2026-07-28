@@ -1,7 +1,7 @@
 import { AIRenderer, UserContext } from '../../lib/blueprint-os/engine/services/AIRenderer';
 import { ObjectRegistry } from '../../lib/blueprint-os/engine/services/ObjectRegistry';
 import { EventBus } from '../../lib/blueprint-os/engine/services/EventBus';
-import { IEIO, IXIO } from '../../lib/blueprint-os/engine/types';
+import { IEIO, IXIO, OSEventType } from '../../lib/blueprint-os/engine/types';
 
 export interface GenerationOptions {
   signal?: AbortSignal;
@@ -36,21 +36,23 @@ export async function renderPersonalizedWorkflow<T>(
     
     const latency = Date.now() - startTime;
     eventBus.publish({
-      type: 'AiGenerationCompletedEvent',
+      type: OSEventType.AiGenerationCompleted,
+      userId: 'system', // Default user id for AI generation
       payload: {
         xioUuid,
         eioUuid: eio.uuid,
         latencyMs: latency,
         success: true
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
 
     return result;
   } catch (err: any) {
     const latency = Date.now() - startTime;
     eventBus.publish({
-      type: 'AiGenerationCompletedEvent',
+      type: OSEventType.AiGenerationCompleted,
+      userId: 'system',
       payload: {
         xioUuid,
         eioUuid: eio.uuid,
@@ -58,7 +60,7 @@ export async function renderPersonalizedWorkflow<T>(
         success: false,
         error: err.message
       },
-      timestamp: Date.now()
+      timestamp: new Date().toISOString()
     });
     throw err;
   }

@@ -33,7 +33,7 @@ import { generateProofAsset } from '../../data/module3/proof-assets';
 import { evaluateCredibilityProfile } from '../../data/module3/credibility-rules';
 import { generateProofAssetStrategyForProfile } from '../../data/module3/proof-asset-strategy';
 import { generateProfilePortfolioStrategy as mockGenerate } from '../../data/module3/profile-portfolio-strategy';
-import { generateStep3Strategy } from '../../services/ai/ai-service';
+// Removed generateStep3Strategy import
 import { calculateBlueprintConfidence } from './confidence-engine';
 import { Step3PromptContext } from '../../services/ai/prompts/module3/step3-prompt';
 import { Module4BridgeAdapter } from './module4-bridge';
@@ -409,7 +409,7 @@ export const useModule3Store = create<Module3State>()(
             }
           };
 
-          const strategy = await generateStep3Strategy(context as any, { signal });
+          const strategy = await mockGenerate(context as any);
           
           if (strategy.strategySummary) {
             strategy.strategySummary.confidenceScore = calculateBlueprintConfidence(context as Step3PromptContext);
@@ -457,11 +457,7 @@ export const useModule3Store = create<Module3State>()(
           // In production, we'd only pass fields that were actually edited by the user.
           const currentStrategy = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
           
-          const strategy = await generateStep3Strategy(context as any, { 
-            signal,
-            fieldsToPreserve: currentStrategy || undefined,
-            skipCache: true // force regeneration
-          });
+          const strategy = await mockGenerate(context as any);
           
           if (strategy.strategySummary) {
             strategy.strategySummary.confidenceScore = calculateBlueprintConfidence(context as Step3PromptContext);
