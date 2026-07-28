@@ -2,7 +2,9 @@ export enum OSEventType {
   AssessmentPassed = 'AssessmentPassed',
   AssessmentFailed = 'AssessmentFailed',
   KnowledgeMastered = 'KnowledgeMastered',
-  PathCompleted = 'PathCompleted'
+  PathCompleted = 'PathCompleted',
+  AiGenerationCompleted = 'AiGenerationCompletedEvent',
+  ObjectServed = 'ObjectServedEvent'
 }
 
 export interface IOSBaseEvent {

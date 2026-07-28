@@ -9,7 +9,9 @@ export function getAIProvider(): AIProvider {
     return providerInstance;
   }
 
-  const useMock = import.meta.env.VITE_USE_MOCK_AI === 'true';
+  const useMock = 
+    (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env.VITE_USE_MOCK_AI === 'true') || 
+    (typeof process !== 'undefined' && process.env.VITE_USE_MOCK_AI === 'true');
 
   if (useMock) {
     providerInstance = new MockProvider();

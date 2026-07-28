@@ -1,77 +1,65 @@
-import { getAIProvider } from './index';
-import { buildStep3Prompt, Step3PromptContext, STEP3_PROMPT_VERSION } from './prompts/module3/step3-prompt';
-import { validateAndSanitizeStep3Strategy } from './schema/module3-step3';
-import { hashObject, deepMergePreserve } from './utils';
-
-// Simple in-memory cache
-const cache = new Map<string, any>();
+import { AIRenderer, UserContext } from '../../lib/blueprint-os/engine/services/AIRenderer';
+import { ObjectRegistry } from '../../lib/blueprint-os/engine/services/ObjectRegistry';
+import { EventBus } from '../../lib/blueprint-os/engine/services/EventBus';
+import { IEIO, IXIO } from '../../lib/blueprint-os/engine/types';
 
 export interface GenerationOptions {
   signal?: AbortSignal;
-  fieldsToPreserve?: Record<string, any>;
-  skipCache?: boolean;
 }
 
-export async function generateStep3Strategy(context: Step3PromptContext, options?: GenerationOptions) {
-  const provider = getAIProvider();
-  
-  // 1. Context Hashing for Cache
-  const contextHash = await hashObject(context);
-  if (!options?.skipCache && cache.has(contextHash)) {
-    return cache.get(contextHash);
+/**
+ * Modern AI Service using Blueprint OS Engine
+ */
+export async function renderPersonalizedWorkflow<T>(
+  xioUuid: string,
+  userContext: UserContext,
+  options?: GenerationOptions
+): Promise<T> {
+  const registry = ObjectRegistry.getInstance();
+  const renderer = AIRenderer.getInstance();
+  const eventBus = EventBus.getInstance();
+
+  const xio = registry.getObjectByUuid(xioUuid) as IXIO;
+  if (!xio) {
+    throw new Error(`XIO not found in registry: ${xioUuid}`);
   }
 
-  // 2. Build Prompt
-  const prompt = buildStep3Prompt(context);
-
-  // 3. Generate via Provider (with basic retry logic for 429s)
-  let generatedData: any;
-  let attempts = 0;
-  const maxRetries = 3;
-
-  while (attempts < maxRetries) {
-    try {
-      generatedData = await provider.generateJSON(prompt, "Expected JSON schema is provided in prompt", options?.signal);
-      break;
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
-        throw error;
-      }
-      attempts++;
-      if (attempts >= maxRetries) {
-        throw new Error(`AI generation failed after ${maxRetries} attempts. Last error: ${error.message}`);
-      }
-      // Exponential backoff
-      await new Promise(res => setTimeout(res, 1000 * Math.pow(2, attempts)));
-    }
+  const eio = registry.getObjectByUuid(xio.linkedEioUuid) as IEIO;
+  if (!eio) {
+    throw new Error(`Linked EIO not found for XIO: ${xioUuid}`);
   }
 
-  // 4. Validate and Sanitize (Zod + Business logic)
-  let validatedData;
+  const startTime = Date.now();
+
   try {
-    validatedData = validateAndSanitizeStep3Strategy(generatedData);
-  } catch (validationError: any) {
-    throw new Error(`Failed to validate AI output: ${validationError.message}`);
+    const result = await renderer.renderWorkflow<T>(xio, eio, userContext, options?.signal);
+    
+    const latency = Date.now() - startTime;
+    eventBus.publish({
+      type: 'AiGenerationCompletedEvent',
+      payload: {
+        xioUuid,
+        eioUuid: eio.uuid,
+        latencyMs: latency,
+        success: true
+      },
+      timestamp: Date.now()
+    });
+
+    return result;
+  } catch (err: any) {
+    const latency = Date.now() - startTime;
+    eventBus.publish({
+      type: 'AiGenerationCompletedEvent',
+      payload: {
+        xioUuid,
+        eioUuid: eio.uuid,
+        latencyMs: latency,
+        success: false,
+        error: err.message
+      },
+      timestamp: Date.now()
+    });
+    throw err;
   }
-
-  // 5. Apply User Edits Merge (if regenerating)
-  if (options?.fieldsToPreserve) {
-    validatedData = deepMergePreserve(validatedData, options.fieldsToPreserve);
-  }
-
-  // 6. Attach Generation Metrics
-  const finalData = {
-    ...validatedData,
-    version: STEP3_PROMPT_VERSION,
-    generatedAt: new Date().toISOString(),
-    _metadata: {
-      model: provider.getModelName(),
-      promptVersion: STEP3_PROMPT_VERSION,
-    }
-  };
-
-  // 7. Cache the result
-  cache.set(contextHash, finalData);
-
-  return finalData;
 }
