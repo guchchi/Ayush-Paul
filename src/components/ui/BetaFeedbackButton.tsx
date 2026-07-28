@@ -26,7 +26,7 @@ export function BetaFeedbackButton() {
         whileTap={{ scale: 0.95 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className="fixed bottom-6 right-6 z-[100] flex items-center gap-2 px-4 py-3 rounded-full bg-brand-primary text-white shadow-[0_0_20px_rgba(0,194,255,0.3)] border border-brand-primary/50 cursor-pointer group hover:bg-brand-primary/90 transition-colors"
+        className="fixed bottom-16 right-4 sm:right-6 z-[100] flex items-center gap-2 px-4 py-3 rounded-full bg-brand-primary text-white shadow-[0_0_20px_rgba(0,194,255,0.3)] border border-brand-primary/50 cursor-pointer group hover:bg-brand-primary/90 transition-colors"
       >
         <MessageSquarePlus size={18} className="text-white" />
         

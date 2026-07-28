@@ -440,7 +440,7 @@ export function DevTestTools() {
   }, [show]);
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2">
+    <div className="fixed bottom-4 right-4 sm:right-6 z-[9999] flex flex-col items-end gap-2">
       {open && (
         <div className="bg-[#0a0a0f] border border-white/10 rounded-2xl p-4 w-[280px] shadow-2xl shadow-black/60 space-y-3">
           <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-400">Dev Test Tools</p>
