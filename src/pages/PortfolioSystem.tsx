@@ -4,6 +4,7 @@ import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { PortfolioSystemShell } from '../components/portfolio-system/PortfolioSystemShell';
 import { PortfolioSystemIntroPage } from '../components/portfolio-system/PortfolioSystemIntroPage';
 import { StepContent } from '../components/portfolio-system/StepContent';
+import { PremiumComingSoon } from '../components/workspace/PremiumComingSoon';
 import { usePortfolioSystemStore } from '../lib/portfolio-system';
 import { useAuthoritySystemStore } from '../lib/authority-system';
 import { useModule3Store } from '../lib/module3';
@@ -153,44 +154,50 @@ export function PortfolioSystemPage() {
   }, []);
 
   /* ── Guard: No Module 3 context ── */
-  if (!upstream) {
-    return (
-      <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
-        <div className="max-w-md text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto">
-            <AlertCircle size={28} className="text-amber-500" />
-          </div>
-          <h1 className="text-2xl font-bold">Authority System Required</h1>
-          <p className="text-sm text-neutral-500 leading-relaxed">
-            Complete the Authority System (Module 3) first to unlock the Portfolio System.
-            Your portfolio plan uses your authority strategy and accepted proof assets.
-          </p>
-          <button
-            onClick={() => navigate('/workspace/authority-system')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:bg-[#0047a0] cursor-pointer"
-          >
-            <ArrowLeft size={14} />
-            Go to Authority System
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // We bypass guards in Beta to show the Coming Soon page to everyone
+  // if (!upstream) {
+  //   return (
+  //     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] flex items-center justify-center px-5">
+  //       ...
+  //     </div>
+  //   );
+  // }
 
   /* ── Intro page for first-time / non-started users ── */
-  if (!moduleStarted) {
-    return (
-      <PortfolioSystemIntroPage
-        onStart={handleStart}
-        onBackToBlueprint={handleBackToBlueprint}
-      />
-    );
-  }
+  // if (!moduleStarted) {
+  //   return (
+  //     <PortfolioSystemIntroPage
+  //       onStart={handleStart}
+  //       onBackToBlueprint={handleBackToBlueprint}
+  //     />
+  //   );
+  // }
 
   return (
-    <PortfolioSystemShell>
-      <StepContent />
-    </PortfolioSystemShell>
+    <PremiumComingSoon 
+      config={{
+        moduleNumber: 4,
+        moduleName: "Portfolio System",
+        tagline: "Currently in Development",
+        description: "We are crafting this module carefully to ensure it delivers the best learning experience.",
+        whyItMatters: "This module transforms your expertise into a portfolio that builds trust and attracts high-ticket clients effortlessly.",
+        previewFeatures: [
+          { name: "AI Portfolio Generator", description: "Generate professional portfolios in seconds using your Module 3 assets." },
+          { name: "Case Study Builder", description: "Structure client wins into compelling stories." },
+          { name: "Portfolio Templates", description: "Premium layouts designed for conversion." },
+          { name: "Authority Showcase", description: "Highlight your credibility gaps perfectly." }
+        ],
+        developmentProgress: {
+          research: 'Complete',
+          content: 'Near Complete',
+          design: 'In Progress',
+          development: 'Active',
+          testing: 'Pending'
+        },
+        estimatedRelease: "Planned for Version 1.0",
+        previousModulePath: "/workspace/authority-system"
+      }}
+    />
   );
 }
 
