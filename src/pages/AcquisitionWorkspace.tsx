@@ -1274,7 +1274,6 @@ export function AcquisitionWorkspace() {
                       <span>Save Result</span>
                     </button>
                   ) : (
-                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                       <button
                         disabled={Boolean(adapterError)}
                         onClick={() => {
@@ -1285,28 +1284,11 @@ export function AcquisitionWorkspace() {
                           });
                           navigate('/workspace/offer-engineering');
                         }}
-                        className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white font-bold text-base transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b1c30] active:scale-[0.98]"
+                        className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-base transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0058be] active:scale-[0.98]"
                       >
-                        <span>Continue to Module 2</span>
+                        <span>Continue to Offer Engineering</span>
                         <ArrowRight size={16} aria-hidden="true" />
                       </button>
-                      {m2Completed && (
-                        <button
-                          onClick={() => {
-                            trackEvent('module1_completed', {
-                              selectedTrack: trackId,
-                              selectedMarket: marketId,
-                              selectedNiche: nicheId,
-                            });
-                            navigate('/workspace/authority-system');
-                          }}
-                          className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-base transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0058be] active:scale-[0.98]"
-                        >
-                          <span>Continue to Authority System</span>
-                          <ArrowRight size={16} aria-hidden="true" />
-                        </button>
-                      )}
-                    </div>
                   )}
                 </div>
               </div>
