@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowLeft, CheckCircle2, Circle, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Menu, X, ArrowLeft, CheckCircle2, Circle, Lock } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { EASING, DURATION } from '../../lib/motion-presets';
-import { SIDEBAR, SPACING } from '../../lib/design-tokens';
+import { SIDEBAR } from '../../lib/design-tokens';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
+import { SidebarToggle } from './SidebarToggle';
 
 export interface StepItem {
   id: string;
@@ -36,12 +37,8 @@ export function ModuleSidebar({
 }: ModuleSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [viewport, setViewport] = useState<'mobile' | 'desktop'>('desktop');
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('sidebar_collapsed') === 'true';
-    }
-    return false;
-  });
+  
+  const { mode, isCollapsed, toggle: toggleCollapse } = useSidebarCollapse();
 
   useEffect(() => {
     const check = () => {
@@ -52,48 +49,60 @@ export function ModuleSidebar({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const toggleCollapse = () => {
-    const nextVal = !isCollapsed;
-    setIsCollapsed(nextVal);
-    localStorage.setItem('sidebar_collapsed', String(nextVal));
-    window.dispatchEvent(new Event('sidebar-toggle'));
-  };
-
   const showSidebar = viewport === 'desktop';
 
   const SidebarContent = () => {
-    if (isCollapsed && showSidebar) {
-      return (
-        <div className={cn('flex flex-col h-full justify-between items-center py-6 relative', SIDEBAR.BG, SIDEBAR.BORDER, SIDEBAR.SHADOW)}>
-          {/* Expand Toggle floating button on the right edge */}
-          <button
-            onClick={toggleCollapse}
-            className="absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 flex items-center justify-center cursor-pointer shadow-sm z-50 text-neutral-500 hover:text-neutral-700 transition-transform"
-            title="Expand Sidebar"
-          >
-            <ChevronRight size={14} />
-          </button>
+    return (
+      <div className={cn('flex flex-col h-full relative', SIDEBAR.BG, SIDEBAR.BORDER, SIDEBAR.SHADOW)}>
+        {showSidebar && (
+          <SidebarToggle mode={mode} onToggle={toggleCollapse} />
+        )}
 
-          <div className="flex flex-col items-center gap-6 w-full border-b border-neutral-100 pb-6 px-2">
-            {onBack && (
-              <button
-                onClick={onBack}
-                className="flex items-center justify-center w-8 h-8 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be]"
-                aria-label="Back to module overview"
-                title="Back to Overview"
-              >
-                <ArrowLeft size={16} aria-hidden="true" />
-              </button>
-            )}
-            
+        {/* Header Section */}
+        <div className={cn("px-6 pt-6 pb-8 border-b border-neutral-100 flex flex-col transition-all overflow-hidden whitespace-nowrap", isCollapsed ? "items-center px-2" : "")}>
+          {onBack && (
+            <button
+              onClick={onBack}
+              className={cn(
+                "flex items-center text-neutral-400 hover:text-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded",
+                isCollapsed ? "justify-center w-8 h-8 hover:bg-neutral-50 mb-6" : "gap-2 text-[11px] font-bold uppercase tracking-wider mb-6"
+              )}
+              aria-label="Back to module overview"
+              title={isCollapsed ? "Back to Overview" : undefined}
+            >
+              <ArrowLeft size={isCollapsed ? 16 : 14} aria-hidden="true" /> 
+              {!isCollapsed && "Back to Overview"}
+            </button>
+          )}
+
+          <div className={cn("flex items-center gap-2.5 mb-4", isCollapsed && "justify-center")}>
             {icon && (
-              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#0058be]/10 border border-[#0058be]/20 shrink-0">
+              <span className={cn("flex items-center justify-center rounded-lg bg-[#0058be]/10 border border-[#0058be]/20 shrink-0", isCollapsed ? "w-9 h-9 rounded-xl" : "w-8 h-8")}>
                 {icon}
               </span>
             )}
-
-            {/* Circular mini progress indicator */}
-            <div className="relative w-9 h-9 flex items-center justify-center">
+            
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div 
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <h2 className="text-xl font-bold text-[#0b1c30]">{title}</h2>
+                  {subtitle && (
+                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.12em]">{subtitle}</p>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          
+          {/* Progress Indicator */}
+          {isCollapsed ? (
+            <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <circle cx="18" cy="18" r="15" stroke="#f1f5f9" strokeWidth="3" fill="transparent" />
                 <circle 
@@ -104,99 +113,62 @@ export function ModuleSidebar({
               </svg>
               <span className="absolute text-[8px] font-black text-[#0b1c30]">{Math.round(progress)}%</span>
             </div>
-          </div>
-
-          <div className="flex-1 w-full overflow-y-auto py-6 px-2 flex flex-col items-center gap-3">
-            {steps.map((step, index) => {
-              const isCompleted = step.status === 'completed';
-              const isCurrent = step.status === 'current';
-              const isLocked = step.status === 'locked';
-
-              return (
-                <button
-                  key={step.id}
-                  disabled={isLocked}
-                  onClick={() => onStepChange(step.id)}
-                  title={`Step 0${index + 1}: ${step.label}`}
-                  className={cn(
-                    'w-9 h-9 rounded-xl flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
-                    isCurrent
-                      ? 'bg-[#0058be] text-white shadow-sm'
-                      : 'text-neutral-500 hover:bg-neutral-50 border border-transparent',
-                    isLocked && 'opacity-40 cursor-not-allowed'
-                  )}
-                >
-                  <div aria-hidden="true">
-                    {isCompleted ? (
-                      <CheckCircle2 size={16} className={isCurrent ? 'text-white' : 'text-[#0058be]'} />
-                    ) : (
-                      <span className={cn("text-[10px] font-black", isCurrent ? "text-white" : "text-neutral-500")}>
-                        0{index + 1}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={cn('flex flex-col h-full relative', SIDEBAR.BG, SIDEBAR.BORDER, SIDEBAR.SHADOW)}>
-        {/* Collapse Toggle floating button on the right edge of sidebar (desktop only) */}
-        {showSidebar && (
-          <button
-            onClick={toggleCollapse}
-            className="absolute top-1/2 -right-3 -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 flex items-center justify-center cursor-pointer shadow-sm z-50 text-neutral-500 hover:text-neutral-700 transition-transform"
-            title="Collapse Sidebar"
-          >
-            <ChevronLeft size={14} />
-          </button>
-        )}
-
-        <div className="p-6 pb-8 border-b border-neutral-100">
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-700 transition-colors mb-6 focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded"
-              aria-label="Back to module overview"
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
             >
-              <ArrowLeft size={14} aria-hidden="true" /> Back to Overview
-            </button>
+              <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+                <div
+                  className="h-full bg-[#0058be] rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${Math.max(progress, 2)}%` }}
+                />
+              </div>
+              <p className="text-xs font-bold text-neutral-400 mt-2 text-right">
+                {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+              </p>
+            </motion.div>
           )}
-          <div className="flex items-center gap-2.5 mb-4">
-            {icon && (
-              <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0058be]/10 border border-[#0058be]/20 shrink-0">
-                {icon}
-              </span>
-            )}
-            <div>
-              <h2 className="text-xl font-bold text-[#0b1c30]">{title}</h2>
-              {subtitle && (
-                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.12em]">{subtitle}</p>
-              )}
-            </div>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
-            <div
-              className="h-full bg-[#0058be] rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${Math.max(progress, 2)}%` }}
-            />
-          </div>
-          <p className="text-xs font-bold text-neutral-400 mt-2 text-right">
-            {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
-          </p>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 px-4">
-          <div className="space-y-1">
+        {/* Steps Section */}
+        <div className={cn("flex-1 overflow-y-auto py-6", isCollapsed ? "px-2 flex flex-col items-center gap-3" : "px-4")}>
+          <div className={cn("space-y-1 w-full", isCollapsed && "flex flex-col items-center gap-3 space-y-0")}>
             {steps.map((step, index) => {
               const isCompleted = step.status === 'completed';
               const isCurrent = step.status === 'current';
               const isUpcoming = step.status === 'upcoming';
               const isLocked = step.status === 'locked';
+
+              if (isCollapsed) {
+                return (
+                  <button
+                    key={step.id}
+                    disabled={isLocked}
+                    onClick={() => onStepChange(step.id)}
+                    title={`Step 0${index + 1}: ${step.label}`}
+                    className={cn(
+                      'w-9 h-9 rounded-xl flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] shrink-0',
+                      isCurrent
+                        ? 'bg-[#0058be] text-white shadow-sm'
+                        : 'text-neutral-500 hover:bg-neutral-50 border border-transparent',
+                      isLocked && 'opacity-40 cursor-not-allowed'
+                    )}
+                  >
+                    <div aria-hidden="true">
+                      {isCompleted ? (
+                        <CheckCircle2 size={16} className={isCurrent ? 'text-white' : 'text-[#0058be]'} />
+                      ) : (
+                        <span className={cn("text-[10px] font-black", isCurrent ? "text-white" : "text-neutral-500")}>
+                          0{index + 1}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              }
 
               return (
                 <button
@@ -248,7 +220,17 @@ export function ModuleSidebar({
           </div>
         </div>
 
-        {children && <div className="px-4 pb-4">{children}</div>}
+        {/* Children (usually contextual content like summary). Only render if expanded, or handle it via CSS */}
+        {!isCollapsed && children && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="px-4 pb-4 overflow-hidden"
+          >
+            {children}
+          </motion.div>
+        )}
       </div>
     );
   };
@@ -281,12 +263,14 @@ export function ModuleSidebar({
 
       {/* Desktop Sidebar */}
       {showSidebar && (
-        <div
-          className="shrink-0 fixed inset-y-0 left-0 z-30 transition-all duration-300"
-          style={{ width: isCollapsed ? 68 : SIDEBAR.WIDTH.base }}
+        <motion.div
+          initial={false}
+          animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          className="shrink-0 fixed inset-y-0 left-0 z-30"
         >
           <SidebarContent />
-        </div>
+        </motion.div>
       )}
 
       {/* Mobile Drawer */}
@@ -310,7 +294,7 @@ export function ModuleSidebar({
             >
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="absolute top-4 right-4 p-2 rounded-lg text-neutral-400 hover:bg-neutral-100"
+                className="absolute top-4 right-4 p-2 rounded-lg text-neutral-400 hover:bg-neutral-100 z-50"
                 aria-label="Close navigation"
               >
                 <X size={18} />

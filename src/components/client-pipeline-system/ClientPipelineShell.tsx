@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useClientPipelineStore, CLIENT_PIPELINE_STEPS } from '../../lib/client-pipeline-system';
 import type { ClientPipelineStep } from '../../types/client-pipeline-system';
 import { cn } from '../../lib/utils';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
+import { SidebarToggle } from '../workspace/SidebarToggle';
+import { SIDEBAR } from '../../lib/design-tokens';
 
 const STEP_LABELS: Record<ClientPipelineStep, string> = {
   client_source_map: 'Client Source Map',
@@ -68,20 +71,20 @@ export function ClientPipelineShell({ children }: { children: React.ReactNode })
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween', duration: 0.2 }}
-              className="absolute left-0 top-0 bottom-0 w-64 bg-black border-r border-white/5 p-6 overflow-y-auto"
+              className={`absolute left-0 top-0 bottom-0 w-64 border-r p-6 overflow-y-auto ${theme === 'dark' ? 'bg-black border-white/5' : 'bg-white border-zinc-200'}`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="space-y-6">
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-500">Client Pipeline</p>
-                <StepNav currentStep={currentStep} completedSteps={completedSteps} jumpToStep={jumpToStep} />
-                <PhaseContextMini niche={niche} serviceLabel={serviceLabel} positioning={positioning} offerName={offerName} theme={theme} />
+                <p className={`text-[10px] font-bold uppercase tracking-[0.15em] ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}`}>Client Pipeline</p>
+                <StepNav currentStep={currentStep} completedSteps={completedSteps} jumpToStep={jumpToStep} theme={theme} isCollapsed={false} />
+                <PhaseContextMini niche={niche} serviceLabel={serviceLabel} positioning={positioning} offerName={offerName} theme={theme} isCollapsed={false} />
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <header className={`flex items-center justify-between px-5 sm:px-10 h-14 border-b ${theme === 'dark' ? 'border-white/5' : 'border-zinc-200'}`}>
           <div className="flex items-center gap-3">
             <button onClick={() => setMobileSidebar(true)} className={`lg:hidden p-1.5 rounded-lg ${theme === 'dark' ? 'hover:bg-white/5' : 'hover:bg-zinc-100'}`}>
@@ -145,39 +148,96 @@ function DesktopSidebar({ currentStep, completedSteps, jumpToStep, niche, servic
   offerName: string;
   theme: string;
 }) {
+  const { mode, isCollapsed, toggle } = useSidebarCollapse();
+
   return (
-    <aside className={`hidden lg:flex flex-col w-64 shrink-0 border-r ${theme === 'dark' ? 'border-white/5 bg-white/[0.02]' : 'border-zinc-200 bg-zinc-50'}`}>
-      <div className="p-6 border-b border-inherit">
-        <p className={`text-[10px] font-bold uppercase tracking-[0.15em] ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}`}>Client Pipeline</p>
-        <p className={`text-[9px] mt-1 ${theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'}`}>Module 5</p>
+    <motion.aside 
+      initial={false}
+      animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
+      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      className={`relative hidden lg:flex flex-col shrink-0 border-r ${theme === 'dark' ? 'border-white/5 bg-white/[0.02]' : 'border-zinc-200 bg-zinc-50'}`}
+    >
+      <SidebarToggle 
+        mode={mode} 
+        onToggle={toggle} 
+        className={cn(
+          theme === 'dark' 
+            ? "bg-zinc-900 border-white/10 text-zinc-400 hover:text-white hover:border-white/20" 
+            : "bg-white border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300"
+        )} 
+      />
+      <div className={cn("p-6 border-b border-inherit overflow-hidden whitespace-nowrap", isCollapsed && "px-2 flex flex-col items-center justify-center py-4")}>
+        {isCollapsed ? (
+          <span className={cn("flex items-center justify-center w-6 h-6 rounded-md", theme === 'dark' ? "bg-white/5" : "bg-black/5")}>
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          </span>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <p className={`text-[10px] font-bold uppercase tracking-[0.15em] ${theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'}`}>Client Pipeline</p>
+            <p className={`text-[9px] mt-1 ${theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'}`}>Module 5</p>
+          </motion.div>
+        )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
-        <StepNav currentStep={currentStep} completedSteps={completedSteps} jumpToStep={jumpToStep} />
+      <div className={cn("flex-1 overflow-y-auto p-4 custom-scrollbar", isCollapsed && "px-2 py-4")}>
+        <StepNav currentStep={currentStep} completedSteps={completedSteps} jumpToStep={jumpToStep} theme={theme} isCollapsed={isCollapsed} />
       </div>
 
       {niche && (
-        <div className={`p-4 border-t border-inherit space-y-2`}>
-          <p className={`text-[8px] font-bold uppercase tracking-[0.1em] ${theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'}`}>Phase Context</p>
-          <PhaseContextMini niche={niche} serviceLabel={serviceLabel} positioning={positioning} offerName={offerName} theme={theme} />
+        <div className={cn("p-4 border-t border-inherit overflow-hidden", isCollapsed && "px-1")}>
+          {!isCollapsed && <p className={`text-[8px] font-bold uppercase tracking-[0.1em] mb-2 ${theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400'}`}>Phase Context</p>}
+          <PhaseContextMini niche={niche} serviceLabel={serviceLabel} positioning={positioning} offerName={offerName} theme={theme} isCollapsed={isCollapsed} />
         </div>
       )}
-    </aside>
+    </motion.aside>
   );
 }
 
-function StepNav({ currentStep, completedSteps, jumpToStep }: {
+function StepNav({ currentStep, completedSteps, jumpToStep, theme, isCollapsed }: {
   currentStep: ClientPipelineStep;
   completedSteps: ClientPipelineStep[];
   jumpToStep: (s: ClientPipelineStep) => void;
+  theme: string;
+  isCollapsed: boolean;
 }) {
   return (
-    <nav className="space-y-1">
+    <nav className={cn("space-y-1", isCollapsed && "space-y-2 flex flex-col items-center")}>
       {CLIENT_PIPELINE_STEPS.map((step, i) => {
         const isActive = step === currentStep;
         const isCompleted = completedSteps.includes(step);
         const isBeforeCompleted = i === 0 || completedSteps.includes(CLIENT_PIPELINE_STEPS[i - 1]);
         const unlocked = i === 0 || isBeforeCompleted;
+        
+        if (isCollapsed) {
+          return (
+            <button
+              key={step}
+              onClick={() => unlocked && jumpToStep(step)}
+              disabled={!unlocked}
+              title={STEP_LABELS[step]}
+              className={cn(
+                'flex items-center justify-center w-8 h-8 rounded-lg transition-colors cursor-pointer',
+                isActive 
+                  ? 'bg-brand-primary/20 border border-brand-primary/40 text-brand-primary' 
+                  : isCompleted 
+                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' 
+                    : unlocked 
+                      ? (theme === 'dark' ? 'bg-white/[0.04] border border-white/10 text-zinc-400 hover:bg-white/[0.08]' : 'bg-black/[0.04] border border-black/10 text-zinc-500 hover:bg-black/[0.08]') 
+                      : (theme === 'dark' ? 'bg-white/[0.02] border border-white/5 text-zinc-700' : 'bg-black/[0.02] border border-black/5 text-zinc-300'),
+                !unlocked && 'cursor-not-allowed opacity-50'
+              )}
+            >
+              <span className="text-[10px] font-bold">
+                {isCompleted ? '✓' : i + 1}
+              </span>
+            </button>
+          );
+        }
+
         return (
           <button
             key={step}
@@ -186,19 +246,19 @@ function StepNav({ currentStep, completedSteps, jumpToStep }: {
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all ${
               isActive ? 'bg-brand-primary/10 text-brand-primary' :
               isCompleted ? 'text-emerald-400' :
-              unlocked ? 'text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.03]' :
-              'text-zinc-700 cursor-not-allowed'
+              unlocked ? (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-300 hover:bg-white/[0.03]' : 'text-zinc-500 hover:text-zinc-700 hover:bg-black/[0.03]') :
+              (theme === 'dark' ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-300 cursor-not-allowed')
             }`}
           >
-            <span className={`flex items-center justify-center w-5 h-5 rounded text-[8px] font-bold ${
+            <span className={`flex items-center justify-center w-5 h-5 rounded text-[8px] font-bold shrink-0 ${
               isActive ? 'bg-brand-primary/20 border border-brand-primary/40' :
               isCompleted ? 'bg-emerald-500/20 border border-emerald-500/40' :
-              unlocked ? 'bg-white/[0.04] border border-white/10' :
-              'bg-white/[0.02] border border-white/5'
+              unlocked ? (theme === 'dark' ? 'bg-white/[0.04] border border-white/10' : 'bg-black/[0.04] border border-black/10') :
+              (theme === 'dark' ? 'bg-white/[0.02] border border-white/5' : 'bg-black/[0.02] border border-black/5')
             }`}>
               {isCompleted ? '✓' : i + 1}
             </span>
-            <span className="text-[10px] font-medium leading-tight">{STEP_LABELS[step]}</span>
+            <span className="text-[10px] font-medium leading-tight truncate">{STEP_LABELS[step]}</span>
           </button>
         );
       })}
@@ -206,20 +266,22 @@ function StepNav({ currentStep, completedSteps, jumpToStep }: {
   );
 }
 
-function PhaseContextMini({ niche, serviceLabel, positioning, offerName, theme }: {
+function PhaseContextMini({ niche, serviceLabel, positioning, offerName, theme, isCollapsed }: {
   niche: string;
   serviceLabel: string;
   positioning: string;
   offerName: string;
   theme: string;
+  isCollapsed: boolean;
 }) {
+  if (isCollapsed) return null;
   const tc = theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600';
   const lc = theme === 'dark' ? 'text-zinc-600' : 'text-zinc-400';
   return (
     <div className="space-y-1.5">
-      {serviceLabel && <p className={`text-[9px] ${tc}`}><span className={lc}>Service:</span> {serviceLabel}</p>}
-      {niche && <p className={`text-[9px] ${tc}`}><span className={lc}>Niche:</span> {niche}</p>}
-      {offerName && <p className={`text-[9px] ${tc}`}><span className={lc}>Offer:</span> {offerName}</p>}
+      {serviceLabel && <p className={`text-[9px] ${tc} truncate`}><span className={lc}>Service:</span> {serviceLabel}</p>}
+      {niche && <p className={`text-[9px] ${tc} truncate`}><span className={lc}>Niche:</span> {niche}</p>}
+      {offerName && <p className={`text-[9px] ${tc} truncate`}><span className={lc}>Offer:</span> {offerName}</p>}
       {positioning && <p className={`text-[8px] ${tc} leading-relaxed line-clamp-2`}>{positioning}</p>}
     </div>
   );

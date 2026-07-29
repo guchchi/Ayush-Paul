@@ -6,6 +6,8 @@ import { EASING, DURATION } from '../../lib/motion-presets';
 import { MissionBar } from './MissionBar';
 import { Sidebar } from './Sidebar';
 import { AssetsPanel } from './AssetsPanel';
+import { SIDEBAR } from '../../lib/design-tokens';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
 
 interface SidebarItem {
   id: string;
@@ -40,7 +42,6 @@ interface WorkspaceShellProps {
   assetCategories: AssetCategory[];
 }
 
-const SIDEBAR_WIDTH = 240;
 const ASSETS_WIDTH = 320;
 
 export function WorkspaceShell({
@@ -73,6 +74,7 @@ export function WorkspaceShell({
 
   const showSidebar = viewport === 'desktop';
   const showAssets = viewport === 'desktop';
+  const { isCollapsed } = useSidebarCollapse();
 
   return (
     <div className="flex flex-col min-h-screen bg-[#050505] text-white selection:bg-brand-primary/30">
@@ -92,8 +94,13 @@ export function WorkspaceShell({
 
         {/* Desktop Sidebar — glass panel */}
         {showSidebar && (
-          <div className="shrink-0 border-r border-white/[0.06]" style={{ width: SIDEBAR_WIDTH }}>
-            <div className="h-full overflow-y-auto custom-scrollbar bg-[var(--glass-bg)]">
+          <motion.div
+            initial={false}
+            animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="shrink-0 border-r border-white/[0.06] relative"
+          >
+            <div className="h-full overflow-y-auto custom-scrollbar bg-[var(--glass-bg)] overflow-x-hidden">
               <Sidebar
                 phaseName={phaseName}
                 items={sidebarItems}
@@ -101,7 +108,7 @@ export function WorkspaceShell({
                 onSectionChange={onSectionChange}
               />
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Center Workspace */}
@@ -145,12 +152,12 @@ export function WorkspaceShell({
         <AnimatePresence>
           {sidebarOpen && !showSidebar && (
             <motion.div
-              initial={{ x: -SIDEBAR_WIDTH }}
+              initial={{ x: -SIDEBAR.WIDTH.base }}
               animate={{ x: 0 }}
-              exit={{ x: -SIDEBAR_WIDTH }}
+              exit={{ x: -SIDEBAR.WIDTH.base }}
               transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
               className="fixed inset-y-0 left-0 z-50 bg-[#050505] border-r border-white/[0.06] shadow-2xl"
-              style={{ width: SIDEBAR_WIDTH }}
+              style={{ width: SIDEBAR.WIDTH.base }}
             >
               <div className="flex items-center justify-between h-20 px-4 border-b border-white/[0.06]">
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/60">Sections</span>

@@ -3,13 +3,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
+import { SIDEBAR } from '../../lib/design-tokens';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
+import { SidebarToggle } from '../workspace/SidebarToggle';
 import {
   useOpportunityMapStore,
   STEP_ORDER,
 } from '../../lib/opportunity-map';
 import type { BlueprintStep } from '../../types/opportunity-map';
-
-const SIDEBAR_WIDTH = 256;
 
 const STEP_LABELS: Record<BlueprintStep, string> = {
   career_track: 'Career Track',
@@ -58,33 +59,67 @@ function DesktopSidebar({
   currentStep: BlueprintStep;
   onStepSelect: (id: BlueprintStep) => void;
 }) {
+  const { mode, isCollapsed, toggle: toggleCollapse } = useSidebarCollapse();
   const completedCount = completedSteps.length;
   const totalSteps = STEP_ORDER.length;
   const progress = totalSteps > 0 ? (completedCount / totalSteps) * 100 : 0;
 
   return (
-      <aside
-        className="hidden lg:flex flex-col shrink-0 border-r border-white/5 bg-black"
-        style={{ width: SIDEBAR_WIDTH }}
-      >
-        {/* Brand header */}
-        <div className="flex items-center gap-3 px-5 h-14 border-b border-white/5 shrink-0">
-          <span className="w-6 h-6 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center">
-            <span className="text-[9px] font-bold text-white/70 tracking-tight">B</span>
-          </span>
-          <span className="text-xs font-semibold text-white/70 tracking-tight truncate">Opportunity Map</span>
-        </div>
+    <motion.aside
+      initial={false}
+      animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
+      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      className="hidden lg:flex flex-col shrink-0 border-r border-white/5 bg-black relative"
+    >
+      <SidebarToggle 
+        mode={mode} 
+        onToggle={toggleCollapse} 
+        className="bg-zinc-900 border-white/10 text-zinc-400 hover:text-white hover:border-white/20" 
+      />
 
-      {/* Step nav */}
-      <nav className="flex-1 overflow-y-auto custom-scrollbar py-3 px-3">
-        <div className="relative">
-          <div className="absolute left-[22px] top-3 bottom-3 w-px bg-white/5" />
+      <div className={cn("flex items-center gap-3 px-5 h-14 border-b border-white/5 shrink-0 overflow-hidden whitespace-nowrap", isCollapsed && "justify-center px-0")}>
+        <span className={cn("flex items-center justify-center w-6 h-6 rounded-lg bg-white/10 border border-white/10 shrink-0", isCollapsed && "w-7 h-7")}>
+          <span className="text-[9px] font-bold text-white/70 tracking-tight">B</span>
+        </span>
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <span className="text-xs font-semibold text-white/70 tracking-tight truncate block">Opportunity Map</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-          <div className="space-y-0.5">
+      <nav className={cn("flex-1 overflow-y-auto custom-scrollbar py-3 px-3", isCollapsed && "px-1 flex flex-col items-center")}>
+        <div className={cn("relative w-full", isCollapsed && "flex flex-col items-center space-y-2")}>
+          {!isCollapsed && <div className="absolute left-[22px] top-3 bottom-3 w-px bg-white/5" />}
+
+          <div className={cn("space-y-0.5", isCollapsed && "space-y-3 mt-2")}>
             {STEP_ORDER.map((step) => {
               const isActive = step === currentStep;
               const isCompleted = completedSteps.includes(step);
               const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
+
+              if (isCollapsed) {
+                return (
+                  <button
+                    key={step}
+                    onClick={() => onStepSelect(step)}
+                    title={STEP_LABELS[step]}
+                    className={cn(
+                      'flex items-center justify-center w-8 h-8 rounded-lg cursor-pointer transition-colors',
+                      isActive ? 'bg-white/10' : 'hover:bg-white/5'
+                    )}
+                  >
+                    <StepDot status={status} />
+                  </button>
+                );
+              }
 
               return (
                 <button
@@ -115,22 +150,27 @@ function DesktopSidebar({
         </div>
       </nav>
 
-      {/* Progress footer */}
-      <div className="px-5 py-4 border-t border-white/5 shrink-0">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Progress</span>
-          <span className="text-[10px] font-semibold text-zinc-400">{completedCount}/{totalSteps}</span>
-        </div>
-        <div className="w-full h-[3px] rounded-full bg-white/5 overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-brand-primary"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.8, ease: EASING.PREMIUM }}
-          />
-        </div>
+      <div className={cn("px-5 py-4 border-t border-white/5 shrink-0 overflow-hidden", isCollapsed && "px-1 flex flex-col items-center")}>
+        {isCollapsed ? (
+          <span className="text-[9px] font-semibold tabular-nums text-zinc-400">{completedCount}/{totalSteps}</span>
+        ) : (
+          <>
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-500">Progress</span>
+              <span className="text-[10px] font-semibold text-zinc-400">{completedCount}/{totalSteps}</span>
+            </div>
+            <div className="w-full h-[3px] rounded-full bg-white/5 overflow-hidden">
+              <motion.div
+                className="h-full rounded-full bg-brand-primary"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.8, ease: EASING.PREMIUM }}
+              />
+            </div>
+          </>
+        )}
       </div>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -263,12 +303,12 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         {sidebarOpen && (
           <motion.div
             key="mobile-sidebar"
-            initial={{ x: -SIDEBAR_WIDTH }}
+            initial={{ x: -SIDEBAR.WIDTH.base }}
             animate={{ x: 0 }}
-            exit={{ x: -SIDEBAR_WIDTH }}
+            exit={{ x: -SIDEBAR.WIDTH.base }}
             transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
             className="fixed inset-y-0 left-0 z-50 shadow-2xl"
-            style={{ width: SIDEBAR_WIDTH }}
+            style={{ width: SIDEBAR.WIDTH.base }}
           >
             <MobileSidebar
               completedSteps={completedSteps}
@@ -280,8 +320,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col flex-1 min-w-0">
-        <header className="sticky top-0 z-30 flex items-center h-14 border-b border-white/5 bg-black/80 backdrop-blur-2xl px-4 gap-3">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <header className="sticky top-0 z-30 flex items-center h-14 border-b border-white/5 bg-black/80 backdrop-blur-2xl px-4 gap-3 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-all duration-200 cursor-pointer shrink-0"

@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
+import { SIDEBAR } from '../../lib/design-tokens';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
+import { SidebarToggle } from '../workspace/SidebarToggle';
 import {
   useOfferEngineeringStore,
   OFFER_ENGINEERING_STEPS,
@@ -15,7 +18,6 @@ import {
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import type { OfferEngineeringStep } from '../../types/offer-engineering';
 
-const SIDEBAR_WIDTH = 280;
 const BRIEF_WIDTH = 320;
 
 const STEP_LABELS: Record<OfferEngineeringStep, string> = {
@@ -263,37 +265,109 @@ function DesktopSidebar({
   onStepSelect: (id: OfferEngineeringStep) => void;
   onBack?: () => void;
 }) {
+  const { mode, isCollapsed, toggle: toggleCollapse } = useSidebarCollapse();
+  const progress = Math.max((completedSteps.length / 8) * 100, 2);
+
   return (
-    <aside
-      className="hidden lg:flex flex-col shrink-0 border-r border-neutral-200 bg-white"
-      style={{ width: SIDEBAR_WIDTH }}
+    <motion.aside
+      initial={false}
+      animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
+      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      className="hidden lg:flex flex-col shrink-0 border-r border-neutral-200 bg-white relative"
     >
-      <div className="p-6 pb-6 border-b border-neutral-100 shrink-0">
+      <SidebarToggle mode={mode} onToggle={toggleCollapse} />
+
+      <div className={cn("p-6 pb-6 border-b border-neutral-100 shrink-0 flex flex-col overflow-hidden whitespace-nowrap transition-all", isCollapsed && "items-center px-2")}>
         {onBack && (
           <button
             onClick={onBack}
-            className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-700 transition-colors mb-6 focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded cursor-pointer"
+            className={cn(
+              "flex items-center text-neutral-400 hover:text-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded cursor-pointer",
+              isCollapsed ? "justify-center w-8 h-8 hover:bg-neutral-50 mb-6" : "gap-2 text-[11px] font-bold uppercase tracking-wider mb-6"
+            )}
             aria-label="Back to overview"
+            title={isCollapsed ? "Back to Overview" : undefined}
           >
-            <ArrowLeft size={14} aria-hidden="true" /> Back to Overview
+            <ArrowLeft size={isCollapsed ? 16 : 14} aria-hidden="true" /> 
+            {!isCollapsed && "Back to Overview"}
           </button>
         )}
         
-        <h2 className="text-lg font-bold text-[#0b1c30] mb-3">Offer Engineering</h2>
-        <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
-          <div
-            className="h-full bg-[#0058be] rounded-full transition-all duration-500"
-            style={{ width: `${Math.max((completedSteps.length / 8) * 100, 2)}%` }}
-          />
-        </div>
-        <p className="text-[10px] font-bold text-neutral-400 mt-2 text-right">{Math.round((completedSteps.length / 8) * 100)}% Complete</p>
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <h2 className="text-lg font-bold text-[#0b1c30] mb-3">Offer Engineering</h2>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {isCollapsed ? (
+          <div className="relative w-9 h-9 flex items-center justify-center shrink-0 mt-2">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15" stroke="#f1f5f9" strokeWidth="3" fill="transparent" />
+              <circle 
+                cx="18" cy="18" r="15" stroke="#0058be" strokeWidth="3" fill="transparent" 
+                strokeDasharray="94.2"
+                strokeDashoffset={94.2 - (94.2 * progress) / 100}
+              />
+            </svg>
+            <span className="absolute text-[8px] font-black text-[#0b1c30]">{Math.round(progress)}%</span>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full"
+          >
+            <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+              <div
+                className="h-full bg-[#0058be] rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="text-[10px] font-bold text-neutral-400 mt-2 text-right">{Math.round((completedSteps.length / 8) * 100)}% Complete</p>
+          </motion.div>
+        )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto custom-scrollbar py-6 px-4 space-y-1">
+      <nav className={cn("flex-1 overflow-y-auto custom-scrollbar py-6", isCollapsed ? "px-2 flex flex-col items-center gap-3" : "px-4 space-y-1")}>
         {OFFER_ENGINEERING_STEPS.map((step, index) => {
           const isActive = step === currentStep;
           const isCompleted = completedSteps.includes(step);
           const status = isCompleted ? 'completed' : isActive ? 'active' : 'upcoming';
+
+          if (isCollapsed) {
+            return (
+              <button
+                key={step}
+                onClick={() => onStepSelect(step)}
+                title={`Step 0${index + 1}: ${STEP_LABELS[step]}`}
+                className={cn(
+                  'w-9 h-9 rounded-xl flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] shrink-0 cursor-pointer',
+                  isActive
+                    ? 'bg-[#0058be] text-white shadow-sm'
+                    : 'text-neutral-500 hover:bg-neutral-50 border border-transparent',
+                )}
+              >
+                <div aria-hidden="true">
+                  {isCompleted ? (
+                    <CheckCircle2 size={16} className={isActive ? 'text-white' : 'text-[#0058be]'} />
+                  ) : (
+                    <span className={cn("text-[10px] font-black", isActive ? "text-white" : "text-neutral-500")}>
+                      0{index + 1}
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          }
 
           return (
             <button
@@ -320,7 +394,7 @@ function DesktopSidebar({
           );
         })}
       </nav>
-    </aside>
+    </motion.aside>
   );
 }
 
@@ -446,9 +520,9 @@ export function OfferEngineeringShell({
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div
-              initial={{ x: -SIDEBAR_WIDTH }}
+              initial={{ x: -SIDEBAR.WIDTH.base }}
               animate={{ x: 0 }}
-              exit={{ x: -SIDEBAR_WIDTH }}
+              exit={{ x: -SIDEBAR.WIDTH.base }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className="fixed inset-y-0 left-0 z-50 w-[280px] border-r border-neutral-200 bg-white"
             >

@@ -1,5 +1,5 @@
 export const SIDEBAR = {
-  WIDTH: { base: 280, xl: 320 },
+  WIDTH: { base: 280, xl: 320, collapsed: 68 },
   BG: 'bg-white',
   BORDER: 'border-r border-neutral-200',
   SHADOW: 'shadow-[2px_0_12px_rgba(0,0,0,0.02)]',
