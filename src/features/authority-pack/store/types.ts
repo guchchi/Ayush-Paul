@@ -10,12 +10,16 @@ export interface WorkspaceSlice {
 export interface NotesSlice {
   notes: PackNote[];
   updateNotes: (notes: PackNote[]) => void;
+  addOrUpdateNote: (note: PackNote) => void;
+  removeNote: (id: string) => void;
   resetNotes: () => void;
 }
 
 export interface BookmarkSlice {
   bookmarks: PackBookmark[];
   updateBookmarks: (bookmarks: PackBookmark[]) => void;
+  addBookmark: (bookmark: PackBookmark) => void;
+  removeBookmark: (id: string) => void;
   resetBookmarks: () => void;
 }
 

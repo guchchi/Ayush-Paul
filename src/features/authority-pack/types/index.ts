@@ -48,11 +48,18 @@ export interface PackNote extends BaseEntity {
   packId: string;
   sectionId: string;
   content: string;
+  author?: string;
+  source?: string;
+  version?: string;
 }
 
 export interface PackBookmark extends BaseEntity {
+  bookmarkId: string;
   packId: string;
   sectionId: string;
+  label?: string;
+  color?: string;
+  metadata?: Record<string, any>;
 }
 
 // ---------------------------------------------------------

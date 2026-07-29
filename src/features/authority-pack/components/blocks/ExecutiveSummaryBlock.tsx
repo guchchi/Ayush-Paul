@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlockRendererProps, ViewModel } from '../../../../lib/rendering/types';
+import { NoteEditor } from '../../../notes/components/NoteEditor';
 
 interface ExecutiveSummaryViewModel extends ViewModel {
   type: 'authority-pack.executive-summary';
@@ -9,7 +10,9 @@ interface ExecutiveSummaryViewModel extends ViewModel {
   guidance: string;
 }
 
-export function ExecutiveSummaryBlock({ block }: BlockRendererProps<ExecutiveSummaryViewModel>) {
+export function ExecutiveSummaryBlock({ block, context }: BlockRendererProps<ExecutiveSummaryViewModel>) {
+  const packId = context?.packId;
+
   return (
     <section className="p-6 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800/30">
       <h2 className="text-xl font-semibold mb-4 text-blue-900 dark:text-blue-100">Executive Summary</h2>
@@ -34,6 +37,8 @@ export function ExecutiveSummaryBlock({ block }: BlockRendererProps<ExecutiveSum
           <strong>Guidance:</strong> {block.guidance}
         </div>
       </div>
+
+      {packId && <NoteEditor packId={packId} blockId={block.id} />}
     </section>
   );
 }

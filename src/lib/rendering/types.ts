@@ -16,6 +16,7 @@ export interface ViewModel {
 export interface BlockRendererProps<T extends ViewModel = ViewModel> {
   block: T;
   index: number;
+  context?: any;
 }
 
 /**

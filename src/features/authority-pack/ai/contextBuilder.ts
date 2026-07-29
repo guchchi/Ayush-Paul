@@ -1,8 +1,11 @@
-
 export interface AuthorityPackContext {
   targetAudience: string;
   coreTopic: string;
-  // Other gathered state goes here
+  niche: string;
+  offerType: string;
+  uniqueMechanism: string;
+  authorityPosition: string;
+  coreTrustPromise: string;
 }
 
 /**
@@ -10,11 +13,14 @@ export interface AuthorityPackContext {
  */
 export class AuthorityPackContextBuilder {
   buildContext(rawInputs?: any): AuthorityPackContext {
-    // In reality, this would pull from previous module stores via adapters
-    // or from the initialized workspace state.
     return {
-      targetAudience: rawInputs?.targetAudience || 'General Audience',
-      coreTopic: rawInputs?.coreTopic || 'Blueprint OS'
+      targetAudience: rawInputs?.mod1MarketId || 'General Audience',
+      coreTopic: rawInputs?.mod1ServiceId || 'General Topic',
+      niche: rawInputs?.mod1NicheId || 'General Niche',
+      offerType: rawInputs?.mod2OfferType || 'Standard Offer',
+      uniqueMechanism: rawInputs?.mod2UniqueMechanism || 'Standard Framework',
+      authorityPosition: rawInputs?.authorityPosition || 'Expert',
+      coreTrustPromise: rawInputs?.coreTrustPromise || 'Deliver great results'
     };
   }
 }

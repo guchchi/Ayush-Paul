@@ -15,7 +15,7 @@ async function runTest() {
 
   console.log("--- Initial Store Population ---");
   store.getState().updateNotes([{ id: 'n1', packId: 'p1', sectionId: 's1', content: 'hello', createdAt: '', updatedAt: '' }]);
-  store.getState().updateBookmarks([{ id: 'b1', packId: 'p1', sectionId: 's1', createdAt: '', updatedAt: '' }]);
+  store.getState().updateBookmarks([{ bookmarkId: 'b1', id: 'b1', packId: 'p1', sectionId: 's1', createdAt: '', updatedAt: '' } as any]);
   store.getState().updateProgress(['action-1', 'action-2']);
   
   // Set transient state

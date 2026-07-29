@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlockRendererProps, ViewModel } from '../../../../lib/rendering/types';
+import { NoteEditor } from '../../../notes/components/NoteEditor';
 
 interface StrategicPillarViewModel extends ViewModel {
   type: 'authority-pack.strategic-pillar';
@@ -8,7 +9,9 @@ interface StrategicPillarViewModel extends ViewModel {
   rationale: string;
 }
 
-export function StrategicPillarBlock({ block }: BlockRendererProps<StrategicPillarViewModel>) {
+export function StrategicPillarBlock({ block, context }: BlockRendererProps<StrategicPillarViewModel>) {
+  const packId = context?.packId;
+
   return (
     <section className="p-5 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
       <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
@@ -21,6 +24,8 @@ export function StrategicPillarBlock({ block }: BlockRendererProps<StrategicPill
         <span className="font-semibold block mb-1">Rationale</span>
         {block.rationale}
       </div>
+
+      {packId && <NoteEditor packId={packId} blockId={block.id} />}
     </section>
   );
 }

@@ -9,13 +9,14 @@ interface ContentRendererProps {
   blocks: ViewModel[];
   className?: string;
   animate?: boolean;
+  context?: any;
 }
 
 /**
  * ContentRenderer iterates over view models, looks them up in the RendererRegistry,
  * and renders them. It never knows business logic or inspects data.
  */
-export function ContentRenderer({ blocks, className, animate = true }: ContentRendererProps) {
+export function ContentRenderer({ blocks, className, animate = true, context }: ContentRendererProps) {
   if (!blocks || blocks.length === 0) {
     return (
       <div className="flex items-center justify-center py-12 text-zinc-500">
@@ -40,7 +41,7 @@ export function ContentRenderer({ blocks, className, animate = true }: ContentRe
 
           const content = (
             <BlockErrorBoundary blockId={block.id}>
-              <Component block={block} index={index} />
+              <Component block={block} index={index} context={context} />
             </BlockErrorBoundary>
           );
 

@@ -1,4 +1,4 @@
-import { AuthorityPackDomain } from '../../types';
+import { AuthorityPackDomain, AuthorityPackViewModel, ActionItem, StrategicPillar } from '../types';
 import { ViewModel } from '../../../lib/rendering/types';
 
 export class AuthorityPackViewMapper {
