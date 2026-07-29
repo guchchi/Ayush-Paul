@@ -1,5 +1,6 @@
 import type { AuthorityPackDomain } from '../types';
 
+// eslint-disable-next-line no-restricted-syntax
 export const MOCK_AUTHORITY_PACK: AuthorityPackDomain = {
   id: 'mock-pack-123',
   version: '1.0',
