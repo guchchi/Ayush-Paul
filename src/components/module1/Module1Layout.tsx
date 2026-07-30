@@ -236,7 +236,7 @@ export function Module1Layout({
         <motion.div
           initial={false}
           animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="shrink-0 fixed inset-y-0 left-0 z-30"
         >
           {sidebarContent}
@@ -279,7 +279,7 @@ export function Module1Layout({
         animate={{ 
           marginLeft: showSidebar ? (isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base) : 0 
         }}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="flex-1 min-w-0"
       >
         <div className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">

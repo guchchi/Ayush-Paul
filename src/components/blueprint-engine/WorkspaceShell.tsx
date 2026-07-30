@@ -68,7 +68,7 @@ function DesktopSidebar({
     <motion.aside
       initial={false}
       animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
-      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="hidden lg:flex flex-col shrink-0 border-r border-white/5 bg-black relative"
     >
       <SidebarToggle 

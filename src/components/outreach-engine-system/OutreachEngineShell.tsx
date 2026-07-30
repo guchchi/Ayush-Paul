@@ -165,7 +165,7 @@ function DesktopSidebar({ currentStep, completedSteps, jumpToStep, niche, servic
     <motion.aside 
       initial={false}
       animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
-      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={`relative hidden lg:flex flex-col shrink-0 border-r ${theme === 'dark' ? 'border-white/5 bg-white/[0.02]' : 'border-zinc-200 bg-zinc-50'}`}
     >
       <SidebarToggle 

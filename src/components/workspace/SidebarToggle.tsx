@@ -25,7 +25,7 @@ export function SidebarToggle({ mode, onToggle, className }: SidebarToggleProps)
       <motion.div
         initial={false}
         animate={{ rotate: isCollapsed ? 180 : 0 }}
-        transition={{ duration: 0.2, ease: 'easeInOut' }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
         <ChevronLeft className="h-3.5 w-3.5" />
       </motion.div>

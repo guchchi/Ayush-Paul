@@ -97,7 +97,7 @@ export function WorkspaceShell({
           <motion.div
             initial={false}
             animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="shrink-0 border-r border-white/[0.06] relative"
           >
             <div className="h-full overflow-y-auto custom-scrollbar bg-[var(--glass-bg)] overflow-x-hidden">
