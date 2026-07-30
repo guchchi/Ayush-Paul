@@ -427,7 +427,7 @@ export function Module1V2() {
   }
 
   /* ── Sidebar content ── */
-  const SidebarContent = () => (
+  const sidebarContent = (
     <div className="flex flex-col h-full bg-white border-r border-neutral-200 shadow-[2px_0_12px_rgba(0,0,0,0.02)]">
       <div className="p-6 pb-8 border-b border-neutral-100">
         <button
@@ -658,7 +658,7 @@ export function Module1V2() {
               >
                 <X size={18} />
               </button>
-              <SidebarContent />
+              {sidebarContent}
             </motion.div>
           </>
         )}

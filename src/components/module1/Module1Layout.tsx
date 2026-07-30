@@ -58,7 +58,7 @@ export function Module1Layout({
 
   const showSidebar = viewport === 'desktop';
 
-  const SidebarContent = () => (
+  const sidebarContent = (
     <div className="flex flex-col h-full relative bg-white border-r border-neutral-200 shadow-[2px_0_12px_rgba(0,0,0,0.02)]">
       {showSidebar && (
         <SidebarToggle mode={mode} onToggle={toggleCollapse} />
@@ -239,7 +239,7 @@ export function Module1Layout({
           transition={{ duration: 0.2, ease: 'easeInOut' }}
           className="shrink-0 fixed inset-y-0 left-0 z-30"
         >
-          <SidebarContent />
+          {sidebarContent}
         </motion.div>
       )}
 
@@ -267,7 +267,7 @@ export function Module1Layout({
               >
                 <X size={18} />
               </button>
-              <SidebarContent />
+              {sidebarContent}
             </motion.div>
           </>
         )}

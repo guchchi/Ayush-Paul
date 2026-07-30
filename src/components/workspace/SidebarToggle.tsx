@@ -18,7 +18,7 @@ export function SidebarToggle({ mode, onToggle, className }: SidebarToggleProps)
       aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       aria-expanded={!isCollapsed}
       className={cn(
-        'absolute -right-3 top-6 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-neutral-200 bg-white shadow-sm text-neutral-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] focus-visible:ring-offset-1 hover:text-[#0b1c30] hover:border-[#0b1c30]',
+        'absolute -right-3 top-1/2 -translate-y-1/2 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-neutral-200 bg-white shadow-sm text-neutral-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] focus-visible:ring-offset-1 hover:text-[#0b1c30] hover:border-[#0b1c30]',
         className
       )}
     >
