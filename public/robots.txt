@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://ayushpaul.in/sitemap.xml
+Sitemap: https://thepaulsyndicate.com/sitemap.xml
