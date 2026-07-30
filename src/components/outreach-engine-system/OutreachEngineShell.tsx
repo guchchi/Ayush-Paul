@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useOutreachEngineStore, OUTREACH_ENGINE_STEPS } from '../../lib/outreach-engine-system';
 import type { OutreachEngineStep } from '../../types/outreach-engine-system';
@@ -36,6 +36,8 @@ export function OutreachEngineShell({ children }: { children: React.ReactNode })
     catch { return 'dark'; }
   });
 
+  const mainRef = useRef<HTMLElement>(null);
+
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
@@ -44,8 +46,17 @@ export function OutreachEngineShell({ children }: { children: React.ReactNode })
 
   const currentIdx = OUTREACH_ENGINE_STEPS.indexOf(currentStep);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentStep]);
+
   return (
-    <div className={`flex min-h-screen ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-zinc-900'}`}>
+    <div className={`flex h-screen overflow-hidden ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-zinc-900'}`}>
       <DesktopSidebar
         currentStep={currentStep}
         completedSteps={completedSteps}
@@ -118,7 +129,7 @@ export function OutreachEngineShell({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        <main className="flex-1">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-3xl lg:max-w-5xl xl:max-w-7xl px-5 sm:px-10 py-8 lg:py-12">
             <AnimatePresence mode="wait">
               <motion.div

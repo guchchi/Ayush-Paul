@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Check, ChevronLeft, ChevronRight, Sun, Moon, Briefcase } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -293,6 +293,7 @@ function MobileSidebar({
 export function PortfolioSystemShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLight, setIsLight] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('ps-theme');
@@ -331,8 +332,17 @@ export function PortfolioSystemShell({ children }: { children: ReactNode }) {
   const prevStep = activeIndex > 0 ? PORTFOLIO_SYSTEM_STEPS[activeIndex - 1] : null;
   const nextStep = activeIndex < PORTFOLIO_SYSTEM_STEPS.length - 1 ? PORTFOLIO_SYSTEM_STEPS[activeIndex + 1] : null;
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentStep]);
+
   return (
-    <div className="flex min-h-screen bg-black text-white selection:bg-white/10">
+    <div className="flex h-screen overflow-hidden bg-black text-white selection:bg-white/10">
       <DesktopSidebar
         completedSteps={completedSteps}
         currentStep={currentStep}
@@ -440,7 +450,7 @@ export function PortfolioSystemShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-3xl lg:max-w-5xl xl:max-w-7xl px-5 sm:px-10 py-8 lg:py-12">
             <AnimatePresence mode="wait">
               <motion.div

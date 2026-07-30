@@ -410,6 +410,7 @@ export function OfferEngineeringShell({
 
   const briefToggleRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   const currentStep = useOfferEngineeringStore((s) => s.currentStep);
   const completedSteps = useOfferEngineeringStore((s) => s.completedSteps);
@@ -418,6 +419,15 @@ export function OfferEngineeringShell({
   const activeIndex = OFFER_ENGINEERING_STEPS.indexOf(currentStep);
   const prevStep = activeIndex > 0 ? OFFER_ENGINEERING_STEPS[activeIndex - 1] : null;
   const nextStep = activeIndex < OFFER_ENGINEERING_STEPS.length - 1 ? OFFER_ENGINEERING_STEPS[activeIndex + 1] : null;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentStep]);
 
   const handleCloseSummary = () => {
     setSummaryOpen(false);
@@ -646,7 +656,7 @@ export function OfferEngineeringShell({
         </header>
 
         {/* Workspace content scroll container */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-[720px] lg:max-w-[1024px] xl:max-w-[1280px] px-5 sm:px-8 py-8 md:py-12">
             <AnimatePresence mode="wait">
               <motion.div

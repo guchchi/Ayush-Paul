@@ -78,6 +78,14 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
     return () => window.removeEventListener('sidebar-toggle', handleToggle);
   }, []);
 
+  useEffect(() => {
+    // Delay slightly to ensure React has flushed the new step's DOM to the page
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentStep]);
+
   const steps: StepItem[] = MODULE3_STEPS.map((step) => ({
     id: step,
     label: STEP_LABELS[step],

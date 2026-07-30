@@ -256,6 +256,16 @@ function MobileSidebar({
 export function AuthoritySystemShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLight, setIsLight] = useState(false);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mainRef.current) {
+        mainRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentStep]);
 
   useEffect(() => {
     const stored = localStorage.getItem('as-theme');
@@ -295,7 +305,7 @@ export function AuthoritySystemShell({ children }: { children: ReactNode }) {
   const nextStep = activeIndex < AUTHORITY_SYSTEM_STEPS.length - 1 ? AUTHORITY_SYSTEM_STEPS[activeIndex + 1] : null;
 
   return (
-    <div className="flex min-h-screen bg-black text-white selection:bg-white/10">
+    <div className="flex h-screen overflow-hidden bg-black text-white selection:bg-white/10">
       <DesktopSidebar
         completedSteps={completedSteps}
         currentStep={currentStep}
@@ -403,7 +413,7 @@ export function AuthoritySystemShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-3xl lg:max-w-5xl xl:max-w-7xl px-5 sm:px-10 py-8 lg:py-12">
             <AnimatePresence mode="wait">
               <motion.div

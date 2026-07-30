@@ -38,6 +38,14 @@ export function Module1Layout({
   const { mode, isCollapsed, toggle: toggleCollapse } = useSidebarCollapse();
 
   useEffect(() => {
+    // Delay slightly to ensure React has flushed the new step's DOM to the page
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [activeStep]);
+
+  useEffect(() => {
     const check = () => {
       const w = window.innerWidth;
       if (w < 1024) setViewport('mobile');

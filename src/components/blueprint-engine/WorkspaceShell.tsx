@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -263,6 +263,7 @@ function MobileSidebar({
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
 
   const currentStep = useOpportunityMapStore((s) => s.currentStep);
   const completedSteps = useOpportunityMapStore((s) => s.completedSteps);
@@ -276,8 +277,14 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const prevStep = activeIndex > 0 ? STEP_ORDER[activeIndex - 1] : null;
   const nextStep = activeIndex < STEP_ORDER.length - 1 ? STEP_ORDER[activeIndex + 1] : null;
 
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentStep]);
+
   return (
-    <div className="flex min-h-screen bg-black text-white selection:bg-white/10">
+    <div className="flex h-screen overflow-hidden bg-black text-white selection:bg-white/10">
 
       <DesktopSidebar
         completedSteps={completedSteps}
@@ -377,7 +384,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
+        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="mx-auto w-full max-w-3xl lg:max-w-5xl xl:max-w-7xl px-5 sm:px-10 py-8 lg:py-16">
             <AnimatePresence mode="wait">
               <motion.div

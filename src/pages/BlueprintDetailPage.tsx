@@ -27,6 +27,7 @@ import { BlueprintPurchaseSidebar } from '../components/sections/BlueprintPurcha
 import { BlueprintSidebarFAQ } from '../components/sections/BlueprintSidebarFAQ';
 import { BlueprintRelatedContent } from '../components/sections/BlueprintRelatedContent';
 import { BlueprintStickyMobileBar } from '../components/sections/BlueprintStickyMobileBar';
+import { BlueprintGetClientsPage } from './BlueprintGetClientsPage';
 
 const TARGET_ENGINE_SLUG = 'get-your-first-3-clients';
 
@@ -186,6 +187,20 @@ export const BlueprintDetailPage = () => {
           </div>
         </div>
       </motion.div>
+    );
+  }
+
+  if (slug === TARGET_ENGINE_SLUG) {
+    return (
+      <BlueprintGetClientsPage 
+        product={product}
+        isOwned={isOwned}
+        hasDiscount={hasDiscount}
+        isDownloading={isDownloading}
+        isCheckingOut={isCheckingOut}
+        onFreeDownload={handleFreeDownload}
+        onPremiumUpgrade={handlePremiumUpgrade}
+      />
     );
   }
 
