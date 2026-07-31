@@ -1,11 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, 
-  getRedirectResult, signOut, onAuthStateChanged,
-  createUserWithEmailAndPassword, signInWithEmailAndPassword
-} from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy, where, onSnapshot, addDoc, serverTimestamp, getDocFromServer, limit, arrayUnion } from 'firebase/firestore';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import * as authModule from 'firebase/auth';
+import * as firestoreModule from 'firebase/firestore';
+import * as storageModule from 'firebase/storage';
 import { firebaseConfig } from './config/firebase-config';
 
 if (!firebaseConfig.projectId || firebaseConfig.projectId === "MISSING_PROJECT") {
@@ -14,11 +10,11 @@ if (!firebaseConfig.projectId || firebaseConfig.projectId === "MISSING_PROJECT")
 
 // Initialize Firebase SDK Fail-Safe
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
-export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const db = firestoreModule.getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const auth = authModule.getAuth(app);
+export const storage = storageModule.getStorage(app);
 
-export const googleProvider = new GoogleAuthProvider();
+export const googleProvider = new authModule.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // --- Solo Founder Architecture Guardrails ---
@@ -29,56 +25,53 @@ const isPublicRoute = () => {
   return !path.startsWith('/dashboard') && !path.startsWith('/admin') && !path.startsWith('/lab/dashboard') && !path.startsWith('/vault');
 };
 
-const monitoredGetDoc = ((...args: any[]) => {
+export const getDoc = ((...args: any[]) => {
   if (import.meta.env.DEV) {
     console.log("%c📊 [QUOTA] Firestore Read: getDoc", "color: #00C2FF; font-weight: bold;");
   }
-  return (getDoc as any)(...args);
-}) as unknown as typeof getDoc;
+  return (firestoreModule.getDoc as any)(...args);
+}) as unknown as typeof firestoreModule.getDoc;
 
-const monitoredGetDocs = ((...args: any[]) => {
+export const getDocs = ((...args: any[]) => {
   if (import.meta.env.DEV) {
     console.log("%c📊 [QUOTA] Firestore Read: getDocs", "color: #00C2FF; font-weight: bold;");
   }
-  return (getDocs as any)(...args);
-}) as unknown as typeof getDocs;
+  return (firestoreModule.getDocs as any)(...args);
+}) as unknown as typeof firestoreModule.getDocs;
 
-const monitoredOnSnapshot = ((...args: any[]) => {
+export const onSnapshot = ((...args: any[]) => {
   if (isPublicRoute()) {
     console.warn("%c🚨 [GUARD] Accidental onSnapshot detected on public route! Use getDocs + Cache instead to save quota.", "color: #FF0055; font-weight: bold;");
   }
   if (import.meta.env.DEV) {
     console.log("%c📡 [LISTENER] Firestore onSnapshot active", "color: #FFCC00; font-weight: bold;");
   }
-  return (onSnapshot as any)(...args);
-}) as unknown as typeof onSnapshot;
+  return (firestoreModule.onSnapshot as any)(...args);
+}) as unknown as typeof firestoreModule.onSnapshot;
 
-export { 
-  signInWithPopup, 
-  signInWithRedirect,
-  getRedirectResult,
-  signOut, 
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  collection,  
-  doc, 
-  monitoredGetDoc as getDoc, 
-  monitoredGetDocs as getDocs, 
-  setDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  orderBy, 
-  where, 
-  monitoredOnSnapshot as onSnapshot,
-  addDoc,
-  serverTimestamp,
-  getDocFromServer,
-  limit,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  arrayUnion
-};
+// Firestore exports
+export const collection = firestoreModule.collection;
+export const doc = firestoreModule.doc;
+export const setDoc = firestoreModule.setDoc;
+export const updateDoc = firestoreModule.updateDoc;
+export const deleteDoc = firestoreModule.deleteDoc;
+export const query = firestoreModule.query;
+export const orderBy = firestoreModule.orderBy;
+export const where = firestoreModule.where;
+export const addDoc = firestoreModule.addDoc;
+export const serverTimestamp = firestoreModule.serverTimestamp;
+export const limit = firestoreModule.limit;
 
+// Auth exports
+export const signInWithPopup = authModule.signInWithPopup;
+export const signInWithRedirect = authModule.signInWithRedirect;
+export const getRedirectResult = authModule.getRedirectResult;
+export const signOut = authModule.signOut;
+export const onAuthStateChanged = authModule.onAuthStateChanged;
+export const createUserWithEmailAndPassword = authModule.createUserWithEmailAndPassword;
+export const signInWithEmailAndPassword = authModule.signInWithEmailAndPassword;
+
+// Storage exports
+export const ref = storageModule.ref;
+export const uploadBytesResumable = storageModule.uploadBytesResumable;
+export const getDownloadURL = storageModule.getDownloadURL;

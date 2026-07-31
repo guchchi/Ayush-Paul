@@ -1,72 +1,39 @@
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
+import fsAsync from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function fetchDynamicRoutes() {
-  const projectId = process.env.VITE_FIREBASE_PROJECT_ID || 'paulx-2026'; // fallback or read from env
-  const dbId = process.env.VITE_FIREBASE_FIRESTORE_DB_ID || 'ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a';
-  
-  const routes = [];
-  
-  try {
-    // We use the Firestore REST API for public data to avoid needing service account credentials during build
-    const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/${dbId}/documents`;
-    
-    // Fetch blueprints/projects
-    const projectsRes = await fetch(`${baseUrl}/projects`);
-    if (!projectsRes.ok) throw new Error(`Failed to fetch projects: ${projectsRes.statusText}`);
-    const projectsData = await projectsRes.json();
-    if (projectsData.documents) {
-      for (const doc of projectsData.documents) {
-        const slug = doc.name.split('/').pop();
-        routes.push(`/blueprints/${slug}`);
-      }
-    }
-
-    // Fetch blog posts
-    const blogRes = await fetch(`${baseUrl}/blogPosts`);
-    if (!blogRes.ok) throw new Error(`Failed to fetch blogPosts: ${blogRes.statusText}`);
-    const blogData = await blogRes.json();
-    if (blogData.documents) {
-      for (const doc of blogData.documents) {
-        const slug = doc.name.split('/').pop();
-        routes.push(`/blog/${slug}`);
-      }
-    }
-    
-    return routes;
-  } catch (error) {
-    console.error("🔥 FATAL ERROR: Failed to discover Firebase routes during prerender.", error);
-    // Fail-build-on-error policy
-    process.exit(1); 
-  }
-}
-
 async function prerender() {
   const templatePath = path.resolve(__dirname, 'dist/index.html');
   let template;
   try {
-    template = await fs.readFile(templatePath, 'utf-8');
+    template = await fsAsync.readFile(templatePath, 'utf-8');
   } catch (e) {
-    console.error("Template not found at dist/index.html. Run 'vite build' first.");
+    console.error(`Template not found at ${templatePath}. Run 'vite build' first. Error:`, e);
     process.exit(1);
   }
 
   // Dynamically import the server entry point (built by vite build --ssr)
-  let render;
-  try {
-    const entryServerModule = await import('./dist/server/entry-server.js');
-    render = entryServerModule.render;
-  } catch (e) {
-    console.error("Server entry not found at dist/server/entry-server.js. Run 'vite build --ssr src/entry-server.tsx' first.");
-    console.error(e);
+  let render, getDynamicRoutes;
+  const serverEntryPath = path.resolve(__dirname, 'dist/server/entry-server.js');
+  if (!fs.existsSync(serverEntryPath)) {
+    console.error(`Server entry not found at ${serverEntryPath}. Run 'vite build --ssr src/entry-server.tsx' first.`);
     process.exit(1);
   }
 
-  // Base static routes
-  const routes = [
+  try {
+    const entryServerModule = await import('./dist/server/entry-server.js');
+    render = entryServerModule.render;
+    getDynamicRoutes = entryServerModule.getDynamicRoutes;
+  } catch (e) {
+    console.error('Failed to load server entry:', e);
+    process.exit(1);
+  }
+
+  // Define static routes
+  const staticRoutes = [
     '/',
     '/blueprints',
     '/collaborate',
@@ -77,8 +44,13 @@ async function prerender() {
   ];
 
   // Fetch dynamic routes
-  const dynamicRoutes = await fetchDynamicRoutes();
-  routes.push(...dynamicRoutes);
+  let dynamicRoutes = [];
+  if (getDynamicRoutes) {
+    console.log("Fetching dynamic routes from Firebase...");
+    dynamicRoutes = await getDynamicRoutes();
+  }
+
+  const routes = [...staticRoutes, ...dynamicRoutes];
 
   console.log(`Prerendering ${routes.length} routes...`);
   
@@ -91,8 +63,8 @@ async function prerender() {
       const html = template.replace(`<!--app-html-->`, appHtml);
 
       const filePath = path.resolve(__dirname, `dist${url === '/' ? '/index' : url}.html`);
-      await fs.mkdir(path.dirname(filePath), { recursive: true });
-      await fs.writeFile(filePath, html);
+      await fsAsync.mkdir(path.dirname(filePath), { recursive: true });
+      await fsAsync.writeFile(filePath, html);
       console.log(`✅ Prerendered ${url}`);
       
       // Add to sitemap
@@ -116,9 +88,10 @@ async function prerender() {
 ${sitemapUrls.join('')}
 </urlset>`;
 
-  await fs.writeFile(path.resolve(__dirname, 'dist/sitemap.xml'), sitemap);
+  await fsAsync.writeFile(path.resolve(__dirname, 'dist/sitemap.xml'), sitemap);
   console.log('✅ Generated sitemap.xml');
   console.log('🎉 SSG build complete!');
+  process.exit(0);
 }
 
 prerender();
