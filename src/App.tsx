@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 
 // --- Layouts ---
@@ -54,8 +54,9 @@ import { DevTestTools } from "./dev/DevTestTools";
 import { ScrollToTop, ScrollToTopButton } from "./components/ui/ScrollUtilities";
 import { CursorFollower } from "./components/ui/CursorEffects";
 import { FirebaseConfigWarning } from "./components/FirebaseConfigWarning";
-import { CookieConsent } from "./components/ui/CookieConsent";
 import { BetaFeedbackButton } from "./components/ui/BetaFeedbackButton";
+
+const CookieConsent = lazy(() => import("./components/ui/CookieConsent").then(m => ({ default: m.CookieConsent })));
 
 import { getFirebaseStatus } from "./config/firebase-config";
 
@@ -66,7 +67,17 @@ const RedirectWithSlug = () => {
 
 export default function App() {
   const [showConfigWarning, setShowConfigWarning] = useState(true);
+  const [isIdle, setIsIdle] = useState(false);
   const { isConfigured, projectId, databaseId } = getFirebaseStatus();
+
+  // Defer non-critical components until idle
+  useEffect(() => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => setIsIdle(true), { timeout: 2000 });
+    } else {
+      setTimeout(() => setIsIdle(true), 2000);
+    }
+  }, []);
 
   // System Health Monitoring
   useEffect(() => {
@@ -102,12 +113,11 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <Router>
-        <ScrollToTop />
-        <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-bg-primary min-h-screen w-full text-text-primary">
-          <CursorFollower />
-          
-          {!isConfigured && showConfigWarning && (
+      <ScrollToTop />
+      <div className="font-sans selection:bg-brand-primary/30 selection:text-brand-primary bg-bg-primary min-h-screen w-full text-text-primary">
+        <CursorFollower />
+        
+        {!isConfigured && showConfigWarning && (
             <FirebaseConfigWarning 
               variant="banner" 
               onDismiss={() => setShowConfigWarning(false)} 
@@ -173,12 +183,15 @@ export default function App() {
           </Suspense>
 
           <ScrollToTopButton />
-          <CookieConsent />
+          {isIdle && (
+            <Suspense fallback={null}>
+              <CookieConsent />
+            </Suspense>
+          )}
           <BetaFeedbackButton />
 
           {import.meta.env.DEV && <DevTestTools />}
         </div>
-      </Router>
     </ErrorBoundary>
   );
 }

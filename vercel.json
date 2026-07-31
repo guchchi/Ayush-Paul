@@ -1,4 +1,5 @@
 {
+  "cleanUrls": true,
   "redirects": [
     { "source": "/now", "destination": "/building", "permanent": true },
     { "source": "/projects", "destination": "/blueprints", "permanent": true },

@@ -46,10 +46,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       createdAt: data.createdAt || admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
+    // Trigger Vercel Deploy Hook (Debounced to once every 5 minutes)
+    let rebuildTriggered = false;
+    if (process.env.VERCEL_DEPLOY_HOOK_URL) {
+      const deployRef = db.collection('_system').doc('builds');
+      const deployDoc = await deployRef.get();
+      const lastTrigger = deployDoc.data()?.lastTriggered?.toMillis() || 0;
+      const now = Date.now();
+      
+      if (now - lastTrigger > 5 * 60 * 1000) {
+        try {
+          await fetch(process.env.VERCEL_DEPLOY_HOOK_URL, { method: 'POST' });
+          await deployRef.set({ 
+            lastTriggered: admin.firestore.FieldValue.serverTimestamp() 
+          }, { merge: true });
+          rebuildTriggered = true;
+        } catch (e) {
+          console.error("Failed to trigger Vercel deploy hook:", e);
+        }
+      }
+    }
+
     return res.status(200).json({ 
       success: true, 
       message: `${type} published successfully`,
-      slug 
+      slug,
+      rebuildTriggered
     });
   } catch (error: any) {
     console.error('Publish error:', error);

@@ -31,11 +31,12 @@ export function Step3ProfilePortfolio() {
   const [isChecklistComplete, setIsChecklistComplete] = useState(false);
 
   useEffect(() => {
-    if (!pendingStrategy && !strategy && !isUpstreamStale && !isGeneratingStrategy) {
+    // Auto-generate if we have no strategy yet. Do not let upstream staleness block initial generation.
+    if (!pendingStrategy && !strategy && !isGeneratingStrategy) {
       abortControllerRef.current = new AbortController();
       generateStrategy(abortControllerRef.current.signal);
     }
-  }, [pendingStrategy, strategy, isUpstreamStale, isGeneratingStrategy, generateStrategy]);
+  }, [pendingStrategy, strategy, isGeneratingStrategy, generateStrategy]);
 
   // Handle cleanup on unmount
   useEffect(() => {
