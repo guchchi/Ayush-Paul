@@ -4,9 +4,8 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { visualizer } from 'rollup-plugin-visualizer';
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react(), tailwindcss(), visualizer({ filename: 'stats.json', template: 'raw-data' })],
   resolve: {
     alias: {
@@ -16,11 +15,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-ui': ['motion/react'],
-          'vendor-charts': ['recharts'],
-          'vendor-base': ['react', 'react-dom', 'react-router-dom'],
-        }
+        ...(isSsrBuild ? {} : {
+          manualChunks: {
+            'vendor-ui': ['motion/react'],
+            'vendor-charts': ['recharts'],
+            'vendor-base': ['react', 'react-dom', 'react-router-dom'],
+          }
+        })
       }
     },
     chunkSizeWarningLimit: 1000,
@@ -30,4 +31,4 @@ export default defineConfig({
     // Do not modify—file watching is disabled to prevent flickering during agent edits.
     hmr: process.env.DISABLE_HMR !== 'true',
   },
-});
+}));
