@@ -629,7 +629,7 @@ export function Module1V2() {
       {/* ── Desktop sidebar ── */}
       {showSidebar && (
         <div className="shrink-0 w-[280px] xl:w-[320px] fixed inset-y-0 left-0 z-30">
-          <SidebarContent />
+          {sidebarContent}
         </div>
       )}
 

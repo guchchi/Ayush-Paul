@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
-const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
+const DEFAULT_FROM = 'Ayush Paul <lab@thepaulx.in>';
 const ADMIN_EMAIL = 'ap877@cornell.edu';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -43,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         <tr><td style="padding:12px 0 4px;border-top:1px solid #222222;font-size:11px;color:#666666;text-transform:uppercase;letter-spacing:1px;">Request ID</td></tr>
         <tr><td style="padding:0 0 12px;font-size:12px;color:#888888;">${requestId || '—'}</td></tr>
       </table>
-      <p style="margin:24px 0 0;font-size:12px;color:#666666;">Review this request in the <a href="https://ayushpaul.in/admin" style="color:#00C2FF;text-decoration:none;">Creator Studio</a> admin panel.</p>
+      <p style="margin:24px 0 0;font-size:12px;color:#666666;">Review this request in the <a href="https://thepaulx.in/admin" style="color:#00C2FF;text-decoration:none;">Creator Studio</a> admin panel.</p>
     `;
 
     const emailHtml = `<!DOCTYPE html>

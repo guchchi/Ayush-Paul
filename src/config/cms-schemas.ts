@@ -119,7 +119,7 @@ export const CMS_SCHEMAS: Record<string, CollectionSchema> = {
       { name: "paidFileUrl", label: "Paid Resource File", type: "string", placeholder: "https://drive.google.com/..." },
       { name: "authorName", label: "Author Name", type: "string", placeholder: "Ayush Paul", defaultValue: "Ayush Paul" },
       { name: "authorRole", label: "Author Role", type: "string", placeholder: "Builder & Creator", defaultValue: "Builder & Creator" },
-      { name: "authorPhoto", label: "Author Photo URL", type: "string", placeholder: "https://ayushpaul.in/author.png" },
+      { name: "authorPhoto", label: "Author Photo URL", type: "string", placeholder: "https://thepaulx.in/author.png" },
       { name: "pageCount", label: "Page Count", type: "number", placeholder: "48" },
       { name: "readingTime", label: "Reading Time (minutes)", type: "number", placeholder: "35" },
       {

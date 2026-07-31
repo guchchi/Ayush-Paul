@@ -79,24 +79,100 @@ export const useSEO = ({
       document.head.appendChild(scriptEntry);
     }
 
-    const defaultSchema = {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Ayush Paul",
-      "jobTitle": "AI Developer & Full Stack Engineer",
-      "url": getCanonicalUrl(),
-      "image": getCanonicalUrl("/founder.png"),
+    const baseUrl = getCanonicalUrl();
+    const currentUrl = url.startsWith('http') ? url : getCanonicalUrl(url);
+
+    const organizationSchema = {
+      "@type": "Organization",
+      "@id": `${baseUrl}/#organization`,
+      "name": "PaulX",
+      "url": baseUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/og-image.png`
+      },
       "sameAs": [
         "https://github.com/guchchi",
         "https://www.linkedin.com/in/paulayush/",
         "https://www.youtube.com/@ALX-17",
         "https://www.fiverr.com/ayushpaulx",
-        "https://www.instagram.com/ayushpaul_/", // Added Instagram
-        "https://twitter.com/ayushpaul_" // Placeholder for Twitter/X
+        "https://www.instagram.com/ayushpaul_/",
+        "https://twitter.com/ayushpaul_"
       ]
     };
 
-    scriptEntry.textContent = JSON.stringify(schema || defaultSchema);
+    const websiteSchema = {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      "url": baseUrl,
+      "name": "PaulX",
+      "publisher": {
+        "@id": `${baseUrl}/#organization`
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": `${baseUrl}/blog?q={search_term_string}`
+        },
+        "query-input": "required name=search_term_string"
+      }
+    };
+
+    const webpageSchema = {
+      "@type": "WebPage",
+      "@id": `${currentUrl}#webpage`,
+      "url": currentUrl,
+      "name": title,
+      "description": description,
+      "isPartOf": {
+        "@id": `${baseUrl}/#website`
+      },
+      "about": {
+        "@id": `${baseUrl}/#organization`
+      }
+    };
+
+    const personSchema = {
+      "@type": "Person",
+      "@id": `${baseUrl}/#person`,
+      "name": "Ayush Paul",
+      "jobTitle": "AI Developer & Full Stack Engineer",
+      "url": baseUrl,
+      "image": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/founder.png`
+      },
+      "worksFor": {
+        "@id": `${baseUrl}/#organization`
+      }
+    };
+
+    let customSchemas: any[] = [];
+    if (schema) {
+      if (Array.isArray(schema)) {
+        customSchemas = schema;
+      } else if (schema['@graph']) {
+        customSchemas = schema['@graph'];
+      } else {
+        // Strip @context if it exists in the custom schema since we wrap it in @graph
+        const { '@context': _, ...cleanSchema } = schema;
+        customSchemas = [cleanSchema];
+      }
+    }
+
+    const finalSchema = {
+      "@context": "https://schema.org",
+      "@graph": [
+        organizationSchema,
+        websiteSchema,
+        webpageSchema,
+        personSchema,
+        ...customSchemas
+      ]
+    };
+
+    scriptEntry.textContent = JSON.stringify(finalSchema);
 
     // Cleanup: In an SPA, we usually leave the tags as is until overridden by the next page.
     // So there is no explicit cleanup of the meta tags because the next call of useSEO automatically replaces them.

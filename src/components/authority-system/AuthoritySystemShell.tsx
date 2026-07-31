@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Check, ChevronLeft, ChevronRight, Sparkles, Sun, Moon, Shield } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -258,6 +258,8 @@ export function AuthoritySystemShell({ children }: { children: ReactNode }) {
   const [isLight, setIsLight] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
 
+  const currentStep = useAuthoritySystemStore((s) => s.currentStep);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (mainRef.current) {
@@ -292,7 +294,7 @@ export function AuthoritySystemShell({ children }: { children: ReactNode }) {
     localStorage.setItem('as-theme', next ? 'light' : 'dark');
   };
 
-  const currentStep = useAuthoritySystemStore((s) => s.currentStep);
+
   const completedSteps = useAuthoritySystemStore((s) => s.completedSteps);
   const jumpToStep = useAuthoritySystemStore((s) => s.jumpToStep);
 

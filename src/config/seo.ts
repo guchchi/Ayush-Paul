@@ -1,12 +1,12 @@
 import { getCanonicalUrl } from '../lib/domain';
 
 export const defaultSEO = {
-  siteName: "Ayush Paul",
-  title: "Ayush Paul | AI Developer, Full Stack Developer & Digital Creator",
+  siteName: "PaulX",
+  title: "PaulX | AI Ecosystem & Engineering Blueprint OS",
   description:
-    "Ayush Paul is a senior AI Developer and Full Stack Engineer building venture-scale digital products, intelligent automation systems, and high-performance web applications.",
+    "PaulX is a venture-scale AI ecosystem and the creator of Blueprint OS. We engineer intelligent automation systems and high-performance digital platforms.",
   keywords:
-    "Ayush Paul, AI Developer Ayush Paul, Ayush Paul Developer, Ayush Paul Portfolio, Full Stack Developer India, AI Engineer India, Robotics Developer",
+    "PaulX, Ayush Paul, PaulX OS, Blueprint OS, AI Startup India, AI Ecosystem, Full Stack AI Developer",
   image: "/og-image.png",
   url: getCanonicalUrl()
 };

@@ -38,7 +38,7 @@ export const HomeBlogSection = ({ loadingBlogs, blogs }: HomeBlogSectionProps) =
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {blogs.map((b) => (
               <Link to={`/blog/${b.slug}`} key={b.id} className="relative group aspect-[3/4] rounded-[32px] overflow-hidden cursor-pointer block border border-[#c2c6d6]/30 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <img src={b.coverImage || "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600"} alt={b.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <img src={b.coverImage || "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600"} alt={b.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" decoding="async" width={400} height={533} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 <div className="absolute top-5 left-5 z-20">
                   <span className="px-3 py-1 rounded-full bg-white/95 border border-gray-100 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">

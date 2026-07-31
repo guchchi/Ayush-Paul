@@ -66,8 +66,8 @@ export const CreatorDetailModal: React.FC<Props> = ({
   const pendingCommission = creator.payoutStatus === 'pending' ? totalCommission : 0;
   const paidCommission = creator.payoutStatus === 'paid' ? totalCommission : sales.filter(s => s.commission).reduce((sum, s) => sum + (s.commission || 0), 0);
 
-  const referralLink = `https://ayushpaul.in?ref=${creator.code}`;
-  const creatorParamLink = `https://ayushpaul.in?creator=${creator.code}`;
+  const referralLink = `https://thepaulx.in?ref=${creator.code}`;
+  const creatorParamLink = `https://thepaulx.in?creator=${creator.code}`;
 
   const [copied, setCopied] = useState<'ref' | 'creator' | null>(null);
   const [copiedRef, setCopiedRef] = useState(false);

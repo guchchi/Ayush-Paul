@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://ayushpaul.in/og-image.png" alt="Ayush Paul Portfolio Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;"/>
+  <img src="https://thepaulx.in/og-image.png" alt="Ayush Paul Portfolio Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;"/>
 
   <h1>🚀 Ayush Paul | AI Engineer & Developer Portfolio</h1>
   

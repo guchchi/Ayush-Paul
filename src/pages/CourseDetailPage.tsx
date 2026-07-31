@@ -99,10 +99,56 @@ export const CourseDetailPage = () => {
     return () => unsubscribe();
   }, [courseId]);
 
+  const canonical = getCanonicalUrl(`/mastery/courses/${courseId}`);
+
   useSEO({
     title: course ? `${course.title} | Ayush Paul Academy` : "Course Details | Academy",
     description: course ? course.description : "Academy course syllabus and progress tracker.",
-    url: getCanonicalUrl(`/mastery/courses/${courseId}`),
+    url: canonical,
+    schema: course ? [
+      {
+        "@type": "Course",
+        "@id": `${canonical}#course`,
+        "name": course.title,
+        "description": course.description,
+        "provider": {
+          "@id": `${getCanonicalUrl()}/#organization`
+        },
+        "url": canonical,
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "online",
+          "instructor": {
+            "@type": "Person",
+            "name": "Ayush Paul"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${canonical}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": getCanonicalUrl()
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Academy",
+            "item": getCanonicalUrl("/mastery")
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": course.title,
+            "item": canonical
+          }
+        ]
+      }
+    ] : null
   });
 
   const handleEnroll = async () => {

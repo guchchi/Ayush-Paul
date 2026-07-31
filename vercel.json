@@ -1,4 +1,29 @@
 {
+  "redirects": [
+    { "source": "/now", "destination": "/building", "permanent": true },
+    { "source": "/projects", "destination": "/blueprints", "permanent": true },
+    { "source": "/projects/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/experiments", "destination": "/blueprints", "permanent": true },
+    { "source": "/experiments/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/contact", "destination": "/collaborate", "permanent": true },
+    { "source": "/products", "destination": "/blueprints", "permanent": true },
+    { "source": "/products/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/ebooks", "destination": "/blueprints", "permanent": true },
+    { "source": "/ebooks/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/systems", "destination": "/blueprints", "permanent": true },
+    { "source": "/systems/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/academy", "destination": "/mastery", "permanent": true },
+    { "source": "/academy/courses/:courseId", "destination": "/mastery/courses/:courseId", "permanent": true },
+    { "source": "/academy/courses/:courseId/lessons/:lessonId", "destination": "/mastery/courses/:courseId/lessons/:lessonId", "permanent": true },
+    { "source": "/labs", "destination": "/blueprints", "permanent": true },
+    { "source": "/labs/:slug", "destination": "/blueprints/:slug", "permanent": true },
+    { "source": "/lab/dashboard", "destination": "/vault", "permanent": true },
+    { "source": "/blogs", "destination": "/blog", "permanent": true },
+    { "source": "/research", "destination": "/blog", "permanent": true },
+    { "source": "/in-public", "destination": "/building", "permanent": true },
+    { "source": "/milestones", "destination": "/building", "permanent": true },
+    { "source": "/momentum", "destination": "/building", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/chat", "destination": "/api/chat" },
     { "source": "/api/stripe-webhook", "destination": "/api/stripe-webhook" },
@@ -48,7 +73,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.stripe.com https://apis.google.com https://*.firebaseapp.com; connect-src 'self' https://*.stripe.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.posthog.com https://app.posthog.com; frame-src 'self' https://*.stripe.com https://*.firebaseapp.com; img-src 'self' data: blob: https://*.stripe.com https://ayushpaul.in https://*.firebasestorage.app https://images.unsplash.com https://*.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src 'self' blob:;"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.stripe.com https://apis.google.com https://*.firebaseapp.com; connect-src 'self' https://*.stripe.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebasestorage.app https://*.posthog.com https://app.posthog.com; frame-src 'self' https://*.stripe.com https://*.firebaseapp.com; img-src 'self' data: blob: https://*.stripe.com https://thepaulx.in https://*.firebasestorage.app https://images.unsplash.com https://*.unsplash.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; media-src 'self' blob:;"
         }
       ]
     }

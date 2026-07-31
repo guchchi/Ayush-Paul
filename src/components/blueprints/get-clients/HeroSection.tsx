@@ -16,7 +16,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onPrimaryAction, isOwn
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.md, ease: EASING.easeOut }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
         className="flex flex-wrap items-center justify-center gap-3 mb-8"
       >
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e8f2ff] text-[#0058be] text-xs font-semibold uppercase tracking-wider">
@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onPrimaryAction, isOwn
       <motion.h1 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.lg, ease: EASING.easeOut, delay: 0.1 }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
         className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0b1c30] mb-6 max-w-4xl"
       >
         Stop guessing how to find clients.
@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onPrimaryAction, isOwn
       <motion.p 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.lg, ease: EASING.easeOut, delay: 0.2 }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
         className="text-lg md:text-xl text-[#424754] mb-10 max-w-2xl leading-relaxed"
       >
         Build a complete client acquisition system—from choosing your niche to signing your first three paying clients.
@@ -53,7 +53,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onPrimaryAction, isOwn
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.lg, ease: EASING.easeOut, delay: 0.3 }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.3 }}
         className="flex flex-col sm:flex-row items-center gap-4"
       >
         <button

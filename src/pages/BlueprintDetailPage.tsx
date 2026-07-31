@@ -74,12 +74,85 @@ export const BlueprintDetailPage = () => {
     fetchProduct();
   }, [slug]);
 
+  const canonical = getCanonicalUrl(`/blueprints/${slug}`);
+  const basePrice = product?.basePrice || 0;
+  const salePrice = product?.salePrice || 0;
+  const currentPrice = salePrice > 0 ? salePrice : basePrice;
+
   useSEO({
     title: product ? `${product.title} | Implementation Blueprint by Ayush Paul` : "Loading Blueprint...",
     description: product?.description || "Browse implementation blueprints, AI prompt packs, and automation workflows.",
     keywords: product?.tags?.join(", ") || "implementation blueprint, Ayush Paul, automation workflow, AI prompt template",
-    url: getCanonicalUrl(`/blueprints/${slug}`),
+    url: canonical,
     image: product?.thumbnail || "/og-image.png",
+    schema: product ? [
+      {
+        "@type": "Product",
+        "@id": `${canonical}#product`,
+        "name": product.title,
+        "description": product.description,
+        "image": {
+          "@type": "ImageObject",
+          "url": getCanonicalUrl(product.thumbnail || "/og-image.png")
+        },
+        "sku": product.slug,
+        "category": "Digital Blueprint",
+        "url": canonical,
+        "brand": {
+          "@id": `${getCanonicalUrl()}/#organization`
+        },
+        "manufacturer": {
+          "@id": `${getCanonicalUrl()}/#organization`
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": canonical,
+          "priceCurrency": "INR",
+          "price": currentPrice,
+          "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+          "availability": "https://schema.org/InStock",
+          "seller": {
+            "@id": `${getCanonicalUrl()}/#organization`
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${canonical}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": getCanonicalUrl()
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blueprints",
+            "item": getCanonicalUrl("/blueprints")
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.title,
+            "item": canonical
+          }
+        ]
+      },
+      ...(product.faq && product.faq.length > 0 ? [{
+        "@type": "FAQPage",
+        "@id": `${canonical}#faq`,
+        "mainEntity": product.faq.map((f: any) => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": f.a
+          }
+        }))
+      }] : [])
+    ] : null
   });
 
   const handleFreeDownload = async () => {

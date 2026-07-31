@@ -11,7 +11,7 @@ const config = {
   apiKey: process.env.VITE_FIREBASE_API_KEY
 };
 
-const BASE_URL = 'https://thepaulsyndicate.com';
+const BASE_URL = 'https://thepaulx.in';
 
 async function generateSitemap() {
   console.log('Generating sitemap...');

@@ -52,6 +52,10 @@ export const HomeBlueprintsSection = ({ loadingProducts, featuredBlueprints }: H
                     src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    loading="lazy"
+                    decoding="async"
+                    width={640}
+                    height={400}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">

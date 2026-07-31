@@ -33,7 +33,7 @@ export const HowItWorksSection = () => {
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: DURATION.md, ease: EASING.easeOut, delay: idx * 0.1 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: idx * 0.1 }}
               className="relative"
             >
               <div className="h-full flex flex-col p-6 rounded-2xl bg-white border border-gray-100 hover:border-[#0058be]/30 hover:shadow-md transition-all group relative overflow-hidden">

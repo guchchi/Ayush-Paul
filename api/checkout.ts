@@ -71,7 +71,7 @@ async function handleCreateCheckoutSession(req: VercelRequest, res: VercelRespon
               product_data: {
                 name: `Support Ayush Paul - ${tierName}`,
                 description: "Thank you for supporting my work and projects!",
-                images: ["https://ayushpaul.in/og-image.png"],
+                images: ["https://thepaulx.in/og-image.png"],
               },
               unit_amount: amount * 100,
             },
@@ -345,7 +345,7 @@ async function handleCreateDonationSession(req: VercelRequest, res: VercelRespon
           product_data: {
             name: "Donation: Support Open Innovation",
             description: "Thank you for supporting Ayush Paul's engineering research.",
-            images: ["https://ayushpaul.in/founder.png"],
+            images: ["https://thepaulx.in/founder.png"],
           },
           unit_amount: amount * 100,
         },
