@@ -6,6 +6,8 @@ import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import type { Product } from '../types';
 import { getProductBySlug } from '../lib/product-utils';
+import { generateInitialGraph } from '../lib/knowledge-graph/seed/initial-seed';
+import { BlueprintProjection } from '../lib/knowledge-graph/projections/projections';
 import { auth, onAuthStateChanged, db, doc, setDoc, getDoc, serverTimestamp } from '../firebase';
 import { AuthModal } from '../components/ui/AuthModal';
 import { useAnalytics } from '../hooks/useAnalytics';
@@ -64,12 +66,46 @@ export const BlueprintDetailPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       if (!slug) return;
-      const data = await getProductBySlug(slug);
-      if (data) {
-        setProduct(data);
-        trackEvent('Blueprint Viewed', { slug: data.slug, id: data.id, title: data.title });
+      try {
+        const { repository } = generateInitialGraph();
+        const node = await repository.getNodeBySlug(slug, 'en');
+        if (node && node.nodeType === 'PRODUCT') {
+          const bpProj = new BlueprintProjection();
+          const viewModel = await bpProj.project(node.nodeId, repository);
+          
+          const mappedProduct: Product = {
+            id: node.nodeId,
+            title: node.title.en,
+            slug: node.slug.en,
+            description: node.description?.en || '',
+            thumbnail: node.properties.thumbnailUrl || '/images/blueprint-placeholder.jpg',
+            category: 'Blueprint',
+            type: 'free' as const,
+            basePrice: node.properties.priceInCents || 0,
+            salePrice: 0,
+            discountPercentage: 0,
+            inventoryCount: null,
+            downloadFileURL: null,
+            tier: 'free',
+            features: [],
+            published: true,
+            featured: true,
+            rating: 5,
+            reviewCount: 1,
+            createdAt: node.createdAt,
+            updatedAt: node.updatedAt
+          };
+          setProduct(mappedProduct);
+          trackEvent('Blueprint Viewed', { slug: node.slug.en, id: node.nodeId, title: node.title.en });
+        } else {
+          const data = await getProductBySlug(slug);
+          if (data) setProduct(data);
+        }
+      } catch (err) {
+        console.error("Failed to load blueprint from Knowledge Graph:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchProduct();
   }, [slug]);

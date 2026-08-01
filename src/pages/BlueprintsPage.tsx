@@ -4,6 +4,7 @@ import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import { getPublishedProducts } from '../lib/product-utils';
 import { Product } from '../types';
+import { generateInitialGraph } from '../lib/knowledge-graph/seed/initial-seed';
 import { BlueprintsHero } from '../components/sections/BlueprintsHero';
 import { BlueprintsFeatured } from '../components/sections/BlueprintsFeatured';
 import { BlueprintsGrid } from '../components/sections/BlueprintsGrid';
@@ -25,10 +26,36 @@ export const BlueprintsPage = () => {
     try {
       setLoading(true);
       setError(false);
-      const data = await getPublishedProducts();
-      setProducts(data || []);
+      const { repository } = generateInitialGraph();
+      const allNodes = await repository.getAllNodes();
+      const productNodes = allNodes.filter(n => n.nodeType === 'PRODUCT');
+
+      const mappedProducts: Product[] = productNodes.map(node => ({
+        id: node.nodeId,
+        title: node.title.en,
+        slug: node.slug.en,
+        description: node.description?.en || '',
+        thumbnail: node.properties.thumbnailUrl || '/images/blueprint-placeholder.jpg',
+        category: 'Blueprint',
+        type: 'free' as const,
+        basePrice: node.properties.priceInCents || 0,
+        salePrice: 0,
+        discountPercentage: 0,
+        inventoryCount: null,
+        downloadFileURL: null,
+        tier: 'free',
+        features: [],
+        published: true,
+        featured: true,
+        rating: 5,
+        reviewCount: 1,
+        createdAt: node.createdAt,
+        updatedAt: node.updatedAt
+      }));
+
+      setProducts(mappedProducts);
     } catch (err) {
-      console.error("Failed to load blueprints:", err);
+      console.error("Failed to load blueprints from Knowledge Graph:", err);
       setProducts([]);
       setError(true);
       trackEvent('Connection Failed', { error: String(err) });
