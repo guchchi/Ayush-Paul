@@ -5,6 +5,7 @@ import { GraphQueryApi } from './services/query';
 import { UnifiedSearchEngine } from './services/search';
 import { SeoProjectionService } from './seo/generator';
 import { BlueprintProjection, StepProjection } from './projections/projections';
+import { StudioProjection } from './projections/studio';
 import { InMemoryContentRepository } from './content/loader';
 
 class KnowledgeGraphSingleton {
@@ -16,6 +17,7 @@ class KnowledgeGraphSingleton {
   public seoService: SeoProjectionService;
   public blueprintProjection: BlueprintProjection;
   public stepProjection: StepProjection;
+  public studioProjection: StudioProjection;
   public nodes: BaseNode[];
   public edges: BaseEdge[];
 
@@ -30,6 +32,7 @@ class KnowledgeGraphSingleton {
     this.seoService = new SeoProjectionService(repository);
     this.blueprintProjection = new BlueprintProjection();
     this.stepProjection = new StepProjection();
+    this.studioProjection = new StudioProjection(repository);
   }
 
   public static getInstance(): KnowledgeGraphSingleton {

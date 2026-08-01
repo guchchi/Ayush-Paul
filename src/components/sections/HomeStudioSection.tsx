@@ -1,12 +1,28 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 import { useAnalytics } from "../../hooks/useAnalytics";
-import { COLLABORATION_AREAS } from "../../data/studio";
+import { getKnowledgeGraph } from "../../lib/knowledge-graph/instance";
 
 export const HomeStudioSection = () => {
   const { trackEvent } = useAnalytics();
   const workTogetherSectionRef = useRef<HTMLDivElement>(null);
+  const [collaborationAreas, setCollaborationAreas] = useState<Array<{ title: string; description: string }>>([]);
+
+  useEffect(() => {
+    const loadStudioProjections = async () => {
+      try {
+        const kg = getKnowledgeGraph();
+        const studioVM = await kg.studioProjection.getStudioViewModel('en');
+        const areas = studioVM.categories.flatMap(c => 
+          c.assets.map(a => ({ title: a.title, description: a.description }))
+        );
+        setCollaborationAreas(areas);
+      } catch (err) {
+        console.error("Failed to load studio projection:", err);
+      }
+    };
+    loadStudioProjections();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -117,7 +133,7 @@ export const HomeStudioSection = () => {
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[650px] mb-8">
-                {COLLABORATION_AREAS.map((card, index) => (
+                {collaborationAreas.map((card, index) => (
                   <div 
                     key={index} 
                     onClick={() => handleCardClick(card.title, index + 1)}
