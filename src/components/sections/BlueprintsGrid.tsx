@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { getKnowledgeGraph } from '../../lib/knowledge-graph/instance';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search, ChevronLeft, ChevronRight, RotateCw,
@@ -215,11 +215,15 @@ export const BlueprintsGrid = ({
       else matchCat = pCat === active;
     }
 
-    const q = searchQuery.toLowerCase();
-    const matchSearch =
-      (p.title ?? '').toLowerCase().includes(q) ||
-      (p.description ?? '').toLowerCase().includes(q) ||
-      (p.tags ?? []).some(t => t.toLowerCase().includes(q));
+    if (!searchQuery.trim()) return matchCat;
+
+    const kg = getKnowledgeGraph();
+    const searchHits = kg.searchEngine.search(searchQuery);
+    const hitIds = new Set(searchHits.map(h => h.node.nodeId));
+    const matchSearch = hitIds.has(p.id) ||
+      (p.title ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description ?? '').toLowerCase().includes(searchQuery.toLowerCase());
+
     return matchCat && matchSearch;
   });
 

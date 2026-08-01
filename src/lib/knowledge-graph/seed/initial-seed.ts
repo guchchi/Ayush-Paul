@@ -30,10 +30,28 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
     .build();
   nodes.push(studioEcosystem);
 
+  const masteryEcosystem = new NodeBuilder('eco_mastery', 'ECOSYSTEM')
+    .setTitle('Mastery')
+    .setSlug('mastery')
+    .setDescription('Comprehensive video courses, deep-dive lessons, and skill acquisition paths.')
+    .build();
+  nodes.push(masteryEcosystem);
+
+  const blogEcosystem = new NodeBuilder('eco_blog', 'ECOSYSTEM')
+    .setTitle('Blog')
+    .setSlug('blog')
+    .setDescription('Technical articles, engineering essays, and system breakdowns.')
+    .build();
+  nodes.push(blogEcosystem);
+
   edges.push(new EdgeBuilder('e_brand_blueprints', 'brand_paulx', 'eco_blueprints', 'HAS_CHILD').build());
   edges.push(new EdgeBuilder('e_blueprints_brand', 'eco_blueprints', 'brand_paulx', 'HAS_PARENT').build());
   edges.push(new EdgeBuilder('e_brand_studio', 'brand_paulx', 'eco_studio', 'HAS_CHILD').build());
   edges.push(new EdgeBuilder('e_studio_brand', 'eco_studio', 'brand_paulx', 'HAS_PARENT').build());
+  edges.push(new EdgeBuilder('e_brand_mastery', 'brand_paulx', 'eco_mastery', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_mastery_brand', 'eco_mastery', 'brand_paulx', 'HAS_PARENT').build());
+  edges.push(new EdgeBuilder('e_brand_blog', 'brand_paulx', 'eco_blog', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_blog_brand', 'eco_blog', 'brand_paulx', 'HAS_PARENT').build());
 
   // ==========================================
   // 2. PRODUCT NODE: Get Your First 3 Clients

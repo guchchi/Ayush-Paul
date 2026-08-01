@@ -31,11 +31,13 @@ import { BlueprintRelatedContent } from '../components/sections/BlueprintRelated
 import { BlueprintStickyMobileBar } from '../components/sections/BlueprintStickyMobileBar';
 import { BlueprintGetClientsPage } from './BlueprintGetClientsPage';
 
-const TARGET_ENGINE_SLUG = 'get-your-first-3-clients';
+import { getKnowledgeGraph } from '../lib/knowledge-graph/instance';
+import type { BlueprintPageViewModel } from '../lib/knowledge-graph/projections/projections';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [viewModel, setViewModel] = useState<BlueprintPageViewModel | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -67,12 +69,18 @@ export const BlueprintDetailPage = () => {
     const fetchProduct = async () => {
       if (!slug) return;
       try {
-        const { repository } = generateInitialGraph();
-        const node = await repository.getNodeBySlug(slug, 'en');
+        const kg = getKnowledgeGraph();
+        const node = await kg.repository.getNodeBySlug(slug, 'en');
         if (node && node.nodeType === 'PRODUCT') {
-          const bpProj = new BlueprintProjection();
-          const viewModel = await bpProj.project(node.nodeId, repository);
+          const vm = await kg.blueprintProjection.project(node.nodeId, kg.repository, kg.contentRepository);
+          setViewModel(vm);
           
+          // Generate graph SEO
+          const seoData = await kg.seoService.generateSeoMetadata(node.nodeId, 'en');
+          if (seoData) {
+            document.title = seoData.title;
+          }
+
           const mappedProduct: Product = {
             id: node.nodeId,
             title: node.title.en,
@@ -95,9 +103,6 @@ export const BlueprintDetailPage = () => {
             updatedAt: node.updatedAt,
             isFeatured: true,
             isPublished: true,
-            purchaseCount: 0,
-            downloadCount: 0,
-            viewCount: 0,
             rating: 5,
             author: {
               name: 'Ayush Paul',

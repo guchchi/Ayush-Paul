@@ -17,6 +17,9 @@ import { cn } from '../lib/utils';
 import type { BlueprintEngineData, BlueprintProgress } from '../types/blueprint-engine';
 import { auth, db, doc, getDoc, setDoc, onAuthStateChanged, serverTimestamp } from '../firebase';
 
+import { getKnowledgeGraph } from '../lib/knowledge-graph/instance';
+import type { StepPageViewModel } from '../lib/knowledge-graph/projections/projections';
+
 function calculateProgress(
   completedModules: string[],
   totalModules: number,
@@ -37,20 +40,32 @@ export function BlueprintEnginePage() {
   const [profile, setProfile] = useState<any>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [data, setData] = useState<BlueprintEngineData | undefined>(undefined);
+  const [stepViewModel, setStepViewModel] = useState<StepPageViewModel | null>(null);
   const [contentLoading, setContentLoading] = useState(true);
-  const [progress, setProgress] = useState<BlueprintProgress>({
-    completedModules: [],
-    completedChecklistItems: [],
-    lastVisitedModule: null,
-    overallProgress: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) {
       setContentLoading(false);
       return;
     }
+    const loadStepGraph = async () => {
+      try {
+        const kg = getKnowledgeGraph();
+        const node = await kg.repository.getNodeBySlug(slug, 'en');
+        if (node && node.nodeType === 'STEP') {
+          const vm = await kg.stepProjection.project(node.nodeId, kg.repository, kg.contentRepository);
+          setStepViewModel(vm);
+          
+          const seoData = await kg.seoService.generateSeoMetadata(node.nodeId, 'en');
+          if (seoData) {
+            document.title = seoData.title;
+          }
+        }
+      } catch (e) {
+        console.warn("StepProjection failed to load from graph:", e);
+      }
+    };
+    loadStepGraph();
     getBlueprint(slug).then((blueprint) => {
       setData(blueprint);
       setContentLoading(false);
