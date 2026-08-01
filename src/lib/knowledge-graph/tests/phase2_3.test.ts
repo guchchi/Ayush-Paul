@@ -1,36 +1,24 @@
 import { generateInitialGraph } from '../seed/initial-seed';
-import { InMemoryContentRepository } from '../content/loader';
 import { StepProjection, BlueprintProjection } from '../projections/projections';
 import { EntityInternalLinker } from '../rendering/linker';
 
 async function runPhase23TestSuite() {
   console.log('=== Starting Phase 2.3 Content Engine Test Suite ===\n');
 
-  // 1. Setup Seed Graph & Content Repository
-  const { repository, nodes } = generateInitialGraph();
-
-  const contentRepo = new InMemoryContentRepository({
-    cnt_step1_niche: `# Niche & ICP Definition\n\nTo build a high-ticket offer, you must master Client Acquisition and target an Ideal Customer Profile. Complete the ICP Generator tool to begin.`,
-    cnt_prod_first3: `# Get Your First 3 Clients\n\nThis blueprint teaches high-value freelancers how to close clients with zero guesswork.`
-  });
-
-  // Assign contentId to step1 & product nodes
-  const step1 = nodes.find(n => n.nodeId === 'step_niche_selection');
-  if (step1) step1.properties.contentId = 'cnt_step1_niche';
-
-  const product = nodes.find(n => n.nodeId === 'prod_first_3_clients');
-  if (product) product.properties.contentId = 'cnt_prod_first3';
+  // 1. Setup Seed Graph
+  const { repository } = generateInitialGraph();
 
   // 2. Test StepProjection
   console.log('--- Testing StepProjection ---');
   const stepProj = new StepProjection();
-  const stepVm = await stepProj.project('step_niche_selection', repository, contentRepo);
+  const stepVm = await stepProj.project('step_niche_selection', repository);
 
   if (!stepVm) {
     throw new Error('StepProjection returned null!');
   }
   console.log(`✅ StepProjection successfully assembled model for: "${stepVm.node.title.en}"`);
-  console.log(`   - Content Reading Time: ${stepVm.content?.readingTimeMinutes} min`);
+  console.log(`   - Content Node ID: ${stepVm.contentNode?.nodeId}`);
+  console.log(`   - Content Body Preview: "${stepVm.contentDoc?.markdown.slice(0, 45)}..."`);
   console.log(`   - Navigation Breadcrumbs: ${stepVm.navigation.breadcrumbs.map(b => b.title).join(' > ')}`);
   console.log(`   - Next Step: ${stepVm.navigation.next?.title}`);
   console.log(`   - Associated Assets: ${stepVm.navigation.relatedAssets.map(a => a.title).join(', ')}`);
@@ -38,12 +26,13 @@ async function runPhase23TestSuite() {
   // 3. Test BlueprintProjection
   console.log('\n--- Testing BlueprintProjection ---');
   const bpProj = new BlueprintProjection();
-  const bpVm = await bpProj.project('prod_first_3_clients', repository, contentRepo);
+  const bpVm = await bpProj.project('prod_first_3_clients', repository);
 
   if (!bpVm) {
     throw new Error('BlueprintProjection returned null!');
   }
   console.log(`✅ BlueprintProjection assembled model for: "${bpVm.productNode.title.en}"`);
+  console.log(`   - Content Node ID: ${bpVm.contentNode?.nodeId}`);
   console.log(`   - Modules Count: ${bpVm.modules.length}`);
   bpVm.modules.forEach(m => {
     console.log(`     Module: ${m.moduleNode.title.en} (${m.steps.length} steps)`);
@@ -68,7 +57,7 @@ async function runPhase23TestSuite() {
     throw new Error('EntityInternalLinker failed to inject internal link');
   }
 
-  console.log('\n🎉 ALL PHASE 2.3 CONTENT ENGINE TESTS PASSED CLEANLY!');
+  console.log('\n🎉 ALL PHASE 2.3 CONTENT ENGINE TESTS PASSED CLEANLY WITH FIRST-CLASS CONTENT NODES!');
 }
 
 runPhase23TestSuite().catch(err => {

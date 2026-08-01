@@ -18,6 +18,12 @@ export interface StepProperties {
   actionItem: string;
 }
 
+export interface ContentProperties {
+  bodyMarkdown: string;
+  format: 'MARKDOWN' | 'MDX' | 'RICH_TEXT';
+  readingTimeMinutes: number;
+}
+
 export interface ToolProperties {
   isInteractive: boolean;
   runtimeEngine: 'CLIENT_SIDE' | 'SERVER_SIDE' | 'LLM_PROMPT';
@@ -68,7 +74,7 @@ export const NODE_SPECIFICATIONS: Record<string, NodeSpecification> = {
   },
   PRODUCT: {
     nodeType: 'PRODUCT',
-    allowedOutgoingEdges: ['HAS_CHILD', 'HAS_PARENT', 'RECOMMENDS', 'REQUIRES'],
+    allowedOutgoingEdges: ['HAS_CHILD', 'HAS_PARENT', 'HAS_CONTENT', 'RECOMMENDS', 'REQUIRES'],
     allowedIncomingEdges: ['HAS_CHILD', 'SUPPORTS', 'SOLVES', 'UPSELLS', 'REQUIRES'],
     validateProperties: (props: ProductProperties) => {
       const errors: string[] = [];
@@ -79,17 +85,22 @@ export const NODE_SPECIFICATIONS: Record<string, NodeSpecification> = {
   },
   MODULE: {
     nodeType: 'MODULE',
-    allowedOutgoingEdges: ['HAS_CHILD', 'HAS_PARENT', 'NEXT_STEP', 'PREVIOUS_STEP', 'REQUIRES'],
+    allowedOutgoingEdges: ['HAS_CHILD', 'HAS_PARENT', 'HAS_CONTENT', 'NEXT_STEP', 'PREVIOUS_STEP', 'REQUIRES'],
     allowedIncomingEdges: ['HAS_CHILD', 'NEXT_STEP', 'PREVIOUS_STEP', 'REQUIRES']
   },
   STEP: {
     nodeType: 'STEP',
-    allowedOutgoingEdges: ['HAS_PARENT', 'NEXT_STEP', 'PREVIOUS_STEP', 'IMPLEMENTS', 'REQUIRES'],
+    allowedOutgoingEdges: ['HAS_PARENT', 'HAS_CONTENT', 'NEXT_STEP', 'PREVIOUS_STEP', 'IMPLEMENTS', 'REQUIRES'],
     allowedIncomingEdges: ['HAS_CHILD', 'NEXT_STEP', 'PREVIOUS_STEP', 'REQUIRES']
+  },
+  CONTENT: {
+    nodeType: 'CONTENT',
+    allowedOutgoingEdges: ['BELONGS_TO', 'HAS_PARENT'],
+    allowedIncomingEdges: ['HAS_CONTENT']
   },
   TOOL: {
     nodeType: 'TOOL',
-    allowedOutgoingEdges: ['BELONGS_TO', 'GENERATES', 'SOLVES', 'UPSELLS', 'RECOMMENDS'],
+    allowedOutgoingEdges: ['BELONGS_TO', 'HAS_CONTENT', 'GENERATES', 'SOLVES', 'UPSELLS', 'RECOMMENDS'],
     allowedIncomingEdges: ['IMPLEMENTS', 'EXPLAINS', 'RECOMMENDS', 'IS_ALTERNATIVE_TO']
   },
   ENTITY: {

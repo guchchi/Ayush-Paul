@@ -42,6 +42,19 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
     .build();
   nodes.push(product);
 
+  const productContent = new NodeBuilder('cnt_prod_first3', 'CONTENT')
+    .setTitle('Get Your First 3 Clients — Blueprint Overview')
+    .setSlug('cnt-get-your-first-3-clients')
+    .setProperties({
+      bodyMarkdown: '# Get Your First 3 Clients\n\nThis blueprint teaches high-value freelancers how to close clients with zero guesswork.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 2
+    })
+    .build();
+  nodes.push(productContent);
+
+  edges.push(new EdgeBuilder('e_prod_cnt', 'prod_first_3_clients', 'cnt_prod_first3', 'HAS_CONTENT').build());
+
   edges.push(new EdgeBuilder('e_eco_prod', 'eco_blueprints', 'prod_first_3_clients', 'HAS_CHILD').build());
   edges.push(new EdgeBuilder('e_prod_eco', 'prod_first_3_clients', 'eco_blueprints', 'HAS_PARENT').build());
 
@@ -64,6 +77,19 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
     .setProperties({ order: 1, estimatedMinutes: 45, actionItem: 'Complete the ICP Generator' })
     .build();
   nodes.push(step1);
+
+  const step1Content = new NodeBuilder('cnt_step1_niche', 'CONTENT')
+    .setTitle('Step 1 Body Content')
+    .setSlug('cnt-step-1-niche')
+    .setProperties({
+      bodyMarkdown: '# Niche & ICP Definition\n\nTo build a high-ticket offer, you must master Client Acquisition and target an Ideal Customer Profile. Complete the ICP Generator tool to begin.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 3
+    })
+    .build();
+  nodes.push(step1Content);
+
+  edges.push(new EdgeBuilder('e_step1_cnt', 'step_niche_selection', 'cnt_step1_niche', 'HAS_CONTENT').build());
 
   edges.push(new EdgeBuilder('e_mod1_step1', 'mod_offer_engineering', 'step_niche_selection', 'HAS_CHILD').build());
   edges.push(new EdgeBuilder('e_step1_mod1', 'step_niche_selection', 'mod_offer_engineering', 'HAS_PARENT').build());

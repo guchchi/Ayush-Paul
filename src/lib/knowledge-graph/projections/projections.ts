@@ -6,7 +6,8 @@ import { NavigationGenerator } from './navigation';
 
 export interface StepPageViewModel {
   node: BaseNode;
-  content: ContentDoc | null;
+  contentNode: BaseNode | null;
+  contentDoc: ContentDoc | null;
   navigation: NodeNavigationViewModel;
 }
 
@@ -15,9 +16,23 @@ export class StepProjection implements IProjection<StepPageViewModel> {
     const node = await repo.getNode(nodeId);
     if (!node || node.nodeType !== 'STEP') return null;
 
-    let content: ContentDoc | null = null;
-    if (contentRepo && node.properties.contentId) {
-      content = await contentRepo.getContent(node.properties.contentId);
+    // Fetch CONTENT node via HAS_CONTENT edge
+    const edges = await repo.getEdgesForNode(nodeId, 'OUTGOING');
+    const contentEdge = edges.find(e => e.relationType === 'HAS_CONTENT');
+    
+    let contentNode: BaseNode | null = null;
+    let contentDoc: ContentDoc | null = null;
+
+    if (contentEdge) {
+      contentNode = await repo.getNode(contentEdge.targetId);
+      if (contentNode && contentNode.properties.bodyMarkdown) {
+        contentDoc = {
+          contentId: contentNode.nodeId,
+          markdown: contentNode.properties.bodyMarkdown,
+          frontmatter: {},
+          readingTimeMinutes: contentNode.properties.readingTimeMinutes || 2
+        };
+      }
     }
 
     const navGen = new NavigationGenerator(repo, contentRepo);
@@ -25,7 +40,8 @@ export class StepProjection implements IProjection<StepPageViewModel> {
 
     return {
       node,
-      content,
+      contentNode,
+      contentDoc,
       navigation
     };
   }
@@ -33,11 +49,12 @@ export class StepProjection implements IProjection<StepPageViewModel> {
 
 export interface BlueprintPageViewModel {
   productNode: BaseNode;
+  contentNode: BaseNode | null;
+  contentDoc: ContentDoc | null;
   modules: {
     moduleNode: BaseNode;
     steps: BaseNode[];
   }[];
-  content: ContentDoc | null;
   navigation: NodeNavigationViewModel;
 }
 
@@ -46,9 +63,23 @@ export class BlueprintProjection implements IProjection<BlueprintPageViewModel> 
     const productNode = await repo.getNode(nodeId);
     if (!productNode || productNode.nodeType !== 'PRODUCT') return null;
 
-    let content: ContentDoc | null = null;
-    if (contentRepo && productNode.properties.contentId) {
-      content = await contentRepo.getContent(productNode.properties.contentId);
+    // Fetch CONTENT node via HAS_CONTENT edge
+    const edges = await repo.getEdgesForNode(nodeId, 'OUTGOING');
+    const contentEdge = edges.find(e => e.relationType === 'HAS_CONTENT');
+    
+    let contentNode: BaseNode | null = null;
+    let contentDoc: ContentDoc | null = null;
+
+    if (contentEdge) {
+      contentNode = await repo.getNode(contentEdge.targetId);
+      if (contentNode && contentNode.properties.bodyMarkdown) {
+        contentDoc = {
+          contentId: contentNode.nodeId,
+          markdown: contentNode.properties.bodyMarkdown,
+          frontmatter: {},
+          readingTimeMinutes: contentNode.properties.readingTimeMinutes || 2
+        };
+      }
     }
 
     const navGen = new NavigationGenerator(repo, contentRepo);
@@ -77,8 +108,9 @@ export class BlueprintProjection implements IProjection<BlueprintPageViewModel> 
 
     return {
       productNode,
+      contentNode,
+      contentDoc,
       modules,
-      content,
       navigation
     };
   }

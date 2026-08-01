@@ -7,6 +7,8 @@ export const NODE_TYPES = [
   'STEP',
   'COURSE',
   'LESSON',
+  // First-Class Content Node
+  'CONTENT',
   // Studio Execution Assets
   'TOOL',
   'TEMPLATE',
@@ -36,6 +38,7 @@ export type ThePaulXNodeType = (typeof NODE_TYPES)[number];
 export const RELATION_TYPES = [
   'HAS_PARENT',
   'HAS_CHILD',
+  'HAS_CONTENT',
   'BELONGS_TO',
   'NEXT_STEP',
   'PREVIOUS_STEP',
@@ -65,20 +68,26 @@ export interface EdgeConstraint {
 export const EDGE_CONSTRAINTS: Record<ThePaulXRelationType, EdgeConstraint> = {
   HAS_PARENT: {
     relationType: 'HAS_PARENT',
-    allowedSources: ['ECOSYSTEM', 'PRODUCT', 'MODULE', 'STEP', 'LESSON'],
-    allowedTargets: ['BRAND', 'ECOSYSTEM', 'PRODUCT', 'MODULE', 'COURSE'],
+    allowedSources: ['ECOSYSTEM', 'PRODUCT', 'MODULE', 'STEP', 'LESSON', 'CONTENT'],
+    allowedTargets: ['BRAND', 'ECOSYSTEM', 'PRODUCT', 'MODULE', 'COURSE', 'STEP'],
     semanticMeaning: 'Child node points up to parent node in hierarchy'
   },
   HAS_CHILD: {
     relationType: 'HAS_CHILD',
-    allowedSources: ['BRAND', 'ECOSYSTEM', 'PRODUCT', 'MODULE', 'COURSE'],
-    allowedTargets: ['ECOSYSTEM', 'PRODUCT', 'MODULE', 'STEP', 'LESSON'],
+    allowedSources: ['BRAND', 'ECOSYSTEM', 'PRODUCT', 'MODULE', 'COURSE', 'STEP'],
+    allowedTargets: ['ECOSYSTEM', 'PRODUCT', 'MODULE', 'STEP', 'LESSON', 'CONTENT'],
     semanticMeaning: 'Parent node points down to child node'
+  },
+  HAS_CONTENT: {
+    relationType: 'HAS_CONTENT',
+    allowedSources: ['STEP', 'PRODUCT', 'MODULE', 'BLOG', 'LESSON', 'FAQ', 'TOOL', 'TEMPLATE'],
+    allowedTargets: ['CONTENT'],
+    semanticMeaning: 'Node links to its first-class Content node'
   },
   BELONGS_TO: {
     relationType: 'BELONGS_TO',
-    allowedSources: ['TOOL', 'TEMPLATE', 'WORKSHEET', 'PROMPT', 'WORKFLOW', 'AUTOMATION', 'AI_AGENT', 'BLOG', 'FAQ', 'CASE_STUDY', 'RESOURCE'],
-    allowedTargets: ['ECOSYSTEM', 'PRODUCT', 'BRAND'],
+    allowedSources: ['TOOL', 'TEMPLATE', 'WORKSHEET', 'PROMPT', 'WORKFLOW', 'AUTOMATION', 'AI_AGENT', 'BLOG', 'FAQ', 'CASE_STUDY', 'RESOURCE', 'CONTENT'],
+    allowedTargets: ['ECOSYSTEM', 'PRODUCT', 'BRAND', 'STEP'],
     semanticMeaning: 'Asset ownership relationship'
   },
   NEXT_STEP: {
