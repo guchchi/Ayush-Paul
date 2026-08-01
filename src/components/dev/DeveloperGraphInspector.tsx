@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { generateInitialGraph } from '../../lib/knowledge-graph/seed/initial-seed';
+import { getKnowledgeGraph } from '../../lib/knowledge-graph/instance';
 import { GraphValidator, ValidationError } from '../../lib/knowledge-graph/services/validator';
 import { GraphQueryApi } from '../../lib/knowledge-graph/services/query';
 import { BaseNode, BaseEdge } from '../../lib/knowledge-graph/core/types';
@@ -22,13 +22,13 @@ export const DeveloperGraphInspector: React.FC = () => {
   const [playgroundInputId, setPlaygroundInputId] = useState<string>('prod_first_3_clients');
   const [playgroundResult, setPlaygroundResult] = useState<any>(null);
 
-  const { repository } = generateInitialGraph();
-  const queryApi = new GraphQueryApi(repository);
-  const validator = new GraphValidator(repository);
+  const kg = getKnowledgeGraph();
+  const queryApi = new GraphQueryApi(kg.repository);
+  const validator = new GraphValidator(kg.repository);
 
   useEffect(() => {
-    repository.getAllNodes().then(setNodes);
-    repository.getAllEdges().then(setEdges);
+    kg.repository.getAllNodes().then(setNodes);
+    kg.repository.getAllEdges().then(setEdges);
   }, []);
 
   const handleRunValidation = async () => {

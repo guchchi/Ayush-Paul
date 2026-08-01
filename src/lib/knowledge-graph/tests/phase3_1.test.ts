@@ -30,11 +30,11 @@ async function runPhase31IntegrationTestSuite() {
   }
   console.log(`✅ BlueprintProjection: Direct view model resolved 6 modules for "${bpVm.productNode.title.en}".`);
 
-  const stepVm = await kg1.stepProjection.project('step_niche', kg1.repository, kg1.contentRepository);
+  const stepVm = await kg1.stepProjection.project('step_niche_selection', kg1.repository, kg1.contentRepository);
   if (!stepVm || !stepVm.contentDoc) {
-    throw new Error('StepProjection failed to yield content document for step_niche.');
+    throw new Error('StepProjection failed to yield content document for step_niche_selection.');
   }
-  console.log(`✅ StepProjection: Resolved content doc "${stepVm.contentDoc.title}" for Step 1.`);
+  console.log(`✅ StepProjection: Resolved content doc body (${stepVm.contentDoc.readingTimeMinutes} min read) for Step 1.`);
 
   // 4. Production SEO Service Output
   const seoData = await kg1.seoService.generateSeoMetadata('prod_first_3_clients', 'en');
@@ -44,7 +44,7 @@ async function runPhase31IntegrationTestSuite() {
   console.log(`✅ SeoProjectionService: Generated canonical "${seoData.canonicalUrl}".`);
 
   // 5. Unified Search Engine Output
-  const searchResults = kg1.searchEngine.search('Client Acquisition');
+  const searchResults = await kg1.searchEngine.search('Client Acquisition');
   if (searchResults.length === 0) {
     throw new Error('UnifiedSearchEngine returned zero hits for query "Client Acquisition".');
   }

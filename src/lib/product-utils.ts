@@ -1,5 +1,5 @@
 import { Product } from "../types";
-import { generateInitialGraph } from "./knowledge-graph/seed/initial-seed";
+import { getKnowledgeGraph } from "./knowledge-graph/instance";
 import { BlueprintProjection } from "./knowledge-graph/projections/projections";
 
 let graphCache: Product[] | null = null;
@@ -7,8 +7,8 @@ let graphCache: Product[] | null = null;
 export const getPublishedProducts = async (): Promise<Product[]> => {
   if (graphCache) return graphCache;
 
-  const { repository } = generateInitialGraph();
-  const allNodes = await repository.getAllNodes();
+  const kg = getKnowledgeGraph();
+  const allNodes = await kg.repository.getAllNodes();
   const productNodes = allNodes.filter(n => n.nodeType === 'PRODUCT');
 
   graphCache = productNodes.map(node => ({

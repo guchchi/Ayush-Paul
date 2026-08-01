@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getKnowledgeGraph } from '../lib/knowledge-graph/instance';
+import type { BlueprintPageViewModel } from '../lib/knowledge-graph/projections/projections';
 import { motion } from 'motion/react';
 import { Lock } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
@@ -29,10 +31,8 @@ import { BlueprintPurchaseSidebar } from '../components/sections/BlueprintPurcha
 import { BlueprintSidebarFAQ } from '../components/sections/BlueprintSidebarFAQ';
 import { BlueprintRelatedContent } from '../components/sections/BlueprintRelatedContent';
 import { BlueprintStickyMobileBar } from '../components/sections/BlueprintStickyMobileBar';
-import { BlueprintGetClientsPage } from './BlueprintGetClientsPage';
 
-import { getKnowledgeGraph } from '../lib/knowledge-graph/instance';
-import type { BlueprintPageViewModel } from '../lib/knowledge-graph/projections/projections';
+const TARGET_ENGINE_SLUG = 'get-your-first-3-clients';
 
 export const BlueprintDetailPage = () => {
   const { slug } = useParams();
@@ -103,6 +103,9 @@ export const BlueprintDetailPage = () => {
             updatedAt: node.updatedAt,
             isFeatured: true,
             isPublished: true,
+            purchaseCount: 0,
+            downloadCount: 0,
+            viewCount: 0,
             rating: 5,
             author: {
               name: 'Ayush Paul',
@@ -311,20 +314,6 @@ export const BlueprintDetailPage = () => {
           </div>
         </div>
       </motion.div>
-    );
-  }
-
-  if (slug === TARGET_ENGINE_SLUG) {
-    return (
-      <BlueprintGetClientsPage 
-        product={product}
-        isOwned={isOwned}
-        hasDiscount={hasDiscount}
-        isDownloading={isDownloading}
-        isCheckingOut={isCheckingOut}
-        onFreeDownload={handleFreeDownload}
-        onPremiumUpgrade={handlePremiumUpgrade}
-      />
     );
   }
 

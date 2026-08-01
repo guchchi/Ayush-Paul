@@ -42,6 +42,13 @@ export function BlueprintEnginePage() {
   const [data, setData] = useState<BlueprintEngineData | undefined>(undefined);
   const [stepViewModel, setStepViewModel] = useState<StepPageViewModel | null>(null);
   const [contentLoading, setContentLoading] = useState(true);
+  const [progress, setProgress] = useState<BlueprintProgress>({
+    completedModules: [],
+    completedChecklistItems: [],
+    lastVisitedModule: null,
+    overallProgress: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) {
