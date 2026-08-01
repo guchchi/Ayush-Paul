@@ -3,6 +3,7 @@ import {createRoot, hydrateRoot} from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
+import { SEOProvider } from './contexts/SEOContext';
 
 const rootElement = document.getElementById('root')!;
 
@@ -14,7 +15,9 @@ if (hasPrerenderedHTML) {
     rootElement,
     <StrictMode>
       <BrowserRouter>
-        <App />
+        <SEOProvider>
+          <App />
+        </SEOProvider>
       </BrowserRouter>
     </StrictMode>
   );
@@ -22,7 +25,9 @@ if (hasPrerenderedHTML) {
   createRoot(rootElement).render(
     <StrictMode>
       <BrowserRouter>
-        <App />
+        <SEOProvider>
+          <App />
+        </SEOProvider>
       </BrowserRouter>
     </StrictMode>
   );

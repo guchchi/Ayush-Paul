@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { defaultSEO } from '../config/seo';
 import { getCanonicalUrl } from '../lib/domain';
+import { SEOContext } from '../contexts/SEOContext';
 
 interface SEOProps {
   title?: string;
@@ -21,6 +22,13 @@ export const useSEO = ({
   noindex = false,
   schema = null,
 }: SEOProps = {}) => {
+  const context = useContext(SEOContext);
+  
+  if (context && !context.isClient) {
+    // Record SEO data during SSR execution (renderToString is synchronous)
+    context.seoData = { title, description, keywords, image, url, noindex, schema };
+  }
+
   useEffect(() => {
     // 1. Title
     document.title = title;

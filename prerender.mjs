@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import fsAsync from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -16,7 +16,7 @@ async function prerender() {
   }
 
   // Dynamically import the server entry point (built by vite build --ssr)
-  let render, getDynamicRoutes;
+  let render, getRoutesConfig;
   const serverEntryPath = path.resolve(__dirname, 'dist/server/entry-server.js');
   if (!fs.existsSync(serverEntryPath)) {
     console.error(`Server entry not found at ${serverEntryPath}. Run 'vite build --ssr src/entry-server.tsx' first.`);
@@ -24,43 +24,70 @@ async function prerender() {
   }
 
   try {
-    const entryServerModule = await import('./dist/server/entry-server.js');
-    render = entryServerModule.render;
-    getDynamicRoutes = entryServerModule.getDynamicRoutes;
+    const entryModule = await import(pathToFileURL(serverEntryPath).href);
+    render = entryModule.render;
+    getRoutesConfig = entryModule.getRoutesConfig;
   } catch (e) {
     console.error('Failed to load server entry:', e);
     process.exit(1);
   }
 
-  // Define static routes
-  const staticRoutes = [
-    '/',
-    '/blueprints',
-    '/collaborate',
-    '/building',
-    '/mastery',
-    '/blog',
-    '/vault'
-  ];
-
-  // Fetch dynamic routes
-  let dynamicRoutes = [];
-  if (getDynamicRoutes) {
-    console.log("Fetching dynamic routes from Firebase...");
-    dynamicRoutes = await getDynamicRoutes();
+  // Fetch routes configuration
+  let routes = [];
+  if (getRoutesConfig) {
+    console.log("Fetching route configuration and SEO metadata...");
+    routes = await getRoutesConfig();
+  } else {
+    console.error("No getRoutesConfig exported from entry-server!");
+    process.exit(1);
   }
-
-  const routes = [...staticRoutes, ...dynamicRoutes];
 
   console.log(`Prerendering ${routes.length} routes...`);
   
   const sitemapUrls = [];
   const currentDate = new Date().toISOString().split('T')[0];
 
-  for (const url of routes) {
+  for (const route of routes) {
+    const url = route.url;
+    const seoData = route.seoData;
+
     try {
-      const appHtml = render(url);
-      const html = template.replace(`<!--app-html-->`, appHtml);
+      // Just render HTML (React components fallback gracefully if Suspense fails on server)
+      const { html: appHtml } = render(url);
+      
+      console.log(`Prerendering URL: ${url}`);
+      
+      let html = template.replace(`<!--app-html-->`, appHtml);
+
+      if (seoData) {
+        if (seoData.title) {
+          html = html.replace(/<title>.*?<\/title>/, `<title>${seoData.title}</title>`);
+          html = html.replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${seoData.title}"`);
+          html = html.replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${seoData.title}"`);
+        }
+        if (seoData.description) {
+          html = html.replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${seoData.description}"`);
+          html = html.replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${seoData.description}"`);
+          html = html.replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${seoData.description}"`);
+        }
+        if (seoData.keywords) {
+          html = html.replace(/<meta name="keywords" content="[^"]*"/, `<meta name="keywords" content="${seoData.keywords}"`);
+        }
+        if (seoData.image) {
+          html = html.replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${seoData.image}"`);
+          html = html.replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${seoData.image}"`);
+        }
+        if (seoData.url) {
+          html = html.replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${seoData.url}"`);
+          html = html.replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${seoData.url}"`);
+        }
+        if (seoData.noindex) {
+          html = html.replace('</head>', `  <meta name="robots" content="noindex, nofollow" />\n  </head>`);
+        }
+        if (seoData.schema) {
+          html = html.replace('</head>', `  <script type="application/ld+json">\n${JSON.stringify(seoData.schema)}\n  </script>\n  </head>`);
+        }
+      }
 
       const filePath = path.resolve(__dirname, `dist${url === '/' ? '/index' : url}.html`);
       await fsAsync.mkdir(path.dirname(filePath), { recursive: true });
