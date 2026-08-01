@@ -43,14 +43,24 @@ export const BlueprintsPage = () => {
         discountPercentage: 0,
         inventoryCount: null,
         downloadFileURL: null,
-        tier: 'free',
+        previewImages: [],
         features: [],
-        published: true,
-        featured: true,
-        rating: 5,
-        reviewCount: 1,
+        comparisonFree: [],
+        comparisonPremium: [],
+        tags: ['blueprint'],
         createdAt: node.createdAt,
-        updatedAt: node.updatedAt
+        updatedAt: node.updatedAt,
+        isFeatured: true,
+        isPublished: true,
+        purchaseCount: 0,
+        downloadCount: 0,
+        viewCount: 0,
+        rating: 5,
+        author: {
+          name: 'Ayush Paul',
+          role: 'Founder',
+          avatar: '/images/author-avatar.jpg'
+        }
       }));
 
       setProducts(mappedProducts);
