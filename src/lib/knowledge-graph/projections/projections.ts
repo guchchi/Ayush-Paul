@@ -3,6 +3,7 @@ import { BaseNode } from '../core/types';
 import { IGraphRepository } from '../repositories/interface';
 import { IContentRepository, ContentDoc } from '../content/loader';
 import { NavigationGenerator } from './navigation';
+import { GraphCache } from '../services/cache';
 
 export interface StepPageViewModel {
   node: BaseNode;
@@ -13,6 +14,10 @@ export interface StepPageViewModel {
 
 export class StepProjection implements IProjection<StepPageViewModel> {
   async project(nodeId: string, repo: IGraphRepository, contentRepo?: IContentRepository): Promise<StepPageViewModel | null> {
+    const cacheKey = `proj_step_${nodeId}`;
+    const cached = GraphCache.getInstance().getProjection<StepPageViewModel>(cacheKey);
+    if (cached) return cached;
+
     const node = await repo.getNode(nodeId);
     if (!node || node.nodeType !== 'STEP') return null;
 
@@ -38,12 +43,15 @@ export class StepProjection implements IProjection<StepPageViewModel> {
     const navGen = new NavigationGenerator(repo, contentRepo);
     const navigation = await navGen.generateNavigation(nodeId);
 
-    return {
+    const result: StepPageViewModel = {
       node,
       contentNode,
       contentDoc,
       navigation
     };
+
+    GraphCache.getInstance().setProjection(cacheKey, result);
+    return result;
   }
 }
 
@@ -60,6 +68,10 @@ export interface BlueprintPageViewModel {
 
 export class BlueprintProjection implements IProjection<BlueprintPageViewModel> {
   async project(nodeId: string, repo: IGraphRepository, contentRepo?: IContentRepository): Promise<BlueprintPageViewModel | null> {
+    const cacheKey = `proj_bp_${nodeId}`;
+    const cached = GraphCache.getInstance().getProjection<BlueprintPageViewModel>(cacheKey);
+    if (cached) return cached;
+
     const productNode = await repo.getNode(nodeId);
     if (!productNode || productNode.nodeType !== 'PRODUCT') return null;
 
@@ -106,12 +118,15 @@ export class BlueprintProjection implements IProjection<BlueprintPageViewModel> 
     }
     modules.sort((a, b) => (a.moduleNode.properties.order || 0) - (b.moduleNode.properties.order || 0));
 
-    return {
+    const result: BlueprintPageViewModel = {
       productNode,
       contentNode,
       contentDoc,
       modules,
       navigation
     };
+
+    GraphCache.getInstance().setProjection(cacheKey, result);
+    return result;
   }
 }

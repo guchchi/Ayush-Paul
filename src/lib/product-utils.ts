@@ -1,225 +1,53 @@
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
-import { db } from "../firebase";
-import { Product, DownloadAnalytics, AssetCategory, ResourceItem, ChangelogEntry } from "../types";
-import { handleFirestoreError } from "./firebase-utils";
-import { OperationType } from "../types";
-import { LOCAL_SEED_PRODUCTS } from "../data/blueprint-local-seed";
+import { Product } from "../types";
+import { generateInitialGraph } from "./knowledge-graph/seed/initial-seed";
+import { BlueprintProjection } from "./knowledge-graph/projections/projections";
 
-const CACHE_KEY = "products_cache";
-const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes
+let graphCache: Product[] | null = null;
 
-interface CacheData {
-  timestamp: number;
-  products: Product[];
-}
-
-let memoryCache: Product[] | null = null;
-let memoryCacheTimestamp: number = 0;
-
-// Fallback dynamic parser for legacy products to ensure zero-breakage backward compatibility
-export const enrichDigitalSystem = (system: any): Product => {
-  if (!system) return system;
-
-  const enriched = { ...system } as Product;
-
-  // Provide default assets/resources if none are defined
-  if (!enriched.resources || enriched.resources.length === 0) {
-    enriched.resources = [
-      {
-        id: `${enriched.id}_ebook_guide`,
-        title: "Copy-Paste Ready Ebook Guide",
-        description: "The core ebook containing step-by-step documentation, theory, and templates.",
-        category: AssetCategory.PDF,
-        isPremium: false,
-        fileSize: "4.5 MB"
-      },
-      {
-        id: `${enriched.id}_code_templates`,
-        title: "Deployment Assets & Codes",
-        description: "Production ready codes, scripts, CADs, or configs to run immediately.",
-        category: AssetCategory.CODE,
-        isPremium: true,
-        fileSize: "1.8 MB"
-      }
-    ];
-  }
-
-  // Compute discount percentage from basePrice and salePrice
-  const bp = Number(enriched.basePrice) || 0;
-  const sp = Number(enriched.salePrice) || 0;
-  if (bp > 0 && sp > 0 && sp < bp) {
-    enriched.discountPercentage = Math.round((1 - sp / bp) * 100);
-  } else {
-    enriched.discountPercentage = 0;
-  }
-
-  // 2. Changelog fallback
-  if (!enriched.changelog || enriched.changelog.length === 0) {
-    const generatedChangelog: ChangelogEntry[] = [
-      {
-        version: "v1.0.0",
-        date: "2026-04-15",
-        title: "Initial Mainframe Core Deployment",
-        description: "Official publication of system schematics, baseline components, and core blueprints.",
-        changes: {
-          added: [
-            "Baseline blueprints and configuration files",
-            "Technical checklists and wiring guides",
-            "Quickstart operational setup instructions"
-          ]
-        }
-      },
-      {
-        version: "v1.1.0",
-        date: "2026-05-10",
-        title: "Workflow Refinements & Core Optimization",
-        description: "Performance tuning, data compression updates, and documentation repairs.",
-        changes: {
-          improved: [
-            "Reduced latency overhead in webhook handlers",
-            "Updated and optimized code templates"
-          ],
-          fixed: [
-            "Resolved sitemap crawl issues",
-            "Fixed webhook connection handshake timeouts"
-          ]
-        }
-      }
-    ];
-    enriched.changelog = generatedChangelog;
-  }
-
-  return enriched;
-};
-
-// Fetch all visible products (published + coming-soon) with Multi-Tier Cache
 export const getPublishedProducts = async (): Promise<Product[]> => {
-  const now = Date.now();
+  if (graphCache) return graphCache;
 
-  // 1. Check Memory Cache
-  if (memoryCache && (now - memoryCacheTimestamp < CACHE_TTL_MS)) {
-    console.log("[Cache] Product List: Memory Hit");
-    return memoryCache.map(enrichDigitalSystem);
-  }
+  const { repository } = generateInitialGraph();
+  const allNodes = await repository.getAllNodes();
+  const productNodes = allNodes.filter(n => n.nodeType === 'PRODUCT');
 
-  // 2. Check LocalStorage Cache
-  try {
-    const localCacheStr = localStorage.getItem(CACHE_KEY);
-    if (localCacheStr) {
-      const localCache: CacheData = JSON.parse(localCacheStr);
-      if (now - localCache.timestamp < CACHE_TTL_MS) {
-        console.log("[Cache] Product List: LocalStorage Hit");
-        memoryCache = localCache.products;
-        memoryCacheTimestamp = localCache.timestamp;
-        return localCache.products.map(enrichDigitalSystem);
-      }
+  graphCache = productNodes.map(node => ({
+    id: node.nodeId,
+    title: node.title.en,
+    slug: node.slug.en,
+    description: node.description?.en || '',
+    thumbnail: node.properties.thumbnailUrl || '/images/blueprint-placeholder.jpg',
+    category: 'Blueprint',
+    type: 'free' as const,
+    basePrice: node.properties.priceInCents || 0,
+    salePrice: 0,
+    discountPercentage: 0,
+    inventoryCount: null,
+    downloadFileURL: null,
+    previewImages: [],
+    features: [],
+    comparisonFree: [],
+    comparisonPremium: [],
+    tags: ['blueprint'],
+    createdAt: node.createdAt,
+    updatedAt: node.updatedAt,
+    isFeatured: true,
+    isPublished: true,
+    purchaseCount: 0,
+    downloadCount: 0,
+    viewCount: 0,
+    rating: 5,
+    author: {
+      name: 'Ayush Paul',
+      role: 'Founder',
+      avatar: '/images/author-avatar.jpg'
     }
-  } catch (e) {
-    console.warn("Failed to read from localStorage cache:", e);
-  }
+  }));
 
-  // 3. Fallback to Firestore (Network)
-  console.log("[Cache] Product List: Network Fetch (Firestore)");
-  try {
-    // Fetch published products
-    const pubQ = query(
-      collection(db, "products"),
-      where("isPublished", "==", true),
-      orderBy("createdAt", "desc")
-    );
-    const pubSnap = await getDocs(pubQ);
-    const published = pubSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
-
-    // Also fetch COMING_SOON products
-    let comingSoon: Product[] = [];
-    try {
-      const csQ = query(
-        collection(db, "products"),
-        where("status", "==", "COMING_SOON")
-      );
-      const csSnap = await getDocs(csQ);
-      comingSoon = csSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
-    } catch (e) {
-      // COMING_SOON query may fail if index doesn't exist yet; that's fine
-      console.warn("COMING_SOON query failed (index may not exist yet):", e);
-    }
-
-    // Merge: published first, then coming-soon (deduplicate by ID)
-    const seen = new Set(published.map(p => p.id));
-    const products = [...published];
-    for (const p of comingSoon) {
-      if (!seen.has(p.id)) {
-        products.push(p);
-        seen.add(p.id);
-      }
-    }
-
-    // Merge local seed products (so they appear without requiring a Firestore write)
-    for (const local of LOCAL_SEED_PRODUCTS) {
-      if (!seen.has(local.id)) {
-        products.push(local);
-        seen.add(local.id);
-      }
-    }
-
-    // Update caches
-    memoryCache = products;
-    memoryCacheTimestamp = now;
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: now, products }));
-    } catch (e) {
-      console.warn("Failed to write to localStorage cache:", e);
-    }
-
-    return products.map(enrichDigitalSystem);
-  } catch (error) {
-    handleFirestoreError(error, OperationType.GET, "products");
-    return (memoryCache || []).map(enrichDigitalSystem); // Return stale memory cache if network fails
-  }
+  return graphCache;
 };
 
-// Fetch a single product by slug (leverages the same cache)
 export const getProductBySlug = async (slug: string): Promise<Product | null> => {
-  // Try to find it in the cached list first to save a document read
-  const allProducts = await getPublishedProducts();
-  const cachedProduct = allProducts.find(p => p.slug === slug);
-  if (cachedProduct) {
-    console.log(`[Cache] Product '${slug}': Hit`);
-    return enrichDigitalSystem(cachedProduct);
-  }
-
-  // If not found in cache, try fetching directly
-  console.log(`[Cache] Product '${slug}': Network Fetch (Firestore)`);
-  try {
-    // First try with isPublished filter
-    const q = query(
-      collection(db, "products"),
-      where("slug", "==", slug),
-      where("isPublished", "==", true),
-      limit(1)
-    );
-    let snapshot = await getDocs(q);
-    if (!snapshot.empty) {
-      const product = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
-      return enrichDigitalSystem(product);
-    }
-
-    // Fallback: try finding a COMING_SOON product
-    const csQ = query(
-      collection(db, "products"),
-      where("slug", "==", slug),
-      where("status", "==", "COMING_SOON"),
-      limit(1)
-    );
-    snapshot = await getDocs(csQ);
-    if (!snapshot.empty) {
-      const product = { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as Product;
-      return enrichDigitalSystem(product);
-    }
-
-    return null;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.GET, `products/${slug}`);
-    return null;
-  }
+  const products = await getPublishedProducts();
+  return products.find(p => p.slug === slug) || null;
 };

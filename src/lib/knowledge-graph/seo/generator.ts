@@ -1,6 +1,7 @@
 import { BaseNode } from '../core/types';
 import { IGraphRepository } from '../repositories/interface';
 import { GraphQueryApi } from '../services/query';
+import { GraphCache } from '../services/cache';
 
 export interface SeoMetadataViewModel {
   title: string;
@@ -17,12 +18,18 @@ export interface SeoMetadataViewModel {
 
 export class SeoProjectionService {
   private query: GraphQueryApi;
+  private cache: GraphCache;
 
   constructor(private repo: IGraphRepository, private baseUrl: string = 'https://thepaulx.com') {
     this.query = new GraphQueryApi(repo);
+    this.cache = GraphCache.getInstance();
   }
 
   async generateSeoMetadata(nodeId: string, lang: 'en' | 'es' | 'hi' = 'en'): Promise<SeoMetadataViewModel | null> {
+    const cacheKey = `seo_${nodeId}_${lang}`;
+    const cached = this.cache.getSeo<SeoMetadataViewModel>(cacheKey);
+    if (cached) return cached;
+
     const node = await this.repo.getNode(nodeId);
     if (!node) return null;
 
@@ -76,7 +83,7 @@ export class SeoProjectionService {
       });
     }
 
-    return {
+    const result: SeoMetadataViewModel = {
       title,
       description,
       canonicalUrl,
@@ -88,5 +95,8 @@ export class SeoProjectionService {
       },
       jsonLd
     };
+
+    this.cache.setSeo(cacheKey, result);
+    return result;
   }
 }
