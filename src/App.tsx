@@ -36,6 +36,8 @@ const PortfolioSystemPage = lazy(() => import("./pages/PortfolioSystem").then(m 
 const ClientPipelineSystemPage = lazy(() => import("./pages/ClientPipelineSystem").then(m => ({ default: m.ClientPipelineSystemPage })));
 const OutreachEnginePage = lazy(() => import("./pages/OutreachEngine").then(m => ({ default: m.OutreachEnginePage })));
 const DeliverySystemPage = lazy(() => import("./pages/DeliverySystem").then(m => ({ default: m.DeliverySystemPage })));
+const DeveloperGraphInspector = lazy(() => import("./components/dev/DeveloperGraphInspector").then(m => ({ default: m.DeveloperGraphInspector })));
+
 
 
 // --- Loading Fallback ---
@@ -178,6 +180,7 @@ export default function App() {
               <Route path="/workspace/client-pipeline" element={<ClientPipelineSystemPage />} />
 <Route path="/workspace/outreach-engine" element={<OutreachEnginePage />} />
 <Route path="/workspace/client-delivery" element={<DeliverySystemPage />} />
+<Route path="/dev/inspector" element={<DeveloperGraphInspector />} />
 <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
