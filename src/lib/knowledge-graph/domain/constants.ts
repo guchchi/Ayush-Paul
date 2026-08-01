@@ -42,6 +42,7 @@ export const RELATION_TYPES = [
   'BELONGS_TO',
   'NEXT_STEP',
   'PREVIOUS_STEP',
+  'NEXT_LESSON',
   'REQUIRES',
   'IMPLEMENTS',
   'GENERATES',
@@ -86,7 +87,7 @@ export const EDGE_CONSTRAINTS: Record<ThePaulXRelationType, EdgeConstraint> = {
   },
   BELONGS_TO: {
     relationType: 'BELONGS_TO',
-    allowedSources: ['TOOL', 'TEMPLATE', 'WORKSHEET', 'PROMPT', 'WORKFLOW', 'AUTOMATION', 'AI_AGENT', 'BLOG', 'FAQ', 'CASE_STUDY', 'RESOURCE', 'CONTENT'],
+    allowedSources: ['TOOL', 'TEMPLATE', 'WORKSHEET', 'PROMPT', 'WORKFLOW', 'AUTOMATION', 'AI_AGENT', 'BLOG', 'FAQ', 'CASE_STUDY', 'RESOURCE', 'CONTENT', 'COURSE'],
     allowedTargets: ['ECOSYSTEM', 'PRODUCT', 'BRAND', 'STEP'],
     semanticMeaning: 'Asset ownership relationship'
   },
@@ -102,10 +103,16 @@ export const EDGE_CONSTRAINTS: Record<ThePaulXRelationType, EdgeConstraint> = {
     allowedTargets: ['STEP', 'MODULE', 'LESSON'],
     semanticMeaning: 'Linear sequence predecessor'
   },
+  NEXT_LESSON: {
+    relationType: 'NEXT_LESSON',
+    allowedSources: ['LESSON'],
+    allowedTargets: ['LESSON'],
+    semanticMeaning: 'Linear lesson successor in a course'
+  },
   REQUIRES: {
     relationType: 'REQUIRES',
-    allowedSources: ['STEP', 'MODULE', 'PRODUCT', 'COURSE'],
-    allowedTargets: ['STEP', 'MODULE', 'PRODUCT', 'COURSE'],
+    allowedSources: ['STEP', 'MODULE', 'PRODUCT', 'COURSE', 'LESSON'],
+    allowedTargets: ['STEP', 'MODULE', 'PRODUCT', 'COURSE', 'LESSON'],
     semanticMeaning: 'Hard prerequisite block'
   },
   IMPLEMENTS: {

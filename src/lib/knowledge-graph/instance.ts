@@ -6,6 +6,7 @@ import { UnifiedSearchEngine } from './services/search';
 import { SeoProjectionService } from './seo/generator';
 import { BlueprintProjection, StepProjection } from './projections/projections';
 import { StudioProjection } from './projections/studio';
+import { MasteryProjection } from './projections/mastery';
 import { InMemoryContentRepository } from './content/loader';
 
 class KnowledgeGraphSingleton {
@@ -18,6 +19,7 @@ class KnowledgeGraphSingleton {
   public blueprintProjection: BlueprintProjection;
   public stepProjection: StepProjection;
   public studioProjection: StudioProjection;
+  public masteryProjection: MasteryProjection;
   public nodes: BaseNode[];
   public edges: BaseEdge[];
 
@@ -33,6 +35,7 @@ class KnowledgeGraphSingleton {
     this.blueprintProjection = new BlueprintProjection();
     this.stepProjection = new StepProjection();
     this.studioProjection = new StudioProjection(repository);
+    this.masteryProjection = new MasteryProjection(repository);
   }
 
   public static getInstance(): KnowledgeGraphSingleton {

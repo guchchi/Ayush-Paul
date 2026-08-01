@@ -422,6 +422,72 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
   edges.push(new EdgeBuilder('e_kw_targets_ent', 'kw_get_freelance_clients', 'ent_client_acquisition', 'TARGETS').build());
   edges.push(new EdgeBuilder('e_prod_solves_ent', 'prod_first_3_clients', 'ent_client_acquisition', 'SOLVES').build());
 
+  // ==========================================
+  // 11. MASTERY COURSES & LESSONS
+  // ==========================================
+  const courseAi = new NodeBuilder('course_fullstack_ai', 'COURSE')
+    .setTitle('Fullstack AI Agent Engineering')
+    .setSlug('fullstack-ai-agent-engineering')
+    .setDescription('Master autonomous AI agent orchestration, tool use, and production LLM pipelines.')
+    .setProperties({
+      difficulty: 'Advanced',
+      durationHours: 12,
+      instructor: 'Ayush Paul',
+      category: 'Artificial Intelligence',
+      tags: ['AI Agents', 'LLMs', 'Orchestration', 'TypeScript'],
+      thumbnailUrl: '/images/mastery-ai-agents.jpg'
+    })
+    .build();
+  nodes.push(courseAi);
+
+  edges.push(new EdgeBuilder('e_course_ai_belongs', 'course_fullstack_ai', 'eco_mastery', 'BELONGS_TO').build());
+
+  const lessonAi1 = new NodeBuilder('lesson_ai_agents_101', 'LESSON')
+    .setTitle('Lesson 1: AI Agents Architecture & Fundamentals')
+    .setSlug('ai-agents-architecture-and-fundamentals')
+    .setDescription('Understand memory systems, tool calling, and autonomous decision loops.')
+    .setProperties({ order: 1, durationMinutes: 35, estimatedReadingTime: 10 })
+    .build();
+  nodes.push(lessonAi1);
+
+  const cntLessonAi1 = new NodeBuilder('cnt_lesson_ai_agents_101', 'CONTENT')
+    .setTitle('Lesson 1 Content')
+    .setSlug('cnt-lesson-ai-agents-101')
+    .setProperties({
+      bodyMarkdown: '# Lesson 1: AI Agents Architecture & Fundamentals\n\nAutonomous agents combine reasoning LLMs with tool execution loops and persistent memory layers.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 10
+    })
+    .build();
+  nodes.push(cntLessonAi1);
+
+  edges.push(new EdgeBuilder('e_course_lesson1', 'course_fullstack_ai', 'lesson_ai_agents_101', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_lesson1_cnt', 'lesson_ai_agents_101', 'cnt_lesson_ai_agents_101', 'HAS_CONTENT').build());
+
+  const lessonAi2 = new NodeBuilder('lesson_llm_orchestration', 'LESSON')
+    .setTitle('Lesson 2: Multi-Agent Orchestration & Tool Use')
+    .setSlug('multi-agent-orchestration-and-tool-use')
+    .setDescription('Coordinate multiple specialized subagents with state handoffs.')
+    .setProperties({ order: 2, durationMinutes: 45, estimatedReadingTime: 12 })
+    .build();
+  nodes.push(lessonAi2);
+
+  const cntLessonAi2 = new NodeBuilder('cnt_lesson_llm_orchestration', 'CONTENT')
+    .setTitle('Lesson 2 Content')
+    .setSlug('cnt-lesson-llm-orchestration')
+    .setProperties({
+      bodyMarkdown: '# Lesson 2: Multi-Agent Orchestration & Tool Use\n\nLearn how to build swarm systems using strict typed tools and message queues.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 12
+    })
+    .build();
+  nodes.push(cntLessonAi2);
+
+  edges.push(new EdgeBuilder('e_course_lesson2', 'course_fullstack_ai', 'lesson_llm_orchestration', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_lesson2_cnt', 'lesson_llm_orchestration', 'cnt_lesson_llm_orchestration', 'HAS_CONTENT').build());
+  edges.push(new EdgeBuilder('e_lesson1_next_lesson2', 'lesson_ai_agents_101', 'lesson_llm_orchestration', 'NEXT_LESSON').build());
+  edges.push(new EdgeBuilder('e_lesson2_requires_lesson1', 'lesson_llm_orchestration', 'lesson_ai_agents_101', 'REQUIRES').build());
+
   const repo = new JsonRepository(nodes, edges);
   return { nodes, edges, repository: repo };
 }

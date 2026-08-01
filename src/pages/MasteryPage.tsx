@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { auth, db, collection, getDocs, query, where, orderBy, addDoc, serverTimestamp } from "../firebase";
+import { auth, db, collection, getDocs, query, where, addDoc, serverTimestamp } from "../firebase";
 import { useSEO } from "../hooks/useSEO";
 import { useAnalytics } from "../hooks/useAnalytics";
 import { getCanonicalUrl } from "../lib/domain";
 import { AuthModal } from "../components/ui/AuthModal";
+import { getKnowledgeGraph } from "../lib/knowledge-graph/instance";
 
 // Modular Sections
 import { MasteryHero } from "../components/sections/MasteryHero";
@@ -30,64 +31,6 @@ const CATEGORY_NAMES: Record<string, string> = {
   entrepreneurship: 'Entrepreneurship',
 };
 
-const COMING_SOON_COURSES = [
-  {
-    id: "ai-execution-systems",
-    title: "AI Execution Systems",
-    category: "ai",
-    description: "Build end-to-end AI agents that research, plan, and execute autonomously using LLM orchestration, tool calling, and memory management.",
-    difficulty: "Advanced",
-    duration: "6-8 Hours",
-    lessonsCount: 12,
-    isPublished: false,
-    status: "COMING_SOON",
-  },
-  {
-    id: "cursor-ai-mastery-advanced",
-    title: "Cursor AI Mastery (Advanced)",
-    category: "ai",
-    description: "Go beyond vanilla Cursor workflows. Build custom rules, MCP servers, and advanced agentic patterns for production-grade codebases.",
-    difficulty: "Advanced",
-    duration: "4-6 Hours",
-    lessonsCount: 10,
-    isPublished: false,
-    status: "COMING_SOON",
-  },
-  {
-    id: "seo-execution-blueprint",
-    title: "SEO Execution Blueprint",
-    category: "seo",
-    description: "A tactical system for ranking in 2026 and beyond. Learn technical SEO, content architecture, entity optimization, and AI-era search strategies.",
-    difficulty: "Intermediate",
-    duration: "3-5 Hours",
-    lessonsCount: 8,
-    isPublished: false,
-    status: "COMING_SOON",
-  },
-  {
-    id: "freelance-client-acquisition",
-    title: "Freelance Client Acquisition",
-    category: "entrepreneurship",
-    description: "A repeatable outreach-to-close system for freelancers. Build authority, craft proposals that convert, and command premium rates.",
-    difficulty: "Intermediate",
-    duration: "4-6 Hours",
-    lessonsCount: 10,
-    isPublished: false,
-    status: "COMING_SOON",
-  },
-  {
-    id: "personal-brand-content-system",
-    title: "Personal Brand Content System",
-    category: "branding",
-    description: "A structured content engine for busy builders. Plan, produce, and distribute consistently without burning out across Twitter, LinkedIn, and newsletters.",
-    difficulty: "Beginner",
-    duration: "3-5 Hours",
-    lessonsCount: 8,
-    isPublished: false,
-    status: "COMING_SOON",
-  },
-];
-
 export const MasteryPage = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,45 +43,23 @@ export const MasteryPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Load courses from Firestore database
-      const pubQ = query(
-        collection(db, "courses"),
-        where("isPublished", "==", true),
-        orderBy("createdAt", "desc")
-      );
-      const pubSnap = await getDocs(pubQ);
-      const publishedCourses = pubSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const kg = getKnowledgeGraph();
+      const masteryVM = await kg.masteryProjection.getMasteryViewModel('en');
+      
+      const graphCourses = masteryVM.courses.map(course => ({
+        id: course.nodeId,
+        title: course.title,
+        slug: course.slug,
+        category: course.category || 'ai',
+        description: course.description,
+        difficulty: course.difficulty,
+        duration: `${course.durationHours} Hours`,
+        lessonsCount: course.totalLessonsCount,
+        isPublished: true,
+        status: 'PUBLISHED'
+      }));
 
-      // Also load COMING_SOON courses
-      let comingSoonCourses: any[] = [];
-      try {
-        const csQ = query(
-          collection(db, "courses"),
-          where("status", "==", "COMING_SOON")
-        );
-        const csSnap = await getDocs(csQ);
-        comingSoonCourses = csSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      } catch (e) {
-        console.warn("COMING_SOON courses query failed:", e);
-      }
-
-      // Merge: published first, then coming-soon (deduplicate)
-      const seen = new Set(publishedCourses.map(c => c.id));
-      const coursesList = [...publishedCourses];
-      for (const c of comingSoonCourses) {
-        if (!seen.has(c.id)) {
-          coursesList.push(c);
-          seen.add(c.id);
-        }
-      }
-      // Append local coming-soon courses not yet in Firestore
-      for (const c of COMING_SOON_COURSES) {
-        if (!seen.has(c.id)) {
-          coursesList.push(c);
-          seen.add(c.id);
-        }
-      }
-      setCourses(coursesList);
+      setCourses(graphCourses);
 
       // Load current user's enrollments
       if (auth.currentUser) {
