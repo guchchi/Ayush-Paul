@@ -1,11 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { HomeBlueprintCard } from "../../data/blueprints";
-
 interface HomeBlueprintsSectionProps {
   loadingProducts: boolean;
-  featuredBlueprints: HomeBlueprintCard[];
+  featuredBlueprints: any[];
 }
 
 export const HomeBlueprintsSection = ({ loadingProducts, featuredBlueprints }: HomeBlueprintsSectionProps) => {

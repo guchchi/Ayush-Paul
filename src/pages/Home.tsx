@@ -6,7 +6,7 @@ import { getDynamicBlogs, BlogPost } from "../lib/blog-utils";
 import { auth, db, collection, query, getDocs, where } from "../firebase";
 import { Product, Workshop } from "../types";
 import { AuthModal } from "../components/ui/AuthModal";
-import { getFeaturedBlueprints } from "../data/blueprints";
+import { getKnowledgeGraph } from "../lib/knowledge-graph/instance";
 import { HomeHeroSection } from "../components/sections/HomeHeroSection";
 import { HomeBlueprintsSection } from "../components/sections/HomeBlueprintsSection";
 import { HomeMasterySection } from "../components/sections/HomeMasterySection";
@@ -120,12 +120,10 @@ export const HomePage = () => {
     return () => unsubscribe();
   }, []);
 
-  const featuredBlueprints = getFeaturedBlueprints(products);
-
   return (
     <div className="w-full bg-bg-primary text-text-primary min-h-screen pt-4 md:pt-6">
       <HomeHeroSection />
-      <HomeBlueprintsSection loadingProducts={loadingProducts} featuredBlueprints={featuredBlueprints} />
+      <HomeBlueprintsSection loadingProducts={loadingProducts} featuredBlueprints={products} />
       <HomeMasterySection courses={courses} coursesCount={coursesCount} loadingCourses={loadingCourses} workshops={workshops} loadingWorkshops={loadingWorkshops} />
       <HomeBlogSection loadingBlogs={loadingBlogs} blogs={blogs} />
       <HomeStudioSection />
