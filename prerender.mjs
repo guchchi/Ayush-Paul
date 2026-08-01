@@ -52,8 +52,8 @@ async function prerender() {
     const seoData = route.seoData;
 
     try {
-      // Just render HTML (React components fallback gracefully if Suspense fails on server)
-      const { html: appHtml } = render(url);
+      // Await render HTML (using stream rendering to support Suspense)
+      const { html: appHtml } = await render(url);
       
       console.log(`Prerendering URL: ${url}`);
       
