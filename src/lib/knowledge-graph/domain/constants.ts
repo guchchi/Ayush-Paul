@@ -129,7 +129,7 @@ export const EDGE_CONSTRAINTS: Record<ThePaulXRelationType, EdgeConstraint> = {
   },
   SOLVES: {
     relationType: 'SOLVES',
-    allowedSources: ['TOOL', 'TEMPLATE', 'PRODUCT', 'PROMPT', 'WORKFLOW'],
+    allowedSources: ['TOOL', 'TEMPLATE', 'PRODUCT', 'PROMPT', 'WORKFLOW', 'BLOG'],
     allowedTargets: ['FAQ', 'ENTITY', 'PERSONA'],
     semanticMeaning: 'Asset solves problem or answers question'
   },

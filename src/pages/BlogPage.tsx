@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ArrowRight, ChevronDown, Check } from "lucide-react";
-import { useSEO } from "../hooks/useSEO";
-import { getCanonicalUrl } from "../lib/domain";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
-import { getDynamicBlogs, BlogPost } from "../lib/blog-utils";
 import { SystemEmptyState } from "../components/ui/SystemEmptyState";
+import { getKnowledgeGraph } from "../lib/knowledge-graph/instance";
 
 export const BlogPage = () => {
-  useSEO({
-    title: "Blog | Ayush Paul — Ideas, Engineering & Systems Thinking",
-    description: "Essays on AI development, system architecture, automation workflows, and building in public. Practical insights from the lab.",
-    url: getCanonicalUrl("/blog"),
-    image: "/og-image.png",
-  });
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -38,15 +30,25 @@ export const BlogPage = () => {
     const loadAllPosts = async () => {
       setLoading(true);
       try {
-        const { getDynamicBlogs } = await import('../lib/blog-utils');
-        
-        // 1. Load dynamic
-        const dynamicPosts = await getDynamicBlogs();
+        const kg = getKnowledgeGraph();
+        const seoData = await kg.seoService.generateSeoMetadata('eco_blog', 'en');
+        if (seoData) {
+          document.title = seoData.title;
+        }
 
-        // 2. Sort
-        dynamicPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        
-        setPosts(dynamicPosts);
+        const blogVM = await kg.blogProjection.getBlogViewModel('en');
+        const mappedPosts = blogVM.posts.map(p => ({
+          id: p.nodeId,
+          title: p.title,
+          slug: p.slug,
+          excerpt: p.description,
+          date: p.publishedAt,
+          readTime: `${p.readingTimeMinutes} min read`,
+          tags: p.tags,
+          category: p.category,
+          content: p.bodyMarkdown || p.description
+        }));
+        setPosts(mappedPosts);
       } catch (err) {
         console.error("[Blog] Error:", err);
       } finally {

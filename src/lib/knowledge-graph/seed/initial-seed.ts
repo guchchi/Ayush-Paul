@@ -488,6 +488,68 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
   edges.push(new EdgeBuilder('e_lesson1_next_lesson2', 'lesson_ai_agents_101', 'lesson_llm_orchestration', 'NEXT_LESSON').build());
   edges.push(new EdgeBuilder('e_lesson2_requires_lesson1', 'lesson_llm_orchestration', 'lesson_ai_agents_101', 'REQUIRES').build());
 
+  // ==========================================
+  // 12. BLOG ARTICLES & CONTENT
+  // ==========================================
+  const blogAi = new NodeBuilder('blog_ai_agents_2026', 'BLOG')
+    .setTitle('How We Built Autonomous AI Subagents in 2026')
+    .setSlug('how-we-built-autonomous-ai-subagents')
+    .setDescription('Architectural lessons from scaling multi-agent swarm systems using TypeScript and strict tool specifications.')
+    .setProperties({
+      author: 'Ayush Paul',
+      publishedAt: '2026-07-15',
+      category: 'AI Architecture',
+      tags: ['AI', 'Subagents', 'Architecture'],
+      readingTimeMinutes: 8,
+      coverImageUrl: '/images/blog-ai-agents.jpg'
+    })
+    .build();
+  nodes.push(blogAi);
+
+  const cntBlogAi = new NodeBuilder('cnt_blog_ai_agents', 'CONTENT')
+    .setTitle('Blog Article Content: AI Subagents')
+    .setSlug('cnt-blog-ai-agents')
+    .setProperties({
+      bodyMarkdown: '# How We Built Autonomous AI Subagents in 2026\n\nIn this article we cover how multi-agent swarm architectures resolve complex software tasks using deterministic state loops.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 8
+    })
+    .build();
+  nodes.push(cntBlogAi);
+
+  edges.push(new EdgeBuilder('e_blog_ai_belongs', 'blog_ai_agents_2026', 'eco_blog', 'BELONGS_TO').build());
+  edges.push(new EdgeBuilder('e_blog_ai_cnt', 'blog_ai_agents_2026', 'cnt_blog_ai_agents', 'HAS_CONTENT').build());
+
+  const blogOutreach = new NodeBuilder('blog_client_acquisition_system', 'BLOG')
+    .setTitle('The 10x Cold Outreach Framework for High-Ticket Services')
+    .setSlug('the-10x-cold-outreach-framework')
+    .setDescription('A comprehensive guide to packaging value-based offers and automating client acquisition pipelines.')
+    .setProperties({
+      author: 'Ayush Paul',
+      publishedAt: '2026-07-20',
+      category: 'Business Growth',
+      tags: ['Outreach', 'Client Acquisition', 'Sales'],
+      readingTimeMinutes: 6,
+      coverImageUrl: '/images/blog-outreach.jpg'
+    })
+    .build();
+  nodes.push(blogOutreach);
+
+  const cntBlogOutreach = new NodeBuilder('cnt_blog_outreach', 'CONTENT')
+    .setTitle('Blog Article Content: Cold Outreach')
+    .setSlug('cnt-blog-outreach')
+    .setProperties({
+      bodyMarkdown: '# The 10x Cold Outreach Framework\n\nLearn how to construct offer packages and sequence outbound communications to close high-ticket clients consistently.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 6
+    })
+    .build();
+  nodes.push(cntBlogOutreach);
+
+  edges.push(new EdgeBuilder('e_blog_outreach_belongs', 'blog_client_acquisition_system', 'eco_blog', 'BELONGS_TO').build());
+  edges.push(new EdgeBuilder('e_blog_outreach_cnt', 'blog_client_acquisition_system', 'cnt_blog_outreach', 'HAS_CONTENT').build());
+  edges.push(new EdgeBuilder('e_blog_outreach_solves', 'blog_client_acquisition_system', 'ent_client_acquisition', 'SOLVES').build());
+
   const repo = new JsonRepository(nodes, edges);
   return { nodes, edges, repository: repo };
 }

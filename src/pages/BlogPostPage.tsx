@@ -2,58 +2,24 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Calendar, Clock, Info, ArrowRight, Twitter, Linkedin, Link2, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { useSEO } from "../hooks/useSEO";
 import { BackButton } from "../components/ui/back-button";
 import { cn } from "../lib/utils";
 import { formatDate } from "../lib/firebase-utils";
 import { getCanonicalUrl } from "../lib/domain";
-import { BlogPost } from "../lib/blog-utils";
 import { motion, AnimatePresence } from "motion/react";
 import { Product, Block } from "../types";
 import { WaitlistForm } from "../components/ui/WaitlistForm";
+import { getKnowledgeGraph } from "../lib/knowledge-graph/instance";
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [post, setPost] = useState<any>(null);
+  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeHeading, setActiveHeading] = useState("");
   const [copied, setCopied] = useState(false);
-
-  useSEO({
-    title: post?.seo?.title || (post ? `${post.title} | Ayush Paul Blog` : "Ayush Paul Blog"),
-    description: post?.seo?.description || post?.description || post?.excerpt || "Read insights on AI development, system architecture, and building in public.",
-    keywords: post?.seo?.keywords || post?.tags?.join(", ") || "Ayush Paul blog, AI development, systems thinking, engineering",
-    image: post?.seo?.ogImage || post?.coverImage || "/og-image.png",
-    url: `/blog/${slug}`,
-    schema: post ? {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": post.title,
-      "description": post.description || post.excerpt,
-      "image": post.coverImage,
-      "datePublished": post.date,
-      "author": {
-        "@type": "Person",
-        "name": "Ayush Paul",
-        "url": getCanonicalUrl()
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Ayush Paul",
-        "logo": {
-          "@type": "ImageObject",
-          "url": getCanonicalUrl("/founder.png?v=2")
-        }
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": getCanonicalUrl(`/blog/${slug}`)
-      }
-    } : null
-  });
 
   useEffect(() => {
     if (!slug) return;
@@ -61,55 +27,41 @@ export const BlogPostPage = () => {
     const loadPost = async () => {
       setLoading(true);
       try {
-        const { getDynamicBlogs } = await import('../lib/blog-utils');
-        
-        // Fetch entirely from dynamic Firebase
-        const dynamics = await getDynamicBlogs();
-        const data = dynamics.find(p => p.slug === slug);
+        const kg = getKnowledgeGraph();
+        const postVM = await kg.blogProjection.getBlogPostViewModel(slug, 'en');
 
-        if (data) {
-          setPost(data);
+        if (postVM) {
+          document.title = postVM.seoTitle;
+          const mappedPost = {
+            id: postVM.nodeId,
+            title: postVM.title,
+            slug: postVM.slug,
+            description: postVM.description,
+            excerpt: postVM.description,
+            date: postVM.publishedAt,
+            readTime: `${postVM.readingTimeMinutes} min read`,
+            tags: postVM.tags,
+            category: postVM.category,
+            content: postVM.bodyMarkdown || postVM.description,
+            coverImage: postVM.coverImageUrl
+          };
+          setPost(mappedPost);
 
-          // Compute related posts
-          const combined = dynamics;
-
-          const others = combined.filter(p => p.slug !== slug);
-          const currentTags = Array.isArray(data.tags) ? data.tags : [];
-          
-          const scored = others.map(other => {
-            let score = 0;
-            const otherTags = Array.isArray(other.tags) ? other.tags : [];
-            if (other.category === data.category) score += 5;
-            const commonTags = currentTags.filter(t => otherTags.includes(t));
-            score += commonTags.length * 2;
-            return { ...other, score };
-          });
-          
-          setRelatedPosts(scored.sort((a, b) => b.score - a.score).slice(0, 3));
-
+          const blogVM = await kg.blogProjection.getBlogViewModel('en');
+          const others = blogVM.posts.filter(p => p.slug !== slug);
+          setRelatedPosts(others.slice(0, 3).map(p => ({
+            id: p.nodeId,
+            title: p.title,
+            slug: p.slug,
+            excerpt: p.description,
+            date: p.publishedAt,
+            readTime: `${p.readingTimeMinutes} min read`
+          })));
           // Compute related products matching categories or tags
           try {
             const { getPublishedProducts } = await import('../lib/product-utils');
             const allProducts = await getPublishedProducts();
-            
-            const scoredProducts = allProducts.map(prod => {
-              let score = 0;
-              const prodTags = Array.isArray(prod.tags) ? prod.tags : [];
-              if (prod.category && data.category && prod.category.toLowerCase() === data.category.toLowerCase()) {
-                score += 5;
-              }
-              const commonTags = currentTags.filter(t => 
-                prodTags.some(pt => pt.toLowerCase() === t.toLowerCase())
-              );
-              score += commonTags.length * 2;
-              return { ...prod, score };
-            });
-            
-            const relevant = scoredProducts
-              .filter(p => p.score > 0)
-              .sort((a, b) => b.score - a.score);
-              
-            setRelatedProducts(relevant.length > 0 ? relevant.slice(0, 3) : allProducts.slice(0, 3));
+            setRelatedProducts(allProducts.slice(0, 3));
           } catch (pErr) {
             console.error("Failed to load related products for blog post:", pErr);
           }

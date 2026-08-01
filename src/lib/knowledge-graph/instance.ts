@@ -7,6 +7,7 @@ import { SeoProjectionService } from './seo/generator';
 import { BlueprintProjection, StepProjection } from './projections/projections';
 import { StudioProjection } from './projections/studio';
 import { MasteryProjection } from './projections/mastery';
+import { BlogProjection } from './projections/blog';
 import { InMemoryContentRepository } from './content/loader';
 
 class KnowledgeGraphSingleton {
@@ -20,6 +21,7 @@ class KnowledgeGraphSingleton {
   public stepProjection: StepProjection;
   public studioProjection: StudioProjection;
   public masteryProjection: MasteryProjection;
+  public blogProjection: BlogProjection;
   public nodes: BaseNode[];
   public edges: BaseEdge[];
 
@@ -36,6 +38,7 @@ class KnowledgeGraphSingleton {
     this.stepProjection = new StepProjection();
     this.studioProjection = new StudioProjection(repository);
     this.masteryProjection = new MasteryProjection(repository);
+    this.blogProjection = new BlogProjection(repository);
   }
 
   public static getInstance(): KnowledgeGraphSingleton {
