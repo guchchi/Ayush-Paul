@@ -39,46 +39,53 @@ export const HomeBlueprintsSection = ({ loadingProducts, featuredBlueprints }: H
               </div>
             ))
             ) : featuredBlueprints.length > 0 ? (
-            featuredBlueprints.map((item) => (
-              <Link
-                key={item.id}
-                to={item.ctaLink}
-                className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-lg hover:border-[#d1f34d] transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
-              >
-                <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
-                  <img 
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    loading="lazy"
-                    decoding="async"
-                    width={640}
-                    height={400}
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
-                      {item.categoryLabel}
-                    </span>
+            featuredBlueprints.map((item) => {
+              const targetUrl = item.ctaLink || `/blueprints/${item.slug}`;
+              const imgUrl = item.image || item.thumbnail || '/og-image.png';
+              const catLabel = item.categoryLabel || item.category || 'Blueprint System';
+              const tierLabel = item.tier || (item.type === 'free' ? 'FREE SYSTEM' : 'PREMIUM');
+
+              return (
+                <Link
+                  key={item.id}
+                  to={targetUrl}
+                  className="group bg-white rounded-[32px] border border-[#c2c6d6]/30 overflow-hidden shadow-sm hover:shadow-lg hover:border-[#d1f34d] transition-all duration-300 hover:-translate-y-1 flex flex-col h-full cursor-pointer"
+                >
+                  <div className="aspect-[16/10] bg-gray-50 relative overflow-hidden border-b border-[#c2c6d6]/10">
+                    <img 
+                      src={imgUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                      decoding="async"
+                      width={640}
+                      height={400}
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 rounded-full bg-white/95 border border-[#c2c6d6]/20 text-[9px] font-bold uppercase tracking-widest text-[#0b1c30] shadow-sm">
+                        {catLabel}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="p-8 flex flex-col flex-grow">
-                  <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
-                    {item.title}
-                  </h3>
-                  <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
-                    {item.description}
-                  </p>
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
-                      {item.tier}
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] group-hover:text-[#d1f34d] transition-colors flex items-center gap-1">
-                      OPEN BLUEPRINT <ArrowRight size={10} />
-                    </span>
+                  <div className="p-8 flex flex-col flex-grow">
+                    <h3 className="text-xl font-extrabold text-[#0b1c30] group-hover:text-black transition-colors leading-snug mb-3">
+                      {item.title}
+                    </h3>
+                    <p className="text-[#424754] text-xs line-clamp-3 mb-8 flex-grow leading-relaxed font-semibold">
+                      {item.description}
+                    </p>
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#eff4ff]">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d] bg-[#0b1c30] px-2.5 py-1 rounded-full">
+                        {tierLabel}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#0b1c30] group-hover:text-[#d1f34d] transition-colors flex items-center gap-1">
+                        OPEN BLUEPRINT <ArrowRight size={10} />
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))
+                </Link>
+              );
+            })
             ) : (
               <div className="col-span-full text-center py-16 bg-white rounded-[32px] border border-dashed border-[#c2c6d6]/40">
                 <p className="text-sm text-[#424754] font-semibold">Blueprints being prepared. Check back soon.</p>
