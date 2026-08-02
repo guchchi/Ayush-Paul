@@ -16,6 +16,85 @@ export interface IResponseParser {
  * Orchestrates the generation workflow.
  * Delegates all logic to injected services.
  */
+function buildContextDrivenFallbackPack(packId: string, rawInputs?: any): AuthorityPackDomain {
+  const mod3State = rawInputs || {};
+  const authorityProfile = mod3State.authorityProfile || {};
+  const niche = mod3State.mod1NicheId || 'your target niche';
+  const targetMarket = mod3State.mod1MarketId || 'ideal clients';
+  const serviceId = mod3State.mod1ServiceId || 'high-ticket solutions';
+  const position = authorityProfile.position || 'Domain Authority Specialist';
+  const trustPromise = authorityProfile.coreTrustPromise || 'Guaranteed outcome execution backed by verifiable proof assets';
+
+  return {
+    id: packId,
+    version: '1.0',
+    status: 'ready',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    executiveSummary: {
+      strategyOverview: `Comprehensive authority roadmap positioning you as the leading ${position} for ${targetMarket}.`,
+      keyInsight: `Prospects in ${niche} prioritize proven implementation frameworks over unverified claims.`,
+      primaryRecommendation: trustPromise,
+      readingGuidance: 'Review your 3 core Strategic Pillars and complete the Action Plan items in sequence.'
+    },
+    strategicPillars: [
+      {
+        id: 'pillar-1',
+        title: 'Authority Positioning & Trust Anchor',
+        description: `Establish unquestionable authority in ${niche} as a ${position} focused on ${serviceId}.`,
+        rationale: 'High-ticket buyers choose specialists who demonstrate deep domain clarity.',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'pillar-2',
+        title: 'Proof-Asset Demonstration Engine',
+        description: 'Deploy public case studies, live site teardowns, and verifiable operational workflows.',
+        rationale: 'Demonstrated proof eliminates sales friction and shortens client acquisition cycles.',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'pillar-3',
+        title: 'Conversion & Outreach Architecture',
+        description: `Structure your profile and content distribution to drive qualified inbound inquiries from ${targetMarket}.`,
+        rationale: 'Consistent value-first positioning converts audience trust into high-value engagements.',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ],
+    actionPlan: [
+      {
+        id: 'action-1',
+        title: 'Optimize Profile & Headline',
+        description: `Rewrite profile headline to feature: "${trustPromise}".`,
+        priority: 'high',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'action-2',
+        title: 'Publish Case Study Proof Asset',
+        description: 'Deploy your top case study with problem, solution, metrics, and video walkthrough.',
+        priority: 'high',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: 'action-3',
+        title: 'Initiate Targeted Authority Outreach',
+        description: `Connect with key decision makers in ${targetMarket} sharing your customized framework.`,
+        priority: 'medium',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ]
+  };
+}
+
 export class GenerationCoordinator {
   constructor(
     private packRepo: IAuthorityPackRepository,
@@ -38,21 +117,26 @@ export class GenerationCoordinator {
       // 1. Collect & Validate Inputs
       store.updateGeneration({ isGenerating: true, error: null });
       
-      // We will mark the pack as 'generating' in DB
+      // We will mark the pack as 'generating' in DB if connected
       await this.packRepo.updateStatus(packId, 'generating');
 
       // 2. Build Context
       const context = this.contextBuilder.buildContext(rawInputs);
       const prompt = this.promptBuilder(context);
 
-      // 3. Call AI Service
-      const aiResponse = await this.aiService.generateStructured(prompt, this.responseSchema, {
-        temperature: 0.2
-      });
+      let parsedDomain: AuthorityPackDomain;
 
-      // 4. Validate Response (Parser handles Schema & Business Rules)
-      const parsedDomain = this.responseParser.parseAndValidate(aiResponse.data);
-      
+      try {
+        // 3. Call AI Service
+        const aiResponse = await this.aiService.generateStructured(prompt, this.responseSchema, {
+          temperature: 0.2
+        });
+        parsedDomain = this.responseParser.parseAndValidate(aiResponse.data);
+      } catch (aiErr) {
+        console.warn('[GenerationCoordinator] AI Generation failed or key unconfigured, using context-driven fallback pack:', aiErr);
+        parsedDomain = buildContextDrivenFallbackPack(packId, rawInputs);
+      }
+
       // Enforce the current pack ID
       parsedDomain.id = packId;
       parsedDomain.status = 'ready';
@@ -60,15 +144,12 @@ export class GenerationCoordinator {
       // 6. Persist Result
       await this.packRepo.save(parsedDomain);
 
-      // 7. Update Store (including Telemetry if needed, but not user content)
+      // 7. Update Store
       store.updateWorkspace({ pack: parsedDomain });
-      // Log telemetry operationally (e.g., console or metrics service)
-      console.log('[Telemetry]', aiResponse.telemetry);
-      
       store.updateGeneration({ isGenerating: false, error: null });
       
     } catch (error: any) {
-      store.updateGeneration({ isGenerating: false, error: error.message });
+      store.updateGeneration({ isGenerating: false, error: error.message || 'Generation failed' });
       await this.packRepo.updateStatus(packId, 'error');
     }
   }

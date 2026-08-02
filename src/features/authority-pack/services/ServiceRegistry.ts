@@ -42,7 +42,10 @@ class Registry {
 
     const packRepo = new FirestoreAuthorityPackRepository();
     const contextBuilder = new AuthorityPackContextBuilder();
-    const aiAdapter = new GeminiAdapter(process.env.GEMINI_API_KEY || 'dummy_key');
+    const apiKey = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_GEMINI_API_KEY) ||
+      (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) ||
+      '';
+    const aiAdapter = new GeminiAdapter(apiKey);
     const parser = {
       parseAndValidate: (raw: any) => AuthorityPackParser.parseAndValidate(raw)
     };

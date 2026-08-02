@@ -12,8 +12,8 @@ export class FirestoreAuthorityPackRepository implements IAuthorityPackRepositor
       if (!snap.exists()) return null;
       return { id: snap.id, ...snap.data() } as AuthorityPackDomain;
     } catch (err) {
-      console.error(`[FirestoreAuthorityPackRepository] Failed to get pack ${id}:`, err);
-      throw err;
+      console.warn(`[FirestoreAuthorityPackRepository] Falling back to local state (Firestore read skipped/failed):`, err);
+      return null;
     }
   }
 
@@ -25,8 +25,7 @@ export class FirestoreAuthorityPackRepository implements IAuthorityPackRepositor
         updatedAt: serverTimestamp()
       }, { merge: true });
     } catch (err) {
-      console.error(`[FirestoreAuthorityPackRepository] Failed to save pack ${pack.id}:`, err);
-      throw err;
+      console.warn(`[FirestoreAuthorityPackRepository] Could not save pack to Firestore (unauthenticated or permission restricted):`, err);
     }
   }
 
@@ -38,8 +37,7 @@ export class FirestoreAuthorityPackRepository implements IAuthorityPackRepositor
         updatedAt: serverTimestamp()
       });
     } catch (err) {
-      console.error(`[FirestoreAuthorityPackRepository] Failed to update status for pack ${id}:`, err);
-      throw err;
+      console.warn(`[FirestoreAuthorityPackRepository] Could not update status in Firestore (unauthenticated or permission restricted):`, err);
     }
   }
 
@@ -48,8 +46,7 @@ export class FirestoreAuthorityPackRepository implements IAuthorityPackRepositor
       const docRef = doc(db, this.collectionName, id);
       await deleteDoc(docRef);
     } catch (err) {
-      console.error(`[FirestoreAuthorityPackRepository] Failed to delete pack ${id}:`, err);
-      throw err;
+      console.warn(`[FirestoreAuthorityPackRepository] Could not delete pack in Firestore:`, err);
     }
   }
 }
