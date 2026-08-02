@@ -79,6 +79,10 @@ export function AuthoritySystem() {
   useEffect(() => {
     if (!serviceId) return;
 
+    if (!hasProgress) {
+      setIsUpstreamStale(false);
+    }
+
     if (storedFP === '') {
       setPhase1Context(mod1Ctx);
       setPhase2Context(mod2Ctx);
@@ -96,14 +100,14 @@ export function AuthoritySystem() {
       setUpstreamFingerprint(currentFP);
       setIsUpstreamStale(hasProgress);
     }
-  }, [storedFP, currentFP, serviceId, hasProgress]);
+  }, [storedFP, currentFP, serviceId, hasProgress, setPhase1Context, setPhase2Context, setUpstreamFingerprint, setIsUpstreamStale]);
 
   const handleRebuild = useCallback(() => {
     clearModule3Data();
     setPhase1Context(mod1Ctx);
     setPhase2Context(mod2Ctx);
     setUpstreamFingerprint(currentFP);
-  }, [mod1Ctx, mod2Ctx, currentFP]);
+  }, [mod1Ctx, mod2Ctx, currentFP, clearModule3Data, setPhase1Context, setPhase2Context, setUpstreamFingerprint]);
 
   const handleStart = useCallback(() => {
     setModuleStarted(true);
@@ -177,7 +181,7 @@ export function AuthoritySystem() {
 
   return (
     <div className="relative flex flex-col min-h-screen bg-[#f8f9ff]">
-      {isStale && (
+      {isStale && hasProgress && (
         <div className="bg-amber-50 border-b border-amber-200 p-4 text-[#0b1c30] z-50">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
