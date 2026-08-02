@@ -18,6 +18,7 @@ import { generateProofAsset } from '../../data/module3/proof-assets';
 import { StepHeader } from '../workspace/StepHeader';
 import { StepActionArea } from '../workspace/StepActionArea';
 import { ModuleButton } from '../workspace/ModuleButton';
+import { ChatGPTIcon, ClaudeIcon, GeminiIcon, PerplexityIcon } from '../ui/AIIcons';
 
 const getAssetLabel = (id: string): string => {
   const labels: Record<string, string> = {
@@ -1416,7 +1417,7 @@ export function Step2ProofAssetBuilder() {
                                     }} 
                                     className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" alt="ChatGPT" className="w-6 h-6 select-none" />
+                                    <ChatGPTIcon className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Claude */}
@@ -1429,7 +1430,7 @@ export function Step2ProofAssetBuilder() {
                                     }} 
                                     className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/claude.svg" alt="Claude" className="w-6 h-6 select-none" />
+                                    <ClaudeIcon className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Gemini */}
@@ -1442,7 +1443,7 @@ export function Step2ProofAssetBuilder() {
                                     }} 
                                     className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini.svg" alt="Gemini" className="w-6 h-6 select-none" />
+                                    <GeminiIcon className="w-6 h-6 select-none" />
                                   </DockIcon>
 
                                   {/* Perplexity */}
@@ -1455,7 +1456,7 @@ export function Step2ProofAssetBuilder() {
                                     }} 
                                     className="bg-white border border-neutral-200/80 hover:border-[#0058be] hover:shadow-md transition-colors"
                                   >
-                                    <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg" alt="Perplexity" className="w-6 h-6 select-none" />
+                                    <PerplexityIcon className="w-6 h-6 select-none" />
                                   </DockIcon>
                                 </Dock>
                               </div>
