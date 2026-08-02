@@ -88,6 +88,7 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
   const m2CompletedSteps = useOfferEngineeringStore((s) => s.completedSteps);
   const m2IsComplete = m2CompletedSteps.includes('offer_blueprint');
 
+  const currentStep = useModule3Store((s) => s.currentStep);
   const completedSteps = useModule3Store((s) => s.completedSteps);
   const isCompleted = useModule3Store((s) => s.isCompleted);
 
@@ -98,19 +99,19 @@ export function Module3IntroPage({ onStart, onBackToBlueprint }: Module3IntroPag
 
   const stepsData = useMemo(
     () =>
-      MODULE3_STEPS.map((step) => {
+      MODULE3_STEPS.map((step, index) => {
         const info = stepDescriptions[step];
         const isStepCompleted = completedSteps.includes(step);
-        const isActive = step === completedSteps[completedSteps.length - 1] || (!isStepCompleted && !isCompleted);
+        const isActive = (step === currentStep || index === completedStepsCount) && !isStepCompleted && !isCompleted;
         return {
-          num: MODULE3_STEPS.indexOf(step) + 1,
+          num: index + 1,
           title: info.title,
           desc: info.desc,
           isCompleted: isStepCompleted,
-          isActive: isActive && !isStepCompleted,
+          isActive: isActive,
         };
       }),
-    [completedSteps, isCompleted],
+    [completedSteps, currentStep, isCompleted, completedStepsCount],
   );
 
   const serviceLabel = serviceId
