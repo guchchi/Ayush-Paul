@@ -394,6 +394,17 @@ export const useModule3Store = create<Module3State>()(
           set({ isGeneratingStrategy: true, lastUpdated: Date.now() });
           
           const context = {
+            authorityProfile: state.authorityProfile || {
+              position: 'builder',
+              summary: 'Expert',
+              coreTrustPromise: 'Delivering exceptional client outcomes',
+            },
+            proofAssetStrategy: state.proofAssetStrategy || {
+              priorityProofAssets: [],
+              status: 'draft',
+            },
+            mod1ServiceId: state.mod1ServiceId,
+            mod2OfferType: state.mod2OfferType,
             module1: {
               niche: state.mod1NicheId || 'General',
               targetAudience: state.mod1MarketId || 'General Audience',
@@ -405,11 +416,6 @@ export const useModule3Store = create<Module3State>()(
               pricePoint: state.mod2FinalPrice ? `$${state.mod2FinalPrice}` : 'TBD',
               promise: state.mod2ValueAmplifier || 'Great results',
             },
-            authorityProfile: {
-              position: state.authorityProfile?.position || 'builder',
-              summary: state.authorityProfile?.summary || 'Expert',
-              coreTrustPromise: state.authorityProfile?.coreTrustPromise || '',
-            }
           };
 
           const strategy = await mockGenerate(context as any);
@@ -437,6 +443,17 @@ export const useModule3Store = create<Module3State>()(
           set({ isGeneratingStrategy: true, lastUpdated: Date.now() });
           
           const context = {
+            authorityProfile: state.authorityProfile || {
+              position: 'builder',
+              summary: 'Expert',
+              coreTrustPromise: 'Delivering exceptional client outcomes',
+            },
+            proofAssetStrategy: state.proofAssetStrategy || {
+              priorityProofAssets: [],
+              status: 'draft',
+            },
+            mod1ServiceId: state.mod1ServiceId,
+            mod2OfferType: state.mod2OfferType,
             module1: {
               niche: state.mod1NicheId || 'General',
               targetAudience: state.mod1MarketId || 'General Audience',
@@ -448,16 +465,8 @@ export const useModule3Store = create<Module3State>()(
               pricePoint: state.mod2FinalPrice ? `$${state.mod2FinalPrice}` : 'TBD',
               promise: state.mod2ValueAmplifier || 'Great results',
             },
-            authorityProfile: {
-              position: state.authorityProfile?.position || 'builder',
-              summary: state.authorityProfile?.summary || 'Expert',
-              coreTrustPromise: state.authorityProfile?.coreTrustPromise || '',
-            }
           };
 
-          // In a real application we would track explicitly edited fields via fieldProvenance.
-          // For now, we will pass the entire current strategy as fieldsToPreserve to demonstrate the merge.
-          // In production, we'd only pass fields that were actually edited by the user.
           const currentStrategy = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
           
           const strategy = await mockGenerate(context as any);

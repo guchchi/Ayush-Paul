@@ -5,14 +5,24 @@ import type {
   ProfilePortfolioStrategy
 } from '../../types/module3';
 
-export function generateProfilePortfolioStrategy(ctx: {
-  authorityProfile: AuthorityProfile;
-  proofAssetStrategy: ProofAssetStrategy;
-  mod1ServiceId: string | null;
-  mod2OfferType: string | null;
+export function generateProfilePortfolioStrategy(ctx?: {
+  authorityProfile?: AuthorityProfile;
+  proofAssetStrategy?: ProofAssetStrategy;
+  mod1ServiceId?: string | null;
+  mod2OfferType?: string | null;
 }): ProfilePortfolioStrategy {
   
-  const { authorityProfile, proofAssetStrategy } = ctx;
+  const authorityProfile = ctx?.authorityProfile || {
+    position: 'builder',
+    summary: 'Expert',
+    coreTrustPromise: 'Delivering exceptional client outcomes'
+  };
+  const proofAssetStrategy = ctx?.proofAssetStrategy || {
+    priorityProofAssets: []
+  };
+  const priorityAssets = Array.isArray(proofAssetStrategy.priorityProofAssets) 
+    ? proofAssetStrategy.priorityProofAssets 
+    : [];
 
   return {
     version: 2,
@@ -130,7 +140,9 @@ export function generateProfilePortfolioStrategy(ctx: {
         expectedOutcome: 'Immediate authority positioning.',
         firstAction: 'Add a video testimonial or logo strip above the fold.'
       },
-      recommendedElements: proofAssetStrategy.priorityProofAssets.map(a => a.name),
+      recommendedElements: priorityAssets.length > 0 
+        ? priorityAssets.map(a => a.name)
+        : ['Public Case Study', 'Live Demonstration Project', 'Client Testimonials'],
       priority: 'High'
     },
     contentStrategy: {
