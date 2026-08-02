@@ -16,12 +16,22 @@ export interface IResponseParser {
  * Orchestrates the generation workflow.
  * Delegates all logic to injected services.
  */
+function formatId(str?: string | null): string {
+  if (!str) return '';
+  const formatted = str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  return formatted
+    .replace(/\bYoutube\b/g, 'YouTube')
+    .replace(/\bB2b\b/g, 'B2B')
+    .replace(/\bUx\b/g, 'UX')
+    .replace(/\bAi\b/g, 'AI');
+}
+
 function buildContextDrivenFallbackPack(packId: string, rawInputs?: any): AuthorityPackDomain {
   const mod3State = rawInputs || {};
   const authorityProfile = mod3State.authorityProfile || {};
-  const niche = mod3State.mod1NicheId || 'your target niche';
-  const targetMarket = mod3State.mod1MarketId || 'ideal clients';
-  const serviceId = mod3State.mod1ServiceId || 'high-ticket solutions';
+  const niche = formatId(mod3State.mod1NicheId) || 'Your Target Niche';
+  const targetMarket = formatId(mod3State.mod1MarketId) || 'Ideal Clients';
+  const serviceId = formatId(mod3State.mod1ServiceId) || 'High-Ticket Solutions';
   const position = authorityProfile.position || 'Domain Authority Specialist';
   const trustPromise = authorityProfile.coreTrustPromise || 'Guaranteed outcome execution backed by verifiable proof assets';
 

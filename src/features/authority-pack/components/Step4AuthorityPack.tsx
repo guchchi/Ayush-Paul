@@ -104,14 +104,17 @@ export function Step4AuthorityPack() {
 
       {pack && !isGenerating && (
         <section className="space-y-8">
-          <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 text-sm">
-            <h3 className="font-bold text-[#0058be] mb-2 flex items-center gap-2">
-              <Shield size={16} />
-              How to use your Authority Pack
-            </h3>
-            <p className="text-neutral-600">
-              This pack translates your core strategy into a usable foundation for all your outbound content.
-              Share it with your team, use it as a reference for your social media, or feed it into AI writing tools to ensure your brand voice remains perfectly aligned with your Blueprint OS strategy.
+          <div className="bg-gradient-to-br from-blue-50/90 via-white to-slate-50 border border-blue-100/90 rounded-3xl p-6 sm:p-8 text-left space-y-3 shadow-xs relative overflow-hidden">
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 rounded-xl bg-blue-100 text-[#0058be]">
+                <Shield size={18} />
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-[#0b1c30] tracking-tight">
+                How to use your Authority Pack
+              </h3>
+            </div>
+            <p className="text-sm font-semibold text-neutral-700 leading-relaxed max-w-3xl">
+              This pack translates your core strategy into a usable foundation for all your outbound content. Share it with your team, use it as a reference for your social media, or feed it into AI writing tools to ensure your brand voice remains perfectly aligned with your Blueprint OS strategy.
             </p>
           </div>
 
