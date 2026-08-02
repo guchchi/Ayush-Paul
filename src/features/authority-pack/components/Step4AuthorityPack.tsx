@@ -8,6 +8,10 @@ import { ContentRenderer } from '../../../lib/rendering/ContentRenderer';
 import { StepHeader } from '../../../components/workspace/StepHeader';
 import { ModuleButton } from '../../../components/workspace/ModuleButton';
 import { useModule3Store } from '../../../lib/module3';
+import { registerAuthorityPackBlocks } from './registry/RegistrySetup';
+
+// Register block components into renderer registry
+registerAuthorityPackBlocks();
 
 export function Step4AuthorityPack() {
   const { pack, isGenerating, error } = useAuthorityPackStore(
