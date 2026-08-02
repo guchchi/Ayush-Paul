@@ -46,7 +46,7 @@ const ebooks = [
     description: "Complete engineering guide, wiring schematics, assembly steps, and source code for the Ayu-Boat autonomous water drone. Includes 3D printable CAD models and sensor calibration modules.",
     thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa", // Active price
-    downloadFileURL: "https://thepaulx.in/downloads/ayu-boat-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/ayu-boat-free.zip",
     features: [
       "3D Print CAD Models (STEP/STL)",
       "Autonomous Navigation Source Code",
@@ -89,7 +89,7 @@ const ebooks = [
     description: "An interactive guide and control software repository to build IOBot—a companion desktop robot. Includes haptic feedback configurations, computer vision algorithms, and voice synthesis codes.",
     thumbnail: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa", // Reusing active price for sandbox checkouts
-    downloadFileURL: "https://thepaulx.in/downloads/iobot-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/iobot-free.zip",
     features: [
       "3D Print CAD Models (STL/STEP)",
       "ROS2 Computer Vision Nodes",
@@ -132,7 +132,7 @@ const ebooks = [
     description: "Open-source schematics, linkage CAD, and micro-controller software for a high-precision spatial teleoperation controller offering real-time low-latency force feedback.",
     thumbnail: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200",
     stripePriceId: "",
-    downloadFileURL: "https://thepaulx.in/downloads/haptic-teleoperation-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/haptic-teleoperation-free.zip",
     features: [
       "ESP32 Low-Latency Telemetry Code",
       "3D Printable Joint Linkages CAD",
@@ -171,7 +171,7 @@ const ebooks = [
     description: "The complete technical SEO handbook for modern websites. Includes step-by-step redirect checklists, robots.txt strategies, sitemap construction codes, and JSON-LD schema markup generators.",
     thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa",
-    downloadFileURL: "https://thepaulx.in/downloads/seo-checklist-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/seo-checklist-free.zip",
     features: [
       "Technical SEO Crawl Audit Checklist",
       "Technical JSON-LD Schema Generator",
@@ -214,7 +214,7 @@ const ebooks = [
     description: "Supercharge your software development and content pipeline. Features custom `.cursorrules` configurations, automated ChatGPT workflows, and structured prompting templates to speed up development by 10x.",
     thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa",
-    downloadFileURL: "https://thepaulx.in/downloads/ai-workflows-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/ai-workflows-free.zip",
     features: [
       "Custom .cursorrules Configurations",
       "Automated Prompting System Framework",
@@ -257,7 +257,7 @@ const ebooks = [
     description: "Launch your Next.js project with confidence. Includes styling systems, database configurations, auth setups, and ready-to-deploy Stripe webhook templates.",
     thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa",
-    downloadFileURL: "https://thepaulx.in/downloads/saas-boilerplate-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/saas-boilerplate-free.zip",
     features: [
       "Next.js App Router Boilerplate Code",
       "Stripe checkout webhook templates",

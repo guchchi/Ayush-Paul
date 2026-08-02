@@ -88,8 +88,8 @@ export class BlogProjection {
       readingTimeMinutes: Number(blogNode.properties.readingTimeMinutes || 5),
       coverImageUrl: (blogNode.properties.coverImageUrl as string) || undefined,
       bodyMarkdown: (contentNode?.properties.bodyMarkdown as string) || undefined,
-      canonicalUrl: `https://thepaulx.com/blog/${bSlug}`,
-      seoTitle: `${blogNode.title[locale] || blogNode.title.en} | ThePaulX Blog`
+      canonicalUrl: `https://ayushpaul.in/blog/${bSlug}`,
+      seoTitle: `${blogNode.title[locale] || blogNode.title.en} | Ayush Paul Blog`
     };
 
     this.cache.setProjection(cacheKey, result);

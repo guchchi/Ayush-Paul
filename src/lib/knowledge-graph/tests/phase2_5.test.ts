@@ -45,7 +45,7 @@ async function runPhase25TestSuite() {
 
   // 4. Test Full SEO & Search Engine
   console.log('\n--- Testing SEO & Search Engine ---');
-  const seoService = new SeoProjectionService(repository, 'https://thepaulx.com');
+  const seoService = new SeoProjectionService(repository, 'https://ayushpaul.in');
   const seoMeta = await seoService.generateSeoMetadata('prod_first_3_clients', 'en');
   console.log(`✅ SEO Title: "${seoMeta?.title}"`);
   console.log(`   Canonical: ${seoMeta?.canonicalUrl}`);

@@ -86,7 +86,7 @@ async function startServer() {
                 product_data: {
                   name: `Support Ayush Paul - ${tierName}`,
                   description: "Thank you for supporting my work and projects!",
-                  images: ["https://thepaulx.in/og-image.png"],
+                  images: ["https://ayushpaul.in/og-image.png"],
                 },
                 unit_amount: amount * 100,
               },
@@ -231,7 +231,7 @@ async function startServer() {
               product_data: {
                 name: "Donation: Support Open Innovation",
                 description: "Thank you for supporting Ayush Paul's engineering research.",
-                images: ["https://thepaulx.in/founder.png"],
+                images: ["https://ayushpaul.in/founder.png"],
               },
               unit_amount: amount * 100,
             },

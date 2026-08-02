@@ -111,8 +111,8 @@ export class MasteryProjection {
           bodyMarkdown: (contentNode?.properties.bodyMarkdown as string) || undefined,
           nextLessonSlug: nextNode?.slug[locale] || nextNode?.slug.en,
           prerequisiteLessonSlug: prereqNode?.slug[locale] || prereqNode?.slug.en,
-          canonicalUrl: `https://thepaulx.com/mastery/lessons/${lessonSlug}`,
-          seoTitle: `${lessonNode.title[locale] || lessonNode.title.en} | Mastery | ThePaulX`
+          canonicalUrl: `https://ayushpaul.in/mastery/lessons/${lessonSlug}`,
+          seoTitle: `${lessonNode.title[locale] || lessonNode.title.en} | Mastery | Ayush Paul`
         };
       })
     );
@@ -131,8 +131,8 @@ export class MasteryProjection {
       thumbnailUrl: (courseNode.properties.thumbnailUrl as string) || '/images/course-placeholder.jpg',
       lessons,
       totalLessonsCount: lessons.length,
-      canonicalUrl: `https://thepaulx.com/mastery/courses/${cSlug}`,
-      seoTitle: `${courseNode.title[locale] || courseNode.title.en} | Mastery Course | ThePaulX`
+      canonicalUrl: `https://ayushpaul.in/mastery/courses/${cSlug}`,
+      seoTitle: `${courseNode.title[locale] || courseNode.title.en} | Mastery Course | Ayush Paul`
     };
 
     this.cache.setProjection(cacheKey, result);

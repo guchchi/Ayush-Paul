@@ -251,7 +251,7 @@ export const SEOPanel: React.FC<SEOPanelProps> = ({
               </div>
               <div className="p-6 space-y-2">
                 <div className="text-[9px] font-bold text-brand-primary uppercase tracking-[0.2em]">
-                  thepaulx.in
+                  ayushpaul.in
                 </div>
                 <div className="text-base font-bold text-white/90 line-clamp-1">
                   {data.ogTitle || data.title || "Innovation Narrative Title"}

@@ -131,7 +131,7 @@ export const ThankYouPage = () => {
           <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#424754]/40 mb-6">Share Blueprint</div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just unlocked a new engineering blueprint from @paulayush's Lab. Time to build. 🚀\n\nCheck it out here: https://thepaulx.in/blueprints")}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just unlocked a new engineering blueprint from @paulayush's Lab. Time to build. 🚀\n\nCheck it out here: ${getCanonicalUrl('/blueprints')}`)}`}
               target="_blank"
               rel="noreferrer"
               className="px-8 py-4 rounded-2xl bg-white border border-[#c2c6d6]/35 hover:bg-[#1DA1F2]/5 hover:border-[#1DA1F2]/20 hover:text-[#1DA1F2] text-[#424754] font-bold text-sm shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer"
@@ -140,7 +140,7 @@ export const ThankYouPage = () => {
               <span>Share on X</span>
             </a>
             <a 
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent("https://thepaulx.in/blueprints")}`}
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getCanonicalUrl('/blueprints'))}`}
               target="_blank"
               rel="noreferrer"
               className="px-8 py-4 rounded-2xl bg-white border border-[#c2c6d6]/35 hover:bg-[#0077B5]/5 hover:border-[#0077B5]/20 hover:text-[#0077B5] text-[#424754] font-bold text-sm shadow-sm flex items-center justify-center gap-3 transition-all cursor-pointer"

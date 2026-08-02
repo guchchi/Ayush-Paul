@@ -57,8 +57,8 @@ export async function getRoutesConfig() {
       title: "Ayush Paul | AI Developer, Systems Builder & Digital Creator", 
       description: "Premium blueprints, AI automation workflows, and engineering systems for builders who ship.",
       schema: new SchemaFactory()
-        .addOrganization({ name: "The Paul Syndicate", url: "https://thepaulx.in" })
-        .addWebSite({ name: "The Paul Syndicate", url: "https://thepaulx.in" })
+        .addOrganization({ name: "Ayush Paul", url: "https://ayushpaul.in" })
+        .addWebSite({ name: "Ayush Paul", url: "https://ayushpaul.in" })
         .addWebPage({ name: "Ayush Paul | AI Developer", description: "Premium blueprints and AI workflows.", url: "/" })
         .build()
     }

@@ -61,8 +61,8 @@ export class StudioProjection {
         category,
         isInteractive: Boolean(node.properties?.isInteractive),
         format: node.properties?.format as string | undefined,
-        canonicalUrl: `https://thepaulx.com/studio/${node.slug[locale] || node.slug.en}`,
-        seoTitle: `${node.title[locale] || node.title.en} | Studio | ThePaulX`
+        canonicalUrl: `https://ayushpaul.in/studio/${node.slug[locale] || node.slug.en}`,
+        seoTitle: `${node.title[locale] || node.title.en} | Studio | Ayush Paul`
       };
     });
 

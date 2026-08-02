@@ -6,7 +6,7 @@ import { Resend } from "resend";
 
 // ── Inlined helpers (no subdirectory imports) ──
 
-const DEFAULT_FROM = 'Ayush Paul <lab@thepaulx.in>';
+const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
 let _resend: Resend | null = null;
 
 function initResend(): string | null {
@@ -50,9 +50,9 @@ function emailLayout(content: string): string {
 <tr><td style="padding:32px 24px;">${content}</td></tr>
 <tr><td style="padding:20px 24px;border-top:1px solid #222222;text-align:center;">
 <p style="margin:0 0 8px;font-size:12px;color:#555555;">
-<a href="https://thepaulx.in/vault" style="color:#00C2FF;text-decoration:none;">My Vault</a>
-&nbsp;·&nbsp;<a href="https://thepaulx.in/blueprints" style="color:#00C2FF;text-decoration:none;">Blueprints</a>
-&nbsp;·&nbsp;<a href="https://thepaulx.in/mastery" style="color:#00C2FF;text-decoration:none;">Mastery</a>
+<a href="https://ayushpaul.in/vault" style="color:#00C2FF;text-decoration:none;">My Vault</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/blueprints" style="color:#00C2FF;text-decoration:none;">Blueprints</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/mastery" style="color:#00C2FF;text-decoration:none;">Mastery</a>
 </p>
 <p style="margin:0;font-size:11px;color:#444444;">Ayush Paul — Systems Builder &amp; Architect</p>
 </td></tr></table></td></tr></table></body></html>`;

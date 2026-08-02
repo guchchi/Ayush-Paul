@@ -7,7 +7,7 @@ import { Resend } from "resend";
 // EMAIL HELPERS (inlined — no subdirectory imports)
 // ============================================================
 
-const DEFAULT_FROM = 'Ayush Paul <lab@thepaulx.in>';
+const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
 let _resend: Resend | null = null;
 
 function initResend(): string | null {
@@ -60,9 +60,9 @@ function emailLayout(content: string): string {
 <tr><td style="padding:32px 24px;">${content}</td></tr>
 <tr><td style="padding:20px 24px;border-top:1px solid #222222;text-align:center;">
 <p style="margin:0 0 8px;font-size:12px;color:#555555;">
-<a href="https://thepaulx.in/vault" style="color:#00C2FF;text-decoration:none;">My Vault</a>
-&nbsp;·&nbsp;<a href="https://thepaulx.in/blueprints" style="color:#00C2FF;text-decoration:none;">Blueprints</a>
-&nbsp;·&nbsp;<a href="https://thepaulx.in/mastery" style="color:#00C2FF;text-decoration:none;">Mastery</a>
+<a href="https://ayushpaul.in/vault" style="color:#00C2FF;text-decoration:none;">My Vault</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/blueprints" style="color:#00C2FF;text-decoration:none;">Blueprints</a>
+&nbsp;·&nbsp;<a href="https://ayushpaul.in/mastery" style="color:#00C2FF;text-decoration:none;">Mastery</a>
 </p>
 <p style="margin:0;font-size:11px;color:#444444;">Ayush Paul — Systems Builder &amp; Architect</p>
 </td></tr></table></td></tr></table></body></html>`;
@@ -234,7 +234,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You started <strong style="color:#d1f34d;">${data.courseTitle || 'a course'}</strong> and your progress is saved.</p>
     <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">One session is all it takes to move forward again.</p>
-    ${emailButton('Resume Learning', `https://thepaulx.in/mastery/courses/${data.courseId || ''}`)}
+    ${emailButton('Resume Learning', `https://ayushpaul.in/mastery/courses/${data.courseId || ''}`)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   streak_broken: (data) => ({
@@ -242,7 +242,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${data.streakDays || 'learning'}</strong>-day streak ended yesterday.</p>
     <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">The best time to start a new streak is today. One session can restart the momentum.</p>
-    ${emailButton('Start a New Streak', 'https://thepaulx.in/vault')}
+    ${emailButton('Start a New Streak', 'https://ayushpaul.in/vault')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   upsell: (data) => ({
@@ -250,7 +250,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Based on your interests, this might help you build faster:</p>
     <p style="margin:0 0 8px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${data.productTitle || 'Premium Blueprint'}</strong></p>
-    ${emailButton('Explore Blueprint', `https://thepaulx.in/blueprints/${data.productId || ''}`)}
+    ${emailButton('Explore Blueprint', `https://ayushpaul.in/blueprints/${data.productId || ''}`)}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   purchase_followup: (data) => ({
@@ -258,7 +258,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'Innovator'},</p>
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Thank you for purchasing <strong style="color:#d1f34d;">${data.productTitle || 'your Blueprint'}</strong>.</p>
     <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It is now available in your Vault and ready to use.</p>
-    ${emailButton('Open in Vault', 'https://thepaulx.in/vault')}
+    ${emailButton('Open in Vault', 'https://ayushpaul.in/vault')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
   }),
   creator_promo: (data) => ({
@@ -267,7 +267,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${data.creatorName || 'A creator'}</strong> completed a promo cycle.</p>
     <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:24px;color:#cccccc;">
     <li>Code: ${data.creatorCode || 'N/A'}</li><li>Sales: ${data.salesCount || 0}</li><li>Commission: INR ${data.totalCommission || 0}</li></ul>
-    ${emailButton('View Dashboard', 'https://thepaulx.in/admin')}
+    ${emailButton('View Dashboard', 'https://ayushpaul.in/admin')}
     <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— AyushPaul.in System</p>`),
   }),
 };
@@ -276,7 +276,7 @@ const DEFAULT_TEMPLATE: (data: any) => { subject: string; html: string } = (data
   subject: `Update from Ayush Paul`,
   html: emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${data.userName || 'there'},</p>
   <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Here is an update you requested from the Innovation Lab.</p>
-  ${emailButton('Visit Dashboard', 'https://thepaulx.in/vault')}
+  ${emailButton('Visit Dashboard', 'https://ayushpaul.in/vault')}
   <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`),
 });
 
@@ -325,7 +325,7 @@ async function handleProcessEmailTriggers(req: VercelRequest, res: VercelRespons
         html = emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userName},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Your <strong style="color:#d1f34d;">${metadata?.streakDays || 'learning'}</strong>-day streak ended yesterday.</p>
         <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">Every streak starts with day one. Jump back in today.</p>
-        ${emailButton('Restart Your Streak', 'https://thepaulx.in/vault')}
+        ${emailButton('Restart Your Streak', 'https://ayushpaul.in/vault')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
         break;
       case 'purchase_followup':
@@ -333,7 +333,7 @@ async function handleProcessEmailTriggers(req: VercelRequest, res: VercelRespons
         html = emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userName},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">Thank you for purchasing <strong style="color:#d1f34d;">${metadata?.productTitle || 'your Blueprint'}</strong>.</p>
         <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">It is now in your Vault and ready to use.</p>
-        ${emailButton('Open in Vault', 'https://thepaulx.in/vault')}
+        ${emailButton('Open in Vault', 'https://ayushpaul.in/vault')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`);
         break;
       case 'creator_promo':
@@ -342,7 +342,7 @@ async function handleProcessEmailTriggers(req: VercelRequest, res: VercelRespons
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;"><strong style="color:#d1f34d;">${metadata?.creatorName || 'A creator'}</strong> completed a promo cycle.</p>
         <ul style="margin:0 0 24px;padding-left:20px;font-size:14px;line-height:24px;color:#cccccc;">
         <li>Code: ${metadata?.creatorCode || 'N/A'}</li><li>Sales: ${metadata?.salesCount || 0}</li><li>Commission: INR ${metadata?.totalCommission || 0}</li></ul>
-        ${emailButton('View Dashboard', 'https://thepaulx.in/admin')}
+        ${emailButton('View Dashboard', 'https://ayushpaul.in/admin')}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— AyushPaul.in System</p>`);
         break;
       default:
@@ -378,7 +378,7 @@ async function handleTriggerAbandonedCheck(req: VercelRequest, res: VercelRespon
         emailLayout(`<p style="margin:0 0 20px;font-size:16px;line-height:26px;color:#cccccc;">Hi ${userData.displayName || email.split('@')[0] || 'Innovator'},</p>
         <p style="margin:0 0 16px;font-size:16px;line-height:26px;color:#cccccc;">You have not continued <strong style="color:#d1f34d;">${courseData.title || 'your course'}</strong> recently, and your progress is still saved.</p>
         <p style="margin:0 0 24px;font-size:16px;line-height:26px;color:#cccccc;">One session is all it takes to move forward again.</p>
-        ${emailButton('Resume Learning', `https://thepaulx.in/mastery/courses/${courseId}`)}
+        ${emailButton('Resume Learning', `https://ayushpaul.in/mastery/courses/${courseId}`)}
         <p style="margin:16px 0 0;font-size:14px;line-height:22px;color:#666666;">— Ayush Paul</p>`));
       if (result.success) sent++;
     }
@@ -411,7 +411,7 @@ async function handleTriggerEnrollmentEmail(req: VercelRequest, res: VercelRespo
 
     const html = renderEnrollmentWelcome({
       userName, courseName: courseData.title || 'Course',
-      courseUrl: `https://thepaulx.in/mastery/courses/${courseId}`,
+      courseUrl: `https://ayushpaul.in/mastery/courses/${courseId}`,
       modulesCount: modSnap.size, lessonsCount: lesSnap.size || courseData.lessonsCount || 10,
       isFree: courseData.isFree || courseData.price === 0,
     });

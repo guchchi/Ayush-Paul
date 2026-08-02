@@ -20,7 +20,7 @@ export class SeoProjectionService {
   private query: GraphQueryApi;
   private cache: GraphCache;
 
-  constructor(private repo: IGraphRepository, private baseUrl: string = 'https://thepaulx.com') {
+  constructor(private repo: IGraphRepository, private baseUrl: string = 'https://ayushpaul.in') {
     this.query = new GraphQueryApi(repo);
     this.cache = GraphCache.getInstance();
   }
@@ -33,8 +33,8 @@ export class SeoProjectionService {
     const node = await this.repo.getNode(nodeId);
     if (!node) return null;
 
-    const title = `${node.title[lang]} | ThePaulX`;
-    const description = node.description?.[lang] || `Learn ${node.title[lang]} on ThePaulX`;
+    const title = `${node.title[lang]} | Ayush Paul`;
+    const description = node.description?.[lang] || `Learn ${node.title[lang]} on Ayush Paul`;
     const slug = node.slug[lang];
     
     let path = `/${slug}`;
@@ -69,7 +69,7 @@ export class SeoProjectionService {
         'description': description,
         'provider': {
           '@type': 'Organization',
-          'name': 'ThePaulX',
+          'name': 'Ayush Paul',
           'sameAs': this.baseUrl
         }
       });

@@ -1,11 +1,11 @@
 /**
  * Domain handling utility for multi-domain production environment.
- * Primary Canonical Domain: thepaulx.in
+ * Primary Canonical Domain: ayushpaul.in
  * Backup/Preview Domain: ayushpaul.vercel.app
  */
 
 export const DOMAINS = {
-  PRIMARY: 'https://thepaulx.in',
+  PRIMARY: 'https://ayushpaul.in',
   VERCEL: 'https://ayushpaul.vercel.app',
 };
 
@@ -32,7 +32,7 @@ export const getCanonicalUrl = (path: string = '') => {
  */
 export const isPrimaryDomain = () => {
   if (typeof window === 'undefined') return true;
-  return window.location.hostname === 'thepaulx.in';
+  return window.location.hostname === 'ayushpaul.in';
 };
 
 /**

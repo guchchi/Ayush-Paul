@@ -11,7 +11,7 @@ export interface SchemaConfig {
 export class SchemaFactory {
   private schemas: any[] = [];
 
-  constructor(private baseUrl: string = 'https://thepaulx.in') {}
+  constructor(private baseUrl: string = 'https://ayushpaul.in') {}
 
   /**
    * Generates Organization schema (Brand Knowledge Panel signals)

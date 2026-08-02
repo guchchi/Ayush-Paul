@@ -97,7 +97,7 @@ async function prerender() {
       // Add to sitemap
       sitemapUrls.push(`
   <url>
-    <loc>https://thepaulx.in${url}</loc>
+    <loc>https://ayushpaul.in${url}</loc>
     <lastmod>${currentDate}</lastmod>
     <changefreq>${url === '/' ? 'daily' : 'weekly'}</changefreq>
     <priority>${url === '/' ? '1.0' : '0.8'}</priority>

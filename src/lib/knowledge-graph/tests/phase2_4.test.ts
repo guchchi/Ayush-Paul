@@ -10,7 +10,7 @@ async function runPhase24TestSuite() {
 
   // 2. Test SeoProjectionService
   console.log('--- Testing SeoProjectionService ---');
-  const seoService = new SeoProjectionService(repository, 'https://thepaulx.com');
+  const seoService = new SeoProjectionService(repository, 'https://ayushpaul.in');
 
   const prodSeo = await seoService.generateSeoMetadata('prod_first_3_clients', 'en');
   if (!prodSeo) throw new Error('SeoProjectionService returned null for product!');

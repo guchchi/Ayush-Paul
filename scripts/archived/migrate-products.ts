@@ -39,7 +39,7 @@ async function migrateProducts() {
     salePrice: 29,
     currency: "inr",
     stripePriceId: "price_1TXafVCrlf5LZT5FgtUkEyWa", // Preserved exactly from active DB
-    downloadFileURL: "https://thepaulx.in/downloads/ayu-boat-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/ayu-boat-free.zip",
     category: "Robotics",
     description: "Full engineering blueprints for the Ayu-Boat autonomous water drone. Includes CAD, source code, and assembly guide.",
     thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200",
@@ -78,7 +78,7 @@ async function migrateProducts() {
     salePrice: 59,
     currency: "inr",
     stripePriceId: "", // Empty for stage-1 no stripe constraint
-    downloadFileURL: "https://thepaulx.in/downloads/iobot-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/iobot-free.zip",
     category: "Robotics",
     description: "Complete engineering blueprints and control software for IOBot, a smart desktop companion robot with haptic feedback, computer vision object tracking, and integrated voice agency capabilities.",
     thumbnail: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200",
@@ -116,7 +116,7 @@ async function migrateProducts() {
     salePrice: 0,
     currency: "inr",
     stripePriceId: "", // Free product, no price ID
-    downloadFileURL: "https://thepaulx.in/downloads/haptic-teleoperation-free.zip",
+    downloadFileURL: "https://ayushpaul.in/downloads/haptic-teleoperation-free.zip",
     category: "Blueprints",
     description: "Open-source schematics, linkage CAD, and micro-controller software for a high-precision haptic teleoperation controller, offering real-time low-latency force feedback.",
     thumbnail: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200",
