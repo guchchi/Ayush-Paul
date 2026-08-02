@@ -83,6 +83,9 @@ export function AuthoritySystem() {
       setPhase1Context(mod1Ctx);
       setPhase2Context(mod2Ctx);
       setUpstreamFingerprint(currentFP);
+      if (!hasProgress) {
+        setIsUpstreamStale(false);
+      }
       return;
     }
 
@@ -91,9 +94,7 @@ export function AuthoritySystem() {
       setPhase1Context(mod1Ctx);
       setPhase2Context(mod2Ctx);
       setUpstreamFingerprint(currentFP);
-      if (hasProgress) {
-        setIsUpstreamStale(true);
-      }
+      setIsUpstreamStale(hasProgress);
     }
   }, [storedFP, currentFP, serviceId, hasProgress]);
 

@@ -190,6 +190,7 @@ export const useModule3Store = create<Module3State>()(
             current.mod1Positioning === ctx.positioning) {
           return; // materially identical — skip
         }
+        const hasProgress = current.completedSteps.length > 0 || current.isCompleted;
         set({
           mod1CareerTrackId: ctx.careerTrackId,
           mod1ServiceId: ctx.serviceId,
@@ -197,9 +198,9 @@ export const useModule3Store = create<Module3State>()(
           mod1NicheId: ctx.nicheId,
           mod1OfferId: ctx.offerId,
           mod1Positioning: ctx.positioning,
-          isUpstreamStale: true,
-          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
-          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: 'stale' } } : {}),
+          isUpstreamStale: hasProgress,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: hasProgress ? 'stale' : current.proofAssetStrategy.status } } : {}),
+          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: hasProgress ? 'stale' : current.profilePortfolioStrategy.status } } : {}),
           lastUpdated: Date.now(),
         });
       },
@@ -218,6 +219,7 @@ export const useModule3Store = create<Module3State>()(
             JSON.stringify(current.mod2ProposalSummary) === JSON.stringify(ctx.proposalSummary)) {
           return; // materially identical — skip
         }
+        const hasProgress = current.completedSteps.length > 0 || current.isCompleted;
         set({
           mod2OfferType: ctx.offerType,
           mod2Deliverables: ctx.deliverables,
@@ -229,19 +231,20 @@ export const useModule3Store = create<Module3State>()(
           mod2TieredPricing: ctx.tieredPricing,
           mod2ValueBasedPricing: ctx.valueBasedPricing,
           mod2ProposalSummary: ctx.proposalSummary,
-          isUpstreamStale: true,
-          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
+          isUpstreamStale: hasProgress,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: hasProgress ? 'stale' : current.proofAssetStrategy.status } } : {}),
           lastUpdated: Date.now(),
         });
       },
 
       setAuthorityProfile(profile) {
         const current = get();
+        const hasProgress = current.completedSteps.length > 0 || current.isCompleted;
         set({ 
           authorityProfile: profile, 
-          isUpstreamStale: true,
-          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: 'stale' } } : {}),
-          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: 'stale' } } : {}),
+          isUpstreamStale: hasProgress,
+          ...(current.proofAssetStrategy ? { proofAssetStrategy: { ...current.proofAssetStrategy, status: hasProgress ? 'stale' : current.proofAssetStrategy.status } } : {}),
+          ...(current.profilePortfolioStrategy ? { profilePortfolioStrategy: { ...current.profilePortfolioStrategy, status: hasProgress ? 'stale' : current.profilePortfolioStrategy.status } } : {}),
           lastUpdated: Date.now() 
         });
       },
