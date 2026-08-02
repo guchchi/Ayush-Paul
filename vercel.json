@@ -76,13 +76,7 @@
     { "source": "/api/validate-coupon", "destination": "/api/checkout?action=validate-coupon" },
     { "source": "/api/validate-creator-code", "destination": "/api/checkout?action=validate-creator-code" },
     { "source": "/api/download-product", "destination": "/api/download-product" },
-    { "source": "/workspace/(.*)", "destination": "/index.html" },
-    { "source": "/admin(.*)", "destination": "/index.html" },
-    { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/success", "destination": "/index.html" },
-    { "source": "/cancel", "destination": "/index.html" },
-    { "source": "/blueprints/(.*)/engine", "destination": "/index.html" },
-    { "source": "/design-system", "destination": "/index.html" }
+    { "source": "/((?!api/|.*\\..*).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
