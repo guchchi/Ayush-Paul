@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { BlockRendererProps, ViewModel } from '../../../../lib/rendering/types';
 import { cn } from '../../../../lib/utils';
 import { CheckCircle2, Circle } from 'lucide-react';
 import { NoteEditor } from '../../../notes/components/NoteEditor';
+import { EASING, DURATION } from '../../../../lib/motion-presets';
 
 interface ActionItemViewModel extends ViewModel {
   type: 'authority-pack.action-item';
@@ -12,23 +14,29 @@ interface ActionItemViewModel extends ViewModel {
   status: 'pending' | 'in-progress' | 'completed';
 }
 
-export function ActionItemBlock({ block, context }: BlockRendererProps<ActionItemViewModel>) {
+export function ActionItemBlock({ block, index, context }: BlockRendererProps<ActionItemViewModel>) {
   const packId = context?.packId;
   const [completed, setCompleted] = useState(block.status === 'completed');
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-sm hover:border-blue-200 transition-all flex flex-col gap-3 text-left">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+      transition={{ duration: DURATION.NORMAL, delay: (index || 0) * 0.05, ease: EASING.PREMIUM }}
+      className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-sm hover:border-blue-200 transition-all flex flex-col gap-3 text-left"
+    >
       <div className="flex items-start gap-3.5">
         <button
           type="button"
           onClick={() => setCompleted(!completed)}
-          className="pt-0.5 shrink-0 transition-colors focus:outline-hidden"
+          className="pt-0.5 shrink-0 transition-transform active:scale-95 focus:outline-hidden"
           aria-label="Toggle task status"
         >
           {completed ? (
-            <CheckCircle2 size={20} className="text-emerald-500 fill-emerald-50" />
+            <CheckCircle2 size={22} className="text-emerald-500 fill-emerald-50" />
           ) : (
-            <Circle size={20} className="text-neutral-300 hover:text-[#0058be]" />
+            <Circle size={22} className="text-neutral-300 hover:text-[#0058be] transition-colors" />
           )}
         </button>
         
@@ -51,13 +59,13 @@ export function ActionItemBlock({ block, context }: BlockRendererProps<ActionIte
             </span>
           </div>
 
-          <p className="text-sm font-medium text-neutral-600 leading-relaxed">
+          <p className="text-sm font-semibold text-neutral-600 leading-relaxed">
             {block.description}
           </p>
         </div>
       </div>
 
       {packId && <NoteEditor packId={packId} blockId={block.id} />}
-    </div>
+    </motion.div>
   );
 }
