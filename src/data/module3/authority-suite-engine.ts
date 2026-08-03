@@ -1,0 +1,702 @@
+export function formatSnakeCaseWords(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export interface BrandAssetItem {
+  id: string;
+  title: string;
+  key: string;
+  category: string;
+  value: string;
+  originalValue: string;
+  isCustomized?: boolean;
+  version?: number;
+}
+
+export interface ProfileSystemAsset {
+  platform: 'linkedin' | 'twitter' | 'instagram' | 'website';
+  title: string;
+  fields: {
+    key: string;
+    label: string;
+    value: string;
+    originalValue: string;
+  }[];
+}
+
+export interface PortfolioBlueprintSection {
+  id: string;
+  sectionNumber: number;
+  title: string;
+  purpose: string;
+  conversionReasoning: string;
+  recommendedVisuals: string;
+  headline: string;
+  subheadline: string;
+  bodyCopy: string;
+  ctaText: string;
+  trustStatement?: string;
+  animationSuggestion?: string;
+}
+
+export interface ContentPostItem {
+  dayNumber: number;
+  weekNumber: number;
+  title: string;
+  platform: 'LinkedIn' | 'X/Twitter' | 'YouTube' | 'Newsletter';
+  format: 'Text + Image' | 'Carousel' | 'Short Video' | 'Text Post' | 'Long Form';
+  contentAngle: string;
+  hook: string;
+  body: string;
+  cta: string;
+  visualIdea: string;
+  repurposingTip: string;
+}
+
+export interface OutboundScriptItem {
+  id: string;
+  title: string;
+  type: string;
+  targetAudience: string;
+  scriptText: string;
+  originalScriptText: string;
+  proTip: string;
+}
+
+export interface CompetitorGapItem {
+  feature: string;
+  genericCompetitors: string;
+  yourAuthoritySystem: string;
+  gapImpact: string;
+  advantageLevel: 'High' | 'Dominant' | 'Critical';
+}
+
+export interface ROIOpportunityItem {
+  id: string;
+  title: string;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  estimatedTime: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  authorityImpactPts: number;
+  businessImpact: 'High' | 'Very High' | 'Transformational';
+  description: string;
+  isCompleted?: boolean;
+}
+
+export interface RoadmapMilestone {
+  dayRange: '7-Day Launch' | '30-Day Scale' | '90-Day Dominance';
+  phaseTitle: string;
+  goals: string[];
+  keyDeliverables: string[];
+  expectedOutcome: string;
+}
+
+export interface GeneratedAuthoritySuite {
+  brandAssets: BrandAssetItem[];
+  profileSystem: ProfileSystemAsset[];
+  portfolioBlueprint: PortfolioBlueprintSection[];
+  contentCalendar: ContentPostItem[];
+  outreachScripts: OutboundScriptItem[];
+  competitorGaps: CompetitorGapItem[];
+  opportunityMatrix: ROIOpportunityItem[];
+  roadmaps: RoadmapMilestone[];
+}
+
+export function generateFullAuthoritySuite(ctx?: {
+  marketId?: string | null;
+  serviceId?: string | null;
+  position?: string | null;
+  trustPromise?: string | null;
+  uniqueMechanism?: string | null;
+  offerType?: string | null;
+  targetClient?: string | null;
+}): GeneratedAuthoritySuite {
+  const market = formatSnakeCaseWords(ctx?.marketId || 'target_clients');
+  const service = formatSnakeCaseWords(ctx?.serviceId || 'high_ticket_services');
+  const position = formatSnakeCaseWords(ctx?.position || 'builder');
+  const mechanism = ctx?.uniqueMechanism || 'Proof-First Demonstration Engine';
+  const promise = ctx?.trustPromise || 'Verifiable outputs with zero fabricated claims';
+
+  // 1. BRAND IDENTITY ENGINE (14 Assets)
+  const brandAssets: BrandAssetItem[] = [
+    {
+      id: 'brand_positioning',
+      title: 'Positioning Statement',
+      key: 'Positioning Statement',
+      category: 'Core Strategy',
+      value: `I help ${market} achieve predictable growth using my ${mechanism}, delivering measurable outcomes without generic agency bloat.`,
+      originalValue: `I help ${market} achieve predictable growth using my ${mechanism}, delivering measurable outcomes without generic agency bloat.`,
+    },
+    {
+      id: 'brand_category',
+      title: 'Category Definition',
+      key: 'Category Definition',
+      category: 'Core Strategy',
+      value: `Category King in ${service} for ${market}`,
+      originalValue: `Category King in ${service} for ${market}`,
+    },
+    {
+      id: 'brand_value_prop',
+      title: 'Value Proposition',
+      key: 'Value Proposition',
+      category: 'Messaging',
+      value: `Transforming how ${market} source, evaluate, and scale ${service} through transparent proof assets.`,
+      originalValue: `Transforming how ${market} source, evaluate, and scale ${service} through transparent proof assets.`,
+    },
+    {
+      id: 'brand_promise',
+      title: 'Brand Promise',
+      key: 'Brand Promise',
+      category: 'Trust',
+      value: promise,
+      originalValue: promise,
+    },
+    {
+      id: 'brand_mission',
+      title: 'Mission Statement',
+      key: 'Mission Statement',
+      category: 'Identity',
+      value: `To eliminate trust friction between ${market} and elite service providers by creating verifiable demonstration projects.`,
+      originalValue: `To eliminate trust friction between ${market} and elite service providers by creating verifiable demonstration projects.`,
+    },
+    {
+      id: 'brand_oneliner',
+      title: 'One-Liner',
+      key: 'One-Liner',
+      category: 'Elevator',
+      value: `The ${position}-led ${service} architect built specifically for ${market}.`,
+      originalValue: `The ${position}-led ${service} architect built specifically for ${market}.`,
+    },
+    {
+      id: 'brand_pitch',
+      title: 'Elevator Pitch',
+      key: 'Elevator Pitch',
+      category: 'Elevator',
+      value: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
+      originalValue: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
+    },
+    {
+      id: 'brand_thesis',
+      title: 'Authority Thesis',
+      key: 'Authority Thesis',
+      category: 'Point of View',
+      value: `In a market flooded with empty promises, proof is the ultimate conversion mechanism. Work should speak through verifiable outputs, not speculative slide decks.`,
+      originalValue: `In a market flooded with empty promises, proof is the ultimate conversion mechanism. Work should speak through verifiable outputs, not speculative slide decks.`,
+    },
+    {
+      id: 'brand_traits',
+      title: 'Personality Traits',
+      key: 'Personality Traits',
+      category: 'Brand Voice',
+      value: `Authoritative, Transparent, Analytical, High-Output, Direct`,
+      originalValue: `Authoritative, Transparent, Analytical, High-Output, Direct`,
+    },
+    {
+      id: 'brand_tone',
+      title: 'Tone of Voice',
+      key: 'Tone of Voice',
+      category: 'Brand Voice',
+      value: `Clear, concise, evidence-based, executive-level precision without jargon.`,
+      originalValue: `Clear, concise, evidence-based, executive-level precision without jargon.`,
+    },
+    {
+      id: 'brand_style',
+      title: 'Communication Style',
+      key: 'Communication Style',
+      category: 'Brand Voice',
+      value: `Direct-to-value. Lead with findings, follow with methodology, conclude with action items.`,
+      originalValue: `Direct-to-value. Lead with findings, follow with methodology, conclude with action items.`,
+    },
+    {
+      id: 'brand_messaging',
+      title: 'Core Messaging Framework',
+      key: 'Core Messaging Framework',
+      category: 'Messaging',
+      value: `Pillar 1: Proof Over Claims | Pillar 2: Systemized Execution | Pillar 3: Measured Impact`,
+      originalValue: `Pillar 1: Proof Over Claims | Pillar 2: Systemized Execution | Pillar 3: Measured Impact`,
+    },
+    {
+      id: 'brand_diff',
+      title: 'Differentiation Statement',
+      key: 'Differentiation Statement',
+      category: 'Competitive',
+      value: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
+      originalValue: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
+    },
+    {
+      id: 'brand_transformation',
+      title: 'Audience Transformation Statement',
+      key: 'Audience Transformation Statement',
+      category: 'Identity',
+      value: `Taking ${market} from unverified execution risk to a high-certainty, high-ROI authority position.`,
+      originalValue: `Taking ${market} from unverified execution risk to a high-certainty, high-ROI authority position.`,
+    },
+  ];
+
+  // 2. COMPLETE PROFILE SYSTEM
+  const profileSystem: ProfileSystemAsset[] = [
+    {
+      platform: 'linkedin',
+      title: 'LinkedIn Profile Package',
+      fields: [
+        {
+          key: 'banner_text',
+          label: 'Banner Concept & Text',
+          value: `Helping ${market} scale ${service} via ${mechanism} | Zero Fluff. Pure Execution.`,
+          originalValue: `Helping ${market} scale ${service} via ${mechanism} | Zero Fluff. Pure Execution.`,
+        },
+        {
+          key: 'headline',
+          label: 'Professional Headline',
+          value: `${service} Partner for ${market} | Creator of ${mechanism} | Proof-First Execution`,
+          originalValue: `${service} Partner for ${market} | Creator of ${mechanism} | Proof-First Execution`,
+        },
+        {
+          key: 'about',
+          label: 'About Section (Story & Proof)',
+          value: `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`,
+          originalValue: `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`,
+        },
+        {
+          key: 'featured_cta',
+          label: 'Featured Link CTA',
+          value: `👉 Access My Full ${service} Blueprint & Live Case Studies`,
+          originalValue: `👉 Access My Full ${service} Blueprint & Live Case Studies`,
+        },
+        {
+          key: 'services_desc',
+          label: 'Services Description',
+          value: `High-ticket ${service} consulting, system implementation, and strategic auditing for ${market}.`,
+          originalValue: `High-ticket ${service} consulting, system implementation, and strategic auditing for ${market}.`,
+        },
+      ],
+    },
+    {
+      platform: 'twitter',
+      title: 'X / Twitter Profile Package',
+      fields: [
+        {
+          key: 'name_format',
+          label: 'Display Name',
+          value: `Ayush | ${service} for ${market}`,
+          originalValue: `Ayush | ${service} for ${market}`,
+        },
+        {
+          key: 'bio',
+          label: 'Bio Copy',
+          value: `Building ${mechanism} for ${market}. Sharing breakdown teardowns on ${service}. ${promise}. 👇 Read my pinned thread`,
+          originalValue: `Building ${mechanism} for ${market}. Sharing breakdown teardowns on ${service}. ${promise}. 👇 Read my pinned thread`,
+        },
+        {
+          key: 'pinned_post',
+          label: 'Pinned Post Hook',
+          value: `I spent 30 days building a complete ${service} framework for ${market}. Here are the exact 5 components that drive 80% of the results 🧵👇`,
+          originalValue: `I spent 30 days building a complete ${service} framework for ${market}. Here are the exact 5 components that drive 80% of the results 🧵👇`,
+        },
+        {
+          key: 'cta_link',
+          label: 'Link CTA',
+          value: `ayushpaul.app/blueprint`,
+          originalValue: `ayushpaul.app/blueprint`,
+        },
+      ],
+    },
+    {
+      platform: 'instagram',
+      title: 'Instagram Profile Package',
+      fields: [
+        {
+          key: 'bio',
+          label: 'Bio Copy',
+          value: `⚡ ${service} Specialist for ${market}\n🧠 Creator of ${mechanism}\n🛡️ ${promise}\n👇 Free Case Study Blueprint below`,
+          originalValue: `⚡ ${service} Specialist for ${market}\n🧠 Creator of ${mechanism}\n🛡️ ${promise}\n👇 Free Case Study Blueprint below`,
+        },
+        {
+          key: 'cta',
+          label: 'Bio Link CTA',
+          value: `Get My Free ${service} Case Study Teardown`,
+          originalValue: `Get My Free ${service} Case Study Teardown`,
+        },
+        {
+          key: 'story_highlights',
+          label: 'Story Highlights Structure',
+          value: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
+          originalValue: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
+        },
+      ],
+    },
+    {
+      platform: 'website',
+      title: 'Website Hero Canvas Package',
+      fields: [
+        {
+          key: 'hero_headline',
+          label: 'Hero Headline',
+          value: `The Proof-First ${service} System for ${market}`,
+          originalValue: `The Proof-First ${service} System for ${market}`,
+        },
+        {
+          key: 'hero_subheadline',
+          label: 'Hero Subheadline',
+          value: `We eliminate execution risk for ${market} using ${mechanism}. See exact proof assets before signing any contract.`,
+          originalValue: `We eliminate execution risk for ${market} using ${mechanism}. See exact proof assets before signing any contract.`,
+        },
+        {
+          key: 'primary_cta',
+          label: 'Primary CTA Button',
+          value: `Explore Blueprint & Live Case Studies →`,
+          originalValue: `Explore Blueprint & Live Case Studies →`,
+        },
+        {
+          key: 'trust_statement',
+          label: 'Trust & Risk Free Statement',
+          value: `🛡️ 100% Verifiable Demonstration Projects. Zero Fabricated Claims.`,
+          originalValue: `🛡️ 100% Verifiable Demonstration Projects. Zero Fabricated Claims.`,
+        },
+        {
+          key: 'social_proof_line',
+          label: 'Social Proof Micro-copy',
+          value: `Trusted by high-growth ${market} seeking verifiable delivery standards.`,
+          originalValue: `Trusted by high-growth ${market} seeking verifiable delivery standards.`,
+        },
+      ],
+    },
+  ];
+
+  // 3. PORTFOLIO ARCHITECTURE GENERATOR (9 Sections)
+  const portfolioBlueprint: PortfolioBlueprintSection[] = [
+    {
+      id: 'section_hero',
+      sectionNumber: 1,
+      title: '1. Hero Section (First Impression)',
+      purpose: 'Hook high-ticket buyers immediately and state positioning clearly.',
+      conversionReasoning: 'Reduces bounce rates by immediately answering: Who is this for? What do they deliver? Why should I trust them?',
+      recommendedVisuals: 'Clean high-contrast typography, interactive floating proof badge, live demonstration GIF/video preview.',
+      headline: `High-Certainty ${service} for ${market}`,
+      subheadline: `Scale your brand using ${mechanism}. Documented results with zero fabricated claims.`,
+      bodyCopy: `Stop taking leaps of faith with generic agencies. Experience proof-first execution built specifically for ${market}.`,
+      ctaText: 'Access Authority Portfolio →',
+      trustStatement: '🛡️ Verifiable outputs & transparent scope notes included with every project.',
+      animationSuggestion: 'FadeUp with 0.4s ease out, subtle scale-up on CTA button hover.',
+    },
+    {
+      id: 'section_about',
+      sectionNumber: 2,
+      title: '2. Authority Story & Background',
+      purpose: 'Establish domain expertise, core philosophy, and mission.',
+      conversionReasoning: 'Buyers buy from experts they trust. Demonstrating a clear point-of-view builds immediate personal authority.',
+      recommendedVisuals: 'High-resolution professional photo, key metrics counter, timeline of major milestones.',
+      headline: `Why I Built the ${mechanism}`,
+      subheadline: `The industry is full of promises. I chose to build on verifiable proof.`,
+      bodyCopy: `After analyzing how ${market} evaluate service providers, I realized traditional pitch decks create unnecessary risk. My mission is to deliver complete transparency through self-initiated demonstration projects.`,
+      ctaText: 'Read My Authority Thesis',
+    },
+    {
+      id: 'section_services',
+      sectionNumber: 3,
+      title: '3. Core Service & Offer System',
+      purpose: 'Display high-ticket offer tiers and deliverable scope with clarity.',
+      conversionReasoning: 'Eliminates scope ambiguity so clients understand exact deliverables, milestones, and engagement options.',
+      recommendedVisuals: '3-column pricing or scope cards with feature checkmarks and highlighted recommended tier.',
+      headline: `Tailored ${service} Packages for ${market}`,
+      subheadline: `Structured engagements designed for speed, certainty, and maximum ROI.`,
+      bodyCopy: `Choose between Milestone-based implementations or Ongoing Retainer support. Every package includes direct access to expert execution, weekly updates, and documented deliverables.`,
+      ctaText: 'Select Offer Tier →',
+    },
+    {
+      id: 'section_case_studies',
+      sectionNumber: 4,
+      title: '4. Case Studies & STAR Breakdown',
+      purpose: 'Demonstrate real-world problem solving through Situation, Task, Action, Result.',
+      conversionReasoning: 'Provides concrete evidence of execution capability and strategic thinking under real constraints.',
+      recommendedVisuals: 'Before/After metrics visual, code/workflow screenshots, client video snippet.',
+      headline: `Live Case Studies & Implementation Teardowns`,
+      subheadline: `Real challenges, strategic execution, and measured outcomes.`,
+      bodyCopy: `Explore detailed breakdowns showing how we diagnosed bottlenecks for ${market} and implemented ${mechanism} to achieve measurable scale.`,
+      ctaText: 'View Case Study Teardown',
+    },
+    {
+      id: 'section_proof',
+      sectionNumber: 5,
+      title: '5. Verifiable Proof Assets & Code',
+      purpose: 'Show actual deliverable outputs, repositories, live dashboards, or design files.',
+      conversionReasoning: 'Unquestionable proof: clients can see, touch, and test your actual work quality before buying.',
+      recommendedVisuals: 'Embedded live interactive widget, clickable prototype link, GitHub repository link.',
+      headline: `Interactive Proof Asset Gallery`,
+      subheadline: `Inspect live outputs, templates, and execution blueprints.`,
+      bodyCopy: `Transparency is our core currency. Browse our open proof repository to evaluate exact code quality, design tokens, and strategic documentation.`,
+      ctaText: 'Open Live Proof Hub',
+    },
+    {
+      id: 'section_testimonials',
+      sectionNumber: 6,
+      title: '6. Testimonials & Social Proof',
+      purpose: 'Provide third-party validation from peers and past clients.',
+      conversionReasoning: 'Social proof activates peer validation, confirming that others in ${market} recommend your work.',
+      recommendedVisuals: 'Grid of video testimonial cards + verified LinkedIn quote cards with client avatar and company logo.',
+      headline: `What ${market} Say About Working With Us`,
+      subheadline: `Feedback from partners who transformed their business with our authority system.`,
+      bodyCopy: `"Working with Ayush was the single best decision we made for our ${service}. The level of proof and clarity was unlike any agency." — Founder, SaaS Startup`,
+      ctaText: 'Read All Testimonials',
+    },
+    {
+      id: 'section_authority',
+      sectionNumber: 7,
+      title: '7. Media & Thought Leadership',
+      purpose: 'Display podcast appearances, articles, press mentions, and guest posts.',
+      conversionReasoning: 'Leverages external media authority to position you as a recognized industry leader.',
+      recommendedVisuals: 'Media logo bar (Podcasts, Press, Publications) + featured article cards with reading times.',
+      headline: `Featured In & Industry Contributions`,
+      subheadline: `Sharing insights on ${service} across podcasts, publications, and keynotes.`,
+      bodyCopy: `Listen to deep-dive interviews where we break down the future of ${service} for ${market}.`,
+      ctaText: 'Listen to Podcast Interviews',
+    },
+    {
+      id: 'section_faq',
+      sectionNumber: 8,
+      title: '8. High-Ticket FAQ & Objection Handling',
+      purpose: 'Address the top 6 buying objections directly before the call.',
+      conversionReasoning: 'Handling price, time, scope, and trust objections upfront increases calendar booking conversion by 40%.',
+      recommendedVisuals: 'Clean accordion UI with search/filter tags.',
+      headline: `Frequently Asked Questions`,
+      subheadline: `Everything you need to know about our engagement model, timelines, and guarantees.`,
+      bodyCopy: `Q: How quickly can we launch?\nA: Discovery takes 3 days, full implementation begins within 1 week.\n\nQ: What if we have custom requirements?\nA: All packages are tailored using modular components from our ${mechanism}.`,
+      ctaText: 'Have More Questions? Contact Us',
+    },
+    {
+      id: 'section_cta',
+      sectionNumber: 9,
+      title: '9. Final CTA & Calendar Booking',
+      purpose: 'Drive high-ticket prospects to book a strategy call or request a proposal.',
+      conversionReasoning: 'A focused, low-friction booking section converts interested visitors into scheduled pipeline calls.',
+      recommendedVisuals: 'Embedded Calendly/SavvyCal widget alongside a quick 3-bullet value summary.',
+      headline: `Ready to Build Your ${service} Authority?`,
+      subheadline: `Book a 15-minute strategy consultation to review your current positioning and proof assets.`,
+      bodyCopy: `Select a time that works for you below. No high-pressure sales tactics — just an honest evaluation of your market potential.`,
+      ctaText: 'Book Strategy Call Now →',
+      trustStatement: '🔒 100% Confidential. Zero Obligation.',
+    },
+  ];
+
+  // 4. 30-DAY AUTHORITY CONTENT MATRIX (30 Posts)
+  const contentCalendar: ContentPostItem[] = [];
+  const platforms: ('LinkedIn' | 'X/Twitter')[] = ['LinkedIn', 'X/Twitter'];
+  const formats: ('Text + Image' | 'Carousel' | 'Short Video' | 'Text Post' | 'Long Form')[] = [
+    'Text Post', 'Carousel', 'Text + Image', 'Short Video', 'Long Form'
+  ];
+
+  for (let day = 1; day <= 30; day++) {
+    const week = Math.ceil(day / 7);
+    const platform = platforms[day % 2];
+    const format = formats[day % 5];
+    
+    contentCalendar.push({
+      dayNumber: day,
+      weekNumber: week,
+      title: `Day ${day}: ${service} Teardown #${day}`,
+      platform,
+      format,
+      contentAngle: day % 3 === 0 ? 'Case Study Breakdown' : day % 3 === 1 ? 'Contrarian Industry Myth' : 'Step-by-Step Tactical Framework',
+      hook: `Most ${market} make this critical mistake when scaling ${service}...`,
+      body: `Here is the exact step-by-step breakdown of how we solved it using ${mechanism}:\n\n1. Diagnosed the root bottleneck\n2. Built proof demonstration\n3. Measured output results\n\nSwipe through for the complete blueprint.`,
+      cta: `DM me "PROOF" for the full template or drop a comment below!`,
+      visualIdea: `Diagram graphic showing Before vs After metrics for ${market}.`,
+      repurposingTip: `Turn this post into a 60-second vertical video script or LinkedIn article.`,
+    });
+  }
+
+  // 5. 8 OUTBOUND CLIENT ACQUISITION SCRIPTS
+  const outreachScripts: OutboundScriptItem[] = [
+    {
+      id: 'script_linkedin_dm',
+      title: '1. LinkedIn Cold DM (Permission-Based)',
+      type: 'Outbound DM',
+      targetAudience: market,
+      scriptText: `Hey [Name], noticed your recent work with [Company]. I built a live demonstration breakdown analyzing how ${market} are optimizing their ${service} using ${mechanism}.\n\nNo pitch — would you be open to me dropping the 2-minute video link over here?`,
+      originalScriptText: `Hey [Name], noticed your recent work with [Company]. I built a live demonstration breakdown analyzing how ${market} are optimizing their ${service} using ${mechanism}.\n\nNo pitch — would you be open to me dropping the 2-minute video link over here?`,
+      proTip: 'Permission-based DMs get a 4x higher response rate because they do not push a hard pitch upfront.',
+    },
+    {
+      id: 'script_cold_email',
+      title: '2. Cold Email (Teardown Pitch)',
+      type: 'Cold Email',
+      targetAudience: market,
+      scriptText: `Subject: Teardown for [Company] ${service}\n\nHi [Name],\n\nI put together a quick proof asset breakdown of [Company]'s current ${service} workflow.\n\nIdentified 2 key areas where ${market} typically unlock 20-30% efficiency gains through ${mechanism}.\n\nHere is the view-only link: [Insert Link]\n\nHope this provides value! Let me know if you want me to expand on point #2.\n\nBest,\nAyush`,
+      originalScriptText: `Subject: Teardown for [Company] ${service}\n\nHi [Name],\n\nI put together a quick proof asset breakdown of [Company]'s current ${service} workflow.\n\nIdentified 2 key areas where ${market} typically unlock 20-30% efficiency gains through ${mechanism}.\n\nHere is the view-only link: [Insert Link]\n\nHope this provides value! Let me know if you want me to expand on point #2.\n\nBest,\nAyush`,
+      proTip: 'Always attach a free customized teardown link to prove capability before asking for time.',
+    },
+    {
+      id: 'script_followup_1',
+      title: '3. Follow-up Script #1 (Value Bump)',
+      type: 'Follow-up',
+      targetAudience: market,
+      scriptText: `Hi [Name], following up on the ${service} teardown link I sent over. I just updated the framework with a quick checklist specifically for ${market}.\n\nDid you have a chance to take a look?`,
+      originalScriptText: `Hi [Name], following up on the ${service} teardown link I sent over. I just updated the framework with a quick checklist specifically for ${market}.\n\nDid you have a chance to take a look?`,
+      proTip: 'Send Follow-up #1 within 48-72 hours. Always add a new snippet of value rather than saying "just checking in".',
+    },
+    {
+      id: 'script_followup_2',
+      title: '4. Follow-up Script #2 (Break-up / Final Value)',
+      type: 'Follow-up',
+      targetAudience: market,
+      scriptText: `Hey [Name], assuming you are fully focused on other priorities right now. I'll archive this teardown for now, but if you ever want to explore ${mechanism} for ${market}, feel free to reach out anytime!`,
+      originalScriptText: `Hey [Name], assuming you are fully focused on other priorities right now. I'll archive this teardown for now, but if you ever want to explore ${mechanism} for ${market}, feel free to reach out anytime!`,
+      proTip: 'Break-up emails trigger loss aversion and often generate the highest response rate in a sequence.',
+    },
+    {
+      id: 'script_discovery_opener',
+      title: '5. Discovery Call Opener Script',
+      type: 'Sales Call',
+      targetAudience: market,
+      scriptText: `"Thanks for joining today, [Name]. The goal for our 20 minutes is simple: I want to understand your current ${service} setup, show you how we deploy ${mechanism}, and see if there is a mutual fit. How does that sound?"`,
+      originalScriptText: `"Thanks for joining today, [Name]. The goal for our 20 minutes is simple: I want to understand your current ${service} setup, show you how we deploy ${mechanism}, and see if there is a mutual fit. How does that sound?"`,
+      proTip: 'Setting a clear agenda in the first 30 seconds establishes authority and controls call pacing.',
+    },
+    {
+      id: 'script_proposal_intro',
+      title: '6. Proposal Introduction Script',
+      type: 'Sales Proposal',
+      targetAudience: market,
+      scriptText: `Based on our conversation, we have structured a proof-first engagement around 3 milestones. Every milestone includes verifiable delivery criteria before phase progression.`,
+      originalScriptText: `Based on our conversation, we have structured a proof-first engagement around 3 milestones. Every milestone includes verifiable delivery criteria before phase progression.`,
+      proTip: 'Highlighting milestone verification in proposals removes buying anxiety for high-ticket clients.',
+    },
+    {
+      id: 'script_objection_handling',
+      title: '7. Objection Handling Scripts (Price & Trust)',
+      type: 'Sales Objection',
+      targetAudience: market,
+      scriptText: `Objection: "Your pricing is higher than other providers."\nResponse: "I completely understand. Generic agencies charge less because they deliver unverified promises. We build custom demonstration assets using ${mechanism} that guarantee execution quality before scaling."`,
+      originalScriptText: `Objection: "Your pricing is higher than other providers."\nResponse: "I completely understand. Generic agencies charge less because they deliver unverified promises. We build custom demonstration assets using ${mechanism} that guarantee execution quality before scaling."`,
+      proTip: 'Frame premium pricing around certainty and execution risk reduction rather than features.',
+    },
+    {
+      id: 'script_reengagement',
+      title: '8. Re-engagement Script (Stale Leads)',
+      type: 'Re-engagement',
+      targetAudience: market,
+      scriptText: `Hi [Name], we just released an updated case study showing how a ${market} brand achieved a 35% increase in ${service} efficiency using ${mechanism}. Thought of you — here is the open link: [Insert Link].`,
+      originalScriptText: `Hi [Name], we just released an updated case study showing how a ${market} brand achieved a 35% increase in ${service} efficiency using ${mechanism}. Thought of you — here is the open link: [Insert Link].`,
+      proTip: 'Re-engage cold prospects every 30-60 days whenever you publish a new high-ticket proof asset.',
+    },
+  ];
+
+  // 6. COMPETITOR GAP ANALYSIS MATRIX
+  const competitorGaps: CompetitorGapItem[] = [
+    {
+      feature: 'Proof & Credibility Assets',
+      genericCompetitors: 'Generic pitch decks, fabricated testimonials, unverified case studies',
+      yourAuthoritySystem: `Live demonstration projects, open proof repositories, verifiable ${mechanism}`,
+      gapImpact: 'Eliminates 90% of prospect buying hesitation upfront',
+      advantageLevel: 'Dominant',
+    },
+    {
+      feature: 'Positioning & Messaging',
+      genericCompetitors: 'Vague "full-service" claims, competing in red ocean categories',
+      yourAuthoritySystem: `Sharply defined Category King positioning as a ${position} for ${market}`,
+      gapImpact: 'Positions you as the default expert rather than a commoditized vendor',
+      advantageLevel: 'High',
+    },
+    {
+      feature: 'Outbound Client Acquisition',
+      genericCompetitors: 'Spammy high-volume cold outreach with immediate sales pitch',
+      yourAuthoritySystem: 'Permission-based outreach offering free value teardowns and proof links',
+      gapImpact: '4x higher response rates and positive brand sentiment',
+      advantageLevel: 'High',
+    },
+    {
+      feature: 'Deliverable Transparency',
+      genericCompetitors: 'Black-box execution with delayed progress updates',
+      yourAuthoritySystem: 'Milestone-driven delivery with public decision rationale and scope notes',
+      gapImpact: 'Builds long-term client trust and high retainer retention',
+      advantageLevel: 'Critical',
+    },
+  ];
+
+  // 7. PRIORITY ROI OPPORTUNITY MATRIX
+  const opportunityMatrix: ROIOpportunityItem[] = [
+    {
+      id: 'opp_1',
+      title: 'Publish Live LinkedIn & X Profile Packages',
+      priority: 'HIGH',
+      estimatedTime: '20 min',
+      difficulty: 'Easy',
+      authorityImpactPts: 12,
+      businessImpact: 'High',
+      description: 'Update your social profiles with the generated headlines, bio, and featured link CTA.',
+      isCompleted: true,
+    },
+    {
+      id: 'opp_2',
+      title: 'Deploy Hero & About Sections to Website Canvas',
+      priority: 'HIGH',
+      estimatedTime: '30 min',
+      difficulty: 'Medium',
+      authorityImpactPts: 15,
+      businessImpact: 'Transformational',
+      description: 'Implement the 9-section portfolio blueprint on your landing page to convert high-ticket traffic.',
+      isCompleted: false,
+    },
+    {
+      id: 'opp_3',
+      title: 'Publish First 3 Teardown Posts from Content Matrix',
+      priority: 'HIGH',
+      estimatedTime: '45 min',
+      difficulty: 'Medium',
+      authorityImpactPts: 10,
+      businessImpact: 'High',
+      description: 'Post Day 1-3 authority content teardowns to LinkedIn and X to establish public thought leadership.',
+      isCompleted: false,
+    },
+    {
+      id: 'opp_4',
+      title: 'Send 10 Permission-Based DMs to Target Prospects',
+      priority: 'MEDIUM',
+      estimatedTime: '30 min',
+      difficulty: 'Easy',
+      authorityImpactPts: 8,
+      businessImpact: 'Very High',
+      description: 'Initiate targeted outreach offering free teardowns to generate qualified pipeline leads.',
+      isCompleted: false,
+    },
+  ];
+
+  // 8. 7 / 30 / 90-DAY EXECUTION ROADMAPS
+  const roadmaps: RoadmapMilestone[] = [
+    {
+      dayRange: '7-Day Launch',
+      phaseTitle: 'Phase 1: Foundation & Profile Activation',
+      goals: ['Complete Brand Identity Engine', 'Update LinkedIn & Twitter Profiles', 'Publish Website Hero Section'],
+      keyDeliverables: ['LinkedIn Banner & Headline', 'Website Hero Copy', '1 Live Case Study Teardown'],
+      expectedOutcome: '100% Brand Consistency & Public Authority Infrastructure Live',
+    },
+    {
+      dayRange: '30-Day Scale',
+      phaseTitle: 'Phase 2: Content Engine & Outbound Pipeline',
+      goals: ['Publish 12 Authority Posts', 'Send 50 Outbound Value DMs', 'Deploy 9-Section Portfolio Website'],
+      keyDeliverables: ['30-Day Content Calendar Execution', 'Permission DM Sequence', 'Portfolio Website'],
+      expectedOutcome: 'Generating 3-5 Inbound/Outbound Qualified Strategy Calls Weekly',
+    },
+    {
+      dayRange: '90-Day Dominance',
+      phaseTitle: 'Phase 3: Category Dominance & Scale',
+      goals: ['Scale Retainer Offers', 'Publish 3 Comprehensive Proof Repositories', 'Establish Podcast Guest Pipeline'],
+      keyDeliverables: ['High-Ticket Retainer System', 'Proof Gallery', 'Media Press Kit'],
+      expectedOutcome: 'Category Leadership Position with Predictable $10k+ Monthly Revenue',
+    },
+  ];
+
+  return {
+    brandAssets,
+    profileSystem,
+    portfolioBlueprint,
+    contentCalendar,
+    outreachScripts,
+    competitorGaps,
+    opportunityMatrix,
+    roadmaps,
+  };
+}

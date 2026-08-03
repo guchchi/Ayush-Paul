@@ -1,61 +1,100 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useModule3Store } from '../../../lib/module3';
 import { StepHeader } from '../../workspace/StepHeader';
 import { StepActionArea } from '../../workspace/StepActionArea';
 import { ModuleButton } from '../../workspace/ModuleButton';
 import { Loader2 } from 'lucide-react';
-import { PlatformStrategySection } from './sections/PlatformStrategySection';
-import { ProfileStrategySection } from './sections/ProfileStrategySection';
-import { PortfolioStrategySection } from './sections/PortfolioStrategySection';
-import { TrustStrategySection } from './sections/TrustStrategySection';
-import { ContentStrategySection } from './sections/ContentStrategySection';
-import { BrandingStrategySection } from './sections/BrandingStrategySection';
-import { OptimizationSection } from './sections/OptimizationSection';
-import { PublishingRoadmapSection } from './sections/PublishingRoadmapSection';
-import { StrategySummarySection } from './sections/StrategySummarySection';
+import { generateFullAuthoritySuite, GeneratedAuthoritySuite } from '../../../data/module3/authority-suite-engine';
+import { BrandIdentitySection } from './sections/BrandIdentitySection';
+import { ProfileSystemSection } from './sections/ProfileSystemSection';
+import { PortfolioArchitectureSection } from './sections/PortfolioArchitectureSection';
+import { AuthorityContentEngineSection } from './sections/AuthorityContentEngineSection';
+import { DynamicAuthorityScoreSection } from './sections/DynamicAuthorityScoreSection';
 import { BeforeYouContinueChecklist } from './components/BeforeYouContinueChecklist';
 
 export function Step3ProfilePortfolio() {
-  const pendingStrategy = useModule3Store((s) => s.pendingProfilePortfolioStrategy);
-  const strategy = useModule3Store((s) => s.profilePortfolioStrategy);
-  const isUpstreamStale = useModule3Store((s) => s.isUpstreamStale);
-  const isGeneratingStrategy = useModule3Store((s) => s.isGeneratingStrategy);
-  const generateStrategy = useModule3Store((s) => s.generateProfilePortfolioStrategy);
-  const regenerateStrategy = useModule3Store((s) => s.regenerateProfilePortfolioStrategy);
+  const mod3State = useModule3Store();
   const approveStrategy = useModule3Store((s) => s.approveProfilePortfolioStrategy);
   const confirmStep = useModule3Store((s) => s.confirmStep);
   const nextStep = useModule3Store((s) => s.nextStep);
   const previousStep = useModule3Store((s) => s.previousStep);
 
-  const abortControllerRef = useRef<AbortController | null>(null);
   const [isChecklistComplete, setIsChecklistComplete] = useState(false);
 
-  useEffect(() => {
-    // Auto-generate if we have no strategy yet. Do not let upstream staleness block initial generation.
-    if (!pendingStrategy && !strategy && !isGeneratingStrategy) {
-      abortControllerRef.current = new AbortController();
-      generateStrategy(abortControllerRef.current.signal);
-    }
-  }, [pendingStrategy, strategy, isGeneratingStrategy, generateStrategy]);
+  // Generate full master suite using store context
+  const initialSuite = useMemo(() => {
+    return generateFullAuthoritySuite({
+      marketId: mod3State.mod1NicheId,
+      serviceId: mod3State.mod1ServiceId,
+      position: mod3State.authorityPosition,
+      trustPromise: mod3State.coreTrustPromise,
+      uniqueMechanism: mod3State.mod2UniqueMechanism,
+      offerType: mod3State.mod2OfferType,
+    });
+  }, [
+    mod3State.mod1NicheId,
+    mod3State.mod1ServiceId,
+    mod3State.authorityPosition,
+    mod3State.coreTrustPromise,
+    mod3State.mod2UniqueMechanism,
+    mod3State.mod2OfferType,
+  ]);
 
-  // Handle cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, []);
+  const [suite, setSuite] = useState<GeneratedAuthoritySuite>(initialSuite);
 
-  const handleRegenerate = () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    abortControllerRef.current = new AbortController();
-    regenerateStrategy(abortControllerRef.current.signal);
+  useEffect(() => {
+    setSuite(initialSuite);
+  }, [initialSuite]);
+
+  // Handler for editing brand assets
+  const handleBrandAssetChange = (assetId: string, newValue: string) => {
+    setSuite((prev) => ({
+      ...prev,
+      brandAssets: prev.brandAssets.map((a) => (a.id === assetId ? { ...a, value: newValue, isCustomized: true } : a)),
+    }));
   };
 
-  const displayStrategy = pendingStrategy || strategy;
+  const handleBrandAssetReset = (assetId: string) => {
+    setSuite((prev) => ({
+      ...prev,
+      brandAssets: prev.brandAssets.map((a) => (a.id === assetId ? { ...a, value: a.originalValue, isCustomized: false } : a)),
+    }));
+  };
+
+  // Handler for editing profile system fields
+  const handleProfileFieldChange = (platform: string, fieldKey: string, newValue: string) => {
+    setSuite((prev) => ({
+      ...prev,
+      profileSystem: prev.profileSystem.map((p) => {
+        if (p.platform !== platform) return p;
+        return {
+          ...p,
+          fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: newValue } : f)),
+        };
+      }),
+    }));
+  };
+
+  const handleProfileFieldReset = (platform: string, fieldKey: string) => {
+    setSuite((prev) => ({
+      ...prev,
+      profileSystem: prev.profileSystem.map((p) => {
+        if (p.platform !== platform) return p;
+        return {
+          ...p,
+          fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: f.originalValue } : f)),
+        };
+      }),
+    }));
+  };
+
+  // Handler for toggling opportunity tasks (Score Booster)
+  const handleToggleOpportunity = (taskId: string) => {
+    setSuite((prev) => ({
+      ...prev,
+      opportunityMatrix: prev.opportunityMatrix.map((o) => (o.id === taskId ? { ...o, isCompleted: !o.isCompleted } : o)),
+    }));
+  };
 
   const handleApprove = () => {
     approveStrategy();
@@ -64,62 +103,58 @@ export function Step3ProfilePortfolio() {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 sm:pb-0 relative">
+    <div className="flex flex-col h-full space-y-8 animate-in fade-in duration-500 pb-24 sm:pb-0 relative text-left">
       <StepHeader
-        title="Profile & Portfolio Strategy"
-        description="Your AI strategist has analyzed your authority position and proof assets to design a complete roadmap for your online presence. Review and refine your strategy."
+        title="Authority Command Center & Workspace"
+        description="Your living strategy workspace. Edit, refine, and copy real-world brand assets, multi-platform profile packages, 9-section portfolio blueprints, and your 30-day authority content matrix."
         step={{ current: 3, total: 3 }}
       />
 
-      {!displayStrategy || isGeneratingStrategy ? (
-        <div className="flex flex-col items-center justify-center py-20 text-neutral-400 space-y-4" aria-live="polite" aria-atomic="true">
-          <Loader2 className="w-8 h-8 animate-spin" />
-          <p className="text-sm">
-            {isGeneratingStrategy ? 'Generating your personalized strategy with AI...' : 'Analyzing your proof assets and positioning...'}
-          </p>
-        </div>
-      ) : (
-        <div className="flex-1 space-y-12">
-          {displayStrategy.strategySummary && <StrategySummarySection summary={displayStrategy.strategySummary} />}
-          {displayStrategy.platformStrategy && <PlatformStrategySection platformStrategy={displayStrategy.platformStrategy} />}
-          {displayStrategy.profileStrategy && <ProfileStrategySection profile={displayStrategy.profileStrategy} />}
-          {displayStrategy.portfolioStrategy && <PortfolioStrategySection portfolio={displayStrategy.portfolioStrategy} />}
-          {displayStrategy.trustStrategy && <TrustStrategySection trust={displayStrategy.trustStrategy} />}
-          {displayStrategy.contentStrategy && <ContentStrategySection content={displayStrategy.contentStrategy} />}
-          {displayStrategy.brandingStrategy && <BrandingStrategySection branding={displayStrategy.brandingStrategy} />}
-          {displayStrategy.optimizationRecommendations && <OptimizationSection optimizations={displayStrategy.optimizationRecommendations} />}
-          {displayStrategy.publishingRoadmap && <PublishingRoadmapSection roadmap={displayStrategy.publishingRoadmap} />}
-          
-          <BeforeYouContinueChecklist onAllChecked={setIsChecklistComplete} />
-        </div>
-      )}
+      <div className="space-y-12">
+        {/* Section 1: Brand Identity Engine (14 Copy-Ready Brand Assets) */}
+        <BrandIdentitySection
+          assets={suite.brandAssets}
+          onAssetChange={handleBrandAssetChange}
+          onAssetReset={handleBrandAssetReset}
+        />
 
+        {/* Section 2: Complete Multi-Platform Profile System */}
+        <ProfileSystemSection
+          packages={suite.profileSystem}
+          onFieldChange={handleProfileFieldChange}
+          onFieldReset={handleProfileFieldReset}
+        />
+
+        {/* Section 3: Portfolio Architecture Generator (9 Website Sections) */}
+        <PortfolioArchitectureSection sections={suite.portfolioBlueprint} />
+
+        {/* Section 4: 30-Day Authority Content Engine */}
+        <AuthorityContentEngineSection posts={suite.contentCalendar} />
+
+        {/* Section 5: Real-Time Dynamic Authority Score Engine */}
+        <DynamicAuthorityScoreSection
+          baseScore={76}
+          opportunities={suite.opportunityMatrix}
+          onToggleTask={handleToggleOpportunity}
+        />
+
+        <BeforeYouContinueChecklist onAllChecked={setIsChecklistComplete} />
+      </div>
+
+      {/* Action Footer Bar */}
       <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-neutral-200 p-4 -mx-4 sm:mx-0 sm:p-0 sm:bg-transparent sm:border-0 sm:relative z-20">
         <StepActionArea className="flex-col sm:flex-row gap-4 sm:gap-0 pt-0 sm:pt-4 border-0 sm:border-t sm:border-neutral-200">
           <div className="flex items-center justify-between w-full sm:w-auto space-x-3">
-            <ModuleButton
-              variant="secondary"
-              onClick={previousStep}
-              disabled={isGeneratingStrategy}
-              className="flex-1 sm:flex-none justify-center"
-            >
+            <ModuleButton variant="secondary" onClick={previousStep} className="flex-1 sm:flex-none justify-center">
               Back
-            </ModuleButton>
-            <ModuleButton
-              variant="secondary"
-              onClick={handleRegenerate}
-              disabled={isGeneratingStrategy || !displayStrategy}
-              className="flex-1 sm:flex-none justify-center"
-            >
-              Regenerate Strategy
             </ModuleButton>
           </div>
           <ModuleButton
             onClick={handleApprove}
-            disabled={!displayStrategy || isGeneratingStrategy || !isChecklistComplete}
-            className="w-full sm:w-auto justify-center mt-3 sm:mt-0"
+            disabled={!isChecklistComplete}
+            className="w-full sm:w-auto justify-center mt-3 sm:mt-0 px-6 py-3"
           >
-            Generate My Authority Pack →
+            Generate My Authority Operating System →
           </ModuleButton>
         </StepActionArea>
       </div>
