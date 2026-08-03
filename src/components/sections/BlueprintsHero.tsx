@@ -117,7 +117,7 @@ const PreviewCard = ({ card, index }: { card: typeof frameworkCards[0]; index: n
 
 export const BlueprintsHero = ({ onExploreClick, onBrowseClick, loading = false }: BlueprintsHeroProps) => {
   return (
-    <section className="relative pt-8 pb-12 md:pt-12 md:pb-16 px-6 overflow-hidden">
+    <section className="relative pt-28 pb-12 md:pt-36 md:pb-16 px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,88,190,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(0,88,190,0.012)_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
