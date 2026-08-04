@@ -652,8 +652,8 @@ export function Step2ProofAssetBuilder() {
     >
       <StepHeader 
         step={{ current: 2, total: 4 }}
-        title="Proof Strategy Blueprint" 
-        description="Select what starting proof materials you already have. We'll automatically identify your trust gaps and custom-build your proof recipe blueprint."
+        title="Proof Asset Builder" 
+        description="Audit your proof inventory, detect credibility gaps, and build the evidence required to earn buyer trust."
       />
 
       {/* Strategic Foundation Card */}
@@ -1555,13 +1555,23 @@ export function Step2ProofAssetBuilder() {
                       </div>
 
                       {/* Bottom Action Bar */}
-                      <div className="border-t border-neutral-100 pt-6 flex justify-between">
-                        <button
-                          onClick={() => setSelectedPath(null)}
-                          className="px-6 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors"
-                        >
-                          Change Path
-                        </button>
+                      <div className="border-t border-neutral-100 pt-6 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => setSelectedPath(null)}
+                            className="px-5 py-2.5 rounded-xl border border-neutral-200 text-[#0b1c30] hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors"
+                          >
+                            Back to Resources
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleSkipProject(workspaceProject.id);
+                            }}
+                            className="px-5 py-2.5 rounded-xl border border-neutral-200 text-neutral-500 hover:bg-neutral-50 text-xs font-black uppercase tracking-wider cursor-pointer transition-colors"
+                          >
+                            Skip for Now
+                          </button>
+                        </div>
 
                         <button
                           onClick={() => {
@@ -1571,7 +1581,7 @@ export function Step2ProofAssetBuilder() {
                           className="bg-[#0058be] hover:bg-blue-700 text-white min-h-[46px] px-8 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-1.5"
                         >
                           <CheckCircle2 size={14} />
-                          Mark as Complete
+                          Mark as Prepared ✓
                         </button>
                       </div>
                     </div>
@@ -1683,7 +1693,7 @@ export function Step2ProofAssetBuilder() {
           onClick={handleNextClick}
           disabled={isGenerating}
         >
-          Continue to Portfolio
+          Continue to Brand & Portfolio Generator
           <ArrowRight size={16} aria-hidden="true" />
         </ModuleButton>
       </StepActionArea>

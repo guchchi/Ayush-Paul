@@ -128,8 +128,8 @@ export function Step3ProfilePortfolio() {
       />
 
       <StepHeader
-        title="Authority Command Center & Workspace"
-        description="Your living strategy workspace. Refine your brand identity, visual multi-platform profile packages, portfolio blueprint, and 30-day content calendar."
+        title="Brand & Portfolio Generator"
+        description="Package your positioning and proof assets into a market-ready public brand, visual profile packages, 9-section portfolio architecture, and 30-day content calendar."
         step={{ current: 3, total: 3 }}
       />
 

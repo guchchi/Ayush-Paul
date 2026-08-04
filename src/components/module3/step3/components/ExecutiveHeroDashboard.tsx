@@ -44,7 +44,7 @@ export const ExecutiveHeroDashboard = React.memo(function ExecutiveHeroDashboard
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-            Authority Command Center
+            Brand & Portfolio Generator
           </h2>
         </div>
 

@@ -44,23 +44,23 @@ const threeOutcomes = [
 const stepDescriptions: Record<string, { title: string; desc: string }> = {
   authority_position: {
     title: 'Authority Position',
-    desc: 'Choose the credibility stance that honestly matches your experience level.',
+    desc: 'Define who you serve, what problem you solve, and what position you want to own.',
   },
   proof_strategy: {
     title: 'Proof Strategy',
-    desc: 'Identify the three credibility gaps buyers need answered before they trust you.',
+    desc: 'Identify the key credibility gaps buyers need answered before they trust you.',
   },
   proof_asset_builder: {
     title: 'Proof Asset Builder',
-    desc: 'Build three execution-ready demonstration projects that fill each gap.',
+    desc: 'Audit proof inventory, detect trust gaps, and build credibility evidence.',
   },
   profile_portfolio: {
-    title: 'Profile & Portfolio Authority',
-    desc: 'Turn your proof into buyer-facing copy and a structured portfolio.',
+    title: 'Brand & Portfolio Generator',
+    desc: 'Package positioning and proof assets into a market-ready public brand.',
   },
   authority_pack: {
-    title: 'Authority Pack',
-    desc: 'Compile everything into one system — ready for Module 4.',
+    title: 'Authority Operating System',
+    desc: 'Execute outbound acquisition, track roadmaps, access asset vault, and launch.',
   },
 };
 

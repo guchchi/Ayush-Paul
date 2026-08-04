@@ -13,8 +13,8 @@ import type { Module3Step } from '../../types/module3';
 const STEP_LABELS: Record<Module3Step, string> = {
   authority_position: 'Authority Position',
   proof_asset_builder: 'Proof Asset Builder',
-  profile_portfolio: 'Profile & Portfolio',
-  authority_pack: 'Authority Pack',
+  profile_portfolio: 'Brand & Portfolio Generator',
+  authority_pack: 'Authority Operating System',
 };
 
 function PhaseContext() {
