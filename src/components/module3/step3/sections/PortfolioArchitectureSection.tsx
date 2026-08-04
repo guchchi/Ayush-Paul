@@ -138,6 +138,20 @@ export const PortfolioArchitectureSection = React.memo(function PortfolioArchite
                         className="md:col-span-2"
                         onSave={(val) => onSectionChange && onSectionChange(section.id, { bodyCopy: val })}
                       />
+                      <EditableAssetCard
+                        id={`${section.id}_cta`}
+                        title="Section CTA Button Text"
+                        value={section.ctaText}
+                        originalValue={section.ctaText}
+                        onSave={(val) => onSectionChange && onSectionChange(section.id, { ctaText: val })}
+                      />
+                      <EditableAssetCard
+                        id={`${section.id}_trust`}
+                        title="Section Trust Statement / Badge"
+                        value={section.trustStatement || ''}
+                        originalValue={section.trustStatement || ''}
+                        onSave={(val) => onSectionChange && onSectionChange(section.id, { trustStatement: val })}
+                      />
                     </div>
                   </motion.div>
                 )}

@@ -71,6 +71,12 @@ export interface PortfolioBlueprintSection {
   ctaText: string;
   trustStatement?: string;
   animationSuggestion?: string;
+  isHeadlineCustomized?: boolean;
+  isSubheadlineCustomized?: boolean;
+  isBodyCustomized?: boolean;
+  isCtaCustomized?: boolean;
+  isTrustCustomized?: boolean;
+  isCustomized?: boolean;
 }
 
 export interface ContentPostItem {
@@ -134,6 +140,120 @@ export interface GeneratedAuthoritySuite {
   competitorGaps: CompetitorGapItem[];
   opportunityMatrix: ROIOpportunityItem[];
   roadmaps: RoadmapMilestone[];
+  upstreamFingerprint?: string;
+  status?: 'draft' | 'approved';
+  approvedAt?: string;
+}
+
+export function computeUpstreamFingerprint(ctx?: {
+  marketId?: string | null;
+  serviceId?: string | null;
+  position?: string | null;
+  trustPromise?: string | null;
+  uniqueMechanism?: string | null;
+  offerType?: string | null;
+  targetClient?: string | null;
+  proofContext?: ProofContext;
+}): string {
+  const payload = {
+    m: ctx?.marketId || '',
+    s: ctx?.serviceId || '',
+    p: ctx?.position || '',
+    tp: ctx?.trustPromise || '',
+    um: ctx?.uniqueMechanism || '',
+    ot: ctx?.offerType || '',
+    avail: (ctx?.proofContext?.availableAssets || []).slice().sort().join(','),
+    skip: (ctx?.proofContext?.skippedAssets || []).slice().sort().join(','),
+  };
+  return JSON.stringify(payload);
+}
+
+export function mergeAuthoritySuites(
+  existingSuite: GeneratedAuthoritySuite,
+  freshSuite: GeneratedAuthoritySuite
+): GeneratedAuthoritySuite {
+  // 1. Brand Assets Smart Merge
+  const mergedBrandAssets = freshSuite.brandAssets.map((freshItem) => {
+    const existingItem = existingSuite.brandAssets.find((a) => a.id === freshItem.id);
+    if (existingItem && (existingItem.isCustomized || existingItem.value !== existingItem.originalValue)) {
+      return {
+        ...freshItem,
+        value: existingItem.value,
+        isCustomized: true,
+      };
+    }
+    return freshItem;
+  });
+
+  // 2. Profile System Smart Merge
+  const mergedProfileSystem = freshSuite.profileSystem.map((freshPkg) => {
+    const existingPkg = existingSuite.profileSystem.find((p) => p.platform === freshPkg.platform);
+    if (!existingPkg) return freshPkg;
+
+    const mergedFields = freshPkg.fields.map((freshField) => {
+      const existingField = existingPkg.fields.find((f) => f.key === freshField.key);
+      if (existingField && (existingField.isCustomized || existingField.value !== existingField.originalValue)) {
+        return {
+          ...freshField,
+          value: existingField.value,
+          isCustomized: true,
+        };
+      }
+      return freshField;
+    });
+
+    return {
+      ...freshPkg,
+      fields: mergedFields,
+    };
+  });
+
+  // 3. Portfolio Blueprint Sections Smart Merge
+  const mergedPortfolioBlueprint = freshSuite.portfolioBlueprint.map((freshSection) => {
+    const existingSection = existingSuite.portfolioBlueprint.find((s) => s.id === freshSection.id);
+    if (!existingSection) return freshSection;
+
+    const isHeadlineCustomized = !!existingSection.isHeadlineCustomized;
+    const isSubheadlineCustomized = !!existingSection.isSubheadlineCustomized;
+    const isBodyCustomized = !!existingSection.isBodyCustomized;
+    const isCtaCustomized = !!existingSection.isCtaCustomized;
+    const isTrustCustomized = !!existingSection.isTrustCustomized;
+
+    return {
+      ...freshSection,
+      headline: isHeadlineCustomized ? existingSection.headline : freshSection.headline,
+      subheadline: isSubheadlineCustomized ? existingSection.subheadline : freshSection.subheadline,
+      bodyCopy: isBodyCustomized ? existingSection.bodyCopy : freshSection.bodyCopy,
+      ctaText: isCtaCustomized ? existingSection.ctaText : freshSection.ctaText,
+      trustStatement: isTrustCustomized ? existingSection.trustStatement : freshSection.trustStatement,
+      isHeadlineCustomized,
+      isSubheadlineCustomized,
+      isBodyCustomized,
+      isCtaCustomized,
+      isTrustCustomized,
+      isCustomized: isHeadlineCustomized || isSubheadlineCustomized || isBodyCustomized || isCtaCustomized || isTrustCustomized,
+    } as PortfolioBlueprintSection;
+  });
+
+  // 4. Opportunity Matrix Completion State
+  const mergedOpportunityMatrix = freshSuite.opportunityMatrix.map((freshOpp) => {
+    const existingOpp = existingSuite.opportunityMatrix.find((o) => o.id === freshOpp.id);
+    if (existingOpp && existingOpp.isCompleted) {
+      return { ...freshOpp, isCompleted: true };
+    }
+    return freshOpp;
+  });
+
+  return {
+    ...freshSuite,
+    brandAssets: mergedBrandAssets,
+    profileSystem: mergedProfileSystem,
+    portfolioBlueprint: mergedPortfolioBlueprint,
+    opportunityMatrix: mergedOpportunityMatrix,
+    upstreamFingerprint: freshSuite.upstreamFingerprint,
+    status: existingSuite.status || 'draft',
+    approvedAt: existingSuite.approvedAt,
+  };
 }
 
 export function generateFullAuthoritySuite(ctx?: {
@@ -697,6 +817,8 @@ export function generateFullAuthoritySuite(ctx?: {
     },
   ];
 
+  const upstreamFingerprint = computeUpstreamFingerprint(ctx);
+
   return {
     brandAssets,
     profileSystem,
@@ -706,5 +828,7 @@ export function generateFullAuthoritySuite(ctx?: {
     competitorGaps,
     opportunityMatrix,
     roadmaps,
+    upstreamFingerprint,
+    status: 'draft',
   };
 }

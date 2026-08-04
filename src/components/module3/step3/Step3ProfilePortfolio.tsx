@@ -5,7 +5,7 @@ import { StepActionArea } from '../../workspace/StepActionArea';
 import { ModuleButton } from '../../workspace/ModuleButton';
 import { ChevronDown, ChevronUp, Sparkles, Check, Copy, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generateFullAuthoritySuite, GeneratedAuthoritySuite, PortfolioBlueprintSection } from '../../../data/module3/authority-suite-engine';
+import { generateFullAuthoritySuite, GeneratedAuthoritySuite, PortfolioBlueprintSection, computeUpstreamFingerprint, mergeAuthoritySuites } from '../../../data/module3/authority-suite-engine';
 import { StickyWorkspaceHeader } from './components/StickyWorkspaceHeader';
 import { ExecutiveHeroDashboard } from './components/ExecutiveHeroDashboard';
 import { BuildModeWorkspace } from './components/BuildModeWorkspace';
@@ -65,12 +65,46 @@ export function Step3ProfilePortfolio() {
     mod3State.proofAssets,
   ]);
 
-  // Sync to store on initial load if empty
+  // Sync to store on initial load or smart merge when upstream fingerprint changes
   useEffect(() => {
     if (!storedSuite) {
       setAuthoritySuite(defaultSuite);
+    } else {
+      const currentFingerprint = computeUpstreamFingerprint({
+        marketId: mod3State.mod1NicheId,
+        serviceId: mod3State.mod1ServiceId,
+        position: mod3State.authorityPosition,
+        trustPromise: mod3State.coreTrustPromise,
+        uniqueMechanism: mod3State.mod2UniqueMechanism,
+        offerType: mod3State.mod2OfferType,
+        proofContext: {
+          availableAssets: mod3State.availableAssets || [],
+          skippedAssets: mod3State.skippedAssets || [],
+          existingProofInventory: mod3State.existingProofInventory || '',
+          proofAssets: mod3State.proofAssets || [],
+        },
+      });
+
+      if (storedSuite.upstreamFingerprint !== currentFingerprint) {
+        const merged = mergeAuthoritySuites(storedSuite, defaultSuite);
+        setAuthoritySuite(merged);
+      }
     }
-  }, [storedSuite, defaultSuite, setAuthoritySuite]);
+  }, [
+    storedSuite,
+    defaultSuite,
+    setAuthoritySuite,
+    mod3State.mod1NicheId,
+    mod3State.mod1ServiceId,
+    mod3State.authorityPosition,
+    mod3State.coreTrustPromise,
+    mod3State.mod2UniqueMechanism,
+    mod3State.mod2OfferType,
+    mod3State.availableAssets,
+    mod3State.skippedAssets,
+    mod3State.existingProofInventory,
+    mod3State.proofAssets,
+  ]);
 
   // Master active suite (prefers persisted Zustand suite)
   const suite: GeneratedAuthoritySuite = storedSuite || defaultSuite;

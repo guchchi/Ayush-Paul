@@ -496,18 +496,28 @@ export const useModule3Store = create<Module3State>()(
       },
 
       approveProfilePortfolioStrategy() {
-        const state = get();
-        if (state.pendingProfilePortfolioStrategy) {
-          set({
-            profilePortfolioStrategy: {
-              ...state.pendingProfilePortfolioStrategy,
-              status: 'approved',
-              approvedAt: new Date().toISOString(),
-            },
+        set((state) => {
+          const currentSuite = state.authoritySuite;
+          const currentLegacy = state.pendingProfilePortfolioStrategy || state.profilePortfolioStrategy;
+          return {
+            authoritySuite: currentSuite
+              ? {
+                  ...currentSuite,
+                  status: 'approved',
+                  approvedAt: new Date().toISOString(),
+                }
+              : null,
+            profilePortfolioStrategy: currentLegacy
+              ? {
+                  ...currentLegacy,
+                  status: 'approved',
+                  approvedAt: new Date().toISOString(),
+                }
+              : null,
             pendingProfilePortfolioStrategy: null,
             lastUpdated: Date.now(),
-          });
-        }
+          };
+        });
       },
 
       updateProfilePortfolioStrategy(updates) {
@@ -603,9 +613,24 @@ export const useModule3Store = create<Module3State>()(
           return {
             authoritySuite: {
               ...state.authoritySuite,
-              portfolioBlueprint: state.authoritySuite.portfolioBlueprint.map((s) =>
-                s.id === sectionId ? { ...s, ...updatedFields } : s
-              ),
+              portfolioBlueprint: state.authoritySuite.portfolioBlueprint.map((s) => {
+                if (s.id !== sectionId) return s;
+                const isHeadlineCustomized = 'headline' in updatedFields ? true : !!s.isHeadlineCustomized;
+                const isSubheadlineCustomized = 'subheadline' in updatedFields ? true : !!s.isSubheadlineCustomized;
+                const isBodyCustomized = 'bodyCopy' in updatedFields ? true : !!s.isBodyCustomized;
+                const isCtaCustomized = 'ctaText' in updatedFields ? true : !!s.isCtaCustomized;
+                const isTrustCustomized = 'trustStatement' in updatedFields ? true : !!s.isTrustCustomized;
+                return {
+                  ...s,
+                  ...updatedFields,
+                  isHeadlineCustomized,
+                  isSubheadlineCustomized,
+                  isBodyCustomized,
+                  isCtaCustomized,
+                  isTrustCustomized,
+                  isCustomized: true,
+                };
+              }),
             },
             lastUpdated: Date.now(),
           };
