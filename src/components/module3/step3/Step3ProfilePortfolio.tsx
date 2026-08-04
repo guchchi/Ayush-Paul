@@ -3,18 +3,16 @@ import { useModule3Store } from '../../../lib/module3';
 import { StepHeader } from '../../workspace/StepHeader';
 import { StepActionArea } from '../../workspace/StepActionArea';
 import { ModuleButton } from '../../workspace/ModuleButton';
-import { ChevronDown, ChevronUp, Sparkles, Zap } from 'lucide-react';
+import { ChevronDown, ChevronUp, Sparkles, Check, Copy, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generateFullAuthoritySuite, GeneratedAuthoritySuite } from '../../../data/module3/authority-suite-engine';
+import { generateFullAuthoritySuite, GeneratedAuthoritySuite, PortfolioBlueprintSection } from '../../../data/module3/authority-suite-engine';
 import { StickyWorkspaceHeader } from './components/StickyWorkspaceHeader';
 import { ExecutiveHeroDashboard } from './components/ExecutiveHeroDashboard';
 import { BuildModeWorkspace } from './components/BuildModeWorkspace';
-import { MissionControlFooter } from './components/MissionControlFooter';
 import { BrandIdentitySection } from './sections/BrandIdentitySection';
 import { ProfileSystemSection } from './sections/ProfileSystemSection';
 import { PortfolioArchitectureSection } from './sections/PortfolioArchitectureSection';
 import { AuthorityContentEngineSection } from './sections/AuthorityContentEngineSection';
-import { DynamicAuthorityScoreSection } from './sections/DynamicAuthorityScoreSection';
 import { BeforeYouContinueChecklist } from './components/BeforeYouContinueChecklist';
 import { EASING, DURATION } from '../../../lib/motion-presets';
 
@@ -25,11 +23,21 @@ export function Step3ProfilePortfolio() {
   const nextStep = useModule3Store((s) => s.nextStep);
   const previousStep = useModule3Store((s) => s.previousStep);
 
-  const [isChecklistComplete, setIsChecklistComplete] = useState(false);
-  const [openSection, setOpenSection] = useState<'brand' | 'profile' | 'portfolio' | 'content' | 'score' | 'all'>('brand');
+  const storedSuite = useModule3Store((s) => s.authoritySuite);
+  const setAuthoritySuite = useModule3Store((s) => s.setAuthoritySuite);
+  const updateBrandAsset = useModule3Store((s) => s.updateBrandAsset);
+  const resetBrandAsset = useModule3Store((s) => s.resetBrandAsset);
+  const updateProfileField = useModule3Store((s) => s.updateProfileField);
+  const resetProfileField = useModule3Store((s) => s.resetProfileField);
+  const updatePortfolioSection = useModule3Store((s) => s.updatePortfolioSection);
+  const toggleOpportunityTask = useModule3Store((s) => s.toggleOpportunityTask);
 
-  // Master suite data
-  const initialSuite = useMemo(() => {
+  const [isChecklistComplete, setIsChecklistComplete] = useState(false);
+  const [openSection, setOpenSection] = useState<'brand' | 'profile' | 'portfolio' | 'content' | 'all'>('brand');
+  const [copyToast, setCopyToast] = useState<string | null>(null);
+
+  // Generate default suite from context if not already stored
+  const defaultSuite = useMemo(() => {
     return generateFullAuthoritySuite({
       marketId: mod3State.mod1NicheId,
       serviceId: mod3State.mod1ServiceId,
@@ -57,60 +65,105 @@ export function Step3ProfilePortfolio() {
     mod3State.proofAssets,
   ]);
 
-  const [suite, setSuite] = useState<GeneratedAuthoritySuite>(initialSuite);
-
+  // Sync to store on initial load if empty
   useEffect(() => {
-    setSuite(initialSuite);
-  }, [initialSuite]);
+    if (!storedSuite) {
+      setAuthoritySuite(defaultSuite);
+    }
+  }, [storedSuite, defaultSuite, setAuthoritySuite]);
 
-  // Handler for editing brand assets
+  // Master active suite (prefers persisted Zustand suite)
+  const suite: GeneratedAuthoritySuite = storedSuite || defaultSuite;
+
+  // Handlers tied to store persistence
   const handleBrandAssetChange = (assetId: string, newValue: string) => {
-    setSuite((prev) => ({
-      ...prev,
-      brandAssets: prev.brandAssets.map((a) => (a.id === assetId ? { ...a, value: newValue, isCustomized: true } : a)),
-    }));
+    updateBrandAsset(assetId, newValue);
   };
 
   const handleBrandAssetReset = (assetId: string) => {
-    setSuite((prev) => ({
-      ...prev,
-      brandAssets: prev.brandAssets.map((a) => (a.id === assetId ? { ...a, value: a.originalValue, isCustomized: false } : a)),
-    }));
+    resetBrandAsset(assetId);
   };
 
-  // Handler for editing profile system fields
   const handleProfileFieldChange = (platform: string, fieldKey: string, newValue: string) => {
-    setSuite((prev) => ({
-      ...prev,
-      profileSystem: prev.profileSystem.map((p) => {
-        if (p.platform !== platform) return p;
-        return {
-          ...p,
-          fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: newValue } : f)),
-        };
-      }),
-    }));
+    updateProfileField(platform, fieldKey, newValue);
   };
 
   const handleProfileFieldReset = (platform: string, fieldKey: string) => {
-    setSuite((prev) => ({
-      ...prev,
-      profileSystem: prev.profileSystem.map((p) => {
-        if (p.platform !== platform) return p;
-        return {
-          ...p,
-          fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: f.originalValue } : f)),
-        };
-      }),
-    }));
+    resetProfileField(platform, fieldKey);
   };
 
-  // Handler for toggling opportunity tasks
-  const handleToggleOpportunity = (taskId: string) => {
-    setSuite((prev) => ({
-      ...prev,
-      opportunityMatrix: prev.opportunityMatrix.map((o) => (o.id === taskId ? { ...o, isCompleted: !o.isCompleted } : o)),
-    }));
+  const handleSectionChange = (sectionId: string, updatedFields: Partial<PortfolioBlueprintSection>) => {
+    updatePortfolioSection(sectionId, updatedFields);
+  };
+
+  const handleToggleTask = (taskId: string) => {
+    toggleOpportunityTask(taskId);
+  };
+
+  // Build Mode Action A: Copy LinkedIn Profile Package
+  const handleCopyLinkedInPackage = () => {
+    const linkedInPkg = suite.profileSystem.find((p) => p.platform === 'linkedin');
+    if (!linkedInPkg) return;
+
+    const formattedText = linkedInPkg.fields
+      .map((f) => `### ${f.label}\n${f.value}`)
+      .join('\n\n');
+
+    navigator.clipboard.writeText(formattedText);
+    setCopyToast('LinkedIn Profile Package Copied to Clipboard!');
+    setTimeout(() => setCopyToast(null), 3000);
+  };
+
+  // Build Mode Action B: Export Central Asset Vault
+  const handleExportVault = () => {
+    const brandText = suite.brandAssets.map((a) => `### ${a.title}\n${a.value}`).join('\n\n');
+
+    const profileText = suite.profileSystem
+      .map((p) => `## ${p.title}\n` + p.fields.map((f) => `**${f.label}:** ${f.value}`).join('\n\n'))
+      .join('\n\n---\n\n');
+
+    const portfolioText = suite.portfolioBlueprint
+      .map((s) => `### ${s.title}\n**Headline:** ${s.headline}\n**Subheadline:** ${s.subheadline}\n**Body Copy:** ${s.bodyCopy}\n**CTA:** ${s.ctaText}`)
+      .join('\n\n---\n\n');
+
+    const contentText = suite.contentCalendar
+      .map((c) => `### Day ${c.dayNumber} [${c.platform} - ${c.format}]\n**Hook:** "${c.hook}"\n**Body:** ${c.body}\n**CTA:** ${c.cta}`)
+      .join('\n\n');
+
+    const markdownDoc = `# AUTHORITY PACK — EXECUTIVE SUITE
+*Generated & Customized via Module 3 Authority Engine*
+
+# 1. BRAND IDENTITY ENGINE
+${brandText}
+
+---
+
+# 2. VISUAL MULTI-PLATFORM PROFILE SYSTEM
+${profileText}
+
+---
+
+# 3. PORTFOLIO ARCHITECTURE BLUEPRINT (9 SECTIONS)
+${portfolioText}
+
+---
+
+# 4. 30-DAY AUTHORITY CONTENT ENGINE
+${contentText}
+`;
+
+    const blob = new Blob([markdownDoc], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Authority-Pack.md');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setCopyToast('Authority-Pack.md Downloaded!');
+    setTimeout(() => setCopyToast(null), 3000);
   };
 
   const handleApprove = () => {
@@ -139,15 +192,23 @@ export function Step3ProfilePortfolio() {
     }
   };
 
-  const handleScrollToBuildMode = () => {
-    const el = document.getElementById('build-mode-workspace');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="flex flex-col h-full space-y-8 animate-in fade-in duration-500 pb-24 sm:pb-0 relative text-left">
+      {/* Toast Notification Banner */}
+      <AnimatePresence>
+        {copyToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-6 right-6 z-50 bg-emerald-900 text-white px-5 py-3 rounded-2xl shadow-xl border border-emerald-500/30 text-xs font-bold flex items-center gap-2"
+          >
+            <Check size={16} className="text-emerald-400" />
+            <span>{copyToast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* 1. Floating Sticky Workspace Header (Appears on scroll) */}
       <StickyWorkspaceHeader
         authorityScore={authorityScore}
@@ -292,7 +353,10 @@ export function Step3ProfilePortfolio() {
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
                 className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
               >
-                <PortfolioArchitectureSection sections={suite.portfolioBlueprint} />
+                <PortfolioArchitectureSection
+                  sections={suite.portfolioBlueprint}
+                  onSectionChange={handleSectionChange}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -330,60 +394,20 @@ export function Step3ProfilePortfolio() {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Accordion 5: Dynamic Authority Score */}
-        <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs overflow-hidden">
-          <button
-            onClick={() => setOpenSection(openSection === 'score' ? 'none' as any : 'score')}
-            className="w-full p-5 flex items-center justify-between text-left cursor-pointer hover:bg-neutral-50/80 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-black flex items-center justify-center border border-emerald-100">
-                05
-              </span>
-              <div>
-                <h4 className="text-base font-black text-[#0b1c30]">5. Real-Time Dynamic Authority Score Engine</h4>
-                <p className="text-xs text-neutral-500 font-medium">Live score recalculation & interactive task roadmap</p>
-              </div>
-            </div>
-            {openSection === 'score' || openSection === 'all' ? <ChevronUp size={18} className="text-neutral-400" /> : <ChevronDown size={18} className="text-neutral-400" />}
-          </button>
-
-          <AnimatePresence>
-            {(openSection === 'score' || openSection === 'all') && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
-              >
-                <DynamicAuthorityScoreSection
-                  baseScore={baseScore}
-                  opportunities={suite.opportunityMatrix}
-                  onToggleTask={handleToggleOpportunity}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
       </div>
 
       {/* 4. Execution & Launch Hub (Contextual 1-Click Execution Bridges) */}
       <div id="build-mode-workspace" className="pt-2 border-t border-neutral-200/80">
-        <BuildModeWorkspace />
+        <BuildModeWorkspace
+          onCopyLinkedInPackage={handleCopyLinkedInPackage}
+          onExportVault={handleExportVault}
+        />
       </div>
 
+      {/* 5. Streamlined Launch Checklist */}
       <BeforeYouContinueChecklist onAllChecked={setIsChecklistComplete} />
 
-      {/* 5. End-of-Page Mission Control Continuation Engine */}
-      <MissionControlFooter
-        progressPercent={progressPercent}
-        readinessPercent={readinessPercent}
-        onBuildNow={handleScrollToBuildMode}
-      />
-
-      {/* Action Footer Bar */}
+      {/* 6. Action Footer Bar */}
       <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-neutral-200 p-4 -mx-4 sm:mx-0 sm:p-0 sm:bg-transparent sm:border-0 sm:relative z-20">
         <StepActionArea className="flex-col sm:flex-row gap-4 sm:gap-0 pt-0 sm:pt-4 border-0 sm:border-t sm:border-neutral-200">
           <div className="flex items-center justify-between w-full sm:w-auto space-x-3">
@@ -403,3 +427,4 @@ export function Step3ProfilePortfolio() {
     </div>
   );
 }
+

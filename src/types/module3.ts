@@ -6,6 +6,7 @@ import type {
   ValueBasedPricing,
   ProposalSummary,
 } from './offer-engineering';
+import type { GeneratedAuthoritySuite, PortfolioBlueprintSection } from '../data/module3/authority-suite-engine';
 
 export const MODULE3_STEPS = [
   'authority_position',
@@ -435,6 +436,15 @@ export interface Module3State {
   generateProofAssetStrategy(): void;
   selectExecutionPriority(priority: 'immediate' | 'short_term' | 'long_term'): void;
   approveProofAssetStrategy(): void;
+
+  authoritySuite: GeneratedAuthoritySuite | null;
+  setAuthoritySuite(suite: GeneratedAuthoritySuite | null): void;
+  updateBrandAsset(assetId: string, newValue: string): void;
+  resetBrandAsset(assetId: string): void;
+  updateProfileField(platform: string, fieldKey: string, newValue: string): void;
+  resetProfileField(platform: string, fieldKey: string): void;
+  updatePortfolioSection(sectionId: string, updatedFields: Partial<PortfolioBlueprintSection>): void;
+  toggleOpportunityTask(taskId: string): void;
 
   setPendingProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
   setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;

@@ -2,26 +2,45 @@ import type { Module3State, Module4BridgeContext, ProfileCopy, PortfolioCopy } f
 
 export const Module4BridgeAdapter = {
   generateContext(state: Module3State): Module4BridgeContext {
-    // Generate legacy ProfileCopy structure from the structural strategy
+    const suite = state.authoritySuite;
+
+    // Helper to extract brand asset or profile field value
+    const getBrandAsset = (id: string) => suite?.brandAssets.find((a) => a.id === id)?.value;
+    const getLinkedInField = (key: string) =>
+      suite?.profileSystem.find((p) => p.platform === 'linkedin')?.fields.find((f) => f.key === key)?.value;
+
+    // Generate ProfileCopy structure using persisted suite
     const legacyProfileCopy: ProfileCopy = {
-      professionalHeadline: state.authorityProfile?.position || state.authorityPosition || 'Expert',
-      shortBio: state.authorityProfile?.coreTrustPromise || state.coreTrustPromise || '',
-      longBio: state.profilePortfolioStrategy?.profileStrategy.bio || '',
-      offerStatement: state.profilePortfolioStrategy?.profileStrategy.bannerConcept || '',
-      credibilityBullets: state.profilePortfolioStrategy?.trustStrategy.recommendedElements || [],
-      proofReferenceLine: state.profilePortfolioStrategy?.trustStrategy.priority || '',
-      ctaLine: state.profilePortfolioStrategy?.profileStrategy.callToAction || 'View my work below.',
+      professionalHeadline: getLinkedInField('headline') || state.authorityProfile?.position || state.authorityPosition || 'Expert',
+      shortBio: getBrandAsset('brand_positioning') || state.authorityProfile?.coreTrustPromise || state.coreTrustPromise || '',
+      longBio: getLinkedInField('about') || state.profilePortfolioStrategy?.profileStrategy.bio || '',
+      offerStatement: getBrandAsset('brand_value_prop') || state.profilePortfolioStrategy?.profileStrategy.bannerConcept || '',
+      credibilityBullets: state.profilePortfolioStrategy?.trustStrategy.recommendedElements || [
+        getBrandAsset('brand_promise') || 'Verifiable outputs',
+        getBrandAsset('brand_diff') || 'Direct implementation',
+      ],
+      proofReferenceLine: state.profilePortfolioStrategy?.trustStrategy.priority || getBrandAsset('brand_pitch60') || '',
+      ctaLine: getLinkedInField('featured_cta') || state.profilePortfolioStrategy?.profileStrategy.callToAction || 'View my work below.',
     };
 
-    // Generate legacy PortfolioCopy structure from the structural strategy
+    const heroSection = suite?.portfolioBlueprint.find((s) => s.id === 'section_hero');
+
+    // Generate PortfolioCopy structure using persisted suite
     const legacyPortfolioCopy: PortfolioCopy = {
-      portfolioCta: 'Let\'s talk',
-      sections: state.profilePortfolioStrategy?.portfolioStrategy.recommendedStructure.map((section, idx) => ({
-        type: `section-${idx}`,
-        heading: section,
-        body: '',
-        bullets: [],
-      })) || [],
+      portfolioCta: heroSection?.ctaText || 'Access Authority Portfolio →',
+      sections: suite
+        ? suite.portfolioBlueprint.map((section, idx) => ({
+            type: `section-${idx + 1}`,
+            heading: section.headline ? `${section.title}: ${section.headline}` : section.title,
+            body: `${section.subheadline ? section.subheadline + '\n\n' : ''}${section.bodyCopy || ''}`,
+            bullets: section.trustStatement ? [section.trustStatement] : [],
+          }))
+        : state.profilePortfolioStrategy?.portfolioStrategy.recommendedStructure.map((section, idx) => ({
+            type: `section-${idx}`,
+            heading: section,
+            body: '',
+            bullets: [],
+          })) || [],
     };
 
     return {
@@ -40,7 +59,7 @@ export const Module4BridgeAdapter = {
       mod2ProposalSummary: state.mod2ProposalSummary as Record<string, any>,
       
       mod3AuthorityPosition: state.authorityProfile?.position || state.authorityPosition || 'builder',
-      mod3CoreTrustPromise: state.authorityProfile?.coreTrustPromise || state.coreTrustPromise,
+      mod3CoreTrustPromise: getBrandAsset('brand_promise') || state.authorityProfile?.coreTrustPromise || state.coreTrustPromise,
       mod3ProofPriorities: state.proofPriorities.map((p) => ({
         id: p.id,
         gapTitle: p.gapTitle,

@@ -159,6 +159,8 @@ export const useModule3Store = create<Module3State>()(
 
       proofAssets: [],
 
+      authoritySuite: null,
+
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
       isGeneratingStrategy: false,
@@ -520,6 +522,108 @@ export const useModule3Store = create<Module3State>()(
           return state.pendingProfilePortfolioStrategy
             ? { pendingProfilePortfolioStrategy: updated }
             : { profilePortfolioStrategy: updated };
+        });
+      },
+
+      setAuthoritySuite(suite) {
+        set({ authoritySuite: suite, lastUpdated: Date.now() });
+      },
+
+      updateBrandAsset(assetId, newValue) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              brandAssets: state.authoritySuite.brandAssets.map((a) =>
+                a.id === assetId ? { ...a, value: newValue, isCustomized: true } : a
+              ),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      resetBrandAsset(assetId) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              brandAssets: state.authoritySuite.brandAssets.map((a) =>
+                a.id === assetId ? { ...a, value: a.originalValue, isCustomized: false } : a
+              ),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      updateProfileField(platform, fieldKey, newValue) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              profileSystem: state.authoritySuite.profileSystem.map((p) => {
+                if (p.platform !== platform) return p;
+                return {
+                  ...p,
+                  fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: newValue, isCustomized: true } : f)),
+                };
+              }),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      resetProfileField(platform, fieldKey) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              profileSystem: state.authoritySuite.profileSystem.map((p) => {
+                if (p.platform !== platform) return p;
+                return {
+                  ...p,
+                  fields: p.fields.map((f) => (f.key === fieldKey ? { ...f, value: f.originalValue, isCustomized: false } : f)),
+                };
+              }),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      updatePortfolioSection(sectionId, updatedFields) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              portfolioBlueprint: state.authoritySuite.portfolioBlueprint.map((s) =>
+                s.id === sectionId ? { ...s, ...updatedFields } : s
+              ),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      toggleOpportunityTask(taskId) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              opportunityMatrix: state.authoritySuite.opportunityMatrix.map((o) =>
+                o.id === taskId ? { ...o, isCompleted: !o.isCompleted } : o
+              ),
+            },
+            lastUpdated: Date.now(),
+          };
         });
       },
 
@@ -924,6 +1028,8 @@ export const useModule3Store = create<Module3State>()(
         coreTrustPromise: state.coreTrustPromise,
         authorityPositionRationale: state.authorityPositionRationale,
         availableAssets: state.availableAssets,
+        skippedAssets: state.skippedAssets,
+        authoritySuite: state.authoritySuite,
         strongestAsset: state.strongestAsset,
         missingAssets: state.missingAssets,
         proofPriorities: state.proofPriorities,
