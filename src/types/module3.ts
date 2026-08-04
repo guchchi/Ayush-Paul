@@ -139,6 +139,13 @@ export interface ProofAsset {
   realWorldExample?: string;
 }
 
+export interface ProofContext {
+  availableAssets: string[];
+  skippedAssets: string[];
+  existingProofInventory?: string;
+  proofAssets?: ProofAsset[];
+}
+
 export interface ProfileCopy {
   professionalHeadline: string;
   shortBio: string;
@@ -357,6 +364,7 @@ export interface Module3State {
   authorityPositionRationale: string;
 
   availableAssets: string[];
+  skippedAssets: string[];
   strongestAsset: string | null;
   missingAssets: string[];
 
@@ -413,6 +421,7 @@ export interface Module3State {
   setCoreTrustPromise(value: string): void;
   setAuthorityPositionRationale(value: string): void;
   setAvailableAssets(assets: string[]): void;
+  setSkippedAssets(assets: string[]): void;
   setStrongestAsset(asset: string | null): void;
   setMissingAssets(assets: string[]): void;
   setProofPriorities(value: ProofPriority[]): void;

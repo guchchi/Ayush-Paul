@@ -147,6 +147,7 @@ export const useModule3Store = create<Module3State>()(
       authorityPositionRationale: '',
 
       availableAssets: [],
+      skippedAssets: [],
       strongestAsset: null,
       missingAssets: [],
 
@@ -274,6 +275,10 @@ export const useModule3Store = create<Module3State>()(
 
       setAvailableAssets(value: string[]) {
         set({ availableAssets: value, lastUpdated: Date.now() });
+      },
+
+      setSkippedAssets(value: string[]) {
+        set({ skippedAssets: value, lastUpdated: Date.now() });
       },
 
       setStrongestAsset(value: string | null) {

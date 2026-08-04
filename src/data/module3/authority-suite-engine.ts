@@ -1,8 +1,38 @@
+import type { ProofContext } from '../../types/module3';
+
 export function formatSnakeCaseWords(str: string): string {
   if (!str) return '';
   return str
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function analyzeProofContext(proofCtx?: ProofContext) {
+  const equipped = proofCtx?.availableAssets || [];
+  const skipped = proofCtx?.skippedAssets || [];
+  
+  const hasTestimonials = equipped.some((id) => id.includes('testimonial') || id.includes('client_testimonials'));
+  const hasCaseStudies = equipped.some((id) => id.includes('case_study') || id.includes('design_case_study'));
+  const hasBeforeAfter = equipped.some((id) => id.includes('before') || id.includes('comparison'));
+  const hasDemos = equipped.some((id) => id.includes('video') || id.includes('showreel') || id.includes('demo') || id.includes('prototype') || id.includes('live'));
+  const hasMetrics = equipped.some((id) => id.includes('metric') || id.includes('analytics') || id.includes('conversion'));
+  const hasCodeOrTech = equipped.some((id) => id.includes('code') || id.includes('github') || id.includes('automation'));
+  
+  const totalEquipped = equipped.length;
+  const isLowProof = totalEquipped === 0;
+
+  return {
+    equipped,
+    skipped,
+    hasTestimonials,
+    hasCaseStudies,
+    hasBeforeAfter,
+    hasDemos,
+    hasMetrics,
+    hasCodeOrTech,
+    totalEquipped,
+    isLowProof,
+  };
 }
 
 export interface BrandAssetItem {
@@ -24,6 +54,7 @@ export interface ProfileSystemAsset {
     label: string;
     value: string;
     originalValue: string;
+    isCustomized?: boolean;
   }[];
 }
 
@@ -46,8 +77,8 @@ export interface ContentPostItem {
   dayNumber: number;
   weekNumber: number;
   title: string;
-  platform: 'LinkedIn' | 'X/Twitter' | 'YouTube' | 'Newsletter';
-  format: 'Text + Image' | 'Carousel' | 'Short Video' | 'Text Post' | 'Long Form';
+  platform: 'LinkedIn' | 'X' | 'X/Twitter' | 'YouTube' | 'Newsletter';
+  format: 'Text + Image' | 'Carousel' | 'Short Video' | 'Text Thread' | 'Text Post' | 'Long Form';
   contentAngle: string;
   hook: string;
   body: string;
@@ -71,7 +102,7 @@ export interface CompetitorGapItem {
   genericCompetitors: string;
   yourAuthoritySystem: string;
   gapImpact: string;
-  advantageLevel: 'High' | 'Dominant' | 'Critical';
+  advantageLevel: 'Dominant' | 'High' | 'Critical';
 }
 
 export interface ROIOpportunityItem {
@@ -81,13 +112,13 @@ export interface ROIOpportunityItem {
   estimatedTime: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   authorityImpactPts: number;
-  businessImpact: 'High' | 'Very High' | 'Transformational';
+  businessImpact: string;
   description: string;
-  isCompleted?: boolean;
+  isCompleted: boolean;
 }
 
 export interface RoadmapMilestone {
-  dayRange: '7-Day Launch' | '30-Day Scale' | '90-Day Dominance';
+  dayRange: string;
   phaseTitle: string;
   goals: string[];
   keyDeliverables: string[];
@@ -113,12 +144,15 @@ export function generateFullAuthoritySuite(ctx?: {
   uniqueMechanism?: string | null;
   offerType?: string | null;
   targetClient?: string | null;
+  proofContext?: ProofContext;
 }): GeneratedAuthoritySuite {
   const market = formatSnakeCaseWords(ctx?.marketId || 'target_clients');
   const service = formatSnakeCaseWords(ctx?.serviceId || 'high_ticket_services');
   const position = formatSnakeCaseWords(ctx?.position || 'builder');
   const mechanism = ctx?.uniqueMechanism || 'Proof-First Demonstration Engine';
   const promise = ctx?.trustPromise || 'Verifiable outputs with zero fabricated claims';
+
+  const proofAnalysis = analyzeProofContext(ctx?.proofContext);
 
   // 1. BRAND IDENTITY ENGINE (14 Assets)
   const brandAssets: BrandAssetItem[] = [
@@ -236,6 +270,47 @@ export function generateFullAuthoritySuite(ctx?: {
     },
   ];
 
+  // Construct dynamic proof-based copy for Portfolio Sections & Profile System
+  let proofSectionHeadline = `Interactive Proof Asset Gallery`;
+  let proofSectionSubhead = `Inspect live outputs, templates, and execution blueprints.`;
+  let proofSectionBody = `Transparency is our core currency. Browse our open proof repository to evaluate exact execution standards and strategic documentation.`;
+  let proofSectionVisuals = `Embedded live interactive widget, clickable prototype link, GitHub repository link.`;
+  let proofTrustNote = `🛡️ Verifiable proof assets self-reported & prepared in Step 2.`;
+
+  if (proofAnalysis.hasBeforeAfter || proofAnalysis.hasDemos) {
+    proofSectionHeadline = `Live Interactive Demos & Before/After Proof`;
+    proofSectionSubhead = `See raw baseline assets side-by-side with our high-pacing optimizations.`;
+    proofSectionBody = `Browse live interactive prototypes and split-screen visual comparisons demonstrating immediate visual and performance speedups for ${market}.`;
+    proofSectionVisuals = `Split-screen Before/After video, interactive prototype embed, live demo workspace link.`;
+  } else if (proofAnalysis.hasMetrics) {
+    proofSectionHeadline = `Data-Backed Results & Performance Metrics`;
+    proofSectionSubhead = `Analytics graphs and conversion improvements recorded under real production conditions.`;
+    proofSectionBody = `Examine verified metric reports and analytics dashboards highlighting exact performance gains achieved using ${mechanism}.`;
+    proofSectionVisuals = `Verified metrics breakdown chart, Google Analytics screenshot proof.`;
+  } else if (proofAnalysis.isLowProof) {
+    proofSectionHeadline = `Methodology Teardown & Transparent Workflow`;
+    proofSectionSubhead = `Zero fabricated claims. Complete transparency into our execution frameworks.`;
+    proofSectionBody = `Rather than fabricating unverified claims, we document our exact step-by-step methodology, architecture wireframes, and process standards. Inspect our transparent workflow before partnering.`;
+    proofSectionVisuals = `Methodology architecture diagram, transparent workflow flowchart, open design spec notebook.`;
+    proofTrustNote = `🛡️ Process-first transparency. Proof assets currently building; full methodology open for inspection.`;
+  }
+
+  let testimonialsHeadline = `What ${market} Say About Working With Us`;
+  let testimonialsSubhead = `Feedback from partners who transformed their business with our authority system.`;
+  let testimonialsBody = `"Working with us was the single best decision for our ${service}. The level of proof and clarity was unlike any agency." — Verified Client Partner`;
+
+  if (!proofAnalysis.hasTestimonials) {
+    testimonialsHeadline = `Client Partnership & Delivery Commitments`;
+    testimonialsSubhead = `Our transparent service-level agreements and execution guarantees.`;
+    testimonialsBody = `We prioritize verifiable execution over verbal claims. Every client engagement includes milestone verification, documented deliverable standards, and zero hidden scope surprises.`;
+  }
+
+  const socialProofLine = (proofAnalysis.hasTestimonials || proofAnalysis.hasCaseStudies)
+    ? `Backed by verified case studies & client endorsements in ${market}.`
+    : (proofAnalysis.hasDemos || proofAnalysis.hasBeforeAfter)
+    ? `Featuring live video demos & before/after performance comparisons.`
+    : `Methodology-first execution with 100% transparent process proof.`;
+
   // 2. COMPLETE PROFILE SYSTEM
   const profileSystem: ProfileSystemAsset[] = [
     {
@@ -251,8 +326,8 @@ export function generateFullAuthoritySuite(ctx?: {
         {
           key: 'headline',
           label: 'Professional Headline',
-          value: `${service} Partner for ${market} | Creator of ${mechanism} | Proof-First Execution`,
-          originalValue: `${service} Partner for ${market} | Creator of ${mechanism} | Proof-First Execution`,
+          value: `${service} Partner for ${market} | Creator of ${mechanism} | ${socialProofLine}`,
+          originalValue: `${service} Partner for ${market} | Creator of ${mechanism} | ${socialProofLine}`,
         },
         {
           key: 'about',
@@ -359,8 +434,8 @@ export function generateFullAuthoritySuite(ctx?: {
         {
           key: 'social_proof_line',
           label: 'Social Proof Micro-copy',
-          value: `Trusted by high-growth ${market} seeking verifiable delivery standards.`,
-          originalValue: `Trusted by high-growth ${market} seeking verifiable delivery standards.`,
+          value: socialProofLine,
+          originalValue: socialProofLine,
         },
       ],
     },
@@ -424,11 +499,12 @@ export function generateFullAuthoritySuite(ctx?: {
       title: '5. Verifiable Proof Assets & Code',
       purpose: 'Show actual deliverable outputs, repositories, live dashboards, or design files.',
       conversionReasoning: 'Unquestionable proof: clients can see, touch, and test your actual work quality before buying.',
-      recommendedVisuals: 'Embedded live interactive widget, clickable prototype link, GitHub repository link.',
-      headline: `Interactive Proof Asset Gallery`,
-      subheadline: `Inspect live outputs, templates, and execution blueprints.`,
-      bodyCopy: `Transparency is our core currency. Browse our open proof repository to evaluate exact code quality, design tokens, and strategic documentation.`,
+      recommendedVisuals: proofSectionVisuals,
+      headline: proofSectionHeadline,
+      subheadline: proofSectionSubhead,
+      bodyCopy: proofSectionBody,
       ctaText: 'Open Live Proof Hub',
+      trustStatement: proofTrustNote,
     },
     {
       id: 'section_testimonials',
@@ -437,9 +513,9 @@ export function generateFullAuthoritySuite(ctx?: {
       purpose: 'Provide third-party validation from peers and past clients.',
       conversionReasoning: 'Social proof activates peer validation, confirming that others in ${market} recommend your work.',
       recommendedVisuals: 'Grid of video testimonial cards + verified LinkedIn quote cards with client avatar and company logo.',
-      headline: `What ${market} Say About Working With Us`,
-      subheadline: `Feedback from partners who transformed their business with our authority system.`,
-      bodyCopy: `"Working with Ayush was the single best decision we made for our ${service}. The level of proof and clarity was unlike any agency." — Founder, SaaS Startup`,
+      headline: testimonialsHeadline,
+      subheadline: testimonialsSubhead,
+      bodyCopy: testimonialsBody,
       ctaText: 'Read All Testimonials',
     },
     {

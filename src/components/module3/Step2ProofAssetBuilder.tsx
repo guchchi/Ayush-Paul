@@ -331,6 +331,8 @@ export function Step2ProofAssetBuilder() {
 
   const availableAssets = useModule3Store((s) => s.availableAssets);
   const setAvailableAssets = useModule3Store((s) => s.setAvailableAssets);
+  const storeSkippedAssets = useModule3Store((s) => s.skippedAssets) || [];
+  const setStoreSkippedAssets = useModule3Store((s) => s.setSkippedAssets);
   
   const generateProofAssetStrategy = useModule3Store((s) => s.generateProofAssetStrategy);
   const approveProofAssetStrategy = useModule3Store((s) => s.approveProofAssetStrategy);
@@ -386,7 +388,22 @@ export function Step2ProofAssetBuilder() {
     };
   }, [mod1ServiceId, mod1MarketId, mod1NicheId, mod1Positioning, mod2OfferType, mod2Deliverables, mod2UniqueMechanism, mod2ValueAmplifier, authorityProfile, availableAssets]);
 
-  const [skippedAssetIds, setSkippedAssetIds] = useState<string[]>([]);
+  const [skippedAssetIds, setSkippedAssetIds] = useState<string[]>(storeSkippedAssets);
+  
+  useEffect(() => {
+    if (storeSkippedAssets.length > 0 && skippedAssetIds.length === 0) {
+      setSkippedAssetIds(storeSkippedAssets);
+    }
+  }, [storeSkippedAssets]);
+
+  const updateSkipped = (updater: (prev: string[]) => string[]) => {
+    setSkippedAssetIds((prev) => {
+      const next = updater(prev);
+      setStoreSkippedAssets(next);
+      return next;
+    });
+  };
+  
   const [isSkipping, setIsSkipping] = useState(false);
   const [showReminder, setShowReminder] = useState(false);
 
@@ -483,7 +500,7 @@ export function Step2ProofAssetBuilder() {
   };
 
   const handleSkipProject = (assetId: string) => {
-    setSkippedAssetIds(prev => [...prev, assetId]);
+    updateSkipped(prev => [...prev.filter(id => id !== assetId), assetId]);
     setIsSkipping(false);
     setVerificationUrl('');
     setVerificationProgress('idle');
@@ -492,7 +509,7 @@ export function Step2ProofAssetBuilder() {
   };
 
   const handleRevisitProject = (assetId: string) => {
-    setSkippedAssetIds(prev => prev.filter(id => id !== assetId));
+    updateSkipped(prev => prev.filter(id => id !== assetId));
     setSelectedAssetId(assetId);
     setActiveWorkspaceAssetId(assetId);
     setWorkspaceTab('prompt');
@@ -527,7 +544,7 @@ export function Step2ProofAssetBuilder() {
 
   const handleClearInventory = () => {
     setAvailableAssets([]);
-    setSkippedAssetIds([]);
+    updateSkipped(() => []);
     setIsSkipping(false);
     useModule3Store.setState({ existingProofInventory: '' });
     generateProofAssetStrategy();

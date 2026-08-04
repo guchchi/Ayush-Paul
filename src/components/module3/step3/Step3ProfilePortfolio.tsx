@@ -37,6 +37,12 @@ export function Step3ProfilePortfolio() {
       trustPromise: mod3State.coreTrustPromise,
       uniqueMechanism: mod3State.mod2UniqueMechanism,
       offerType: mod3State.mod2OfferType,
+      proofContext: {
+        availableAssets: mod3State.availableAssets || [],
+        skippedAssets: mod3State.skippedAssets || [],
+        existingProofInventory: mod3State.existingProofInventory || '',
+        proofAssets: mod3State.proofAssets || [],
+      },
     });
   }, [
     mod3State.mod1NicheId,
@@ -45,6 +51,10 @@ export function Step3ProfilePortfolio() {
     mod3State.coreTrustPromise,
     mod3State.mod2UniqueMechanism,
     mod3State.mod2OfferType,
+    mod3State.availableAssets,
+    mod3State.skippedAssets,
+    mod3State.existingProofInventory,
+    mod3State.proofAssets,
   ]);
 
   const [suite, setSuite] = useState<GeneratedAuthoritySuite>(initialSuite);
