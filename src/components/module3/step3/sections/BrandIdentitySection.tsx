@@ -34,7 +34,7 @@ export const BrandIdentitySection = React.memo(function BrandIdentitySection({
             <h3 className="text-xl font-black tracking-tight">1. Brand Identity Engine</h3>
           </div>
           <p className="text-xs text-blue-100 font-medium">
-            14 copy-ready core strategy & positioning assets. Click edit to customize any statement inline.
+            10 copy-ready core strategy & positioning assets. Click edit to customize any statement inline.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export const BrandIdentitySection = React.memo(function BrandIdentitySection({
           className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-white/20 cursor-pointer shrink-0"
         >
           {copiedAll ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-          <span>{copiedAll ? 'All 14 Assets Copied!' : 'Copy All 14 Brand Assets'}</span>
+          <span>{copiedAll ? 'All 10 Assets Copied!' : 'Copy All 10 Brand Assets'}</span>
         </button>
       </div>
 

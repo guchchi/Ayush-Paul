@@ -14,13 +14,13 @@ export const ProfileSystemSection = React.memo(function ProfileSystemSection({
   onFieldChange,
   onFieldReset,
 }: Props) {
-  const [activePlatform, setActivePlatform] = useState<'linkedin' | 'twitter' | 'instagram' | 'website'>('linkedin');
+  const [activePlatform, setActivePlatform] = useState<'linkedin' | 'twitter' | 'instagram'>('linkedin');
   const [copiedLink, setCopiedLink] = useState(false);
 
   const currentPackage = packages.find((p) => p.platform === activePlatform) || packages[0];
 
   const getFieldValue = (key: string) => {
-    const field = currentPackage.fields.find((f) => f.key === key);
+    const field = currentPackage?.fields.find((f) => f.key === key);
     return field ? field.value : '';
   };
 
@@ -40,7 +40,7 @@ export const ProfileSystemSection = React.memo(function ProfileSystemSection({
             <h3 className="text-xl font-black tracking-tight">2. Visual Multi-Platform Profile System</h3>
           </div>
           <p className="text-xs text-slate-300 font-medium">
-            Realistic visual device previews & copy packages for LinkedIn, X/Twitter, Instagram, and Website Hero.
+            Realistic visual device previews & copy packages for LinkedIn, X/Twitter, and Instagram.
           </p>
         </div>
 
@@ -69,14 +69,6 @@ export const ProfileSystemSection = React.memo(function ProfileSystemSection({
             }`}
           >
             <Instagram size={14} /> Instagram
-          </button>
-          <button
-            onClick={() => setActivePlatform('website')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activePlatform === 'website' ? 'bg-[#0058be] text-white shadow-xs' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            <Globe size={14} /> Web Hero
           </button>
         </div>
       </div>
@@ -179,43 +171,6 @@ export const ProfileSystemSection = React.memo(function ProfileSystemSection({
               <p className="text-xs text-neutral-700 font-medium bg-neutral-50 p-2.5 rounded-xl border border-neutral-100">
                 {getFieldValue('story_highlights')}
               </p>
-            </div>
-          </div>
-        )}
-
-        {activePlatform === 'website' && (
-          <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden text-left">
-            {/* Safari Window Header Bar */}
-            <div className="bg-neutral-100 px-4 py-2 border-b border-neutral-200 flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-              </div>
-              <span className="text-[11px] font-bold text-neutral-500 bg-white px-4 py-0.5 rounded-md border border-neutral-200">
-                ayushpaul.app/blueprint
-              </span>
-              <Globe size={14} className="text-neutral-400" />
-            </div>
-
-            {/* Safari Canvas Body */}
-            <div className="p-6 sm:p-8 space-y-4 bg-gradient-to-b from-blue-50/50 to-white">
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#0058be] bg-blue-100/80 px-2.5 py-1 rounded-full border border-blue-200">
-                {getFieldValue('trust_statement')}
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-black text-[#0b1c30] tracking-tight leading-tight">
-                {getFieldValue('hero_headline')}
-              </h3>
-              <p className="text-xs sm:text-sm font-semibold text-neutral-600 leading-relaxed max-w-xl">
-                {getFieldValue('hero_subheadline')}
-              </p>
-
-              <div className="pt-2 flex items-center gap-3">
-                <button className="px-5 py-2.5 bg-[#0058be] text-white rounded-xl text-xs font-black shadow-xs">
-                  {getFieldValue('primary_cta')}
-                </button>
-                <span className="text-[11px] font-bold text-neutral-500">{getFieldValue('social_proof_line')}</span>
-              </div>
             </div>
           </div>
         )}

@@ -202,7 +202,7 @@ export function Step3ProfilePortfolio() {
                 01
               </span>
               <div>
-                <h4 className="text-base font-black text-[#0b1c30]">1. Brand Identity Engine (14 Assets)</h4>
+                <h4 className="text-base font-black text-[#0b1c30]">1. Brand Identity Engine (10 Assets)</h4>
                 <p className="text-xs text-neutral-500 font-medium">Positioning, Category, Value Prop, Elevator Pitch & Core Messaging</p>
               </div>
             </div>
@@ -240,7 +240,7 @@ export function Step3ProfilePortfolio() {
               </span>
               <div>
                 <h4 className="text-base font-black text-[#0b1c30]">2. Visual Multi-Platform Profile System</h4>
-                <p className="text-xs text-neutral-500 font-medium">LinkedIn, X/Twitter, Instagram, and Website Hero device previews</p>
+                <p className="text-xs text-neutral-500 font-medium">LinkedIn, X/Twitter, and Instagram device previews</p>
               </div>
             </div>
             {openSection === 'profile' || openSection === 'all' ? <ChevronUp size={18} className="text-neutral-400" /> : <ChevronDown size={18} className="text-neutral-400" />}

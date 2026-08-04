@@ -47,7 +47,7 @@ export interface BrandAssetItem {
 }
 
 export interface ProfileSystemAsset {
-  platform: 'linkedin' | 'twitter' | 'instagram' | 'website';
+  platform: 'linkedin' | 'twitter' | 'instagram';
   title: string;
   fields: {
     key: string;
@@ -154,7 +154,7 @@ export function generateFullAuthoritySuite(ctx?: {
 
   const proofAnalysis = analyzeProofContext(ctx?.proofContext);
 
-  // 1. BRAND IDENTITY ENGINE (14 Assets)
+  // 1. BRAND IDENTITY ENGINE (10 Core Strategy Assets)
   const brandAssets: BrandAssetItem[] = [
     {
       id: 'brand_positioning',
@@ -197,60 +197,36 @@ export function generateFullAuthoritySuite(ctx?: {
       originalValue: `To eliminate trust friction between ${market} and elite service providers by creating verifiable demonstration projects.`,
     },
     {
-      id: 'brand_oneliner',
-      title: 'One-Liner',
-      key: 'One-Liner',
+      id: 'brand_pitch15',
+      title: 'Elevator Pitch (15-sec)',
+      key: 'Elevator Pitch (15-sec)',
       category: 'Elevator',
       value: `The ${position}-led ${service} architect built specifically for ${market}.`,
       originalValue: `The ${position}-led ${service} architect built specifically for ${market}.`,
     },
     {
-      id: 'brand_pitch',
-      title: 'Elevator Pitch',
-      key: 'Elevator Pitch',
+      id: 'brand_pitch60',
+      title: 'Elevator Pitch (60-sec)',
+      key: 'Elevator Pitch (60-sec)',
       category: 'Elevator',
       value: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
       originalValue: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
     },
     {
-      id: 'brand_thesis',
-      title: 'Authority Thesis',
-      key: 'Authority Thesis',
+      id: 'brand_tagline',
+      title: 'Brand Tagline',
+      key: 'Brand Tagline',
+      category: 'Messaging',
+      value: `Proof Over Claims. Systemized Execution. Measured Impact.`,
+      originalValue: `Proof Over Claims. Systemized Execution. Measured Impact.`,
+    },
+    {
+      id: 'brand_belief',
+      title: 'Authority Belief System',
+      key: 'Authority Belief System',
       category: 'Point of View',
       value: `In a market flooded with empty promises, proof is the ultimate conversion mechanism. Work should speak through verifiable outputs, not speculative slide decks.`,
       originalValue: `In a market flooded with empty promises, proof is the ultimate conversion mechanism. Work should speak through verifiable outputs, not speculative slide decks.`,
-    },
-    {
-      id: 'brand_traits',
-      title: 'Personality Traits',
-      key: 'Personality Traits',
-      category: 'Brand Voice',
-      value: `Authoritative, Transparent, Analytical, High-Output, Direct`,
-      originalValue: `Authoritative, Transparent, Analytical, High-Output, Direct`,
-    },
-    {
-      id: 'brand_tone',
-      title: 'Tone of Voice',
-      key: 'Tone of Voice',
-      category: 'Brand Voice',
-      value: `Clear, concise, evidence-based, executive-level precision without jargon.`,
-      originalValue: `Clear, concise, evidence-based, executive-level precision without jargon.`,
-    },
-    {
-      id: 'brand_style',
-      title: 'Communication Style',
-      key: 'Communication Style',
-      category: 'Brand Voice',
-      value: `Direct-to-value. Lead with findings, follow with methodology, conclude with action items.`,
-      originalValue: `Direct-to-value. Lead with findings, follow with methodology, conclude with action items.`,
-    },
-    {
-      id: 'brand_messaging',
-      title: 'Core Messaging Framework',
-      key: 'Core Messaging Framework',
-      category: 'Messaging',
-      value: `Pillar 1: Proof Over Claims | Pillar 2: Systemized Execution | Pillar 3: Measured Impact`,
-      originalValue: `Pillar 1: Proof Over Claims | Pillar 2: Systemized Execution | Pillar 3: Measured Impact`,
     },
     {
       id: 'brand_diff',
@@ -259,14 +235,6 @@ export function generateFullAuthoritySuite(ctx?: {
       category: 'Competitive',
       value: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
       originalValue: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
-    },
-    {
-      id: 'brand_transformation',
-      title: 'Audience Transformation Statement',
-      key: 'Audience Transformation Statement',
-      category: 'Identity',
-      value: `Taking ${market} from unverified execution risk to a high-certainty, high-ROI authority position.`,
-      originalValue: `Taking ${market} from unverified execution risk to a high-certainty, high-ROI authority position.`,
     },
   ];
 
@@ -311,7 +279,7 @@ export function generateFullAuthoritySuite(ctx?: {
     ? `Featuring live video demos & before/after performance comparisons.`
     : `Methodology-first execution with 100% transparent process proof.`;
 
-  // 2. COMPLETE PROFILE SYSTEM
+  // 2. COMPLETE PROFILE SYSTEM (3 Social Channels)
   const profileSystem: ProfileSystemAsset[] = [
     {
       platform: 'linkedin',
@@ -400,42 +368,6 @@ export function generateFullAuthoritySuite(ctx?: {
           label: 'Story Highlights Structure',
           value: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
           originalValue: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
-        },
-      ],
-    },
-    {
-      platform: 'website',
-      title: 'Website Hero Canvas Package',
-      fields: [
-        {
-          key: 'hero_headline',
-          label: 'Hero Headline',
-          value: `The Proof-First ${service} System for ${market}`,
-          originalValue: `The Proof-First ${service} System for ${market}`,
-        },
-        {
-          key: 'hero_subheadline',
-          label: 'Hero Subheadline',
-          value: `We eliminate execution risk for ${market} using ${mechanism}. See exact proof assets before signing any contract.`,
-          originalValue: `We eliminate execution risk for ${market} using ${mechanism}. See exact proof assets before signing any contract.`,
-        },
-        {
-          key: 'primary_cta',
-          label: 'Primary CTA Button',
-          value: `Explore Blueprint & Live Case Studies →`,
-          originalValue: `Explore Blueprint & Live Case Studies →`,
-        },
-        {
-          key: 'trust_statement',
-          label: 'Trust & Risk Free Statement',
-          value: `🛡️ 100% Verifiable Demonstration Projects. Zero Fabricated Claims.`,
-          originalValue: `🛡️ 100% Verifiable Demonstration Projects. Zero Fabricated Claims.`,
-        },
-        {
-          key: 'social_proof_line',
-          label: 'Social Proof Micro-copy',
-          value: socialProofLine,
-          originalValue: socialProofLine,
         },
       ],
     },
