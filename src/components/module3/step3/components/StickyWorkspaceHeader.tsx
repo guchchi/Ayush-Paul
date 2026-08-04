@@ -67,13 +67,13 @@ export const StickyWorkspaceHeader = React.memo(function StickyWorkspaceHeader({
               <span className="truncate font-bold text-neutral-900">{nextActionTitle}</span>
             </div>
 
-            {/* Right: Build Mode Action Button */}
+            {/* Right: Next Action Focus Button */}
             <button
               onClick={onOpenBuildMode}
-              className="px-4 py-1.5 bg-[#0058be] hover:bg-blue-700 text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-xs shadow-blue-600/20 active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="px-3.5 py-1.5 bg-[#0058be] hover:bg-blue-700 text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <Zap size={13} className="text-amber-300" />
-              <span>Build Mode</span>
+              <span>Next Action →</span>
             </button>
           </div>
         </motion.header>

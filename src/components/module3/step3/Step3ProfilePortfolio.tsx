@@ -119,6 +119,26 @@ export function Step3ProfilePortfolio() {
     nextStep();
   };
 
+  // Dynamic single-source authority metrics calculation
+  const equippedCount = mod3State.availableAssets?.length || 0;
+  const completedBonus = suite.opportunityMatrix.filter((o) => o.isCompleted).reduce((sum, o) => sum + o.authorityImpactPts, 0);
+  const baseScore = Math.min(85, 70 + equippedCount * 4);
+  const authorityScore = Math.min(100, baseScore + completedBonus);
+  const readinessPercent = Math.min(100, Math.round(55 + equippedCount * 8 + (completedBonus > 0 ? 15 : 0) + (isChecklistComplete ? 15 : 0)));
+  const progressPercent = Math.min(100, Math.round(60 + equippedCount * 5 + (completedBonus > 0 ? 15 : 0) + (isChecklistComplete ? 10 : 0)));
+
+  const nextUncompletedOpp = suite.opportunityMatrix.find((o) => !o.isCompleted) || suite.opportunityMatrix[0];
+  const nextActionTitle = nextUncompletedOpp ? nextUncompletedOpp.title : 'Deploy Hero & About Sections to Website Canvas';
+  const nextActionImpact = nextUncompletedOpp ? nextUncompletedOpp.description : 'Increases buyer conversion by +15%';
+  const estimatedScoreIncrease = nextUncompletedOpp ? nextUncompletedOpp.authorityImpactPts : 15;
+
+  const handleScrollToNextWork = () => {
+    const el = document.getElementById('workspace-sections');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleScrollToBuildMode = () => {
     const el = document.getElementById('build-mode-workspace');
     if (el) {
@@ -130,11 +150,11 @@ export function Step3ProfilePortfolio() {
     <div className="flex flex-col h-full space-y-8 animate-in fade-in duration-500 pb-24 sm:pb-0 relative text-left">
       {/* 1. Floating Sticky Workspace Header (Appears on scroll) */}
       <StickyWorkspaceHeader
-        authorityScore={88}
-        progressPercent={68}
-        readinessPercent={82}
-        nextActionTitle="Deploy Website Hero Section"
-        onOpenBuildMode={handleScrollToBuildMode}
+        authorityScore={authorityScore}
+        progressPercent={progressPercent}
+        readinessPercent={readinessPercent}
+        nextActionTitle={nextActionTitle}
+        onOpenBuildMode={handleScrollToNextWork}
       />
 
       <StepHeader
@@ -143,24 +163,19 @@ export function Step3ProfilePortfolio() {
         step={{ current: 3, total: 3 }}
       />
 
-      {/* 2. Executive Hero Dashboard Header */}
+      {/* 2. Executive Hero Dashboard Header (Single Authoritative Orientation Hub) */}
       <ExecutiveHeroDashboard
-        authorityScore={88}
-        progressPercent={68}
-        readinessPercent={82}
-        nextActionTitle="Deploy Website Hero Section"
-        nextActionImpact="Increases buyer conversion by +15%"
-        estimatedScoreIncrease={8}
-        onContinueBuilding={handleScrollToBuildMode}
+        authorityScore={authorityScore}
+        progressPercent={progressPercent}
+        readinessPercent={readinessPercent}
+        nextActionTitle={nextActionTitle}
+        nextActionImpact={nextActionImpact}
+        estimatedScoreIncrease={estimatedScoreIncrease}
+        onContinueBuilding={handleScrollToNextWork}
       />
 
-      {/* 3. Primary Build Mode Workspace Hub */}
-      <div id="build-mode-workspace">
-        <BuildModeWorkspace />
-      </div>
-
-      {/* 4. Progressive Disclosure Accordions Container */}
-      <div className="space-y-4">
+      {/* 3. Progressive Disclosure Accordions Container */}
+      <div id="workspace-sections" className="space-y-4">
         <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-[#0058be]" />
@@ -344,7 +359,7 @@ export function Step3ProfilePortfolio() {
                 className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
               >
                 <DynamicAuthorityScoreSection
-                  baseScore={76}
+                  baseScore={baseScore}
                   opportunities={suite.opportunityMatrix}
                   onToggleTask={handleToggleOpportunity}
                 />
@@ -354,12 +369,17 @@ export function Step3ProfilePortfolio() {
         </div>
       </div>
 
+      {/* 4. Execution & Launch Hub (Contextual 1-Click Execution Bridges) */}
+      <div id="build-mode-workspace" className="pt-2 border-t border-neutral-200/80">
+        <BuildModeWorkspace />
+      </div>
+
       <BeforeYouContinueChecklist onAllChecked={setIsChecklistComplete} />
 
       {/* 5. End-of-Page Mission Control Continuation Engine */}
       <MissionControlFooter
-        progressPercent={68}
-        readinessPercent={82}
+        progressPercent={progressPercent}
+        readinessPercent={readinessPercent}
         onBuildNow={handleScrollToBuildMode}
       />
 
