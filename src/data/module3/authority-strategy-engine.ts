@@ -46,7 +46,7 @@ export function buildProfilePositioningHierarchy(mod3State: Partial<Module3State
   const service = formatSnakeCaseWords(mod3State.mod1ServiceId || 'high_ticket_services');
   const position = formatSnakeCaseWords(mod3State.authorityPosition || 'builder');
   const mechanism = mod3State.mod2UniqueMechanism || 'Proof-First Framework';
-  const promise = mod3State.coreTrustPromise || 'Verifiable outputs with zero fabricated claims';
+  const promise = mod3State.coreTrustPromise || 'Verifiable outputs with zero claims';
 
   const equippedProofCount = mod3State.availableAssets?.length || 0;
   const proofAssets = mod3State.proofAssets || [];
@@ -57,7 +57,7 @@ export function buildProfilePositioningHierarchy(mod3State: Partial<Module3State
       layerKey: 'who_you_are',
       layerTitle: '1. WHO YOU ARE',
       perceptionTarget: `Category Leader & ${position}-Led Specialist`,
-      recommendedFocus: `The ${position}-led ${service} architect built specifically for ${market}.`,
+      recommendedFocus: `The ${position}-led ${service} specialist built specifically for ${market}.`,
       strategicRationale: 'Establishes clear category identity in the first 3 seconds, eliminating generic vendor ambiguity.',
       status: 'pending',
     },
@@ -66,7 +66,7 @@ export function buildProfilePositioningHierarchy(mod3State: Partial<Module3State
       layerTitle: '2. WHAT YOU DO',
       perceptionTarget: `High-Certainty System Implementation`,
       recommendedFocus: `Designing and executing high-impact ${service} through our proprietary ${mechanism}.`,
-      strategicRationale: 'Frames capability around system execution rather than hours or unverified promises.',
+      strategicRationale: 'Frames capability around system execution rather than hours or unverified claims.',
       status: 'pending',
     },
     {
@@ -113,77 +113,79 @@ export function buildPortfolioStructureJourney(mod3State: Partial<Module3State>)
   const equippedProofCount = mod3State.availableAssets?.length || 0;
   const proofAssets = mod3State.proofAssets || [];
 
-  // Determine structural section order based on proof availability
+  // System adapts structure: Lead with proof if proof count > 2
   const leadWithProof = equippedProofCount > 2 || proofAssets.length > 0;
 
   const defaultSections: PortfolioStructureSectionItem[] = [
     {
-      id: 'sec_hero',
+      id: 'sec_positioning',
       position: 1,
-      sectionTitle: '1. Hero & Positioning Statement',
-      structuralRole: 'Primary Hook & Category Claim',
-      visitorMindset: 'Who is this person and what problem do they solve for me?',
-      conversionRationale: 'Immediately hooks high-ticket visitors and validates that they are in the right place within 5 seconds.',
-      recommendedVisual: 'High-contrast typography header + floating proof badge + main CTA button',
+      sectionTitle: '1. Positioning & Hero Claim',
+      structuralRole: 'Positioning',
+      visitorMindset: 'Who is this person and what core problem do they solve for me?',
+      conversionRationale: 'Immediately hooks high-ticket visitors and validates category relevance within 5 seconds.',
+      recommendedVisual: 'High-contrast positioning header + primary proof anchor badge + clear CTA',
       isEnabled: true,
       status: 'pending',
     },
     {
-      id: leadWithProof ? 'sec_proof' : 'sec_capability',
+      id: leadWithProof ? 'sec_evidence' : 'sec_capability',
       position: 2,
-      sectionTitle: leadWithProof ? '2. Verified Proof Assets & Live Demonstrations' : '2. Capability & Core Offer System',
-      structuralRole: leadWithProof ? 'Immediate Credibility Anchor' : 'Value Proposition & Offer Scope',
-      visitorMindset: leadWithProof ? 'Can this person actually deliver what they claim?' : 'What specific service or system do they offer?',
+      sectionTitle: leadWithProof ? '2. Evidence & Verified Demonstrations' : '2. Capability & Offer Scope',
+      structuralRole: leadWithProof ? 'Evidence' : 'Capability/Offer',
+      visitorMindset: leadWithProof ? 'Can this person actually deliver what they claim?' : 'What specific service scope and deliverables do they provide?',
       conversionRationale: leadWithProof
-        ? 'Leading with verified proof assets immediately satisfies visitor skepticism before presenting price or scope.'
-        : 'Clearly outlines deliverables and scope so visitors understand exact engagement tiers.',
-      recommendedVisual: leadWithProof ? 'Interactive proof asset gallery + live prototype embeds' : '3-column scope card grid with deliverable checkmarks',
+        ? 'Leading with verified proof assets satisfies visitor skepticism early before presenting prices or scope.'
+        : 'Outlines service scope and deliverables so visitors understand exact engagement tiers.',
+      recommendedVisual: leadWithProof ? 'Interactive proof asset gallery + live teardown embeds' : '3-column offer tier grid with deliverable checkmarks',
       isEnabled: true,
       status: 'pending',
     },
     {
-      id: leadWithProof ? 'sec_capability' : 'sec_proof',
+      id: leadWithProof ? 'sec_capability' : 'sec_work',
       position: 3,
-      sectionTitle: leadWithProof ? '3. Capability & Core Offer System' : '3. Verified Proof Assets & Live Demonstrations',
-      structuralRole: leadWithProof ? 'Value Proposition & Offer Scope' : 'Immediate Credibility Anchor',
-      visitorMindset: leadWithProof ? 'What specific service or system do they offer?' : 'Can this person actually deliver what they claim?',
+      sectionTitle: leadWithProof ? '3. Capability & Offer Scope' : '3. Relevant Work & Teardowns',
+      structuralRole: leadWithProof ? 'Capability/Offer' : 'Relevant Work',
+      visitorMindset: leadWithProof ? 'What specific service scope and deliverables do they provide?' : 'How do they solve complex challenges step-by-step?',
       conversionRationale: leadWithProof
-        ? 'Clearly outlines deliverables and scope after credibility has already been established.'
-        : 'Reinforces the offer capability with tangible, inspectable evidence.',
-      recommendedVisual: leadWithProof ? '3-column scope card grid with deliverable checkmarks' : 'Interactive proof asset gallery + live prototype embeds',
+        ? 'Outlines deliverables and scope after credibility has already been anchored by proof.'
+        : 'Demonstrates deep strategic thinking and real execution methodology.',
+      recommendedVisual: leadWithProof ? '3-column offer tier grid with deliverable checkmarks' : 'STAR breakdown teardown cards (Situation, Action, Result)',
       isEnabled: true,
       status: 'pending',
     },
     {
-      id: 'sec_cases',
+      id: leadWithProof ? 'sec_work' : 'sec_evidence',
       position: 4,
-      sectionTitle: '4. Case Studies & STAR Breakdown',
-      structuralRole: 'Problem-Solving Teardown Evidence',
-      visitorMindset: 'How do they solve complex challenges step-by-step under real constraints?',
-      conversionRationale: 'Demonstrates deep strategic thinking and real-world execution capability.',
-      recommendedVisual: 'STAR breakdown cards (Situation, Task, Action, Result) with metrics callout',
+      sectionTitle: leadWithProof ? '4. Relevant Work & Teardowns' : '4. Evidence & Verified Demonstrations',
+      structuralRole: leadWithProof ? 'Relevant Work' : 'Evidence',
+      visitorMindset: leadWithProof ? 'How do they solve complex challenges step-by-step?' : 'Can this person actually deliver what they claim?',
+      conversionRationale: leadWithProof
+        ? 'Demonstrates deep strategic thinking and real execution methodology.'
+        : 'Reinforces capability with tangible, inspectable evidence.',
+      recommendedVisual: leadWithProof ? 'STAR breakdown teardown cards' : 'Interactive proof asset gallery + live teardown embeds',
       isEnabled: true,
       status: 'pending',
     },
     {
-      id: 'sec_social_proof',
+      id: 'sec_trust',
       position: 5,
-      sectionTitle: '5. Social Proof & Peer Validation',
-      structuralRole: 'Third-Party Endorsement',
-      visitorMindset: 'Who else trusts this person and what was their experience?',
-      conversionRationale: 'Activates peer social proof to confirm safety in buying.',
-      recommendedVisual: 'Verified client quote cards + LinkedIn avatar badges',
+      sectionTitle: '5. Trust & Social Proof',
+      structuralRole: 'Trust',
+      visitorMindset: 'Who else trusts this person and what was their outcome?',
+      conversionRationale: 'Activates peer social proof and addresses buying risk directly.',
+      recommendedVisual: 'Client quote cards + verified outcome badges + trust promise SLA',
       isEnabled: true,
       status: 'pending',
     },
     {
-      id: 'sec_cta',
+      id: 'sec_next_step',
       position: 6,
-      sectionTitle: '6. High-Ticket Booking & Next Step',
-      structuralRole: 'Conversion Gateway',
+      sectionTitle: '6. Next Step & Booking Gateway',
+      structuralRole: 'Next Step',
       visitorMindset: 'How do I take the next step to work with them?',
-      conversionRationale: 'Provides a zero-pressure, high-clarity pathway to schedule a discovery call.',
-      recommendedVisual: 'Embedded calendar booking widget + 3-bullet value guarantee note',
+      conversionRationale: 'Provides a low-friction, high-clarity pathway to schedule a 15-minute strategy call.',
+      recommendedVisual: 'Embedded calendar booking widget + 3-bullet value guarantee callout',
       isEnabled: true,
       status: 'pending',
     },
@@ -193,46 +195,46 @@ export function buildPortfolioStructureJourney(mod3State: Partial<Module3State>)
 }
 
 export function buildSectionPrioritiesStrategy(mod3State: Partial<Module3State>): SectionPriorityItem[] {
-  const equippedProofCount = mod3State.availableAssets?.length || 0;
-  const hasProofAssets = (mod3State.proofAssets || []).length > 0;
+  const proofAssets = mod3State.proofAssets || [];
+  const hasProofAssets = proofAssets.length > 0;
 
   return [
     {
       id: 'prio_positioning',
       sectionName: 'Positioning & Hero Claim',
       priority: 'HIGH',
-      whyPriority: 'High-ticket buyers evaluate relevance immediately. If your positioning is vague, visitors bounce before reviewing your work.',
-      actionRequired: 'Make your primary positioning claim and category title impossible to miss at the top of your profile and portfolio.',
+      whyPriority: 'High-ticket buyers evaluate relevance immediately. Vague positioning causes bounce in 5 seconds.',
+      actionRequired: 'Feature primary positioning claim and category title prominently at the top of profile and portfolio.',
     },
     {
       id: 'prio_proof',
-      sectionName: 'Verifiable Proof & Demonstrations',
+      sectionName: 'Evidence & Verified Proof',
       priority: 'HIGH',
       whyPriority: hasProofAssets
-        ? 'You have prepared concrete proof assets in Step 2. These represent your strongest authority differentiator.'
-        : 'In a market flooded with unverified claims, proof assets provide unquestionable credibility.',
-      actionRequired: 'Position proof assets near your core claims so visitors experience evidence early in their journey.',
+        ? 'Your Step 2 proof assets are your strongest authority differentiator.'
+        : 'In a noisy market, proof assets provide unquestionable credibility.',
+      actionRequired: 'Position proof assets near primary claims so visitors encounter evidence early.',
     },
     {
       id: 'prio_cases',
-      sectionName: 'Selected Work & Case Studies',
+      sectionName: 'Relevant Work & Teardowns',
       priority: 'HIGH',
-      whyPriority: 'Shows your step-by-step problem-solving methodology and execution quality.',
-      actionRequired: 'Feature 2-3 deep teardowns showing Situation, Action, and Results rather than a clutter of minor projects.',
+      whyPriority: 'Shows step-by-step problem-solving methodology under real constraints.',
+      actionRequired: 'Feature 2-3 deep teardowns showing Situation, Action, and Results.',
     },
     {
       id: 'prio_offer',
-      sectionName: 'Core Offer & Capability Scope',
+      sectionName: 'Capability & Offer Scope',
       priority: 'MEDIUM',
-      whyPriority: 'Necessary to clarify deliverables, but secondary to establishing positioning and trust.',
-      actionRequired: 'Present clear deliverable scope without overwhelming the visitor with technical jargon.',
+      whyPriority: 'Clarifies deliverables, but secondary to establishing positioning and trust.',
+      actionRequired: 'Present deliverable scope cleanly without overwhelming technical fluff.',
     },
     {
       id: 'prio_background',
-      sectionName: 'Personal Background & Story',
+      sectionName: 'Personal Story & Background',
       priority: 'LOW',
-      whyPriority: 'Visitors care primarily about their own business outcomes before reading personal history.',
-      actionRequired: 'Keep background information concise and directly connected to your core authority philosophy.',
+      whyPriority: 'Visitors care about their own business outcomes before reading personal history.',
+      actionRequired: 'Keep background concise and tightly linked to your core authority philosophy.',
     },
   ];
 }
@@ -253,7 +255,7 @@ export function buildEvidencePlacementMappings(mod3State: Partial<Module3State>)
         proofTitle: asset.title,
         proofStrength: strength,
         whyItSupportsClaim: `Demonstrates exact execution output for "${asset.title}", directly proving ${asset.credibilityGapProved || 'technical capability'}.`,
-        recommendedPlacement: idx === 0 ? 'Hero Section & Proof Showcase' : 'Case Studies & Deliverables Gallery',
+        recommendedPlacement: idx === 0 ? 'Positioning & Hero Section' : 'Relevant Work & Evidence Section',
         visibilityLevel: idx === 0 ? 'High' : 'Medium',
         actionIfWeak: asset.completionChecklist?.some((c) => !c)
           ? 'Complete remaining checklist items in Step 2 to maximize evidence clarity.'
@@ -262,7 +264,7 @@ export function buildEvidencePlacementMappings(mod3State: Partial<Module3State>)
     });
   }
 
-  // Fallback structural evidence placements if no Step 2 proof assets are present
+  // Fallback evidence placements if no Step 2 proof assets are present
   return [
     {
       id: 'map_fallback_1',
@@ -271,7 +273,7 @@ export function buildEvidencePlacementMappings(mod3State: Partial<Module3State>)
       proofTitle: 'Live Architecture & Workflow Teardown',
       proofStrength: 'demonstration',
       whyItSupportsClaim: 'Shows raw execution standards and transparent process logic.',
-      recommendedPlacement: 'Near Hero Positioning & Capability Section',
+      recommendedPlacement: 'Positioning & Capability Section',
       visibilityLevel: 'High',
       actionIfWeak: 'Add a 2-minute video walkthrough or repository link to strengthen this signal.',
     },
@@ -282,7 +284,7 @@ export function buildEvidencePlacementMappings(mod3State: Partial<Module3State>)
       proofTitle: 'Verified Client Outcome SLA',
       proofStrength: 'outcome',
       whyItSupportsClaim: 'Reduces buyer anxiety by guaranteeing milestone verification.',
-      recommendedPlacement: 'Offer Tiers & Booking Section',
+      recommendedPlacement: 'Trust & Booking Section',
       visibilityLevel: 'High',
     },
   ];
@@ -294,10 +296,8 @@ export function buildPresentationFlowStrategy(mod3State: Partial<Module3State>):
 } {
   const position = mod3State.authorityPosition || 'builder';
   const market = formatSnakeCaseWords(mod3State.mod1NicheId || mod3State.mod1MarketId || 'clients');
-  const service = formatSnakeCaseWords(mod3State.mod1ServiceId || 'services');
 
   let personaContext = 'Service Provider & High-Ticket Consultant Flow';
-
   if (position === 'auditor') {
     personaContext = 'Strategic Auditor & Evaluator Communication Flow';
   } else if (position === 'deconstructor') {
@@ -306,47 +306,56 @@ export function buildPresentationFlowStrategy(mod3State: Partial<Module3State>):
     personaContext = 'Hands-On Practitioner & Delivery Architect Flow';
   }
 
+  // The 6-Stage Visitor Progressive Understanding Journey
   const journey: PresentationJourneyStep[] = [
     {
       stepNumber: 1,
-      stageName: 'Stage 1: Immediate Hook (0-5s)',
-      visitorPsychology: 'Curiosity & Relevance Check ("Who is this and is this relevant to me?")',
+      stageName: 'Stage 1: Curiosity (0-5s)',
+      visitorPsychology: 'Relevance Check ("Who is this and is this relevant to me?")',
       communicationPurpose: 'Hook high-ticket prospects with crisp positioning and clear category authority.',
       contentToPresent: `Positioning claim for ${market} + primary proof anchor.`,
-      conversionRole: 'Reduces initial bounce rate and captures focused attention.',
+      conversionRole: 'Captures focused attention and eliminates bounce.',
     },
     {
       stepNumber: 2,
-      stageName: 'Stage 2: Category & Capability (5-15s)',
-      visitorPsychology: 'Clarity ("What exact problem do they solve?")',
-      communicationPurpose: 'Define service scope and unique mechanism without confusing agency fluff.',
-      contentToPresent: `Core service breakdown + ${mod3State.mod2UniqueMechanism || 'Unique Mechanism'}.`,
-      conversionRole: 'Establishes clear service expectations and engagement boundaries.',
+      stageName: 'Stage 2: Clarity (5-15s)',
+      visitorPsychology: 'Scope Check ("What exact problem do they solve?")',
+      communicationPurpose: 'Define service scope and unique mechanism without agency fluff.',
+      contentToPresent: `Capability breakdown + ${mod3State.mod2UniqueMechanism || 'Unique Mechanism'}.`,
+      conversionRole: 'Establishes clear service scope and engagement boundaries.',
     },
     {
       stepNumber: 3,
-      stageName: 'Stage 3: Evidence & Proof (15-30s)',
-      visitorPsychology: 'Validation & Evaluation ("Can they actually deliver what they claim?")',
-      communicationPurpose: 'Fulfill positioning promises with inspectable proof assets and case teardowns.',
-      contentToPresent: `Live prototypes, case studies, and verifiable delivery assets.`,
-      conversionRole: 'Overcomes skepticism and transforms interest into genuine trust.',
+      stageName: 'Stage 3: Evaluation (15-30s)',
+      visitorPsychology: 'Methodology Check ("How do they solve complex problems?")',
+      communicationPurpose: 'Demonstrate step-by-step strategic thinking through teardowns.',
+      contentToPresent: `Relevant work case studies and STAR breakdown teardowns.`,
+      conversionRole: 'Demonstrates deep strategic capability under real constraints.',
     },
     {
       stepNumber: 4,
-      stageName: 'Stage 4: Trust Reinforcement (30-60s)',
-      visitorPsychology: 'Reassurance & Risk Reduction ("Is working with them safe?")',
-      conversionReasoning: 'Address buying objections, guarantees, and peer endorsements.',
-      contentToPresent: `Client feedback, trust guarantees, and milestone FAQs.`,
-      conversionRole: 'Removes purchasing friction and handles sales objections upfront.',
+      stageName: 'Stage 4: Validation (30-45s)',
+      visitorPsychology: 'Evidence Check ("Can they actually deliver what they claim?")',
+      communicationPurpose: 'Fulfill positioning claims with inspectable, verified proof assets.',
+      contentToPresent: `Live prototypes, code teardowns, and verified proof assets.`,
+      conversionRole: 'Overcomes buyer skepticism and builds genuine trust.',
     },
     {
       stepNumber: 5,
-      stageName: 'Stage 5: Conversion Action (60s+)',
-      visitorPsychology: 'Conviction & Decision ("How do I get started?")',
-      communicationPurpose: 'Direct the visitor to a single, focused booking or inquiry gateway.',
+      stageName: 'Stage 5: Conviction (45-60s)',
+      visitorPsychology: 'Safety Check ("Is working with them safe and risk-free?")',
+      communicationPurpose: 'Address buying objections, guarantees, and peer endorsements.',
+      contentToPresent: `Client testimonials, trust guarantees, and SLA callouts.`,
+      conversionRole: 'Removes purchasing anxiety and friction.',
+    },
+    {
+      stepNumber: 6,
+      stageName: 'Stage 6: Action (60s+)',
+      visitorPsychology: 'Decision ("How do I get started?")',
+      communicationPurpose: 'Direct the visitor to a single, focused booking gateway.',
       contentToPresent: `Calendar booking widget + 15-minute discovery consultation CTA.`,
-      conversionRole: 'Converts validated trust into pipeline leads.',
-    } as any,
+      conversionRole: 'Converts validated trust into pipeline inquiries.',
+    },
   ];
 
   return { personaContext, journey };
@@ -362,48 +371,59 @@ export function buildAuthorityReinforcementAudit(mod3State: Partial<Module3State
   const proofAssets = mod3State.proofAssets || [];
   const diagnostics: ReinforcementDiagnosticIssue[] = [];
 
-  let alignmentScore = 75;
+  let alignmentScore = 85;
 
-  // Check 1: Proof vs Positioning Gap
+  // Check 1: Positioning -> Profile Alignment
+  diagnostics.push({
+    id: 'diag_positioning_profile',
+    severity: 'success',
+    title: '✓ POSITIONING → PROFILE ALIGNED',
+    positioningClaim: `Claims expert authority as a ${position}`,
+    actualEvidenceOrWork: 'Profile message hierarchy directly matches Step 1 authority stance.',
+    recommendation: 'Ensure your LinkedIn / X headline uses the exact 6-layer message sequence.',
+    impactedSection: 'Profile Message Architecture',
+  });
+
+  // Check 2: Positioning -> Proof Alignment (Gap check)
   if (equippedCount === 0 && proofAssets.length === 0) {
-    alignmentScore -= 20;
+    alignmentScore -= 25;
     diagnostics.push({
       id: 'diag_proof_gap',
       severity: 'warning',
-      title: '⚠ PROOF → POSITIONING GAP DETECTED',
+      title: '⚠ POSITIONING → PROOF GAP DETECTED',
       positioningClaim: `Claims expert authority as a ${position}`,
       actualEvidenceOrWork: 'No proof assets currently equipped or created in Step 2.',
       recommendation: 'Complete at least 1 self-initiated proof asset or live demonstration in Step 2 to anchor your claim.',
-      impactedSection: 'Proof & Evidence Section',
+      impactedSection: 'Evidence & Proof Section',
     });
   } else {
     diagnostics.push({
       id: 'diag_proof_aligned',
       severity: 'success',
-      title: '✓ POSITIONING & PROOF ALIGNED',
+      title: '✓ POSITIONING → PROOF ALIGNED',
       positioningClaim: `Claims expert authority as a ${position}`,
       actualEvidenceOrWork: `${proofAssets.length || equippedCount} verified proof asset(s) supporting core positioning.`,
-      recommendation: 'Position these proof assets near your primary headline for maximum impact.',
-      impactedSection: 'Hero & Proof Section',
+      recommendation: 'Position your primary proof asset near your hero positioning statement.',
+      impactedSection: 'Portfolio Hero & Proof',
     });
   }
 
-  // Check 2: Core Promise Alignment
+  // Check 3: Positioning -> Portfolio Alignment
   if (mod3State.coreTrustPromise) {
     diagnostics.push({
-      id: 'diag_promise_aligned',
+      id: 'diag_portfolio_promise',
       severity: 'success',
-      title: '✓ TRUST PROMISE ALIGNED WITH OFFER',
+      title: '✓ POSITIONING → PORTFOLIO ALIGNED',
       positioningClaim: mod3State.coreTrustPromise,
-      actualEvidenceOrWork: 'Clear service scope and transparent delivery criteria established.',
-      recommendation: 'Ensure trust promise appears prominently in FAQ and offer tier callouts.',
-      impactedSection: 'Trust & FAQ Section',
+      actualEvidenceOrWork: 'Portfolio section journey places evidence early to satisfy visitor skepticism.',
+      recommendation: 'Keep trust promise visible in offer tier and booking section callouts.',
+      impactedSection: 'Trust & Booking Section',
     });
   }
 
   const verdict = alignmentScore >= 80
-    ? 'High Alignment — All profile & portfolio sections reinforce the same core authority perception.'
-    : 'Moderate Alignment — Minor gaps detected between positioning claims and supporting proof assets.';
+    ? 'High Alignment — Positioning → Profile → Portfolio → Proof reinforce the same core perception.'
+    : 'Moderate Alignment — Disconnect detected between positioning claims and supporting proof assets.';
 
   return {
     alignmentScore,
@@ -426,8 +446,8 @@ export function buildNextMovesActionPlan(
   actions.push({
     id: 'next_1',
     stepNumber: step++,
-    title: 'Refine Profile Message Hierarchy',
-    description: 'Structure your public bio around the 6-layer message hierarchy (Who You Are → What You Do → Proof).',
+    title: 'Align Public Profile with Message Architecture',
+    description: 'Update your LinkedIn / X bio to follow the 6-layer sequence (Who You Are → What You Do → Proof).',
     impact: 'High Impact',
     category: 'Profile',
     isCompleted: false,
@@ -436,8 +456,8 @@ export function buildNextMovesActionPlan(
   actions.push({
     id: 'next_2',
     stepNumber: step++,
-    title: 'Reorganize Portfolio Sections by Conversion Rationale',
-    description: 'Sequence your website layout so positioning comes first, followed by proof assets and service scope.',
+    title: 'Sequence Portfolio Journey by Recommended Order',
+    description: 'Arrange portfolio sections: Positioning → Capability/Offer → Relevant Work → Evidence → Trust → Next Step.',
     impact: 'High Impact',
     category: 'Portfolio',
     isCompleted: false,
@@ -448,7 +468,7 @@ export function buildNextMovesActionPlan(
       id: 'next_3',
       stepNumber: step++,
       title: `Embed Primary Proof Asset "${proofAssets[0].title}" Near Hero`,
-      description: 'Position your strongest verified demonstration immediately after your main headline.',
+      description: 'Position your strongest verified proof asset immediately alongside your hero positioning claim.',
       impact: 'Very High Impact',
       category: 'Proof',
       isCompleted: false,
@@ -457,7 +477,7 @@ export function buildNextMovesActionPlan(
     actions.push({
       id: 'next_3',
       stepNumber: step++,
-      title: 'Prepare 1 High-Impact Demonstration Project',
+      title: 'Prepare 1 High-Impact Demonstration Asset in Step 2',
       description: 'Create a self-initiated proof asset in Step 2 to remove credibility skepticism.',
       impact: 'Critical Impact',
       category: 'Proof',
@@ -469,8 +489,8 @@ export function buildNextMovesActionPlan(
     actions.push({
       id: 'next_4',
       stepNumber: step++,
-      title: 'Resolve Diagnostic Alignment Warnings',
-      description: 'Address detected positioning gaps before launching your public authority pack.',
+      title: 'Resolve Alignment Disconnect Gaps',
+      description: 'Address detected positioning → proof gaps before launching your public authority pack.',
       impact: 'High Impact',
       category: 'Positioning',
       isCompleted: false,
@@ -512,7 +532,7 @@ export function buildDecisionSummary(
     strongestProofAnchor: proofAssets[0]?.title || 'Verifiable Demonstration Engine',
     primaryProfileFocus: profileHierarchy[0]?.recommendedFocus || 'Category Identity',
     topPortfolioPriorities: topPriorities,
-    keyEvidencePlacement: evidencePlacements[0]?.recommendedPlacement || 'Hero & Proof Showcase',
+    keyEvidencePlacement: evidencePlacements[0]?.recommendedPlacement || 'Positioning & Hero Section',
     alignmentHealth: proofAssets.length > 0 ? 'Strong (Proof-Backed)' : 'Developing (Process-backed)',
   };
 }

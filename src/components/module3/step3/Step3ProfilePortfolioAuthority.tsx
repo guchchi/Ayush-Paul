@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import {
   Shield, Sparkles, AlertTriangle, ArrowRight, CheckCircle2,
   ChevronDown, ChevronUp, ArrowUp, ArrowDown, Eye, EyeOff,
-  Pencil, X, Check, Rocket, FileText, Copy, Download,
-  Target, Award, TrendingUp, Users, Zap, MapPin
+  Pencil, X, Check, Rocket, FileText, Copy, Target, Award,
+  Users, Zap, MapPin, Layers, Compass, HelpCircle, AlertCircle
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { EASING, DURATION } from '../../../lib/motion-presets';
@@ -35,13 +35,17 @@ const LAYER_ICONS: Record<string, React.ReactNode> = {
 };
 
 /* ════════════════════════════════════════════════════════════════════
-   ZONE 1 — EXECUTIVE HERO BANNER
+   ZONE 01 — EXECUTIVE AUTHORITY CONTEXT
+   Synthesized view of: Core authority position, Strongest proof assets,
+   Proof strength, Authority alignment health, Strategic direction.
    ════════════════════════════════════════════════════════════════════ */
-function ExecutiveHeroBanner({
+function Zone01ExecutiveAuthorityContext({
   positioningClaim,
   proofCount,
   alignmentHealth,
   strongestProof,
+  trustPromise,
+  authorityPosition,
   isStale,
   onRegenerate,
   onDismissStale,
@@ -50,6 +54,8 @@ function ExecutiveHeroBanner({
   proofCount: number;
   alignmentHealth: string;
   strongestProof: string;
+  trustPromise: string;
+  authorityPosition: string;
   isStale: boolean;
   onRegenerate: () => void;
   onDismissStale: () => void;
@@ -61,16 +67,15 @@ function ExecutiveHeroBanner({
     : 'text-blue-700 bg-blue-50 border-blue-200';
 
   return (
-    <motion.div {...fadeUp} className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-[#f8f9ff] to-[#eff4ff] p-6 sm:p-8 shadow-xs">
-      {/* Subtle decorative gradient orb */}
+    <motion.div {...fadeUp} className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-[#f8f9ff] to-[#eff4ff] p-6 sm:p-8 shadow-xs space-y-6">
       <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#0058be]/[0.04] blur-3xl pointer-events-none" />
 
-      {/* Stale upstream warning — integrated subtly */}
+      {/* Upstream Stale Context Alert */}
       {isStale && (
-        <div className="mb-5 p-3 rounded-xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-between gap-3 text-xs">
+        <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 text-amber-800">
             <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>Your Step 1 or Step 2 data was updated. Your overrides are preserved.</span>
+            <span>Step 1 or Step 2 data was modified. Custom overrides are preserved.</span>
           </div>
           <div className="flex gap-2 shrink-0">
             <button onClick={onDismissStale} className="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-800 font-medium hover:bg-amber-50 cursor-pointer">
@@ -83,36 +88,37 @@ function ExecutiveHeroBanner({
         </div>
       )}
 
-      <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <div className="space-y-3">
-          {/* Visual Input Pipeline Flow */}
-          <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono font-semibold text-slate-500">
-            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-[#0058be] font-bold">
-              Step 1: Position
-            </span>
-            <span>+</span>
-            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-emerald-700 font-bold">
-              Step 2: Proof ({proofCount})
-            </span>
-            <span>+</span>
-            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-slate-700">
-              Mod 1 & 2 Context
-            </span>
-            <span className="text-[#0058be]">→</span>
-            <span className="bg-[#0058be] text-white px-2 py-0.5 rounded-md font-bold">
-              Step 3 Blueprint
-            </span>
-          </div>
+      {/* Header Pipeline Badge */}
+      <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono font-semibold text-slate-500">
+        <span className="bg-white/90 border border-slate-200 px-2 py-0.5 rounded-md text-[#0058be] font-bold">
+          01 Authority Context
+        </span>
+        <span>:</span>
+        <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-slate-700">
+          Position: {authorityPosition}
+        </span>
+        <span>+</span>
+        <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-emerald-700 font-bold">
+          Proof Assets: {proofCount}
+        </span>
+        <span>→</span>
+        <span className="bg-[#0058be] text-white px-2 py-0.5 rounded-md font-bold">
+          Profile & Portfolio Blueprint
+        </span>
+      </div>
 
-          <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-widest text-[#0058be]">
-              <Shield className="w-3.5 h-3.5" />
-              Synthesized Authority Position
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight leading-snug max-w-lg">
-              {positioningClaim}
-            </h2>
-          </div>
+      <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2 flex-1">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-widest text-[#0058be]">
+            <Shield className="w-3.5 h-3.5" />
+            Synthesized Core Authority Position
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight leading-snug">
+            {positioningClaim}
+          </h2>
+          <p className="text-xs text-[#424754] font-medium leading-relaxed pt-1">
+            <strong className="text-[#0058be]">Trust Promise:</strong> "{trustPromise}"
+          </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
@@ -128,8 +134,13 @@ function ExecutiveHeroBanner({
       </div>
 
       {strongestProof && (
-        <div className="mt-4 text-xs text-[#424754] font-medium">
-          <span className="text-[#0058be] font-semibold">Strongest signal:</span> {strongestProof}
+        <div className="pt-2 border-t border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#424754]">
+          <div>
+            <span className="text-[#0058be] font-bold">Primary Proof Anchor:</span> {strongestProof}
+          </div>
+          <span className="text-[11px] font-mono text-slate-500">
+            Strategic Goal: Convert capability → verifiable trust
+          </span>
         </div>
       )}
     </motion.div>
@@ -137,9 +148,10 @@ function ExecutiveHeroBanner({
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   ZONE 2 — PROFILE MESSAGE ARCHITECTURE
+   ZONE 02 — PROFILE MESSAGE ARCHITECTURE
+   Six-layer public profile strategy: Who -> What -> Help -> Known -> Credible -> Next
    ════════════════════════════════════════════════════════════════════ */
-function ProfileArchitectureSection({
+function Zone02ProfileMessageArchitecture({
   layers,
   onEditLayer,
   editingKey,
@@ -161,14 +173,17 @@ function ProfileArchitectureSection({
   return (
     <motion.section {...fadeUp} className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight">Profile Message Architecture</h2>
+        <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
+          <Layers className="w-3.5 h-3.5" />
+          Zone 02 — Profile Message Architecture
+        </div>
+        <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight mt-0.5">Six-Layer Public Profile Strategy</h2>
         <p className="text-sm text-[#424754] mt-1 leading-relaxed max-w-2xl">
-          When a prospect lands on your LinkedIn, X, or portfolio — they form a judgment in 5 seconds. Here's the exact message sequence your profile should communicate, in order:
+          The system provides a contextual recommendation for each profile layer. You are not asked to write from scratch — edit only if you wish to customize.
         </p>
       </div>
 
       <motion.div {...stagger} className="relative pl-8 space-y-0">
-        {/* Vertical timeline line */}
         <div className="absolute left-[15px] top-3 bottom-3 w-px bg-gradient-to-b from-[#0058be]/30 via-[#0058be]/15 to-transparent" />
 
         {layers.map((layer, idx) => {
@@ -178,23 +193,16 @@ function ProfileArchitectureSection({
           const isCustomized = !!layer.userCustomization;
 
           return (
-            <motion.div
-              key={layer.layerKey}
-              variants={fadeUp}
-              className="relative group"
-            >
-              {/* Timeline dot */}
+            <motion.div key={layer.layerKey} variants={fadeUp} className="relative group">
               <div className={cn(
                 'absolute -left-8 top-4 w-[30px] h-[30px] rounded-full border-2 flex items-center justify-center z-10 transition-colors',
-                isCustomized
-                  ? 'bg-[#0058be] border-[#0058be] text-white'
-                  : 'bg-white border-[#0058be]/30 text-[#0058be]'
+                isCustomized ? 'bg-[#0058be] border-[#0058be] text-white' : 'bg-white border-[#0058be]/30 text-[#0058be]'
               )}>
                 {LAYER_ICONS[layer.layerKey] || <span className="text-xs font-bold">{idx + 1}</span>}
               </div>
 
               <div className={cn(
-                'ml-2 p-4 rounded-xl border transition-all',
+                'ml-2 p-4 rounded-xl border transition-all mb-3',
                 'bg-white border-slate-200/60 hover:border-[#0058be]/20 hover:shadow-xs',
                 isCustomized && 'border-[#0058be]/20 bg-[#0058be]/[0.02]'
               )}>
@@ -202,9 +210,12 @@ function ProfileArchitectureSection({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-mono font-bold text-[#0058be] uppercase tracking-wider">
-                        {String(idx + 1).padStart(2, '0')}
+                        Layer {String(idx + 1).padStart(2, '0')}
                       </span>
                       <h4 className="text-sm font-bold text-[#0b1c30]">{layer.layerTitle.replace(/^\d+\.\s*/, '')}</h4>
+                      <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                        {layer.perceptionTarget}
+                      </span>
                       {isCustomized && (
                         <span className="text-[9px] font-mono font-bold text-[#0058be] bg-[#0058be]/8 px-1.5 py-0.5 rounded">CUSTOMIZED</span>
                       )}
@@ -221,7 +232,7 @@ function ProfileArchitectureSection({
                         />
                         <div className="flex gap-2">
                           <button onClick={() => onSaveEdit(layer.layerKey)} className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#0058be] text-white cursor-pointer flex items-center gap-1">
-                            <Check className="w-3 h-3" /> Save
+                            <Check className="w-3 h-3" /> Save Tweak
                           </button>
                           <button onClick={onCancelEdit} className="text-xs text-slate-500 px-2 py-1.5 cursor-pointer flex items-center gap-1">
                             <X className="w-3 h-3" /> Cancel
@@ -229,7 +240,7 @@ function ProfileArchitectureSection({
                         </div>
                       </div>
                     ) : (
-                      <p className="text-[13px] text-[#0b1c30]/80 leading-relaxed">{displayText}</p>
+                      <p className="text-[13px] text-[#0b1c30]/85 font-medium leading-relaxed">{displayText}</p>
                     )}
                   </div>
 
@@ -237,27 +248,22 @@ function ProfileArchitectureSection({
                     <button
                       onClick={() => onEditLayer(layer.layerKey, displayText)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-[#0058be] cursor-pointer shrink-0"
-                      title="Edit this layer"
+                      title="Customize this layer"
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
 
-                {/* Collapsible rationale */}
                 <button
                   onClick={() => setExpandedRationale(isExpanded ? null : layer.layerKey)}
                   className="mt-2 text-[11px] text-[#0058be]/70 hover:text-[#0058be] font-medium cursor-pointer flex items-center gap-1 transition-colors"
                 >
                   {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  Why this matters
+                  Why it matters
                 </button>
                 {isExpanded && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-1.5 text-[11px] text-slate-500 leading-relaxed pl-4 border-l-2 border-[#0058be]/10"
-                  >
+                  <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-1.5 text-[11px] text-slate-500 leading-relaxed pl-4 border-l-2 border-[#0058be]/10">
                     {layer.strategicRationale}
                   </motion.p>
                 )}
@@ -271,35 +277,38 @@ function ProfileArchitectureSection({
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   ZONE 3 — PORTFOLIO JOURNEY CANVAS
+   ZONE 03 — PORTFOLIO JOURNEY + PROOF PLACEMENT
+   Recommended journey: Positioning -> Capability/Offer -> Relevant Work -> Evidence -> Trust -> Next Step
+   Combines Section Priorities + Evidence Placement visually!
    ════════════════════════════════════════════════════════════════════ */
-function PortfolioJourneyCanvas({
+function Zone03PortfolioJourneyAndProofPlacement({
   sections,
   evidencePlacements,
+  sectionPriorities,
   onReorder,
   onToggle,
 }: {
   sections: PortfolioStructureSectionItem[];
   evidencePlacements: EvidencePlacementMapping[];
+  sectionPriorities: { sectionName: string; priority: 'HIGH' | 'MEDIUM' | 'LOW'; whyPriority: string; actionRequired: string }[];
   onReorder: (from: number, to: number) => void;
   onToggle: (id: string) => void;
 }) {
-  // Build a map of evidence placements to section titles for inline display
   const placementMap = useMemo(() => {
     const map: Record<string, EvidencePlacementMapping[]> = {};
     for (const ep of evidencePlacements) {
       const placement = ep.recommendedPlacement.toLowerCase();
       for (const sec of sections) {
         const title = sec.sectionTitle.toLowerCase();
-        if (placement.includes('hero') && title.includes('hero')) {
+        if (placement.includes('positioning') && (title.includes('positioning') || title.includes('hero'))) {
           (map[sec.id] ??= []).push(ep);
-        } else if (placement.includes('proof') && title.includes('proof')) {
+        } else if (placement.includes('evidence') && (title.includes('evidence') || title.includes('proof'))) {
           (map[sec.id] ??= []).push(ep);
-        } else if (placement.includes('case') && title.includes('case')) {
+        } else if (placement.includes('work') && (title.includes('work') || title.includes('teardown') || title.includes('case'))) {
           (map[sec.id] ??= []).push(ep);
-        } else if (placement.includes('offer') && (title.includes('capability') || title.includes('offer'))) {
+        } else if (placement.includes('capability') && (title.includes('capability') || title.includes('offer'))) {
           (map[sec.id] ??= []).push(ep);
-        } else if (placement.includes('trust') && title.includes('social')) {
+        } else if (placement.includes('trust') && (title.includes('trust') || title.includes('social'))) {
           (map[sec.id] ??= []).push(ep);
         } else if (placement.includes('booking') && (title.includes('booking') || title.includes('next step'))) {
           (map[sec.id] ??= []).push(ep);
@@ -309,18 +318,39 @@ function PortfolioJourneyCanvas({
     return map;
   }, [sections, evidencePlacements]);
 
+  const priorityMap = useMemo(() => {
+    const map: Record<string, 'HIGH' | 'MEDIUM' | 'LOW'> = {};
+    for (const p of sectionPriorities) {
+      const name = p.sectionName.toLowerCase();
+      for (const sec of sections) {
+        const title = sec.sectionTitle.toLowerCase();
+        if (name.includes('positioning') && title.includes('positioning')) map[sec.id] = p.priority;
+        else if (name.includes('evidence') && title.includes('evidence')) map[sec.id] = p.priority;
+        else if (name.includes('work') && (title.includes('work') || title.includes('teardown'))) map[sec.id] = p.priority;
+        else if (name.includes('offer') && (title.includes('capability') || title.includes('offer'))) map[sec.id] = p.priority;
+        else if (!map[sec.id]) map[sec.id] = 'MEDIUM';
+      }
+    }
+    return map;
+  }, [sections, sectionPriorities]);
+
   return (
     <motion.section {...fadeUp} className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight">Portfolio Section Sequence</h2>
+        <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
+          <Compass className="w-3.5 h-3.5" />
+          Zone 03 — Portfolio Journey & Evidence Placement
+        </div>
+        <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight mt-0.5">Strategic Portfolio Sequence & Evidence Flow</h2>
         <p className="text-sm text-[#424754] mt-1 leading-relaxed max-w-2xl">
-          This is the recommended order for your portfolio website. Proof is placed early to satisfy buyer skepticism before showing prices. Reorder sections if needed.
+          Strategic Baseline: <span className="font-semibold text-[#0058be]">Positioning → Capability/Offer → Relevant Work → Evidence → Trust → Next Step</span>. System adapts sequence dynamically based on proof strength.
         </p>
       </div>
 
       <motion.div {...stagger} className="space-y-3">
         {sections.map((sec, idx) => {
           const linkedEvidence = placementMap[sec.id] || [];
+          const priority = priorityMap[sec.id] || 'HIGH';
           const isDisabled = !sec.isEnabled;
 
           return (
@@ -335,60 +365,66 @@ function PortfolioJourneyCanvas({
               )}
             >
               <div className="p-4 flex items-start gap-4">
-                {/* Position number */}
                 <div className={cn(
                   'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-mono text-sm font-bold border',
-                  isDisabled
-                    ? 'bg-slate-100 text-slate-400 border-slate-200'
-                    : 'bg-[#0058be]/8 text-[#0058be] border-[#0058be]/15'
+                  isDisabled ? 'bg-slate-100 text-slate-400 border-slate-200' : 'bg-[#0058be]/8 text-[#0058be] border-[#0058be]/15'
                 )}>
-                  {String(sec.position).padStart(2, '0')}
+                  0{sec.position}
                 </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h4 className={cn('text-sm font-bold', isDisabled ? 'text-slate-400' : 'text-[#0b1c30]')}>
                       {sec.sectionTitle.replace(/^\d+\.\s*/, '')}
                     </h4>
                     <span className={cn(
-                      'text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded',
-                      isDisabled ? 'bg-slate-100 text-slate-400' : 'bg-[#eff4ff] text-[#0058be]'
+                      'text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full border',
+                      priority === 'HIGH' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      priority === 'MEDIUM' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                      'bg-slate-100 text-slate-600 border-slate-200'
                     )}>
-                      {sec.structuralRole.split(' ')[0]}
+                      {priority} PRIORITY
                     </span>
                   </div>
+
                   <p className={cn('text-xs leading-relaxed', isDisabled ? 'text-slate-400' : 'text-[#424754]')}>
-                    <span className="font-medium text-[#0058be]/60">Visitor thinks:</span> "{sec.visitorMindset}"
+                    <span className="font-semibold text-[#0058be]">Visitor Mindset:</span> "{sec.visitorMindset}"
                   </p>
 
-                  {/* Inline evidence placement callouts */}
+                  {/* Inline Evidence & Proof Strength Mapping */}
                   {linkedEvidence.length > 0 && !isDisabled && (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
+                    <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5">
+                      <span className="text-[10px] font-mono font-bold uppercase text-[#0058be] block">
+                        Recommended Proof & Strength:
+                      </span>
                       {linkedEvidence.map((ev) => (
-                        <span
-                          key={ev.id}
-                          className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-full"
-                        >
-                          <MapPin className="w-2.5 h-2.5" />
-                          {ev.proofTitle}
-                        </span>
+                        <div key={ev.id} className="p-2 rounded-lg bg-[#f8f9ff] border border-slate-200/60 text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 text-[#0b1c30]">
+                            <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
+                            <span className="font-bold">{ev.proofTitle}</span>
+                            <span className="text-[9px] uppercase font-bold text-[#0058be] bg-white px-1.5 py-0.5 rounded border border-slate-200">
+                              {ev.proofStrength}
+                            </span>
+                          </div>
+                          {ev.actionIfWeak && (
+                            <span className="text-[10px] font-sans text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                              If weak: {ev.actionIfWeak}
+                            </span>
+                          )}
+                        </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                {/* Controls */}
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
                     onClick={() => onToggle(sec.id)}
                     className={cn(
                       'p-1.5 rounded-lg border cursor-pointer transition-colors',
-                      sec.isEnabled
-                        ? 'bg-white border-slate-200 text-slate-500 hover:text-[#0b1c30] hover:bg-slate-50'
-                        : 'bg-rose-50 border-rose-200 text-rose-500'
+                      sec.isEnabled ? 'bg-white border-slate-200 text-slate-500 hover:text-[#0b1c30] hover:bg-slate-50' : 'bg-rose-50 border-rose-200 text-rose-500'
                     )}
-                    title={sec.isEnabled ? 'Hide section' : 'Show section'}
+                    title={sec.isEnabled ? 'Hide stage' : 'Show stage'}
                   >
                     {sec.isEnabled ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                   </button>
@@ -420,58 +456,137 @@ function PortfolioJourneyCanvas({
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   ZONE 4 — MASTER BLUEPRINT SUMMARY
+   ZONE 04 — VISITOR JOURNEY + AUTHORITY ALIGNMENT
+   Explains progressive visitor understanding: Curiosity -> Clarity -> Evaluation -> Validation -> Conviction -> Action
+   Explicitly audits alignment across: Positioning -> Profile -> Portfolio -> Proof
    ════════════════════════════════════════════════════════════════════ */
-function BlueprintSummaryPanel({
-  positioningClaim,
-  primaryCategory,
-  strongestProof,
-  profileFocus,
-  topPriorities,
-  evidencePlacement,
-  alignmentScore,
-  alignmentVerdict,
-  diagnostics,
+function Zone04VisitorJourneyAndAuthorityAlignment({
+  presentationFlow,
+  alignmentAudit,
 }: {
-  positioningClaim: string;
-  primaryCategory: string;
-  strongestProof: string;
-  profileFocus: string;
-  topPriorities: string[];
-  evidencePlacement: string;
-  alignmentScore: number;
-  alignmentVerdict: string;
-  diagnostics: { severity: string; title: string; recommendation: string }[];
+  presentationFlow: { personaContext: string; journey: { stepNumber: number; stageName: string; visitorPsychology: string; contentToPresent: string; conversionRole: string }[] };
+  alignmentAudit: { alignmentScore: number; overallVerdict: string; diagnostics: { id: string; severity: string; title: string; positioningClaim: string; actualEvidenceOrWork: string; recommendation: string; impactedSection: string }[] };
+}) {
+  return (
+    <motion.section {...fadeUp} className="space-y-6">
+      <div>
+        <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
+          <Target className="w-3.5 h-3.5" />
+          Zone 04 — Visitor Journey & Authority Alignment Audit
+        </div>
+        <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight mt-0.5">Progressive Understanding & Alignment Audit</h2>
+        <p className="text-sm text-[#424754] mt-1 leading-relaxed max-w-2xl">
+          Context: <span className="font-semibold text-[#0058be]">{presentationFlow.personaContext}</span>. Auditing whether Positioning → Profile → Portfolio → Proof reinforce the same core perception.
+        </p>
+      </div>
+
+      {/* 6-Stage Progressive Visitor Understanding Sequence */}
+      <div className="p-4 rounded-xl bg-white border border-slate-200/60 space-y-3">
+        <h4 className="text-xs font-mono font-bold uppercase text-[#0058be]">
+          Visitor Understanding Progression (Curiosity → Action)
+        </h4>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          {presentationFlow.journey.map((step) => (
+            <div key={step.stepNumber} className="p-3 rounded-lg bg-[#f8f9ff] border border-slate-200/60 space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#0058be] font-bold">
+                <span>0{step.stepNumber}. {step.stageName.split(':')[1]?.trim() || step.stageName}</span>
+              </div>
+              <p className="text-[11px] font-semibold text-[#0b1c30]">{step.visitorPsychology}</p>
+              <p className="text-[10px] text-slate-500">{step.conversionRole}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Positioning -> Profile -> Portfolio -> Proof Alignment Audit */}
+      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <h4 className="text-sm font-bold text-[#0b1c30] flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#0058be]" />
+              System Alignment Audit: Positioning → Profile → Portfolio → Proof
+            </h4>
+            <p className="text-xs text-slate-500">{alignmentAudit.overallVerdict}</p>
+          </div>
+          <span className={cn(
+            'text-xs font-mono font-bold px-3 py-1 rounded-full border shrink-0',
+            alignmentAudit.alignmentScore >= 80 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+          )}>
+            Score: {alignmentAudit.alignmentScore}/100
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          {alignmentAudit.diagnostics.map((diag) => (
+            <div key={diag.id} className={cn(
+              'p-3.5 rounded-xl border text-xs space-y-1',
+              diag.severity === 'success' ? 'bg-emerald-50/50 border-emerald-200 text-emerald-900' :
+              diag.severity === 'warning' ? 'bg-amber-50/50 border-amber-200 text-amber-900' :
+              'bg-rose-50/50 border-rose-200 text-rose-900'
+            )}>
+              <div className="flex items-center justify-between font-bold">
+                <span>{diag.title}</span>
+                <span className="text-[10px] font-mono uppercase bg-white/80 px-2 py-0.5 rounded border border-slate-200">
+                  Impacts: {diag.impactedSection}
+                </span>
+              </div>
+              <p className="text-[11px] opacity-80">{diag.actualEvidenceOrWork}</p>
+              <div className="pt-1 text-[11px] font-semibold text-[#0058be]">
+                → Fix Recommendation: {diag.recommendation}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   ZONE 05 — MASTER BLUEPRINT + NEXT MOVES
+   Consolidates final deliverable, answers 8 Core Questions, concise action plan
+   Lock Blueprint -> Continue to Step 4: Authority Operating System
+   ════════════════════════════════════════════════════════════════════ */
+function Zone05MasterBlueprintAndNextMoves({
+  decisionSummary,
+  alignmentAudit,
+  nextMoves,
+  onToggleMove,
+  onProceedToStep4,
+}: {
+  decisionSummary: { positioningClaim: string; primaryCategory: string; strongestProofAnchor: string; primaryProfileFocus: string; topPortfolioPriorities: string[]; keyEvidencePlacement: string; alignmentHealth: string };
+  alignmentAudit: { alignmentScore: number; overallVerdict: string; diagnostics: any[] };
+  nextMoves: NextMoveActionItem[];
+  onToggleMove: (id: string) => void;
+  onProceedToStep4: () => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const completedCount = nextMoves.filter((m) => m.isCompleted).length;
 
-  const handleExportMarkdown = () => {
+  const coreQuestionsAnswers = [
+    { q: '1. How should I be perceived?', a: decisionSummary.positioningClaim },
+    { q: '2. What should my profile communicate?', a: decisionSummary.primaryProfileFocus },
+    { q: '3. What should my portfolio lead with?', a: decisionSummary.topPortfolioPriorities[0] || 'Positioning & Hero Claim' },
+    { q: '4. What proof should I emphasize?', a: decisionSummary.strongestProofAnchor },
+    { q: '5. Where should that proof appear?', a: decisionSummary.keyEvidencePlacement },
+    { q: '6. How should a visitor experience the story?', a: 'Curiosity → Clarity → Evaluation → Validation → Conviction → Action' },
+    { q: '7. What is currently misaligned?', a: alignmentAudit.diagnostics.find((d: any) => d.severity === 'warning')?.title.replace(/[⚠✓]/g, '').trim() || 'No critical disconnects detected' },
+    { q: '8. What should I do next?', a: nextMoves[0]?.title || 'Lock Blueprint & Generate Authority Pack' },
+  ];
+
+  const handleCopyMarkdown = () => {
     const md = [
-      `# Profile & Portfolio Authority Blueprint`,
+      `# Profile + Portfolio Authority Blueprint`,
       ``,
-      `## Positioning Claim`,
-      positioningClaim,
+      `## 8 Core Strategic Answers`,
+      ...coreQuestionsAnswers.map((item) => `- **${item.q}**: ${item.a}`),
       ``,
-      `## Primary Category`,
-      primaryCategory,
+      `## Alignment Health`,
+      `Score: ${alignmentAudit.alignmentScore}/100 — ${alignmentAudit.overallVerdict}`,
       ``,
-      `## Strongest Proof Anchor`,
-      strongestProof,
-      ``,
-      `## Primary Profile Focus`,
-      profileFocus,
-      ``,
-      `## Top Portfolio Priorities`,
-      ...topPriorities.map((p, i) => `${i + 1}. ${p}`),
-      ``,
-      `## Key Evidence Placement`,
-      evidencePlacement,
-      ``,
-      `## Alignment Score: ${alignmentScore}/100`,
-      alignmentVerdict,
-      ``,
-      `## Diagnostics`,
-      ...diagnostics.map((d) => `- **${d.title}**: ${d.recommendation}`),
+      `## Action Plan (Next Moves)`,
+      ...nextMoves.map((m, i) => `${i + 1}. [${m.isCompleted ? 'X' : ' '}] ${m.title} — ${m.description}`),
     ].join('\n');
 
     navigator.clipboard.writeText(md).then(() => {
@@ -481,169 +596,100 @@ function BlueprintSummaryPanel({
   };
 
   return (
-    <motion.section {...fadeUp} className="space-y-5">
+    <motion.section {...fadeUp} className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight">Your Authority Blueprint</h2>
-          <p className="text-sm text-[#424754] mt-1">The strategic summary of your profile and portfolio decisions.</p>
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
+            <FileText className="w-3.5 h-3.5" />
+            Zone 05 — Master Authority Blueprint & Next Moves
+          </div>
+          <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight mt-0.5">Final Deliverable & Action Plan</h2>
+          <p className="text-sm text-[#424754] mt-1">Consolidates your strategy into 8 core answers with a concise action plan.</p>
         </div>
+
         <button
-          onClick={handleExportMarkdown}
-          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#0058be] hover:border-[#0058be]/30 cursor-pointer transition-colors"
+          onClick={handleCopyMarkdown}
+          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-[#0058be] hover:border-[#0058be]/30 cursor-pointer transition-colors shrink-0"
         >
           {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-          {copied ? 'Copied!' : 'Copy as Markdown'}
+          {copied ? 'Copied Blueprint!' : 'Copy Markdown'}
         </button>
       </div>
 
-      <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-white to-[#f8f9ff] overflow-hidden shadow-xs">
-        {/* Blueprint Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-slate-200/60">
-          <BlueprintCell label="Positioning Claim" value={positioningClaim} accent />
-          <BlueprintCell label="Primary Category" value={primaryCategory} />
-          <BlueprintCell label="Strongest Proof Anchor" value={strongestProof} />
-          <BlueprintCell label="Key Evidence Placement" value={evidencePlacement} />
-          <BlueprintCell label="Profile Focus" value={profileFocus} />
-          <BlueprintCell
-            label="Alignment Health"
-            value={`${alignmentScore}/100 — ${alignmentVerdict.split('—')[0].trim()}`}
-            badge={alignmentScore >= 80 ? 'strong' : alignmentScore >= 60 ? 'moderate' : 'developing'}
-          />
+      {/* The 8 Core Questions Grid */}
+      <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-xs">
+        <div className="p-4 bg-[#f8f9ff] border-b border-slate-200/60 font-mono text-xs font-bold text-[#0058be]">
+          8 Core Strategic Questions Answered by Step 3:
         </div>
 
-        {/* Diagnostics strip */}
-        {diagnostics.length > 0 && (
-          <div className="px-5 py-4 border-t border-slate-200/60 space-y-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Diagnostics</span>
-            {diagnostics.map((d, i) => (
-              <div key={i} className={cn(
-                'text-xs p-2.5 rounded-lg border flex items-start gap-2',
-                d.severity === 'success' ? 'bg-emerald-50/60 border-emerald-200/60 text-emerald-800' :
-                d.severity === 'warning' ? 'bg-amber-50/60 border-amber-200/60 text-amber-800' :
-                'bg-rose-50/60 border-rose-200/60 text-rose-800'
-              )}>
-                {d.severity === 'success' ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" /> : <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />}
-                <div>
-                  <span className="font-semibold">{d.title.replace(/[✓⚠]/g, '').trim()}</span>
-                  <span className="text-[11px] block mt-0.5 opacity-80">{d.recommendation}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-slate-200/60">
+          {coreQuestionsAnswers.map((item, idx) => (
+            <div key={idx} className="bg-white p-4 space-y-1">
+              <span className="text-[10px] font-mono font-bold text-[#0058be] uppercase block">{item.q}</span>
+              <p className="text-xs font-semibold text-[#0b1c30] leading-relaxed">{item.a}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </motion.section>
-  );
-}
 
-function BlueprintCell({ label, value, accent, badge }: { label: string; value: string; accent?: boolean; badge?: 'strong' | 'moderate' | 'developing' }) {
-  return (
-    <div className="bg-white p-4 space-y-1">
-      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">{label}</span>
-      <div className="flex items-start gap-2">
-        <span className={cn('text-[13px] font-semibold leading-snug', accent ? 'text-[#0058be]' : 'text-[#0b1c30]')}>
-          {value}
-        </span>
-        {badge && (
-          <span className={cn(
-            'text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded shrink-0 mt-0.5',
-            badge === 'strong' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-            badge === 'moderate' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-            'bg-blue-50 text-blue-700 border border-blue-200'
-          )}>
-            {badge}
+      {/* Next Moves Execution Plan */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-bold text-[#0b1c30] flex items-center gap-2">
+            <Rocket className="w-4 h-4 text-[#0058be]" />
+            Personalized Action Plan (Next Moves)
+          </h4>
+          <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+            {completedCount}/{nextMoves.length} Completed
           </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════
-   ZONE 5 — NEXT MOVES & STEP 4 HANDOFF
-   ════════════════════════════════════════════════════════════════════ */
-function NextMovesFooter({
-  moves,
-  onToggle,
-  onProceed,
-}: {
-  moves: NextMoveActionItem[];
-  onToggle: (id: string) => void;
-  onProceed: () => void;
-}) {
-  const completed = moves.filter((m) => m.isCompleted).length;
-
-  return (
-    <motion.section {...fadeUp} className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-[#0b1c30] tracking-tight">Your Next Moves</h2>
-          <p className="text-sm text-[#424754] mt-1">Tactical actions to bring your blueprint to life.</p>
         </div>
-        <span className={cn(
-          'text-xs font-mono font-bold px-3 py-1.5 rounded-full border',
-          completed === moves.length
-            ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-            : 'text-[#0058be] bg-[#0058be]/8 border-[#0058be]/15'
-        )}>
-          {completed}/{moves.length} done
-        </span>
+
+        <div className="space-y-2">
+          {nextMoves.map((m) => (
+            <div
+              key={m.id}
+              onClick={() => onToggleMove(m.id)}
+              className={cn(
+                'p-3.5 rounded-xl border cursor-pointer transition-all flex items-start gap-3 group',
+                m.isCompleted ? 'bg-emerald-50/40 border-emerald-200/60' : 'bg-white border-slate-200/60 hover:border-[#0058be]/20 hover:shadow-xs'
+              )}
+            >
+              <div className={cn(
+                'w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors',
+                m.isCompleted ? 'bg-emerald-600 border-emerald-600' : 'border-slate-300 group-hover:border-[#0058be]'
+              )}>
+                {m.isCompleted && <Check className="w-3 h-3 text-white" />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h5 className={cn('text-xs font-bold', m.isCompleted ? 'line-through text-slate-400' : 'text-[#0b1c30]')}>
+                  0{m.stepNumber}. {m.title}
+                </h5>
+                <p className={cn('text-[11px] mt-0.5', m.isCompleted ? 'text-slate-400' : 'text-[#424754]')}>
+                  {m.description}
+                </p>
+              </div>
+              <span className="text-[9px] font-mono uppercase bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-bold shrink-0">
+                {m.category}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        {moves.map((m) => (
-          <div
-            key={m.id}
-            onClick={() => onToggle(m.id)}
-            className={cn(
-              'p-4 rounded-xl border cursor-pointer transition-all flex items-start gap-3 group',
-              m.isCompleted
-                ? 'bg-emerald-50/40 border-emerald-200/60'
-                : 'bg-white border-slate-200/60 hover:border-[#0058be]/20 hover:shadow-xs'
-            )}
-          >
-            <div className={cn(
-              'w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors',
-              m.isCompleted
-                ? 'bg-emerald-600 border-emerald-600'
-                : 'border-slate-300 group-hover:border-[#0058be]'
-            )}>
-              {m.isCompleted && <Check className="w-3 h-3 text-white" />}
-            </div>
-            <div className="min-w-0">
-              <h4 className={cn('text-sm font-semibold', m.isCompleted ? 'line-through text-slate-400' : 'text-[#0b1c30]')}>
-                {m.title}
-              </h4>
-              <p className={cn('text-xs mt-0.5', m.isCompleted ? 'text-slate-400' : 'text-[#424754]')}>
-                {m.description}
-              </p>
-            </div>
-            <span className={cn(
-              'text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded shrink-0 mt-0.5',
-              m.category === 'Proof' ? 'bg-purple-50 text-purple-700' :
-              m.category === 'Profile' ? 'bg-blue-50 text-blue-700' :
-              m.category === 'Portfolio' ? 'bg-emerald-50 text-emerald-700' :
-              'bg-amber-50 text-amber-700'
-            )}>
-              {m.category}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Step 4 Handoff */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0058be] to-[#004395] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div className="text-white">
-          <h4 className="text-base font-bold">Blueprint Complete</h4>
-          <p className="text-sm text-white/70 mt-0.5">
-            Ready to generate your Authority Operating System in Step 4.
+      {/* Lock Blueprint & Step 4 Handoff */}
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0058be] to-[#004395] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm text-white">
+        <div>
+          <h4 className="text-base font-bold">Lock Blueprint & Continue</h4>
+          <p className="text-xs text-white/80 mt-0.5">
+            Your Profile & Portfolio Strategy is set. Proceed to Step 4 to generate your complete Authority Operating System.
           </p>
         </div>
+
         <button
-          onClick={onProceed}
-          className="flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl bg-white text-[#0058be] hover:bg-blue-50 shadow-sm cursor-pointer transition-colors shrink-0"
+          onClick={onProceedToStep4}
+          className="flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl bg-white text-[#0058be] hover:bg-blue-50 shadow-sm cursor-pointer transition-colors shrink-0 font-mono"
         >
-          Continue to Step 4
+          Lock Blueprint → Continue to Step 4
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -652,7 +698,7 @@ function NextMovesFooter({
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   MAIN COMPONENT — STEP 3 WORKSPACE
+   MAIN COMPONENT SHELL — THE 5 CORE WORKSPACE ZONES
    ════════════════════════════════════════════════════════════════════ */
 export const Step3ProfilePortfolioAuthority: React.FC = () => {
   const mod3State = useModule3Store();
@@ -670,7 +716,6 @@ export const Step3ProfilePortfolioAuthority: React.FC = () => {
   const [editingLayerKey, setEditingLayerKey] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
 
-  // Generate blueprint on first render
   useEffect(() => {
     if (!authorityBlueprint) {
       const generated = generateProfilePortfolioAuthorityBlueprint(mod3State);
@@ -679,7 +724,7 @@ export const Step3ProfilePortfolioAuthority: React.FC = () => {
   }, [authorityBlueprint, mod3State, setAuthorityBlueprint]);
 
   const blueprint = authorityBlueprint || generateProfilePortfolioAuthorityBlueprint(mod3State);
-  const { decisionSummary, profilePositioning, portfolioStructure, evidencePlacements, alignmentAudit, nextMoves, foundation } = blueprint;
+  const { decisionSummary, profilePositioning, portfolioStructure, evidencePlacements, sectionPriorities, presentationFlow, alignmentAudit, nextMoves, foundation } = blueprint;
 
   const handleProceedToStep4 = () => {
     useModule3Store.setState((s) => ({
@@ -710,39 +755,40 @@ export const Step3ProfilePortfolioAuthority: React.FC = () => {
       {/* Step Header */}
       <StepHeader
         step={{ current: 3, total: 4 }}
-        title="Profile & Portfolio Authority"
+        title="Profile & Portfolio Authority Strategy"
         description="Transform scattered capability into a coherent authority system that tells one consistent story from positioning to proof to presentation."
       />
 
-      {/* Core Transformation Strategic Callout */}
+      {/* Core Strategic Bridge Notice */}
       <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0058be]/[0.06] via-white to-[#0058be]/[0.03] border border-[#0058be]/15 flex items-start gap-3">
         <Sparkles className="w-5 h-5 text-[#0058be] shrink-0 mt-0.5" />
         <div className="space-y-0.5 text-xs text-[#424754]">
           <span className="font-bold text-[#0b1c30] block font-mono text-[11px] uppercase tracking-wider">
-            The Step 3 Bridge: Scattered Capability → Coherent Authority
+            The Step 3 Strategic Bridge: Scattered Capability → Coherent Authority
           </span>
           <p className="leading-relaxed">
-            Step 3 takes your Step 1 positioning and Step 2 proof assets to answer: <em>"How should my profile and portfolio guide a visitor from curiosity to trust so they clearly see the value I represent?"</em>
+            Step 3 takes your Step 1 positioning and Step 2 proof assets to determine: <em>"How should my profile and portfolio guide a visitor from curiosity to trust so they clearly see the value I represent?"</em>
           </p>
         </div>
       </div>
 
-      {/* Zone 1: Executive Hero Banner */}
-      <ExecutiveHeroBanner
+      {/* Zone 01 — Executive Authority Context */}
+      <Zone01ExecutiveAuthorityContext
         positioningClaim={decisionSummary.positioningClaim}
         proofCount={foundation.equippedProofCount + (mod3State.proofAssets?.length || 0)}
         alignmentHealth={decisionSummary.alignmentHealth}
         strongestProof={foundation.strongestProofSignal}
+        trustPromise={foundation.trustPromise}
+        authorityPosition={foundation.authorityPosition}
         isStale={isUpstreamStale && !staleDismissed}
         onRegenerate={handleRegenerate}
         onDismissStale={() => setStaleDismissed(true)}
       />
 
-      {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      {/* Zone 2: Profile Message Architecture */}
-      <ProfileArchitectureSection
+      {/* Zone 02 — Profile Message Architecture */}
+      <Zone02ProfileMessageArchitecture
         layers={profilePositioning}
         onEditLayer={handleEditLayer}
         editingKey={editingLayerKey}
@@ -752,41 +798,34 @@ export const Step3ProfilePortfolioAuthority: React.FC = () => {
         onCancelEdit={() => setEditingLayerKey(null)}
       />
 
-      {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      {/* Zone 3: Portfolio Journey Canvas */}
-      <PortfolioJourneyCanvas
+      {/* Zone 03 — Portfolio Journey + Proof Placement */}
+      <Zone03PortfolioJourneyAndProofPlacement
         sections={portfolioStructure}
         evidencePlacements={evidencePlacements}
+        sectionPriorities={sectionPriorities}
         onReorder={reorderBlueprintPortfolioSection}
         onToggle={toggleBlueprintPortfolioSection}
       />
 
-      {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      {/* Zone 4: Master Blueprint Summary */}
-      <BlueprintSummaryPanel
-        positioningClaim={decisionSummary.positioningClaim}
-        primaryCategory={decisionSummary.primaryCategory}
-        strongestProof={decisionSummary.strongestProofAnchor}
-        profileFocus={decisionSummary.primaryProfileFocus}
-        topPriorities={decisionSummary.topPortfolioPriorities}
-        evidencePlacement={decisionSummary.keyEvidencePlacement}
-        alignmentScore={alignmentAudit.alignmentScore}
-        alignmentVerdict={alignmentAudit.overallVerdict}
-        diagnostics={alignmentAudit.diagnostics}
+      {/* Zone 04 — Visitor Journey + Authority Alignment */}
+      <Zone04VisitorJourneyAndAuthorityAlignment
+        presentationFlow={presentationFlow}
+        alignmentAudit={alignmentAudit}
       />
 
-      {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      {/* Zone 5: Next Moves & Step 4 Handoff */}
-      <NextMovesFooter
-        moves={nextMoves}
-        onToggle={toggleNextMoveItem}
-        onProceed={handleProceedToStep4}
+      {/* Zone 05 — Master Blueprint + Next Moves */}
+      <Zone05MasterBlueprintAndNextMoves
+        decisionSummary={decisionSummary}
+        alignmentAudit={alignmentAudit}
+        nextMoves={nextMoves}
+        onToggleMove={toggleNextMoveItem}
+        onProceedToStep4={handleProceedToStep4}
       />
     </div>
   );
