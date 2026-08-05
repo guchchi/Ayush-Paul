@@ -160,6 +160,7 @@ export const useModule3Store = create<Module3State>()(
       proofAssets: [],
 
       authoritySuite: null,
+      authorityBlueprint: null,
 
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
@@ -537,6 +538,104 @@ export const useModule3Store = create<Module3State>()(
 
       setAuthoritySuite(suite) {
         set({ authoritySuite: suite, lastUpdated: Date.now() });
+      },
+
+      setAuthorityBlueprint(blueprint) {
+        set({ authorityBlueprint: blueprint, lastUpdated: Date.now() });
+      },
+
+      updateMessageLayer(layerKey, customization) {
+        set((state) => {
+          if (!state.authorityBlueprint) return {};
+          return {
+            authorityBlueprint: {
+              ...state.authorityBlueprint,
+              profilePositioning: state.authorityBlueprint.profilePositioning.map((l) =>
+                l.layerKey === layerKey
+                  ? { ...l, userCustomization: customization, status: 'adjusted' }
+                  : l
+              ),
+              lastUpdated: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      reorderBlueprintPortfolioSection(fromIdx, toIdx) {
+        set((state) => {
+          if (!state.authorityBlueprint) return {};
+          const sections = [...state.authorityBlueprint.portfolioStructure];
+          if (fromIdx < 0 || fromIdx >= sections.length || toIdx < 0 || toIdx >= sections.length) return {};
+          const [moved] = sections.splice(fromIdx, 1);
+          sections.splice(toIdx, 0, moved);
+          const renumbered = sections.map((s, idx) => ({ ...s, position: idx + 1, status: 'adjusted' as const }));
+          return {
+            authorityBlueprint: {
+              ...state.authorityBlueprint,
+              portfolioStructure: renumbered,
+              lastUpdated: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      toggleBlueprintPortfolioSection(sectionId) {
+        set((state) => {
+          if (!state.authorityBlueprint) return {};
+          return {
+            authorityBlueprint: {
+              ...state.authorityBlueprint,
+              portfolioStructure: state.authorityBlueprint.portfolioStructure.map((s) =>
+                s.id === sectionId ? { ...s, isEnabled: !s.isEnabled, status: 'adjusted' as const } : s
+              ),
+              lastUpdated: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      acceptBlueprintRecommendation(sectionKey, itemId) {
+        set((state) => {
+          if (!state.authorityBlueprint) return {};
+          let updated = { ...state.authorityBlueprint };
+
+          if (sectionKey === 'profilePositioning') {
+            updated.profilePositioning = updated.profilePositioning.map((item) =>
+              item.layerKey === itemId ? { ...item, status: 'accepted' as const } : item
+            );
+          } else if (sectionKey === 'portfolioStructure') {
+            updated.portfolioStructure = updated.portfolioStructure.map((item) =>
+              item.id === itemId ? { ...item, status: 'accepted' as const } : item
+            );
+          }
+
+          return {
+            authorityBlueprint: {
+              ...updated,
+              lastUpdated: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      toggleNextMoveItem(itemId) {
+        set((state) => {
+          if (!state.authorityBlueprint) return {};
+          return {
+            authorityBlueprint: {
+              ...state.authorityBlueprint,
+              nextMoves: state.authorityBlueprint.nextMoves.map((item) =>
+                item.id === itemId ? { ...item, isCompleted: !item.isCompleted } : item
+              ),
+              lastUpdated: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
       },
 
       updateBrandAsset(assetId, newValue) {

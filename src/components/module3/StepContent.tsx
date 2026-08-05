@@ -2,13 +2,13 @@ import { useModule3Store } from '../../lib/module3';
 import type { Module3Step } from '../../types/module3';
 import { Step1AuthorityPosition } from './Step1AuthorityPosition';
 import { Step2ProofAssetBuilder } from './Step2ProofAssetBuilder';
-import { Step3ProfilePortfolio } from './step3/Step3ProfilePortfolio';
+import { Step3ProfilePortfolioAuthority } from './step3/Step3ProfilePortfolioAuthority';
 import { Step4AuthorityPack } from '../../features/authority-pack/components/Step4AuthorityPack';
 
 const STEP_COMPONENTS: Partial<Record<Module3Step, React.FC>> = {
   authority_position: Step1AuthorityPosition,
   proof_asset_builder: Step2ProofAssetBuilder,
-  profile_portfolio: Step3ProfilePortfolio,
+  profile_portfolio: Step3ProfilePortfolioAuthority,
   authority_pack: Step4AuthorityPack,
 };
 

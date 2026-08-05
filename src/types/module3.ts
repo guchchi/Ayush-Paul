@@ -7,6 +7,7 @@ import type {
   ProposalSummary,
 } from './offer-engineering';
 import type { GeneratedAuthoritySuite, PortfolioBlueprintSection } from '../data/module3/authority-suite-engine';
+import type { ProfilePortfolioAuthorityBlueprint } from './module3-step3-authority';
 
 export const MODULE3_STEPS = [
   'authority_position',
@@ -438,6 +439,13 @@ export interface Module3State {
   approveProofAssetStrategy(): void;
 
   authoritySuite: GeneratedAuthoritySuite | null;
+  authorityBlueprint: ProfilePortfolioAuthorityBlueprint | null;
+  setAuthorityBlueprint(blueprint: ProfilePortfolioAuthorityBlueprint | null): void;
+  updateMessageLayer(layerKey: string, customization: string): void;
+  reorderBlueprintPortfolioSection(fromIdx: number, toIdx: number): void;
+  toggleBlueprintPortfolioSection(sectionId: string): void;
+  acceptBlueprintRecommendation(sectionKey: string, itemId: string): void;
+  toggleNextMoveItem(itemId: string): void;
   setAuthoritySuite(suite: GeneratedAuthoritySuite | null): void;
   updateBrandAsset(assetId: string, newValue: string): void;
   resetBrandAsset(assetId: string): void;
