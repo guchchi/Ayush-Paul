@@ -711,8 +711,21 @@ export const Step3ProfilePortfolioAuthority: React.FC = () => {
       <StepHeader
         step={{ current: 3, total: 4 }}
         title="Profile & Portfolio Authority"
-        description="Your positioning and proof are set. Now let's structure exactly how your profile and portfolio should communicate your authority to anyone who discovers you."
+        description="Transform scattered capability into a coherent authority system that tells one consistent story from positioning to proof to presentation."
       />
+
+      {/* Core Transformation Strategic Callout */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0058be]/[0.06] via-white to-[#0058be]/[0.03] border border-[#0058be]/15 flex items-start gap-3">
+        <Sparkles className="w-5 h-5 text-[#0058be] shrink-0 mt-0.5" />
+        <div className="space-y-0.5 text-xs text-[#424754]">
+          <span className="font-bold text-[#0b1c30] block font-mono text-[11px] uppercase tracking-wider">
+            The Step 3 Bridge: Scattered Capability → Coherent Authority
+          </span>
+          <p className="leading-relaxed">
+            Step 3 takes your Step 1 positioning and Step 2 proof assets to answer: <em>"How should my profile and portfolio guide a visitor from curiosity to trust so they clearly see the value I represent?"</em>
+          </p>
+        </div>
+      </div>
 
       {/* Zone 1: Executive Hero Banner */}
       <ExecutiveHeroBanner
