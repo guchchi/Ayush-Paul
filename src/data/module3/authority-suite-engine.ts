@@ -10,20 +10,30 @@ export function formatSnakeCaseWords(str: string): string {
 function analyzeProofContext(proofCtx?: ProofContext) {
   const equipped = proofCtx?.availableAssets || [];
   const skipped = proofCtx?.skippedAssets || [];
-  
+  const proofAssets = proofCtx?.proofAssets || [];
+  const rawInventory = proofCtx?.existingProofInventory || '';
+
   const hasTestimonials = equipped.some((id) => id.includes('testimonial') || id.includes('client_testimonials'));
   const hasCaseStudies = equipped.some((id) => id.includes('case_study') || id.includes('design_case_study'));
   const hasBeforeAfter = equipped.some((id) => id.includes('before') || id.includes('comparison'));
   const hasDemos = equipped.some((id) => id.includes('video') || id.includes('showreel') || id.includes('demo') || id.includes('prototype') || id.includes('live'));
   const hasMetrics = equipped.some((id) => id.includes('metric') || id.includes('analytics') || id.includes('conversion'));
   const hasCodeOrTech = equipped.some((id) => id.includes('code') || id.includes('github') || id.includes('automation'));
-  
+
   const totalEquipped = equipped.length;
-  const isLowProof = totalEquipped === 0;
+
+  // Extract rich item-level evidence from Step 2 proofAssets
+  const preparedProofItems = proofAssets.filter((a) => a.title && a.title.trim().length > 0);
+  const proofTitles = preparedProofItems.map((a) => a.title.trim());
+  const primaryProofTitle = proofTitles[0] || (hasCaseStudies ? 'Interactive Case Study' : hasDemos ? 'Live System Demo' : null);
+
+  const isLowProof = totalEquipped === 0 && preparedProofItems.length === 0;
 
   return {
     equipped,
     skipped,
+    proofAssets,
+    rawInventory,
     hasTestimonials,
     hasCaseStudies,
     hasBeforeAfter,
@@ -32,6 +42,9 @@ function analyzeProofContext(proofCtx?: ProofContext) {
     hasCodeOrTech,
     totalEquipped,
     isLowProof,
+    preparedProofItems,
+    proofTitles,
+    primaryProofTitle,
   };
 }
 
@@ -329,8 +342,12 @@ export function generateFullAuthoritySuite(ctx?: {
       title: 'Elevator Pitch (60-sec)',
       key: 'Elevator Pitch (60-sec)',
       category: 'Elevator',
-      value: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
-      originalValue: `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
+      value: proofAnalysis.primaryProofTitle
+        ? `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations—such as "${proofAnalysis.primaryProofTitle}"—using ${mechanism} that prove capability before any contract is signed.`
+        : `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
+      originalValue: proofAnalysis.primaryProofTitle
+        ? `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations—such as "${proofAnalysis.primaryProofTitle}"—using ${mechanism} that prove capability before any contract is signed.`
+        : `Most ${market} struggle with unverified service claims. I build self-initiated proof demonstrations using ${mechanism} that prove capability before any contract is signed.`,
     },
     {
       id: 'brand_tagline',
@@ -353,8 +370,12 @@ export function generateFullAuthoritySuite(ctx?: {
       title: 'Differentiation Statement',
       key: 'Differentiation Statement',
       category: 'Competitive',
-      value: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
-      originalValue: `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
+      value: proofAnalysis.proofTitles.length > 0
+        ? `Unlike generic agencies that rely on pitch decks, I deploy live proof assets like ${proofAnalysis.proofTitles.slice(0, 2).map((t) => `"${t}"`).join(' & ')} showing exact implementation workflows before contract sign-off.`
+        : `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
+      originalValue: proofAnalysis.proofTitles.length > 0
+        ? `Unlike generic agencies that rely on pitch decks, I deploy live proof assets like ${proofAnalysis.proofTitles.slice(0, 2).map((t) => `"${t}"`).join(' & ')} showing exact implementation workflows before contract sign-off.`
+        : `Unlike generic agencies that rely on pitch decks, I deploy live proof assets showing exact implementation workflows before contract sign-off.`,
     },
   ];
 
@@ -365,7 +386,13 @@ export function generateFullAuthoritySuite(ctx?: {
   let proofSectionVisuals = `Embedded live interactive widget, clickable prototype link, GitHub repository link.`;
   let proofTrustNote = `🛡️ Verifiable proof assets self-reported & prepared in Step 2.`;
 
-  if (proofAnalysis.hasBeforeAfter || proofAnalysis.hasDemos) {
+  if (proofAnalysis.preparedProofItems.length > 0) {
+    proofSectionHeadline = `Interactive Proof Gallery: ${proofAnalysis.proofTitles[0]}`;
+    proofSectionSubhead = `Inspect verified proof assets, interactive prototypes, and execution blueprints.`;
+    proofSectionBody = `Browse our live proof repository featuring: ${proofAnalysis.preparedProofItems.map((p) => `"${p.title}" (${p.portfolioCopy?.proofStatement || p.credibilityGapProved || 'Verified Output'})`).join('; ')}.`;
+    proofSectionVisuals = `Live interactive embeds for: ${proofAnalysis.proofTitles.join(', ')}.`;
+    proofTrustNote = `🛡️ Verifiable proof assets prepared in Step 2: ${proofAnalysis.proofTitles.join(', ')}.`;
+  } else if (proofAnalysis.hasBeforeAfter || proofAnalysis.hasDemos) {
     proofSectionHeadline = `Live Interactive Demos & Before/After Proof`;
     proofSectionSubhead = `See raw baseline assets side-by-side with our high-pacing optimizations.`;
     proofSectionBody = `Browse live interactive prototypes and split-screen visual comparisons demonstrating immediate visual and performance speedups for ${market}.`;
@@ -387,17 +414,31 @@ export function generateFullAuthoritySuite(ctx?: {
   let testimonialsSubhead = `Feedback from partners who transformed their business with our authority system.`;
   let testimonialsBody = `"Working with us was the single best decision for our ${service}. The level of proof and clarity was unlike any agency." — Verified Client Partner`;
 
-  if (!proofAnalysis.hasTestimonials) {
+  if (proofAnalysis.hasTestimonials) {
+    testimonialsHeadline = `Client Testimonials & Verified Outcome Reports`;
+    testimonialsSubhead = `Feedback from partners who transformed their business with our authority system.`;
+    testimonialsBody = `"Working with us was the single best decision for our ${service}. The level of proof and clarity was unlike any agency." — Verified Client Partner`;
+  } else if (proofAnalysis.preparedProofItems.length > 0) {
+    testimonialsHeadline = `Verified Implementation Case Studies`;
+    testimonialsSubhead = `Deep-dive teardowns demonstrating our exact execution standards for ${market}.`;
+    testimonialsBody = `Featured Teardown: "${proofAnalysis.preparedProofItems[0].title}". Demonstrates baseline analysis, optimization architecture, and verifiable outcome metrics.`;
+  } else {
     testimonialsHeadline = `Client Partnership & Delivery Commitments`;
     testimonialsSubhead = `Our transparent service-level agreements and execution guarantees.`;
     testimonialsBody = `We prioritize verifiable execution over verbal claims. Every client engagement includes milestone verification, documented deliverable standards, and zero hidden scope surprises.`;
   }
 
-  const socialProofLine = (proofAnalysis.hasTestimonials || proofAnalysis.hasCaseStudies)
+  const socialProofLine = proofAnalysis.proofTitles.length > 0
+    ? `Featuring live proof assets: ${proofAnalysis.proofTitles.slice(0, 2).join(' | ')}`
+    : (proofAnalysis.hasTestimonials || proofAnalysis.hasCaseStudies)
     ? `Backed by verified case studies & client endorsements in ${market}.`
     : (proofAnalysis.hasDemos || proofAnalysis.hasBeforeAfter)
     ? `Featuring live video demos & before/after performance comparisons.`
     : `Methodology-first execution with 100% transparent process proof.`;
+
+  const linkedinAboutCopy = proofAnalysis.preparedProofItems.length > 0
+    ? `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner:\n\n` + proofAnalysis.preparedProofItems.map((item) => `• ${item.title}: ${item.portfolioCopy?.proofStatement || item.credibilityGapProved || 'Verified Output'}`).join('\n') + `\n\nDM me "PROOF" to view my complete case study teardowns.`
+    : `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`;
 
   // 2. COMPLETE PROFILE SYSTEM (3 Social Channels)
   const profileSystem: ProfileSystemAsset[] = [
@@ -420,8 +461,8 @@ export function generateFullAuthoritySuite(ctx?: {
         {
           key: 'about',
           label: 'About Section (Story & Proof)',
-          value: `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`,
-          originalValue: `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`,
+          value: linkedinAboutCopy,
+          originalValue: linkedinAboutCopy,
         },
         {
           key: 'featured_cta',
@@ -620,18 +661,41 @@ export function generateFullAuthoritySuite(ctx?: {
     const week = Math.ceil(day / 7);
     const platform = platforms[day % 2];
     const format = formats[day % 5];
+    const itemProof = proofAnalysis.preparedProofItems.length > 0
+      ? proofAnalysis.preparedProofItems[(day - 1) % proofAnalysis.preparedProofItems.length]
+      : null;
+
+    const postTitle = itemProof
+      ? `Day ${day}: "${itemProof.title}" Teardown`
+      : `Day ${day}: ${service} Teardown #${day}`;
+
+    const hookText = itemProof
+      ? (day % 3 === 0
+          ? `Inside my "${itemProof.title}": How we solve ${service} for ${market} (Full Breakdown 🧵👇)`
+          : day % 3 === 1
+          ? `Why 90% of ${market} struggle with ${service}—and how our "${itemProof.title}" fixes it.`
+          : `Step-by-step breakdown of "${itemProof.title}" built using ${mechanism}:`)
+      : (day % 3 === 0
+          ? `Most ${market} make this critical mistake when scaling ${service}...`
+          : day % 3 === 1
+          ? `Why 90% of ${market} struggle with ${service}—and how our ${mechanism} fixes it.`
+          : `Step-by-step breakdown of how to build scalable ${service} architecture:`);
     
     contentCalendar.push({
       dayNumber: day,
       weekNumber: week,
-      title: `Day ${day}: ${service} Teardown #${day}`,
+      title: postTitle,
       platform,
       format,
       contentAngle: day % 3 === 0 ? 'Case Study Breakdown' : day % 3 === 1 ? 'Contrarian Industry Myth' : 'Step-by-Step Tactical Framework',
-      hook: `Most ${market} make this critical mistake when scaling ${service}...`,
-      body: `Here is the exact step-by-step breakdown of how we solved it using ${mechanism}:\n\n1. Diagnosed the root bottleneck\n2. Built proof demonstration\n3. Measured output results\n\nSwipe through for the complete blueprint.`,
+      hook: hookText,
+      body: itemProof
+        ? `Here is the exact step-by-step breakdown of "${itemProof.title}" using ${mechanism}:\n\n1. Identified credibility gap: ${itemProof.credibilityGapProved || 'Market skepticism'}\n2. Built proof asset: ${itemProof.title}\n3. Measured output results\n\nSwipe through for the complete blueprint.`
+        : `Here is the exact step-by-step breakdown of how we solved it using ${mechanism}:\n\n1. Diagnosed the root bottleneck\n2. Built proof demonstration\n3. Measured output results\n\nSwipe through for the complete blueprint.`,
       cta: `DM me "PROOF" for the full template or drop a comment below!`,
-      visualIdea: `Diagram graphic showing Before vs After metrics for ${market}.`,
+      visualIdea: itemProof
+        ? `Screenshot breakdown or live video clip of "${itemProof.title}".`
+        : `Diagram graphic showing Before vs After metrics for ${market}.`,
       repurposingTip: `Turn this post into a 60-second vertical video script or LinkedIn article.`,
     });
   }
