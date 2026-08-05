@@ -84,6 +84,9 @@ export interface PortfolioBlueprintSection {
   ctaText: string;
   trustStatement?: string;
   animationSuggestion?: string;
+  isEnabled?: boolean;
+  structuralRole?: string;
+  positioningReasoning?: string;
   isHeadlineCustomized?: boolean;
   isSubheadlineCustomized?: boolean;
   isBodyCustomized?: boolean;

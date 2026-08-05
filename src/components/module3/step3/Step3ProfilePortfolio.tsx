@@ -10,9 +10,8 @@ import { StickyWorkspaceHeader } from './components/StickyWorkspaceHeader';
 import { ExecutiveHeroDashboard } from './components/ExecutiveHeroDashboard';
 import { BuildModeWorkspace } from './components/BuildModeWorkspace';
 import { BrandIdentitySection } from './sections/BrandIdentitySection';
-import { ProfileSystemSection } from './sections/ProfileSystemSection';
-import { PortfolioArchitectureSection } from './sections/PortfolioArchitectureSection';
-import { AuthorityContentEngineSection } from './sections/AuthorityContentEngineSection';
+import { ProfileStructureCanvas } from './sections/ProfileStructureCanvas';
+import { PortfolioOrderingCanvas } from './sections/PortfolioOrderingCanvas';
 import { BeforeYouContinueChecklist } from './components/BeforeYouContinueChecklist';
 import { EASING, DURATION } from '../../../lib/motion-presets';
 
@@ -253,8 +252,8 @@ ${contentText}
       />
 
       <StepHeader
-        title="Brand & Portfolio Generator"
-        description="Package your positioning and proof assets into a market-ready public brand, visual profile packages, 9-section portfolio architecture, and 30-day content calendar."
+        title="Profile & Portfolio Authority Structure"
+        description="Define and sequence the exact structural architecture for your online profiles and 9-section portfolio website based on your proof strategy."
         step={{ current: 3, total: 3 }}
       />
 
@@ -275,7 +274,7 @@ ${contentText}
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-[#0058be]" />
             <h3 className="text-sm font-black uppercase tracking-wider text-[#0b1c30]">
-              Workspace Strategy Sections
+              Structural Architecture Sections
             </h3>
           </div>
           <button
@@ -286,7 +285,7 @@ ${contentText}
           </button>
         </div>
 
-        {/* Accordion 1: Brand Identity Engine */}
+        {/* Accordion 1: Brand Identity & Positioning Foundations */}
         <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs overflow-hidden">
           <button
             onClick={() => setOpenSection(openSection === 'brand' ? 'none' as any : 'brand')}
@@ -297,7 +296,7 @@ ${contentText}
                 01
               </span>
               <div>
-                <h4 className="text-base font-black text-[#0b1c30]">1. Brand Identity Engine (10 Assets)</h4>
+                <h4 className="text-base font-black text-[#0b1c30]">1. Brand Identity Foundations (10 Core Statements)</h4>
                 <p className="text-xs text-neutral-500 font-medium">Positioning, Category, Value Prop, Elevator Pitch & Core Messaging</p>
               </div>
             </div>
@@ -323,7 +322,7 @@ ${contentText}
           </AnimatePresence>
         </div>
 
-        {/* Accordion 2: Visual Profile System */}
+        {/* Accordion 2: Public Profile Structural Architecture */}
         <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs overflow-hidden">
           <button
             onClick={() => setOpenSection(openSection === 'profile' ? 'none' as any : 'profile')}
@@ -334,8 +333,8 @@ ${contentText}
                 02
               </span>
               <div>
-                <h4 className="text-base font-black text-[#0b1c30]">2. Visual Multi-Platform Profile System</h4>
-                <p className="text-xs text-neutral-500 font-medium">LinkedIn, X/Twitter, and Instagram device previews</p>
+                <h4 className="text-base font-black text-[#0b1c30]">2. Public Profile Structural Architecture</h4>
+                <p className="text-xs text-neutral-500 font-medium">Component hierarchy for LinkedIn, X/Twitter, and Instagram profiles</p>
               </div>
             </div>
             {openSection === 'profile' || openSection === 'all' ? <ChevronUp size={18} className="text-neutral-400" /> : <ChevronDown size={18} className="text-neutral-400" />}
@@ -350,7 +349,7 @@ ${contentText}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
                 className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
               >
-                <ProfileSystemSection
+                <ProfileStructureCanvas
                   packages={suite.profileSystem}
                   onFieldChange={handleProfileFieldChange}
                   onFieldReset={handleProfileFieldReset}
@@ -360,7 +359,7 @@ ${contentText}
           </AnimatePresence>
         </div>
 
-        {/* Accordion 3: Portfolio Architecture */}
+        {/* Accordion 3: Portfolio Website Structural Ordering Canvas */}
         <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs overflow-hidden">
           <button
             onClick={() => setOpenSection(openSection === 'portfolio' ? 'none' as any : 'portfolio')}
@@ -371,8 +370,8 @@ ${contentText}
                 03
               </span>
               <div>
-                <h4 className="text-base font-black text-[#0b1c30]">3. Portfolio Architecture Generator (9 Website Sections)</h4>
-                <p className="text-xs text-neutral-500 font-medium">Hero to Final CTA wireframe blueprint & copy spec</p>
+                <h4 className="text-base font-black text-[#0b1c30]">3. Portfolio Website Structural Ordering Canvas</h4>
+                <p className="text-xs text-neutral-500 font-medium">Interactive re-ordering and active status controls for 9 website sections</p>
               </div>
             </div>
             {openSection === 'portfolio' || openSection === 'all' ? <ChevronUp size={18} className="text-neutral-400" /> : <ChevronDown size={18} className="text-neutral-400" />}
@@ -387,43 +386,16 @@ ${contentText}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
                 className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
               >
-                <PortfolioArchitectureSection
+                <PortfolioOrderingCanvas
                   sections={suite.portfolioBlueprint}
                   onSectionChange={handleSectionChange}
+                  onReorderSections={(newSections) => {
+                    setAuthoritySuite({
+                      ...suite,
+                      portfolioBlueprint: newSections,
+                    });
+                  }}
                 />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Accordion 4: 30-Day Content Engine */}
-        <div className="bg-white rounded-3xl border border-neutral-200/90 shadow-2xs overflow-hidden">
-          <button
-            onClick={() => setOpenSection(openSection === 'content' ? 'none' as any : 'content')}
-            className="w-full p-5 flex items-center justify-between text-left cursor-pointer hover:bg-neutral-50/80 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-800 text-xs font-black flex items-center justify-center border border-amber-100">
-                04
-              </span>
-              <div>
-                <h4 className="text-base font-black text-[#0b1c30]">4. 30-Day Authority Content Engine</h4>
-                <p className="text-xs text-neutral-500 font-medium">30 pre-structured post blueprints across 4 weeks</p>
-              </div>
-            </div>
-            {openSection === 'content' || openSection === 'all' ? <ChevronUp size={18} className="text-neutral-400" /> : <ChevronDown size={18} className="text-neutral-400" />}
-          </button>
-
-          <AnimatePresence>
-            {(openSection === 'content' || openSection === 'all') && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                className="p-6 border-t border-neutral-100 bg-neutral-50/40 space-y-6"
-              >
-                <AuthorityContentEngineSection posts={suite.contentCalendar} />
               </motion.div>
             )}
           </AnimatePresence>
