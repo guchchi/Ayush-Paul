@@ -84,14 +84,35 @@ function ExecutiveHeroBanner({
       )}
 
       <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-widest text-[#0058be]">
-            <Shield className="w-3.5 h-3.5" />
-            Your Authority Position
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight leading-snug max-w-lg">
-            {positioningClaim}
-          </h2>
+        <div className="space-y-3">
+          {/* Visual Input Pipeline Flow */}
+          <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono font-semibold text-slate-500">
+            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-[#0058be] font-bold">
+              Step 1: Position
+            </span>
+            <span>+</span>
+            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-emerald-700 font-bold">
+              Step 2: Proof ({proofCount})
+            </span>
+            <span>+</span>
+            <span className="bg-white/80 border border-slate-200 px-2 py-0.5 rounded-md text-slate-700">
+              Mod 1 & 2 Context
+            </span>
+            <span className="text-[#0058be]">→</span>
+            <span className="bg-[#0058be] text-white px-2 py-0.5 rounded-md font-bold">
+              Step 3 Blueprint
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-widest text-[#0058be]">
+              <Shield className="w-3.5 h-3.5" />
+              Synthesized Authority Position
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight leading-snug max-w-lg">
+              {positioningClaim}
+            </h2>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
