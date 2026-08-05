@@ -38,26 +38,26 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
 
   return (
     <div
-      className={`relative p-5 rounded-xl border transition-all duration-200 ${
+      className={`relative p-5 rounded-2xl border transition-all duration-200 ${
         status === 'accepted'
-          ? 'bg-emerald-950/20 border-emerald-500/40 shadow-sm shadow-emerald-950/30'
+          ? 'bg-emerald-50/60 border-emerald-200 shadow-sm'
           : status === 'adjusted'
-          ? 'bg-amber-950/20 border-amber-500/40 shadow-sm shadow-amber-950/30'
-          : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+          ? 'bg-amber-50/60 border-amber-200 shadow-sm'
+          : 'bg-white border-slate-200/80 hover:border-[#0058be]/30 shadow-xs'
       }`}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-sm font-semibold text-slate-200">{title}</h4>
+            <h4 className="text-base font-bold text-[#0b1c30] tracking-tight">{title}</h4>
             <span
-              className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full font-bold tracking-wider ${
+              className={`text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full font-bold tracking-wider ${
                 status === 'accepted'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                   : status === 'adjusted'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                  : 'bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20'
               }`}
             >
               {status === 'accepted' ? 'Accepted' : status === 'adjusted' ? 'User Override' : 'System Recommendation'}
@@ -70,7 +70,7 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
           {status !== 'accepted' && (
             <button
               onClick={onAccept}
-              className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors cursor-pointer"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               Accept
@@ -80,16 +80,16 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
           {onAdjust && !isAdjusting && (
             <button
               onClick={() => setIsAdjusting(true)}
-              className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0b1c30] border border-slate-200 transition-colors cursor-pointer"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-600" />
               Adjust
             </button>
           )}
 
           <button
             onClick={() => setShowWhy(!showWhy)}
-            className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg bg-indigo-950/40 hover:bg-indigo-900/40 text-indigo-300 border border-indigo-800/40 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#0058be]/8 hover:bg-[#0058be]/15 text-[#0058be] border border-[#0058be]/20 transition-colors cursor-pointer"
           >
             <HelpCircle className="w-3.5 h-3.5" />
             Why?
@@ -100,11 +100,11 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
 
       {/* Main Content View / Adjustment Editor */}
       {!isAdjusting ? (
-        <div className="mt-2 text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/40 p-3 rounded-lg border border-slate-850">
+        <div className="mt-2 text-sm text-[#0b1c30] leading-relaxed bg-[#f8f9ff] p-3.5 rounded-xl border border-slate-200/80 font-medium">
           {status === 'adjusted' && userCustomization ? (
-            <span className="text-amber-200 font-sans">{userCustomization}</span>
+            <span className="text-amber-900">{userCustomization}</span>
           ) : (
-            <span className="font-sans text-slate-200">{recommendation}</span>
+            <span>{recommendation}</span>
           )}
         </div>
       ) : (
@@ -113,19 +113,19 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
             value={customText}
             onChange={(e) => setCustomText(e.target.value)}
             rows={3}
-            className="w-full bg-slate-950 border border-amber-500/40 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            className="w-full bg-white border border-amber-300 rounded-xl p-3 text-sm text-[#0b1c30] focus:outline-none focus:ring-2 focus:ring-amber-500/30"
             placeholder="Customize this recommendation to match your specific positioning preference..."
           />
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setIsAdjusting(false)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400"
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleSaveAdjustment}
-              className="text-xs px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-slate-950 font-semibold"
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white cursor-pointer shadow-xs"
             >
               Save Override
             </button>
@@ -135,16 +135,16 @@ export const StrategicRecommendationCard: React.FC<StrategicRecommendationCardPr
 
       {/* Strategic Rationale Drawer */}
       {showWhy && (
-        <div className="mt-3 pt-3 border-t border-slate-800/80 bg-indigo-950/20 p-3 rounded-lg border border-indigo-900/30">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-300 mb-1">
+        <div className="mt-3 pt-3 border-t border-slate-200/80 bg-[#eff4ff]/60 p-3.5 rounded-xl border border-[#0058be]/15 space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[#0058be] uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            Strategic Rationale:
+            Strategic Rationale
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed mb-2">{strategicRationale}</p>
+          <p className="text-xs text-[#424754] leading-relaxed">{strategicRationale}</p>
 
           {actionRequired && (
-            <div className="text-[11px] font-mono text-emerald-400 bg-emerald-950/30 p-2 rounded border border-emerald-900/40">
-              <strong className="text-emerald-300">Action:</strong> {actionRequired}
+            <div className="text-[11px] font-mono text-[#0058be] bg-[#0058be]/10 p-2.5 rounded-lg border border-[#0058be]/20 mt-1">
+              <strong className="text-[#0b1c30]">Action:</strong> {actionRequired}
             </div>
           )}
         </div>

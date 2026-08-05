@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, AlertTriangle, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { Activity, AlertTriangle, CheckCircle2, Sparkles } from 'lucide-react';
 import type { ProfilePortfolioAuthorityBlueprint } from '../../../../types/module3-step3-authority';
 
 interface AuthorityReinforcementSectionProps {
@@ -13,37 +13,37 @@ export const AuthorityReinforcementSection: React.FC<AuthorityReinforcementSecti
     <div className="space-y-6">
       {/* Section Header */}
       <div>
-        <div className="flex items-center gap-2 text-indigo-400 font-mono text-xs uppercase tracking-wider mb-1">
-          <Activity className="w-4 h-4 text-indigo-400" />
+        <div className="flex items-center gap-2 text-[#0058be] font-mono text-xs uppercase tracking-wider mb-1 font-semibold">
+          <Activity className="w-4 h-4 text-[#0058be]" />
           Section 7 — System Alignment Diagnostic
         </div>
-        <h3 className="text-xl font-bold text-slate-100">Authority Reinforcement & Diagnostic Audit</h3>
-        <p className="text-sm text-slate-400 mt-1">
+        <h3 className="text-2xl font-bold text-[#0b1c30] tracking-tight">Authority Reinforcement & Diagnostic Audit</h3>
+        <p className="text-sm text-[#424754] mt-1 max-w-2xl leading-relaxed">
           Verifies whether your Authority Position, Profile, Portfolio, Work, and Proof all reinforce the exact same core perception without contradictory signals.
         </p>
       </div>
 
       {/* Visual Alignment Score Card */}
-      <div className="p-5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-white border border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h4 className="text-sm font-semibold text-slate-200">System Alignment Verdict</h4>
+            <h4 className="text-base font-bold text-[#0b1c30]">System Alignment Verdict</h4>
             <span
-              className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border ${
+              className={`text-xs font-mono font-bold px-3 py-0.5 rounded-full border ${
                 alignmentAudit.alignmentScore >= 80
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                  : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                  : 'bg-amber-100 text-amber-900 border-amber-300'
               }`}
             >
               {alignmentAudit.alignmentScore}% Score
             </span>
           </div>
-          <p className="text-xs text-slate-400 font-sans">{alignmentAudit.overallVerdict}</p>
+          <p className="text-xs text-[#424754] font-sans">{alignmentAudit.overallVerdict}</p>
         </div>
 
         {/* System Alignment Chain */}
-        <div className="text-[11px] font-mono text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-850 whitespace-nowrap">
-          <span className="text-indigo-400 font-semibold">CHAIN:</span> POSITION → PROFILE → PORTFOLIO → PROOF → PERCEPTION
+        <div className="text-[11px] font-mono text-[#0b1c30] bg-[#f8f9ff] p-3 rounded-xl border border-slate-200/80 whitespace-nowrap">
+          <span className="text-[#0058be] font-bold">CHAIN:</span> POSITION → PROFILE → PORTFOLIO → PROOF → PERCEPTION
         </div>
       </div>
 
@@ -52,45 +52,45 @@ export const AuthorityReinforcementSection: React.FC<AuthorityReinforcementSecti
         {alignmentAudit.diagnostics.map((diag) => (
           <div
             key={diag.id}
-            className={`p-4 rounded-xl border ${
+            className={`p-5 rounded-2xl border transition-all ${
               diag.severity === 'warning'
-                ? 'bg-amber-950/20 border-amber-500/40'
+                ? 'bg-amber-50/60 border-amber-200 shadow-xs'
                 : diag.severity === 'critical'
-                ? 'bg-rose-950/20 border-rose-500/40'
-                : 'bg-emerald-950/20 border-emerald-500/40'
+                ? 'bg-rose-50/60 border-rose-200 shadow-xs'
+                : 'bg-emerald-50/60 border-emerald-200 shadow-xs'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
                 {diag.severity === 'warning' || diag.severity === 'critical' ? (
-                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                 ) : (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 )}
-                <h4 className="text-sm font-semibold text-slate-200">{diag.title}</h4>
+                <h4 className="text-base font-bold text-[#0b1c30]">{diag.title}</h4>
               </div>
 
-              <span className="text-[10px] font-mono uppercase bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+              <span className="text-[10px] font-mono uppercase bg-white text-[#0b1c30] font-bold px-2.5 py-0.5 rounded-full border border-slate-200">
                 {diag.impactedSection}
               </span>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-950/60 p-2.5 rounded-lg border border-slate-850 font-mono">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white p-3 rounded-xl border border-slate-200/80 font-mono">
                 <div>
-                  <span className="text-slate-500 text-[10px] uppercase block">POSITIONING CLAIM</span>
-                  <span className="text-slate-300">{diag.positioningClaim}</span>
+                  <span className="text-slate-500 text-[10px] uppercase font-bold block">POSITIONING CLAIM</span>
+                  <span className="text-[#0b1c30] font-semibold">{diag.positioningClaim}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500 text-[10px] uppercase block">ACTUAL EVIDENCE / WORK</span>
-                  <span className="text-slate-300">{diag.actualEvidenceOrWork}</span>
+                  <span className="text-slate-500 text-[10px] uppercase font-bold block">ACTUAL EVIDENCE / WORK</span>
+                  <span className="text-[#0b1c30] font-semibold">{diag.actualEvidenceOrWork}</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-indigo-950/30 border border-indigo-900/40 text-indigo-300 flex items-start gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-0.5" />
+              <div className="p-3 rounded-xl bg-[#eff4ff]/80 border border-[#0058be]/20 text-[#0058be] flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-[#0058be] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-indigo-300">Strategic Advisor Recommendation:</strong> {diag.recommendation}
+                  <strong className="text-[#0b1c30]">Strategic Advisor Recommendation:</strong> {diag.recommendation}
                 </div>
               </div>
             </div>

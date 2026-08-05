@@ -13,12 +13,12 @@ export const SectionPrioritiesSection: React.FC<SectionPrioritiesSectionProps> =
     <div className="space-y-6">
       {/* Section Header */}
       <div>
-        <div className="flex items-center gap-2 text-indigo-400 font-mono text-xs uppercase tracking-wider mb-1">
-          <Signal className="w-4 h-4 text-indigo-400" />
+        <div className="flex items-center gap-2 text-[#0058be] font-mono text-xs uppercase tracking-wider mb-1 font-semibold">
+          <Signal className="w-4 h-4 text-[#0058be]" />
           Section 4 — Attention Hierarchy
         </div>
-        <h3 className="text-xl font-bold text-slate-100">Section Priorities & Focus Allocation</h3>
-        <p className="text-sm text-slate-400 mt-1">
+        <h3 className="text-2xl font-bold text-[#0b1c30] tracking-tight">Section Priorities & Focus Allocation</h3>
+        <p className="text-sm text-[#424754] mt-1 max-w-2xl leading-relaxed">
           Authority requires emphasis. Not all sections deserve equal attention—focus high-ticket visitor attention where your credibility is strongest.
         </p>
       </div>
@@ -28,23 +28,23 @@ export const SectionPrioritiesSection: React.FC<SectionPrioritiesSectionProps> =
         {sectionPriorities.map((item) => (
           <div
             key={item.id}
-            className={`p-4 rounded-xl border ${
+            className={`p-5 rounded-2xl border transition-all ${
               item.priority === 'HIGH'
-                ? 'bg-rose-950/20 border-rose-500/40 shadow-sm shadow-rose-950/20'
+                ? 'bg-rose-50/50 border-rose-200 shadow-xs'
                 : item.priority === 'MEDIUM'
-                ? 'bg-indigo-950/20 border-indigo-500/40'
-                : 'bg-slate-900/40 border-slate-800'
+                ? 'bg-[#eff4ff]/60 border-[#0058be]/20 shadow-xs'
+                : 'bg-white border-slate-200/80'
             }`}
           >
             <div className="flex items-start justify-between gap-4 mb-2">
-              <h4 className="text-sm font-semibold text-slate-200">{item.sectionName}</h4>
+              <h4 className="text-base font-bold text-[#0b1c30]">{item.sectionName}</h4>
               <span
-                className={`text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full border ${
+                className={`text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border ${
                   item.priority === 'HIGH'
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                    ? 'bg-rose-100 text-rose-800 border-rose-300'
                     : item.priority === 'MEDIUM'
-                    ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30'
-                    : 'bg-slate-800 text-slate-400 border-slate-700'
+                    ? 'bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
                 }`}
               >
                 {item.priority} PRIORITY
@@ -52,15 +52,17 @@ export const SectionPrioritiesSection: React.FC<SectionPrioritiesSectionProps> =
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="bg-slate-950/60 p-2.5 rounded-lg border border-slate-850">
-                <span className="text-slate-400 font-mono font-semibold block mb-0.5">Strategic Rationale (Why):</span>
-                <span className="text-slate-300">{item.whyPriority}</span>
+              <div className="bg-white p-3 rounded-xl border border-slate-200/80">
+                <span className="text-slate-500 font-mono font-bold block mb-0.5 uppercase text-[10px]">
+                  STRATEGIC RATIONALE (WHY):
+                </span>
+                <span className="text-[#424754] leading-relaxed">{item.whyPriority}</span>
               </div>
 
-              <div className="bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-900/30 text-emerald-300 font-mono flex items-start gap-2">
-                <AlertCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="bg-emerald-50/80 p-3 rounded-xl border border-emerald-200 text-emerald-900 font-mono flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-emerald-400">Action Required:</strong> {item.actionRequired}
+                  <strong className="text-emerald-950">Action Required:</strong> {item.actionRequired}
                 </div>
               </div>
             </div>
