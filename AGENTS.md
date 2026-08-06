@@ -20,7 +20,7 @@ All under `/workspace/` routes in `src/App.tsx`:
 |---|-------|-------|--------|
 | 1 | `/workspace/client-acquisition` | `useOpportunityMapStore` | Built |
 | 2 | `/workspace/offer-engineering` | `useOfferEngineeringStore` | Built |
-| 3 | `/workspace/authority-system` | `useModule3Store` (new) | In progress |
+| 3 | `/workspace/authority-system` | `useModule3Store` (new) | Built |
 | 4 | `/workspace/portfolio-system` | `usePortfolioSystemStore` | Built |
 | 5 | `/workspace/client-pipeline` | `useClientPipelineSystemStore` | Built |
 | 6 | `/workspace/outreach-engine` | `useOutreachEngineSystemStore` | Built |
@@ -28,7 +28,7 @@ All under `/workspace/` routes in `src/App.tsx`:
 ## Two Module 3 Stores — Critical
 
 - **OLD** `useAuthoritySystemStore` (`src/lib/authority-system/`) — read by Portfolio System (Module 4). Persist key: `authority-system-progress`.
-- **NEW** `useModule3Store` (`src/lib/module3/`) — current Phase 3 work. Persist key: `module-3-progress`. Schema version 4.
+- **NEW** `useModule3Store` (`src/lib/module3/`) — current Phase 3 work. Persist key: `module-3-progress`. Schema version 9.
 - When bridging to Module 4, map `Module4BridgeContext` → old `setPhase3Context` shape via adapter in `PortfolioSystem.tsx`. Do not write to old store directly.
 
 ## State Management

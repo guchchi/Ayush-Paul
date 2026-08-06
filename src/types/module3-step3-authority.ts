@@ -127,3 +127,65 @@ export interface ProfilePortfolioAuthorityBlueprint {
   generatedAt: string;
   lastUpdated: string;
 }
+
+// ── Step 3 Wizard Section Types ──────────────────────────────────────────────
+// These types are produced by each section of the 7-section sequential wizard
+// and persisted in the Zustand store. They survive page refresh.
+
+/** Section 5 — Evidence Placement: one entry per profile field (Option A) */
+export interface ClaimToAssetMapping {
+  /** Unique ID derived from platform + field key, e.g. "linkedin_headline" */
+  claimId: string;
+  /** Full text of the profile field value (for context in UI) */
+  claimText: string;
+  /** Which platform this field belongs to */
+  claimPlatform: string;
+  /** Field key, e.g. "headline", "about" */
+  claimField: string;
+  /** Human-readable label, e.g. "LinkedIn: Professional Headline" */
+  claimLabel: string;
+  /** IDs of proof assets the user has mapped to this claim */
+  assetIds: string[];
+}
+
+/** Section 6 — Content Roadmap: content pillar */
+export interface ContentPillar {
+  id: string;
+  title: string;
+  description: string;
+  exampleTopics: string[];
+}
+
+/** Section 6 — Content Roadmap: a starter post idea */
+export interface ContentPost {
+  id: string;
+  pillarId: string;
+  hook: string;
+  format: string;
+  platform: string;
+}
+
+/** Section 6 output persisted to store */
+export interface ContentRoadmapOutput {
+  pillars: ContentPillar[];
+  cadence: string;
+  firstPosts: ContentPost[];
+  generatedFrom: {
+    position: string;
+    niche: string;
+    mechanism: string;
+  };
+  generatedAt: string;
+}
+
+/** Section 3 output persisted to store after user confirms brand choices */
+export interface BrandIdentityOutput {
+  tonePillars: string[];
+  soundLike: string[];
+  dontSoundLike: string[];
+  visualDirection: string;
+  confirmedAt: string;
+  isCustomized: boolean;
+  /** Which brandAsset IDs contributed to this output */
+  sourceAssetIds: string[];
+}

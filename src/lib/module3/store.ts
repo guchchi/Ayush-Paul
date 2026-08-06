@@ -162,6 +162,14 @@ export const useModule3Store = create<Module3State>()(
       authoritySuite: null,
       authorityBlueprint: null,
 
+      // ── Step 3 Wizard section outputs ─────────────────────────────────
+      step3CompletedSections: [],
+      step3BrandIdentity: null,
+      step3AssetOrder: null,
+      step3ClaimToAssetMap: null,
+      step3ContentRoadmap: null,
+      step3Blueprint: null,
+
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
       isGeneratingStrategy: false,
@@ -751,6 +759,49 @@ export const useModule3Store = create<Module3State>()(
         });
       },
 
+      // ── Step 3 Wizard section actions ─────────────────────────────────
+
+      completeStep3Section(n) {
+        set((state) => ({
+          step3CompletedSections: state.step3CompletedSections.includes(n)
+            ? state.step3CompletedSections
+            : [...state.step3CompletedSections, n].sort((a, b) => a - b),
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      resetStep3Section(n) {
+        set((state) => ({
+          step3CompletedSections: state.step3CompletedSections.filter((s) => s !== n),
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      setStep3BrandIdentity(data) {
+        set({ step3BrandIdentity: data, lastUpdated: Date.now() });
+      },
+
+      setStep3AssetOrder(order) {
+        set({ step3AssetOrder: order, lastUpdated: Date.now() });
+      },
+
+      setStep3ClaimToAssetMap(map) {
+        set({ step3ClaimToAssetMap: map, lastUpdated: Date.now() });
+      },
+
+      setStep3ContentRoadmap(roadmap) {
+        set({ step3ContentRoadmap: roadmap, lastUpdated: Date.now() });
+      },
+
+      setStep3Blueprint(blueprint) {
+        // Write to step3Blueprint and mirror to authorityBlueprint for Module 4 bridge
+        set({
+          step3Blueprint: blueprint,
+          authorityBlueprint: blueprint,
+          lastUpdated: Date.now(),
+        });
+      },
+
       setTaskCompletion(week: string, taskIdx: number, completed: boolean) {
         set((state) => {
           const taskId = `${week}.task${taskIdx}`;
@@ -849,6 +900,13 @@ export const useModule3Store = create<Module3State>()(
           completedSteps: [],
           lastUpdated: Date.now(),
           version: 7,
+          // ── Step 3 Wizard section outputs
+          step3CompletedSections: [],
+          step3BrandIdentity: null,
+          step3AssetOrder: null,
+          step3ClaimToAssetMap: null,
+          step3ContentRoadmap: null,
+          step3Blueprint: null,
         });
       },
 
@@ -1079,7 +1137,7 @@ export const useModule3Store = create<Module3State>()(
     }),
     {
       name: 'module-3-progress',
-      version: 8,
+      version: 9,
       migrate(persisted, version) {
         let state = persisted as any;
         if (version < 6) {
@@ -1138,6 +1196,17 @@ export const useModule3Store = create<Module3State>()(
             version: 8,
           };
         }
+        if (version < 9) {
+          state = {
+            ...state,
+            step3CompletedSections: [],
+            step3BrandIdentity: null,
+            step3AssetOrder: null,
+            step3ClaimToAssetMap: null,
+            step3ContentRoadmap: null,
+            step3Blueprint: null,
+          };
+        }
         return state as Module3State;
       },
       partialize: (state) => ({
@@ -1187,6 +1256,14 @@ export const useModule3Store = create<Module3State>()(
         mod2ProposalSummary: state.mod2ProposalSummary,
         currentStep: state.currentStep,
         completedSteps: state.completedSteps,
+        // ── Step 3 Wizard section outputs
+        step3CompletedSections: state.step3CompletedSections,
+        step3BrandIdentity: state.step3BrandIdentity,
+        step3AssetOrder: state.step3AssetOrder,
+        step3ClaimToAssetMap: state.step3ClaimToAssetMap,
+        step3ContentRoadmap: state.step3ContentRoadmap,
+        step3Blueprint: state.step3Blueprint,
+        authorityBlueprint: state.authorityBlueprint,
       }),
     },
   ),

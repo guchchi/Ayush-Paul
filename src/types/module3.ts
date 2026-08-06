@@ -7,7 +7,12 @@ import type {
   ProposalSummary,
 } from './offer-engineering';
 import type { GeneratedAuthoritySuite, PortfolioBlueprintSection } from '../data/module3/authority-suite-engine';
-import type { ProfilePortfolioAuthorityBlueprint } from './module3-step3-authority';
+import type {
+  ProfilePortfolioAuthorityBlueprint,
+  ClaimToAssetMapping,
+  ContentRoadmapOutput,
+  BrandIdentityOutput,
+} from './module3-step3-authority';
 
 export const MODULE3_STEPS = [
   'authority_position',
@@ -440,6 +445,20 @@ export interface Module3State {
 
   authoritySuite: GeneratedAuthoritySuite | null;
   authorityBlueprint: ProfilePortfolioAuthorityBlueprint | null;
+
+  // ── Step 3 Wizard section outputs (persisted, derived for completion) ──────
+  /** Ordered list of completed section numbers [1..7]. Derived for canGoToSection. */
+  step3CompletedSections: number[];
+  /** Section 3 — brand identity confirmed by user */
+  step3BrandIdentity: BrandIdentityOutput | null;
+  /** Section 4 — ordered portfolio section IDs after user confirms */
+  step3AssetOrder: string[] | null;
+  /** Section 5 — claim-to-proof-asset mappings */
+  step3ClaimToAssetMap: ClaimToAssetMapping[] | null;
+  /** Section 6 — deterministic content roadmap */
+  step3ContentRoadmap: ContentRoadmapOutput | null;
+  /** Section 7 — final assembled blueprint (also mirrored to authorityBlueprint) */
+  step3Blueprint: ProfilePortfolioAuthorityBlueprint | null;
   setAuthorityBlueprint(blueprint: ProfilePortfolioAuthorityBlueprint | null): void;
   updateMessageLayer(layerKey: string, customization: string): void;
   reorderBlueprintPortfolioSection(fromIdx: number, toIdx: number): void;
@@ -453,6 +472,18 @@ export interface Module3State {
   resetProfileField(platform: string, fieldKey: string): void;
   updatePortfolioSection(sectionId: string, updatedFields: Partial<PortfolioBlueprintSection>): void;
   toggleOpportunityTask(taskId: string): void;
+
+  // ── Step 3 Wizard section actions ─────────────────────────────────────────
+  /** Mark section n as complete (persisted). Idempotent. */
+  completeStep3Section(n: number): void;
+  /** Reset a section back to incomplete (used when upstream context changes) */
+  resetStep3Section(n: number): void;
+  setStep3BrandIdentity(data: BrandIdentityOutput): void;
+  setStep3AssetOrder(order: string[]): void;
+  setStep3ClaimToAssetMap(map: ClaimToAssetMapping[]): void;
+  setStep3ContentRoadmap(roadmap: ContentRoadmapOutput): void;
+  /** Saves to step3Blueprint and also mirrors to authorityBlueprint for Module 4 bridge */
+  setStep3Blueprint(blueprint: ProfilePortfolioAuthorityBlueprint): void;
 
   setPendingProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
   setProfilePortfolioStrategy(value: ProfilePortfolioStrategy | null): void;
