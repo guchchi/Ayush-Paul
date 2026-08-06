@@ -488,7 +488,7 @@ export function buildNextMovesActionPlan(
 
   actions.push({
     id: `next_${step}`,
-    stepNumber: step++,
+    stepNumber: step,
     title: 'Lock Blueprint & Generate Authority Operating System',
     description: 'Confirm launch readiness and proceed to Step 4 (Authority Pack generation).',
     impact: 'Transformational',

@@ -259,7 +259,6 @@ export function Step3ProfilePortfolioAuthority() {
         setSuiteGenerating(false);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Section navigation ────────────────────────────────────────────────────

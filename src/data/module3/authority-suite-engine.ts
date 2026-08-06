@@ -413,9 +413,9 @@ export function generateFullAuthoritySuite(ctx?: {
     proofTrustNote = `🛡️ Process-first transparency. Proof assets currently building; full methodology open for inspection.`;
   }
 
-  let testimonialsHeadline = `What ${market} Say About Working With Us`;
-  let testimonialsSubhead = `Feedback from partners who transformed their business with our authority system.`;
-  let testimonialsBody = `"Working with us was the single best decision for our ${service}. The level of proof and clarity was unlike any agency." — Verified Client Partner`;
+  let testimonialsHeadline: string;
+  let testimonialsSubhead: string;
+  let testimonialsBody: string;
 
   if (proofAnalysis.hasTestimonials) {
     testimonialsHeadline = `Client Testimonials & Verified Outcome Reports`;
