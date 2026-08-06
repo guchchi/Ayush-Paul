@@ -60,7 +60,7 @@ export interface BrandAssetItem {
 }
 
 export interface ProfileSystemAsset {
-  platform: 'linkedin' | 'twitter' | 'instagram';
+  platform: 'linkedin' | 'twitter' | 'personal_site';
   title: string;
   fields: {
     key: string;
@@ -512,26 +512,32 @@ export function generateFullAuthoritySuite(ctx?: {
       ],
     },
     {
-      platform: 'instagram',
-      title: 'Instagram Profile Package',
+      platform: 'personal_site',
+      title: 'Personal Portfolio Site Package',
       fields: [
         {
-          key: 'bio',
-          label: 'Bio Copy',
-          value: `⚡ ${service} Specialist for ${market}\n🧠 Creator of ${mechanism}\n🛡️ ${promise}\n👇 Free Case Study Blueprint below`,
-          originalValue: `⚡ ${service} Specialist for ${market}\n🧠 Creator of ${mechanism}\n🛡️ ${promise}\n👇 Free Case Study Blueprint below`,
+          key: 'hero_tagline',
+          label: 'Hero Tagline & Positioning',
+          value: `High-Certainty ${service} for ${market} | Powered by ${mechanism}`,
+          originalValue: `High-Certainty ${service} for ${market} | Powered by ${mechanism}`,
         },
         {
-          key: 'cta',
-          label: 'Bio Link CTA',
-          value: `Get My Free ${service} Case Study Teardown`,
-          originalValue: `Get My Free ${service} Case Study Teardown`,
+          key: 'value_prop_subhead',
+          label: 'Value Proposition Subhead',
+          value: `Delivering predictable client outcomes using ${mechanism}. Documented results with zero fabricated claims.`,
+          originalValue: `Delivering predictable client outcomes using ${mechanism}. Documented results with zero fabricated claims.`,
         },
         {
-          key: 'story_highlights',
-          label: 'Story Highlights Structure',
-          value: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
-          originalValue: `1. "Proof" (Live Demos) | 2. "Client Wins" (Results) | 3. "System" (Mechanism) | 4. "Start Here" (Offer)`,
+          key: 'about_summary',
+          label: 'About / Positioning Paragraph',
+          value: `I help ${market} build scalable ${service} systems without generic agency overhead. ${promise}. Every claim is backed by open proof assets.`,
+          originalValue: `I help ${market} build scalable ${service} systems without generic agency overhead. ${promise}. Every claim is backed by open proof assets.`,
+        },
+        {
+          key: 'primary_cta',
+          label: 'Primary Conversion CTA',
+          value: `Schedule Strategic Consultation & Audit`,
+          originalValue: `Schedule Strategic Consultation & Audit`,
         },
       ],
     },

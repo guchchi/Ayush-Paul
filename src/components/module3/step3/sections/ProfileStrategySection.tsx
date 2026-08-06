@@ -37,8 +37,8 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const formatPlatformName = (name: string) => {
     switch (name.toLowerCase()) {
       case 'linkedin': return 'LinkedIn';
-      case 'twitter': return 'X/Twitter';
-      case 'instagram': return 'Instagram';
+      case 'twitter': return 'X / Twitter';
+      case 'personal_site': return 'Personal Portfolio Site';
       default: return name.charAt(0).toUpperCase() + name.slice(1);
     }
   };
@@ -49,6 +49,8 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     if (p === 'linkedin' && k === 'headline') return 220;
     if (p === 'linkedin' && k === 'about') return 2600;
     if (p === 'twitter' && k === 'bio') return 160;
+    if (p === 'personal_site' && k === 'hero_tagline') return 120;
+    if (p === 'personal_site' && k === 'value_prop_subhead') return 250;
     return null;
   };
 
@@ -57,7 +59,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     setEditValue(value);
   };
 
-  const handleEditSave = (platform: 'linkedin'|'twitter'|'instagram', fieldKey: string) => {
+  const handleEditSave = (platform: 'linkedin'|'twitter'|'personal_site', fieldKey: string) => {
     updateProfileField(platform, fieldKey, editValue);
     setEditingField(null);
   };
@@ -113,7 +115,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                 const isEditing = editingField === field.key;
                 const charLimit = getCharLimit(activePlatformData.platform, field.key);
                 const currentLength = isEditing ? editValue.length : field.value.length;
-                const platformEnum = activePlatformData.platform as 'linkedin'|'twitter'|'instagram';
+                const platformEnum = activePlatformData.platform as 'linkedin'|'twitter'|'personal_site';
 
                 return (
                   <div key={field.key} className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm">

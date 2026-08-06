@@ -70,7 +70,7 @@ export const EvidencePlacementSection: React.FC<Props> = React.memo(({ onContinu
   const getPlatformColor = (platform: string) => {
     if (platform.toLowerCase() === 'linkedin') return 'bg-blue-100 text-blue-700 border-blue-200';
     if (platform.toLowerCase() === 'twitter' || platform.toLowerCase() === 'x') return 'bg-slate-100 text-slate-700 border-slate-200';
-    if (platform.toLowerCase() === 'instagram') return 'bg-pink-100 text-pink-700 border-pink-200';
+    if (platform.toLowerCase() === 'personal_site' || platform.toLowerCase() === 'website') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
     return 'bg-gray-100 text-gray-700 border-gray-200';
   };
 
