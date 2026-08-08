@@ -3,7 +3,7 @@
  * Validates Module 1 (Client Acquisition) store contracts and defaults.
  */
 
-import { useOpportunityMapStore } from '../../src/lib/opportunity-map/useOpportunityMapStore';
+import { useOpportunityMapStore } from '../../src/lib/opportunity-map';
 
 function verifyModule1Store() {
   console.log('[VERIFY-MODULE-1] Starting Module 1 store validation...');

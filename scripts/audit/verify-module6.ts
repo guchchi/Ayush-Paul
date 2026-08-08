@@ -3,7 +3,7 @@
  * Validates Module 6 (Outreach Engine System) store contracts and defaults.
  */
 
-import { useOutreachEngineSystemStore } from '../../src/lib/outreach-engine-system/useOutreachEngineSystemStore';
+import { useOutreachEngineSystemStore } from '../../src/lib/outreach-engine-system';
 
 function verifyModule6Store() {
   console.log('[VERIFY-MODULE-6] Starting Module 6 store validation...');

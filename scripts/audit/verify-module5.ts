@@ -3,7 +3,7 @@
  * Validates Module 5 (Client Pipeline System) store contracts and defaults.
  */
 
-import { useClientPipelineSystemStore } from '../../src/lib/client-pipeline-system/useClientPipelineSystemStore';
+import { useClientPipelineSystemStore } from '../../src/lib/client-pipeline-system';
 
 function verifyModule5Store() {
   console.log('[VERIFY-MODULE-5] Starting Module 5 store validation...');

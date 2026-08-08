@@ -3,7 +3,7 @@
  * Validates Module 2 (Offer Engineering) store contracts and defaults.
  */
 
-import { useOfferEngineeringStore } from '../../src/lib/offer-engineering/useOfferEngineeringStore';
+import { useOfferEngineeringStore } from '../../src/lib/offer-engineering';
 
 function verifyModule2Store() {
   console.log('[VERIFY-MODULE-2] Starting Module 2 store validation...');

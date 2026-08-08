@@ -3,7 +3,7 @@
  * Validates Module 4 (Portfolio System) store contracts and defaults.
  */
 
-import { usePortfolioSystemStore } from '../../src/lib/portfolio-system/usePortfolioSystemStore';
+import { usePortfolioSystemStore } from '../../src/lib/portfolio-system';
 
 function verifyModule4Store() {
   console.log('[VERIFY-MODULE-4] Starting Module 4 store validation...');
