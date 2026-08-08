@@ -3,11 +3,11 @@
  * Validates Module 6 (Outreach Engine System) store contracts and defaults.
  */
 
-import { useOutreachEngineSystemStore } from '../../src/lib/outreach-engine-system';
+import { useOutreachEngineStore } from '../../src/lib/outreach-engine-system';
 
 function verifyModule6Store() {
   console.log('[VERIFY-MODULE-6] Starting Module 6 store validation...');
-  const state = useOutreachEngineSystemStore.getState();
+  const state = useOutreachEngineStore.getState();
   
   if (typeof state.reset !== 'function') {
     throw new Error('Module 6 store missing reset() method');
