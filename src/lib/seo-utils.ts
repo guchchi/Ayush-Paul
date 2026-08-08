@@ -48,3 +48,12 @@ export async function getRelatedContent(tags: string[], currentId: string, type:
 
   return results;
 }
+
+/**
+ * generateCanonicalUrl - Constructs canonical URL for SEO indexing.
+ */
+export function generateCanonicalUrl(path: string, domain = 'https://ayushpaul.com'): string {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${domain}${cleanPath}`;
+}
+
