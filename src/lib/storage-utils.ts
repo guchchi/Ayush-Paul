@@ -48,3 +48,24 @@ export const deleteImageByUrl = async (url: string) => {
     console.error(`Failed to delete storage url ${url}:`, err);
   }
 };
+
+export function getSafeLocalStorage<T>(key: string, fallback: T): T {
+  try {
+    if (typeof window === 'undefined') return fallback;
+    const item = window.localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function setSafeLocalStorage<T>(key: string, value: T): boolean {
+  try {
+    if (typeof window === 'undefined') return false;
+    window.localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
