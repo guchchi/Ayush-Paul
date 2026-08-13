@@ -19,7 +19,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, ChevronRight, Lock, AlertTriangle, Sparkles } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Lock, AlertTriangle, Sparkles, User, Layout, Link as LinkIcon, Send, Award, Shield, ArrowLeft } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { EASING, DURATION } from '../../../lib/motion-presets';
 import { useModule3Store } from '../../../lib/module3/store';
