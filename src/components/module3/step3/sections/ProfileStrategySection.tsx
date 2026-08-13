@@ -3,7 +3,7 @@ import { useModule3Store } from '../../../../lib/module3/store';
 import { cn } from '../../../../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
-import { Pencil, RotateCcw, CheckCircle2, User, Code, Layers, Video, FileText, Globe, Sparkles, Star, ExternalLink } from 'lucide-react';
+import { Pencil, RotateCcw, CheckCircle2, User, Code, Layers, Video, Globe, Sparkles, ExternalLink, ChevronDown } from 'lucide-react';
 import { ModuleButton } from '../../../workspace/ModuleButton';
 
 interface Props {
@@ -64,6 +64,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const { authoritySuite, updateProfileField, resetProfileField, mod1ServiceId, mod1CareerTrackId } = useModule3Store();
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [showAllPlatforms, setShowAllPlatforms] = useState(false);
 
   const recommendation = useMemo(
     () => getRoleRecommendation(mod1ServiceId, mod1CareerTrackId),
@@ -83,16 +84,24 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   const existingPlatforms = authoritySuite.profileSystem;
 
-  // Extended platform definitions including specialized platforms
+  // Master platform definitions
   const allPlatforms = [
-    { key: 'linkedin', name: 'LinkedIn', icon: User, badge: 'Professional' },
-    { key: 'twitter', name: 'X / Twitter', icon: User, badge: 'Social Authority' },
-    { key: 'github', name: 'GitHub Profile', icon: Code, badge: 'Tech & Code' },
-    { key: 'behance', name: 'Behance / Figma', icon: Layers, badge: 'Design System' },
-    { key: 'youtube', name: 'YouTube / Showreel', icon: Video, badge: 'Visual Showreel' },
-    { key: 'personal_site', name: 'Personal Site', icon: Globe, badge: 'Core Hub' },
-    { key: 'instagram', name: 'Instagram', icon: User, badge: 'Visual Feed' },
+    { key: 'linkedin', name: 'LinkedIn', icon: User, category: 'professional' },
+    { key: 'twitter', name: 'X / Twitter', icon: User, category: 'social' },
+    { key: 'github', name: 'GitHub Profile', icon: Code, category: 'tech' },
+    { key: 'behance', name: 'Behance / Figma', icon: Layers, category: 'design' },
+    { key: 'youtube', name: 'YouTube / Showreel', icon: Video, category: 'video' },
+    { key: 'personal_site', name: 'Personal Site', icon: Globe, category: 'hub' },
+    { key: 'instagram', name: 'Instagram', icon: User, category: 'visual' },
   ];
+
+  // Split into Top Recommended vs Other Platforms
+  const recommendedPlatformsList = allPlatforms.filter((p) =>
+    recommendation.recommendedPlatforms.includes(p.key)
+  );
+  const otherPlatformsList = allPlatforms.filter(
+    (p) => !recommendation.recommendedPlatforms.includes(p.key)
+  );
 
   const formatPlatformName = (key: string) => {
     const item = allPlatforms.find((p) => p.key === key);
@@ -125,7 +134,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     setEditValue('');
   };
 
-  // Get active platform data or construct dynamic fallback for specialized platforms
   const activePlatformData = existingPlatforms.find((p) => p.platform === activeTab) || {
     platform: activeTab,
     fields: [
@@ -147,12 +155,12 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   return (
     <div className="w-full space-y-6 text-left font-sans">
       {/* Personalized Role Recommendation Banner */}
-      <div className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3 relative overflow-hidden">
-        <div className="flex items-center justify-between">
+      <div className="p-5 sm:p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-2.5 relative overflow-hidden">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20 px-3 py-1 rounded-full flex items-center gap-1">
               <Sparkles size={12} className="text-[#0058be]" />
-              Role-Tailored Platform Engine
+              Role-Tailored Suite
             </span>
             <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               Targeted for {recommendation.roleLabel}
@@ -165,39 +173,76 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
         </p>
       </div>
 
-      {/* Role-Adapted Platform Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {allPlatforms.map((p) => {
-          const isRecommended = recommendation.recommendedPlatforms.includes(p.key);
-          const isSelected = activeTab === p.key;
-          const IconComp = p.icon;
+      {/* Clean Wrapping Platform Selector (NO scrollbars, NO horizontal overflow) */}
+      <div className="bg-white p-4 rounded-3xl border border-neutral-200 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-400">
+            Select Platform Canvas
+          </span>
+          <button
+            onClick={() => setShowAllPlatforms(!showAllPlatforms)}
+            className="text-xs font-bold text-[#0058be] hover:underline flex items-center gap-1 cursor-pointer border-none bg-transparent"
+          >
+            <span>{showAllPlatforms ? 'Show Recommended Only' : '+ All Platforms'}</span>
+            <ChevronDown size={14} className={cn("transition-transform", showAllPlatforms && "rotate-180")} />
+          </button>
+        </div>
 
-          return (
-            <button
-              key={p.key}
-              onClick={() => {
-                setActiveTab(p.key);
-                setEditingField(null);
-              }}
-              className={cn(
-                'px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 shrink-0 border shadow-2xs',
-                isSelected
-                  ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
-                  : isRecommended
-                  ? 'bg-blue-50/70 text-[#0058be] border-blue-200/80 hover:bg-blue-100/70'
-                  : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50'
-              )}
-            >
-              <IconComp size={15} />
-              <span>{p.name}</span>
-              {isRecommended && !isSelected && (
-                <span className="text-[9px] font-extrabold bg-[#0058be]/15 text-[#0058be] px-1.5 py-0.5 rounded">
+        {/* Primary Recommended Row (Wrapping Grid - Zero Scrollbar!) */}
+        <div className="flex flex-wrap items-center gap-2">
+          {recommendedPlatformsList.map((p) => {
+            const isSelected = activeTab === p.key;
+            const IconComp = p.icon;
+
+            return (
+              <button
+                key={p.key}
+                onClick={() => {
+                  setActiveTab(p.key);
+                  setEditingField(null);
+                }}
+                className={cn(
+                  'px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs',
+                  isSelected
+                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
+                    : 'bg-blue-50/70 text-[#0058be] border-blue-200/80 hover:bg-blue-100/70'
+                )}
+              >
+                <IconComp size={15} />
+                <span>{p.name}</span>
+                <span className="text-[9px] font-extrabold bg-white/20 px-1.5 py-0.5 rounded text-white">
                   Top
                 </span>
-              )}
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+
+          {/* Show remaining platforms when toggled */}
+          {showAllPlatforms &&
+            otherPlatformsList.map((p) => {
+              const isSelected = activeTab === p.key;
+              const IconComp = p.icon;
+
+              return (
+                <button
+                  key={p.key}
+                  onClick={() => {
+                    setActiveTab(p.key);
+                    setEditingField(null);
+                  }}
+                  className={cn(
+                    'px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border shadow-2xs',
+                    isSelected
+                      ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
+                      : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+                  )}
+                >
+                  <IconComp size={15} />
+                  <span>{p.name}</span>
+                </button>
+              );
+            })}
+        </div>
       </div>
 
       {/* Dual Studio Grid (6 cols / 6 cols) */}
