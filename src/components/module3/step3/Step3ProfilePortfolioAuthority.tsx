@@ -290,28 +290,60 @@ export function Step3ProfilePortfolioAuthority() {
   const showStaleWarning = isUpstreamStale && currentSection > 1;
 
   return (
-    <div className="space-y-6 pb-12">
-      <div>
-        <span className="inline-flex items-center rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 mb-3">
-          Step 3 of 6
-        </span>
-        <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Profile &amp; Portfolio Authority</h1>
-        <p className="text-sm text-neutral-500 mt-1.5 leading-relaxed max-w-xl">
-          Build the strategy that turns your authority position and proof assets into a compelling profile, portfolio, and content system.
-        </p>
+    <div className="space-y-6 pb-16 text-left max-w-6xl mx-auto">
+      {/* Executive Hero Header */}
+      <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-7 shadow-xl border border-white/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300 bg-indigo-900/80 px-3 py-1 rounded-full border border-indigo-500/30">
+                Module 3 • Authority System Studio
+              </span>
+              <span className="text-xs text-slate-300 font-bold bg-white/10 px-2.5 py-0.5 rounded-full">
+                Step 3 of 6
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+              Profile &amp; Portfolio Authority Suite
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed font-medium">
+              Transform your authority position and proof inventory into high-converting visual profile assets, website wireframes, and content roadmaps.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4 shrink-0 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+            <div className="space-y-0.5 text-right">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Blueprint Status</span>
+              <span className="text-lg font-black text-emerald-400">
+                {Math.round((step3CompletedSections.length / 7) * 100)}% Complete
+              </span>
+              <span className="text-[10px] text-slate-400 block font-medium">
+                {step3CompletedSections.length} of 7 Sections Verified
+              </span>
+            </div>
+            <div className="w-12 h-12 rounded-full border-2 border-emerald-400/40 bg-emerald-950/60 flex items-center justify-center font-black text-emerald-300 text-sm">
+              0{step3CompletedSections.length}/7
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Progress stepper */}
-      <div className="bg-white border border-neutral-200 rounded-2xl p-4 shadow-xs space-y-3">
-        <div className="flex items-center justify-between text-xs text-neutral-500">
-          <span className="font-medium">
-            Step {step3CompletedSections.length} of 7 completed
+      {/* High-Tech Stepper Bar */}
+      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 shadow-xl text-white space-y-4">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-bold text-slate-300 flex items-center gap-2">
+            <Sparkles size={14} className="text-amber-400" />
+            7-Section Authority Blueprint Wizard
           </span>
-          <span className="font-semibold text-indigo-600">
-            {Math.round((step3CompletedSections.length / 7) * 100)}%
+          <span className="text-emerald-400 font-bold bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
+            Section #{currentSection}: {SECTIONS[currentSection - 1]?.label}
           </span>
         </div>
+
         <ProgressBar completed={step3CompletedSections} />
+
         <SectionStepper
           current={currentSection}
           completed={step3CompletedSections}
@@ -324,19 +356,18 @@ export function Step3ProfilePortfolioAuthority() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3"
+          className="bg-amber-950/80 border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3 text-amber-200 shadow-md"
         >
-          <AlertTriangle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
-          <p className="text-sm text-amber-800">
-            <span className="font-semibold">Upstream context has changed.</span>{' '}
-            Your Module 1 or 2 inputs were updated. The profile copy and blueprint below
-            may reflect outdated context. Consider regenerating from Section 1.
+          <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
+          <p className="text-xs sm:text-sm leading-relaxed">
+            <span className="font-bold text-amber-300">Upstream Context Updated:</span>{' '}
+            Your Module 1 positioning or Module 2 offer details were modified. Consider re-verifying from Section 1 to ensure 100% alignment.
           </p>
         </motion.div>
       )}
 
       {/* Section body */}
-      <div className="min-h-[400px]">
+      <div className="min-h-[450px]">
         <AnimatePresence mode="wait">
           <motion.div key={currentSection} {...fadeUp}>
             {currentSection === 1 && (
