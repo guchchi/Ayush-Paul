@@ -3,8 +3,8 @@
  *
  * Module 3 — Step 3: Profile & Portfolio Authority Suite
  *
- * Clean, lightweight, executive 4-Level packaging hub.
- * Zero scrollbars, zero crammed horizontal overflows, consistent light executive theme.
+ * Harmonized with Module 1 & Module 2 Design System.
+ * Built using StepHeader, ModuleButton, StepActionArea, and #0058be Royal Blue brand tokens.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -20,12 +20,15 @@ import {
   ArrowLeft,
   Zap,
   ArrowRight,
-  Layers,
+  Check,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { EASING, DURATION } from '../../../lib/motion-presets';
 import { useModule3Store } from '../../../lib/module3/store';
 import { generateFullAuthoritySuite } from '../../../data/module3/authority-suite-engine';
+import { StepHeader } from '../../workspace/StepHeader';
+import { StepActionArea } from '../../workspace/StepActionArea';
+import { ModuleButton } from '../../workspace/ModuleButton';
 
 // ── Section components ────────────────────────────────────────────────────────
 import { ProfileStrategySection } from './sections/ProfileStrategySection';
@@ -42,51 +45,55 @@ const fadeUp = {
   transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
 };
 
-// ── 4-Level Metadata ──────────────────────────────────────────────────────────
+// ── 4-Level Metadata (Harmonized with Module 1 & 2 Taxonomy) ─────────────────
 const LEVELS = [
   {
     id: 1,
     levelNumber: 'LEVEL 01',
     title: 'Social Profile Identity Studio',
-    deliverables: ['LinkedIn & X Bio Copy', 'Instagram Copy', 'Personal Site Bio'],
+    subtitle: 'High-Converting Social Copy',
+    deliverables: ['LinkedIn & X Bio Copy', 'Instagram Bio', 'Personal Site Tagline'],
     outcome: 'Instant Expert Authority',
     icon: User,
-    color: 'text-indigo-600',
-    bgColor: 'bg-indigo-50',
-    borderColor: 'border-indigo-200/80',
+    color: 'text-[#0058be]',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-100',
   },
   {
     id: 2,
     levelNumber: 'LEVEL 02',
     title: 'Portfolio Architecture Builder',
+    subtitle: 'Wireframe Layout & Order',
     deliverables: ['Section Sequence Order', 'Wireframe Layout', 'Conversion Funnel'],
     outcome: 'High-Converting Wireframe',
     icon: Layout,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200/80',
+    color: 'text-indigo-600',
+    bgColor: 'bg-indigo-50',
+    borderColor: 'border-indigo-100',
   },
   {
     id: 3,
     levelNumber: 'LEVEL 03',
     title: 'Evidence Placement Matrix',
-    deliverables: ['Proof-to-Claim Linker', 'Trust Scoring', 'Claim Verification'],
+    subtitle: 'Claim-to-Proof Linker',
+    deliverables: ['Proof-to-Claim Mapping', 'Trust Meter', 'Claim Verification'],
     outcome: '100% Backed Proof Claims',
     icon: LinkIcon,
     color: 'text-emerald-600',
     bgColor: 'bg-emerald-50',
-    borderColor: 'border-emerald-200/80',
+    borderColor: 'border-emerald-100',
   },
   {
     id: 4,
     levelNumber: 'LEVEL 04',
-    title: 'Authority Content Roadmap',
-    deliverables: ['90-Day Content Calendar', 'Authority Hooks', 'Publishing Angles'],
+    title: 'Authority Content Roadmap Engine',
+    subtitle: 'Hooks & Publishing Angles',
+    deliverables: ['90-Day Content Calendar', 'Authority Hooks', 'Publishing Roadmap'],
     outcome: 'Inbound Traffic Engine',
     icon: Send,
     color: 'text-purple-600',
     bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-200/80',
+    borderColor: 'border-purple-100',
   },
 ] as const;
 
@@ -125,7 +132,7 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
   if (!authoritySuite?.portfolioBlueprint?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-neutral-400">
-        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-indigo-500" />
+        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-[#0058be]" />
         <p className="text-sm font-bold text-neutral-600">Generating Portfolio Architecture Wireframe…</p>
       </div>
     );
@@ -140,12 +147,9 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
       />
 
       <div className="flex justify-end pt-2">
-        <button
-          onClick={handleConfirm}
-          className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
-        >
+        <ModuleButton onClick={handleConfirm}>
           Confirm Architecture &amp; Continue to Level 3 →
-        </button>
+        </ModuleButton>
       </div>
     </div>
   );
@@ -225,61 +229,50 @@ export function Step3ProfilePortfolioAuthority() {
   const completionPct = Math.round((step3CompletedSections.length / 4) * 100);
 
   return (
-    <div className="space-y-6 pb-16 text-left max-w-6xl mx-auto font-sans">
-      {/* Clean Ultra-Simple Top Header (NO scrollbars, NO crammed pills) */}
-      <div className="bg-white border border-neutral-200 rounded-2xl p-4 shadow-xs flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600">
-            <Layers size={18} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
-                Step 3 of 6
-              </span>
-              <span className="text-xs text-neutral-500 font-medium">Profile &amp; Portfolio Suite</span>
-            </div>
-            <h1 className="text-base font-bold text-neutral-900">
-              Authority Packaging Hub
-            </h1>
-          </div>
-        </div>
+    <div className="space-y-6 pb-16 text-left max-w-5xl mx-auto font-sans">
+      {/* Module 1 & 2 Standard Step Header */}
+      <div className="flex items-start justify-between">
+        <StepHeader
+          step={{ current: 3, total: 6 }}
+          title="Profile & Portfolio Authority System"
+          description="Package your positioning claims into high-converting social profile copy, portfolio website architecture, evidence placement, and content roadmaps."
+        />
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 mt-3 shrink-0">
           <button
             onClick={() => setShowBaselineDrawer(!showBaselineDrawer)}
-            className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <Shield size={14} className="text-indigo-600" />
-            <span>{showBaselineDrawer ? 'Hide Baseline' : 'Baseline'}</span>
+            <Shield size={14} className="text-[#0058be]" />
+            <span>{showBaselineDrawer ? 'Hide Baseline' : 'Upstream Baseline'}</span>
           </button>
 
-          <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700">
-            <span>{completionPct}% Done</span>
-          </div>
+          <span className="inline-flex items-center rounded-full bg-[#0058be]/10 text-[#0058be] text-xs font-bold px-3 py-1 border border-[#0058be]/20">
+            {completionPct}% Complete
+          </span>
         </div>
       </div>
 
-      {/* Collapsible Upstream Context Drawer */}
+      {/* Upstream Baseline Collapsible Card */}
       <AnimatePresence>
         {showBaselineDrawer && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white border border-neutral-200 rounded-2xl p-4 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"
+            className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs"
           >
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Authority Stance</span>
-              <span className="font-bold text-neutral-800 capitalize">{authorityPosition || 'Builder'}</span>
+            <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 space-y-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">Authority Stance</span>
+              <span className="font-bold text-[#0b1c30] capitalize">{authorityPosition || 'Builder'}</span>
             </div>
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Core Trust Promise</span>
-              <span className="font-bold text-neutral-800 line-clamp-1">"{coreTrustPromise || 'Client risk elimination'}"</span>
+            <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 space-y-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">Core Trust Promise</span>
+              <span className="font-bold text-[#0b1c30] line-clamp-2">"{coreTrustPromise || 'Client risk elimination'}"</span>
             </div>
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Unique Mechanism</span>
-              <span className="font-bold text-neutral-800">{mod2UniqueMechanism || 'Narrative Arc Engineering'}</span>
+            <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 space-y-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">Unique Mechanism</span>
+              <span className="font-bold text-[#0b1c30]">{mod2UniqueMechanism || 'Narrative Arc Engineering'}</span>
             </div>
           </motion.div>
         )}
@@ -293,22 +286,56 @@ export function Step3ProfilePortfolioAuthority() {
             {...fadeUp}
             className="space-y-6"
           >
-            {/* Clean Section Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-neutral-900">4-Level Authority System</h2>
-                <p className="text-xs text-neutral-500">Complete each level sequentially to package your authority.</p>
+            {/* Visual Level Flow Timeline Card */}
+            <div className="p-6 sm:p-7 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0058be] bg-[#0058be]/10 px-2.5 py-0.5 rounded-full border border-[#0058be]/20">
+                    4-Level Execution Path
+                  </span>
+                  <h2 className="text-xl font-bold text-[#0b1c30] mt-1">
+                    Systematic Authority Blueprint
+                  </h2>
+                </div>
+
+                <ModuleButton onClick={() => setActiveStage(1)}>
+                  Start Level 01 →
+                </ModuleButton>
               </div>
 
-              <button
-                onClick={() => setActiveStage(1)}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <span>Start Level 01 →</span>
-              </button>
+              {/* 4 Connected Level Cards Row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+                {LEVELS.map((level) => {
+                  const isDone = step3CompletedSections.includes(level.id);
+                  return (
+                    <div
+                      key={level.id}
+                      onClick={() => setActiveStage(level.id as 1 | 2 | 3 | 4)}
+                      className="bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200/80 p-3.5 rounded-2xl cursor-pointer transition-all space-y-1 group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black text-[#0058be] tracking-wider">
+                          {level.levelNumber}
+                        </span>
+                        {isDone ? (
+                          <Check size={14} className="text-emerald-600 stroke-[3]" />
+                        ) : (
+                          <span className="w-2 h-2 rounded-full bg-neutral-300 group-hover:bg-[#0058be]" />
+                        )}
+                      </div>
+                      <h4 className="text-xs font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors line-clamp-1">
+                        {level.title}
+                      </h4>
+                      <span className="text-[10px] text-neutral-500 block line-clamp-1">
+                        {level.outcome}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* 4 Clean Level Cards Grid */}
+            {/* 4 Premium Level Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {LEVELS.map((level) => {
                 const IconComponent = level.icon;
@@ -319,59 +346,59 @@ export function Step3ProfilePortfolioAuthority() {
                     key={level.id}
                     onClick={() => setActiveStage(level.id as 1 | 2 | 3 | 4)}
                     whileHover={{ y: -2 }}
-                    className="bg-white rounded-2xl p-5 border border-neutral-200 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer space-y-4 group"
+                    className="p-6 sm:p-7 rounded-3xl border border-neutral-200 bg-white shadow-xs hover:border-[#0058be]/40 hover:shadow-md transition-all cursor-pointer space-y-5 group relative"
                   >
-                    {/* Top Level Bar */}
+                    {/* Card Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2.5 rounded-xl ${level.bgColor} ${level.color} border ${level.borderColor}`}>
-                          <IconComponent size={20} />
+                        <div className={`p-3 rounded-2xl ${level.bgColor} ${level.color} border ${level.borderColor}`}>
+                          <IconComponent size={22} />
                         </div>
                         <div>
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">
+                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
                             {level.levelNumber}
                           </span>
-                          <h3 className="text-base font-bold text-neutral-900 group-hover:text-indigo-600 transition-colors">
+                          <h3 className="text-base font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
                             {level.title}
                           </h3>
                         </div>
                       </div>
 
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${
                         isCompleted
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                          : 'bg-neutral-100 text-neutral-600 border-neutral-200'
                       }`}>
                         {isCompleted ? 'Completed ✓' : 'Ready'}
                       </span>
                     </div>
 
-                    {/* Deliverable Chips */}
-                    <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-2">
-                      <span className="text-[10px] font-bold uppercase text-neutral-400 block">
+                    {/* Deliverable Badges */}
+                    <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 space-y-2.5">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
                         Deliverables:
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {level.deliverables.map((item, i) => (
                           <span
                             key={i}
-                            className="bg-white border border-slate-200 text-neutral-700 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-2xs flex items-center gap-1"
+                            className="bg-white border border-neutral-200 text-neutral-700 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-2xs flex items-center gap-1"
                           >
-                            <Zap size={11} className="text-indigo-500" />
+                            <Zap size={11} className="text-[#0058be]" />
                             {item}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    {/* Outcome Badge & Action Link */}
-                    <div className="flex items-center justify-between pt-1 border-t border-neutral-100 text-xs">
-                      <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 flex items-center gap-1">
-                        <Sparkles size={12} className="text-emerald-600" />
+                    {/* Outcome Tag & Action */}
+                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100 text-xs">
+                      <span className="font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200/60 flex items-center gap-1">
+                        <Sparkles size={13} className="text-emerald-600" />
                         {level.outcome}
                       </span>
 
-                      <span className="font-bold text-indigo-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      <span className="font-bold text-[#0058be] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                         Enter Level {level.id} <ArrowRight size={14} />
                       </span>
                     </div>
@@ -390,16 +417,16 @@ export function Step3ProfilePortfolioAuthority() {
             className="space-y-5"
           >
             {/* Top Back Toolbar */}
-            <div className="flex items-center justify-between bg-white border border-neutral-200 rounded-xl p-3 shadow-xs">
+            <div className="flex items-center justify-between bg-white border border-neutral-200 rounded-2xl p-4 shadow-xs">
               <button
                 onClick={() => setActiveStage('overview')}
-                className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-slate-200"
+                className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border border-neutral-200"
               >
                 <ArrowLeft size={14} />
-                <span>← Back to 4-Level Overview</span>
+                <span>← Back to 4-Level Blueprint</span>
               </button>
 
-              <span className="text-xs font-bold text-neutral-800">
+              <span className="text-xs font-bold text-[#0b1c30]">
                 {activeStage === 'summary'
                   ? 'Master Blueprint Review'
                   : `${LEVELS[(activeStage as number) - 1]?.levelNumber}: ${LEVELS[(activeStage as number) - 1]?.title}`}
