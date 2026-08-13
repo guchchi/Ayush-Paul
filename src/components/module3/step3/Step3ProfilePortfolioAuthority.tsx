@@ -3,8 +3,8 @@
  *
  * Module 3 — Step 3: Profile & Portfolio Authority Suite
  *
- * Harmonized with Module 1 & Module 2 Design System.
- * Built using StepHeader, ModuleButton, StepActionArea, and #0058be Royal Blue brand tokens.
+ * Top SaaS design standards (Linear/Vercel style clean breadcrumb navigation).
+ * Zero card stack clutter, harmonized with Module 1 & 2 design system.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -45,7 +45,7 @@ const fadeUp = {
   transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
 };
 
-// ── 4-Level Metadata (Harmonized with Module 1 & 2 Taxonomy) ─────────────────
+// ── 4-Level Metadata ──────────────────────────────────────────────────────────
 const LEVELS = [
   {
     id: 1,
@@ -230,13 +230,52 @@ export function Step3ProfilePortfolioAuthority() {
 
   return (
     <div className="space-y-6 pb-16 text-left max-w-5xl mx-auto font-sans">
-      {/* Module 1 & 2 Standard Step Header */}
+      {/* Top Header with Integrated Clean Back Breadcrumb */}
       <div className="flex items-start justify-between">
-        <StepHeader
-          step={{ current: 3, total: 6 }}
-          title="Profile & Portfolio Authority System"
-          description="Package your positioning claims into high-converting social profile copy, portfolio website architecture, evidence placement, and content roadmaps."
-        />
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 mb-2">
+            {activeStage !== 'overview' ? (
+              <button
+                onClick={() => setActiveStage('overview')}
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#0058be] hover:underline cursor-pointer bg-[#0058be]/10 px-2.5 py-1 rounded-full border border-[#0058be]/20 transition-all"
+              >
+                <ArrowLeft size={12} />
+                <span>Overview</span>
+              </button>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-[#0058be]/10 text-[#0058be] text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5">
+                Step 3 of 6
+              </span>
+            )}
+
+            {activeStage !== 'overview' && (
+              <span className="text-xs text-neutral-400 font-bold">/</span>
+            )}
+
+            {activeStage !== 'overview' && (
+              <span className="text-xs font-bold text-neutral-700 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
+                {activeStage === 'summary'
+                  ? 'Master Blueprint'
+                  : `${LEVELS[(activeStage as number) - 1]?.levelNumber}: ${LEVELS[(activeStage as number) - 1]?.title}`}
+              </span>
+            )}
+          </div>
+
+          <h1 className="text-3xl font-bold text-[#0b1c30] tracking-tight">
+            {activeStage === 'overview'
+              ? 'Profile & Portfolio Authority System'
+              : activeStage === 'summary'
+              ? 'Master Authority Blueprint'
+              : LEVELS[(activeStage as number) - 1]?.title}
+          </h1>
+          <p className="text-sm text-neutral-500 mt-1 leading-relaxed max-w-xl">
+            {activeStage === 'overview'
+              ? 'Package your positioning claims into high-converting social profile copy, portfolio website architecture, evidence placement, and content roadmaps.'
+              : activeStage === 'summary'
+              ? 'Review your assembled executive blueprint and complete Step 3.'
+              : LEVELS[(activeStage as number) - 1]?.subtitle}
+          </p>
+        </div>
 
         <div className="flex items-center gap-2 mt-3 shrink-0">
           <button
@@ -409,30 +448,13 @@ export function Step3ProfilePortfolioAuthority() {
           </motion.div>
         )}
 
-        {/* Individual Stage Views with Back Toolbar */}
+        {/* Individual Stage Views with Clean Integrated Header Navigation */}
         {activeStage !== 'overview' && (
           <motion.div
             key={String(activeStage)}
             {...fadeUp}
             className="space-y-5"
           >
-            {/* Top Back Toolbar */}
-            <div className="flex items-center justify-between bg-white border border-neutral-200 rounded-2xl p-4 shadow-xs">
-              <button
-                onClick={() => setActiveStage('overview')}
-                className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border border-neutral-200"
-              >
-                <ArrowLeft size={14} />
-                <span>← Back to 4-Level Blueprint</span>
-              </button>
-
-              <span className="text-xs font-bold text-[#0b1c30]">
-                {activeStage === 'summary'
-                  ? 'Master Blueprint Review'
-                  : `${LEVELS[(activeStage as number) - 1]?.levelNumber}: ${LEVELS[(activeStage as number) - 1]?.title}`}
-              </span>
-            </div>
-
             {activeStage === 1 && (
               <ProfileStrategySection
                 onContinue={() => advanceStage(1)}
