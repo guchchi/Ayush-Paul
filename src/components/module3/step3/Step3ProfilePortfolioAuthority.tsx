@@ -1,34 +1,33 @@
 /**
  * Step3ProfilePortfolioAuthority.tsx
  *
- * Module 3 — Step 3: Profile & Portfolio Authority
+ * Module 3 — Step 3: Profile & Portfolio Authority Suite
  *
- * 7-section sequential wizard. Each section produces store-persisted output.
- * Section completion is derived from `step3CompletedSections` in the store —
- * no local useState for progress, no progress loss on refresh.
- *
- * Section flow:
- *   1  AuthoritySnapshotSection     — read-only confirmation of upstream context
- *   2  ProfileStrategySection       — review/edit AI profile copy per platform
- *   3  BrandIdentitySection         — confirm brand tone & visual direction
- *   4  PortfolioOrderingCanvas      — reorder portfolio website sections
- *   5  EvidencePlacementSection     — map profile claims to proof assets
- *   6  ContentStrategySection       — approve deterministic content roadmap
- *   7  StrategySummarySection       — review assembled blueprint, complete step
+ * Light Executive Theme orchestration shell.
+ * 4-Stage Interactive Launchpad Hub with compact navigation bar and zero dark box clutter.
  */
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, ChevronRight, Lock, AlertTriangle, Sparkles, User, Layout, Link as LinkIcon, Send, Award, Shield, ArrowLeft } from 'lucide-react';
+import {
+  CheckCircle2,
+  ChevronRight,
+  Sparkles,
+  User,
+  Layout,
+  Link as LinkIcon,
+  Send,
+  Shield,
+  ArrowLeft,
+  Zap,
+} from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { EASING, DURATION } from '../../../lib/motion-presets';
 import { useModule3Store } from '../../../lib/module3/store';
 import { generateFullAuthoritySuite } from '../../../data/module3/authority-suite-engine';
 
 // ── Section components ────────────────────────────────────────────────────────
-import { AuthoritySnapshotSection } from './sections/AuthoritySnapshotSection';
 import { ProfileStrategySection } from './sections/ProfileStrategySection';
-import { BrandIdentitySection } from './sections/BrandIdentitySection';
 import { PortfolioOrderingCanvas } from './sections/PortfolioOrderingCanvas';
 import { EvidencePlacementSection } from './sections/EvidencePlacementSection';
 import { ContentStrategySection } from './sections/ContentStrategySection';
@@ -36,152 +35,67 @@ import { StrategySummarySection } from './sections/StrategySummarySection';
 
 // ── Motion tokens ─────────────────────────────────────────────────────────────
 const fadeUp = {
-  initial: { opacity: 0, y: 16, filter: 'blur(6px)' },
+  initial: { opacity: 0, y: 12, filter: 'blur(4px)' },
   animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
   exit: { opacity: 0, y: -8, filter: 'blur(4px)' },
   transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
 };
 
-// ── Section metadata for Stepper ──────────────────────────────────────────────
+// ── 4 Stage Card Metadata ─────────────────────────────────────────────────────
 const STAGE_CARDS = [
   {
     id: 1,
     stageNumber: '01',
     title: 'Social Profile Identity Studio',
-    shortLabel: 'Profile Studio',
+    shortLabel: '01 Profile',
     purpose: 'Transform positioning claims into high-converting bio & headline copy for LinkedIn, X, Instagram & Personal Site.',
-    whyWeDoThis: 'Prospects check your social profiles before booking a call. This stage ensures instant expert authority.',
+    whyWeDoThis: 'Prospects check your social profiles before booking a call. Ensures instant expert authority.',
     icon: User,
-    color: 'from-blue-600 to-indigo-600',
-    accentText: 'text-blue-400',
-    borderHover: 'hover:border-blue-500/50',
-    bgGlow: 'bg-blue-500/10',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50',
+    borderColor: 'border-blue-200/80',
+    badgeColor: 'bg-blue-100/70 text-blue-700',
   },
   {
     id: 2,
     stageNumber: '02',
     title: 'Portfolio Website Architecture Builder',
-    shortLabel: 'Portfolio Builder',
+    shortLabel: '02 Portfolio',
     purpose: 'Structure your portfolio website layout wireframe & section sequence for maximum conversion.',
     whyWeDoThis: 'Ensures your proof assets hit the prospect at the exact psychological moment in their buyer journey.',
     icon: Layout,
-    color: 'from-[#0058be] to-cyan-600',
-    accentText: 'text-cyan-400',
-    borderHover: 'hover:border-cyan-500/50',
-    bgGlow: 'bg-cyan-500/10',
+    color: 'text-cyan-600',
+    bgColor: 'bg-cyan-50',
+    borderColor: 'border-cyan-200/80',
+    badgeColor: 'bg-cyan-100/70 text-cyan-700',
   },
   {
     id: 3,
     stageNumber: '03',
     title: 'Evidence Placement Matrix',
-    shortLabel: 'Evidence Matrix',
+    shortLabel: '03 Evidence',
     purpose: 'Link every profile & portfolio claim directly to verified Step 2 proof assets.',
     whyWeDoThis: 'Eliminates unproven promises so your positioning is 100% backed by demonstrable evidence.',
     icon: LinkIcon,
-    color: 'from-emerald-600 to-teal-600',
-    accentText: 'text-emerald-400',
-    borderHover: 'hover:border-emerald-500/50',
-    bgGlow: 'bg-emerald-500/10',
+    color: 'text-emerald-600',
+    bgColor: 'bg-emerald-50',
+    borderColor: 'border-emerald-200/80',
+    badgeColor: 'bg-emerald-100/70 text-emerald-700',
   },
   {
     id: 4,
     stageNumber: '04',
     title: 'Authority Content Roadmap Engine',
-    shortLabel: 'Content Engine',
+    shortLabel: '04 Content',
     purpose: 'Generate high-impact authority content hooks & 90-day publishing calendar.',
     whyWeDoThis: 'Establishes top-of-funnel organic trust and drives warm inbound traffic to your portfolio.',
     icon: Send,
-    color: 'from-purple-600 to-pink-600',
-    accentText: 'text-purple-400',
-    borderHover: 'hover:border-purple-500/50',
-    bgGlow: 'bg-purple-500/10',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50',
+    borderColor: 'border-purple-200/80',
+    badgeColor: 'bg-purple-100/70 text-purple-700',
   },
 ] as const;
-
-// ── Step progress stepper ─────────────────────────────────────────────────────
-function SectionStepper({
-  currentStage,
-  completed,
-  onJump,
-}: {
-  currentStage: 'overview' | 1 | 2 | 3 | 4 | 'summary';
-  completed: number[];
-  onJump: (stage: 'overview' | 1 | 2 | 3 | 4 | 'summary') => void;
-}) {
-  return (
-    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 px-1 scrollbar-none">
-      <button
-        onClick={() => onJump('overview')}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0',
-          currentStage === 'overview'
-            ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-indigo-500 shadow-md'
-            : 'bg-neutral-800 text-neutral-300 border-neutral-700 hover:text-white'
-        )}
-      >
-        <Sparkles size={14} className="text-amber-400" />
-        <span>Launchpad Overview</span>
-      </button>
-
-      {STAGE_CARDS.map((card) => {
-        const isDone = completed.includes(card.id);
-        const isCurrent = currentStage === card.id;
-
-        return (
-          <button
-            key={card.id}
-            onClick={() => onJump(card.id as 1 | 2 | 3 | 4)}
-            className={cn(
-              'flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0',
-              isCurrent
-                ? 'bg-indigo-600 text-white border-indigo-500 shadow-md'
-                : isDone
-                ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800 hover:bg-indigo-900'
-                : 'bg-neutral-900 text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700'
-            )}
-          >
-            {isDone ? (
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            ) : (
-              <span className="w-4 h-4 rounded-full bg-neutral-800 text-neutral-400 text-[10px] font-black flex items-center justify-center shrink-0">
-                {card.id}
-              </span>
-            )}
-            <span>{card.shortLabel}</span>
-          </button>
-        );
-      })}
-
-      <button
-        onClick={() => onJump('summary')}
-        className={cn(
-          'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0 ml-auto',
-          currentStage === 'summary'
-            ? 'bg-emerald-600 text-white border-emerald-500 shadow-md'
-            : 'bg-neutral-900 text-emerald-400 border-neutral-800 hover:bg-emerald-950'
-        )}
-      >
-        <Award size={14} />
-        <span>Master Blueprint</span>
-      </button>
-    </div>
-  );
-}
-
-// ── Progress bar ──────────────────────────────────────────────────────────────
-function ProgressBar({ completed }: { completed: number[] }) {
-  const pct = Math.round((completed.length / 4) * 100);
-  return (
-    <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
-      <motion.div
-        className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full"
-        initial={false}
-        animate={{ width: `${pct}%` }}
-        transition={{ duration: 0.4, ease: EASING.PREMIUM }}
-      />
-    </div>
-  );
-}
 
 // ── Portfolio section wrapper for Section 4 ───────────────────────────────────
 function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
@@ -218,8 +132,8 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
   if (!authoritySuite?.portfolioBlueprint?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-neutral-400">
-        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-indigo-400" />
-        <p className="text-sm font-bold">Generating Portfolio Architecture Wireframe…</p>
+        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-indigo-500" />
+        <p className="text-sm font-bold text-neutral-600">Generating Portfolio Architecture Wireframe…</p>
       </div>
     );
   }
@@ -235,7 +149,7 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
       <div className="flex justify-end pt-2">
         <button
           onClick={handleConfirm}
-          className="px-7 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl font-black text-sm transition-all shadow-lg hover:shadow-indigo-500/20 flex items-center gap-2 cursor-pointer"
+          className="px-7 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm transition-all shadow-md flex items-center gap-2 cursor-pointer"
         >
           Confirm Architecture &amp; Continue to Stage 3 →
         </button>
@@ -257,7 +171,6 @@ export function Step3ProfilePortfolioAuthority() {
   const mod2OfferType = useModule3Store((s) => s.mod2OfferType);
   const availableAssets = useModule3Store((s) => s.availableAssets);
   const skippedAssets = useModule3Store((s) => s.skippedAssets);
-  const isUpstreamStale = useModule3Store((s) => s.isUpstreamStale);
 
   const step3CompletedSections = useModule3Store((s) => s.step3CompletedSections);
   const completeStep3Section = useModule3Store((s) => s.completeStep3Section);
@@ -316,91 +229,126 @@ export function Step3ProfilePortfolioAuthority() {
     nextStep();
   }, [completeStep3Section, confirmStep, nextStep]);
 
+  const completionPct = Math.round((step3CompletedSections.length / 4) * 100);
+
   return (
-    <div className="space-y-6 pb-16 text-left max-w-6xl mx-auto">
-      {/* Executive Hero Header */}
-      <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-7 shadow-xl border border-white/10 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
+    <div className="space-y-6 pb-16 text-left max-w-6xl mx-auto font-sans">
+      {/* Sleek Compact Light Navigation Header */}
+      <div className="bg-white border border-neutral-200/90 rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Left Title & Status */}
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600">
+            <Zap size={18} />
+          </div>
+          <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300 bg-indigo-900/80 px-3 py-1 rounded-full border border-indigo-500/30">
-                Module 3 • Step 3
+              <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                Step 3 of 6
               </span>
-              <span className="text-xs text-slate-300 font-bold bg-white/10 px-2.5 py-0.5 rounded-full">
-                Executive Packaging Studio
-              </span>
+              <span className="text-xs text-neutral-500 font-medium">Profile &amp; Portfolio Suite</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-              Profile &amp; Portfolio Authority Launchpad
+            <h1 className="text-base font-bold text-neutral-900 leading-snug">
+              Authority Packaging Launchpad
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed font-medium">
-              Transform your authority stance into high-converting social profile copy, portfolio website architecture, evidence mapping, and content roadmaps.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => setShowBaselineDrawer(!showBaselineDrawer)}
-              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
-            >
-              <Shield size={16} className="text-cyan-400" />
-              <span>{showBaselineDrawer ? 'Hide Baseline' : 'View Baseline Context'}</span>
-            </button>
           </div>
         </div>
 
-        {/* Collapsible Upstream Context Drawer */}
-        <AnimatePresence>
-          {showBaselineDrawer && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-6 pt-5 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"
-            >
-              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Authority Stance</span>
-                <span className="font-bold text-cyan-300 capitalize">{authorityPosition || 'Builder'}</span>
-              </div>
-              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Core Trust Promise</span>
-                <span className="font-bold text-emerald-300 line-clamp-1">"{coreTrustPromise || 'Client risk elimination'}"</span>
-              </div>
-              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Unique Mechanism</span>
-                <span className="font-bold text-purple-300">{mod2UniqueMechanism || 'Narrative Arc Engineering'}</span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        {/* Center Stage Selector Pills */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          <button
+            onClick={() => setActiveStage('overview')}
+            className={cn(
+              'px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 border',
+              activeStage === 'overview'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+            )}
+          >
+            Overview Map
+          </button>
 
-      {/* Stepper Navigation Bar */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 shadow-xl text-white space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-slate-300 flex items-center gap-2">
-            <Sparkles size={14} className="text-amber-400" />
-            Step 3 — 4-Stage Executive Roadmap
-          </span>
-          <span className="text-emerald-400 font-bold bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
-            {activeStage === 'overview'
-              ? 'Overview Map'
-              : activeStage === 'summary'
-              ? 'Master Blueprint'
-              : `Stage 0${activeStage}: ${STAGE_CARDS[activeStage - 1].shortLabel}`}
-          </span>
+          {STAGE_CARDS.map((card) => {
+            const isDone = step3CompletedSections.includes(card.id);
+            const isCurrent = activeStage === card.id;
+
+            return (
+              <button
+                key={card.id}
+                onClick={() => setActiveStage(card.id as 1 | 2 | 3 | 4)}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 border',
+                  isCurrent
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                    : isDone
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+                )}
+              >
+                {isDone && !isCurrent ? (
+                  <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />
+                ) : (
+                  <span className="w-3.5 h-3.5 rounded-full bg-neutral-200 text-neutral-600 text-[9px] font-black flex items-center justify-center shrink-0">
+                    {card.id}
+                  </span>
+                )}
+                <span>{card.shortLabel}</span>
+              </button>
+            );
+          })}
+
+          <button
+            onClick={() => setActiveStage('summary')}
+            className={cn(
+              'px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 border',
+              activeStage === 'summary'
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-neutral-50 text-emerald-700 border-neutral-200 hover:bg-emerald-50'
+            )}
+          >
+            Blueprint
+          </button>
         </div>
 
-        <ProgressBar completed={step3CompletedSections} />
+        {/* Right Action Tools */}
+        <div className="flex items-center gap-2.5 shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-neutral-100">
+          <button
+            onClick={() => setShowBaselineDrawer(!showBaselineDrawer)}
+            className="px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 text-neutral-700 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Shield size={14} className="text-indigo-600" />
+            <span>{showBaselineDrawer ? 'Hide Baseline' : 'Baseline'}</span>
+          </button>
 
-        <SectionStepper
-          currentStage={activeStage}
-          completed={step3CompletedSections}
-          onJump={(stage) => setActiveStage(stage)}
-        />
+          <div className="flex items-center gap-1.5 bg-indigo-50/70 border border-indigo-100 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700">
+            <span>{completionPct}% Done</span>
+          </div>
+        </div>
       </div>
+
+      {/* Collapsible Upstream Context Drawer */}
+      <AnimatePresence>
+        {showBaselineDrawer && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bg-white border border-neutral-200 rounded-2xl p-4 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"
+          >
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/70 space-y-0.5">
+              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Authority Stance</span>
+              <span className="font-bold text-neutral-800 capitalize">{authorityPosition || 'Builder'}</span>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/70 space-y-0.5">
+              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Core Trust Promise</span>
+              <span className="font-bold text-neutral-800 line-clamp-1">"{coreTrustPromise || 'Client risk elimination'}"</span>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/70 space-y-0.5">
+              <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block">Unique Mechanism</span>
+              <span className="font-bold text-neutral-800">{mod2UniqueMechanism || 'Narrative Arc Engineering'}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main View Orchestration */}
       <AnimatePresence mode="wait">
@@ -408,23 +356,23 @@ export function Step3ProfilePortfolioAuthority() {
           <motion.div
             key="overview"
             {...fadeUp}
-            className="space-y-6"
+            className="space-y-5"
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-black text-white">4-Stage Packaging System Overview</h3>
-                <p className="text-xs text-neutral-400 mt-1">Select any stage below to enter its interactive workspace.</p>
+                <h2 className="text-lg font-bold text-neutral-900">4-Stage Authority Suite Stages</h2>
+                <p className="text-xs text-neutral-500">Select any stage to enter its dedicated studio workspace.</p>
               </div>
               <button
                 onClick={() => setActiveStage(1)}
-                className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
-                <span>Start Stage 01: Profile Studio →</span>
+                <span>Start Stage 01 →</span>
               </button>
             </div>
 
-            {/* 4 Stage Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Light Executive 4 Stage Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {STAGE_CARDS.map((card) => {
                 const IconComponent = card.icon;
                 const isCompleted = step3CompletedSections.includes(card.id);
@@ -433,46 +381,46 @@ export function Step3ProfilePortfolioAuthority() {
                   <motion.div
                     key={card.id}
                     onClick={() => setActiveStage(card.id as 1 | 2 | 3 | 4)}
-                    whileHover={{ scale: 1.01 }}
-                    className={`bg-neutral-900 rounded-3xl p-6 border border-neutral-800 shadow-xl text-white space-y-4 cursor-pointer transition-all ${card.borderHover} relative overflow-hidden group`}
+                    whileHover={{ y: -2 }}
+                    className="bg-white rounded-2xl p-5 border border-neutral-200/90 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer space-y-4 group relative"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-2xl ${card.bgGlow} ${card.accentText} border border-white/10`}>
+                        <div className={`p-2.5 rounded-xl ${card.bgColor} ${card.color} border ${card.borderColor}`}>
                           <IconComponent size={20} />
                         </div>
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500 block">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">
                             Stage {card.stageNumber}
                           </span>
-                          <h4 className="text-base font-black text-white">{card.title}</h4>
+                          <h3 className="text-base font-bold text-neutral-900">{card.title}</h3>
                         </div>
                       </div>
 
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
                         isCompleted
-                          ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
-                          : 'bg-neutral-950 text-neutral-400 border-neutral-800'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
                       }`}>
                         {isCompleted ? 'Completed' : 'Ready'}
                       </span>
                     </div>
 
-                    <div className="bg-neutral-950/80 p-4 rounded-2xl border border-neutral-800/80 space-y-2">
-                      <p className="text-xs text-neutral-300 font-medium leading-relaxed">
+                    <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/60 space-y-2">
+                      <p className="text-xs text-neutral-700 font-medium leading-relaxed">
                         {card.purpose}
                       </p>
-                      <div className="pt-1 border-t border-neutral-800/80">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block mb-0.5">Why we do this:</span>
-                        <p className="text-[11px] text-neutral-400 italic leading-snug">
+                      <div className="pt-1.5 border-t border-slate-200/60 flex items-start gap-1">
+                        <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0">Why:</span>
+                        <p className="text-[11px] text-neutral-500 italic leading-snug">
                           "{card.whyWeDoThis}"
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between text-xs pt-1">
-                      <span className={`font-bold ${card.accentText}`}>Stage 0{card.id} Studio Workspace</span>
-                      <span className="text-white font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      <span className={`font-bold ${card.color}`}>Stage 0{card.id} Studio</span>
+                      <span className="text-indigo-600 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                         Launch Stage <ChevronRight size={14} />
                       </span>
                     </div>
@@ -483,27 +431,27 @@ export function Step3ProfilePortfolioAuthority() {
           </motion.div>
         )}
 
-        {/* Individual Stage Views with Back Button */}
+        {/* Individual Stage Views with Back Toolbar */}
         {activeStage !== 'overview' && (
           <motion.div
             key={String(activeStage)}
             {...fadeUp}
-            className="space-y-6"
+            className="space-y-5"
           >
-            {/* Top Back-to-Overview Action Bar */}
-            <div className="flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-2xl p-3.5 shadow-md">
+            {/* Top Back Toolbar */}
+            <div className="flex items-center justify-between bg-white border border-neutral-200 rounded-xl p-3 shadow-xs">
               <button
                 onClick={() => setActiveStage('overview')}
-                className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border border-neutral-700"
+                className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-slate-200"
               >
                 <ArrowLeft size={14} />
-                <span>← Back to 4-Stage Launchpad Overview</span>
+                <span>← Back to Overview Map</span>
               </button>
 
-              <span className="text-xs font-bold text-slate-300">
+              <span className="text-xs font-bold text-neutral-700">
                 {activeStage === 'summary'
                   ? 'Master Blueprint Review'
-                  : `Currently in Stage 0${activeStage}: ${STAGE_CARDS[(activeStage as number) - 1]?.title}`}
+                  : `Stage 0${activeStage}: ${STAGE_CARDS[(activeStage as number) - 1]?.title}`}
               </span>
             </div>
 
