@@ -42,84 +42,139 @@ const fadeUp = {
   transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
 };
 
-// ── Section metadata ──────────────────────────────────────────────────────────
-const SECTIONS = [
-  { n: 1, label: 'Authority Snapshot',    shortLabel: 'Snapshot' },
-  { n: 2, label: 'Profile Identity',      shortLabel: 'Profile' },
-  { n: 3, label: 'Brand Identity',        shortLabel: 'Brand' },
-  { n: 4, label: 'Portfolio Structure',   shortLabel: 'Structure' },
-  { n: 5, label: 'Evidence Placement',    shortLabel: 'Evidence' },
-  { n: 6, label: 'Content Roadmap',       shortLabel: 'Content' },
-  { n: 7, label: 'Strategy Blueprint',    shortLabel: 'Blueprint' },
+// ── Section metadata for Stepper ──────────────────────────────────────────────
+const STAGE_CARDS = [
+  {
+    id: 1,
+    stageNumber: '01',
+    title: 'Social Profile Identity Studio',
+    shortLabel: 'Profile Studio',
+    purpose: 'Transform positioning claims into high-converting bio & headline copy for LinkedIn, X, Instagram & Personal Site.',
+    whyWeDoThis: 'Prospects check your social profiles before booking a call. This stage ensures instant expert authority.',
+    icon: User,
+    color: 'from-blue-600 to-indigo-600',
+    accentText: 'text-blue-400',
+    borderHover: 'hover:border-blue-500/50',
+    bgGlow: 'bg-blue-500/10',
+  },
+  {
+    id: 2,
+    stageNumber: '02',
+    title: 'Portfolio Website Architecture Builder',
+    shortLabel: 'Portfolio Builder',
+    purpose: 'Structure your portfolio website layout wireframe & section sequence for maximum conversion.',
+    whyWeDoThis: 'Ensures your proof assets hit the prospect at the exact psychological moment in their buyer journey.',
+    icon: Layout,
+    color: 'from-[#0058be] to-cyan-600',
+    accentText: 'text-cyan-400',
+    borderHover: 'hover:border-cyan-500/50',
+    bgGlow: 'bg-cyan-500/10',
+  },
+  {
+    id: 3,
+    stageNumber: '03',
+    title: 'Evidence Placement Matrix',
+    shortLabel: 'Evidence Matrix',
+    purpose: 'Link every profile & portfolio claim directly to verified Step 2 proof assets.',
+    whyWeDoThis: 'Eliminates unproven promises so your positioning is 100% backed by demonstrable evidence.',
+    icon: LinkIcon,
+    color: 'from-emerald-600 to-teal-600',
+    accentText: 'text-emerald-400',
+    borderHover: 'hover:border-emerald-500/50',
+    bgGlow: 'bg-emerald-500/10',
+  },
+  {
+    id: 4,
+    stageNumber: '04',
+    title: 'Authority Content Roadmap Engine',
+    shortLabel: 'Content Engine',
+    purpose: 'Generate high-impact authority content hooks & 90-day publishing calendar.',
+    whyWeDoThis: 'Establishes top-of-funnel organic trust and drives warm inbound traffic to your portfolio.',
+    icon: Send,
+    color: 'from-purple-600 to-pink-600',
+    accentText: 'text-purple-400',
+    borderHover: 'hover:border-purple-500/50',
+    bgGlow: 'bg-purple-500/10',
+  },
 ] as const;
 
 // ── Step progress stepper ─────────────────────────────────────────────────────
 function SectionStepper({
-  current,
+  currentStage,
   completed,
   onJump,
 }: {
-  current: number;
+  currentStage: 'overview' | 1 | 2 | 3 | 4 | 'summary';
   completed: number[];
-  onJump: (n: number) => void;
+  onJump: (stage: 'overview' | 1 | 2 | 3 | 4 | 'summary') => void;
 }) {
   return (
-    <div className="flex items-center gap-0.5 overflow-x-auto pb-1 px-1 scrollbar-none">
-      {SECTIONS.map(({ n, shortLabel }, idx) => {
-        const isDone = completed.includes(n);
-        const isCurrent = current === n;
-        const canAccess = n === 1 || completed.includes(n - 1) || isDone;
+    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 px-1 scrollbar-none">
+      <button
+        onClick={() => onJump('overview')}
+        className={cn(
+          'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0',
+          currentStage === 'overview'
+            ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white border-indigo-500 shadow-md'
+            : 'bg-neutral-800 text-neutral-300 border-neutral-700 hover:text-white'
+        )}
+      >
+        <Sparkles size={14} className="text-amber-400" />
+        <span>Launchpad Overview</span>
+      </button>
+
+      {STAGE_CARDS.map((card) => {
+        const isDone = completed.includes(card.id);
+        const isCurrent = currentStage === card.id;
 
         return (
-          <div key={n} className="flex items-center gap-0.5 shrink-0">
-            {idx > 0 && (
-              <div
-                className={cn(
-                  'h-0.5 w-6 rounded-full transition-colors',
-                  completed.includes(n - 1) ? 'bg-indigo-500' : 'bg-neutral-200'
-                )}
-              />
+          <button
+            key={card.id}
+            onClick={() => onJump(card.id as 1 | 2 | 3 | 4)}
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0',
+              isCurrent
+                ? 'bg-indigo-600 text-white border-indigo-500 shadow-md'
+                : isDone
+                ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800 hover:bg-indigo-900'
+                : 'bg-neutral-900 text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700'
             )}
-            <button
-              onClick={() => canAccess && onJump(n)}
-              disabled={!canAccess}
-              className={cn(
-                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer disabled:cursor-default',
-                isCurrent
-                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                  : isDone
-                  ? 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
-                  : canAccess
-                  ? 'bg-white text-neutral-600 border-neutral-200 hover:border-indigo-300 hover:text-indigo-600'
-                  : 'bg-neutral-50 text-neutral-400 border-neutral-200 opacity-60'
-              )}
-              title={canAccess ? undefined : 'Complete previous sections first'}
-            >
-              {isDone && !isCurrent ? (
-                <CheckCircle2 className="w-3 h-3 text-indigo-500 shrink-0" />
-              ) : !canAccess ? (
-                <Lock className="w-3 h-3 shrink-0" />
-              ) : (
-                <span className="w-3.5 h-3.5 text-[10px] font-black flex items-center justify-center shrink-0">
-                  {n}
-                </span>
-              )}
-              <span className="hidden sm:block">{shortLabel}</span>
-            </button>
-          </div>
+          >
+            {isDone ? (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            ) : (
+              <span className="w-4 h-4 rounded-full bg-neutral-800 text-neutral-400 text-[10px] font-black flex items-center justify-center shrink-0">
+                {card.id}
+              </span>
+            )}
+            <span>{card.shortLabel}</span>
+          </button>
         );
       })}
+
+      <button
+        onClick={() => onJump('summary')}
+        className={cn(
+          'flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer shrink-0 ml-auto',
+          currentStage === 'summary'
+            ? 'bg-emerald-600 text-white border-emerald-500 shadow-md'
+            : 'bg-neutral-900 text-emerald-400 border-neutral-800 hover:bg-emerald-950'
+        )}
+      >
+        <Award size={14} />
+        <span>Master Blueprint</span>
+      </button>
     </div>
   );
 }
 
 // ── Progress bar ──────────────────────────────────────────────────────────────
 function ProgressBar({ completed }: { completed: number[] }) {
-  const pct = Math.round((completed.length / 7) * 100);
+  const pct = Math.round((completed.length / 4) * 100);
   return (
-    <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
+    <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden">
       <motion.div
-        className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full"
+        className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 rounded-full"
         initial={false}
         animate={{ width: `${pct}%` }}
         transition={{ duration: 0.4, ease: EASING.PREMIUM }}
@@ -163,23 +218,14 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
   if (!authoritySuite?.portfolioBlueprint?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-neutral-400">
-        <Sparkles className="w-8 h-8 mb-3 opacity-40" />
-        <p className="text-sm">Portfolio blueprint is generating…</p>
+        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-indigo-400" />
+        <p className="text-sm font-bold">Generating Portfolio Architecture Wireframe…</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Section header */}
-      <div>
-        <h2 className="text-xl font-bold text-neutral-900">Section 4 — Portfolio Structure</h2>
-        <p className="mt-1 text-sm text-neutral-500 max-w-2xl">
-          Arrange and enable/disable sections in your portfolio website. The order here
-          becomes your portfolio architecture specification.
-        </p>
-      </div>
-
       <PortfolioOrderingCanvas
         sections={sections}
         onSectionChange={handleSectionChange}
@@ -189,10 +235,9 @@ function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
       <div className="flex justify-end pt-2">
         <button
           onClick={handleConfirm}
-          className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
+          className="px-7 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl font-black text-sm transition-all shadow-lg hover:shadow-indigo-500/20 flex items-center gap-2 cursor-pointer"
         >
-          Confirm Portfolio Structure
-          <ChevronRight className="w-4 h-4" />
+          Confirm Architecture &amp; Continue to Stage 3 →
         </button>
       </div>
     </div>
@@ -208,7 +253,6 @@ export function Step3ProfilePortfolioAuthority() {
   const proofAssets = useModule3Store((s) => s.proofAssets);
   const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
   const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
-  const mod1NicheId = useModule3Store((s) => s.mod1NicheId);
   const mod2UniqueMechanism = useModule3Store((s) => s.mod2UniqueMechanism);
   const mod2OfferType = useModule3Store((s) => s.mod2OfferType);
   const availableAssets = useModule3Store((s) => s.availableAssets);
@@ -220,16 +264,9 @@ export function Step3ProfilePortfolioAuthority() {
   const confirmStep = useModule3Store((s) => s.confirmStep);
   const nextStep = useModule3Store((s) => s.nextStep);
 
-  // ── Auto-resume: start at first incomplete section ──
-  const computeInitialSection = (): number => {
-    for (let n = 1; n <= 7; n++) {
-      if (!step3CompletedSections.includes(n)) return n;
-    }
-    return 7; // all done — show summary
-  };
-
-  const [currentSection, setCurrentSection] = useState<number>(computeInitialSection);
+  const [activeStage, setActiveStage] = useState<'overview' | 1 | 2 | 3 | 4 | 'summary'>('overview');
   const [suiteGenerating, setSuiteGenerating] = useState(false);
+  const [showBaselineDrawer, setShowBaselineDrawer] = useState(false);
 
   // ── Auto-generate authority suite if missing ──────────────────────────────
   useEffect(() => {
@@ -261,33 +298,23 @@ export function Step3ProfilePortfolioAuthority() {
     }
   }, []);
 
-  // ── Section navigation ────────────────────────────────────────────────────
-  const canGoToSection = (n: number): boolean =>
-    n === 1 || step3CompletedSections.includes(n - 1) || step3CompletedSections.includes(n);
-
-  const goToSection = (n: number) => {
-    if (canGoToSection(n)) setCurrentSection(n);
-  };
-
-  const advanceSection = useCallback(
-    (n: number) => {
-      completeStep3Section(n);
-      if (n < 7) {
-        setCurrentSection(n + 1);
+  const advanceStage = useCallback(
+    (stageId: number) => {
+      completeStep3Section(stageId);
+      if (stageId < 4) {
+        setActiveStage((stageId + 1) as 1 | 2 | 3 | 4);
+      } else {
+        setActiveStage('summary');
       }
     },
     [completeStep3Section]
   );
 
-  // ── Section 7 completion ─────────────────────────────────────────────────
   const handleComplete = useCallback(() => {
-    completeStep3Section(7);
+    completeStep3Section(4);
     confirmStep();
     nextStep();
   }, [completeStep3Section, confirmStep, nextStep]);
-
-  // ── Stale warning ────────────────────────────────────────────────────────
-  const showStaleWarning = isUpstreamStale && currentSection > 1;
 
   return (
     <div className="space-y-6 pb-16 text-left max-w-6xl mx-auto">
@@ -299,115 +326,219 @@ export function Step3ProfilePortfolioAuthority() {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300 bg-indigo-900/80 px-3 py-1 rounded-full border border-indigo-500/30">
-                Module 3 • Authority System Studio
+                Module 3 • Step 3
               </span>
               <span className="text-xs text-slate-300 font-bold bg-white/10 px-2.5 py-0.5 rounded-full">
-                Step 3 of 6
+                Executive Packaging Studio
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-              Profile &amp; Portfolio Authority Suite
+              Profile &amp; Portfolio Authority Launchpad
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed font-medium">
-              Transform your authority position and proof inventory into high-converting visual profile assets, website wireframes, and content roadmaps.
+              Transform your authority stance into high-converting social profile copy, portfolio website architecture, evidence mapping, and content roadmaps.
             </p>
           </div>
 
-          <div className="flex items-center gap-4 shrink-0 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-            <div className="space-y-0.5 text-right">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Blueprint Status</span>
-              <span className="text-lg font-black text-emerald-400">
-                {Math.round((step3CompletedSections.length / 7) * 100)}% Complete
-              </span>
-              <span className="text-[10px] text-slate-400 block font-medium">
-                {step3CompletedSections.length} of 7 Sections Verified
-              </span>
-            </div>
-            <div className="w-12 h-12 rounded-full border-2 border-emerald-400/40 bg-emerald-950/60 flex items-center justify-center font-black text-emerald-300 text-sm">
-              0{step3CompletedSections.length}/7
-            </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => setShowBaselineDrawer(!showBaselineDrawer)}
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <Shield size={16} className="text-cyan-400" />
+              <span>{showBaselineDrawer ? 'Hide Baseline' : 'View Baseline Context'}</span>
+            </button>
           </div>
         </div>
+
+        {/* Collapsible Upstream Context Drawer */}
+        <AnimatePresence>
+          {showBaselineDrawer && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-6 pt-5 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"
+            >
+              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Authority Stance</span>
+                <span className="font-bold text-cyan-300 capitalize">{authorityPosition || 'Builder'}</span>
+              </div>
+              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Core Trust Promise</span>
+                <span className="font-bold text-emerald-300 line-clamp-1">"{coreTrustPromise || 'Client risk elimination'}"</span>
+              </div>
+              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/10 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Unique Mechanism</span>
+                <span className="font-bold text-purple-300">{mod2UniqueMechanism || 'Narrative Arc Engineering'}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* High-Tech Stepper Bar */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 shadow-xl text-white space-y-4">
+      {/* Stepper Navigation Bar */}
+      <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-5 shadow-xl text-white space-y-3">
         <div className="flex items-center justify-between text-xs">
           <span className="font-bold text-slate-300 flex items-center gap-2">
             <Sparkles size={14} className="text-amber-400" />
-            7-Section Authority Blueprint Wizard
+            Step 3 — 4-Stage Executive Roadmap
           </span>
           <span className="text-emerald-400 font-bold bg-emerald-950/80 px-2.5 py-1 rounded-full border border-emerald-800">
-            Section #{currentSection}: {SECTIONS[currentSection - 1]?.label}
+            {activeStage === 'overview'
+              ? 'Overview Map'
+              : activeStage === 'summary'
+              ? 'Master Blueprint'
+              : `Stage 0${activeStage}: ${STAGE_CARDS[activeStage - 1].shortLabel}`}
           </span>
         </div>
 
         <ProgressBar completed={step3CompletedSections} />
 
         <SectionStepper
-          current={currentSection}
+          currentStage={activeStage}
           completed={step3CompletedSections}
-          onJump={goToSection}
+          onJump={(stage) => setActiveStage(stage)}
         />
       </div>
 
-      {/* Stale upstream warning */}
-      {showStaleWarning && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-amber-950/80 border border-amber-500/30 rounded-2xl p-4 flex items-start gap-3 text-amber-200 shadow-md"
-        >
-          <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
-          <p className="text-xs sm:text-sm leading-relaxed">
-            <span className="font-bold text-amber-300">Upstream Context Updated:</span>{' '}
-            Your Module 1 positioning or Module 2 offer details were modified. Consider re-verifying from Section 1 to ensure 100% alignment.
-          </p>
-        </motion.div>
-      )}
+      {/* Main View Orchestration */}
+      <AnimatePresence mode="wait">
+        {activeStage === 'overview' && (
+          <motion.div
+            key="overview"
+            {...fadeUp}
+            className="space-y-6"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-black text-white">4-Stage Packaging System Overview</h3>
+                <p className="text-xs text-neutral-400 mt-1">Select any stage below to enter its interactive workspace.</p>
+              </div>
+              <button
+                onClick={() => setActiveStage(1)}
+                className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-2xl font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+              >
+                <span>Start Stage 01: Profile Studio →</span>
+              </button>
+            </div>
 
-      {/* Section body */}
-      <div className="min-h-[450px]">
-        <AnimatePresence mode="wait">
-          <motion.div key={currentSection} {...fadeUp}>
-            {currentSection === 1 && (
-              <AuthoritySnapshotSection
-                onContinue={() => advanceSection(1)}
-              />
-            )}
-            {currentSection === 2 && (
+            {/* 4 Stage Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {STAGE_CARDS.map((card) => {
+                const IconComponent = card.icon;
+                const isCompleted = step3CompletedSections.includes(card.id);
+
+                return (
+                  <motion.div
+                    key={card.id}
+                    onClick={() => setActiveStage(card.id as 1 | 2 | 3 | 4)}
+                    whileHover={{ scale: 1.01 }}
+                    className={`bg-neutral-900 rounded-3xl p-6 border border-neutral-800 shadow-xl text-white space-y-4 cursor-pointer transition-all ${card.borderHover} relative overflow-hidden group`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`p-3 rounded-2xl ${card.bgGlow} ${card.accentText} border border-white/10`}>
+                          <IconComponent size={20} />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500 block">
+                            Stage {card.stageNumber}
+                          </span>
+                          <h4 className="text-base font-black text-white">{card.title}</h4>
+                        </div>
+                      </div>
+
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                        isCompleted
+                          ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                          : 'bg-neutral-950 text-neutral-400 border-neutral-800'
+                      }`}>
+                        {isCompleted ? 'Completed' : 'Ready'}
+                      </span>
+                    </div>
+
+                    <div className="bg-neutral-950/80 p-4 rounded-2xl border border-neutral-800/80 space-y-2">
+                      <p className="text-xs text-neutral-300 font-medium leading-relaxed">
+                        {card.purpose}
+                      </p>
+                      <div className="pt-1 border-t border-neutral-800/80">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block mb-0.5">Why we do this:</span>
+                        <p className="text-[11px] text-neutral-400 italic leading-snug">
+                          "{card.whyWeDoThis}"
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <span className={`font-bold ${card.accentText}`}>Stage 0{card.id} Studio Workspace</span>
+                      <span className="text-white font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        Launch Stage <ChevronRight size={14} />
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Individual Stage Views with Back Button */}
+        {activeStage !== 'overview' && (
+          <motion.div
+            key={String(activeStage)}
+            {...fadeUp}
+            className="space-y-6"
+          >
+            {/* Top Back-to-Overview Action Bar */}
+            <div className="flex items-center justify-between bg-neutral-900 border border-neutral-800 rounded-2xl p-3.5 shadow-md">
+              <button
+                onClick={() => setActiveStage('overview')}
+                className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border border-neutral-700"
+              >
+                <ArrowLeft size={14} />
+                <span>← Back to 4-Stage Launchpad Overview</span>
+              </button>
+
+              <span className="text-xs font-bold text-slate-300">
+                {activeStage === 'summary'
+                  ? 'Master Blueprint Review'
+                  : `Currently in Stage 0${activeStage}: ${STAGE_CARDS[(activeStage as number) - 1]?.title}`}
+              </span>
+            </div>
+
+            {activeStage === 1 && (
               <ProfileStrategySection
-                onContinue={() => advanceSection(2)}
+                onContinue={() => advanceStage(1)}
               />
             )}
-            {currentSection === 3 && (
-              <BrandIdentitySection
-                onContinue={() => advanceSection(3)}
-              />
-            )}
-            {currentSection === 4 && (
+
+            {activeStage === 2 && (
               <Section4Wrapper
-                onContinue={() => advanceSection(4)}
+                onContinue={() => advanceStage(2)}
               />
             )}
-            {currentSection === 5 && (
+
+            {activeStage === 3 && (
               <EvidencePlacementSection
-                onContinue={() => advanceSection(5)}
+                onContinue={() => advanceStage(3)}
               />
             )}
-            {currentSection === 6 && (
+
+            {activeStage === 4 && (
               <ContentStrategySection
-                onContinue={() => advanceSection(6)}
+                onContinue={() => advanceStage(4)}
               />
             )}
-            {currentSection === 7 && (
+
+            {activeStage === 'summary' && (
               <StrategySummarySection
                 onComplete={handleComplete}
               />
             )}
           </motion.div>
-        </AnimatePresence>
-      </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
