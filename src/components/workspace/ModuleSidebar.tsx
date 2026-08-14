@@ -37,7 +37,7 @@ export function ModuleSidebar({
 }: ModuleSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [viewport, setViewport] = useState<'mobile' | 'desktop'>('desktop');
-  
+
   const { mode, isCollapsed, toggle: toggleCollapse } = useSidebarCollapse();
 
   useEffect(() => {
@@ -54,10 +54,6 @@ export function ModuleSidebar({
   const SidebarContent = () => {
     return (
       <div className={cn('flex flex-col h-full relative', SIDEBAR.BG, SIDEBAR.BORDER, SIDEBAR.SHADOW)}>
-        {showSidebar && (
-          <SidebarToggle mode={mode} onToggle={toggleCollapse} />
-        )}
-
         {/* Header Section */}
         <div className={cn("px-6 pt-6 pb-8 border-b border-neutral-100 flex flex-col transition-all overflow-hidden whitespace-nowrap", isCollapsed ? "items-center px-2" : "")}>
           {onBack && (
@@ -81,7 +77,7 @@ export function ModuleSidebar({
                 {icon}
               </span>
             )}
-            
+
             <AnimatePresence>
               {!isCollapsed && (
                 <motion.div 
@@ -99,7 +95,7 @@ export function ModuleSidebar({
               )}
             </AnimatePresence>
           </div>
-          
+
           {/* Progress Indicator */}
           {isCollapsed ? (
             <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
@@ -150,7 +146,7 @@ export function ModuleSidebar({
                     onClick={() => onStepChange(step.id)}
                     title={`Step 0${index + 1}: ${step.label}`}
                     className={cn(
-                      'w-9 h-9 rounded-xl flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] shrink-0',
+                      'w-9 h-9 rounded-xl flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] shrink-0 cursor-pointer',
                       isCurrent
                         ? 'bg-[#0058be] text-white shadow-sm'
                         : 'text-neutral-500 hover:bg-neutral-50 border border-transparent',
@@ -159,11 +155,13 @@ export function ModuleSidebar({
                   >
                     <div aria-hidden="true">
                       {isCompleted ? (
-                        <CheckCircle2 size={16} className={isCurrent ? 'text-white' : 'text-[#0058be]'} />
+                        <CheckCircle2 size={16} className={isCurrent ? "text-white" : "text-[#0058be]"} />
+                      ) : isCurrent ? (
+                        <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                      ) : isLocked ? (
+                        <Lock size={14} className="text-neutral-300" />
                       ) : (
-                        <span className={cn("text-[10px] font-black", isCurrent ? "text-white" : "text-neutral-500")}>
-                          0{index + 1}
-                        </span>
+                        <Circle size={14} className="text-neutral-300" />
                       )}
                     </div>
                   </button>
@@ -175,89 +173,82 @@ export function ModuleSidebar({
                   key={step.id}
                   disabled={isLocked}
                   onClick={() => onStepChange(step.id)}
-                  aria-current={isCurrent ? 'step' : undefined}
-                  aria-disabled={isLocked}
                   className={cn(
-                    'w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
-                    isCurrent
-                      ? 'text-[#0b1c30] border-l-2 border-[#0058be] -ml-4 pl-[14px] rounded-l-none bg-neutral-50/40'
-                      : 'text-neutral-600 hover:bg-neutral-50/70 border-l-2 border-transparent',
-                    isLocked && 'opacity-40 cursor-not-allowed',
+                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] cursor-pointer',
+                    isCurrent && 'bg-[#0058be] text-white shadow-sm font-semibold',
+                    isCompleted && !isCurrent && 'text-neutral-700 hover:bg-neutral-50',
+                    isUpcoming && 'text-neutral-400 hover:bg-neutral-50/50 hover:text-neutral-600',
+                    isLocked && 'text-neutral-300 cursor-not-allowed hover:bg-transparent'
                   )}
                 >
-                  <div className="shrink-0" aria-hidden="true">
+                  <span className="shrink-0" aria-hidden="true">
                     {isCompleted ? (
-                      <CheckCircle2 size={18} className="text-[#0058be]" />
+                      <CheckCircle2 size={16} className={isCurrent ? "text-white" : "text-[#0058be]"} />
                     ) : isCurrent ? (
-                      <Circle size={18} className="text-[#0058be] fill-[#0058be]" />
-                    ) : isUpcoming ? (
-                      <div className="w-[18px] h-[18px] rounded-full border border-neutral-300 bg-white" />
+                      <Circle size={16} className="text-white fill-white/20" />
+                    ) : isLocked ? (
+                      <Lock size={14} className="text-neutral-300" />
                     ) : (
-                      <Lock size={15} className="text-neutral-300" />
+                      <div className="w-4 h-4 rounded-full border-2 border-neutral-200 group-hover:border-neutral-300" />
                     )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={cn(
-                      'text-[10px] font-bold uppercase tracking-widest mb-0.5 leading-none',
-                      isCurrent ? 'text-[#0058be]' : 'text-neutral-400',
+                  </span>
+                  <div className="flex flex-col min-w-0">
+                    <span className={cn(
+                      'text-[9px] uppercase tracking-wider font-bold',
+                      isCurrent ? 'text-white/80' : 'text-neutral-400'
                     )}>
                       Step 0{index + 1}
-                    </p>
-                    <p className={cn(
-                      'text-xs truncate',
-                      isCurrent
-                        ? 'text-[#0b1c30] font-bold'
-                        : isLocked
-                          ? 'text-neutral-400 font-normal'
-                          : 'text-neutral-600 font-semibold',
-                    )}>
-                      {step.label}
-                    </p>
+                    </span>
+                    <span className="truncate">{step.label}</span>
                   </div>
                 </button>
               );
             })}
           </div>
-        </div>
 
-        {/* Children (usually contextual content like summary). Only render if expanded, or handle it via CSS */}
-        {!isCollapsed && children && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="px-4 pb-4 overflow-hidden"
-          >
-            {children}
-          </motion.div>
-        )}
+          {/* Additional Context Area */}
+          {!isCollapsed && children && (
+            <div className="mt-8 pt-6 border-t border-neutral-100">
+              {children}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
 
   return (
     <>
-      {/* Mobile Header */}
+      {/* Mobile Top Bar */}
       {!showSidebar && (
-        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 -ml-2 text-neutral-500 hover:text-neutral-800"
-            aria-label="Open navigation menu"
-          >
-            <Menu size={20} />
-          </button>
-          <div className="flex-1 mx-4">
-            <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+        <div className="lg:hidden bg-white border-b border-neutral-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg text-neutral-600 hover:bg-neutral-100"
+              aria-label="Open navigation menu"
+            >
+              <Menu size={20} />
+            </button>
+            <div>
+              <h1 className="text-sm font-bold text-[#0b1c30]">{title}</h1>
+              <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">
+                {steps.find((s) => s.id === activeStep)?.label}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-24 h-1.5 rounded-full bg-neutral-100 overflow-hidden">
               <div
-                className="h-full bg-[#0058be] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-[#0058be] rounded-full transition-all duration-500"
                 style={{ width: `${Math.max(progress, 2)}%` }}
               />
             </div>
+            <span className="text-xs font-bold text-[#0b1c30] shrink-0">
+              {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+            </span>
           </div>
-          <span className="text-xs font-bold text-[#0b1c30] shrink-0">
-            {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
-          </span>
         </div>
       )}
 
@@ -267,8 +258,9 @@ export function ModuleSidebar({
           initial={false}
           animate={{ width: isCollapsed ? SIDEBAR.WIDTH.collapsed : SIDEBAR.WIDTH.base }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="shrink-0 fixed inset-y-0 left-0 z-30"
+          className="shrink-0 fixed inset-y-0 left-0 z-40"
         >
+          <SidebarToggle mode={mode} onToggle={toggleCollapse} />
           <SidebarContent />
         </motion.div>
       )}

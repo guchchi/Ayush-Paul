@@ -14,11 +14,15 @@ export function SidebarToggle({ mode, onToggle, className }: SidebarToggleProps)
 
   return (
     <button
-      onClick={onToggle}
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
+      type="button"
       aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       aria-expanded={!isCollapsed}
       className={cn(
-        'absolute -right-3 top-1/2 -translate-y-1/2 z-50 flex h-6 w-6 items-center justify-center rounded-full border border-neutral-200 bg-white shadow-sm text-neutral-400 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] focus-visible:ring-offset-1 hover:text-[#0b1c30] hover:border-[#0b1c30]',
+        'absolute -right-3.5 top-1/2 -translate-y-1/2 z-50 flex h-7 w-7 items-center justify-center rounded-full border border-neutral-300 bg-white shadow-md text-neutral-600 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] hover:bg-neutral-50 hover:text-[#0058be] hover:border-[#0058be] cursor-pointer',
         className
       )}
     >
@@ -27,7 +31,7 @@ export function SidebarToggle({ mode, onToggle, className }: SidebarToggleProps)
         animate={{ rotate: isCollapsed ? 180 : 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <ChevronLeft className="h-3.5 w-3.5" />
+        <ChevronLeft className="h-4 w-4" />
       </motion.div>
     </button>
   );
