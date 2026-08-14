@@ -64,9 +64,18 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
 
   const { isCollapsed } = useSidebarCollapse();
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // Delay slightly to ensure React has flushed the new step's DOM to the page
+    const checkViewport = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    checkViewport();
+    window.addEventListener('resize', checkViewport);
+    return () => window.removeEventListener('resize', checkViewport);
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     }, 50);
@@ -86,7 +95,7 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
   const progress = (completedSteps.length / MODULE3_STEPS.length) * 100;
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#d1f34d]/50">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#d1f34d]/50 overflow-x-hidden">
       <ModuleSidebar
         title="Authority System"
         subtitle="Module 3"
@@ -100,10 +109,12 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
         <PhaseContext />
       </ModuleSidebar>
 
-      <main className={cn(
-        'flex-1 min-w-0 transition-all duration-300',
-        isCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[280px]',
-      )}>
+      <motion.main
+        initial={false}
+        animate={{ marginLeft: isDesktop ? (isCollapsed ? 68 : 280) : 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="flex-1 min-w-0"
+      >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
           <motion.div
             key={currentStep}
@@ -115,7 +126,7 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
           </motion.div>
           <div className="h-32" />
         </div>
-      </main>
+      </motion.main>
     </div>
   );
 }
