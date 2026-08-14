@@ -22,5 +22,5 @@ export function isValidUrl(url: string): boolean {
 export function isValidPhoneNumber(phone: string): boolean {
   if (!phone || typeof phone !== 'string') return false;
   const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+  return phoneRegex.test(phone.replace(/[\s()\-[#\]]/g, ''));
 }
