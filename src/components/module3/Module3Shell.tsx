@@ -4,6 +4,7 @@ import { Shield } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { EASING, DURATION } from '../../lib/motion-presets';
 import { ModuleSidebar, type StepItem } from '../workspace/ModuleSidebar';
+import { useSidebarCollapse } from '../../lib/workspace/useSidebarCollapse';
 import {
   useModule3Store,
   MODULE3_STEPS,
@@ -62,21 +63,7 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
   const completedSteps = useModule3Store((s) => s.completedSteps);
   const jumpToStep = useModule3Store((s) => s.jumpToStep);
 
-  const activeIndex = MODULE3_STEPS.indexOf(currentStep);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('sidebar_collapsed') === 'true';
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    const handleToggle = () => {
-      setSidebarCollapsed(localStorage.getItem('sidebar_collapsed') === 'true');
-    };
-    window.addEventListener('sidebar-toggle', handleToggle);
-    return () => window.removeEventListener('sidebar-toggle', handleToggle);
-  }, []);
+  const { isCollapsed } = useSidebarCollapse();
 
   useEffect(() => {
     // Delay slightly to ensure React has flushed the new step's DOM to the page
@@ -115,9 +102,9 @@ export function Module3Shell({ children, onBack }: { children: ReactNode; onBack
 
       <main className={cn(
         'flex-1 min-w-0 transition-all duration-300',
-        sidebarCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[280px]',
+        isCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[280px]',
       )}>
-        <div className="max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto px-5 sm:px-8 py-6 sm:py-10 lg:py-16">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
           <motion.div
             key={currentStep}
             initial={{ opacity: 0, y: 15 }}

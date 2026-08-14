@@ -229,7 +229,7 @@ export function Step3ProfilePortfolioAuthority() {
   const completionPct = Math.round((step3CompletedSections.length / 4) * 100);
 
   return (
-    <div className="space-y-6 pb-16 text-left max-w-5xl mx-auto font-sans">
+    <div className="space-y-6 pb-16 text-left w-full max-w-7xl mx-auto font-sans">
       {/* Top Header with Integrated Clean Back Breadcrumb */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">
