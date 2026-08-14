@@ -16,9 +16,11 @@ import {
   ExternalLink,
   Copy,
   Check,
-  Zap,
-  Sliders,
+  Download,
+  ChevronDown,
   ShieldCheck,
+  Share2,
+  Box,
 } from 'lucide-react';
 import { ModuleButton } from '../../../workspace/ModuleButton';
 
@@ -40,7 +42,7 @@ const getRoleRecommendation = (serviceId: string | null, careerTrackId: string |
   if (s.includes('edit') || s.includes('video') || s.includes('motion') || c.includes('editor')) {
     return {
       roleLabel: 'Video Editor & Motion Specialist',
-      recommendedPlatforms: ['youtube', 'instagram', 'twitter', 'personal_site', 'linkedin'],
+      recommendedPlatforms: ['youtube', 'instagram', 'twitter'],
       rationale: 'Clients hire editors based on visual showreels and pacing clips. YouTube & Reels give instant proof.',
     };
   }
@@ -48,7 +50,7 @@ const getRoleRecommendation = (serviceId: string | null, careerTrackId: string |
   if (s.includes('design') || s.includes('ui') || s.includes('figma') || c.includes('designer')) {
     return {
       roleLabel: 'UI/UX & Product Designer',
-      recommendedPlatforms: ['behance', 'linkedin', 'twitter', 'personal_site', 'instagram'],
+      recommendedPlatforms: ['behance', 'linkedin', 'twitter'],
       rationale: 'Clients look for auto-layout grids and clickable prototypes on Behance/Figma alongside LinkedIn.',
     };
   }
@@ -56,16 +58,27 @@ const getRoleRecommendation = (serviceId: string | null, careerTrackId: string |
   if (s.includes('code') || s.includes('dev') || s.includes('tech') || s.includes('app') || c.includes('developer')) {
     return {
       roleLabel: 'Software Developer & Technical Architect',
-      recommendedPlatforms: ['github', 'linkedin', 'twitter', 'personal_site'],
+      recommendedPlatforms: ['github', 'linkedin', 'twitter'],
       rationale: 'Tech clients evaluate code quality via GitHub READMEs and public repositories before booking a call.',
     };
   }
 
   return {
     roleLabel: 'Authority Specialist',
-    recommendedPlatforms: ['linkedin', 'twitter', 'personal_site', 'instagram'],
+    recommendedPlatforms: ['linkedin', 'twitter', 'personal_site'],
     rationale: 'Optimizing high-converting copy across LinkedIn, X, and your personal site.',
   };
+};
+
+// ── Direct Platform Settings Deep Links ───────────────────────────────────────
+const PLATFORM_DEEP_LINKS: Record<string, { label: string; url: string }> = {
+  linkedin: { label: 'Open LinkedIn Profile Edit ↗', url: 'https://www.linkedin.com/in/me/overlay/edit/' },
+  github: { label: 'Open GitHub Profile Settings ↗', url: 'https://github.com/settings/profile' },
+  twitter: { label: 'Open X / Twitter Profile Settings ↗', url: 'https://x.com/settings/profile' },
+  youtube: { label: 'Open YouTube Studio Branding ↗', url: 'https://studio.youtube.com/channel/editing/profile' },
+  behance: { label: 'Open Figma Account Settings ↗', url: 'https://www.figma.com/settings' },
+  instagram: { label: 'Open Instagram Edit Profile ↗', url: 'https://www.instagram.com/accounts/edit/' },
+  personal_site: { label: 'Copy Site HTML Tagline', url: '#' },
 };
 
 // ── Tone Variations Generator ────────────────────────────────────────────────
@@ -86,6 +99,8 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const [editValue, setEditValue] = useState('');
   const [activeTone, setActiveTone] = useState<'executive' | 'conversion' | 'direct'>('executive');
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [showAllPlatforms, setShowAllPlatforms] = useState(false);
+  const [showVaultDrawer, setShowVaultDrawer] = useState(false);
 
   const recommendation = useMemo(
     () => getRoleRecommendation(mod1ServiceId, mod1CareerTrackId),
@@ -115,6 +130,10 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     { key: 'instagram', name: 'Instagram', icon: User, brandColor: 'bg-[#e1306c]', textBrand: 'text-[#e1306c]' },
   ];
 
+  // Improvement 1: Role-Driven Platform Clustering
+  const primaryPlatforms = allPlatforms.filter((p) => recommendation.recommendedPlatforms.includes(p.key));
+  const secondaryPlatforms = allPlatforms.filter((p) => !recommendation.recommendedPlatforms.includes(p.key));
+
   const formatPlatformName = (key: string) => {
     const item = allPlatforms.find((p) => p.key === key);
     return item ? item.name : key.charAt(0).toUpperCase() + key.slice(1);
@@ -139,6 +158,29 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const handleEditCancel = () => {
     setEditingField(null);
     setEditValue('');
+  };
+
+  // Compile full Master Social Package Markdown text
+  const generateFullPackageMarkdown = () => {
+    let md = `# EXECUTIVE SOCIAL IDENTITY PACKAGE\nRole: ${recommendation.roleLabel}\nTone: ${activeTone.toUpperCase()}\n\n`;
+    existingPlatforms.forEach((p) => {
+      md += `----------------------------------------\nPLATFORM: ${formatPlatformName(p.platform).toUpperCase()}\n----------------------------------------\n`;
+      p.fields.forEach((f) => {
+        md += `[${f.label}]\n${f.value}\n\n`;
+      });
+    });
+    return md;
+  };
+
+  const handleDownloadPackage = () => {
+    const md = generateFullPackageMarkdown();
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Social-Identity-Package-${recommendation.roleLabel.replace(/\s+/g, '-')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const activePlatformData = existingPlatforms.find((p) => p.platform === activeTab) || {
@@ -166,6 +208,8 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   const currentBio = activePlatformData.fields.find((f) => f.key.includes('bio') || f.key.includes('about') || f.key.includes('value'))?.value || '';
 
+  const currentDeepLink = PLATFORM_DEEP_LINKS[activeTab] || { label: 'Open Settings ↗', url: '#' };
+
   return (
     <div className="w-full space-y-6 text-left font-sans">
       {/* Strategic Role Banner */}
@@ -181,78 +225,158 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
             </span>
           </div>
 
-          {/* Tone Variation Switcher */}
-          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 text-xs">
-            <span className="text-[10px] font-bold text-neutral-400 px-2 uppercase tracking-wider flex items-center gap-1">
-              <Sliders size={12} /> Tone:
-            </span>
-            {(['executive', 'conversion', 'direct'] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setActiveTone(t)}
-                className={cn(
-                  'px-2.5 py-1 rounded-lg font-bold text-[11px] capitalize transition-all cursor-pointer border-none',
-                  activeTone === t
-                    ? 'bg-white text-[#0058be] shadow-2xs'
-                    : 'text-neutral-600 hover:text-neutral-900'
-                )}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+          {/* Master Vault Trigger Button */}
+          <button
+            onClick={() => setShowVaultDrawer(!showVaultDrawer)}
+            className="px-3.5 py-1.5 bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <Box size={14} />
+            <span>Master Identity Vault</span>
+          </button>
         </div>
 
         <p className="text-xs text-neutral-600 leading-relaxed font-medium">
-          <strong className="text-[#0b1c30]">Recommendation:</strong> {recommendation.rationale}
+          <strong className="text-[#0b1c30]">Strategic Recommendation:</strong> {recommendation.rationale}
         </p>
       </div>
 
-      {/* High-Impact Platform OS Switcher */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-        {allPlatforms.map((p) => {
-          const isRecommended = recommendation.recommendedPlatforms.includes(p.key);
-          const isSelected = activeTab === p.key;
-          const IconComp = p.icon;
+      {/* Improvement 1: Role-Driven Platform Clustering (Primary Top 3 vs Secondary) */}
+      <div className="bg-white p-4 rounded-3xl border border-neutral-200 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-400">
+            Primary Channels for {recommendation.roleLabel}
+          </span>
 
-          return (
-            <button
-              key={p.key}
-              onClick={() => {
-                setActiveTab(p.key);
-                setEditingField(null);
-              }}
-              className={cn(
-                'p-3 rounded-2xl border text-left transition-all cursor-pointer space-y-1.5 shadow-2xs group relative overflow-hidden',
-                isSelected
-                  ? 'bg-white border-[#0058be] ring-2 ring-[#0058be]/20 shadow-md'
-                  : isRecommended
-                  ? 'bg-blue-50/50 border-blue-200/80 hover:bg-blue-100/50'
-                  : 'bg-white border-neutral-200 hover:border-neutral-300'
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <div className={cn('p-1.5 rounded-lg text-white text-xs', p.brandColor)}>
-                  <IconComp size={14} />
-                </div>
-                {isRecommended && (
-                  <span className="text-[9px] font-extrabold text-[#0058be] bg-[#0058be]/10 px-1.5 py-0.5 rounded">
-                    Top
-                  </span>
+          <button
+            onClick={() => setShowAllPlatforms(!showAllPlatforms)}
+            className="text-xs font-bold text-[#0058be] hover:underline flex items-center gap-1 cursor-pointer border-none bg-transparent"
+          >
+            <span>{showAllPlatforms ? 'Hide Secondary' : `+ Show ${secondaryPlatforms.length} More Platforms`}</span>
+            <ChevronDown size={14} className={cn("transition-transform", showAllPlatforms && "rotate-180")} />
+          </button>
+        </div>
+
+        {/* Primary Recommended Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {primaryPlatforms.map((p) => {
+            const isSelected = activeTab === p.key;
+            const IconComp = p.icon;
+
+            return (
+              <button
+                key={p.key}
+                onClick={() => {
+                  setActiveTab(p.key);
+                  setEditingField(null);
+                }}
+                className={cn(
+                  'p-3.5 rounded-2xl border text-left transition-all cursor-pointer space-y-1 shadow-2xs group relative overflow-hidden',
+                  isSelected
+                    ? 'bg-white border-[#0058be] ring-2 ring-[#0058be]/20 shadow-md'
+                    : 'bg-blue-50/40 border-blue-200/80 hover:bg-blue-100/50'
                 )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className={cn('p-1.5 rounded-lg text-white text-xs', p.brandColor)}>
+                    <IconComp size={14} />
+                  </div>
+                  <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    Primary
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
+                    {p.name}
+                  </h4>
+                  <span className="text-[10px] text-neutral-500 font-medium block">
+                    {isSelected ? 'Currently Viewing' : 'Click to Edit Studio'}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Secondary Expansion Channels */}
+        <AnimatePresence>
+          {showAllPlatforms && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="pt-2 border-t border-neutral-100 space-y-2"
+            >
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
+                Secondary Expansion Channels
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {secondaryPlatforms.map((p) => {
+                  const isSelected = activeTab === p.key;
+                  const IconComp = p.icon;
+
+                  return (
+                    <button
+                      key={p.key}
+                      onClick={() => {
+                        setActiveTab(p.key);
+                        setEditingField(null);
+                      }}
+                      className={cn(
+                        'p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2 text-xs font-bold',
+                        isSelected
+                          ? 'bg-[#0058be] text-white border-[#0058be]'
+                          : 'bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100'
+                      )}
+                    >
+                      <IconComp size={14} />
+                      <span className="truncate">{p.name}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div>
-                <h4 className="text-xs font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors truncate">
-                  {p.name}
-                </h4>
-                <span className="text-[9px] text-neutral-400 font-medium block uppercase tracking-wider">
-                  {isSelected ? 'Active Studio' : 'Click to View'}
-                </span>
-              </div>
-            </button>
-          );
-        })}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Improvement 3: Master Identity Vault Collapsible Drawer */}
+      <AnimatePresence>
+        {showVaultDrawer && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="p-6 rounded-3xl border border-neutral-200 bg-neutral-900 text-white shadow-xl space-y-4"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Box size={18} className="text-[#0058be]" />
+                <h3 className="text-base font-bold text-white">Master Social Identity Vault</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleCopy('master_vault', generateFullPackageMarkdown())}
+                  className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border border-neutral-700"
+                >
+                  {copiedField === 'master_vault' ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                  <span>{copiedField === 'master_vault' ? 'Copied Master Suite!' : 'Copy Entire Suite'}</span>
+                </button>
+                <button
+                  onClick={handleDownloadPackage}
+                  className="px-3.5 py-1.5 bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Download size={13} />
+                  <span>Download .MD Package</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-neutral-950 p-4 rounded-2xl border border-neutral-800 font-mono text-xs text-neutral-300 max-h-48 overflow-y-auto space-y-2 leading-relaxed whitespace-pre-wrap">
+              {generateFullPackageMarkdown()}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Dual Studio Workspace */}
       <AnimatePresence mode="wait">
@@ -270,15 +394,18 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-400">
                 {formatPlatformName(activeTab)} OS Workspace
               </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleCopy('all', `${currentHeadline}\n\n${currentBio}`)}
+
+              {/* Improvement 2: Deep Link Action Bar ("Bridge to Real World") */}
+              {currentDeepLink.url !== '#' && (
+                <a
+                  href={currentDeepLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs font-bold text-[#0058be] hover:underline flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-neutral-200 shadow-2xs"
                 >
-                  {copiedField === 'all' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
-                  <span>{copiedField === 'all' ? 'Copied All!' : '1-Click Copy All'}</span>
-                </button>
-              </div>
+                  <span>{currentDeepLink.label}</span>
+                </a>
+              )}
             </div>
 
             <div className="bg-neutral-950 rounded-3xl p-5 border border-neutral-800 shadow-2xl text-white space-y-4 relative overflow-hidden">
@@ -318,24 +445,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                     <p className="text-xs text-neutral-200 leading-relaxed font-mono font-medium">
                       {currentHeadline}
                     </p>
-                  </div>
-
-                  {/* Commit Activity Grid Simulation */}
-                  <div className="space-y-1.5 pt-1">
-                    <span className="text-[10px] text-neutral-500 uppercase tracking-wider block">
-                      1,842 contributions in the last year
-                    </span>
-                    <div className="grid grid-cols-12 gap-1 bg-[#161b22] p-3 rounded-xl border border-[#30363d]">
-                      {Array.from({ length: 36 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            'h-3 rounded-xs',
-                            i % 5 === 0 ? 'bg-emerald-500' : i % 3 === 0 ? 'bg-emerald-700' : i % 2 === 0 ? 'bg-emerald-900' : 'bg-[#21262d]'
-                          )}
-                        />
-                      ))}
-                    </div>
                   </div>
                 </div>
               )}
