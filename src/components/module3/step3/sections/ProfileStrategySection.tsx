@@ -18,9 +18,9 @@ import {
   Check,
   Download,
   ChevronDown,
-  ShieldCheck,
-  Share2,
   Box,
+  AtSign,
+  UserCheck,
 } from 'lucide-react';
 import { ModuleButton } from '../../../workspace/ModuleButton';
 
@@ -93,6 +93,14 @@ const generateToneVariations = (text: string, tone: 'executive' | 'conversion' |
   return `${text} | Guaranteed Delivery & Measurable ROI.`;
 };
 
+// Helper for Initials (e.g. "Alex Rivers" -> "AR")
+const getInitials = (name: string) => {
+  if (!name) return 'AP';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue }) => {
   const { authoritySuite, updateProfileField, resetProfileField, mod1ServiceId, mod1CareerTrackId } = useModule3Store();
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -101,6 +109,11 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const [showVaultDrawer, setShowVaultDrawer] = useState(false);
+
+  // Dynamic User Identity State (User can edit their real name & handle)
+  const [userName, setUserName] = useState('Alex Rivers');
+  const [userHandle, setUserHandle] = useState('alexrivers');
+  const [isEditingIdentity, setIsEditingIdentity] = useState(false);
 
   const recommendation = useMemo(
     () => getRoleRecommendation(mod1ServiceId, mod1CareerTrackId),
@@ -130,7 +143,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     { key: 'instagram', name: 'Instagram', icon: User, brandColor: 'bg-[#e1306c]', textBrand: 'text-[#e1306c]' },
   ];
 
-  // Improvement 1: Role-Driven Platform Clustering
   const primaryPlatforms = allPlatforms.filter((p) => recommendation.recommendedPlatforms.includes(p.key));
   const secondaryPlatforms = allPlatforms.filter((p) => !recommendation.recommendedPlatforms.includes(p.key));
 
@@ -160,9 +172,8 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     setEditValue('');
   };
 
-  // Compile full Master Social Package Markdown text
   const generateFullPackageMarkdown = () => {
-    let md = `# EXECUTIVE SOCIAL IDENTITY PACKAGE\nRole: ${recommendation.roleLabel}\nTone: ${activeTone.toUpperCase()}\n\n`;
+    let md = `# EXECUTIVE SOCIAL IDENTITY PACKAGE\nUser: ${userName} (@${userHandle})\nRole: ${recommendation.roleLabel}\nTone: ${activeTone.toUpperCase()}\n\n`;
     existingPlatforms.forEach((p) => {
       md += `----------------------------------------\nPLATFORM: ${formatPlatformName(p.platform).toUpperCase()}\n----------------------------------------\n`;
       p.fields.forEach((f) => {
@@ -178,7 +189,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Social-Identity-Package-${recommendation.roleLabel.replace(/\s+/g, '-')}.md`;
+    a.download = `Social-Identity-Package-${userName.replace(/\s+/g, '-')}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -209,10 +220,75 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const currentBio = activePlatformData.fields.find((f) => f.key.includes('bio') || f.key.includes('about') || f.key.includes('value'))?.value || '';
 
   const currentDeepLink = PLATFORM_DEEP_LINKS[activeTab] || { label: 'Open Settings ↗', url: '#' };
+  const initials = getInitials(userName);
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
-      {/* Strategic Role Banner */}
+      {/* User Identity Bar (Dynamic Real Name & Handle Editor) */}
+      <div className="p-4 sm:p-5 rounded-3xl border border-neutral-200 bg-white shadow-xs flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#0058be] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+            {initials}
+          </div>
+          {isEditingIdentity ? (
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 bg-neutral-50 px-3 py-1.5 rounded-xl border border-neutral-300">
+                <User size={13} className="text-neutral-400" />
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Your Full Name"
+                  className="text-xs font-bold text-[#0b1c30] bg-transparent focus:outline-none w-36"
+                />
+              </div>
+              <div className="flex items-center gap-1.5 bg-neutral-50 px-3 py-1.5 rounded-xl border border-neutral-300">
+                <AtSign size={13} className="text-neutral-400" />
+                <input
+                  type="text"
+                  value={userHandle}
+                  onChange={(e) => setUserHandle(e.target.value.toLowerCase().replace(/\s+/g, ''))}
+                  placeholder="handle"
+                  className="text-xs font-mono text-neutral-700 bg-transparent focus:outline-none w-28"
+                />
+              </div>
+              <button
+                onClick={() => setIsEditingIdentity(false)}
+                className="px-3 py-1.5 bg-[#0058be] text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs"
+              >
+                Save Name
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-extrabold text-[#0b1c30]">{userName}</h3>
+                <span className="text-xs font-mono text-neutral-400">@{userHandle}</span>
+                <button
+                  onClick={() => setIsEditingIdentity(true)}
+                  className="text-[10px] font-bold text-[#0058be] hover:underline flex items-center gap-1 cursor-pointer ml-1"
+                >
+                  <Pencil size={11} /> Edit Name
+                </button>
+              </div>
+              <p className="text-[11px] text-neutral-500 font-medium">
+                Live Mockups sync real-time to your name &amp; handle
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Master Vault Trigger Button */}
+        <button
+          onClick={() => setShowVaultDrawer(!showVaultDrawer)}
+          className="px-3.5 py-1.5 bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+        >
+          <Box size={14} />
+          <span>Master Identity Vault</span>
+        </button>
+      </div>
+
+      {/* Strategic Role Recommendation Banner */}
       <div className="p-5 sm:p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
@@ -224,15 +300,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               Targeted for {recommendation.roleLabel}
             </span>
           </div>
-
-          {/* Master Vault Trigger Button */}
-          <button
-            onClick={() => setShowVaultDrawer(!showVaultDrawer)}
-            className="px-3.5 py-1.5 bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-          >
-            <Box size={14} />
-            <span>Master Identity Vault</span>
-          </button>
         </div>
 
         <p className="text-xs text-neutral-600 leading-relaxed font-medium">
@@ -240,7 +307,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
         </p>
       </div>
 
-      {/* Improvement 1: Role-Driven Platform Clustering (Primary Top 3 vs Secondary) */}
+      {/* Primary Role-Driven Platform Clustering */}
       <div className="bg-white p-4 rounded-3xl border border-neutral-200 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-400">
@@ -339,7 +406,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
         </AnimatePresence>
       </div>
 
-      {/* Improvement 3: Master Identity Vault Collapsible Drawer */}
+      {/* Master Identity Vault Drawer */}
       <AnimatePresence>
         {showVaultDrawer && (
           <motion.div
@@ -388,14 +455,13 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
           transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-6"
         >
-          {/* Left Column: High-Fidelity OS Mockup Canvas (6 cols) */}
+          {/* Left Column: Dynamic OS Mockup Canvas Syncing to Real User Name (6 cols) */}
           <div className="lg:col-span-6 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-400">
                 {formatPlatformName(activeTab)} OS Workspace
               </span>
 
-              {/* Improvement 2: Deep Link Action Bar ("Bridge to Real World") */}
               {currentDeepLink.url !== '#' && (
                 <a
                   href={currentDeepLink.url}
@@ -415,16 +481,16 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                   <div className="flex items-center justify-between border-b border-[#30363d] pb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center font-bold text-white text-lg">
-                        AP
+                        {initials}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-white">Ayush Paul</h3>
+                          <h3 className="font-bold text-base text-white">{userName}</h3>
                           <span className="text-[9px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800">
                             Pro Developer
                           </span>
                         </div>
-                        <p className="text-xs text-neutral-400">ayushpaul • Verified Software Architect</p>
+                        <p className="text-xs text-neutral-400">{userHandle} • Verified Software Architect</p>
                       </div>
                     </div>
                   </div>
@@ -457,7 +523,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                       <span className="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full border border-white/20">
                         Figma Design System &amp; UI Kit
                       </span>
-                      <h3 className="font-bold text-lg text-white mt-1">Ayush Paul — UX Space</h3>
+                      <h3 className="font-bold text-lg text-white mt-1">{userName} — Design Space</h3>
                     </div>
                     <ExternalLink size={16} className="text-slate-300" />
                   </div>
@@ -490,7 +556,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                       <span className="text-[10px] font-black uppercase text-red-400 bg-red-950 px-2.5 py-1 rounded border border-red-800">
                         Official Showreel Channel
                       </span>
-                      <h3 className="font-bold text-base text-white mt-1">Ayush Paul Edits</h3>
+                      <h3 className="font-bold text-base text-white mt-1">{userName} Edits</h3>
                     </div>
                     <button className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-1.5 rounded-full">
                       Subscribe
@@ -529,14 +595,14 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                   <div className="p-5 pt-0 relative space-y-3">
                     <div className="flex items-end justify-between -mt-10 mb-2">
                       <div className="w-20 h-20 rounded-full border-4 border-white bg-slate-900 text-white flex items-center justify-center font-black text-2xl shadow-md">
-                        AP
+                        {initials}
                       </div>
                       <button className="px-4 py-1.5 bg-[#0058be] text-white text-xs font-bold rounded-full shadow-xs">
                         Open to Work
                       </button>
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-neutral-900">Ayush Paul</h3>
+                      <h3 className="font-bold text-lg text-neutral-900">{userName}</h3>
                       <p className="text-xs font-bold text-[#0058be] leading-snug">
                         {currentHeadline}
                       </p>
@@ -565,15 +631,15 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                 <div className="bg-black text-white rounded-2xl overflow-hidden border border-neutral-800 p-5 space-y-3">
                   <div className="flex justify-between items-start">
                     <div className="w-16 h-16 rounded-full bg-neutral-800 text-white flex items-center justify-center font-bold text-xl border border-neutral-700">
-                      AP
+                      {initials}
                     </div>
                     <button className="px-4 py-1.5 bg-white text-black font-bold text-xs rounded-full">
                       Follow
                     </button>
                   </div>
                   <div>
-                    <h3 className="font-bold text-base text-white">Ayush Paul</h3>
-                    <p className="text-xs text-neutral-400 font-mono">@ayushpaul</p>
+                    <h3 className="font-bold text-base text-white">{userName}</h3>
+                    <p className="text-xs text-neutral-400 font-mono">@{userHandle}</p>
                   </div>
                   <p className="text-xs text-neutral-200 leading-relaxed bg-neutral-900 p-3.5 rounded-xl border border-neutral-800">
                     {currentHeadline}
@@ -585,7 +651,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               {activeTab === 'personal_site' && (
                 <div className="bg-neutral-950 text-white rounded-2xl overflow-hidden border border-neutral-800 p-5 space-y-4">
                   <div className="bg-neutral-900 px-3 py-2 rounded-lg border border-neutral-800 flex items-center justify-between text-xs text-neutral-400 font-mono">
-                    <span>https://ayushpaul.com</span>
+                    <span>https://{userHandle}.com</span>
                     <span className="text-emerald-400 font-bold">HTTPS</span>
                   </div>
                   <div className="text-center space-y-3 py-3">
@@ -605,11 +671,11 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-0.5">
                       <div className="w-full h-full bg-black rounded-full flex items-center justify-center font-bold text-white">
-                        AP
+                        {initials}
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <h3 className="font-bold text-sm text-white">ayushpaul.official</h3>
+                      <h3 className="font-bold text-sm text-white">{userHandle}.official</h3>
                       <button className="px-4 py-1 bg-blue-600 text-white font-bold text-xs rounded-lg">
                         Follow
                       </button>
