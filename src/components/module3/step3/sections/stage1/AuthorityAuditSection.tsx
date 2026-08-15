@@ -7,8 +7,8 @@
  *  1C. Live Scorecard — Apple Watch style SVG Score Ring (0-100), 4 Dimension Bars & Gap Analysis.
  */
 
-import React, { useState, useMemo } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
 import type { ProfileSystemAsset } from '@/src/data/module3/authority-suite-engine';
@@ -502,6 +502,10 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   // Step 1A: Selected platforms state (STARTS UNSELECTED / CLEAN)
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
 
+  // Sub-step phase: 'inputs' -> 'analyzing' -> 'scorecard'
+  const [auditPhase, setAuditPhase] = useState<'inputs' | 'analyzing' | 'scorecard'>('inputs');
+  const [analysisStep, setAnalysisStep] = useState<number>(0);
+
   // Step 1B: Diagnostic Audit Mode (Quiz vs. Paste Text)
   const [auditMode, setAuditMode] = useState<'quiz' | 'paste'>('quiz');
 
@@ -548,6 +552,21 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     );
   }, [selectedPlatforms, quizAnswers, pastedBio]);
 
+  const handleStartAnalysis = useCallback(() => {
+    setAuditPhase('analyzing');
+    setAnalysisStep(1);
+
+    const t1 = setTimeout(() => setAnalysisStep(2), 600);
+    const t2 = setTimeout(() => setAnalysisStep(3), 1200);
+    const t3 = setTimeout(() => setAuditPhase('scorecard'), 1800);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, []);
+
   // Compute live diagnostic score based on user's actual selections
   const diagnosticScore = useMemo<number | null>(() => {
     if (!hasInteracted) return null;
@@ -583,13 +602,13 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         label: 'Positioning & Headline Clarity',
         score: quizAnswers.headlineType === null && !isBioAnalyzed ? 0 : isAuth ? 22 : quizAnswers.headlineType === 'skills' ? 14 : 7,
         max: 25,
-        desc: quizAnswers.headlineType === null ? 'Select your current headline style above' : isAuth ? 'Clear authority stance' : 'Currently generic worker positioning',
+        desc: quizAnswers.headlineType === null ? 'Select your current headline style' : isAuth ? 'Clear strategic authority stance' : 'Currently generic worker positioning',
       },
       {
         label: 'Channel Architecture & Relevance',
         score: Math.min(selectedPlatforms.length * 8, 25),
         max: 25,
-        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} relevant platforms selected for ${roleConfig.roleTitle}`,
+        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} active platforms aligned for ${roleConfig.roleTitle}`,
       },
       {
         label: 'Social Proof & Evidence Placement',
@@ -608,469 +627,545 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
   return (
     <div className="w-full space-y-8 text-left font-sans">
-      {/* ── 1A. ROLE-SMART PLATFORM SELECTION ─────────────────────────────────── */}
-      <div className="space-y-4">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
-              Step 1A: Target Channels
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              Curated for {roleConfig.roleTitle}
-            </span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
-            Which platforms do you currently use or plan to build your presence on?
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
-            Select the primary channels where prospective clients find and evaluate your services.
-          </p>
-        </div>
+      <AnimatePresence mode="wait">
+        {/* ── PHASE 1: INPUTS (STEP 1A + STEP 1B) ────────────────────────────── */}
+        {auditPhase === 'inputs' && (
+          <motion.div
+            key="inputs-phase"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+            className="space-y-8"
+          >
+            {/* ── 1A. ROLE-SMART PLATFORM SELECTION ───────────────────────────── */}
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
+                    Step 1A: Target Channels
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    Curated for {roleConfig.roleTitle}
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
+                  Which platforms do you currently use or plan to build your presence on?
+                </h2>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
+                  Select the primary channels where prospective clients find and evaluate your services.
+                </p>
+              </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleSelectAllRecommended}
-              className="text-xs font-bold text-[#0058be] hover:text-[#0047a0] transition-colors cursor-pointer bg-blue-50/60 hover:bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200"
-            >
-              + Select All Recommended
-            </button>
-            {selectedPlatforms.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClearPlatforms}
-                className="text-xs text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer px-2.5 py-1.5"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-          <span className="text-xs text-neutral-500 font-semibold">
-            {selectedPlatforms.length} / {roleConfig.platforms.length} channels selected
-          </span>
-        </div>
+              {/* Action Controls */}
+              <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSelectAllRecommended}
+                    className="text-xs font-bold text-[#0058be] hover:text-[#0047a0] transition-colors cursor-pointer bg-blue-50/60 hover:bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200"
+                  >
+                    + Select All Recommended
+                  </button>
+                  {selectedPlatforms.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleClearPlatforms}
+                      className="text-xs text-neutral-500 hover:text-neutral-700 transition-colors cursor-pointer px-2.5 py-1.5"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                <span className="text-xs text-neutral-500 font-semibold">
+                  {selectedPlatforms.length} / {roleConfig.platforms.length} channels selected
+                </span>
+              </div>
 
-        {/* Platform Grid (Clean SVG Icons + Selected State) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {roleConfig.platforms.map((platform) => {
-            const isSelected = selectedPlatforms.includes(platform.key);
-            const Icon = platform.icon;
+              {/* Platform Grid (Clean SVG Icons + Selected State) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {roleConfig.platforms.map((platform) => {
+                  const isSelected = selectedPlatforms.includes(platform.key);
+                  const Icon = platform.icon;
 
-            return (
-              <button
-                key={platform.key}
-                type="button"
-                onClick={() => togglePlatform(platform.key)}
-                className={cn(
-                  'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[115px] relative group',
-                  isSelected
-                    ? 'bg-blue-50/70 border-2 border-[#0058be] shadow-sm ring-2 ring-[#0058be]/10'
-                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
-                )}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-2.5">
-                    <div className={cn(
-                      'p-2 rounded-xl border transition-colors',
-                      isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200'
-                    )}>
-                      <Icon />
+                  return (
+                    <button
+                      key={platform.key}
+                      type="button"
+                      onClick={() => togglePlatform(platform.key)}
+                      className={cn(
+                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[115px] relative group',
+                        isSelected
+                          ? 'bg-blue-50/70 border-2 border-[#0058be] shadow-sm ring-2 ring-[#0058be]/10'
+                          : 'bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
+                      )}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2.5">
+                          <div className={cn(
+                            'p-2 rounded-xl border transition-colors',
+                            isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200'
+                          )}>
+                            <Icon />
+                          </div>
+                          <span className="font-bold text-xs text-[#0b1c30]">{platform.name}</span>
+                        </div>
+
+                        {/* Selection Check Circle */}
+                        <div className={cn(
+                          'w-5 h-5 rounded-full border flex items-center justify-center transition-all',
+                          isSelected
+                            ? 'bg-[#0058be] border-[#0058be] text-white shadow-2xs'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                        )}>
+                          {isSelected ? (
+                            <Check size={12} strokeWidth={3} />
+                          ) : (
+                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 group-hover:bg-neutral-300" />
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mt-3">
+                        <span className="text-[10px] text-neutral-400 font-medium">
+                          {platform.category}
+                        </span>
+                        <span className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                          isSelected
+                            ? 'bg-blue-100/80 text-[#0058be]'
+                            : platform.recommended
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-neutral-100 text-neutral-500'
+                        )}>
+                          {isSelected ? 'Active Channel' : platform.recommended ? 'Recommended' : 'Optional'}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ── 1B. CURRENT STATE HONEST DIAGNOSTIC ──────────────────────────── */}
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
+                    Step 1B: Current Profile Structure
+                  </span>
+
+                  <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
+                    <button
+                      type="button"
+                      onClick={() => setAuditMode('quiz')}
+                      className={cn(
+                        'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                        auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
+                      )}
+                    >
+                      <HelpCircle size={12} />
+                      <span>3-Question Diagnostic</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAuditMode('paste')}
+                      className={cn(
+                        'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                        auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
+                      )}
+                    >
+                      <FileText size={12} />
+                      <span>Paste Current Bio</span>
+                    </button>
+                  </div>
+                </div>
+
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
+                  How is your current social presence structured?
+                </h2>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
+                  Answer 3 quick questions about your current profiles or paste your bio to reveal your baseline authority score.
+                </p>
+              </div>
+
+              {/* Option A: Quick 3-Question Honest Diagnostic */}
+              {auditMode === 'quiz' && (
+                <div className="space-y-4 pt-1">
+                  {/* Question 1: Headline */}
+                  <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                          01
+                        </span>
+                        <div>
+                          <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                            What does your main profile headline look like?
+                          </h3>
+                          <p className="text-xs text-neutral-500">
+                            Select the format closest to how you currently introduce yourself on social channels.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                        Question 1 of 3
+                      </span>
                     </div>
-                    <span className="font-bold text-xs text-[#0b1c30]">{platform.name}</span>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                      {roleQuiz.headlineOptions.map((item) => {
+                        const isSelected = quizAnswers.headlineType === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setQuizAnswers(prev => ({ ...prev, headlineType: item.id }))}
+                            className={cn(
+                              'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
+                              isSelected
+                                ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
+                                : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
+                            )}
+                          >
+                            <div className="flex items-center gap-2.5 w-full">
+                              <div className={cn(
+                                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                                isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                              )}>
+                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                              </div>
+                              <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
+                            </div>
+
+                            <p className="text-[11px] text-neutral-500 leading-relaxed">
+                              {item.description}
+                            </p>
+
+                            <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                                Example Format
+                              </span>
+                              <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  {/* Selection Check Circle */}
-                  <div className={cn(
-                    'w-5 h-5 rounded-full border flex items-center justify-center transition-all',
-                    isSelected
-                      ? 'bg-[#0058be] border-[#0058be] text-white shadow-2xs'
-                      : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                  )}>
-                    {isSelected ? (
-                      <Check size={12} strokeWidth={3} />
-                    ) : (
-                      <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 group-hover:bg-neutral-300" />
-                    )}
+                  {/* Question 2: Featured Social Proof */}
+                  <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                          02
+                        </span>
+                        <div>
+                          <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                            Do you have verified proof, numbers, or pinned case studies?
+                          </h3>
+                          <p className="text-xs text-neutral-500">
+                            High-ticket clients look for tangible proof metrics before reaching out.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                        Question 2 of 3
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {roleQuiz.proofOptions.map((item) => {
+                        const isSelected = quizAnswers.hasPinnedProof === item.id;
+                        return (
+                          <button
+                            key={String(item.id)}
+                            type="button"
+                            onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: item.id }))}
+                            className={cn(
+                              'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
+                              isSelected
+                                ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
+                                : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
+                            )}
+                          >
+                            <div className="flex items-center gap-2.5 w-full">
+                              <div className={cn(
+                                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                                isSelected
+                                  ? 'border-[#0058be] bg-[#0058be]'
+                                  : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                              )}>
+                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                              </div>
+                              <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
+                            </div>
+
+                            <p className="text-[11px] text-neutral-500 leading-relaxed">
+                              {item.description}
+                            </p>
+
+                            <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                                Example Format
+                              </span>
+                              <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Question 3: CTA & Funnel Link */}
+                  <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                          03
+                        </span>
+                        <div>
+                          <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                            Where does your profile link direct prospective clients?
+                          </h3>
+                          <p className="text-xs text-neutral-500">
+                            A frictionless conversion funnel turns profile visitors into scheduled client discovery calls.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                        Question 3 of 3
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      {roleQuiz.ctaOptions.map((item) => {
+                        const isSelected = quizAnswers.hasSingleCta === item.id;
+                        return (
+                          <button
+                            key={String(item.id)}
+                            type="button"
+                            onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: item.id }))}
+                            className={cn(
+                              'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
+                              isSelected
+                                ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
+                                : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
+                            )}
+                          >
+                            <div className="flex items-center gap-2.5 w-full">
+                              <div className={cn(
+                                'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                                isSelected
+                                  ? 'border-[#0058be] bg-[#0058be]'
+                                  : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                              )}>
+                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                              </div>
+                              <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
+                            </div>
+
+                            <p className="text-[11px] text-neutral-500 leading-relaxed">
+                              {item.description}
+                            </p>
+
+                            <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                                Example Format
+                              </span>
+                              <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
+              )}
 
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-[10px] text-neutral-400 font-medium">
-                    {platform.category}
-                  </span>
-                  <span className={cn(
-                    'text-[10px] font-bold px-2 py-0.5 rounded-full',
-                    isSelected
-                      ? 'bg-blue-100/80 text-[#0058be]'
-                      : platform.recommended
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      : 'bg-neutral-100 text-neutral-500'
-                  )}>
-                    {isSelected ? 'Active Channel' : platform.recommended ? 'Recommended' : 'Optional'}
-                  </span>
+              {/* Option B: Direct Bio Text Paste Analyzer */}
+              {auditMode === 'paste' && (
+                <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
+                    Paste your current LinkedIn Headline, Twitter Bio, or About Section
+                  </label>
+                  <textarea
+                    value={pastedBio}
+                    onChange={(e) => {
+                      setPastedBio(e.target.value);
+                      setIsBioAnalyzed(true);
+                    }}
+                    placeholder={`e.g. ${roleQuiz.headlineOptions[0]?.example.replace('e.g. ', '').replace(/"/g, '')}. Available for freelance client projects. DM for rates.`}
+                    rows={3}
+                    className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all font-sans leading-relaxed"
+                  />
+                  {pastedBio.trim().length > 0 && (
+                    <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-[#0058be] font-semibold flex items-center gap-2">
+                      <CheckCircle2 size={14} className="shrink-0" />
+                      <span>Text detected — Authority engine scored your current baseline below.</span>
+                    </div>
+                  )}
                 </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+              )}
+            </div>
 
-      {/* ── 1B. CURRENT STATE HONEST DIAGNOSTIC (CUSTOMIZED PER ROLE) ────────────── */}
-      <div className="space-y-4">
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
-              Step 1B: Current Profile Structure
-            </span>
-
-            <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
-              <button
-                type="button"
-                onClick={() => setAuditMode('quiz')}
-                className={cn(
-                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                  auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-                )}
+            {/* Calculate Score CTA */}
+            <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
+              <span className="text-xs text-neutral-400 font-medium">
+                {hasInteracted ? 'Selections complete. Ready to benchmark your authority score.' : 'Select your channels and current profile structure above.'}
+              </span>
+              <ModuleButton
+                variant="primary"
+                disabled={!hasInteracted}
+                onClick={handleStartAnalysis}
               >
-                <HelpCircle size={12} />
-                <span>3-Question Diagnostic</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setAuditMode('paste')}
-                className={cn(
-                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                  auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-                )}
-              >
-                <FileText size={12} />
-                <span>Paste Current Bio</span>
-              </button>
+                Analyze Presence & Calculate Score →
+              </ModuleButton>
             </div>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
-            How is your current social presence structured?
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
-            Answer 3 quick questions about your current profiles or paste your bio to reveal your baseline authority score.
-          </p>
-        </div>
-
-        {/* Option A: Quick 3-Question Honest Diagnostic (Personalized & Luxury UX) */}
-        {auditMode === 'quiz' && (
-          <div className="space-y-4 pt-1">
-            {/* Question 1: Headline */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                    01
-                  </span>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                      What does your main profile headline look like?
-                    </h3>
-                    <p className="text-xs text-neutral-500">
-                      Select the format closest to how you currently introduce yourself on social channels.
-                    </p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                  Question 1 of 3
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                {roleQuiz.headlineOptions.map((item) => {
-                  const isSelected = quizAnswers.headlineType === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setQuizAnswers(prev => ({ ...prev, headlineType: item.id }))}
-                      className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
-                        isSelected
-                          ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
-                      )}
-                    >
-                      <div className="flex items-center gap-2.5 w-full">
-                        <div className={cn(
-                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                        )}>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                        </div>
-                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                      </div>
-
-                      <p className="text-[11px] text-neutral-500 leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
-                          Example Format
-                        </span>
-                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Question 2: Featured Social Proof */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                    02
-                  </span>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                      Do you have verified proof, numbers, or pinned case studies?
-                    </h3>
-                    <p className="text-xs text-neutral-500">
-                      High-ticket clients look for tangible proof metrics before reaching out.
-                    </p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                  Question 2 of 3
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {roleQuiz.proofOptions.map((item) => {
-                  const isSelected = quizAnswers.hasPinnedProof === item.id;
-                  return (
-                    <button
-                      key={String(item.id)}
-                      type="button"
-                      onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: item.id }))}
-                      className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
-                        isSelected
-                          ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
-                      )}
-                    >
-                      <div className="flex items-center gap-2.5 w-full">
-                        <div className={cn(
-                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected
-                            ? 'border-[#0058be] bg-[#0058be]'
-                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                        )}>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                        </div>
-                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                      </div>
-
-                      <p className="text-[11px] text-neutral-500 leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
-                          Example Format
-                        </span>
-                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Question 3: CTA & Funnel Link */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                    03
-                  </span>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                      Where does your profile link direct prospective clients?
-                    </h3>
-                    <p className="text-xs text-neutral-500">
-                      A frictionless conversion funnel turns profile visitors into scheduled client discovery calls.
-                    </p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                  Question 3 of 3
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {roleQuiz.ctaOptions.map((item) => {
-                  const isSelected = quizAnswers.hasSingleCta === item.id;
-                  return (
-                    <button
-                      key={String(item.id)}
-                      type="button"
-                      onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: item.id }))}
-                      className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
-                        isSelected
-                          ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
-                      )}
-                    >
-                      <div className="flex items-center gap-2.5 w-full">
-                        <div className={cn(
-                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected
-                            ? 'border-[#0058be] bg-[#0058be]'
-                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                        )}>
-                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                        </div>
-                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                      </div>
-
-                      <p className="text-[11px] text-neutral-500 leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
-                          Example Format
-                        </span>
-                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* Option B: Direct Bio Text Paste Analyzer */}
-        {auditMode === 'paste' && (
-          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-3">
-            <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
-              Paste your current LinkedIn Headline, Twitter Bio, or About Section
-            </label>
-            <textarea
-              value={pastedBio}
-              onChange={(e) => {
-                setPastedBio(e.target.value);
-                setIsBioAnalyzed(true);
-              }}
-              placeholder={`e.g. ${roleQuiz.headlineOptions[0]?.example.replace('e.g. ', '').replace(/"/g, '')}. Available for freelance client projects. DM for rates.`}
-              rows={3}
-              className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all font-sans leading-relaxed"
-            />
-            {pastedBio.trim().length > 0 && (
-              <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-[#0058be] font-semibold flex items-center gap-2">
-                <CheckCircle2 size={14} className="shrink-0" />
-                <span>Text detected — Authority engine scored your current baseline below.</span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+        {/* ── PHASE 2: PROCESSING / SCANNING ANIMATION ──────────────────────── */}
+        {auditPhase === 'analyzing' && (
+          <motion.div
+            key="analyzing-phase"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+            className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-2xl text-white flex flex-col items-center justify-center space-y-6 text-center"
+          >
+            <div className="relative flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full border-3 border-white/10 border-t-[#d1f34d] animate-spin" />
+              <Shield size={24} className="text-[#d1f34d] absolute" />
+            </div>
 
-      {/* ── 1C. LIVE REALITY SCORECARD (HOME LUXURY DESIGN) ────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-xl text-white space-y-6"
-      >
-        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
-          <div className="flex items-center gap-2">
-            <Shield size={16} className="text-[#d1f34d]" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
-              Live Authority Diagnostic Scorecard
-            </span>
-          </div>
-
-          <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
-            {!hasInteracted
-              ? 'Awaiting Selections'
-              : (diagnosticScore as number) < 50
-              ? 'High Drop-Off Risk'
-              : 'Moderate Authority'}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left: Score Ring */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-center space-y-3">
-            <ScoreRing score={diagnosticScore} />
-            <div className="text-center space-y-0.5">
-              <h4 className="text-xs font-bold text-white">Current Social Baseline</h4>
-              <p className="text-[10px] text-white/60">
-                {hasInteracted
-                  ? 'Calculated from your active channels & profile posture'
-                  : 'Select your channels & answers above to reveal score'}
+            <div className="space-y-1 max-w-md">
+              <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                Running Authority Diagnostic Audit...
+              </h3>
+              <p className="text-xs text-white/60">
+                Evaluating your profile posture against high-ticket client conversion benchmarks.
               </p>
             </div>
-          </div>
 
-          {/* Right: 4 Dimension Status Bars */}
-          <div className="lg:col-span-8 space-y-3.5">
-            {dimensions.map((dim, idx) => {
-              const pct = dim.score > 0 ? Math.round((dim.score / dim.max) * 100) : 0;
-              const isHigh = pct >= 70;
-              const isMid = pct >= 40;
+            {/* Checkpoints */}
+            <div className="w-full max-w-md space-y-2.5 bg-black/30 p-4 rounded-2xl border border-white/10 text-left">
+              <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 1 ? "text-white" : "text-white/30")}>
+                {analysisStep >= 2 ? <Check size={14} className="text-emerald-400 shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 animate-pulse" />}
+                <span className="font-medium">Auditing active channel architecture for {roleConfig.roleTitle}...</span>
+              </div>
+              <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 2 ? "text-white" : "text-white/30")}>
+                {analysisStep >= 3 ? <Check size={14} className="text-emerald-400 shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 animate-pulse" />}
+                <span className="font-medium">Evaluating headline positioning & proof visibility...</span>
+              </div>
+              <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 3 ? "text-white" : "text-white/30")}>
+                {analysisStep >= 3 ? <Check size={14} className="text-[#d1f34d] shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0" />}
+                <span className="font-medium">Synthesizing 4-dimension baseline authority scorecard...</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-              return (
-                <div key={idx} className="space-y-1 bg-black/25 backdrop-blur-sm p-3.5 rounded-2xl border border-white/5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-white/90">{dim.label}</span>
-                    <span className={cn('font-black font-mono', dim.score === 0 ? 'text-white/40' : isHigh ? 'text-[#d1f34d]' : isMid ? 'text-amber-300' : 'text-red-400')}>
-                      {dim.score > 0 ? `${dim.score}/${dim.max}` : `— / ${dim.max}`}
-                    </span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <motion.div
-                      className={cn('h-full rounded-full', isHigh ? 'bg-[#d1f34d]' : isMid ? 'bg-amber-400' : 'bg-red-400')}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${pct}%` }}
-                      transition={{ duration: 0.8, ease: EASING.PREMIUM }}
-                    />
-                  </div>
-                  <p className="text-[10px] text-white/50">{dim.desc}</p>
+        {/* ── PHASE 3: REALITY SCORECARD REVEAL ────────────────────────────── */}
+        {auditPhase === 'scorecard' && (
+          <motion.div
+            key="scorecard-phase"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+            className="space-y-6"
+          >
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-xl text-white space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
+                <div className="flex items-center gap-2">
+                  <Shield size={16} className="text-[#d1f34d]" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
+                    Baseline Authority Reality Scorecard
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* Dynamic Gap Statement Box */}
-        <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
-          <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold text-white">
-              Client Perception Diagnosis
-            </h4>
-            <p className="text-[11px] text-white/70 leading-relaxed">
-              When high-ticket clients ($3,000+) evaluate your profile, they make a hiring decision in under 5 seconds. Generic titles and missing proof assets lead to immediate drop-off. In the next steps, we will engineer a unified, authority-positioned presence across all your channels.
-            </p>
-          </div>
-        </div>
-      </motion.div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
+                  {(diagnosticScore as number) < 50 ? 'High Drop-Off Risk' : 'Moderate Authority'}
+                </span>
+              </div>
 
-      {/* ── ACTION FOOTER ────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between pt-2">
-        <span className="text-xs text-neutral-400 font-medium hidden sm:inline">
-          {hasInteracted ? 'Audit ready. Proceed to set your identity foundation.' : 'Complete audit selections above to continue.'}
-        </span>
-        <ModuleButton onClick={onContinue}>
-          Audit Confirmed — Proceed to Step 2 (Identity Foundation) →
-        </ModuleButton>
-      </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                {/* Left: Score Ring */}
+                <div className="lg:col-span-4 flex flex-col items-center justify-center space-y-3">
+                  <ScoreRing score={diagnosticScore} />
+                  <div className="text-center space-y-0.5">
+                    <h4 className="text-xs font-bold text-white">Current Social Baseline</h4>
+                    <p className="text-[10px] text-white/60">
+                      Calculated from your active channels & profile posture
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: 4 Dimension Status Bars */}
+                <div className="lg:col-span-8 space-y-3.5">
+                  {dimensions.map((dim, idx) => {
+                    const pct = dim.score > 0 ? Math.round((dim.score / dim.max) * 100) : 0;
+                    const isHigh = pct >= 70;
+                    const isMid = pct >= 40;
+
+                    return (
+                      <div key={idx} className="space-y-1 bg-black/25 backdrop-blur-sm p-3.5 rounded-2xl border border-white/5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-white/90">{dim.label}</span>
+                          <span className={cn('font-black font-mono', dim.score === 0 ? 'text-white/40' : isHigh ? 'text-[#d1f34d]' : isMid ? 'text-amber-300' : 'text-red-400')}>
+                            {dim.score > 0 ? `${dim.score}/${dim.max}` : `— / ${dim.max}`}
+                          </span>
+                        </div>
+                        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                          <motion.div
+                            className={cn('h-full rounded-full', isHigh ? 'bg-[#d1f34d]' : isMid ? 'bg-amber-400' : 'bg-red-400')}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.8, ease: EASING.PREMIUM }}
+                          />
+                        </div>
+                        <p className="text-[10px] text-white/50">{dim.desc}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dynamic Gap Statement Box */}
+              <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
+                <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="text-xs font-bold text-white">
+                    Client Perception Diagnosis
+                  </h4>
+                  <p className="text-[11px] text-white/70 leading-relaxed">
+                    When high-ticket clients ($3,000+) evaluate your profile, they make a hiring decision in under 5 seconds. Generic titles and missing proof assets lead to immediate drop-off. In the next steps, we will engineer a unified, authority-positioned presence across all your channels.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── ACTION FOOTER ────────────────────────────────────────────────── */}
+            <div className="flex items-center justify-between pt-2">
+              <ModuleButton
+                variant="secondary"
+                onClick={() => setAuditPhase('inputs')}
+              >
+                ← Change Selections & Re-audit
+              </ModuleButton>
+              <ModuleButton
+                variant="primary"
+                onClick={onContinue}
+              >
+                Audit Confirmed — Proceed to Step 2 (Identity Foundation) →
+              </ModuleButton>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 });
