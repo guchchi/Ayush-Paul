@@ -220,6 +220,9 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               userHandle={userHandle}
               activeTone={activeTone}
               recommendedPlatforms={recommendation.recommendedPlatforms}
+              roleLabel={recommendation.roleLabel}
+              serviceId={mod1ServiceId}
+              careerTrackId={mod1CareerTrackId}
               onContinue={() => advanceSection(1)}
             />
           )}
