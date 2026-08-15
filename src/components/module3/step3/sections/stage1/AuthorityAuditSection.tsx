@@ -659,25 +659,22 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             const Icon = platform.icon;
 
             return (
-              <motion.button
+              <button
                 key={platform.key}
                 type="button"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                aria-pressed={isSelected}
                 onClick={() => togglePlatform(platform.key)}
                 className={cn(
-                  'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[115px] relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be] focus-visible:ring-offset-2',
+                  'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[115px] relative group',
                   isSelected
                     ? 'bg-blue-50/70 border-2 border-[#0058be] shadow-sm ring-2 ring-[#0058be]/10'
-                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60 hover:shadow-xs'
+                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                 )}
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-2.5">
                     <div className={cn(
                       'p-2 rounded-xl border transition-colors',
-                      isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200 group-hover:bg-white'
+                      isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200'
                     )}>
                       <Icon />
                     </div>
@@ -704,7 +701,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     {platform.category}
                   </span>
                   <span className={cn(
-                    'text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors',
+                    'text-[10px] font-bold px-2 py-0.5 rounded-full',
                     isSelected
                       ? 'bg-blue-100/80 text-[#0058be]'
                       : platform.recommended
@@ -714,7 +711,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     {isSelected ? 'Active Channel' : platform.recommended ? 'Recommended' : 'Optional'}
                   </span>
                 </div>
-              </motion.button>
+              </button>
             );
           })}
         </div>
@@ -733,7 +730,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 type="button"
                 onClick={() => setAuditMode('quiz')}
                 className={cn(
-                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
+                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
                   auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
                 )}
               >
@@ -744,7 +741,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 type="button"
                 onClick={() => setAuditMode('paste')}
                 className={cn(
-                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
+                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
                   auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
                 )}
               >
@@ -781,28 +778,24 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block font-mono">
-                  Question 01 / 03
+                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                  Question 1 of 3
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1" role="radiogroup" aria-label="Headline format">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                 {roleQuiz.headlineOptions.map((item) => {
                   const isSelected = quizAnswers.headlineType === item.id;
                   return (
-                    <motion.button
+                    <button
                       key={item.id}
                       type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
                       onClick={() => setQuizAnswers(prev => ({ ...prev, headlineType: item.id }))}
                       className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
+                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                         isSelected
                           ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60 hover:shadow-xs'
+                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
                       <div className="flex items-start justify-between gap-2 w-full">
@@ -811,14 +804,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                             'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
                             isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                           )}>
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.15, ease: EASING.PREMIUM }}
-                                className="w-1.5 h-1.5 rounded-full bg-white"
-                              />
-                            )}
+                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                           <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                         </div>
@@ -834,10 +820,13 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                         {item.description}
                       </p>
 
-                      <div className="p-2.5 rounded-xl bg-neutral-100/80 border border-neutral-200/60 text-[10.5px] text-neutral-600 font-mono italic leading-normal">
-                        {item.example}
+                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                          Example Format
+                        </span>
+                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
                       </div>
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>
@@ -859,30 +848,26 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block font-mono">
-                  Question 02 / 03
+                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                  Question 2 of 3
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1" role="radiogroup" aria-label="Social proof presence">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {roleQuiz.proofOptions.map((item) => {
                   const isSelected = quizAnswers.hasPinnedProof === item.id;
                   return (
-                    <motion.button
+                    <button
                       key={String(item.id)}
                       type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
                       onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: item.id }))}
                       className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
+                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                         isSelected
                           ? item.id
                             ? 'bg-emerald-50/70 border-2 border-emerald-600 ring-2 ring-emerald-600/15 shadow-sm'
                             : 'bg-red-50/60 border-2 border-red-500 ring-2 ring-red-500/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60 hover:shadow-xs'
+                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
                       <div className="flex items-start justify-between gap-2 w-full">
@@ -893,14 +878,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                               ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-red-500 bg-red-500'
                               : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                           )}>
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.15, ease: EASING.PREMIUM }}
-                                className="w-1.5 h-1.5 rounded-full bg-white"
-                              />
-                            )}
+                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                           <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                         </div>
@@ -916,10 +894,13 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                         {item.description}
                       </p>
 
-                      <div className="p-2.5 rounded-xl bg-neutral-100/80 border border-neutral-200/60 text-[10.5px] text-neutral-600 font-mono italic leading-normal">
-                        {item.example}
+                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                          Example Format
+                        </span>
+                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
                       </div>
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>
@@ -941,30 +922,26 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block font-mono">
-                  Question 03 / 03
+                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
+                  Question 3 of 3
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1" role="radiogroup" aria-label="Call to action link">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {roleQuiz.ctaOptions.map((item) => {
                   const isSelected = quizAnswers.hasSingleCta === item.id;
                   return (
-                    <motion.button
+                    <button
                       key={String(item.id)}
                       type="button"
-                      role="radio"
-                      aria-checked={isSelected}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
                       onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: item.id }))}
                       className={cn(
-                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0058be]',
+                        'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                         isSelected
                           ? item.id
                             ? 'bg-emerald-50/70 border-2 border-emerald-600 ring-2 ring-emerald-600/15 shadow-sm'
                             : 'bg-amber-50/60 border-2 border-amber-500 ring-2 ring-amber-500/15 shadow-sm'
-                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60 hover:shadow-xs'
+                          : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
                       <div className="flex items-start justify-between gap-2 w-full">
@@ -975,14 +952,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                               ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-amber-500 bg-amber-500'
                               : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                           )}>
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.15, ease: EASING.PREMIUM }}
-                                className="w-1.5 h-1.5 rounded-full bg-white"
-                              />
-                            )}
+                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                           <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                         </div>
@@ -998,10 +968,13 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                         {item.description}
                       </p>
 
-                      <div className="p-2.5 rounded-xl bg-neutral-100/80 border border-neutral-200/60 text-[10.5px] text-neutral-600 font-mono italic leading-normal">
-                        {item.example}
+                      <div className="p-3 rounded-xl bg-neutral-50/90 border border-neutral-200/70 text-xs text-neutral-700 font-medium leading-relaxed">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">
+                          Example Format
+                        </span>
+                        <span>{item.example.replace(/^e\.g\.\s*/, '')}</span>
                       </div>
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>
@@ -1040,13 +1013,9 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-xl text-white space-y-6 relative overflow-hidden"
+        className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-xl text-white space-y-6"
       >
-        {/* Subtle Ambient Radial Lighting */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 bg-[#0058be]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-[#d1f34d]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <Shield size={16} className="text-[#d1f34d]" />
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
@@ -1063,7 +1032,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           </span>
         </div>
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left: Score Ring */}
           <div className="lg:col-span-4 flex flex-col items-center justify-center space-y-3">
             <ScoreRing score={diagnosticScore} />
@@ -1108,7 +1077,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         </div>
 
         {/* Dynamic Gap Statement Box */}
-        <div className="relative z-10 p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
+        <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
           <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <h4 className="text-xs font-bold text-white">
