@@ -31,6 +31,7 @@ interface Props {
   onUserHandleChange: (handle: string) => void;
   onHeadlineChange: (headline: string) => void;
   onProofLineChange: (line: string) => void;
+  onBack?: () => void;
   onContinue: () => void;
 }
 
@@ -44,6 +45,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   onUserHandleChange,
   onHeadlineChange,
   onProofLineChange,
+  onBack,
   onContinue,
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -256,8 +258,13 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
       </motion.div>
 
       {/* Continue CTA */}
-      <div className="flex justify-end pt-2">
-        <ModuleButton onClick={onContinue}>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <ModuleButton variant="secondary" onClick={onBack}>
+            ← Back to Audit
+          </ModuleButton>
+        ) : <div />}
+        <ModuleButton variant="primary" onClick={onContinue}>
           Identity Set — Open Platform Studio →
         </ModuleButton>
       </div>

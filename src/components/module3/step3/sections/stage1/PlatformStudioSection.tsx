@@ -39,6 +39,7 @@ interface Props {
   onToneChange: (tone: 'executive' | 'conversion' | 'direct') => void;
   onUpdateField: (platform: string, fieldKey: string, value: string) => void;
   onResetField: (platform: string, fieldKey: string) => void;
+  onBack?: () => void;
   onContinue: () => void;
 }
 
@@ -230,6 +231,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   onToneChange,
   onUpdateField,
   onResetField,
+  onBack,
   onContinue,
 }) => {
   const primaryPlatforms = ALL_PLATFORMS.filter(p => recommendedPlatforms.includes(p.key));
@@ -515,8 +517,13 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
       </AnimatePresence>
 
       {/* Continue CTA */}
-      <div className="flex justify-end pt-4">
-        <ModuleButton onClick={onContinue}>
+      <div className="flex items-center justify-between pt-4">
+        {onBack ? (
+          <ModuleButton variant="secondary" onClick={onBack}>
+            ← Back to Identity Foundation
+          </ModuleButton>
+        ) : <div />}
+        <ModuleButton variant="primary" onClick={onContinue}>
           Platforms Optimized — Run Consistency Check →
         </ModuleButton>
       </div>

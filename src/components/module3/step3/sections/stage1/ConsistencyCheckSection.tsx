@@ -21,6 +21,7 @@ import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 interface Props {
   profileSystem: ProfileSystemAsset[];
   activeTone: string;
+  onBack?: () => void;
   onContinue: () => void;
 }
 
@@ -151,6 +152,7 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
 export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
   profileSystem,
   activeTone,
+  onBack,
   onContinue,
 }) => {
   const result = useMemo(() => analyzeConsistency(profileSystem), [profileSystem]);
@@ -262,8 +264,13 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
       )}
 
       {/* Continue CTA */}
-      <div className="flex justify-end pt-2">
-        <ModuleButton onClick={onContinue}>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <ModuleButton variant="secondary" onClick={onBack}>
+            ← Back to Platform Studio
+          </ModuleButton>
+        ) : <div />}
+        <ModuleButton variant="primary" onClick={onContinue}>
           Consistency Verified — Deploy & Prove →
         </ModuleButton>
       </div>

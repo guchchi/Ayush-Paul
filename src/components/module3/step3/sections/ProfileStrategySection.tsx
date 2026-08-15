@@ -132,6 +132,12 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     }
   }, []);
 
+  const retreatSection = useCallback((currentId: number) => {
+    if (currentId > 1) {
+      setActiveSection(currentId - 1);
+    }
+  }, []);
+
   const handleComplete = useCallback(() => {
     setCompletedSections(prev => new Set([...prev, 5]));
     onContinue();
@@ -149,14 +155,14 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
-      {/* Step Progress Bar */}
+      {/* Step Progress Bar (Module 1 Aligned Luxury Stepper) */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
+        className="p-3.5 sm:p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
       >
-        <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar">
           {SECTIONS.map((section, idx) => {
             const isActive = activeSection === section.id;
             const isCompleted = completedSections.has(section.id);
@@ -166,30 +172,32 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
             return (
               <React.Fragment key={section.id}>
                 <button
+                  type="button"
                   onClick={() => {
-                    if (isCompleted || isPast || section.id <= activeSection) {
+                    if (isCompleted || isPast || section.id <= activeSection + 1) {
                       setActiveSection(section.id);
                     }
                   }}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer flex-1 min-w-0',
+                    'flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer flex-1 min-w-[120px] sm:min-w-0',
                     isActive
                       ? 'bg-[#0058be] text-white shadow-md'
                       : isCompleted || isPast
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                      : 'bg-neutral-50 text-neutral-400 border border-neutral-200'
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/80 hover:bg-emerald-100/70'
+                      : 'bg-neutral-50 text-neutral-400 border border-neutral-200 hover:text-neutral-600'
                   )}
                 >
-                  {isCompleted ? (
-                    <Check size={14} className="shrink-0 stroke-[3]" />
-                  ) : (
-                    <Icon size={14} className="shrink-0" />
-                  )}
-                  <span className="text-[10px] font-bold truncate hidden sm:block">{section.shortLabel}</span>
+                  <span className={cn(
+                    'w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0',
+                    isActive ? 'bg-white/20 text-white' : isCompleted ? 'bg-emerald-200 text-emerald-900' : 'bg-neutral-200 text-neutral-600'
+                  )}>
+                    {isCompleted ? <Check size={12} strokeWidth={3} /> : `0${section.id}`}
+                  </span>
+                  <span className="text-[11px] font-bold truncate">{section.shortLabel}</span>
                 </button>
                 {idx < SECTIONS.length - 1 && (
                   <div className={cn(
-                    'w-4 h-0.5 rounded-full shrink-0',
+                    'w-3 sm:w-4 h-0.5 rounded-full shrink-0',
                     section.id < activeSection ? 'bg-emerald-300' : 'bg-neutral-200'
                   )} />
                 )}
@@ -198,16 +206,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
           })}
         </div>
       </motion.div>
-
-      {/* Section Title */}
-      <div className="space-y-1 px-1">
-        <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0058be]">
-          {SECTIONS[activeSection - 1].label}
-        </span>
-        <p className="text-xs text-neutral-400 font-medium">
-          {SECTIONS[activeSection - 1].desc}
-        </p>
-      </div>
 
       {/* Active Section Content */}
       <AnimatePresence mode="wait">
@@ -237,6 +235,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               onUserHandleChange={setUserHandle}
               onHeadlineChange={setPositioningHeadline}
               onProofLineChange={setProofLine}
+              onBack={() => retreatSection(2)}
               onContinue={() => advanceSection(2)}
             />
           )}
@@ -252,6 +251,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               onToneChange={setActiveTone}
               onUpdateField={(platform, fieldKey, value) => updateProfileField(platform as any, fieldKey, value)}
               onResetField={(platform, fieldKey) => resetProfileField(platform as any, fieldKey)}
+              onBack={() => retreatSection(3)}
               onContinue={() => advanceSection(3)}
             />
           )}
@@ -260,6 +260,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
             <ConsistencyCheckSection
               profileSystem={profileSystem}
               activeTone={activeTone}
+              onBack={() => retreatSection(4)}
               onContinue={() => advanceSection(4)}
             />
           )}
@@ -274,6 +275,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               userHandle={userHandle}
               activeTone={activeTone}
               initialScore={initialScore ?? 0}
+              onBack={() => retreatSection(5)}
               onComplete={handleComplete}
             />
           )}

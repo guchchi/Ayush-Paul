@@ -37,6 +37,7 @@ interface Props {
   userHandle: string;
   activeTone: string;
   initialScore: number; // Score from Section 1 (before optimization)
+  onBack?: () => void;
   onComplete: () => void;
 }
 
@@ -100,6 +101,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
   userHandle,
   activeTone,
   initialScore,
+  onBack,
   onComplete,
 }) => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -305,8 +307,13 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
       </motion.div>
 
       {/* Complete CTA */}
-      <div className="flex justify-end pt-2">
-        <ModuleButton onClick={onComplete}>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <ModuleButton variant="secondary" onClick={onBack}>
+            ← Back to Consistency Check
+          </ModuleButton>
+        ) : <div />}
+        <ModuleButton variant="primary" onClick={onComplete}>
           Stage 1 Complete — Continue to Portfolio Architecture →
         </ModuleButton>
       </div>
