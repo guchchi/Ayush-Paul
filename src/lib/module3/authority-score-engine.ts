@@ -189,10 +189,10 @@ function scorePlatformCompleteness(
   // - Customization bonus (0-4 pts): User actually edited content
   const customScore = Math.round(customRate * 4);
 
-  // - Identity set bonus (0-3 pts): Name and handle are non-default
+  // - Identity set bonus (0-3 pts): Name and handle are provided
   let identityScore = 0;
-  if (userName && userName !== 'Alex Rivers' && userName.trim().length > 2) identityScore += 2;
-  if (userHandle && userHandle !== 'alexrivers' && userHandle.trim().length > 2) identityScore += 1;
+  if (userName && userName.trim().length >= 2) identityScore += 2;
+  if (userHandle && userHandle.trim().length >= 2) identityScore += 1;
 
   const finalScore = Math.min(platformCoverage + fieldFillScore + customScore + identityScore, 25);
 

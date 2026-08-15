@@ -2,22 +2,15 @@
  * Section 1: Authority Audit (Role-Smart & Interactive Reality Check)
  * 
  * Flow:
- *  1A. "Aap kin channels par active hain?" — Role-tailored platform selector with official SVG icons.
- *  1B. Diagnostic Mode — Quick 3-Question Honest Diagnostic OR Paste Bio / URL Scanner.
- *  1C. Live Reality Scorecard — Apple Watch style SVG Score Ring (0-100), 4 Dimension Bars & Role Gap Statement.
+ *  1A. "Aap kin channels par active hain?" — Role-tailored platform selector with official SVG icons (Starts unselected / clean).
+ *  1B. Diagnostic Mode — Quick 3-Question Honest Diagnostic OR Paste Bio / URL Scanner (Starts unselected).
+ *  1C. Live Reality Scorecard — Calculates live when user answers questions or selects platforms.
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
-import {
-  calculateAuthorityScore,
-  calculatePlatformReadiness,
-  generateGapStatement,
-  type AuthorityScoreBreakdown,
-  type PlatformReadiness,
-} from '@/src/lib/module3/authority-score-engine';
 import type { ProfileSystemAsset } from '@/src/data/module3/authority-suite-engine';
 import {
   Shield,
@@ -26,11 +19,9 @@ import {
   Circle,
   Sparkles,
   Zap,
-  Link2,
   FileText,
   HelpCircle,
-  ArrowRight,
-  RefreshCw,
+  Check,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
@@ -78,8 +69,6 @@ const BrandIcons = {
   ),
 };
 
-// ── Role-Specific Platform Definitions ────────────────────────────────────────
-
 interface RolePlatformConfig {
   key: string;
   name: string;
@@ -96,10 +85,10 @@ const getRoleSensiblePlatforms = (serviceId: string | null, careerTrackId: strin
     return {
       roleTitle: 'Video Editor & Motion Specialist',
       platforms: [
-        { key: 'youtube', name: 'YouTube Showreel', category: 'Showcase', icon: BrandIcons.YouTube, recommended: true },
-        { key: 'instagram', name: 'Instagram (Reels)', category: 'Short-Form', icon: BrandIcons.Instagram, recommended: true },
-        { key: 'twitter', name: 'X / Twitter', category: 'Authority', icon: BrandIcons.Twitter, recommended: true },
-        { key: 'behance', name: 'Behance / Vimeo', category: 'Portfolio', icon: BrandIcons.Behance, recommended: false },
+        { key: 'youtube', name: 'YouTube Showreel', category: 'Showcase Channel', icon: BrandIcons.YouTube, recommended: true },
+        { key: 'instagram', name: 'Instagram (Reels)', category: 'Short-Form Clips', icon: BrandIcons.Instagram, recommended: true },
+        { key: 'twitter', name: 'X / Twitter', category: 'Creator Authority', icon: BrandIcons.Twitter, recommended: true },
+        { key: 'behance', name: 'Behance / Vimeo', category: 'Portfolio Reel', icon: BrandIcons.Behance, recommended: false },
       ],
     };
   }
@@ -108,9 +97,9 @@ const getRoleSensiblePlatforms = (serviceId: string | null, careerTrackId: strin
     return {
       roleTitle: 'Software Developer & Technical Architect',
       platforms: [
-        { key: 'github', name: 'GitHub Profile', category: 'Code Proof', icon: BrandIcons.GitHub, recommended: true },
-        { key: 'linkedin', name: 'LinkedIn Executive', category: 'B2B Authority', icon: BrandIcons.LinkedIn, recommended: true },
-        { key: 'twitter', name: 'X / Twitter', category: 'Tech Audience', icon: BrandIcons.Twitter, recommended: true },
+        { key: 'github', name: 'GitHub Profile', category: 'Code Proof & Repos', icon: BrandIcons.GitHub, recommended: true },
+        { key: 'linkedin', name: 'LinkedIn Executive', category: 'B2B Client Stance', icon: BrandIcons.LinkedIn, recommended: true },
+        { key: 'twitter', name: 'X / Twitter', category: 'Tech Build-in-Public', icon: BrandIcons.Twitter, recommended: true },
       ],
     };
   }
@@ -119,10 +108,10 @@ const getRoleSensiblePlatforms = (serviceId: string | null, careerTrackId: strin
     return {
       roleTitle: 'UI/UX & Product Designer',
       platforms: [
-        { key: 'behance', name: 'Figma / Behance Space', category: 'Design System', icon: BrandIcons.Figma, recommended: true },
-        { key: 'linkedin', name: 'LinkedIn Professional', category: 'B2B Clients', icon: BrandIcons.LinkedIn, recommended: true },
+        { key: 'behance', name: 'Figma / Behance Space', category: 'Design Systems', icon: BrandIcons.Figma, recommended: true },
+        { key: 'linkedin', name: 'LinkedIn Professional', category: 'Enterprise Clients', icon: BrandIcons.LinkedIn, recommended: true },
         { key: 'twitter', name: 'X / Twitter', category: 'Design Community', icon: BrandIcons.Twitter, recommended: true },
-        { key: 'instagram', name: 'Instagram Portfolio', category: 'Visuals', icon: BrandIcons.Instagram, recommended: false },
+        { key: 'instagram', name: 'Instagram Portfolio', category: 'Visual Carousel', icon: BrandIcons.Instagram, recommended: false },
       ],
     };
   }
@@ -153,15 +142,17 @@ interface Props {
 
 // ── Score Ring Component ──────────────────────────────────────────────────────
 
-function ScoreRing({ score, maxScore = 100, size = 150 }: { score: number; maxScore?: number; size?: number }) {
+function ScoreRing({ score, maxScore = 100, size = 150 }: { score: number | null; maxScore?: number; size?: number }) {
   const radius = (size - 16) / 2;
   const circumference = 2 * Math.PI * radius;
-  const percentage = Math.min(score / maxScore, 1);
-  const strokeDashoffset = circumference * (1 - percentage);
+  const hasScore = score !== null;
+  const percentage = hasScore ? Math.min((score as number) / maxScore, 1) : 0;
+  const strokeDashoffset = hasScore ? circumference * (1 - percentage) : circumference;
 
   const getColor = () => {
-    if (score >= 70) return { stroke: '#10b981', text: 'text-emerald-400', badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
-    if (score >= 40) return { stroke: '#d1f34d', text: 'text-[#d1f34d]', badge: 'bg-[#d1f34d]/10 text-[#d1f34d] border-[#d1f34d]/25' };
+    if (!hasScore) return { stroke: '#404040', text: 'text-neutral-500', badge: 'bg-neutral-800 text-neutral-400 border-neutral-700' };
+    if ((score as number) >= 70) return { stroke: '#10b981', text: 'text-emerald-400', badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+    if ((score as number) >= 40) return { stroke: '#d1f34d', text: 'text-[#d1f34d]', badge: 'bg-[#d1f34d]/10 text-[#d1f34d] border-[#d1f34d]/25' };
     return { stroke: '#f87171', text: 'text-red-400', badge: 'bg-red-500/10 text-red-400 border-red-500/25' };
   };
 
@@ -200,7 +191,7 @@ function ScoreRing({ score, maxScore = 100, size = 150 }: { score: number; maxSc
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          {score}
+          {hasScore ? score : '—'}
         </motion.span>
         <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mt-0.5">
           / {maxScore} PTS
@@ -225,58 +216,81 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 }) => {
   const roleConfig = useMemo(() => getRoleSensiblePlatforms(headline, uniqueMechanism), [headline, uniqueMechanism]);
 
-  // Step 1A: Selected platforms state
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(() => {
-    return roleConfig.platforms.filter(p => p.recommended).map(p => p.key);
-  });
+  // Step 1A: Selected platforms state (STARTS UNSELECTED / CLEAN)
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
 
   // Step 1B: Diagnostic Audit Mode (Quiz vs. Paste Text)
   const [auditMode, setAuditMode] = useState<'quiz' | 'paste'>('quiz');
 
-  // Quiz Responses
-  const [quizAnswers, setQuizAnswers] = useState({
-    headlineType: 'generic', // 'generic' | 'skills' | 'authority'
-    hasPinnedProof: false,
-    hasSingleCta: false,
+  // Quiz Responses (STARTS UNSELECTED / NULL)
+  const [quizAnswers, setQuizAnswers] = useState<{
+    headlineType: string | null;
+    hasPinnedProof: boolean | null;
+    hasSingleCta: boolean | null;
+  }>({
+    headlineType: null,
+    hasPinnedProof: null,
+    hasSingleCta: null,
   });
 
-  // Raw Bio Paste State
+  // Raw Bio Paste State (STARTS CLEAN)
   const [pastedBio, setPastedBio] = useState('');
   const [isBioAnalyzed, setIsBioAnalyzed] = useState(false);
 
   const togglePlatform = (key: string) => {
     setSelectedPlatforms(prev => {
       if (prev.includes(key)) {
-        return prev.length > 1 ? prev.filter(k => k !== key) : prev;
+        return prev.filter(k => k !== key);
       }
       return [...prev, key];
     });
   };
 
-  // Compute live diagnostic score based on user's real responses
-  const diagnosticScore = useMemo(() => {
-    let baseScore = 20;
+  const handleSelectAllRecommended = () => {
+    setSelectedPlatforms(roleConfig.platforms.filter(p => p.recommended).map(p => p.key));
+  };
+
+  const handleClearPlatforms = () => {
+    setSelectedPlatforms([]);
+  };
+
+  // Has user interacted with the audit inputs yet?
+  const hasInteracted = useMemo(() => {
+    return (
+      selectedPlatforms.length > 0 ||
+      quizAnswers.headlineType !== null ||
+      quizAnswers.hasPinnedProof !== null ||
+      quizAnswers.hasSingleCta !== null ||
+      pastedBio.trim().length > 0
+    );
+  }, [selectedPlatforms, quizAnswers, pastedBio]);
+
+  // Compute live diagnostic score based on user's actual selections
+  const diagnosticScore = useMemo<number | null>(() => {
+    if (!hasInteracted) return null;
+
+    let baseScore = 15;
 
     // Platform coverage (up to 20 pts)
-    baseScore += Math.min(selectedPlatforms.length * 7, 20);
+    baseScore += Math.min(selectedPlatforms.length * 8, 20);
 
     if (auditMode === 'quiz') {
       if (quizAnswers.headlineType === 'authority') baseScore += 30;
       else if (quizAnswers.headlineType === 'skills') baseScore += 15;
-      else baseScore += 5;
+      else if (quizAnswers.headlineType === 'generic') baseScore += 5;
 
-      if (quizAnswers.hasPinnedProof) baseScore += 15;
-      if (quizAnswers.hasSingleCta) baseScore += 15;
+      if (quizAnswers.hasPinnedProof === true) baseScore += 15;
+      if (quizAnswers.hasSingleCta === true) baseScore += 15;
     } else {
       const bioText = (pastedBio || '').toLowerCase();
       if (bioText.length > 20) baseScore += 10;
-      if (bioText.includes('help') || bioText.includes('scale') || bioText.includes('system')) baseScore += 15;
+      if (bioText.includes('help') || bioText.includes('scale') || bioText.includes('system') || bioText.includes('engineer')) baseScore += 15;
       if (bioText.includes('http') || bioText.includes('link') || bioText.includes('book') || bioText.includes('dm')) baseScore += 15;
       if (isBioAnalyzed && bioText.length > 50) baseScore += 15;
     }
 
     return Math.min(baseScore, 95);
-  }, [selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed]);
+  }, [hasInteracted, selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed]);
 
   // Dimension Bars calculation
   const dimensions = useMemo(() => {
@@ -284,30 +298,30 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     return [
       {
         label: 'Positioning & Headline Clarity',
-        score: isAuth ? 22 : quizAnswers.headlineType === 'skills' ? 14 : 7,
+        score: quizAnswers.headlineType === null && !isBioAnalyzed ? 0 : isAuth ? 22 : quizAnswers.headlineType === 'skills' ? 14 : 7,
         max: 25,
-        desc: isAuth ? 'Clear authority stance' : 'Currently generic worker positioning',
+        desc: quizAnswers.headlineType === null ? 'Select headline style above' : isAuth ? 'Clear authority stance' : 'Currently generic worker positioning',
       },
       {
         label: 'Role-Channel Relevance',
         score: Math.min(selectedPlatforms.length * 8, 25),
         max: 25,
-        desc: `${selectedPlatforms.length} relevant platforms active for ${roleConfig.roleTitle}`,
+        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} relevant platforms active for ${roleConfig.roleTitle}`,
       },
       {
         label: 'Social Proof & Case Study Signals',
-        score: quizAnswers.hasPinnedProof ? 21 : 6,
+        score: quizAnswers.hasPinnedProof === null ? 0 : quizAnswers.hasPinnedProof ? 21 : 6,
         max: 25,
-        desc: quizAnswers.hasPinnedProof ? 'Evidence accessible on profile' : 'Zero pinned verifiable proof assets',
+        desc: quizAnswers.hasPinnedProof === null ? 'Select proof state above' : quizAnswers.hasPinnedProof ? 'Evidence accessible on profile' : 'Zero pinned verifiable proof assets',
       },
       {
         label: 'Conversion CTA & Booking Link',
-        score: quizAnswers.hasSingleCta ? 22 : 8,
+        score: quizAnswers.hasSingleCta === null ? 0 : quizAnswers.hasSingleCta ? 22 : 8,
         max: 25,
-        desc: quizAnswers.hasSingleCta ? 'Single clear call to action' : 'No direct booking or portfolio funnel link',
+        desc: quizAnswers.hasSingleCta === null ? 'Select CTA state above' : quizAnswers.hasSingleCta ? 'Single clear call to action' : 'No direct booking or portfolio funnel link',
       },
     ];
-  }, [quizAnswers, pastedBio, selectedPlatforms, roleConfig.roleTitle]);
+  }, [quizAnswers, pastedBio, isBioAnalyzed, selectedPlatforms, roleConfig.roleTitle]);
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
@@ -323,10 +337,30 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               Curated for {roleConfig.roleTitle}
             </span>
           </div>
-          <span className="text-xs text-neutral-400 font-medium">
-            Select channels where high-ticket clients find you
-          </span>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleSelectAllRecommended}
+              className="text-xs font-bold text-[#0058be] hover:underline cursor-pointer bg-blue-50/60 px-2.5 py-1 rounded-lg border border-blue-200/60"
+            >
+              + Select All Recommended
+            </button>
+            {selectedPlatforms.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearPlatforms}
+                className="text-xs text-neutral-400 hover:text-neutral-600 cursor-pointer"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
+
+        <p className="text-xs text-neutral-500 font-medium">
+          Aap jin channels par clients se connect hote hain, unhe select karein:
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
           {roleConfig.platforms.map((p) => {
@@ -449,7 +483,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: true }))}
                   className={cn(
                     'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
-                    quizAnswers.hasPinnedProof
+                    quizAnswers.hasPinnedProof === true
                       ? 'bg-white border-emerald-600 text-emerald-700 font-bold shadow-2xs ring-1 ring-emerald-600/20'
                       : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
                   )}
@@ -462,7 +496,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: false }))}
                   className={cn(
                     'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
-                    !quizAnswers.hasPinnedProof
+                    quizAnswers.hasPinnedProof === false
                       ? 'bg-white border-red-500 text-red-600 font-bold shadow-2xs ring-1 ring-red-500/20'
                       : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
                   )}
@@ -484,7 +518,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: true }))}
                   className={cn(
                     'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
-                    quizAnswers.hasSingleCta
+                    quizAnswers.hasSingleCta === true
                       ? 'bg-white border-emerald-600 text-emerald-700 font-bold shadow-2xs ring-1 ring-emerald-600/20'
                       : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
                   )}
@@ -497,7 +531,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: false }))}
                   className={cn(
                     'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
-                    !quizAnswers.hasSingleCta
+                    quizAnswers.hasSingleCta === false
                       ? 'bg-white border-amber-500 text-amber-700 font-bold shadow-2xs ring-1 ring-amber-500/20'
                       : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
                   )}
@@ -554,7 +588,11 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           </div>
 
           <span className="text-[10px] font-bold uppercase tracking-wider text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
-            {diagnosticScore < 50 ? '⚠️ High Client Drop-Off Risk' : '⚡ Moderate Authority'}
+            {!hasInteracted
+              ? '⏳ Awaiting Selections'
+              : (diagnosticScore as number) < 50
+              ? '⚠️ High Client Drop-Off Risk'
+              : '⚡ Moderate Authority'}
           </span>
         </div>
 
@@ -565,7 +603,9 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             <div className="text-center space-y-0.5">
               <h4 className="text-xs font-bold text-white">Current Social Baseline</h4>
               <p className="text-[10px] text-white/60">
-                Calculated from your active channels &amp; profile state
+                {hasInteracted
+                  ? 'Calculated from your active channels & profile state'
+                  : 'Select your channels & answers above to reveal score'}
               </p>
             </div>
           </div>
@@ -573,7 +613,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           {/* Right: 4 Dimension Status Bars */}
           <div className="lg:col-span-8 space-y-3.5">
             {dimensions.map((dim, idx) => {
-              const pct = Math.round((dim.score / dim.max) * 100);
+              const pct = dim.score > 0 ? Math.round((dim.score / dim.max) * 100) : 0;
               const isHigh = pct >= 70;
               const isMid = pct >= 40;
 
@@ -581,8 +621,8 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 <div key={idx} className="space-y-1 bg-black/25 backdrop-blur-sm p-3 rounded-2xl border border-white/5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-white/90">{dim.label}</span>
-                    <span className={cn('font-black font-mono', isHigh ? 'text-[#d1f34d]' : isMid ? 'text-amber-300' : 'text-red-400')}>
-                      {dim.score}/{dim.max}
+                    <span className={cn('font-black font-mono', dim.score === 0 ? 'text-white/40' : isHigh ? 'text-[#d1f34d]' : isMid ? 'text-amber-300' : 'text-red-400')}>
+                      {dim.score > 0 ? `${dim.score}/${dim.max}` : `— / ${dim.max}`}
                     </span>
                   </div>
                   <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
@@ -605,10 +645,10 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <h4 className="text-xs font-bold text-white">
-              Client Perception Leak: {diagnosticScore < 50 ? 'Generic Commodity Trap' : 'Unrealized Pricing Power'}
+              Client Perception Reality
             </h4>
             <p className="text-[11px] text-white/70 leading-relaxed">
-              Jab koi high-ticket client ($3,000+) aapka profile open karta hai, wo 3 seconds me decide karta hai ki aap ek ₹5,000 ke worker hain ya ek verifiable authority specialist. Next step me hum is gap ko <strong>100% eliminate</strong> karenge.
+              Jab koi high-ticket client ($3,000+) aapka profile open karta hai, wo 3 seconds me decide karta hai ki aap ek ₹5,000 ke commodity worker hain ya ek verifiable authority specialist. Next step me hum is gap ko <strong>100% eliminate</strong> karenge.
             </p>
           </div>
         </div>
@@ -617,7 +657,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
       {/* ── ACTION FOOTER ────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between pt-2">
         <span className="text-xs text-neutral-400 font-medium hidden sm:inline">
-          Audit complete. Ready to transform your identity baseline.
+          {hasInteracted ? 'Audit ready. Proceed to set your identity foundation.' : 'Complete audit selections above to continue.'}
         </span>
         <ModuleButton onClick={onContinue}>
           Audit Confirmed — Proceed to Step 2 (Identity Foundation) →

@@ -241,7 +241,9 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showSecondary, setShowSecondary] = useState(false);
 
-  const initials = getInitials(userName);
+  const displayName = userName?.trim() || 'Your Name';
+  const displayHandle = userHandle?.trim() || 'yourhandle';
+  const initials = getInitials(userName?.trim() || 'YN');
 
   const activePlatformData = useMemo(() => {
     return profileSystem.find(p => p.platform === activeTab) || {
@@ -418,13 +420,13 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             </div>
 
             <div className="bg-neutral-950 rounded-3xl p-4 border border-neutral-800 shadow-2xl">
-              {activeTab === 'linkedin' && <LinkedInMockup userName={userName} initials={initials} headline={currentHeadline} bio={currentBio} />}
-              {activeTab === 'github' && <GitHubMockup userName={userName} userHandle={userHandle} initials={initials} headline={currentHeadline} />}
-              {activeTab === 'twitter' && <TwitterMockup userName={userName} userHandle={userHandle} initials={initials} headline={currentHeadline} />}
-              {activeTab === 'youtube' && <YouTubeMockup userName={userName} headline={currentHeadline} />}
-              {activeTab === 'personal_site' && <PersonalSiteMockup userHandle={userHandle} headline={currentHeadline} bio={currentBio} />}
+              {activeTab === 'linkedin' && <LinkedInMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} />}
+              {activeTab === 'github' && <GitHubMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} />}
+              {activeTab === 'twitter' && <TwitterMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} />}
+              {activeTab === 'youtube' && <YouTubeMockup userName={displayName} headline={currentHeadline} />}
+              {activeTab === 'personal_site' && <PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} />}
               {!['linkedin', 'github', 'twitter', 'youtube', 'personal_site'].includes(activeTab) && (
-                <GenericMockup platformName={platformLabel} userName={userName} initials={initials} headline={currentHeadline} />
+                <GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} />
               )}
             </div>
           </div>

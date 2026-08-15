@@ -84,9 +84,9 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const [activeSection, setActiveSection] = useState(1);
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
 
-  // Identity state
-  const [userName, setUserName] = useState('Alex Rivers');
-  const [userHandle, setUserHandle] = useState('alexrivers');
+  // Identity state (Clean empty baseline — user fills in Section 2)
+  const [userName, setUserName] = useState('');
+  const [userHandle, setUserHandle] = useState('');
   const [positioningHeadline, setPositioningHeadline] = useState('');
   const [proofLine, setProofLine] = useState('');
   const [activeTone, setActiveTone] = useState<'executive' | 'conversion' | 'direct'>('executive');

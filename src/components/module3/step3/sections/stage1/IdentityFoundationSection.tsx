@@ -48,8 +48,8 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const isNameSet = userName.trim().length > 2 && userName !== 'Alex Rivers';
-  const isHandleSet = userHandle.trim().length > 2 && userHandle !== 'alexrivers';
+  const isNameSet = userName.trim().length >= 2;
+  const isHandleSet = userHandle.trim().length >= 2;
   const isHeadlineSet = positioningHeadline.trim().length > 10;
   const isProofLineSet = proofLine.trim().length > 10;
   const completedFields = [isNameSet, isHandleSet, isHeadlineSet, isProofLineSet].filter(Boolean).length;
