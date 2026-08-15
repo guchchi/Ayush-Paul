@@ -863,7 +863,9 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                       <div className="flex items-center gap-2.5 w-full">
                         <div className={cn(
                           'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                          isSelected
+                            ? 'border-[#0058be] bg-[#0058be]'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
@@ -925,7 +927,9 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                       <div className="flex items-center gap-2.5 w-full">
                         <div className={cn(
                           'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                          isSelected
+                            ? 'border-[#0058be] bg-[#0058be]'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
