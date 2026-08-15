@@ -798,22 +798,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
-                      <div className="flex items-start justify-between gap-2 w-full">
-                        <div className="flex items-center gap-2.5">
-                          <div className={cn(
-                            'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                            isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                          )}>
-                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                          </div>
-                          <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                        </div>
-                        <span className={cn(
-                          'text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0',
-                          item.id === 'authority' ? 'bg-emerald-100 text-emerald-800' : item.id === 'skills' ? 'bg-amber-100 text-amber-800' : 'bg-neutral-100 text-neutral-600'
+                      <div className="flex items-center gap-2.5 w-full">
+                        <div className={cn(
+                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
-                          {item.scoreWeight}
-                        </span>
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                       </div>
 
                       <p className="text-[11px] text-neutral-500 leading-relaxed">
@@ -870,24 +862,16 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
-                      <div className="flex items-start justify-between gap-2 w-full">
-                        <div className="flex items-center gap-2.5">
-                          <div className={cn(
-                            'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                            isSelected
-                              ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-red-500 bg-red-500'
-                              : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                          )}>
-                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                          </div>
-                          <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                        </div>
-                        <span className={cn(
-                          'text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0',
-                          item.id ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                      <div className="flex items-center gap-2.5 w-full">
+                        <div className={cn(
+                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                          isSelected
+                            ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-red-500 bg-red-500'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
-                          {item.scoreWeight}
-                        </span>
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                       </div>
 
                       <p className="text-[11px] text-neutral-500 leading-relaxed">
@@ -944,24 +928,16 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
-                      <div className="flex items-start justify-between gap-2 w-full">
-                        <div className="flex items-center gap-2.5">
-                          <div className={cn(
-                            'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                            isSelected
-                              ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-amber-500 bg-amber-500'
-                              : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                          )}>
-                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                          </div>
-                          <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
-                        </div>
-                        <span className={cn(
-                          'text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0',
-                          item.id ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      <div className="flex items-center gap-2.5 w-full">
+                        <div className={cn(
+                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
+                          isSelected
+                            ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-amber-500 bg-amber-500'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
-                          {item.scoreWeight}
-                        </span>
+                          {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                        <span className="font-bold text-xs text-[#0b1c30]">{item.title}</span>
                       </div>
 
                       <p className="text-[11px] text-neutral-500 leading-relaxed">
