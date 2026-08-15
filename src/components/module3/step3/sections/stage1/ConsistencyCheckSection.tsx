@@ -187,7 +187,7 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
         </div>
 
         <p className="text-xs text-neutral-500 leading-relaxed">
-          Jab koi high-ticket client tera LinkedIn check karta hai toh wo <strong>Twitter, GitHub, aur Website bhi check karta hai.</strong> Agar ek jagah professional hai aur doosri jagah casual — credibility instantly destroy ho jaati hai.
+          High-ticket clients routinely cross-reference multiple profiles before booking. If your LinkedIn reads enterprise while your Twitter or personal site reads casual, client trust is compromised. This audit verifies uniform messaging across all your active channels.
         </p>
       </motion.div>
 

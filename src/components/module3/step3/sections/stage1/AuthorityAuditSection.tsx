@@ -2,9 +2,9 @@
  * Section 1: Authority Audit (Role-Smart & Interactive Reality Check)
  * 
  * Flow:
- *  1A. "Aap kin channels par active hain?" — Role-tailored platform selector with official SVG icons (Starts unselected / clean).
- *  1B. Diagnostic Mode — Quick 3-Question Honest Diagnostic OR Paste Bio / URL Scanner (Starts unselected).
- *  1C. Live Reality Scorecard — Calculates live when user answers questions or selects platforms.
+ *  1A. Channel Selection — "Select your active or target platforms" (Role-tailored with official SVGs).
+ *  1B. Diagnostic Baseline — 3-Question Honest Diagnostic OR Direct Bio Paste.
+ *  1C. Live Scorecard — Apple Watch style SVG Score Ring (0-100), 4 Dimension Bars & Gap Analysis.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -21,6 +21,7 @@ import {
   Zap,
   FileText,
   HelpCircle,
+  Plus,
   Check,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
@@ -150,10 +151,10 @@ function ScoreRing({ score, maxScore = 100, size = 150 }: { score: number | null
   const strokeDashoffset = hasScore ? circumference * (1 - percentage) : circumference;
 
   const getColor = () => {
-    if (!hasScore) return { stroke: '#404040', text: 'text-neutral-500', badge: 'bg-neutral-800 text-neutral-400 border-neutral-700' };
-    if ((score as number) >= 70) return { stroke: '#10b981', text: 'text-emerald-400', badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
-    if ((score as number) >= 40) return { stroke: '#d1f34d', text: 'text-[#d1f34d]', badge: 'bg-[#d1f34d]/10 text-[#d1f34d] border-[#d1f34d]/25' };
-    return { stroke: '#f87171', text: 'text-red-400', badge: 'bg-red-500/10 text-red-400 border-red-500/25' };
+    if (!hasScore) return { stroke: '#334155', text: 'text-neutral-500' };
+    if ((score as number) >= 70) return { stroke: '#10b981', text: 'text-emerald-400' };
+    if ((score as number) >= 40) return { stroke: '#d1f34d', text: 'text-[#d1f34d]' };
+    return { stroke: '#f87171', text: 'text-red-400' };
   };
 
   const color = getColor();
@@ -300,22 +301,22 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         label: 'Positioning & Headline Clarity',
         score: quizAnswers.headlineType === null && !isBioAnalyzed ? 0 : isAuth ? 22 : quizAnswers.headlineType === 'skills' ? 14 : 7,
         max: 25,
-        desc: quizAnswers.headlineType === null ? 'Select headline style above' : isAuth ? 'Clear authority stance' : 'Currently generic worker positioning',
+        desc: quizAnswers.headlineType === null ? 'Select your current headline style above' : isAuth ? 'Clear authority stance' : 'Currently generic worker positioning',
       },
       {
-        label: 'Role-Channel Relevance',
+        label: 'Channel Architecture & Relevance',
         score: Math.min(selectedPlatforms.length * 8, 25),
         max: 25,
-        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} relevant platforms active for ${roleConfig.roleTitle}`,
+        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} relevant platforms selected for ${roleConfig.roleTitle}`,
       },
       {
-        label: 'Social Proof & Case Study Signals',
+        label: 'Social Proof & Evidence Placement',
         score: quizAnswers.hasPinnedProof === null ? 0 : quizAnswers.hasPinnedProof ? 21 : 6,
         max: 25,
         desc: quizAnswers.hasPinnedProof === null ? 'Select proof state above' : quizAnswers.hasPinnedProof ? 'Evidence accessible on profile' : 'Zero pinned verifiable proof assets',
       },
       {
-        label: 'Conversion CTA & Booking Link',
+        label: 'Conversion CTA & Funnel Link',
         score: quizAnswers.hasSingleCta === null ? 0 : quizAnswers.hasSingleCta ? 22 : 8,
         max: 25,
         desc: quizAnswers.hasSingleCta === null ? 'Select CTA state above' : quizAnswers.hasSingleCta ? 'Single clear call to action' : 'No direct booking or portfolio funnel link',
@@ -324,220 +325,242 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   }, [quizAnswers, pastedBio, isBioAnalyzed, selectedPlatforms, roleConfig.roleTitle]);
 
   return (
-    <div className="w-full space-y-6 text-left font-sans">
+    <div className="w-full space-y-8 text-left font-sans">
       {/* ── 1A. ROLE-SMART PLATFORM SELECTION ─────────────────────────────────── */}
-      <div className="p-6 rounded-3xl bg-white border border-neutral-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Sparkles size={12} className="text-[#0058be]" />
-              Step 1A: Role Channels
+      <div className="space-y-4">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
+              Step 1A: Target Channels
             </span>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               Curated for {roleConfig.roleTitle}
             </span>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleSelectAllRecommended}
-              className="text-xs font-bold text-[#0058be] hover:underline cursor-pointer bg-blue-50/60 px-2.5 py-1 rounded-lg border border-blue-200/60"
-            >
-              + Select All Recommended
-            </button>
-            {selectedPlatforms.length > 0 && (
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
+            Which platforms do you currently use or plan to build your presence on?
+          </h2>
+          <div className="flex items-center justify-between flex-wrap gap-2 pt-0.5">
+            <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
+              Select the primary channels where prospective clients find and evaluate your services.
+            </p>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={handleClearPlatforms}
-                className="text-xs text-neutral-400 hover:text-neutral-600 cursor-pointer"
+                onClick={handleSelectAllRecommended}
+                className="text-xs font-semibold text-[#0058be] hover:underline cursor-pointer bg-blue-50 px-3 py-1 rounded-lg border border-blue-200/80 transition-colors"
               >
-                Clear
+                + Select All Recommended
               </button>
-            )}
+              {selectedPlatforms.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearPlatforms}
+                  className="text-xs text-neutral-400 hover:text-neutral-600 cursor-pointer transition-colors"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <p className="text-xs text-neutral-500 font-medium">
-          Aap jin channels par clients se connect hote hain, unhe select karein:
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {roleConfig.platforms.map((p) => {
             const isSelected = selectedPlatforms.includes(p.key);
             const IconComp = p.icon;
 
             return (
-              <button
+              <motion.button
                 key={p.key}
                 type="button"
+                whileTap={{ scale: 0.98 }}
                 onClick={() => togglePlatform(p.key)}
                 className={cn(
-                  'p-4 rounded-2xl border text-left transition-all cursor-pointer space-y-2 relative overflow-hidden group',
+                  'relative flex flex-col justify-between w-full p-4 rounded-2xl text-left transition-all duration-200 cursor-pointer group',
                   isSelected
-                    ? 'bg-blue-50/50 border-[#0058be] ring-1 ring-[#0058be]/30 shadow-xs'
-                    : 'bg-neutral-50/80 border-neutral-200 hover:bg-neutral-100 hover:border-neutral-300'
+                    ? 'bg-blue-50/70 border-2 border-[#0058be] shadow-sm'
+                    : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <div className="p-2 rounded-xl bg-white border border-neutral-200/80 shadow-2xs">
+                <div className="flex items-center justify-between w-full mb-3">
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200/80 shadow-2xs">
                     <IconComp />
                   </div>
                   {isSelected ? (
-                    <CheckCircle2 size={16} className="text-[#0058be]" />
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#0058be] text-white">
+                      <Check size={11} strokeWidth={3} />
+                    </span>
                   ) : (
-                    <Circle size={16} className="text-neutral-300 group-hover:text-neutral-400" />
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full border border-neutral-300 group-hover:border-neutral-400 text-neutral-300">
+                      <Plus size={11} strokeWidth={2.5} />
+                    </span>
                   )}
                 </div>
 
-                <div>
-                  <h4 className="text-xs font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
+                <div className="space-y-1">
+                  <span className="block text-sm font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
                     {p.name}
-                  </h4>
-                  <span className="text-[10px] text-neutral-400 font-medium block">
+                  </span>
+                  <span className="block text-[11px] text-neutral-500 font-medium">
                     {p.category}
                   </span>
                 </div>
-              </button>
+
+                <div className="mt-3 pt-2.5 border-t border-neutral-100 flex items-center justify-between">
+                  <span className={cn(
+                    'text-[10px] font-bold uppercase tracking-[0.1em]',
+                    isSelected ? 'text-[#0058be]' : 'text-neutral-400 group-hover:text-neutral-500'
+                  )}>
+                    {isSelected ? 'Active Channel' : 'Click to Add'}
+                  </span>
+                </div>
+              </motion.button>
             );
           })}
         </div>
       </div>
 
       {/* ── 1B. DIAGNOSTIC AUDIT INPUT (QUIZ VS BIO PASTE) ────────────────────── */}
-      <div className="p-6 rounded-3xl bg-white border border-neutral-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Zap size={12} className="text-[#0058be]" />
-              Step 1B: Current Reality Check
+      <div className="space-y-4 pt-2">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
+              Step 1B: Current Profile Benchmark
             </span>
+
+            <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
+              <button
+                type="button"
+                onClick={() => setAuditMode('quiz')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                  auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
+                )}
+              >
+                <HelpCircle size={12} />
+                <span>3-Question Diagnostic</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAuditMode('paste')}
+                className={cn(
+                  'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                  auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
+                )}
+              >
+                <FileText size={12} />
+                <span>Paste Current Bio</span>
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
-            <button
-              type="button"
-              onClick={() => setAuditMode('quiz')}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-              )}
-            >
-              <HelpCircle size={12} />
-              <span>3-Tap Quiz</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setAuditMode('paste')}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-              )}
-            >
-              <FileText size={12} />
-              <span>Paste Current Bio</span>
-            </button>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
+            How is your current social presence structured?
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
+            Select your current profile posture or paste your bio to reveal your baseline authority score.
+          </p>
         </div>
 
         {/* Option A: Quick 3-Question Honest Diagnostic */}
         {auditMode === 'quiz' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
             {/* Question 1: Headline */}
-            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-2.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
-                1. Current Headline Style
+            <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
+                1. Headline Positioning
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {[
-                  { id: 'generic', label: 'Generic Worker', desc: 'e.g. Freelance Editor / Coder' },
-                  { id: 'skills', label: 'Skill List', desc: 'e.g. React • Node • Tailwind' },
-                  { id: 'authority', label: 'Authority Stance', desc: 'e.g. Helping X achieve Y via Z' },
+                  { id: 'generic', label: 'Commodity Role Title', desc: 'e.g. Freelance Video Editor / React Developer' },
+                  { id: 'skills', label: 'Feature & Skill List', desc: 'e.g. React • TypeScript • Tailwind • Next.js' },
+                  { id: 'authority', label: 'Strategic Authority Stance', desc: 'e.g. Helping B2B Brands Scale via Architecture' },
                 ].map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setQuizAnswers(prev => ({ ...prev, headlineType: item.id }))}
                     className={cn(
-                      'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
+                      'w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer',
                       quizAnswers.headlineType === item.id
-                        ? 'bg-white border-[#0058be] text-[#0058be] font-bold shadow-2xs ring-1 ring-[#0058be]/20'
-                        : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
+                        ? 'bg-blue-50/80 border-[#0058be] text-[#0058be] font-bold ring-1 ring-[#0058be]/20'
+                        : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300'
                     )}
                   >
-                    <div className="font-bold">{item.label}</div>
-                    <div className="text-[10px] text-neutral-400">{item.desc}</div>
+                    <div className="font-bold text-[#0b1c30]">{item.label}</div>
+                    <div className="text-[10px] text-neutral-400 mt-0.5">{item.desc}</div>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Question 2: Pinned Case Study */}
-            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-2.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
-                2. Pinned Proof &amp; Case Study
+            <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
+                2. Featured Social Proof
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <button
                   type="button"
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: true }))}
                   className={cn(
-                    'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
+                    'w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer',
                     quizAnswers.hasPinnedProof === true
-                      ? 'bg-white border-emerald-600 text-emerald-700 font-bold shadow-2xs ring-1 ring-emerald-600/20'
-                      : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
+                      ? 'bg-emerald-50/80 border-emerald-600 text-emerald-800 font-bold ring-1 ring-emerald-600/20'
+                      : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300'
                   )}
                 >
-                  <div className="font-bold">✅ Yes, Pinned Proof</div>
-                  <div className="text-[10px] text-neutral-400">Featured client case study or demo live</div>
+                  <div className="font-bold text-[#0b1c30]">✅ Yes, Featured Case Study Live</div>
+                  <div className="text-[10px] text-neutral-400 mt-0.5">Verified client result pinned on profile</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: false }))}
                   className={cn(
-                    'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
+                    'w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer',
                     quizAnswers.hasPinnedProof === false
-                      ? 'bg-white border-red-500 text-red-600 font-bold shadow-2xs ring-1 ring-red-500/20'
-                      : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
+                      ? 'bg-red-50/80 border-red-500 text-red-700 font-bold ring-1 ring-red-500/20'
+                      : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300'
                   )}
                 >
-                  <div className="font-bold">❌ No Pinned Proof</div>
-                  <div className="text-[10px] text-neutral-400">Empty profile or generic portfolio link</div>
+                  <div className="font-bold text-[#0b1c30]">❌ No Pinned Proof Yet</div>
+                  <div className="text-[10px] text-neutral-400 mt-0.5">Empty profile or generic social links</div>
                 </button>
               </div>
             </div>
 
             {/* Question 3: CTA & Funnel Link */}
-            <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-2.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
-                3. High-Ticket Booking Link
+            <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
+                3. High-Ticket Booking Funnel
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <button
                   type="button"
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: true }))}
                   className={cn(
-                    'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
+                    'w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer',
                     quizAnswers.hasSingleCta === true
-                      ? 'bg-white border-emerald-600 text-emerald-700 font-bold shadow-2xs ring-1 ring-emerald-600/20'
-                      : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
+                      ? 'bg-emerald-50/80 border-emerald-600 text-emerald-800 font-bold ring-1 ring-emerald-600/20'
+                      : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300'
                   )}
                 >
-                  <div className="font-bold">✅ Direct Call / Funnel Link</div>
-                  <div className="text-[10px] text-neutral-400">Clear next step for high-ticket prospects</div>
+                  <div className="font-bold text-[#0b1c30]">✅ Direct Booking / Strategy Call Link</div>
+                  <div className="text-[10px] text-neutral-400 mt-0.5">Clear calendar funnel for inbound prospects</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: false }))}
                   className={cn(
-                    'w-full p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer',
+                    'w-full p-3 rounded-xl border text-left text-xs transition-all cursor-pointer',
                     quizAnswers.hasSingleCta === false
-                      ? 'bg-white border-amber-500 text-amber-700 font-bold shadow-2xs ring-1 ring-amber-500/20'
-                      : 'bg-white/60 border-neutral-200 text-neutral-700 hover:bg-white'
+                      ? 'bg-amber-50/80 border-amber-500 text-amber-800 font-bold ring-1 ring-amber-500/20'
+                      : 'bg-neutral-50 border-neutral-200 text-neutral-700 hover:bg-white hover:border-neutral-300'
                   )}
                 >
-                  <div className="font-bold">⚠️ No Direct CTA</div>
-                  <div className="text-[10px] text-neutral-400">"DM for work" or missing link</div>
+                  <div className="font-bold text-[#0b1c30]">⚠️ No Direct Conversion Funnel</div>
+                  <div className="text-[10px] text-neutral-400 mt-0.5">"DM for work" or unoptimized link in bio</div>
                 </button>
               </div>
             </div>
@@ -546,24 +569,22 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
         {/* Option B: Direct Bio Text Paste Analyzer */}
         {auditMode === 'paste' && (
-          <div className="space-y-3 pt-1">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
-                Paste your current LinkedIn Headline, Twitter Bio, or About Section
-              </label>
-              <textarea
-                value={pastedBio}
-                onChange={(e) => {
-                  setPastedBio(e.target.value);
-                  setIsBioAnalyzed(true);
-                }}
-                placeholder="Paste here e.g. 'Freelance Video Editor with 3 years of experience in Premiere Pro and After Effects. DM for collaborations!'"
-                rows={3}
-                className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-2xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all font-sans leading-relaxed"
-              />
-            </div>
+          <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-2xs space-y-3">
+            <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
+              Paste your current LinkedIn Headline, Twitter Bio, or About Section
+            </label>
+            <textarea
+              value={pastedBio}
+              onChange={(e) => {
+                setPastedBio(e.target.value);
+                setIsBioAnalyzed(true);
+              }}
+              placeholder="e.g. Freelance Video Editor with 3 years of experience in Premiere Pro and After Effects. Available for short-form & long-form projects. DM for rates."
+              rows={3}
+              className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all font-sans leading-relaxed"
+            />
             {pastedBio.trim().length > 0 && (
-              <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200/80 text-[11px] text-[#0058be] font-medium flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-[#0058be] font-semibold flex items-center gap-2">
                 <CheckCircle2 size={14} className="shrink-0" />
                 <span>Text detected — Authority engine scored your current baseline below.</span>
               </div>
@@ -582,17 +603,17 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <Shield size={16} className="text-[#d1f34d]" />
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#d1f34d]">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
               Live Authority Diagnostic Scorecard
             </span>
           </div>
 
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
+          <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
             {!hasInteracted
-              ? '⏳ Awaiting Selections'
+              ? 'Awaiting Selections'
               : (diagnosticScore as number) < 50
-              ? '⚠️ High Client Drop-Off Risk'
-              : '⚡ Moderate Authority'}
+              ? 'High Drop-Off Risk'
+              : 'Moderate Authority'}
           </span>
         </div>
 
@@ -604,7 +625,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               <h4 className="text-xs font-bold text-white">Current Social Baseline</h4>
               <p className="text-[10px] text-white/60">
                 {hasInteracted
-                  ? 'Calculated from your active channels & profile state'
+                  ? 'Calculated from your active channels & profile posture'
                   : 'Select your channels & answers above to reveal score'}
               </p>
             </div>
@@ -618,7 +639,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               const isMid = pct >= 40;
 
               return (
-                <div key={idx} className="space-y-1 bg-black/25 backdrop-blur-sm p-3 rounded-2xl border border-white/5">
+                <div key={idx} className="space-y-1 bg-black/25 backdrop-blur-sm p-3.5 rounded-2xl border border-white/5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-white/90">{dim.label}</span>
                     <span className={cn('font-black font-mono', dim.score === 0 ? 'text-white/40' : isHigh ? 'text-[#d1f34d]' : isMid ? 'text-amber-300' : 'text-red-400')}>
@@ -641,14 +662,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
         </div>
 
         {/* Dynamic Gap Statement Box */}
-        <div className="p-4 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
+        <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
           <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
           <div className="space-y-1">
             <h4 className="text-xs font-bold text-white">
-              Client Perception Reality
+              Client Perception Diagnosis
             </h4>
             <p className="text-[11px] text-white/70 leading-relaxed">
-              Jab koi high-ticket client ($3,000+) aapka profile open karta hai, wo 3 seconds me decide karta hai ki aap ek ₹5,000 ke commodity worker hain ya ek verifiable authority specialist. Next step me hum is gap ko <strong>100% eliminate</strong> karenge.
+              When high-ticket clients ($3,000+) evaluate your profile, they make a hiring decision in under 5 seconds. Generic titles and missing proof assets lead to immediate drop-off. In the next steps, we will engineer a unified, authority-positioned presence across all your channels.
             </p>
           </div>
         </div>

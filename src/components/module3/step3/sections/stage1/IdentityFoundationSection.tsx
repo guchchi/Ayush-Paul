@@ -81,10 +81,10 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           </span>
         </div>
 
-        <div className="flex items-start gap-2 p-3 rounded-2xl bg-blue-50/80 border border-blue-100">
-          <Info size={14} className="text-[#0058be] mt-0.5 shrink-0" />
+        <div className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-blue-50/80 border border-blue-100">
+          <Info size={15} className="text-[#0058be] mt-0.5 shrink-0" />
           <p className="text-xs text-neutral-600 leading-relaxed">
-            Ye foundation hai jo <strong>saari platforms me auto-sync</strong> hoga. Ek jagah edit karo — LinkedIn, GitHub, Twitter, YouTube sab me turant update ho jayega.
+            This identity foundation acts as your <strong>single source of truth</strong>. Any update made here instantly propagates across all your platform mockups, bio snippets, and export bundles.
           </p>
         </div>
       </motion.div>

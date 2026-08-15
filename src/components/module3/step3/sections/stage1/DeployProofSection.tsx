@@ -300,7 +300,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         className="p-5 rounded-3xl bg-gradient-to-r from-[#0058be]/10 via-blue-50 to-indigo-50 border border-[#0058be]/20 space-y-2"
       >
         <p className="text-xs text-neutral-600 leading-relaxed">
-          <strong className="text-[#0b1c30]">Teri profiles optimize ho gayi hain.</strong> Ab chalo portfolio build karte hain jo in profiles ko BACK kare — real case studies, proof assets, aur conversion architecture.
+          <strong className="text-[#0b1c30]">Your social presence is now authority-optimized.</strong> Next, we will construct a high-converting portfolio wireframe to support your positioning with structured case studies, evidence assets, and conversion funnels.
         </p>
       </motion.div>
 

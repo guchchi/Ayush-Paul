@@ -36,11 +36,11 @@ interface Props {
 // ── Section Metadata ──────────────────────────────────────────────────────────
 
 const SECTIONS = [
-  { id: 1, label: 'Authority Audit', shortLabel: 'Audit', icon: Shield, desc: 'Dekh tu kahan hai' },
-  { id: 2, label: 'Identity Foundation', shortLabel: 'Identity', icon: Target, desc: 'Base set kar' },
-  { id: 3, label: 'Platform Studio', shortLabel: 'Studio', icon: Monitor, desc: 'Platforms optimize kar' },
-  { id: 4, label: 'Consistency Check', shortLabel: 'Check', icon: Eye, desc: 'Cross-check kar' },
-  { id: 5, label: 'Deploy & Proof', shortLabel: 'Deploy', icon: Rocket, desc: 'Deploy kar, result dekh' },
+  { id: 1, label: 'Authority Audit', shortLabel: 'Audit', icon: Shield, desc: 'Benchmark your current profile baseline & diagnostic gap' },
+  { id: 2, label: 'Identity Foundation', shortLabel: 'Identity', icon: Target, desc: 'Single source of truth for name, handle & positioning' },
+  { id: 3, label: 'Platform Studio', shortLabel: 'Studio', icon: Monitor, desc: 'Multi-platform live studio with conversion-tested copy' },
+  { id: 4, label: 'Consistency Check', shortLabel: 'Check', icon: Eye, desc: 'Verify message continuity & eliminate tone drift across channels' },
+  { id: 5, label: 'Deploy & Proof', shortLabel: 'Deploy', icon: Rocket, desc: 'Review before/after score gain & export master identity package' },
 ] as const;
 
 // ── Role Recommendation Logic ─────────────────────────────────────────────────
