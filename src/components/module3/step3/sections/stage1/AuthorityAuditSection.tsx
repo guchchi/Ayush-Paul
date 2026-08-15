@@ -856,18 +856,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                       className={cn(
                         'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                         isSelected
-                          ? item.id
-                            ? 'bg-emerald-50/70 border-2 border-emerald-600 ring-2 ring-emerald-600/15 shadow-sm'
-                            : 'bg-red-50/60 border-2 border-red-500 ring-2 ring-red-500/15 shadow-sm'
+                          ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
                           : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
                       <div className="flex items-center gap-2.5 w-full">
                         <div className={cn(
                           'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected
-                            ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-red-500 bg-red-500'
-                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
@@ -922,18 +918,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                       className={cn(
                         'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                         isSelected
-                          ? item.id
-                            ? 'bg-emerald-50/70 border-2 border-emerald-600 ring-2 ring-emerald-600/15 shadow-sm'
-                            : 'bg-amber-50/60 border-2 border-amber-500 ring-2 ring-amber-500/15 shadow-sm'
+                          ? 'bg-blue-50/70 border-2 border-[#0058be] ring-2 ring-[#0058be]/15 shadow-sm'
                           : 'bg-white border border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                       )}
                     >
                       <div className="flex items-center gap-2.5 w-full">
                         <div className={cn(
                           'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all',
-                          isSelected
-                            ? item.id ? 'border-emerald-600 bg-emerald-600' : 'border-amber-500 bg-amber-500'
-                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                          isSelected ? 'border-[#0058be] bg-[#0058be]' : 'border-neutral-300 bg-white group-hover:border-neutral-400'
                         )}>
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
