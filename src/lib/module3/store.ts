@@ -14,6 +14,8 @@ import type {
   Module2Context,
   Module4BridgeContext,
   Module3FieldProvenance,
+  Stage1AuditData,
+  Stage1IdentityData,
 } from '../../types/module3';
 import type {
   ScopeLimits,
@@ -169,6 +171,12 @@ export const useModule3Store = create<Module3State>()(
       step3ClaimToAssetMap: null,
       step3ContentRoadmap: null,
       step3Blueprint: null,
+
+      // ── Stage 1 (Profile Strategy) Studio Persistence ──────────────────
+      stage1ActiveSection: 1,
+      stage1CompletedSections: [],
+      stage1Audit: null,
+      stage1Identity: null,
 
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
@@ -849,6 +857,45 @@ export const useModule3Store = create<Module3State>()(
         return Module4BridgeAdapter.generateContext(state);
       },
 
+      setStage1ActiveSection(section: number) {
+        set({ stage1ActiveSection: section, lastUpdated: Date.now() });
+      },
+
+      setStage1CompletedSections(sections: number[]) {
+        set({ stage1CompletedSections: sections, lastUpdated: Date.now() });
+      },
+
+      setStage1Audit(auditData: Partial<Stage1AuditData>) {
+        set((state) => ({
+          stage1Audit: {
+            selectedPlatforms: state.stage1Audit?.selectedPlatforms ?? [],
+            auditStep: state.stage1Audit?.auditStep ?? 1,
+            auditMode: state.stage1Audit?.auditMode ?? 'quiz',
+            quizAnswers: state.stage1Audit?.quizAnswers ?? { headlineType: null, hasPinnedProof: null, hasSingleCta: null },
+            pastedBio: state.stage1Audit?.pastedBio ?? '',
+            isBioAnalyzed: state.stage1Audit?.isBioAnalyzed ?? false,
+            diagnosticScore: state.stage1Audit?.diagnosticScore ?? null,
+            completedAt: state.stage1Audit?.completedAt,
+            ...auditData,
+          },
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      setStage1Identity(identityData: Partial<Stage1IdentityData>) {
+        set((state) => ({
+          stage1Identity: {
+            userName: state.stage1Identity?.userName ?? '',
+            userHandle: state.stage1Identity?.userHandle ?? '',
+            positioningHeadline: state.stage1Identity?.positioningHeadline ?? '',
+            proofLine: state.stage1Identity?.proofLine ?? '',
+            activeTone: state.stage1Identity?.activeTone ?? 'executive',
+            ...identityData,
+          },
+          lastUpdated: Date.now(),
+        }));
+      },
+
       setIsCompleted(value: boolean) {
         set({ isCompleted: value, lastUpdated: Date.now() });
       },
@@ -1264,6 +1311,11 @@ export const useModule3Store = create<Module3State>()(
         step3ContentRoadmap: state.step3ContentRoadmap,
         step3Blueprint: state.step3Blueprint,
         authorityBlueprint: state.authorityBlueprint,
+        // ── Stage 1 (Profile Strategy) Studio Persistence
+        stage1ActiveSection: state.stage1ActiveSection,
+        stage1CompletedSections: state.stage1CompletedSections,
+        stage1Audit: state.stage1Audit,
+        stage1Identity: state.stage1Identity,
       }),
     },
   ),

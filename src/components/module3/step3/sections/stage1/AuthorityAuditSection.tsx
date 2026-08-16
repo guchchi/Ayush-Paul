@@ -26,6 +26,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
+import { useModule3Store } from '@/src/lib/module3/store';
 
 // ── Official Lightweight SVG Brand Icons ──────────────────────────────────────
 
@@ -723,39 +724,61 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     [serviceId, headline, careerTrackId, uniqueMechanism]
   );
 
-  // Step 1A: Selected platforms state (STARTS UNSELECTED / CLEAN)
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const { stage1Audit, setStage1Audit } = useModule3Store();
 
-  // Sub-step: 1 (Platforms) | 2 (Questions) | 3 (Scorecard)
-  const [auditStep, setAuditStep] = useState<1 | 2 | 3>(1);
-  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [analysisStep, setAnalysisStep] = useState<number>(0);
+  // Fallback defaults from role
+  const defaultRecommended = useMemo(
+    () => roleConfig.platforms.filter(p => p.recommended).map(p => p.key),
+    [roleConfig]
+  );
 
-  // Step 1B: Diagnostic Audit Mode (Quiz vs. Paste Text)
-  const [auditMode, setAuditMode] = useState<'quiz' | 'paste'>('quiz');
-
-  // Quiz Responses (STARTS UNSELECTED / NULL)
-  const [quizAnswers, setQuizAnswers] = useState<{
-    headlineType: string | null;
-    hasPinnedProof: boolean | null;
-    hasSingleCta: boolean | null;
-  }>({
+  // Read persisted state with fallback
+  const selectedPlatforms = stage1Audit?.selectedPlatforms ?? defaultRecommended;
+  const auditStep = (stage1Audit?.auditStep ?? 1) as 1 | 2 | 3;
+  const auditMode = stage1Audit?.auditMode ?? 'quiz';
+  const quizAnswers = stage1Audit?.quizAnswers ?? {
     headlineType: null,
     hasPinnedProof: null,
     hasSingleCta: null,
-  });
+  };
+  const pastedBio = stage1Audit?.pastedBio ?? '';
+  const isBioAnalyzed = stage1Audit?.isBioAnalyzed ?? false;
 
-  // Raw Bio Paste State (STARTS CLEAN)
-  const [pastedBio, setPastedBio] = useState('');
-  const [isBioAnalyzed, setIsBioAnalyzed] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [analysisStep, setAnalysisStep] = useState<number>(0);
+
+  const setSelectedPlatforms = useCallback((updateFn: string[] | ((prev: string[]) => string[])) => {
+    const nextVal = typeof updateFn === 'function' ? updateFn(selectedPlatforms) : updateFn;
+    setStage1Audit({ selectedPlatforms: nextVal });
+  }, [selectedPlatforms, setStage1Audit]);
+
+  const setAuditStep = useCallback((step: 1 | 2 | 3) => {
+    setStage1Audit({ auditStep: step });
+  }, [setStage1Audit]);
+
+  const setAuditMode = useCallback((mode: 'quiz' | 'paste') => {
+    setStage1Audit({ auditMode: mode });
+  }, [setStage1Audit]);
+
+  const setQuizAnswers = useCallback((updateFn: any) => {
+    const nextVal = typeof updateFn === 'function' ? updateFn(quizAnswers) : updateFn;
+    setStage1Audit({ quizAnswers: nextVal });
+  }, [quizAnswers, setStage1Audit]);
+
+  const setPastedBio = useCallback((val: string) => {
+    setStage1Audit({ pastedBio: val });
+  }, [setStage1Audit]);
+
+  const setIsBioAnalyzed = useCallback((val: boolean) => {
+    setStage1Audit({ isBioAnalyzed: val });
+  }, [setStage1Audit]);
 
   const togglePlatform = (key: string) => {
-    setSelectedPlatforms(prev => {
-      if (prev.includes(key)) {
-        return prev.filter(k => k !== key);
-      }
-      return [...prev, key];
-    });
+    if (selectedPlatforms.includes(key)) {
+      setSelectedPlatforms(selectedPlatforms.filter(k => k !== key));
+    } else {
+      setSelectedPlatforms([...selectedPlatforms, key]);
+    }
   };
 
   const handleSelectAllRecommended = () => {
@@ -780,22 +803,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   const hasInteracted = useMemo(() => {
     return selectedPlatforms.length > 0 || hasAnsweredQuestions;
   }, [selectedPlatforms, hasAnsweredQuestions]);
-
-  const handleStartAnalysis = useCallback(() => {
-    setAuditStep(3);
-    setIsAnalyzing(true);
-    setAnalysisStep(1);
-
-    const t1 = setTimeout(() => setAnalysisStep(2), 600);
-    const t2 = setTimeout(() => setAnalysisStep(3), 1200);
-    const t3 = setTimeout(() => setIsAnalyzing(false), 1800);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, []);
 
   // Compute live diagnostic score based on user's actual selections
   const diagnosticScore = useMemo<number | null>(() => {
@@ -823,6 +830,27 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
     return Math.min(baseScore, 95);
   }, [hasInteracted, selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed]);
+
+  const handleStartAnalysis = useCallback(() => {
+    setAuditStep(3);
+    setIsAnalyzing(true);
+    setAnalysisStep(1);
+
+    const t1 = setTimeout(() => setAnalysisStep(2), 600);
+    const t2 = setTimeout(() => setAnalysisStep(3), 1200);
+    const t3 = setTimeout(() => {
+      setIsAnalyzing(false);
+      if (diagnosticScore !== null) {
+        setStage1Audit({ diagnosticScore, completedAt: new Date().toISOString() });
+      }
+    }, 1800);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, [setAuditStep, diagnosticScore, setStage1Audit]);
 
   // Dimension Bars calculation
   const dimensions = useMemo(() => {

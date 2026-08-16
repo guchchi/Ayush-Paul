@@ -508,8 +508,41 @@ export interface Module3State {
   jumpToStep(step: Module3Step): void;
   reset(): void;
 
+  // ── Stage 1 (Profile Strategy) Studio Persistence ─────────────────────────
+  stage1ActiveSection: number;
+  stage1CompletedSections: number[];
+  stage1Audit: Stage1AuditData | null;
+  stage1Identity: Stage1IdentityData | null;
+  setStage1ActiveSection(section: number): void;
+  setStage1CompletedSections(sections: number[]): void;
+  setStage1Audit(auditData: Partial<Stage1AuditData>): void;
+  setStage1Identity(identityData: Partial<Stage1IdentityData>): void;
+
   dismissStaleContext(): void;
   refreshStaleContext(): void;
+}
+
+export interface Stage1AuditData {
+  selectedPlatforms: string[];
+  auditStep: 1 | 2 | 3;
+  auditMode: 'quiz' | 'paste';
+  quizAnswers: {
+    headlineType: string | null;
+    hasPinnedProof: boolean | null;
+    hasSingleCta: boolean | null;
+  };
+  pastedBio: string;
+  isBioAnalyzed: boolean;
+  diagnosticScore: number | null;
+  completedAt?: string;
+}
+
+export interface Stage1IdentityData {
+  userName: string;
+  userHandle: string;
+  positioningHeadline: string;
+  proofLine: string;
+  activeTone: 'executive' | 'conversion' | 'direct';
 }
 
 export interface Module4BridgeContext {

@@ -78,18 +78,40 @@ const sectionFade = {
 // ── Main Orchestrator ─────────────────────────────────────────────────────────
 
 export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue }) => {
-  const { authoritySuite, updateProfileField, resetProfileField, mod1ServiceId, mod1CareerTrackId, mod2UniqueMechanism } = useModule3Store();
+  const {
+    authoritySuite,
+    updateProfileField,
+    resetProfileField,
+    mod1ServiceId,
+    mod1CareerTrackId,
+    mod2UniqueMechanism,
+    stage1ActiveSection,
+    stage1CompletedSections,
+    stage1Identity,
+    setStage1ActiveSection,
+    setStage1CompletedSections,
+    setStage1Identity,
+  } = useModule3Store();
 
-  // Wizard state
-  const [activeSection, setActiveSection] = useState(1);
-  const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
+  // Wizard state persisted via store
+  const activeSection = stage1ActiveSection || 1;
+  const completedSections = useMemo(
+    () => new Set(stage1CompletedSections || []),
+    [stage1CompletedSections]
+  );
 
-  // Identity state (Clean empty baseline — user fills in Section 2)
-  const [userName, setUserName] = useState('');
-  const [userHandle, setUserHandle] = useState('');
-  const [positioningHeadline, setPositioningHeadline] = useState('');
-  const [proofLine, setProofLine] = useState('');
-  const [activeTone, setActiveTone] = useState<'executive' | 'conversion' | 'direct'>('executive');
+  // Identity state persisted via store
+  const userName = stage1Identity?.userName ?? '';
+  const userHandle = stage1Identity?.userHandle ?? '';
+  const positioningHeadline = stage1Identity?.positioningHeadline ?? '';
+  const proofLine = stage1Identity?.proofLine ?? '';
+  const activeTone = stage1Identity?.activeTone ?? 'executive';
+
+  const setUserName = useCallback((val: string) => setStage1Identity({ userName: val }), [setStage1Identity]);
+  const setUserHandle = useCallback((val: string) => setStage1Identity({ userHandle: val }), [setStage1Identity]);
+  const setPositioningHeadline = useCallback((val: string) => setStage1Identity({ positioningHeadline: val }), [setStage1Identity]);
+  const setProofLine = useCallback((val: string) => setStage1Identity({ proofLine: val }), [setStage1Identity]);
+  const setActiveTone = useCallback((val: 'executive' | 'conversion' | 'direct') => setStage1Identity({ activeTone: val }), [setStage1Identity]);
 
   // Initial score capture (frozen at Section 1 entry for Before/After comparison)
   const [initialScore, setInitialScore] = useState<number | null>(null);
@@ -101,13 +123,15 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   const profileSystem = authoritySuite?.profileSystem || [];
 
-  // Auto-set headline from profileSystem on first render
+  // Auto-set headline from profileSystem if empty
   useMemo(() => {
-    if (positioningHeadline === '' && profileSystem.length > 0) {
+    if (!stage1Identity?.positioningHeadline && profileSystem.length > 0) {
       const firstHeadline = profileSystem[0]?.fields.find(f => f.key.includes('headline') || f.key.includes('hero'));
-      if (firstHeadline) setPositioningHeadline(firstHeadline.value);
+      if (firstHeadline) {
+        setStage1Identity({ positioningHeadline: firstHeadline.value });
+      }
     }
-  }, [profileSystem]);
+  }, [profileSystem, stage1Identity?.positioningHeadline, setStage1Identity]);
 
   // Capture initial score on first render
   useMemo(() => {
@@ -123,25 +147,27 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
       });
       setInitialScore(score.total);
     }
-  }, [profileSystem]);
+  }, [profileSystem, positioningHeadline, proofLine, mod2UniqueMechanism, userName, userHandle, activeTone, initialScore]);
 
   const advanceSection = useCallback((currentId: number) => {
-    setCompletedSections(prev => new Set([...prev, currentId]));
+    const updated = Array.from(new Set([...(stage1CompletedSections || []), currentId]));
+    setStage1CompletedSections(updated);
     if (currentId < 5) {
-      setActiveSection(currentId + 1);
+      setStage1ActiveSection(currentId + 1);
     }
-  }, []);
+  }, [stage1CompletedSections, setStage1CompletedSections, setStage1ActiveSection]);
 
   const retreatSection = useCallback((currentId: number) => {
     if (currentId > 1) {
-      setActiveSection(currentId - 1);
+      setStage1ActiveSection(currentId - 1);
     }
-  }, []);
+  }, [setStage1ActiveSection]);
 
   const handleComplete = useCallback(() => {
-    setCompletedSections(prev => new Set([...prev, 5]));
+    const updated = Array.from(new Set([...(stage1CompletedSections || []), 5]));
+    setStage1CompletedSections(updated);
     onContinue();
-  }, [onContinue]);
+  }, [stage1CompletedSections, setStage1CompletedSections, onContinue]);
 
   // Loading state
   if (!authoritySuite || !authoritySuite.profileSystem) {
@@ -175,7 +201,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
                   type="button"
                   onClick={() => {
                     if (isCompleted || isPast || section.id <= activeSection + 1) {
-                      setActiveSection(section.id);
+                      setStage1ActiveSection(section.id);
                     }
                   }}
                   className={cn(
