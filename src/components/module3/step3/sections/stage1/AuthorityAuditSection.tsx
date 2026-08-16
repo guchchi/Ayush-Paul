@@ -31,32 +31,32 @@ import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
 const BrandIcons = {
   LinkedIn: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#0A66C2]">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#0A66C2]" aria-hidden="true">
       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
     </svg>
   ),
   YouTube: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#FF0000]">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#FF0000]" aria-hidden="true">
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
     </svg>
   ),
   Instagram: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#E4405F]">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#E4405F]" aria-hidden="true">
       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
     </svg>
   ),
   GitHub: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#0b1c30]">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#0b1c30]" aria-hidden="true">
       <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
     </svg>
   ),
   Twitter: () => (
-    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current text-black">
+    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current text-black" aria-hidden="true">
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
     </svg>
   ),
   Figma: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4">
+    <svg viewBox="0 0 24 24" className="w-4 h-4" aria-hidden="true">
       <path fill="#0ACF83" d="M12 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0z"/>
       <path fill="#A259FF" d="M6 18a3 3 0 0 1 3-3h3v3a3 3 0 0 1-3 3 3 3 0 0 1-3-3z"/>
       <path fill="#F24E1E" d="M6 6a3 3 0 0 1 3-3h3v6H9a3 3 0 0 1-3-3z"/>
@@ -65,8 +65,33 @@ const BrandIcons = {
     </svg>
   ),
   Behance: () => (
-    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#1769FF]">
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#1769FF]" aria-hidden="true">
       <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.171 3-3.455 0-5.555-2.226-5.555-5.69 0-3.328 2.055-5.69 5.378-5.69 3.447 0 5.164 2.26 5.164 5.352 0 .61-.061 1.155-.098 1.408h-7.79c.123 1.776 1.405 2.768 3.082 2.768 1.341 0 2.247-.648 2.705-1.579l2.285.431zm-7.986-4.664h5.188c-.126-1.516-1.127-2.316-2.584-2.316-1.503 0-2.457.877-2.604 2.316zm-8.74 7.664h-7v-16h7.625c2.457 0 4.375 1.111 4.375 3.625 0 1.488-.724 2.586-1.927 3.125 1.624.512 2.427 1.879 2.427 3.525 0 3.016-2.292 5.725-5.5 5.725zm-4.375-9.375h3.875c1.47 0 2.25-.662 2.25-1.875s-.78-1.75-2.25-1.75h-3.875v3.625zm0 6.75h4.125c1.54 0 2.375-.765 2.375-2.125s-.835-2.125-2.375-2.125h-4.125v4.25z"/>
+    </svg>
+  ),
+  Dribbble: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#EA4C89]" aria-hidden="true">
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm9.849 11.002c-.08-.016-2.585-.494-5.183.376 1.092 2.996 1.542 5.49 1.637 6.071 2.155-1.635 3.546-4.148 3.546-6.447zm-5.26 7.42c-.116-.763-.586-3.328-1.748-6.398-4.437 1.482-6.002 4.453-6.177 4.814 1.48 1.157 3.344 1.848 5.368 1.848.918 0 1.799-.142 2.557-.264zm-9.39-2.032c.264-.471 2.039-3.479 6.385-4.887.214-.07.433-.133.655-.192-.47-1.066-.997-2.096-1.577-3.08-4.195 1.258-8.232 1.246-8.618 1.244-.029.356-.044.717-.044 1.082 0 2.213.784 4.249 2.096 5.833zm-2.148-7.794c.433.003 3.992-.016 7.973-1.164-1.282-2.316-2.73-4.24-2.883-4.44-2.868 1.18-4.912 3.864-5.09 5.604zm6.657-6.223c.162.214 1.619 2.138 2.879 4.417 2.378-.887 4.542-.716 4.793-.693-1.67-2.339-4.394-3.864-7.464-3.864-.07 0-.138.005-.208.007v.133zm9.362 5.253c-.328-.026-2.748-.175-5.275.823.548.966 1.05 1.968 1.498 3.003 2.502-.821 4.791-.371 4.908-.346-.109-1.326-.499-2.482-1.131-3.48z"/>
+    </svg>
+  ),
+  TikTok: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#000000]" aria-hidden="true">
+      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.18 1.18 2.16 2.37 2.37.95.19 1.98-.05 2.74-.64.71-.53 1.14-1.36 1.19-2.25.04-3.14.02-6.28.02-9.42V.02z"/>
+    </svg>
+  ),
+  ProductHunt: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#DA552F]" aria-hidden="true">
+      <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm-1.09 16.5H8.36V7.5h4.18c2.42 0 4.18 1.65 4.18 4.09 0 2.44-1.76 4.09-4.18 4.09h-1.63v.82zm0-4.91h1.63c.99 0 1.63-.66 1.63-1.64 0-.97-.64-1.63-1.63-1.63h-1.63v3.27z"/>
+    </svg>
+  ),
+  Substack: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#FF6719]" aria-hidden="true">
+      <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+    </svg>
+  ),
+  Vimeo: () => (
+    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-[#1AB7EA]" aria-hidden="true">
+      <path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609-3.268 4.247-6.026 6.37-8.29 6.37-1.409 0-2.578-1.294-3.553-3.881L5.322 11.4C4.603 8.816 3.834 7.522 3.012 7.522c-.179 0-.806.378-1.881 1.132L0 7.197c1.185-1.044 2.351-2.084 3.501-3.128 1.604-1.398 2.809-2.138 3.611-2.215 1.9-.179 3.064 1.119 3.498 3.896.46 2.96 1.05 6.077 1.768 9.351.644-1.015 1.547-2.613 2.709-4.795 1.162-2.181 1.777-3.729 1.848-4.643.141-1.611-.531-2.417-2.016-2.417-.672 0-1.344.14-2.016.42 1.344-4.385 3.894-6.527 7.65-6.427 2.784.07 4.095 1.83 3.935 5.279z"/>
     </svg>
   ),
 };
@@ -75,57 +100,255 @@ interface RolePlatformConfig {
   key: string;
   name: string;
   category: string;
+  benefit: string;
+  clientSignal: string;
   icon: React.ComponentType;
   recommended: boolean;
 }
 
-const getRoleSensiblePlatforms = (serviceId: string | null, careerTrackId: string | null): { roleTitle: string; platforms: RolePlatformConfig[] } => {
+const getRoleSensiblePlatforms = (serviceId: string | null, careerTrackId: string | null): { roleTitle: string; roleNiche: string; platforms: RolePlatformConfig[] } => {
   const s = (serviceId || '').toLowerCase();
   const c = (careerTrackId || '').toLowerCase();
 
-  if (s.includes('edit') || s.includes('video') || s.includes('motion') || c.includes('editor')) {
+  if (s.includes('edit') || s.includes('video') || s.includes('motion') || s.includes('cut') || s.includes('reel') || c.includes('editor') || c.includes('video')) {
     return {
-      roleTitle: 'Video Editor & Motion Specialist',
+      roleTitle: 'Video Editor & Motion Designer',
+      roleNiche: 'High-Retention Video Editing & Motion Production',
       platforms: [
-        { key: 'youtube', name: 'YouTube Showreel', category: 'Showcase Channel', icon: BrandIcons.YouTube, recommended: true },
-        { key: 'instagram', name: 'Instagram (Reels)', category: 'Short-Form Clips', icon: BrandIcons.Instagram, recommended: true },
-        { key: 'twitter', name: 'X / Twitter', category: 'Creator Authority', icon: BrandIcons.Twitter, recommended: true },
-        { key: 'behance', name: 'Behance / Vimeo', category: 'Portfolio Reel', icon: BrandIcons.Behance, recommended: false },
+        {
+          key: 'youtube',
+          name: 'YouTube',
+          category: 'Showcase & Retention Hub',
+          benefit: 'Pacing breakdowns, narrative editing, sound design, and retention graph case studies.',
+          clientSignal: 'Essential conversion hub for 6-figure and 7-figure YouTube creators.',
+          icon: BrandIcons.YouTube,
+          recommended: true,
+        },
+        {
+          key: 'twitter',
+          name: 'X / Twitter',
+          category: 'Creator & Founder Outreach',
+          benefit: 'Direct access to top YouTubers, SaaS CEOs, viral editing teardowns, and before/after clips.',
+          clientSignal: 'Highest conversion rate for cold creator DM client closing.',
+          icon: BrandIcons.Twitter,
+          recommended: true,
+        },
+        {
+          key: 'instagram',
+          name: 'Instagram (Reels)',
+          category: 'Short-Form Showreels',
+          benefit: 'High-velocity motion graphics, dynamic sound design reels, and viral pacing samples.',
+          clientSignal: 'Instant visual proof of viral short-form editing and brand aesthetic mastery.',
+          icon: BrandIcons.Instagram,
+          recommended: true,
+        },
+        {
+          key: 'tiktok',
+          name: 'TikTok',
+          category: 'Viral Hook & Pacing Testing',
+          benefit: 'Fast-hook retention tests, viral meme formats, dynamic subtitles, and algorithm pacing proof.',
+          clientSignal: 'Demonstrates high viral literacy for TikTok-first brand accounts.',
+          icon: BrandIcons.TikTok,
+          recommended: false,
+        },
+        {
+          key: 'vimeo_behance',
+          name: 'Behance / Vimeo',
+          category: 'Cinematic Reel & Grading',
+          benefit: 'Uncompressed 4K showreels, high-budget commercial commercials, and color grading portfolios.',
+          clientSignal: 'Required by agency creative directors and high-budget brand commercials.',
+          icon: BrandIcons.Vimeo,
+          recommended: false,
+        },
+        {
+          key: 'linkedin',
+          name: 'LinkedIn',
+          category: 'B2B Brand Video & Retainers',
+          benefit: 'Corporate video marketing, B2B podcast repurposing, and executive personal brand clips.',
+          clientSignal: 'Unlocks corporate monthly retainers ($3,000–$10,000/mo).',
+          icon: BrandIcons.LinkedIn,
+          recommended: false,
+        },
       ],
     };
   }
 
-  if (s.includes('code') || s.includes('dev') || s.includes('tech') || s.includes('app') || c.includes('developer')) {
+  if (s.includes('code') || s.includes('dev') || s.includes('tech') || s.includes('app') || s.includes('software') || s.includes('fullstack') || s.includes('frontend') || s.includes('backend') || c.includes('developer') || c.includes('engineer')) {
     return {
       roleTitle: 'Software Developer & Technical Architect',
+      roleNiche: 'Full-Stack Engineering & Scalable Systems',
       platforms: [
-        { key: 'github', name: 'GitHub Profile', category: 'Code Proof & Repos', icon: BrandIcons.GitHub, recommended: true },
-        { key: 'linkedin', name: 'LinkedIn Executive', category: 'B2B Client Stance', icon: BrandIcons.LinkedIn, recommended: true },
-        { key: 'twitter', name: 'X / Twitter', category: 'Tech Build-in-Public', icon: BrandIcons.Twitter, recommended: true },
+        {
+          key: 'github',
+          name: 'GitHub',
+          category: 'Code Proof & Repos',
+          benefit: 'Pinned repositories, live architectures, commit frequency, and open-source PRs.',
+          clientSignal: 'Primary technical evaluation channel for CTOs and tech founders.',
+          icon: BrandIcons.GitHub,
+          recommended: true,
+        },
+        {
+          key: 'linkedin',
+          name: 'LinkedIn',
+          category: 'B2B Client Pipeline',
+          benefit: 'Direct executive outreach to SaaS founders, enterprise tech leads, and venture-backed startups.',
+          clientSignal: 'Generates highest contract-value retainers ($5,000–$20,000/mo).',
+          icon: BrandIcons.LinkedIn,
+          recommended: true,
+        },
+        {
+          key: 'twitter',
+          name: 'X / Twitter',
+          category: 'Tech Founder Network',
+          benefit: 'Build in public, viral code demos, software architecture breakdowns, and tech networking.',
+          clientSignal: 'Fastest channel for viral inbound project requests from startup founders.',
+          icon: BrandIcons.Twitter,
+          recommended: true,
+        },
+        {
+          key: 'technical_blog',
+          name: 'Substack / Dev.to',
+          category: 'Deep-Dive Engineering',
+          benefit: 'In-depth technical whitepapers, database optimization breakdowns, and system design case studies.',
+          clientSignal: 'Demonstrates elite problem-solving depth over junior code tutorials.',
+          icon: BrandIcons.Substack,
+          recommended: false,
+        },
+        {
+          key: 'producthunt',
+          name: 'Product Hunt',
+          category: 'Shipped SaaS Proof',
+          benefit: 'Live product launches, user upvotes, micro-SaaS tools, and revenue traction milestones.',
+          clientSignal: 'Proves full product execution capability from zero to one.',
+          icon: BrandIcons.ProductHunt,
+          recommended: false,
+        },
+        {
+          key: 'youtube',
+          name: 'YouTube (Tech Walkthroughs)',
+          category: 'Live Code & System Design',
+          benefit: 'Full-stack architectural teardowns, codebase walkthroughs, and live code reviews.',
+          clientSignal: 'High-trust proof asset for non-technical founders seeking confidence.',
+          icon: BrandIcons.YouTube,
+          recommended: false,
+        },
       ],
     };
   }
 
-  if (s.includes('design') || s.includes('ui') || s.includes('figma') || c.includes('designer')) {
+  if (s.includes('design') || s.includes('ui') || s.includes('ux') || s.includes('product') || s.includes('brand') || s.includes('figma') || c.includes('designer')) {
     return {
       roleTitle: 'UI/UX & Product Designer',
+      roleNiche: 'High-Converting Product Design & Design Systems',
       platforms: [
-        { key: 'behance', name: 'Figma / Behance Space', category: 'Design Systems', icon: BrandIcons.Figma, recommended: true },
-        { key: 'linkedin', name: 'LinkedIn Professional', category: 'Enterprise Clients', icon: BrandIcons.LinkedIn, recommended: true },
-        { key: 'twitter', name: 'X / Twitter', category: 'Design Community', icon: BrandIcons.Twitter, recommended: true },
-        { key: 'instagram', name: 'Instagram Portfolio', category: 'Visual Carousel', icon: BrandIcons.Instagram, recommended: false },
+        {
+          key: 'dribbble',
+          name: 'Dribbble',
+          category: 'Visual Craft & Interactions',
+          benefit: 'Polished UI shots, micro-interaction animations, and clean visual design aesthetics.',
+          clientSignal: 'Top design discovery engine for startup founders seeking aesthetic polish.',
+          icon: BrandIcons.Dribbble,
+          recommended: true,
+        },
+        {
+          key: 'behance',
+          name: 'Behance',
+          category: 'End-to-End Case Studies',
+          benefit: 'Deep-dive UX research, user personas, design system architectures, and end-to-end design journeys.',
+          clientSignal: 'Proves strategic design thinking for high-ticket product redesigns.',
+          icon: BrandIcons.Behance,
+          recommended: true,
+        },
+        {
+          key: 'figma',
+          name: 'Figma Community',
+          category: 'Design Systems & UI Kits',
+          benefit: 'Published design system tokens, auto-layout UI kits, and downloadable component libraries.',
+          clientSignal: 'Industry benchmark for technical UI/UX craft and design system mastery.',
+          icon: BrandIcons.Figma,
+          recommended: true,
+        },
+        {
+          key: 'linkedin',
+          name: 'LinkedIn',
+          category: 'Product Leaders & Retainers',
+          benefit: 'Product design teardowns, conversion rate optimization (CRO) case studies, and design ROI insights.',
+          clientSignal: 'Primary channel for landing recurring B2B product design retainers.',
+          icon: BrandIcons.LinkedIn,
+          recommended: true,
+        },
+        {
+          key: 'twitter',
+          name: 'X / Twitter',
+          category: 'Design Engineering Community',
+          benefit: 'Figma tips, design system breakdowns, live redesign threads, and UI craft critiques.',
+          clientSignal: 'Connects directly with Y-Combinator founders and design executives.',
+          icon: BrandIcons.Twitter,
+          recommended: false,
+        },
+        {
+          key: 'instagram',
+          name: 'Instagram',
+          category: 'UI Carousels & Brand Guides',
+          benefit: 'Typography pairings, UI breakdown carousels, aesthetic design tips, and visual inspiration.',
+          clientSignal: 'Builds personal brand recognition and design agency authority.',
+          icon: BrandIcons.Instagram,
+          recommended: false,
+        },
       ],
     };
   }
 
-  // Default / Agency / Consultant
+  // Default / Consultant / Agency
   return {
     roleTitle: 'Authority Specialist & Consultant',
+    roleNiche: 'High-Ticket B2B Client Acquisition & Consulting',
     platforms: [
-      { key: 'linkedin', name: 'LinkedIn Profile', category: 'Executive Authority', icon: BrandIcons.LinkedIn, recommended: true },
-      { key: 'twitter', name: 'X / Twitter', category: 'Audience & Growth', icon: BrandIcons.Twitter, recommended: true },
-      { key: 'youtube', name: 'YouTube Channel', category: 'Long-form Video', icon: BrandIcons.YouTube, recommended: false },
-      { key: 'instagram', name: 'Instagram', category: 'Visual Stance', icon: BrandIcons.Instagram, recommended: false },
+      {
+        key: 'linkedin',
+        name: 'LinkedIn',
+        category: 'B2B Executive Authority',
+        benefit: 'Thought leadership articles, executive positioning, and inbound corporate pipeline.',
+        clientSignal: 'Essential channel for $5,000+ consulting engagements.',
+        icon: BrandIcons.LinkedIn,
+        recommended: true,
+      },
+      {
+        key: 'twitter',
+        name: 'X / Twitter',
+        category: 'Industry Thought Leadership',
+        benefit: 'Framework teardowns, contrarian industry perspectives, and high-engagement threads.',
+        clientSignal: 'Generates organic inbound leads from founders and operators.',
+        icon: BrandIcons.Twitter,
+        recommended: true,
+      },
+      {
+        key: 'technical_blog',
+        name: 'Substack / Newsletter',
+        category: 'Strategic Whitepapers',
+        benefit: 'Deep-dive industry analysis, client case studies, and proprietary playbooks.',
+        clientSignal: 'Builds deep trust and pre-sells high-ticket advisory packages.',
+        icon: BrandIcons.Substack,
+        recommended: true,
+      },
+      {
+        key: 'youtube',
+        name: 'YouTube',
+        category: 'Long-Form Advisory',
+        benefit: 'Recorded client workshops, framework walkthroughs, and executive keynotes.',
+        clientSignal: 'Highest authority conversion medium for premium buyers.',
+        icon: BrandIcons.YouTube,
+        recommended: false,
+      },
+      {
+        key: 'instagram',
+        name: 'Instagram',
+        category: 'Brand Stance & Social Proof',
+        benefit: 'Client testimonials, behind-the-scenes consulting, and milestone updates.',
+        clientSignal: 'Provides social validation and human connection.',
+        icon: BrandIcons.Instagram,
+        recommended: false,
+      },
     ],
   };
 };
@@ -685,7 +908,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             </div>
 
             {/* Platform Grid (Clean SVG Icons + Selected State) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {roleConfig.platforms.map((platform) => {
                 const isSelected = selectedPlatforms.includes(platform.key);
                 const Icon = platform.icon;
@@ -696,52 +919,67 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     type="button"
                     onClick={() => togglePlatform(platform.key)}
                     className={cn(
-                      'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[115px] relative group',
+                      'p-4.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                       isSelected
                         ? 'bg-blue-50/70 border-2 border-[#0058be] shadow-sm ring-2 ring-[#0058be]/10'
                         : 'bg-white border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/60'
                     )}
                   >
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center gap-2.5">
-                        <div className={cn(
-                          'p-2 rounded-xl border transition-colors',
-                          isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200'
-                        )}>
-                          <Icon />
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2.5">
+                          <div className={cn(
+                            'p-2 rounded-xl border transition-colors',
+                            isSelected ? 'bg-white border-blue-200 shadow-2xs' : 'bg-neutral-50 border-neutral-200'
+                          )}>
+                            <Icon />
+                          </div>
+                          <div>
+                            <span className="font-bold text-xs sm:text-sm text-[#0b1c30] block">{platform.name}</span>
+                            <span className="text-[10px] text-neutral-400 font-medium">{platform.category}</span>
+                          </div>
                         </div>
-                        <span className="font-bold text-xs text-[#0b1c30]">{platform.name}</span>
+
+                        {/* Selection Check Circle */}
+                        <div className={cn(
+                          'w-5 h-5 rounded-full border flex items-center justify-center transition-all shrink-0',
+                          isSelected
+                            ? 'bg-[#0058be] border-[#0058be] text-white shadow-2xs'
+                            : 'border-neutral-300 bg-white group-hover:border-neutral-400'
+                        )}>
+                          {isSelected ? (
+                            <Check size={12} strokeWidth={3} />
+                          ) : (
+                            <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 group-hover:bg-neutral-300" />
+                          )}
+                        </div>
                       </div>
 
-                      {/* Selection Check Circle */}
-                      <div className={cn(
-                        'w-5 h-5 rounded-full border flex items-center justify-center transition-all',
-                        isSelected
-                          ? 'bg-[#0058be] border-[#0058be] text-white shadow-2xs'
-                          : 'border-neutral-300 bg-white group-hover:border-neutral-400'
-                      )}>
-                        {isSelected ? (
-                          <Check size={12} strokeWidth={3} />
-                        ) : (
-                          <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 group-hover:bg-neutral-300" />
-                        )}
-                      </div>
+                      {/* Role Benefit */}
+                      <p className="text-[11px] text-neutral-600 leading-relaxed">
+                        {platform.benefit}
+                      </p>
                     </div>
 
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="text-[10px] text-neutral-400 font-medium">
-                        {platform.category}
-                      </span>
-                      <span className={cn(
-                        'text-[10px] font-bold px-2 py-0.5 rounded-full',
-                        isSelected
-                          ? 'bg-blue-100/80 text-[#0058be]'
-                          : platform.recommended
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-neutral-100 text-neutral-500'
-                      )}>
-                        {isSelected ? 'Active Channel' : platform.recommended ? 'Recommended' : 'Optional'}
-                      </span>
+                    <div className="space-y-2 pt-1 border-t border-neutral-100">
+                      {/* High-Ticket Client Signal */}
+                      <div className="text-[10px] text-neutral-500 font-medium flex items-start gap-1.5">
+                        <Zap size={11} className={cn("shrink-0 mt-0.5", isSelected ? "text-[#0058be]" : "text-amber-500")} />
+                        <span className="line-clamp-2">{platform.clientSignal}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <span className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                          isSelected
+                            ? 'bg-blue-100/80 text-[#0058be]'
+                            : platform.recommended
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-neutral-100 text-neutral-500'
+                        )}>
+                          {isSelected ? '✓ Active Target Channel' : platform.recommended ? '★ Core Recommended' : 'Optional Channel'}
+                        </span>
+                      </div>
                     </div>
                   </button>
                 );
