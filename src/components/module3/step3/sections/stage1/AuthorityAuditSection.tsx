@@ -633,80 +633,52 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
-      {/* ── SUB-STEPPER NAVIGATION (TABS: 1. CHANNELS -> 2. DIAGNOSTIC -> 3. SCORECARD) ── */}
-      <div className="flex items-center justify-between gap-2 p-1.5 rounded-2xl bg-neutral-100/90 border border-neutral-200/80 w-full max-w-2xl">
-        <button
-          type="button"
-          onClick={() => setAuditStep(1)}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer',
-            auditStep === 1
-              ? 'bg-white text-[#0058be] shadow-2xs border border-neutral-200/60'
-              : 'text-neutral-500 hover:text-neutral-800'
-          )}
-        >
-          <span className={cn(
-            'w-5 h-5 rounded-full text-[10px] font-black flex items-center justify-center transition-all',
-            auditStep === 1
-              ? 'bg-[#0058be] text-white'
-              : selectedPlatforms.length > 0
-              ? 'bg-emerald-100 text-emerald-800'
-              : 'bg-neutral-200 text-neutral-600'
-          )}>
-            {selectedPlatforms.length > 0 && auditStep > 1 ? <Check size={11} strokeWidth={3} /> : '1'}
+      {/* ── MINIMAL INTEGRATED AUDIT PROGRESS (CLEAN & NON-DUPLICATE) ──────── */}
+      <div className="flex items-center justify-between pb-2 border-b border-neutral-100">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#0058be]">
+            {auditStep === 1
+              ? 'Stage 1 • Part 1 of 3: Target Channels'
+              : auditStep === 2
+              ? 'Stage 1 • Part 2 of 3: Diagnostic Assessment'
+              : 'Stage 1 • Part 3 of 3: Reality Scorecard'}
           </span>
-          <span>Target Channels</span>
-        </button>
+        </div>
 
-        <div className="w-3 h-0.5 bg-neutral-300/60 rounded-full shrink-0" />
-
-        <button
-          type="button"
-          disabled={selectedPlatforms.length === 0}
-          onClick={() => setAuditStep(2)}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all',
-            selectedPlatforms.length === 0 ? 'opacity-40 cursor-not-allowed text-neutral-400' : 'cursor-pointer',
-            auditStep === 2
-              ? 'bg-white text-[#0058be] shadow-2xs border border-neutral-200/60'
-              : 'text-neutral-500 hover:text-neutral-800'
-          )}
-        >
-          <span className={cn(
-            'w-5 h-5 rounded-full text-[10px] font-black flex items-center justify-center transition-all',
-            auditStep === 2
-              ? 'bg-[#0058be] text-white'
-              : hasAnsweredQuestions && auditStep > 2
-              ? 'bg-emerald-100 text-emerald-800'
-              : 'bg-neutral-200 text-neutral-600'
-          )}>
-            {hasAnsweredQuestions && auditStep > 2 ? <Check size={11} strokeWidth={3} /> : '2'}
-          </span>
-          <span>Diagnostic Quiz</span>
-        </button>
-
-        <div className="w-3 h-0.5 bg-neutral-300/60 rounded-full shrink-0" />
-
-        <button
-          type="button"
-          disabled={!hasInteracted}
-          onClick={() => setAuditStep(3)}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all',
-            !hasInteracted ? 'opacity-40 cursor-not-allowed text-neutral-400' : 'cursor-pointer',
-            auditStep === 3
-              ? 'bg-white text-[#0058be] shadow-2xs border border-neutral-200/60'
-              : 'text-neutral-500 hover:text-neutral-800'
-          )}
-        >
-          <span className={cn(
-            'w-5 h-5 rounded-full text-[10px] font-black flex items-center justify-center transition-all',
-            auditStep === 3 ? 'bg-[#0058be] text-white' : 'bg-neutral-200 text-neutral-600'
-          )}>
-            3
-          </span>
-          <span>Scorecard</span>
-        </button>
+        {/* Minimal 3-Segment Interactive Micro-Pills */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setAuditStep(1)}
+            className={cn(
+              'h-1.5 rounded-full transition-all cursor-pointer',
+              auditStep === 1 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
+            )}
+            title="Part 1: Target Channels"
+          />
+          <button
+            type="button"
+            disabled={selectedPlatforms.length === 0}
+            onClick={() => setAuditStep(2)}
+            className={cn(
+              'h-1.5 rounded-full transition-all',
+              selectedPlatforms.length === 0 ? 'cursor-not-allowed opacity-30' : 'cursor-pointer',
+              auditStep === 2 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
+            )}
+            title="Part 2: Diagnostic Assessment"
+          />
+          <button
+            type="button"
+            disabled={!hasInteracted}
+            onClick={() => setAuditStep(3)}
+            className={cn(
+              'h-1.5 rounded-full transition-all',
+              !hasInteracted ? 'cursor-not-allowed opacity-30' : 'cursor-pointer',
+              auditStep === 3 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
+            )}
+            title="Part 3: Reality Scorecard"
+          />
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
