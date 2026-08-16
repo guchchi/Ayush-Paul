@@ -23,6 +23,7 @@ import {
   HelpCircle,
   Plus,
   Check,
+  ArrowLeft,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
@@ -775,13 +776,22 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
             className="space-y-6"
           >
-            <div className="space-y-1.5">
+            <div className="space-y-3">
+              {/* Top Navigation Row: Back Link on Left + Mode Selector on Right */}
               <div className="flex items-center justify-between flex-wrap gap-2">
-                {selectedPlatforms.length > 0 && (
-                  <span className="text-[10px] font-semibold text-neutral-600 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
-                    {selectedPlatforms.length} Active Channels Selected
-                  </span>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setAuditStep(1)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-[#0058be] transition-colors cursor-pointer group py-1"
+                >
+                  <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform text-neutral-400 group-hover:text-[#0058be]" />
+                  <span>Back to Channels</span>
+                  {selectedPlatforms.length > 0 && (
+                    <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 ml-0.5">
+                      {selectedPlatforms.length} selected
+                    </span>
+                  )}
+                </button>
 
                 <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
                   <button
@@ -809,12 +819,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 </div>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
-                How is your current social presence structured?
-              </h2>
-              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl">
-                Answer 3 quick questions about your current profiles or paste your bio to benchmark your authority score.
-              </p>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0b1c30]">
+                  How is your current social presence structured?
+                </h2>
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl mt-1">
+                  Answer 3 quick questions about your current profiles or paste your bio to benchmark your authority score.
+                </p>
+              </div>
             </div>
 
             {/* Option A: Quick 3-Question Honest Diagnostic */}
@@ -1024,12 +1036,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
             {/* Action Footer for Step 2 */}
             <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
-              <ModuleButton
-                variant="secondary"
+              <button
+                type="button"
                 onClick={() => setAuditStep(1)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer px-2.5 py-1.5 rounded-xl hover:bg-neutral-100"
               >
-                ← Back to Channels
-              </ModuleButton>
+                <ArrowLeft size={13} />
+                <span>Back to Channels</span>
+              </button>
               <ModuleButton
                 variant="primary"
                 disabled={!hasAnsweredQuestions}
@@ -1051,6 +1065,20 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
             className="space-y-6"
           >
+            {/* Top Navigation Row for Step 3 */}
+            {!isAnalyzing && (
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setAuditStep(2)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-[#0058be] transition-colors cursor-pointer group py-1"
+                >
+                  <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform text-neutral-400 group-hover:text-[#0058be]" />
+                  <span>Back to Diagnostic Answers</span>
+                </button>
+              </div>
+            )}
+
             {isAnalyzing ? (
               /* Scanning Animation State */
               <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-2xl text-white flex flex-col items-center justify-center space-y-6 text-center">
@@ -1159,12 +1187,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
                 {/* ── ACTION FOOTER ────────────────────────────────────────────────── */}
                 <div className="flex items-center justify-between pt-2">
-                  <ModuleButton
-                    variant="secondary"
+                  <button
+                    type="button"
                     onClick={() => setAuditStep(2)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer px-3 py-2 rounded-xl hover:bg-neutral-100"
                   >
-                    ← Modify Selections & Re-audit
-                  </ModuleButton>
+                    <ArrowLeft size={13} />
+                    <span>Adjust Answers & Re-audit</span>
+                  </button>
                   <ModuleButton
                     variant="primary"
                     onClick={onContinue}
