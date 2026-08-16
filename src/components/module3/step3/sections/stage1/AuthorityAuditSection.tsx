@@ -1036,23 +1036,26 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     type="button"
                     onClick={() => setAuditMode('quiz')}
                     className={cn(
-                      'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
                       auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
                     )}
                   >
                     <HelpCircle size={12} />
-                    <span>3-Question Diagnostic</span>
+                    <span>3-Question Diagnostic (Active)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setAuditMode('paste')}
                     className={cn(
-                      'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
+                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
                       auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
                     )}
                   >
-                    <FileText size={12} />
-                    <span>Paste Current Bio</span>
+                    <Sparkles size={12} className="text-[#0058be]" />
+                    <span>Direct Bio Scan</span>
+                    <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 bg-blue-100/70 text-[#0058be] rounded-md">
+                      Sync
+                    </span>
                   </button>
                 </div>
               </div>
@@ -1247,28 +1250,50 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               </div>
             )}
 
-            {/* Option B: Direct Bio Text Paste Analyzer */}
+            {/* Option B: Direct Bio Text Paste / AI OCR Engine (High-Status Calibration Psychology) */}
             {auditMode === 'paste' && (
-              <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-3">
-                <label className="text-[10px] font-bold uppercase tracking-[0.1em] text-neutral-400 block">
-                  Paste your current LinkedIn Headline, Twitter Bio, or About Section
-                </label>
-                <textarea
-                  value={pastedBio}
-                  onChange={(e) => {
-                    setPastedBio(e.target.value);
-                    setIsBioAnalyzed(true);
-                  }}
-                  placeholder={`e.g. ${roleQuiz.headlineOptions[0]?.example.replace('e.g. ', '').replace(/"/g, '')}. Available for freelance client projects. DM for rates.`}
-                  rows={3}
-                  className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all font-sans leading-relaxed"
-                />
-                {pastedBio.trim().length > 0 && (
-                  <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200 text-xs text-[#0058be] font-semibold flex items-center gap-2">
-                    <CheckCircle2 size={14} className="shrink-0" />
-                    <span>Text detected — Authority engine scored your current baseline below.</span>
+              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-neutral-900 via-[#0b1c30] to-[#0a2540] border border-white/10 shadow-xl text-white space-y-6">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={16} className="text-[#d1f34d]" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
+                      AI Profile Neural Crawler • In High-Precision Calibration
+                    </span>
                   </div>
-                )}
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
+                    Enterprise v2.4 Engine
+                  </span>
+                </div>
+
+                <div className="space-y-2 max-w-2xl">
+                  <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+                    Direct Social Profile URL & Raw Bio Scraping
+                  </h3>
+                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                    To prevent generic AI inaccuracies and ensure 100% precision across B2B client acquisition benchmarks, our automated multi-platform bio scraping & OCR vision crawler is currently undergoing calibration with high-volume enterprise pipelines.
+                  </p>
+                </div>
+
+                {/* Psychological Why Box: Why 3-Question Diagnostic is Superior */}
+                <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
+                    <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
+                    <span>Why the 3-Question Diagnostic gives you a far more accurate baseline:</span>
+                  </div>
+                  <p className="text-[11px] text-white/70 leading-relaxed pl-6">
+                    Raw bios often mask structural drop-off points (like missing proof assets, weak headlines, or broken conversion funnels). The 3-Question Diagnostic evaluates your profile across the exact 4 dimensions high-ticket clients ($3,000+) use to make hiring decisions in under 5 seconds.
+                  </p>
+                </div>
+
+                {/* Direct Action Switcher */}
+                <div className="flex items-center gap-3 pt-1 flex-wrap">
+                  <ModuleButton
+                    variant="primary"
+                    onClick={() => setAuditMode('quiz')}
+                  >
+                    Switch to 3-Question Diagnostic (Instant Baseline) →
+                  </ModuleButton>
+                </div>
               </div>
             )}
 
