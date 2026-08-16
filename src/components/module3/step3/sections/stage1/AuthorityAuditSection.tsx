@@ -633,54 +633,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
-      {/* ── MINIMAL INTEGRATED AUDIT PROGRESS (CLEAN & NON-DUPLICATE) ──────── */}
-      <div className="flex items-center justify-between pb-2 border-b border-neutral-100">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#0058be]">
-            {auditStep === 1
-              ? 'Stage 1 • Part 1 of 3: Target Channels'
-              : auditStep === 2
-              ? 'Stage 1 • Part 2 of 3: Diagnostic Assessment'
-              : 'Stage 1 • Part 3 of 3: Reality Scorecard'}
-          </span>
-        </div>
-
-        {/* Minimal 3-Segment Interactive Micro-Pills */}
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setAuditStep(1)}
-            className={cn(
-              'h-1.5 rounded-full transition-all cursor-pointer',
-              auditStep === 1 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
-            )}
-            title="Part 1: Target Channels"
-          />
-          <button
-            type="button"
-            disabled={selectedPlatforms.length === 0}
-            onClick={() => setAuditStep(2)}
-            className={cn(
-              'h-1.5 rounded-full transition-all',
-              selectedPlatforms.length === 0 ? 'cursor-not-allowed opacity-30' : 'cursor-pointer',
-              auditStep === 2 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
-            )}
-            title="Part 2: Diagnostic Assessment"
-          />
-          <button
-            type="button"
-            disabled={!hasInteracted}
-            onClick={() => setAuditStep(3)}
-            className={cn(
-              'h-1.5 rounded-full transition-all',
-              !hasInteracted ? 'cursor-not-allowed opacity-30' : 'cursor-pointer',
-              auditStep === 3 ? 'w-7 bg-[#0058be]' : 'w-3.5 bg-neutral-200 hover:bg-neutral-300'
-            )}
-            title="Part 3: Reality Scorecard"
-          />
-        </div>
-      </div>
-
       <AnimatePresence mode="wait">
         {/* ── SUB-STEP 1: PLATFORM CHANNEL SELECTION ────────────────────────── */}
         {auditStep === 1 && (
@@ -694,9 +646,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           >
             <div className="space-y-1.5">
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
-                  Sub-Step 1 of 3: Target Channels
-                </span>
                 <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   Curated for {roleConfig.roleTitle}
                 </span>
@@ -828,16 +777,11 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
           >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0058be]">
-                    Sub-Step 2 of 3: Profile Structure
+                {selectedPlatforms.length > 0 && (
+                  <span className="text-[10px] font-semibold text-neutral-600 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
+                    {selectedPlatforms.length} Active Channels Selected
                   </span>
-                  {selectedPlatforms.length > 0 && (
-                    <span className="text-[10px] font-semibold text-neutral-600 bg-neutral-100 px-2.5 py-0.5 rounded-full border border-neutral-200">
-                      {selectedPlatforms.length} Active Channels
-                    </span>
-                  )}
-                </div>
+                )}
 
                 <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
                   <button
@@ -878,23 +822,18 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               <div className="space-y-4 pt-1">
                 {/* Question 1: Headline */}
                 <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                        01
-                      </span>
-                      <div>
-                        <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                          What does your main profile headline look like?
-                        </h3>
-                        <p className="text-xs text-neutral-500">
-                          Select the format closest to how you currently introduce yourself on social channels.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                      Question 1 of 3
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                      01
                     </span>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                        What does your main profile headline look like?
+                      </h3>
+                      <p className="text-xs text-neutral-500">
+                        Select the format closest to how you currently introduce yourself on social channels.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
@@ -940,23 +879,18 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
                 {/* Question 2: Featured Social Proof */}
                 <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                        02
-                      </span>
-                      <div>
-                        <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                          Do you have verified proof, numbers, or pinned case studies?
-                        </h3>
-                        <p className="text-xs text-neutral-500">
-                          High-ticket clients look for tangible proof metrics before reaching out.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                      Question 2 of 3
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                      02
                     </span>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                        Do you have verified proof, numbers, or pinned case studies?
+                      </h3>
+                      <p className="text-xs text-neutral-500">
+                        High-ticket clients look for tangible proof metrics before reaching out.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -1004,23 +938,18 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
                 {/* Question 3: CTA & Funnel Link */}
                 <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
-                        03
-                      </span>
-                      <div>
-                        <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
-                          Where does your profile link direct prospective clients?
-                        </h3>
-                        <p className="text-xs text-neutral-500">
-                          A frictionless conversion funnel turns profile visitors into scheduled client discovery calls.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hidden sm:block">
-                      Question 3 of 3
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-[#0058be]/10 text-[#0058be] text-xs font-black flex items-center justify-center">
+                      03
                     </span>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold text-[#0b1c30]">
+                        Where does your profile link direct prospective clients?
+                      </h3>
+                      <p className="text-xs text-neutral-500">
+                        A frictionless conversion funnel turns profile visitors into scheduled client discovery calls.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -1163,7 +1092,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     <div className="flex items-center gap-2">
                       <Shield size={16} className="text-[#d1f34d]" />
                       <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
-                        Sub-Step 3 of 3: Authority Reality Scorecard
+                        Authority Reality Scorecard
                       </span>
                     </div>
 
