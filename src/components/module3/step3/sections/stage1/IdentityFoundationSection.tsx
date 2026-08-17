@@ -27,6 +27,7 @@ interface Props {
   positioningHeadline: string;
   proofLine: string;
   roleLabel: string;
+  activePlatforms?: string[];
   onUserNameChange: (name: string) => void;
   onUserHandleChange: (handle: string) => void;
   onHeadlineChange: (headline: string) => void;
@@ -41,6 +42,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   positioningHeadline,
   proofLine,
   roleLabel,
+  activePlatforms,
   onUserNameChange,
   onUserHandleChange,
   onHeadlineChange,
@@ -191,6 +193,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           onBlur={() => setFocusedField(null)}
           placeholder="e.g., Narrative Arc Engineering for YouTube Creators | Systematic Authority Builder"
           rows={2}
+          maxLength={220}
           className="w-full text-sm text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all resize-none leading-relaxed"
         />
         <p className="text-[10px] text-neutral-400">
@@ -213,7 +216,17 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
             <Target size={16} className="text-[#0058be]" />
             <span className="text-xs font-bold text-[#0b1c30]">Positioning Proof Line</span>
           </div>
-          {isProofLineSet && <CheckCircle2 size={14} className="text-emerald-500" />}
+          <div className="flex items-center gap-2">
+            {isProofLineSet && <CheckCircle2 size={14} className="text-emerald-500" />}
+            <span className={cn(
+              'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+              proofLine.length > 200 ? 'text-red-600 bg-red-50 border-red-200' :
+              proofLine.length > 150 ? 'text-amber-600 bg-amber-50 border-amber-200' :
+              'text-neutral-400 bg-neutral-100 border-neutral-200'
+            )}>
+              {proofLine.length}/220 chars
+            </span>
+          </div>
         </div>
         <div className="bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 space-y-2">
           <p className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider">Template</p>
@@ -228,6 +241,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           onBlur={() => setFocusedField(null)}
           placeholder="e.g., I help YouTube creators achieve 10x subscriber growth through systematic narrative arc engineering"
           rows={2}
+          maxLength={220}
           className="w-full text-sm text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all resize-none leading-relaxed"
         />
       </motion.div>
@@ -237,23 +251,86 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.4 }}
-        className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-2"
+        className="p-5 rounded-3xl bg-gradient-to-b from-[#0b1c30] to-[#06111f] border border-[#1a2d45] shadow-xl space-y-4"
       >
-        <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-          Live Sync Preview — How platforms will display your identity
-        </span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {[
-            { platform: 'LinkedIn', preview: `${userName} • ${positioningHeadline.slice(0, 40)}...` },
-            { platform: 'GitHub', preview: `${userHandle} — ${positioningHeadline.slice(0, 30)}...` },
-            { platform: 'Twitter', preview: `@${userHandle} • ${positioningHeadline.slice(0, 25)}...` },
-            { platform: 'YouTube', preview: `${userName} Edits` },
-          ].map((item) => (
-            <div key={item.platform} className="p-2.5 rounded-xl bg-white border border-neutral-200 space-y-0.5">
-              <span className="text-[9px] font-bold text-[#0058be] uppercase tracking-wider">{item.platform}</span>
-              <p className="text-[10px] text-neutral-600 font-medium truncate">{item.preview}</p>
-            </div>
-          ))}
+        <div className="flex items-center gap-2 border-b border-[#1a2d45] pb-3">
+          <Sparkles size={14} className="text-[#d1f34d]" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">
+            Cross-Platform Live Mockup
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          {(activePlatforms && activePlatforms.length > 0 ? activePlatforms : ['linkedin', 'twitter', 'github']).map((p) => {
+            const platformId = p.toLowerCase();
+            let previewText = '';
+            let platformName = '';
+            
+            switch (platformId) {
+              case 'linkedin':
+                platformName = 'LinkedIn';
+                previewText = userName ? `${userName} • ${positioningHeadline.slice(0, 40)}${positioningHeadline.length > 40 ? '...' : ''}` : 'Your Name • Headline...';
+                break;
+              case 'twitter':
+                platformName = 'Twitter / X';
+                previewText = userHandle ? `@${userHandle} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle • Headline...';
+                break;
+              case 'github':
+                platformName = 'GitHub';
+                previewText = userHandle ? `${userHandle} — ${positioningHeadline.slice(0, 30)}${positioningHeadline.length > 30 ? '...' : ''}` : 'handle — Headline...';
+                break;
+              case 'youtube':
+                platformName = 'YouTube';
+                previewText = userName ? `${userName} ${roleLabel.toLowerCase().includes('edit') ? 'Edits' : roleLabel.toLowerCase().includes('design') ? 'Design' : roleLabel.toLowerCase().includes('dev') ? 'Tech' : 'HQ'}` : 'Your Name HQ';
+                break;
+              case 'instagram':
+                platformName = 'Instagram';
+                previewText = userHandle ? `@${userHandle} | ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle | Headline...';
+                break;
+              case 'behance':
+                platformName = 'Behance';
+                previewText = userName ? `${userName} — ${positioningHeadline.slice(0, 30)}${positioningHeadline.length > 30 ? '...' : ''}` : 'Your Name — Headline...';
+                break;
+              case 'dribbble':
+                platformName = 'Dribbble';
+                previewText = userName ? `${userName} • Design Portfolio` : 'Your Name • Design Portfolio';
+                break;
+              case 'tiktok':
+                platformName = 'TikTok';
+                previewText = userHandle ? `@${userHandle} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle • Headline...';
+                break;
+              case 'figma':
+                platformName = 'Figma';
+                previewText = userName ? `${userName} — UI/UX Profile` : 'Your Name — UI/UX Profile';
+                break;
+              case 'producthunt':
+                platformName = 'Product Hunt';
+                previewText = userHandle ? `@${userHandle} • Maker` : '@handle • Maker';
+                break;
+              case 'vimeo_behance':
+                platformName = 'Vimeo / Behance';
+                previewText = userName ? `${userName} • Video & Motion` : 'Your Name • Video & Motion';
+                break;
+              case 'technical_blog':
+                platformName = 'Substack / Dev.to';
+                previewText = userName ? `${userName}'s Newsletter` : 'Your Name\'s Newsletter';
+                break;
+              case 'personal_site':
+                platformName = 'Personal Site';
+                previewText = userName ? `${userName} | Official Website` : 'Your Name | Official Website';
+                break;
+              default:
+                platformName = p.charAt(0).toUpperCase() + p.slice(1).replace(/_/g, ' ');
+                previewText = userName ? `${userName} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : 'Your Name • Headline...';
+                break;
+            }
+
+            return (
+              <div key={p} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5 transition-colors hover:bg-white/10">
+                <span className="text-[9px] font-bold text-[#d1f34d] uppercase tracking-wider">{platformName}</span>
+                <p className="text-[11px] text-white/90 font-medium line-clamp-1">{previewText}</p>
+              </div>
+            );
+          })}
         </div>
       </motion.div>
 
@@ -264,9 +341,16 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
             ← Back to Audit
           </ModuleButton>
         ) : <div />}
-        <ModuleButton variant="primary" onClick={onContinue}>
-          Identity Set — Open Platform Studio →
-        </ModuleButton>
+        <div className="flex items-center gap-3">
+          {completedFields < 4 && (
+            <span className="text-xs text-neutral-400 font-medium hidden sm:inline-block">
+              Complete all 4 fields to continue
+            </span>
+          )}
+          <ModuleButton variant="primary" onClick={onContinue} disabled={completedFields < 4}>
+            Identity Set — Open Platform Studio →
+          </ModuleButton>
+        </div>
       </div>
     </div>
   );

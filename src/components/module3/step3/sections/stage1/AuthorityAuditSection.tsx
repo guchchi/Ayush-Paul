@@ -7,7 +7,7 @@
  *  1C. Live Scorecard — Apple Watch style SVG Score Ring (0-100), 4 Dimension Bars & Gap Analysis.
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
@@ -16,12 +16,9 @@ import {
   Shield,
   AlertTriangle,
   CheckCircle2,
-  Circle,
   Sparkles,
   Zap,
-  FileText,
   HelpCircle,
-  Plus,
   Check,
   ArrowLeft,
 } from 'lucide-react';
@@ -791,13 +788,13 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
   // Has user answered the questions in Step 2?
   const hasAnsweredQuestions = useMemo(() => {
+    if (auditMode === 'paste') return false;
     return (
-      quizAnswers.headlineType !== null ||
-      quizAnswers.hasPinnedProof !== null ||
-      quizAnswers.hasSingleCta !== null ||
-      pastedBio.trim().length > 0
+      quizAnswers.headlineType !== null &&
+      quizAnswers.hasPinnedProof !== null &&
+      quizAnswers.hasSingleCta !== null
     );
-  }, [quizAnswers, pastedBio]);
+  }, [quizAnswers, auditMode]);
 
   // Has user interacted with the audit inputs yet?
   const hasInteracted = useMemo(() => {
@@ -831,6 +828,14 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     return Math.min(baseScore, 95);
   }, [hasInteracted, selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed]);
 
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
+
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+    };
+  }, []);
+
   const handleStartAnalysis = useCallback(() => {
     setAuditStep(3);
     setIsAnalyzing(true);
@@ -845,11 +850,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
       }
     }, 1800);
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
+    timersRef.current = [t1, t2, t3];
   }, [setAuditStep, diagnosticScore, setStage1Audit]);
 
   // Dimension Bars calculation
@@ -1125,6 +1126,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           key={item.id}
                           type="button"
                           onClick={() => setQuizAnswers(prev => ({ ...prev, headlineType: item.id }))}
+                          aria-selected={isSelected}
                           className={cn(
                             'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                             isSelected
@@ -1182,6 +1184,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           key={String(item.id)}
                           type="button"
                           onClick={() => setQuizAnswers(prev => ({ ...prev, hasPinnedProof: item.id }))}
+                          aria-selected={isSelected}
                           className={cn(
                             'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                             isSelected
@@ -1241,6 +1244,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           key={String(item.id)}
                           type="button"
                           onClick={() => setQuizAnswers(prev => ({ ...prev, hasSingleCta: item.id }))}
+                          aria-selected={isSelected}
                           className={cn(
                             'p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between space-y-3 relative group',
                             isSelected
@@ -1335,13 +1339,29 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 <ArrowLeft size={13} />
                 <span>Back to Channels</span>
               </button>
-              <ModuleButton
-                variant="primary"
-                disabled={!hasAnsweredQuestions}
-                onClick={handleStartAnalysis}
-              >
-                Analyze Presence & Calculate Score →
-              </ModuleButton>
+              {auditMode === 'paste' ? (
+                <ModuleButton
+                  variant="primary"
+                  onClick={() => setAuditMode('quiz')}
+                >
+                  Switch to Diagnostic Quiz →
+                </ModuleButton>
+              ) : (
+                <div className="flex items-center gap-3">
+                  {!hasAnsweredQuestions && (
+                    <span className="text-xs text-neutral-400 font-medium hidden sm:inline-block">
+                      Answer all 3 questions to calculate score
+                    </span>
+                  )}
+                  <ModuleButton
+                    variant="primary"
+                    disabled={!hasAnsweredQuestions}
+                    onClick={handleStartAnalysis}
+                  >
+                    Analyze Presence & Calculate Score →
+                  </ModuleButton>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -1416,7 +1436,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     </div>
 
                     <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-white/80 bg-white/10 px-3 py-1 rounded-full border border-white/15">
-                      {(diagnosticScore as number) < 50 ? 'High Drop-Off Risk' : 'Moderate Authority'}
+                      {(diagnosticScore ?? 0) < 50 ? 'High Drop-Off Risk' : 'Moderate Authority'}
                     </span>
                   </div>
 
@@ -1490,7 +1510,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     variant="primary"
                     onClick={onContinue}
                   >
-                    Audit Confirmed — Proceed to Step 2 (Identity Foundation) →
+                    Continue to Identity Foundation →
                   </ModuleButton>
                 </div>
               </>

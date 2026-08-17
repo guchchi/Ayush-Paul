@@ -5,7 +5,7 @@
  * Step-by-step navigation: Authority Audit → Identity Foundation → Platform Studio → Consistency Check → Deploy & Proof.
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../../../lib/utils';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
@@ -84,10 +84,14 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     resetProfileField,
     mod1ServiceId,
     mod1CareerTrackId,
+    mod1Positioning,
+    mod1MarketId,
     mod2UniqueMechanism,
+    mod2ProposalSummary,
     stage1ActiveSection,
     stage1CompletedSections,
     stage1Identity,
+    stage1Audit,
     setStage1ActiveSection,
     setStage1CompletedSections,
     setStage1Identity,
@@ -123,18 +127,47 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   const profileSystem = authoritySuite?.profileSystem || [];
 
-  // Auto-set headline from profileSystem if empty
-  useMemo(() => {
-    if (!stage1Identity?.positioningHeadline && profileSystem.length > 0) {
-      const firstHeadline = profileSystem[0]?.fields.find(f => f.key.includes('headline') || f.key.includes('hero'));
-      if (firstHeadline) {
-        setStage1Identity({ positioningHeadline: firstHeadline.value });
+  // Auto-set highly personalized headline and proof line from user's exact Module 1 & 2 inputs
+  useEffect(() => {
+    if (!stage1Identity?.positioningHeadline || !stage1Identity?.proofLine) {
+      const updates: any = {};
+
+      if (!stage1Identity?.positioningHeadline) {
+        // Build an organic headline combining their exact mechanism and positioning
+        // Fallback to their proposal summary headline if available, otherwise construct from raw parts
+        const mechanism = mod2UniqueMechanism?.trim() || 'Systematic Approach';
+        const positioning = mod1Positioning?.trim() || (mod1ServiceId || '').replace(/_/g, ' ') || 'Specialist';
+        
+        updates.positioningHeadline = mod2ProposalSummary?.headline?.trim() 
+          ? mod2ProposalSummary.headline 
+          : `${positioning} | ${mechanism}`;
       }
+
+      if (!stage1Identity?.proofLine) {
+        // Build a raw proof line from their own words
+        const market = (mod1MarketId || '').replace(/_/g, ' ') || 'clients';
+        const mechanism = mod2UniqueMechanism?.trim() || 'my proven system';
+        
+        updates.proofLine = mod2ProposalSummary?.solution?.trim()
+          ? mod2ProposalSummary.solution
+          : `I help ${market} achieve measurable results through ${mechanism}`;
+      }
+
+      setStage1Identity(updates);
     }
-  }, [profileSystem, stage1Identity?.positioningHeadline, setStage1Identity]);
+  }, [
+    mod1Positioning,
+    mod1ServiceId,
+    mod1MarketId,
+    mod2UniqueMechanism,
+    mod2ProposalSummary,
+    stage1Identity?.positioningHeadline,
+    stage1Identity?.proofLine,
+    setStage1Identity
+  ]);
 
   // Capture initial score on first render
-  useMemo(() => {
+  useEffect(() => {
     if (initialScore === null && profileSystem.length > 0) {
       const score = calculateAuthorityScore({
         profileSystem,
@@ -260,6 +293,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               positioningHeadline={positioningHeadline}
               proofLine={proofLine}
               roleLabel={recommendation.roleLabel}
+              activePlatforms={stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : recommendation.recommendedPlatforms}
               onUserNameChange={setUserName}
               onUserHandleChange={setUserHandle}
               onHeadlineChange={setPositioningHeadline}
