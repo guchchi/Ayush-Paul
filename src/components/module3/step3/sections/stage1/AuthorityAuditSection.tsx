@@ -21,9 +21,136 @@ import {
   HelpCircle,
   Check,
   ArrowLeft,
+  XCircle,
+  TrendingUp,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 import { useModule3Store } from '@/src/lib/module3/store';
+
+// ── Intelligent Bio Analyzer (Heuristic AI) ───────────────────────────────────
+
+interface BioFeedback {
+  type: 'positive' | 'warning' | 'critical';
+  message: string;
+  detail: string;
+}
+
+function analyzeBioHeuristic(bio: string): BioFeedback[] {
+  const feedback: BioFeedback[] = [];
+  const lower = bio.toLowerCase().trim();
+  if (!lower || lower.length < 10) return feedback;
+
+  // Authority killers
+  const weakWords = ['passionate', 'aspiring', 'freelancer', 'looking for', 'available for', 'open to work', 'enthusiast', 'love to', 'jack of all'];
+  const foundWeak = weakWords.filter(w => lower.includes(w));
+  if (foundWeak.length > 0) {
+    feedback.push({
+      type: 'critical',
+      message: `Authority-killer detected: "${foundWeak[0]}"`,
+      detail: 'High-ticket clients skip profiles with generic or needy language. Replace with a specific outcome you deliver.',
+    });
+  }
+
+  // Check for positioning pattern "I help X achieve Y"
+  if (lower.includes('i help') || lower.includes('i build') || lower.includes('i design') || lower.includes('i create') || lower.includes('i engineer')) {
+    feedback.push({
+      type: 'positive',
+      message: 'Strong positioning pattern detected',
+      detail: 'Your bio leads with a clear value statement. This converts 3x better than skill-listing bios.',
+    });
+  } else {
+    feedback.push({
+      type: 'warning',
+      message: 'No clear positioning statement found',
+      detail: 'Try starting with "I help [WHO] achieve [RESULT] through [METHOD]" — this is the #1 authority bio pattern.',
+    });
+  }
+
+  // Check for metrics/numbers
+  const hasNumbers = /\d+[%xX+]|\$\d|\d+\s*(clients|projects|videos|brands|companies|subscribers|views)/i.test(bio);
+  if (hasNumbers) {
+    feedback.push({
+      type: 'positive',
+      message: 'Contains quantifiable proof signals',
+      detail: 'Numbers and metrics (like "50+ clients" or "10x growth") dramatically increase trust and conversion.',
+    });
+  } else {
+    feedback.push({
+      type: 'warning',
+      message: 'No metrics or numbers found',
+      detail: 'Adding even one number ("helped 30+ creators" or "$500K+ revenue generated") makes your bio 2x more credible.',
+    });
+  }
+
+  // Check for CTA
+  const ctaSignals = ['book', 'dm ', 'dm me', 'calendar', 'apply', 'link in', 'let\'s talk', 'schedule', 'reach out', 'hire me', 'work with'];
+  const hasCta = ctaSignals.some(s => lower.includes(s));
+  if (hasCta) {
+    feedback.push({
+      type: 'positive',
+      message: 'Call-to-action detected',
+      detail: 'You\'re directing visitors towards the next step. Ensure it leads to a single, clear booking page.',
+    });
+  } else {
+    feedback.push({
+      type: 'critical',
+      message: 'No call-to-action found',
+      detail: 'Without a CTA, visitors read your bio and leave. Add "Book a strategy call" or "DM me [keyword]" at the end.',
+    });
+  }
+
+  // Check length
+  if (bio.length < 60) {
+    feedback.push({
+      type: 'warning',
+      message: 'Bio is very short',
+      detail: 'Most converting bios are 100-200 characters. You have room to add a proof point or a CTA.',
+    });
+  }
+
+  // Check for niche specificity
+  const genericRoles = ['developer', 'designer', 'editor', 'marketer', 'writer', 'consultant'];
+  const hasGenericRole = genericRoles.some(r => {
+    const idx = lower.indexOf(r);
+    if (idx === -1) return false;
+    // Check if it's preceded by a modifier (good) or standalone (bad)
+    const before = lower.slice(Math.max(0, idx - 15), idx).trim();
+    return !before.includes(' ') || before.endsWith('a ') || before.endsWith('an ');
+  });
+  if (hasGenericRole && !lower.includes('for ') && !lower.includes('helping') && !lower.includes('specializ')) {
+    feedback.push({
+      type: 'warning',
+      message: 'Generic role title without niche',
+      detail: 'Instead of just "Designer", try "UI/UX Designer for SaaS Startups" — specificity attracts premium clients.',
+    });
+  }
+
+  return feedback;
+}
+
+// ── Role Benchmark Data ───────────────────────────────────────────────────────
+
+function getRoleBenchmarks(serviceId: string | null, careerTrackId: string | null): { average: number; topPerformer: number; roleLabel: string } {
+  const s = (serviceId || '').toLowerCase();
+  const c = (careerTrackId || '').toLowerCase();
+
+  if (s.includes('edit') || s.includes('video') || s.includes('motion') || c.includes('editor') || c.includes('video')) {
+    return { average: 38, topPerformer: 87, roleLabel: 'Video Editors' };
+  }
+  if (s.includes('code') || s.includes('dev') || s.includes('tech') || s.includes('software') || c.includes('developer') || c.includes('engineer')) {
+    return { average: 45, topPerformer: 89, roleLabel: 'Developers' };
+  }
+  if (s.includes('design') || s.includes('ui') || s.includes('ux') || c.includes('designer')) {
+    return { average: 42, topPerformer: 86, roleLabel: 'Designers' };
+  }
+  if (s.includes('market') || s.includes('growth') || s.includes('seo') || c.includes('marketer')) {
+    return { average: 40, topPerformer: 84, roleLabel: 'Marketers' };
+  }
+  if (s.includes('write') || s.includes('copy') || s.includes('content') || c.includes('writer')) {
+    return { average: 36, topPerformer: 82, roleLabel: 'Writers' };
+  }
+  return { average: 41, topPerformer: 85, roleLabel: 'Professionals' };
+}
 
 // ── Official Lightweight SVG Brand Icons ──────────────────────────────────────
 
@@ -1282,50 +1409,95 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
               </div>
             )}
 
-            {/* Option B: Direct Bio Text Paste / AI OCR Engine (High-Status Calibration Psychology) */}
+            {/* Option B: Feature 1 — Intelligent Bio Analyzer (Heuristic AI) */}
             {auditMode === 'paste' && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-neutral-900 via-[#0b1c30] to-[#0a2540] border border-white/10 shadow-xl text-white space-y-6">
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-2">
-                    <Sparkles size={16} className="text-[#d1f34d]" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
-                      AI Profile Neural Crawler • In High-Precision Calibration
+              <div className="space-y-4">
+                <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-neutral-900 via-[#0b1c30] to-[#0a2540] border border-white/10 shadow-xl text-white space-y-5">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={16} className="text-[#d1f34d]" />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
+                        Bio Intelligence Scanner
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
+                      Heuristic Engine v3.0
                     </span>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
-                    Enterprise v2.4 Engine
-                  </span>
-                </div>
 
-                <div className="space-y-2 max-w-2xl">
-                  <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-                    Direct Social Profile URL & Raw Bio Scraping
-                  </h3>
-                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
-                    To prevent generic AI inaccuracies and ensure 100% precision across B2B client acquisition benchmarks, our automated multi-platform bio scraping & OCR vision crawler is currently undergoing calibration with high-volume enterprise pipelines.
-                  </p>
-                </div>
-
-                {/* Psychological Why Box: Why 3-Question Diagnostic is Superior */}
-                <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-white">
-                    <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                    <span>Why the 3-Question Diagnostic gives you a far more accurate baseline:</span>
+                  <div className="space-y-2 max-w-2xl">
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+                      Paste Your Current Bio for Instant Analysis
+                    </h3>
+                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+                      Copy your current LinkedIn headline, Twitter bio, or any platform bio below. We'll scan it for authority signals, proof patterns, and conversion gaps.
+                    </p>
                   </div>
-                  <p className="text-[11px] text-white/70 leading-relaxed pl-6">
-                    Raw bios often mask structural drop-off points (like missing proof assets, weak headlines, or broken conversion funnels). The 3-Question Diagnostic evaluates your profile across the exact 4 dimensions high-ticket clients ($3,000+) use to make hiring decisions in under 5 seconds.
-                  </p>
+
+                  {/* Bio Textarea */}
+                  <textarea
+                    value={pastedBio}
+                    onChange={(e) => setPastedBio(e.target.value)}
+                    placeholder={'Paste your current bio here...\n\nExample: "Full-stack developer | React, Node, AWS | Open to freelance projects | Coffee lover ☕"'}
+                    rows={4}
+                    className="w-full text-sm text-white bg-white/5 border border-white/15 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#d1f34d]/30 focus:border-[#d1f34d]/50 transition-all resize-none leading-relaxed placeholder:text-white/25"
+                  />
+
+                  {pastedBio.trim().length > 0 && !isBioAnalyzed && (
+                    <ModuleButton
+                      variant="primary"
+                      onClick={() => setIsBioAnalyzed(true)}
+                    >
+                      <Sparkles size={14} className="mr-1.5" />
+                      Scan Bio for Authority Signals →
+                    </ModuleButton>
+                  )}
                 </div>
 
-                {/* Direct Action Switcher */}
-                <div className="flex items-center gap-3 pt-1 flex-wrap">
-                  <ModuleButton
-                    variant="primary"
-                    onClick={() => setAuditMode('quiz')}
+                {/* Feature 1: Bio Feedback Cards */}
+                {isBioAnalyzed && pastedBio.trim().length > 10 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+                    className="space-y-3"
                   >
-                    Switch to 3-Question Diagnostic (Instant Baseline) →
-                  </ModuleButton>
-                </div>
+                    <div className="flex items-center gap-2 px-1">
+                      <Shield size={14} className="text-[#0058be]" />
+                      <span className="text-xs font-bold text-[#0b1c30]">Bio Intelligence Report</span>
+                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        {analyzeBioHeuristic(pastedBio).filter(f => f.type === 'positive').length} strengths found
+                      </span>
+                    </div>
+                    {analyzeBioHeuristic(pastedBio).map((item, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: idx * 0.1 }}
+                        className={cn(
+                          'p-4 rounded-2xl border flex items-start gap-3',
+                          item.type === 'positive' ? 'bg-emerald-50/70 border-emerald-200' :
+                          item.type === 'warning' ? 'bg-amber-50/70 border-amber-200' :
+                          'bg-red-50/70 border-red-200'
+                        )}
+                      >
+                        {item.type === 'positive' ? <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" /> :
+                         item.type === 'warning' ? <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" /> :
+                         <XCircle size={16} className="text-red-600 shrink-0 mt-0.5" />}
+                        <div className="space-y-0.5">
+                          <span className={cn(
+                            'text-xs font-bold',
+                            item.type === 'positive' ? 'text-emerald-800' :
+                            item.type === 'warning' ? 'text-amber-800' :
+                            'text-red-800'
+                          )}>{item.message}</span>
+                          <p className="text-[11px] text-neutral-600 leading-relaxed">{item.detail}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
               </div>
             )}
 
@@ -1340,12 +1512,24 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 <span>Back to Channels</span>
               </button>
               {auditMode === 'paste' ? (
-                <ModuleButton
-                  variant="primary"
-                  onClick={() => setAuditMode('quiz')}
-                >
-                  Switch to Diagnostic Quiz →
-                </ModuleButton>
+                <div className="flex items-center gap-3">
+                  {isBioAnalyzed && pastedBio.trim().length > 10 && (
+                    <ModuleButton
+                      variant="primary"
+                      onClick={handleStartAnalysis}
+                    >
+                      View Authority Scorecard →
+                    </ModuleButton>
+                  )}
+                  {!isBioAnalyzed && (
+                    <ModuleButton
+                      variant="secondary"
+                      onClick={() => setAuditMode('quiz')}
+                    >
+                      Switch to Diagnostic Quiz →
+                    </ModuleButton>
+                  )}
+                </div>
               ) : (
                 <div className="flex items-center gap-3">
                   {!hasAnsweredQuestions && (
@@ -1391,7 +1575,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             )}
 
             {isAnalyzing ? (
-              /* Scanning Animation State */
+              /* Scanning Animation State — Feature 2: Deep-Scan Analysis Phases */
               <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-[#0a1e35] via-[#0f2b4a] to-[#1a3a5c] border border-white/15 shadow-2xl text-white flex flex-col items-center justify-center space-y-6 text-center">
                 <div className="relative flex items-center justify-center">
                   <div className="w-16 h-16 rounded-full border-3 border-white/10 border-t-[#d1f34d] animate-spin" />
@@ -1407,19 +1591,19 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   </p>
                 </div>
 
-                {/* Checkpoints */}
+                {/* Feature 2: Contextual Phase Messages */}
                 <div className="w-full max-w-md space-y-2.5 bg-black/30 p-4 rounded-2xl border border-white/10 text-left">
                   <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 1 ? "text-white" : "text-white/30")}>
                     {analysisStep >= 2 ? <Check size={14} className="text-emerald-400 shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 animate-pulse" />}
-                    <span className="font-medium">Auditing active channel architecture for {roleConfig.roleTitle}...</span>
+                    <span className="font-medium">Scanning headline positioning keywords for {roleConfig.roleTitle}...</span>
                   </div>
                   <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 2 ? "text-white" : "text-white/30")}>
                     {analysisStep >= 3 ? <Check size={14} className="text-emerald-400 shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0 animate-pulse" />}
-                    <span className="font-medium">Evaluating headline positioning & proof visibility...</span>
+                    <span className="font-medium">Analyzing social proof signals across {selectedPlatforms.length} active platform{selectedPlatforms.length !== 1 ? 's' : ''}...</span>
                   </div>
                   <div className={cn("flex items-center gap-2.5 text-xs transition-all", analysisStep >= 3 ? "text-white" : "text-white/30")}>
                     {analysisStep >= 3 ? <Check size={14} className="text-[#d1f34d] shrink-0 stroke-[3]" /> : <div className="w-3.5 h-3.5 rounded-full border-2 border-current shrink-0" />}
-                    <span className="font-medium">Synthesizing 4-dimension baseline authority scorecard...</span>
+                    <span className="font-medium">Calibrating authority score against {roleConfig.roleTitle} benchmarks...</span>
                   </div>
                 </div>
               </div>
@@ -1450,6 +1634,36 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                           Calculated from your active channels & profile posture
                         </p>
                       </div>
+                      {/* Feature 3: Role Benchmark Comparison */}
+                      {(() => {
+                        const bench = getRoleBenchmarks(serviceId || null, careerTrackId || null);
+                        const sc = diagnosticScore ?? 0;
+                        return (
+                          <div className="w-full mt-3 p-3 rounded-xl bg-black/30 border border-white/10 space-y-2">
+                            <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-white/50">
+                              <TrendingUp size={11} className="text-[#d1f34d]" />
+                              <span>{bench.roleLabel} Benchmark</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 text-center">
+                              <div className="p-2 rounded-lg bg-white/5 border border-white/5">
+                                <span className="text-lg font-black text-white/60 block">{bench.average}</span>
+                                <span className="text-[9px] text-white/40 font-bold">Average</span>
+                              </div>
+                              <div className={cn('p-2 rounded-lg border', sc >= bench.average ? 'bg-[#d1f34d]/10 border-[#d1f34d]/30' : 'bg-red-500/10 border-red-500/20')}>
+                                <span className={cn('text-lg font-black block', sc >= bench.average ? 'text-[#d1f34d]' : 'text-red-400')}>{sc}</span>
+                                <span className="text-[9px] text-white/60 font-bold">You</span>
+                              </div>
+                              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                <span className="text-lg font-black text-emerald-400 block">{bench.topPerformer}</span>
+                                <span className="text-[9px] text-white/40 font-bold">Top Performer</span>
+                              </div>
+                            </div>
+                            <p className="text-[10px] text-white/40 text-center">
+                              {sc < bench.average ? `You're ${bench.average - sc} pts below the average ${bench.roleLabel.toLowerCase()}. Let's fix that →` : sc < bench.topPerformer ? `${bench.topPerformer - sc} pts away from top performer status` : 'You\'re outperforming top benchmarks!'}
+                            </p>
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Right: 4 Dimension Status Bars */}

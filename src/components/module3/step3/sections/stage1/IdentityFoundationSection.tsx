@@ -4,10 +4,15 @@
  * "Pehle base set kar"
  * Single source of truth: Name, Handle, Positioning Headline, Proof Line.
  * Changes here auto-sync to all platform mockups.
+ * 
+ * Features:
+ *  - Smart Platform Fit Indicators (real-time char limit per platform)
+ *  - Before vs After Identity Shift Card
+ *  - Platform-Accurate CSS Mockup Cards (LinkedIn, Twitter/X, GitHub, etc.)
  */
 
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
 import {
@@ -18,8 +23,265 @@ import {
   ArrowRight,
   CheckCircle2,
   Info,
+  AlertTriangle,
+  XCircle,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
+
+// ── Platform Character Limits ────────────────────────────────────────────────
+
+const PLATFORM_CHAR_LIMITS: Record<string, { name: string; headlineMax: number; bioMax: number }> = {
+  linkedin:       { name: 'LinkedIn',       headlineMax: 220, bioMax: 2600 },
+  twitter:        { name: 'Twitter / X',    headlineMax: 160, bioMax: 160 },
+  instagram:      { name: 'Instagram',      headlineMax: 150, bioMax: 150 },
+  tiktok:         { name: 'TikTok',         headlineMax: 80,  bioMax: 80 },
+  github:         { name: 'GitHub',         headlineMax: 9999, bioMax: 9999 }, // effectively unlimited
+  youtube:        { name: 'YouTube',        headlineMax: 1000, bioMax: 1000 },
+  dribbble:       { name: 'Dribbble',       headlineMax: 160, bioMax: 500 },
+  behance:        { name: 'Behance',        headlineMax: 200, bioMax: 500 },
+  figma:          { name: 'Figma',          headlineMax: 200, bioMax: 500 },
+  producthunt:    { name: 'Product Hunt',   headlineMax: 160, bioMax: 500 },
+  vimeo_behance:  { name: 'Vimeo / Behance',headlineMax: 200, bioMax: 500 },
+  technical_blog: { name: 'Substack',       headlineMax: 9999, bioMax: 9999 },
+  personal_site:  { name: 'Personal Site',  headlineMax: 9999, bioMax: 9999 },
+};
+
+// ── Platform Fit Indicator Component ─────────────────────────────────────────
+
+function PlatformFitStrip({ text, platforms, mode }: { text: string; platforms: string[]; mode: 'headline' | 'proof' }) {
+  if (!text || text.length < 5 || !platforms.length) return null;
+
+  const relevantPlatforms = platforms
+    .map(p => PLATFORM_CHAR_LIMITS[p.toLowerCase()])
+    .filter(Boolean);
+
+  if (!relevantPlatforms.length) return null;
+
+  return (
+    <div className="flex flex-wrap gap-1.5 pt-1">
+      {relevantPlatforms.map((plat) => {
+        const limit = mode === 'headline' ? plat.headlineMax : plat.bioMax;
+        if (limit >= 9999) {
+          return (
+            <span key={plat.name} className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <CheckCircle2 size={9} /> {plat.name}
+            </span>
+          );
+        }
+        const fits = text.length <= limit;
+        const overBy = text.length - limit;
+        return (
+          <span
+            key={plat.name}
+            className={cn(
+              'inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border',
+              fits ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
+              overBy <= 20 ? 'text-amber-700 bg-amber-50 border-amber-200' :
+              'text-red-700 bg-red-50 border-red-200'
+            )}
+          >
+            {fits ? <CheckCircle2 size={9} /> : overBy <= 20 ? <AlertTriangle size={9} /> : <XCircle size={9} />}
+            {plat.name} ({limit})
+            {!fits && <span className="ml-0.5">+{overBy}</span>}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Before vs After Card ─────────────────────────────────────────────────────
+
+function BeforeAfterCard({ beforeBio, quizAnswers, newHeadline, newProofLine }: {
+  beforeBio?: string;
+  quizAnswers?: { headlineType: string | null; hasPinnedProof: boolean | null; hasSingleCta: boolean | null };
+  newHeadline: string;
+  newProofLine: string;
+}) {
+  if ((!beforeBio || beforeBio.trim().length < 10) && !quizAnswers?.headlineType) return null;
+  if (newHeadline.trim().length < 10 && newProofLine.trim().length < 10) return null;
+
+  // Construct "before" text from either pasted bio or quiz answers
+  let beforeText = '';
+  if (beforeBio && beforeBio.trim().length >= 10) {
+    beforeText = beforeBio.trim();
+  } else if (quizAnswers) {
+    const parts: string[] = [];
+    if (quizAnswers.headlineType === 'generic') parts.push('Generic "I do X" headline');
+    else if (quizAnswers.headlineType === 'skills') parts.push('Skill-listing headline (React, Node, etc.)');
+    else if (quizAnswers.headlineType === 'authority') parts.push('Authority-positioned headline');
+    if (quizAnswers.hasPinnedProof === false) parts.push('No pinned proof or case studies');
+    if (quizAnswers.hasSingleCta === false) parts.push('No clear booking funnel');
+    beforeText = parts.join(' • ') || 'Basic generic profile';
+  }
+
+  if (!beforeText) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.35 }}
+      className="p-5 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-4"
+    >
+      <div className="flex items-center gap-2">
+        <ArrowLeftRight size={16} className="text-[#0058be]" />
+        <span className="text-xs font-bold text-[#0b1c30]">Identity Transformation</span>
+        <span className="text-[9px] font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+          Before → After
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Before */}
+        <div className="p-4 rounded-2xl bg-red-50/50 border border-red-200/70 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <XCircle size={12} className="text-red-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-red-600">Before</span>
+          </div>
+          <p className="text-[11px] text-red-800/80 leading-relaxed italic line-clamp-4">
+            "{beforeText}"
+          </p>
+        </div>
+
+        {/* After */}
+        <div className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200/70 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 size={12} className="text-emerald-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">After</span>
+          </div>
+          <p className="text-[11px] text-emerald-800 leading-relaxed font-medium line-clamp-2">
+            {newHeadline || 'Your new headline...'}
+          </p>
+          {newProofLine && (
+            <p className="text-[10px] text-emerald-700/70 leading-relaxed line-clamp-2">
+              {newProofLine}
+            </p>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Platform Mockup Card (CSS Only — Looks Like Real Platform UI) ────────────
+
+function PlatformMockupCard({ platformId, userName, userHandle, headline, proofLine, roleLabel }: {
+  platformId: string;
+  userName: string;
+  userHandle: string;
+  headline: string;
+  proofLine: string;
+  roleLabel: string;
+}) {
+  const p = platformId.toLowerCase();
+  const displayName = userName || 'Your Name';
+  const handle = userHandle || 'handle';
+  const headlineText = headline || 'Your positioning headline...';
+
+  switch (p) {
+    case 'linkedin':
+      return (
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+          <div className="h-8 bg-gradient-to-r from-[#0A66C2] to-[#0077B5]" />
+          <div className="px-3.5 pb-3.5 -mt-3">
+            <div className="w-8 h-8 rounded-full bg-[#0A66C2] border-2 border-[#0b1c30] flex items-center justify-center text-white text-[10px] font-black">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div className="mt-1.5 space-y-0.5">
+              <p className="text-[11px] font-bold text-white truncate">{displayName}</p>
+              <p className="text-[10px] text-white/60 line-clamp-2 leading-snug">{headlineText.slice(0, 120)}{headlineText.length > 120 ? '...' : ''}</p>
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'twitter':
+      return (
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-black/40 p-3.5 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-neutral-700 flex items-center justify-center text-white text-[10px] font-black">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-white">{displayName}</p>
+              <p className="text-[9px] text-white/40 font-mono">@{handle}</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-white/70 leading-snug line-clamp-2">{headlineText.slice(0, 160)}{headlineText.length > 160 ? '...' : ''}</p>
+        </div>
+      );
+
+    case 'github':
+      return (
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-[#0d1117] p-3.5 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-neutral-700 flex items-center justify-center text-white text-[10px] font-black ring-1 ring-white/20">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-white">{handle}</p>
+              <p className="text-[9px] text-white/40">{displayName}</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-white/60 leading-snug line-clamp-2">{headlineText.slice(0, 160)}{headlineText.length > 160 ? '...' : ''}</p>
+          <div className="flex items-center gap-3 pt-1">
+            <span className="text-[9px] text-white/30">📦 12 repos</span>
+            <span className="text-[9px] text-white/30">⭐ 48 stars</span>
+            <span className="text-[9px] text-white/30">👥 5 followers</span>
+          </div>
+        </div>
+      );
+
+    case 'youtube':
+      return (
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-[#0f0f0f] p-3.5 space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#FF0000] flex items-center justify-center text-white text-[10px] font-black">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-white">{displayName} {roleLabel.toLowerCase().includes('edit') ? 'Edits' : 'HQ'}</p>
+              <p className="text-[9px] text-white/40">@{handle} • 1.2K subscribers</p>
+            </div>
+          </div>
+          <p className="text-[10px] text-white/50 leading-snug line-clamp-2">{proofLine || headlineText}</p>
+        </div>
+      );
+
+    case 'instagram':
+      return (
+        <div className="rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-[#833AB4]/20 via-[#FD1D1D]/10 to-[#F77737]/10 p-3.5 space-y-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] ring-2 ring-[#F77737]/50 flex items-center justify-center text-white text-xs font-black">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div className="text-center space-y-0">
+              <p className="text-[11px] font-extrabold text-white">@{handle}</p>
+              <div className="flex items-center gap-3 text-[9px] text-white/40">
+                <span>42 posts</span>
+                <span>1.5K followers</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-[10px] text-white/60 leading-snug line-clamp-2">{headlineText.slice(0, 150)}{headlineText.length > 150 ? '...' : ''}</p>
+        </div>
+      );
+
+    default: {
+      const platformName = p.charAt(0).toUpperCase() + p.slice(1).replace(/_/g, ' ');
+      return (
+        <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5 transition-colors hover:bg-white/10">
+          <span className="text-[9px] font-bold text-[#d1f34d] uppercase tracking-wider">{platformName}</span>
+          <p className="text-[11px] text-white/90 font-medium line-clamp-1">{displayName} • {headlineText.slice(0, 25)}{headlineText.length > 25 ? '...' : ''}</p>
+        </div>
+      );
+    }
+  }
+}
+
+// ── Main Component ───────────────────────────────────────────────────────────
 
 interface Props {
   userName: string;
@@ -28,6 +290,8 @@ interface Props {
   proofLine: string;
   roleLabel: string;
   activePlatforms?: string[];
+  beforeBio?: string;
+  quizAnswers?: { headlineType: string | null; hasPinnedProof: boolean | null; hasSingleCta: boolean | null };
   onUserNameChange: (name: string) => void;
   onUserHandleChange: (handle: string) => void;
   onHeadlineChange: (headline: string) => void;
@@ -43,6 +307,8 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   proofLine,
   roleLabel,
   activePlatforms,
+  beforeBio,
+  quizAnswers,
   onUserNameChange,
   onUserHandleChange,
   onHeadlineChange,
@@ -57,6 +323,8 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   const isHeadlineSet = positioningHeadline.trim().length > 10;
   const isProofLineSet = proofLine.trim().length > 10;
   const completedFields = [isNameSet, isHandleSet, isHeadlineSet, isProofLineSet].filter(Boolean).length;
+
+  const platforms = activePlatforms && activePlatforms.length > 0 ? activePlatforms : ['linkedin', 'twitter', 'github'];
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
@@ -196,6 +464,8 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           maxLength={220}
           className="w-full text-sm text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all resize-none leading-relaxed"
         />
+        {/* Feature 4: Smart Platform Fit Indicators */}
+        <PlatformFitStrip text={positioningHeadline} platforms={platforms} mode="headline" />
         <p className="text-[10px] text-neutral-400">
           This headline appears on your LinkedIn, GitHub README, and Twitter bio. Make it specific — avoid generic words like "freelancer" or "passionate."
         </p>
@@ -244,9 +514,19 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           maxLength={220}
           className="w-full text-sm text-[#0b1c30] bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white focus:border-[#0058be] transition-all resize-none leading-relaxed"
         />
+        {/* Feature 4: Smart Platform Fit Indicators for Proof Line */}
+        <PlatformFitStrip text={proofLine} platforms={platforms} mode="proof" />
       </motion.div>
 
-      {/* Live Sync Preview Strip */}
+      {/* Feature 5: Before vs After Identity Shift Card */}
+      <BeforeAfterCard
+        beforeBio={beforeBio}
+        quizAnswers={quizAnswers}
+        newHeadline={positioningHeadline}
+        newProofLine={proofLine}
+      />
+
+      {/* Feature 6: Platform-Accurate Live Mockup Cards */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -256,81 +536,21 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
         <div className="flex items-center gap-2 border-b border-[#1a2d45] pb-3">
           <Sparkles size={14} className="text-[#d1f34d]" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">
-            Cross-Platform Live Mockup
+            How You'll Look — Live Platform Mockups
           </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {(activePlatforms && activePlatforms.length > 0 ? activePlatforms : ['linkedin', 'twitter', 'github']).map((p) => {
-            const platformId = p.toLowerCase();
-            let previewText = '';
-            let platformName = '';
-            
-            switch (platformId) {
-              case 'linkedin':
-                platformName = 'LinkedIn';
-                previewText = userName ? `${userName} • ${positioningHeadline.slice(0, 40)}${positioningHeadline.length > 40 ? '...' : ''}` : 'Your Name • Headline...';
-                break;
-              case 'twitter':
-                platformName = 'Twitter / X';
-                previewText = userHandle ? `@${userHandle} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle • Headline...';
-                break;
-              case 'github':
-                platformName = 'GitHub';
-                previewText = userHandle ? `${userHandle} — ${positioningHeadline.slice(0, 30)}${positioningHeadline.length > 30 ? '...' : ''}` : 'handle — Headline...';
-                break;
-              case 'youtube':
-                platformName = 'YouTube';
-                previewText = userName ? `${userName} ${roleLabel.toLowerCase().includes('edit') ? 'Edits' : roleLabel.toLowerCase().includes('design') ? 'Design' : roleLabel.toLowerCase().includes('dev') ? 'Tech' : 'HQ'}` : 'Your Name HQ';
-                break;
-              case 'instagram':
-                platformName = 'Instagram';
-                previewText = userHandle ? `@${userHandle} | ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle | Headline...';
-                break;
-              case 'behance':
-                platformName = 'Behance';
-                previewText = userName ? `${userName} — ${positioningHeadline.slice(0, 30)}${positioningHeadline.length > 30 ? '...' : ''}` : 'Your Name — Headline...';
-                break;
-              case 'dribbble':
-                platformName = 'Dribbble';
-                previewText = userName ? `${userName} • Design Portfolio` : 'Your Name • Design Portfolio';
-                break;
-              case 'tiktok':
-                platformName = 'TikTok';
-                previewText = userHandle ? `@${userHandle} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : '@handle • Headline...';
-                break;
-              case 'figma':
-                platformName = 'Figma';
-                previewText = userName ? `${userName} — UI/UX Profile` : 'Your Name — UI/UX Profile';
-                break;
-              case 'producthunt':
-                platformName = 'Product Hunt';
-                previewText = userHandle ? `@${userHandle} • Maker` : '@handle • Maker';
-                break;
-              case 'vimeo_behance':
-                platformName = 'Vimeo / Behance';
-                previewText = userName ? `${userName} • Video & Motion` : 'Your Name • Video & Motion';
-                break;
-              case 'technical_blog':
-                platformName = 'Substack / Dev.to';
-                previewText = userName ? `${userName}'s Newsletter` : 'Your Name\'s Newsletter';
-                break;
-              case 'personal_site':
-                platformName = 'Personal Site';
-                previewText = userName ? `${userName} | Official Website` : 'Your Name | Official Website';
-                break;
-              default:
-                platformName = p.charAt(0).toUpperCase() + p.slice(1).replace(/_/g, ' ');
-                previewText = userName ? `${userName} • ${positioningHeadline.slice(0, 25)}${positioningHeadline.length > 25 ? '...' : ''}` : 'Your Name • Headline...';
-                break;
-            }
-
-            return (
-              <div key={p} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1.5 transition-colors hover:bg-white/10">
-                <span className="text-[9px] font-bold text-[#d1f34d] uppercase tracking-wider">{platformName}</span>
-                <p className="text-[11px] text-white/90 font-medium line-clamp-1">{previewText}</p>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {platforms.map((p) => (
+            <PlatformMockupCard
+              key={p}
+              platformId={p}
+              userName={userName}
+              userHandle={userHandle}
+              headline={positioningHeadline}
+              proofLine={proofLine}
+              roleLabel={roleLabel}
+            />
+          ))}
         </div>
       </motion.div>
 
@@ -357,4 +577,3 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
 });
 
 IdentityFoundationSection.displayName = 'IdentityFoundationSection';
-
