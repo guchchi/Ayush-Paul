@@ -24,6 +24,10 @@ import {
   CheckCircle2,
   RotateCcw,
   ChevronDown,
+  Rocket,
+  CheckSquare,
+  BookOpen,
+  Pin
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
@@ -78,6 +82,22 @@ const TONES = [
   { key: 'direct' as const, label: 'Direct Response', desc: 'Growth Teams & ROI Focus' },
 ];
 
+const PLATFORM_CHECKLISTS: Record<string, string[]> = {
+  linkedin: ['Banner matches new headline vibe', 'Featured section has case study link', 'Custom CTA button enabled', 'Set "Open to" -> Providing Services'],
+  twitter: ['Pinned proof thread active', 'Single booking link in bio', 'Professional avatar updated'],
+  github: ['Profile README.md fully updated', 'Pinned repositories show best work', 'Sponsor / Hire button visible'],
+  instagram: ['Link-in-bio tree set up', 'Highlights organized by service', 'Contact button configured'],
+  youtube: ['Channel banner updated', 'Watermark added to videos', 'About section matches bio'],
+  personal_site: ['Favicon updated', 'Hero section copy is clear', 'Booking widget embedded'],
+  behance: ['Portfolio items categorized', 'Available for hire turned on', 'Custom URL claimed']
+};
+
+const COPY_FORMULAS = [
+  { id: 'proof', label: 'Proof-First', desc: 'Leads with metrics & results' },
+  { id: 'problem', label: 'Problem-Solution', desc: 'Calls out client pain point' },
+  { id: 'contrarian', label: 'Contrarian', desc: 'High-status, zero-fluff' }
+];
+
 // ── Helper ────────────────────────────────────────────────────────────────────
 
 const getInitials = (name: string) => {
@@ -109,17 +129,30 @@ function LinkedInMockup({ userName, initials, headline, bio }: { userName: strin
           <div className="w-16 h-16 rounded-full border-4 border-white bg-slate-900 text-white flex items-center justify-center font-black text-xl shadow-md">
             {initials}
           </div>
-          <button className="px-3.5 py-1 bg-[#0058be] text-white text-[10px] font-bold rounded-full shadow-xs">
-            Open to Work
+          <button className="px-3.5 py-1 bg-[#0a66c2] hover:bg-[#004182] text-white text-[10px] font-bold rounded-full shadow-xs transition-colors">
+            Connect
           </button>
         </div>
         <div>
-          <h3 className="font-bold text-base text-neutral-900">{userName}</h3>
-          <p className="text-[11px] font-bold text-[#0058be] leading-snug line-clamp-2">{headline}</p>
+          <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">· 1st</span></h3>
+          <p className="text-[11px] font-bold text-[#0a66c2] leading-snug line-clamp-2 mt-0.5">{headline}</p>
+          <p className="text-[9px] text-neutral-500 mt-1">Talks about #design, #strategy, and #growth</p>
         </div>
         <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200/80 space-y-1">
           <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">About</span>
           <p className="text-[10px] text-neutral-700 leading-relaxed line-clamp-3 italic">{bio || 'Engineering verifiable authority position systems.'}</p>
+        </div>
+        <div className="pt-2">
+          <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mb-2 block">Featured</span>
+          <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden flex shadow-xs">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#0a66c2] to-[#004182] flex items-center justify-center text-white">
+              <ExternalLink size={14} />
+            </div>
+            <div className="p-2 flex flex-col justify-center">
+              <span className="text-[10px] font-bold text-neutral-900 block truncate w-32">Book a Discovery Call</span>
+              <span className="text-[9px] text-neutral-500">cal.com</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -127,23 +160,40 @@ function LinkedInMockup({ userName, initials, headline, bio }: { userName: strin
 }
 
 function GitHubMockup({ userName, userHandle, initials, headline }: { userName: string; userHandle: string; initials: string; headline: string }) {
+  // Generate random heatmap pattern
+  const heatmap = Array.from({ length: 42 }).map((_, i) => {
+    const active = Math.random() > 0.5;
+    const intensity = Math.floor(Math.random() * 4);
+    const colors = ['bg-[#161b22]', 'bg-[#0e4429]', 'bg-[#006d32]', 'bg-[#26a641]', 'bg-[#39d353]'];
+    return <div key={i} className={`w-2 h-2 rounded-[1px] ${active ? colors[intensity] : colors[0]}`} />;
+  });
+
   return (
     <div className="bg-[#0d1117] rounded-2xl border border-[#30363d] text-neutral-200 p-5 space-y-4 font-mono">
       <div className="flex items-center gap-3 border-b border-[#30363d] pb-3">
-        <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-emerald-500 flex items-center justify-center font-bold text-white text-sm">
+        <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-[#39d353] flex items-center justify-center font-bold text-white text-sm">
           {initials}
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h3 className="font-bold text-sm text-white">{userName}</h3>
-            <span className="text-[8px] bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-800">Pro</span>
+            <span className="text-[8px] bg-emerald-950 text-[#39d353] px-1.5 py-0.5 rounded border border-[#006d32]">Pro</span>
           </div>
           <p className="text-[10px] text-neutral-400">{userHandle}</p>
         </div>
       </div>
       <div className="bg-[#161b22] p-3 rounded-xl border border-[#30363d] space-y-1">
-        <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">README.md</span>
+        <div className="flex items-center gap-1.5 mb-2">
+          <BookOpen size={10} className="text-neutral-400" />
+          <span className="text-[9px] text-[#39d353] font-bold uppercase tracking-wider">README.md</span>
+        </div>
         <p className="text-[10px] text-neutral-200 leading-relaxed font-mono">{headline}</p>
+      </div>
+      <div>
+        <span className="text-[9px] text-neutral-400 font-bold mb-1.5 block">1,240 contributions in the last year</span>
+        <div className="flex flex-wrap gap-0.5 p-1.5 border border-[#30363d] rounded-lg w-fit">
+          {heatmap}
+        </div>
       </div>
     </div>
   );
@@ -153,16 +203,31 @@ function TwitterMockup({ userName, userHandle, initials, headline }: { userName:
   return (
     <div className="bg-black text-white rounded-2xl overflow-hidden border border-neutral-800 p-5 space-y-3">
       <div className="flex justify-between items-start">
-        <div className="w-12 h-12 rounded-full bg-neutral-800 text-white flex items-center justify-center font-bold text-lg border border-neutral-700">
+        <div className="w-12 h-12 rounded-full bg-neutral-800 text-white flex items-center justify-center font-bold text-lg border border-neutral-700 relative">
           {initials}
         </div>
-        <button className="px-3.5 py-1 bg-white text-black font-bold text-[10px] rounded-full">Follow</button>
+        <button className="px-4 py-1.5 bg-white text-black font-bold text-[10px] rounded-full hover:bg-neutral-200 transition-colors">Follow</button>
       </div>
       <div>
-        <h3 className="font-bold text-sm text-white">{userName}</h3>
-        <p className="text-[10px] text-neutral-400 font-mono">@{userHandle}</p>
+        <div className="flex items-center gap-1">
+          <h3 className="font-bold text-sm text-white">{userName}</h3>
+          <CheckCircle2 size={12} className="text-[#1d9bf0] fill-[#1d9bf0]/20" />
+        </div>
+        <p className="text-[10px] text-neutral-500 font-sans">@{userHandle}</p>
       </div>
-      <p className="text-[10px] text-neutral-200 leading-relaxed bg-neutral-900 p-3 rounded-xl border border-neutral-800">{headline}</p>
+      <p className="text-[11px] text-neutral-100 leading-relaxed whitespace-pre-wrap">{headline}</p>
+      <div className="flex items-center gap-4 text-[10px] text-neutral-500 pt-1 border-b border-neutral-800 pb-3">
+        <div><strong className="text-white">1,204</strong> Following</div>
+        <div><strong className="text-white">14.2K</strong> Followers</div>
+      </div>
+      <div className="pt-1">
+        <div className="flex items-center gap-1.5 text-neutral-500 text-[9px] font-bold uppercase tracking-wider mb-2">
+          <Pin size={10} className="rotate-45" /> Pinned
+        </div>
+        <div className="bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
+          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread 🧵👇</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -242,10 +307,52 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [editValue, setEditValue] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showSecondary, setShowSecondary] = useState(false);
+  const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
 
   const displayName = userName?.trim() || 'Your Name';
   const displayHandle = userHandle?.trim() || 'yourhandle';
   const initials = getInitials(userName?.trim() || 'YN');
+
+  // Helper for applying formulas
+  const applyFormula = (fieldKey: string, formulaId: string, originalValue: string) => {
+    let result = originalValue || '';
+    if (formulaId === 'proof') {
+      result = fieldKey.includes('headline') 
+        ? `I help clients scale → Generates $X in value | Ex-[Company] | Book a call below 👇`
+        : `Over the past years, I've consistently delivered verifiable results. If you need someone who eliminates risk and guarantees delivery, let's talk.\n\nKey Result: Reduced churn by X% in 30 days.`;
+    } else if (formulaId === 'problem') {
+      result = fieldKey.includes('headline')
+        ? `Tired of [Pain Point]? I build [Solution] for [Target Audience] so you can [Benefit].`
+        : `Most businesses struggle with [Problem]. \n\nI solve this by implementing [Your Method]. The outcome? Predictable [Result] without the usual headaches.`;
+    } else if (formulaId === 'contrarian') {
+      result = fieldKey.includes('headline')
+        ? `Unpopular opinion: [Industry Myth]. I do the exact opposite for [Target Audience].`
+        : `Everyone says you need [Common Advice]. They're wrong.\n\nI build [Your Method] systems that ignore the noise and focus purely on [Metric that matters].`;
+    }
+    setEditValue(result);
+  };
+
+  const toggleChecklist = (stepId: string) => {
+    setCheckedSteps(prev => ({ ...prev, [stepId]: !prev[stepId] }));
+  };
+
+  const handleExportAll = () => {
+    const lines: string[] = [];
+    lines.push(`# Social Profile Identity Export\n\n`);
+    
+    profileSystem.forEach(p => {
+      const platformName = ALL_PLATFORMS.find(ap => ap.key === p.platform)?.name || p.platform;
+      lines.push(`## === ${platformName.toUpperCase()} ===\n`);
+      p.fields.forEach(f => {
+        lines.push(`**${f.label}:**\n${f.value}\n`);
+      });
+      lines.push('\n');
+    });
+
+    navigator.clipboard.writeText(lines.join('\n'));
+    setCopiedField('export_all');
+    setTimeout(() => setCopiedField(null), 2000);
+  };
 
   const activePlatformData = useMemo(() => {
     return profileSystem.find(p => p.platform === activeTab) || {
@@ -435,9 +542,41 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
           {/* Right: Copy Editor (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
-              {platformLabel} Copy Fields — {activePlatformData.fields.length} fields
-            </span>
+            
+            {/* Copy Formulas Engine */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 shadow-xs space-y-3">
+              <div className="flex items-center gap-2">
+                <Rocket size={14} className="text-blue-600" />
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-900">
+                  Instant Copy Formulas
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {COPY_FORMULAS.map(formula => (
+                  <button
+                    key={formula.id}
+                    onClick={() => {
+                      if (editingField) {
+                         applyFormula(editingField, formula.id, activePlatformData.fields.find(f => f.key === editingField)?.value || '');
+                      } else {
+                         // Note: Instruct user to click edit first
+                         alert('Please click "Edit" on a field below, then apply a formula.');
+                      }
+                    }}
+                    className="flex-1 min-w-[120px] bg-white border border-blue-200 hover:border-blue-400 p-2 rounded-xl text-left transition-all group"
+                  >
+                    <span className="text-xs font-bold text-blue-900 block group-hover:text-blue-600">{formula.label}</span>
+                    <span className="text-[9px] text-blue-500 block leading-tight mt-0.5">{formula.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
+                {platformLabel} Copy Fields — {activePlatformData.fields.length} fields
+              </span>
+            </div>
 
             {activePlatformData.fields.map(field => {
               const isEditing = editingField === field.key;
@@ -512,17 +651,65 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 </div>
               );
             })}
+
+            {/* Micro-Audit Checklist */}
+            {PLATFORM_CHECKLISTS[activeTab] && (
+              <div className="p-5 rounded-3xl border border-neutral-200 bg-white shadow-xs mt-6">
+                <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-400 mb-4 flex items-center gap-2">
+                  <CheckSquare size={14} className="text-emerald-500" />
+                  {platformLabel} Launch Checklist
+                </h4>
+                <div className="space-y-2">
+                  {PLATFORM_CHECKLISTS[activeTab].map((step, idx) => {
+                    const stepId = `${activeTab}_check_${idx}`;
+                    const isChecked = !!checkedSteps[stepId];
+                    return (
+                      <label key={stepId} className="flex items-start gap-3 cursor-pointer group hover:bg-neutral-50 p-2 rounded-xl transition-colors">
+                        <div className={cn(
+                          "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
+                          isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
+                        )}>
+                          {isChecked && <Check size={10} className="text-white" />}
+                        </div>
+                        <input
+                          type="checkbox"
+                          className="hidden"
+                          checked={isChecked}
+                          onChange={() => toggleChecklist(stepId)}
+                        />
+                        <span className={cn(
+                          "text-xs font-medium transition-colors",
+                          isChecked ? "text-neutral-400 line-through" : "text-neutral-700"
+                        )}>
+                          {step}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Continue CTA */}
-      <div className="flex items-center justify-between pt-4">
-        {onBack ? (
-          <ModuleButton variant="secondary" onClick={onBack}>
-            ← Back to Identity Foundation
-          </ModuleButton>
-        ) : <div />}
+      {/* Continue CTA & Global Export */}
+      <div className="flex items-center justify-between pt-4 border-t border-neutral-200/60">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900">
+              ← Back
+            </button>
+          )}
+          <button
+            onClick={handleExportAll}
+            className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md"
+          >
+            {copiedField === 'export_all' ? <CheckCircle2 size={14} className="text-emerald-400" /> : <Copy size={14} />}
+            {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios Bundle'}
+          </button>
+        </div>
+        
         <ModuleButton variant="primary" onClick={onContinue}>
           Platforms Optimized — Run Consistency Check →
         </ModuleButton>
