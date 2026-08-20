@@ -65,7 +65,7 @@ function buildServiceFallback(serviceId: string): OfferEngineeringPathContent | 
 
   return {
     pathTitle: `${data.label} — Standard Package`,
-    audienceInsight: `Clients who need professional ${catLabel.toLowerCase()} services delivered reliably.`,
+    audienceInsight: `Clients who need professional ${catLabel ? catLabel.toLowerCase() : ''} services delivered reliably.`,
     offerStrategy: 'Position this as a straightforward service package with clear scope and predictable delivery. Focus on consistency and quality rather than niche-specific positioning.',
     recommendedOfferType: 'one_time_project',
 
@@ -77,7 +77,7 @@ function buildServiceFallback(serviceId: string): OfferEngineeringPathContent | 
 
     uniqueMechanisms: data.uniqueMechanisms.map((m) => ({
       name: m,
-      description: `A structured methodology designed to deliver consistent, high-quality ${catLabel.toLowerCase()} results.`,
+      description: `A structured methodology designed to deliver consistent, high-quality ${catLabel ? catLabel.toLowerCase() : ''} results.`,
       bestFor: 'General client engagements where a repeatable, proven process adds confidence and predictability.',
     })),
 
@@ -107,14 +107,14 @@ function buildServiceFallback(serviceId: string): OfferEngineeringPathContent | 
     proposalAngle: {
       headline: `${data.label} — Professional, Reliable, Delivered on Time`,
       problem: 'Finding a reliable professional who delivers consistent quality on schedule is difficult. Many providers over-promise and under-deliver, leaving clients with missed deadlines and subpar results.',
-      solution: `This ${catLabel.toLowerCase()} package delivers professional-grade results with clear scope, defined revision limits, and predictable timelines. No surprises, no missed deadlines.`,
+      solution: `This ${catLabel ? catLabel.toLowerCase() : ''} package delivers professional-grade results with clear scope, defined revision limits, and predictable timelines. No surprises, no missed deadlines.`,
       nextStep: 'Book a discovery call to discuss your specific project needs and receive a detailed scope proposal.',
     },
 
     blueprintAngle: {
-      whoItIsFor: `Clients who need professional ${catLabel.toLowerCase()} services with clear expectations, defined scope, and reliable delivery.`,
+      whoItIsFor: `Clients who need professional ${catLabel ? catLabel.toLowerCase() : ''} services with clear expectations, defined scope, and reliable delivery.`,
       problemItSolves: 'Unclear scope, missed deadlines, and unpredictable quality are common frustrations when hiring freelancers. This package solves all three with a structured, transparent approach.',
-      corePromise: `Professional ${catLabel.toLowerCase()} delivered on time, within scope, with clear communication and defined revision limits.`,
+      corePromise: `Professional ${catLabel ? catLabel.toLowerCase() : ''} delivered on time, within scope, with clear communication and defined revision limits.`,
       whyThisWorks: 'A structured service package removes ambiguity. Both sides know exactly what is included, what is not, and what happens if things need to change. This clarity prevents the most common sources of freelance friction.',
       nextStepCTA: 'Share this proposal with your prospect. The best next step is a 15-minute discovery call to align on scope and timeline.',
     },
@@ -174,14 +174,14 @@ function buildCategoryFallback(cat: ServiceCategory): OfferEngineeringPathConten
     proposalAngle: {
       headline: `Professional ${catLabel} — Clear Scope, Reliable Delivery`,
       problem: 'Finding a professional who delivers quality work on time with clear communication is harder than it should be.',
-      solution: `A structured ${catLabel.toLowerCase()} engagement with defined deliverables, transparent timelines, and a revision process that keeps projects on track.`,
+      solution: `A structured ${catLabel ? catLabel.toLowerCase() : ''} engagement with defined deliverables, transparent timelines, and a revision process that keeps projects on track.`,
       nextStep: 'Book a discovery call to discuss your project and receive a detailed scope and price proposal.',
     },
 
     blueprintAngle: {
-      whoItIsFor: `Businesses and individuals who need professional ${catLabel.toLowerCase()} services delivered reliably.`,
+      whoItIsFor: `Businesses and individuals who need professional ${catLabel ? catLabel.toLowerCase() : ''} services delivered reliably.`,
       problemItSolves: 'Unreliable freelancers, unclear scope, and missed deadlines make outsourcing risky. This structured approach removes that risk.',
-      corePromise: `Reliable, professional ${catLabel.toLowerCase()} with clear expectations and defined outcomes.`,
+      corePromise: `Reliable, professional ${catLabel ? catLabel.toLowerCase() : ''} with clear expectations and defined outcomes.`,
       whyThisWorks: 'Clear scope, defined revision limits, and transparent communication prevent the most common causes of project failure in creative and technical services.',
       nextStepCTA: 'Book a discovery call to discuss your specific needs and get a detailed proposal.',
     },

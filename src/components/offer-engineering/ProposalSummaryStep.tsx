@@ -120,7 +120,7 @@ export function ProposalSummaryStep() {
     const fullPool = generateProposalVariations(cat, audience, serviceLabel, offerTypeLabel, uniqueMechanism || '', niche);
     return {
       headline: proposalAngle?.headline || pickVar(fullPool.headlines, vi, `${serviceLabel} for ${audience}`),
-      problem: proposalAngle?.problem || pickVar(fullPool.problems, vi, `${audience} need a better approach to ${serviceLabel.toLowerCase()}.`),
+      problem: proposalAngle?.problem || pickVar(fullPool.problems, vi, `${audience} need a better approach to ${(serviceLabel || '').toLowerCase()}.`),
       solution: proposalAngle?.solution || pickVar(fullPool.solutions, vi, `This package delivers ${deliverables.length > 0 ? deliverables.slice(0, 3).join(', ') + ', and more' : 'a complete service'}${uniqueMechanism ? ` using ${uniqueMechanism}` : ''}.`),
       timeline: scopeLimits.deliveryTime || 'Ongoing per agreed schedule',
       pricing: pricingDesc,

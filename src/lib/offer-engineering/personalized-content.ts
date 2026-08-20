@@ -99,7 +99,7 @@ export function composeStep1Content(input: M2PersonalizationInput): Step1Persona
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM2(pc.m1.serviceId, pc.m1.marketId, pc.m1.nicheId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'deliverables';
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'work';
 
@@ -136,7 +136,7 @@ export function composeStep2Content(input: M2PersonalizationInput): Step2Persona
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM2(pc.m1.serviceId, pc.m1.marketId, pc.m1.nicheId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const outputTerms = profile.outputTerms.slice(0, 2).join(' and ') || 'outputs';
   const commonOutputs = profile.commonOutputs.slice(0, 1).join(', ') || outputTerms;
@@ -171,7 +171,7 @@ export function composeStep3Content(input: M2PersonalizationInput): Step3Persona
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM2(pc.m1.serviceId, pc.m1.marketId, pc.m1.nicheId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const executionTerms = profile.executionTerms.slice(0, 2).join(' and ') || 'process';
 
@@ -206,7 +206,7 @@ export function composeStep4Content(input: M2PersonalizationInput): Step4Persona
   const pc = resolveM2PersonalizationContext(input);
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'output';
 
@@ -250,7 +250,7 @@ export function composeStep5Content(input: M2PersonalizationInput): Step5Persona
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM2(pc.m1.serviceId, pc.m1.marketId, pc.m1.nicheId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'output';
 
@@ -284,7 +284,7 @@ export function composeStep6Content(input: M2PersonalizationInput): Step6Persona
   const pc = resolveM2PersonalizationContext(input);
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'output';
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
 
@@ -312,7 +312,7 @@ export function composeStep7Content(input: M2PersonalizationInput): Step7Persona
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM2(pc.m1.serviceId, pc.m1.marketId, pc.m1.nicheId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'output';
 
@@ -344,7 +344,7 @@ export function composeStep8Content(input: M2PersonalizationInput): Step8Persona
   const pc = resolveM2PersonalizationContext(input);
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const buyerTerm = fmtBuyerTerm(pc.m1.marketId, pc.m1.nicheId);
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
   const workNoun = profile.workNouns.slice(0, 1).join(', ') || 'work';
   const outputTerm = profile.outputTerms.slice(0, 1).join(', ') || 'output';
 

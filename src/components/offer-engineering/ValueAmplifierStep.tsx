@@ -37,7 +37,7 @@ export function ValueAmplifierStep() {
   const amplifiers = useMemo(() => {
     if (pathAmplifiers && pathAmplifiers.length > 0) {
       return pathAmplifiers.map((a) => ({
-        id: a.label.toLowerCase().replace(/\s+/g, '_'),
+        id: (a.label || '').toLowerCase().replace(/\s+/g, '_'),
         label: a.label,
         description: a.description,
       }));

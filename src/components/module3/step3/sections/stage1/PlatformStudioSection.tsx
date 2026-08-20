@@ -288,39 +288,39 @@ function InstagramMockup({ userName, userHandle, initials, headline, bio }: { us
 
       {/* Profile Info */}
       <div className="px-4 pt-3 pb-2">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-4 mb-3">
           <div className="relative shrink-0">
-            <div className="w-[80px] h-[80px] rounded-full p-[2.5px] bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]">
-              <div className="w-full h-full rounded-full border-[2.5px] border-white bg-neutral-100 flex items-center justify-center text-[22px] font-medium text-neutral-400">
+            <div className="w-[64px] h-[64px] rounded-full p-[2.5px] bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]">
+              <div className="w-full h-full rounded-full border-[2.5px] border-white bg-neutral-100 flex items-center justify-center text-[18px] font-medium text-neutral-400">
                 {initials}
               </div>
             </div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 bg-[#0095f6] rounded-full border-[2.5px] border-white flex items-center justify-center text-white font-bold text-[16px] leading-none pb-[2px] pl-[1px]">
+            <div className="absolute bottom-0 right-0 w-[18px] h-[18px] bg-[#0095f6] rounded-full border-[2px] border-white flex items-center justify-center text-white font-bold text-[12px] leading-none pb-[2px] pl-[1px]">
               +
             </div>
           </div>
           
-          <div className="flex gap-5 text-center pr-2">
+          <div className="flex gap-4 text-center flex-1 justify-center pl-2">
             <div className="flex flex-col items-center">
-              <span className="font-bold text-[14px] leading-none">124</span>
-              <span className="text-[10px] text-neutral-800 leading-tight mt-[1px]">posts</span>
+              <span className="font-bold text-[13px] leading-none">124</span>
+              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">posts</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-bold text-[14px] leading-none">14.2K</span>
-              <span className="text-[10px] text-neutral-800 leading-tight mt-[1px]">followers</span>
+              <span className="font-bold text-[13px] leading-none">14.2K</span>
+              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">followers</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-bold text-[14px] leading-none">1,204</span>
-              <span className="text-[10px] text-neutral-800 leading-tight mt-[1px]">following</span>
+              <span className="font-bold text-[13px] leading-none">1,204</span>
+              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">following</span>
             </div>
           </div>
         </div>
 
-        <div className="space-y-[1px] text-[11px] leading-[1.25] mt-1 pr-2">
-          <h2 className="font-semibold text-[12px] text-black">{userName}</h2>
-          <div className="text-neutral-500 text-[11px]">Entrepreneur</div>
+        <div className="space-y-[1px] text-[10px] leading-[1.3] mt-1 pr-2">
+          <h2 className="font-semibold text-[11px] text-black">{userName}</h2>
+          <div className="text-neutral-500 text-[10px]">Entrepreneur</div>
           <p className="whitespace-pre-wrap">{headline || bio || 'Building predictable client acquisition pipelines.'}</p>
-          <div className="flex items-center gap-1 mt-1 text-[#00376b] font-semibold text-[11px]">
+          <div className="flex items-center gap-1 mt-1 text-[#00376b] font-semibold text-[10px]">
             <svg aria-label="Link icon" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="10" role="img" viewBox="0 0 24 24" width="10"><path d="M10.134 14.887a.75.75 0 0 1-1.06 1.06 6.012 6.012 0 0 1 0-8.502l3.414-3.414a6.013 6.013 0 0 1 8.502 8.502l-1.637 1.637a.75.75 0 1 1-1.06-1.06l1.637-1.637a4.512 4.512 0 1 0-6.381-6.381l-3.414 3.414a4.512 4.512 0 0 0 0 6.381Zm4.793-4.713a.75.75 0 0 1 1.06-1.06 6.012 6.012 0 0 1 0 8.502l-3.414 3.414a6.013 6.013 0 0 1-8.502-8.502l1.637-1.637a.75.75 0 1 1 1.06 1.06l-1.637 1.637a4.512 4.512 0 1 0 6.381 6.381l3.414-3.414a4.512 4.512 0 0 0 0-6.381Z"></path></svg>
             <span>linktr.ee/{userHandle || 'yourhandle'}</span>
           </div>

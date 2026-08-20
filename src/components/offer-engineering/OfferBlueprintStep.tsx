@@ -82,7 +82,7 @@ function buildMarkdown(bp: OfferBlueprint): string {
 }
 
 function getSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'offer-blueprint';
+  return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'offer-blueprint';
 }
 
 function p(v: number | null): string { return v !== null && v > 0 ? `$${v}` : 'TBD'; }
