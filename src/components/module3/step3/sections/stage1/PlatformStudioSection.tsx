@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
 import type { ProfileSystemAsset } from '@/src/data/module3/authority-suite-engine';
+import { useModule3Store } from '@/src/lib/module3/store';
 import {
   User,
   Code,
@@ -118,7 +119,7 @@ const generateToneVariation = (text: string, tone: 'executive' | 'conversion' | 
 
 function LinkedInMockup({ userName, initials, headline, bio }: { userName: string; initials: string; headline: string; bio: string }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden text-neutral-900 shadow-md border border-neutral-200">
+    <div className="h-full bg-[#f3f2ef] text-neutral-900 overflow-y-auto hide-scrollbar pb-10">
       <div className="h-24 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-950 relative p-4 flex items-end">
         <span className="text-[9px] font-black uppercase tracking-widest text-blue-300 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-500/30">
           Strategic Authority
@@ -201,7 +202,7 @@ function GitHubMockup({ userName, userHandle, initials, headline }: { userName: 
 
 function TwitterMockup({ userName, userHandle, initials, headline }: { userName: string; userHandle: string; initials: string; headline: string }) {
   return (
-    <div className="bg-black text-white rounded-2xl overflow-hidden border border-neutral-800 p-5 space-y-3">
+    <div className="h-full bg-black text-white p-5 space-y-3 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex justify-between items-start">
         <div className="w-12 h-12 rounded-full bg-neutral-800 text-white flex items-center justify-center font-bold text-lg border border-neutral-700 relative">
           {initials}
@@ -232,19 +233,51 @@ function TwitterMockup({ userName, userHandle, initials, headline }: { userName:
   );
 }
 
-function YouTubeMockup({ userName, headline }: { userName: string; headline: string }) {
+function YouTubeMockup({ userName, userHandle, initials, headline, bio }: { userName: string; userHandle: string; initials: string; headline: string; bio: string }) {
   return (
-    <div className="bg-neutral-950 rounded-2xl border border-neutral-800 text-white p-5 space-y-3">
-      <div className="h-20 bg-gradient-to-r from-red-950 via-neutral-900 to-black rounded-xl p-3 flex items-end justify-between border border-red-900/30">
-        <div>
-          <span className="text-[9px] font-black uppercase text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-800">Showreel</span>
-          <h3 className="font-bold text-sm text-white mt-1">{userName} Edits</h3>
+    <div className="h-full w-full bg-[#0f0f0f] flex flex-col font-sans text-white pb-10 overflow-y-auto hide-scrollbar">
+      {/* Banner */}
+      <div className="h-[90px] bg-gradient-to-r from-red-900 via-neutral-900 to-black w-full" />
+      
+      {/* Profile Info */}
+      <div className="px-4 flex flex-col items-center -mt-[36px]">
+        {/* DP */}
+        <div className="w-[72px] h-[72px] rounded-full border-2 border-[#0f0f0f] bg-neutral-800 flex items-center justify-center font-bold text-2xl text-neutral-400 shrink-0">
+          {initials}
         </div>
-        <button className="bg-red-600 text-white font-bold text-[9px] px-3 py-1 rounded-full">Subscribe</button>
+        
+        {/* Title & Stats */}
+        <h2 className="text-[18px] font-bold mt-2 text-center leading-tight">{userName}</h2>
+        <div className="text-[11px] text-neutral-400 mt-1 flex items-center justify-center gap-1">
+          <span>@{userHandle || 'yourhandle'}</span>
+          <span>‧</span>
+          <span>100K subscribers</span>
+          <span>‧</span>
+          <span>120 videos</span>
+        </div>
+        
+        {/* Bio preview */}
+        <p className="text-[11px] text-neutral-300 mt-2 text-center line-clamp-2 px-2 leading-[1.3]">
+          {headline || bio || 'Building predictable client acquisition pipelines.'}
+        </p>
+        
+        <div className="flex items-center gap-1 mt-1.5 text-[11px] font-bold text-neutral-300">
+          <span>linktr.ee/{userHandle || 'yourhandle'}</span>
+          <span className="text-neutral-500 font-medium">and 2 more links</span>
+        </div>
+
+        {/* Subscribe Button */}
+        <button className="w-full mt-4 bg-white text-black font-bold text-[13px] py-2 rounded-full hover:bg-neutral-200 transition-colors">
+          Subscribe
+        </button>
       </div>
-      <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800 space-y-1">
-        <span className="text-[9px] font-bold text-red-400 uppercase tracking-wider">Hook</span>
-        <p className="text-[10px] text-neutral-200 leading-relaxed italic">"{headline}"</p>
+      
+      {/* Tabs */}
+      <div className="flex items-center gap-6 px-4 mt-4 border-b border-neutral-800 text-[13px] font-medium text-neutral-400">
+        <span className="text-white border-b-2 border-white pb-2">Home</span>
+        <span className="pb-2">Videos</span>
+        <span className="pb-2">Shorts</span>
+        <span className="pb-2">Live</span>
       </div>
     </div>
   );
@@ -252,7 +285,7 @@ function YouTubeMockup({ userName, headline }: { userName: string; headline: str
 
 function PersonalSiteMockup({ userHandle, headline, bio }: { userHandle: string; headline: string; bio: string }) {
   return (
-    <div className="bg-neutral-950 text-white rounded-2xl border border-neutral-800 p-5 space-y-3">
+    <div className="h-full bg-neutral-950 text-white p-5 space-y-3 overflow-y-auto hide-scrollbar pb-10">
       <div className="bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-800 flex items-center justify-between text-[10px] text-neutral-400 font-mono">
         <span>https://{userHandle}.com</span>
         <span className="text-emerald-400 font-bold">HTTPS</span>
@@ -269,7 +302,7 @@ function PersonalSiteMockup({ userHandle, headline, bio }: { userHandle: string;
 
 function InstagramMockup({ userName, userHandle, initials, headline, bio }: { userName: string; userHandle: string; initials: string; headline: string; bio: string }) {
   return (
-    <div className="bg-white text-black rounded-[30px] overflow-hidden border border-neutral-200 w-full font-sans">
+    <div className="h-full w-full bg-white flex flex-col font-sans text-black pb-10 overflow-y-auto hide-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
         <div className="flex items-center gap-1.5">
@@ -288,10 +321,10 @@ function InstagramMockup({ userName, userHandle, initials, headline, bio }: { us
 
       {/* Profile Info */}
       <div className="px-4 pt-3 pb-2">
-        <div className="flex items-center gap-4 mb-3">
-          <div className="relative shrink-0">
+        <div className="flex items-center mb-2">
+          <div className="relative shrink-0 mr-4">
             <div className="w-[64px] h-[64px] rounded-full p-[2.5px] bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]">
-              <div className="w-full h-full rounded-full border-[2.5px] border-white bg-neutral-100 flex items-center justify-center text-[18px] font-medium text-neutral-400">
+              <div className="w-full h-full rounded-full border-[2px] border-white bg-neutral-100 flex items-center justify-center text-[20px] font-medium text-neutral-400">
                 {initials}
               </div>
             </div>
@@ -300,26 +333,26 @@ function InstagramMockup({ userName, userHandle, initials, headline, bio }: { us
             </div>
           </div>
           
-          <div className="flex gap-4 text-center flex-1 justify-center pl-2">
+          <div className="flex gap-1 text-center flex-1 justify-around">
             <div className="flex flex-col items-center">
               <span className="font-bold text-[13px] leading-none">124</span>
-              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">posts</span>
+              <span className="text-[10px] text-neutral-800 leading-tight mt-[2px]">posts</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="font-bold text-[13px] leading-none">14.2K</span>
-              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">followers</span>
+              <span className="text-[10px] text-neutral-800 leading-tight mt-[2px]">followers</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="font-bold text-[13px] leading-none">1,204</span>
-              <span className="text-[9px] text-neutral-800 leading-tight mt-[1px]">following</span>
+              <span className="text-[10px] text-neutral-800 leading-tight mt-[2px]">following</span>
             </div>
           </div>
         </div>
 
-        <div className="space-y-[1px] text-[10px] leading-[1.3] mt-1 pr-2">
+        <div className="space-y-[1px] mt-1 pr-1">
           <h2 className="font-semibold text-[11px] text-black">{userName}</h2>
           <div className="text-neutral-500 text-[10px]">Entrepreneur</div>
-          <p className="whitespace-pre-wrap">{headline || bio || 'Building predictable client acquisition pipelines.'}</p>
+          <p className="whitespace-pre-wrap text-[10px] leading-[1.25] text-black">{headline || bio || 'Building predictable client acquisition pipelines.'}</p>
           <div className="flex items-center gap-1 mt-1 text-[#00376b] font-semibold text-[10px]">
             <svg aria-label="Link icon" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="10" role="img" viewBox="0 0 24 24" width="10"><path d="M10.134 14.887a.75.75 0 0 1-1.06 1.06 6.012 6.012 0 0 1 0-8.502l3.414-3.414a6.013 6.013 0 0 1 8.502 8.502l-1.637 1.637a.75.75 0 1 1-1.06-1.06l1.637-1.637a4.512 4.512 0 1 0-6.381-6.381l-3.414 3.414a4.512 4.512 0 0 0 0 6.381Zm4.793-4.713a.75.75 0 0 1 1.06-1.06 6.012 6.012 0 0 1 0 8.502l-3.414 3.414a6.013 6.013 0 0 1-8.502-8.502l1.637-1.637a.75.75 0 1 1 1.06 1.06l-1.637 1.637a4.512 4.512 0 1 0 6.381 6.381l3.414-3.414a4.512 4.512 0 0 0 0-6.381Z"></path></svg>
             <span>linktr.ee/{userHandle || 'yourhandle'}</span>
@@ -377,7 +410,7 @@ function InstagramMockup({ userName, userHandle, initials, headline, bio }: { us
 
 function GenericMockup({ platformName, userName, initials, headline }: { platformName: string; userName: string; initials: string; headline: string }) {
   return (
-    <div className="bg-neutral-950 text-white rounded-2xl border border-neutral-800 p-5 space-y-3">
+    <div className="h-full bg-neutral-950 text-white p-5 space-y-3 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center font-bold text-white text-sm">{initials}</div>
         <div>
@@ -421,21 +454,33 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const displayHandle = userHandle?.trim() || 'yourhandle';
   const initials = getInitials(userName?.trim() || 'YN');
 
+  const mod1MarketId = useModule3Store(s => s.mod1MarketId);
+  const mod1ServiceId = useModule3Store(s => s.mod1ServiceId);
+  const mod2UniqueMechanism = useModule3Store(s => s.mod2UniqueMechanism);
+  const mod1Positioning = useModule3Store(s => s.mod1Positioning);
+
   // Helper for applying formulas
   const applyFormula = (fieldKey: string, formulaId: string, originalValue: string) => {
     let result = originalValue || '';
+    
+    // Fallback constants from store context
+    const market = (mod1MarketId || '').replace(/_/g, ' ') || 'clients';
+    const service = (mod1ServiceId || '').replace(/_/g, ' ') || 'systems';
+    const mechanism = mod2UniqueMechanism?.trim() || 'our proven methodology';
+    const position = mod1Positioning?.trim() || 'Specialist';
+
     if (formulaId === 'proof') {
       result = fieldKey.includes('headline') 
-        ? `I help clients scale → Generates $X in value | Ex-[Company] | Book a call below 👇`
-        : `Over the past years, I've consistently delivered verifiable results. If you need someone who eliminates risk and guarantees delivery, let's talk.\n\nKey Result: Reduced churn by X% in 30 days.`;
+        ? `I help ${market} scale → Measurable value | Creator of ${mechanism} | Book a call 👇`
+        : `Over the past years, I've consistently delivered verifiable results for ${market}. If you need a ${position} who eliminates risk and guarantees delivery for ${service}, let's talk.\n\nKey Result: Proven impact using ${mechanism}.`;
     } else if (formulaId === 'problem') {
       result = fieldKey.includes('headline')
-        ? `Tired of [Pain Point]? I build [Solution] for [Target Audience] so you can [Benefit].`
-        : `Most businesses struggle with [Problem]. \n\nI solve this by implementing [Your Method]. The outcome? Predictable [Result] without the usual headaches.`;
+        ? `Tired of generic ${service}? I build custom solutions for ${market} so you can scale safely.`
+        : `Most ${market} struggle with unpredictable execution.\n\nI solve this by implementing ${mechanism}. The outcome? Predictable growth without the usual headaches.`;
     } else if (formulaId === 'contrarian') {
       result = fieldKey.includes('headline')
-        ? `Unpopular opinion: [Industry Myth]. I do the exact opposite for [Target Audience].`
-        : `Everyone says you need [Common Advice]. They're wrong.\n\nI build [Your Method] systems that ignore the noise and focus purely on [Metric that matters].`;
+        ? `Unpopular opinion: Traditional ${service} is dead. I do the exact opposite for ${market}.`
+        : `Everyone says you need more pitch decks. They're wrong.\n\nI build ${mechanism} systems that ignore the noise and focus purely on verifiable proof and execution.`;
     }
     setEditValue(result);
   };
@@ -636,16 +681,49 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               )}
             </div>
 
-            <div className="bg-neutral-950 rounded-3xl p-4 border border-neutral-800 shadow-2xl">
-              {activeTab === 'linkedin' && <LinkedInMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} />}
-              {activeTab === 'github' && <GitHubMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} />}
-              {activeTab === 'twitter' && <TwitterMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} />}
-              {activeTab === 'youtube' && <YouTubeMockup userName={displayName} headline={currentHeadline} />}
-              {activeTab === 'instagram' && <InstagramMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} />}
-              {activeTab === 'personal_site' && <PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} />}
-              {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site'].includes(activeTab) && (
-                <GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} />
-              )}
+            <div className="relative mx-auto lg:mx-0 w-[320px] bg-black rounded-[48px] p-2.5 shadow-2xl border-4 border-neutral-800">
+              {/* Hardware buttons */}
+              <div className="absolute top-24 -left-1.5 w-1 h-8 bg-neutral-800 rounded-l-md"></div>
+              <div className="absolute top-36 -left-1.5 w-1 h-12 bg-neutral-800 rounded-l-md"></div>
+              <div className="absolute top-52 -left-1.5 w-1 h-12 bg-neutral-800 rounded-l-md"></div>
+              <div className="absolute top-36 -right-1.5 w-1 h-16 bg-neutral-800 rounded-r-md"></div>
+
+              <div className="w-full h-full bg-neutral-100 rounded-[38px] overflow-hidden relative relative shadow-inner min-h-[550px] flex flex-col">
+                
+                {/* Dynamic Island / Notch */}
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[100px] h-7 bg-black rounded-full z-20 flex items-center justify-between px-2">
+                  <div className="w-2 h-2 rounded-full bg-neutral-800/80"></div>
+                  <div className="w-2 h-2 rounded-full bg-indigo-900/50"></div>
+                </div>
+
+                {/* Status Bar */}
+                <div className="flex justify-between items-center px-6 py-2 text-[11px] font-bold z-10 absolute top-0 w-full mix-blend-difference text-white/90">
+                  <span className="pl-2">9:41</span>
+                  <div className="flex gap-1.5 items-center pr-1">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21L23.6 7C22.2 5.5 17.6 2 12 2C6.4 2 1.8 5.5 0.4 7L12 21Z"/></svg>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22H22V2H2V22ZM20 20H4V4H20V20Z"/></svg>
+                    <div className="w-5 h-2.5 border border-current rounded-sm p-[1px] flex items-center">
+                      <div className="bg-current h-full w-[80%] rounded-[1px]"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Screen Content */}
+                <div className="h-full w-full pt-10 flex-1 overflow-y-auto hide-scrollbar bg-neutral-950 flex flex-col">
+                  {activeTab === 'linkedin' && <div className="h-full bg-neutral-100"><LinkedInMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+                  {activeTab === 'github' && <div className="h-full bg-neutral-950"><GitHubMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
+                  {activeTab === 'twitter' && <div className="h-full bg-white"><TwitterMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
+                  {activeTab === 'youtube' && <div className="h-full bg-[#0f0f0f]"><YouTubeMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+                  {activeTab === 'instagram' && <div className="h-full bg-white"><InstagramMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+                  {activeTab === 'personal_site' && <div className="h-full bg-neutral-950"><PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} /></div>}
+                  {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site'].includes(activeTab) && (
+                    <div className="h-full bg-neutral-100"><GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} /></div>
+                  )}
+                </div>
+                
+                {/* Home Indicator */}
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/50 mix-blend-difference rounded-full z-20 mb-1"></div>
+              </div>
             </div>
           </div>
 
