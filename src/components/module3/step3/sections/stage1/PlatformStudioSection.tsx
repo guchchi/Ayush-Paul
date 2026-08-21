@@ -425,6 +425,41 @@ function GenericMockup({ platformName, userName, initials, headline }: { platfor
   );
 }
 
+function BehanceMockup({ userName, initials, headline, bio }: { userName: string; initials: string; headline: string; bio: string }) {
+  return (
+    <div className="h-full bg-white text-black p-5 space-y-4 overflow-y-auto hide-scrollbar pb-10">
+      <div className="flex justify-between items-center mb-2">
+        <div className="font-bold text-xl tracking-tighter">Bēhance</div>
+        <div className="w-6 h-6 rounded-full bg-neutral-200"></div>
+      </div>
+      <div className="flex flex-col items-center text-center space-y-3 pt-4">
+        <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-2xl shadow-sm">
+          {initials}
+        </div>
+        <div>
+          <h3 className="font-bold text-lg">{userName}</h3>
+          <p className="text-[11px] text-neutral-500 mt-1">{headline}</p>
+        </div>
+        <button className="px-6 py-2 bg-blue-600 text-white font-bold text-[11px] rounded-full hover:bg-blue-700 transition-colors w-full max-w-[200px]">
+          Follow
+        </button>
+      </div>
+      <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 text-[11px] leading-relaxed text-neutral-700">
+        {bio || 'Showcasing digital product design and scalable architectures.'}
+      </div>
+      <div className="pt-2">
+        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block mb-3">Projects</span>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="aspect-[4/3] bg-neutral-200 rounded-lg"></div>
+          <div className="aspect-[4/3] bg-neutral-200 rounded-lg"></div>
+          <div className="aspect-[4/3] bg-neutral-200 rounded-lg"></div>
+          <div className="aspect-[4/3] bg-neutral-200 rounded-lg"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export const PlatformStudioSection: React.FC<Props> = React.memo(({
@@ -716,7 +751,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                   {activeTab === 'youtube' && <div className="h-full bg-[#0f0f0f]"><YouTubeMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
                   {activeTab === 'instagram' && <div className="h-full bg-white"><InstagramMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
                   {activeTab === 'personal_site' && <div className="h-full bg-neutral-950"><PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} /></div>}
-                  {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site'].includes(activeTab) && (
+                  {activeTab === 'behance' && <div className="h-full bg-white"><BehanceMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+                  {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site', 'behance'].includes(activeTab) && (
                     <div className="h-full bg-neutral-100"><GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} /></div>
                   )}
                 </div>
