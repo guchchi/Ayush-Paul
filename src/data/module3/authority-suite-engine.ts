@@ -60,7 +60,7 @@ export interface BrandAssetItem {
 }
 
 export interface ProfileSystemAsset {
-  platform: 'linkedin' | 'twitter' | 'personal_site';
+  platform: 'linkedin' | 'twitter' | 'instagram' | 'youtube' | 'personal_site' | 'github' | 'behance';
   title: string;
   fields: {
     key: string;
@@ -538,6 +538,60 @@ export function generateFullAuthoritySuite(ctx?: {
           label: 'Primary Conversion CTA',
           value: `Schedule Strategic Consultation & Audit`,
           originalValue: `Schedule Strategic Consultation & Audit`,
+        },
+      ],
+    },
+    {
+      platform: 'instagram',
+      title: 'Instagram Profile Package',
+      fields: [
+        {
+          key: 'name_format',
+          label: 'Display Name',
+          value: `Ayush | ${service}`,
+          originalValue: `Ayush | ${service}`,
+        },
+        {
+          key: 'bio',
+          label: 'Bio Copy',
+          value: `I help ${market} scale via ${mechanism}.\n${promise}.\nCheck out my free case study below 👇`,
+          originalValue: `I help ${market} scale via ${mechanism}.\n${promise}.\nCheck out my free case study below 👇`,
+        },
+        {
+          key: 'highlights',
+          label: 'Story Highlights Strategy',
+          value: `1. Case Studies\n2. The Process\n3. Client Wins\n4. About Me`,
+          originalValue: `1. Case Studies\n2. The Process\n3. Client Wins\n4. About Me`,
+        },
+        {
+          key: 'link_cta',
+          label: 'Link-in-Bio CTA',
+          value: `Access the ${service} Blueprint`,
+          originalValue: `Access the ${service} Blueprint`,
+        },
+      ],
+    },
+    {
+      platform: 'youtube',
+      title: 'YouTube Channel Package',
+      fields: [
+        {
+          key: 'banner_text',
+          label: 'Channel Banner Hook',
+          value: `The No-BS Guide to ${service} for ${market} | New Teardowns Weekly`,
+          originalValue: `The No-BS Guide to ${service} for ${market} | New Teardowns Weekly`,
+        },
+        {
+          key: 'bio',
+          label: 'About Section',
+          value: `I document exactly how ${market} can scale using ${mechanism}. No fluff, just raw execution and teardowns.\n\n${promise}.`,
+          originalValue: `I document exactly how ${market} can scale using ${mechanism}. No fluff, just raw execution and teardowns.\n\n${promise}.`,
+        },
+        {
+          key: 'featured_video',
+          label: 'Featured Channel Trailer',
+          value: `Why your ${service} is failing (and how to fix it in 30 days)`,
+          originalValue: `Why your ${service} is failing (and how to fix it in 30 days)`,
         },
       ],
     },
