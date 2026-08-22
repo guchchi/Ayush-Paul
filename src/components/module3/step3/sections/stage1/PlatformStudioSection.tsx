@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Section 3: Platform Studio
  * 
  * "Ab har platform ko ek-ek karke optimize kar"
@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface Props {
   profileSystem: ProfileSystemAsset[];
@@ -48,15 +48,15 @@ interface Props {
   onContinue: () => void;
 }
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+// â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const PLATFORM_DEEP_LINKS: Record<string, { label: string; url: string }> = {
-  linkedin: { label: 'Open LinkedIn Edit ↗', url: 'https://www.linkedin.com/in/me/overlay/edit/' },
-  github: { label: 'Open GitHub Settings ↗', url: 'https://github.com/settings/profile' },
-  twitter: { label: 'Open X Settings ↗', url: 'https://x.com/settings/profile' },
-  youtube: { label: 'Open YouTube Studio ↗', url: 'https://studio.youtube.com/channel/editing/profile' },
-  behance: { label: 'Open Figma Settings ↗', url: 'https://www.figma.com/settings' },
-  instagram: { label: 'Open Instagram Edit ↗', url: 'https://www.instagram.com/accounts/edit/' },
+  linkedin: { label: 'Open LinkedIn Edit â†—', url: 'https://www.linkedin.com/in/me/overlay/edit/' },
+  github: { label: 'Open GitHub Settings â†—', url: 'https://github.com/settings/profile' },
+  twitter: { label: 'Open X Settings â†—', url: 'https://x.com/settings/profile' },
+  youtube: { label: 'Open YouTube Studio â†—', url: 'https://studio.youtube.com/channel/editing/profile' },
+  behance: { label: 'Open Figma Settings â†—', url: 'https://www.figma.com/settings' },
+  instagram: { label: 'Open Instagram Edit â†—', url: 'https://www.instagram.com/accounts/edit/' },
   personal_site: { label: 'Copy Site HTML', url: '#' },
 };
 
@@ -99,7 +99,7 @@ const COPY_FORMULAS = [
   { id: 'contrarian', label: 'Contrarian', desc: 'High-status, zero-fluff' }
 ];
 
-// ── Helper ────────────────────────────────────────────────────────────────────
+// â”€â”€ Helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const getInitials = (name: string) => {
   if (!name) return 'AP';
@@ -110,12 +110,12 @@ const getInitials = (name: string) => {
 
 const generateToneVariation = (text: string, tone: 'executive' | 'conversion' | 'direct') => {
   if (!text) return text;
-  if (tone === 'executive') return text.startsWith('Verifiable') ? text : `Strategic Authority • ${text}`;
-  if (tone === 'conversion') return `Proven ${text} — Eliminating Client Execution Risk.`;
+  if (tone === 'executive') return text.startsWith('Verifiable') ? text : `Strategic Authority â€¢ ${text}`;
+  if (tone === 'conversion') return `Proven ${text} â€” Eliminating Client Execution Risk.`;
   return `${text} | Guaranteed Delivery & Measurable ROI.`;
 };
 
-// ── Live OS Mockup Components ─────────────────────────────────────────────────
+// â”€â”€ Live OS Mockup Components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function LinkedInMockup({ userName, initials, headline, bio }: { userName: string; initials: string; headline: string; bio: string }) {
   return (
@@ -135,7 +135,7 @@ function LinkedInMockup({ userName, initials, headline, bio }: { userName: strin
           </button>
         </div>
         <div>
-          <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">· 1st</span></h3>
+          <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">Â· 1st</span></h3>
           <p className="text-[11px] font-bold text-[#0a66c2] leading-snug line-clamp-2 mt-0.5">{headline}</p>
           <p className="text-[9px] text-neutral-500 mt-1">Talks about #design, #strategy, and #growth</p>
         </div>
@@ -226,7 +226,7 @@ function TwitterMockup({ userName, userHandle, initials, headline }: { userName:
           <Pin size={10} className="rotate-45" /> Pinned
         </div>
         <div className="bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
-          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread 🧵👇</p>
+          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread ðŸ§µðŸ‘‡</p>
         </div>
       </div>
     </div>
@@ -250,9 +250,9 @@ function YouTubeMockup({ userName, userHandle, initials, headline, bio }: { user
         <h2 className="text-[18px] font-bold mt-2 text-center leading-tight">{userName}</h2>
         <div className="text-[11px] text-neutral-400 mt-1 flex items-center justify-center gap-1">
           <span>@{userHandle || 'yourhandle'}</span>
-          <span>‧</span>
+          <span>â€§</span>
           <span>100K subscribers</span>
-          <span>‧</span>
+          <span>â€§</span>
           <span>120 videos</span>
         </div>
         
@@ -429,7 +429,7 @@ function BehanceMockup({ userName, initials, headline, bio }: { userName: string
   return (
     <div className="h-full bg-white text-black p-5 space-y-4 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex justify-between items-center mb-2">
-        <div className="font-bold text-xl tracking-tighter">Bēhance</div>
+        <div className="font-bold text-xl tracking-tighter">BÄ“hance</div>
         <div className="w-6 h-6 rounded-full bg-neutral-200"></div>
       </div>
       <div className="flex flex-col items-center text-center space-y-3 pt-4">
@@ -460,7 +460,7 @@ function BehanceMockup({ userName, initials, headline, bio }: { userName: string
   );
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const PlatformStudioSection: React.FC<Props> = React.memo(({
   profileSystem,
@@ -478,12 +478,16 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const primaryPlatforms = ALL_PLATFORMS.filter(p => recommendedPlatforms.includes(p.key));
   const secondaryPlatforms = ALL_PLATFORMS.filter(p => !recommendedPlatforms.includes(p.key));
 
-  const [activeTab, setActiveTab] = useState<string>(recommendedPlatforms[0] || 'linkedin');
+  // Sequential flow: track current platform index within primary list
+  const [currentPlatformIndex, setCurrentPlatformIndex] = useState(0);
+  const [reviewedPlatforms, setReviewedPlatforms] = useState<Set<string>>(new Set());
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [showSecondary, setShowSecondary] = useState(false);
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
+  const [showToneSelector, setShowToneSelector] = useState(false);
+  const [showOptionalPlatforms, setShowOptionalPlatforms] = useState(false);
+  const [viewingOptionalPlatform, setViewingOptionalPlatform] = useState<string | null>(null);
 
   const displayName = userName?.trim() || 'Your Name';
   const displayHandle = userHandle?.trim() || 'yourhandle';
@@ -494,19 +498,23 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const mod2UniqueMechanism = useModule3Store(s => s.mod2UniqueMechanism);
   const mod1Positioning = useModule3Store(s => s.mod1Positioning);
 
+  // Determine current active platform key
+  const activeTab = viewingOptionalPlatform || (primaryPlatforms[currentPlatformIndex]?.key || 'linkedin');
+  const isViewingOptional = !!viewingOptionalPlatform;
+
+  const allPrimaryReviewed = primaryPlatforms.length > 0 && primaryPlatforms.every(p => reviewedPlatforms.has(p.key));
+
   // Helper for applying formulas
-  const applyFormula = (fieldKey: string, formulaId: string, originalValue: string) => {
-    let result = originalValue || '';
-    
-    // Fallback constants from store context
+  const applyFormula = (fieldKey: string, formulaId: string, _originalValue: string) => {
+    let result = '';
     const market = (mod1MarketId || '').replace(/_/g, ' ') || 'clients';
     const service = (mod1ServiceId || '').replace(/_/g, ' ') || 'systems';
     const mechanism = mod2UniqueMechanism?.trim() || 'our proven methodology';
     const position = mod1Positioning?.trim() || 'Specialist';
 
     if (formulaId === 'proof') {
-      result = fieldKey.includes('headline') 
-        ? `I help ${market} scale → Measurable value | Creator of ${mechanism} | Book a call 👇`
+      result = fieldKey.includes('headline')
+        ? `I help ${market} scale â†’ Measurable value | Creator of ${mechanism} | Book a call ðŸ‘‡`
         : `Over the past years, I've consistently delivered verifiable results for ${market}. If you need a ${position} who eliminates risk and guarantees delivery for ${service}, let's talk.\n\nKey Result: Proven impact using ${mechanism}.`;
     } else if (formulaId === 'problem') {
       result = fieldKey.includes('headline')
@@ -527,7 +535,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const handleExportAll = () => {
     const lines: string[] = [];
     lines.push(`# Social Profile Identity Export\n\n`);
-    
     profileSystem.forEach(p => {
       const platformName = ALL_PLATFORMS.find(ap => ap.key === p.platform)?.name || p.platform;
       lines.push(`## === ${platformName.toUpperCase()} ===\n`);
@@ -536,7 +543,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
       });
       lines.push('\n');
     });
-
     navigator.clipboard.writeText(lines.join('\n'));
     setCopiedField('export_all');
     setTimeout(() => setCopiedField(null), 2000);
@@ -576,10 +582,73 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   };
 
   const platformLabel = ALL_PLATFORMS.find(p => p.key === activeTab)?.name || activeTab;
+  const currentPlatformMeta = ALL_PLATFORMS.find(p => p.key === activeTab);
+
+  const handleMarkReviewed = () => {
+    setReviewedPlatforms(prev => new Set([...prev, activeTab]));
+    setEditingField(null);
+    if (!isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1) {
+      setCurrentPlatformIndex(currentPlatformIndex + 1);
+    }
+  };
+
+  const handleGoToPlatform = (index: number) => {
+    setViewingOptionalPlatform(null);
+    setCurrentPlatformIndex(index);
+    setEditingField(null);
+  };
+
+  // â”€â”€ Render: Phone Mockup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const renderMockup = () => (
+    <div className="relative mx-auto w-[280px] bg-black rounded-[44px] p-2 shadow-2xl border-4 border-neutral-800">
+      {/* Hardware buttons */}
+      <div className="absolute top-20 -left-1.5 w-1 h-7 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-32 -left-1.5 w-1 h-10 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-44 -left-1.5 w-1 h-10 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-32 -right-1.5 w-1 h-14 bg-neutral-800 rounded-r-md" />
+
+      <div className="w-full h-full bg-neutral-100 rounded-[36px] overflow-hidden relative shadow-inner min-h-[480px] flex flex-col">
+        {/* Dynamic Island */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-6 bg-black rounded-full z-20 flex items-center justify-between px-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-neutral-800/80" />
+          <div className="w-1.5 h-1.5 rounded-full bg-indigo-900/50" />
+        </div>
+
+        {/* Status Bar */}
+        <div className="flex justify-between items-center px-5 py-1.5 text-[10px] font-bold z-10 absolute top-0 w-full mix-blend-difference text-white/90">
+          <span className="pl-1.5">9:41</span>
+          <div className="flex gap-1 items-center pr-0.5">
+            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21L23.6 7C22.2 5.5 17.6 2 12 2C6.4 2 1.8 5.5 0.4 7L12 21Z"/></svg>
+            <div className="w-4 h-2 border border-current rounded-sm p-[1px] flex items-center">
+              <div className="bg-current h-full w-[80%] rounded-[1px]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Screen Content */}
+        <div className="h-full w-full pt-8 flex-1 overflow-y-auto hide-scrollbar bg-neutral-950 flex flex-col">
+          {activeTab === 'linkedin' && <div className="h-full bg-neutral-100"><LinkedInMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+          {activeTab === 'github' && <div className="h-full bg-neutral-950"><GitHubMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
+          {activeTab === 'twitter' && <div className="h-full bg-white"><TwitterMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
+          {activeTab === 'youtube' && <div className="h-full bg-[#0f0f0f]"><YouTubeMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+          {activeTab === 'instagram' && <div className="h-full bg-white"><InstagramMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+          {activeTab === 'personal_site' && <div className="h-full bg-neutral-950"><PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} /></div>}
+          {activeTab === 'behance' && <div className="h-full bg-white"><BehanceMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
+          {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site', 'behance'].includes(activeTab) && (
+            <div className="h-full bg-neutral-100"><GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} /></div>
+          )}
+        </div>
+
+        {/* Home Indicator */}
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-28 h-1 bg-white/50 mix-blend-difference rounded-full z-20 mb-0.5" />
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full space-y-5 text-left font-sans">
-      {/* Tone Selector */}
+
+      {/* â”€â”€ Top: Platform Progress Stepper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -587,107 +656,119 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
       >
         <div className="flex items-center justify-between mb-3">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Authority Tone</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Platform Progress</span>
+            <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+              {reviewedPlatforms.size} of {primaryPlatforms.length} reviewed
+            </span>
+          </div>
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
             {roleLabel}
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {TONES.map(tone => (
-            <button
-              key={tone.key}
-              onClick={() => onToneChange(tone.key)}
-              className={cn(
-                'p-3 rounded-2xl border text-left transition-all cursor-pointer space-y-0.5',
-                activeTone === tone.key
-                  ? 'bg-[#0058be] text-white border-[#0058be] shadow-md'
-                  : 'bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100'
-              )}
-            >
-              <span className="text-xs font-bold block">{tone.label}</span>
-              <span className={cn('text-[9px] block', activeTone === tone.key ? 'text-blue-100' : 'text-neutral-400')}>
-                {tone.desc}
-              </span>
-            </button>
-          ))}
-        </div>
-      </motion.div>
 
-      {/* Platform Tab Selector */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.05 }}
-        className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3"
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-            Primary Channels
-          </span>
-          <button
-            onClick={() => setShowSecondary(!showSecondary)}
-            className="text-xs font-bold text-[#0058be] hover:underline flex items-center gap-1 cursor-pointer"
-          >
-            {showSecondary ? 'Hide' : `+ ${secondaryPlatforms.length} More`}
-            <ChevronDown size={13} className={cn('transition-transform', showSecondary && 'rotate-180')} />
-          </button>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {primaryPlatforms.map(p => {
-            const isActive = activeTab === p.key;
+        {/* Platform step dots */}
+        <div className="flex items-center gap-2">
+          {primaryPlatforms.map((p, idx) => {
+            const isReviewed = reviewedPlatforms.has(p.key);
+            const isCurrent = !isViewingOptional && idx === currentPlatformIndex;
             const Icon = p.icon;
             return (
-              <button
-                key={p.key}
-                onClick={() => { setActiveTab(p.key); setEditingField(null); }}
-                className={cn(
-                  'px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-2',
-                  isActive
-                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-md'
-                    : 'bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100'
+              <React.Fragment key={p.key}>
+                <button
+                  onClick={() => handleGoToPlatform(idx)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer',
+                    isCurrent
+                      ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
+                      : isReviewed
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                      : 'bg-neutral-50 text-neutral-500 border-neutral-200 hover:bg-neutral-100'
+                  )}
+                >
+                  {isReviewed ? (
+                    <Check size={13} strokeWidth={3} className="text-emerald-600" />
+                  ) : (
+                    <Icon size={13} />
+                  )}
+                  <span className="hidden sm:inline">{p.name}</span>
+                  <span className="sm:hidden">{idx + 1}</span>
+                </button>
+                {idx < primaryPlatforms.length - 1 && (
+                  <div className={cn(
+                    'w-4 h-0.5 rounded-full shrink-0',
+                    isReviewed ? 'bg-emerald-300' : 'bg-neutral-200'
+                  )} />
                 )}
-              >
-                <Icon size={14} />
-                {p.name}
-              </button>
+              </React.Fragment>
             );
           })}
         </div>
 
+        {/* Progress bar */}
+        <div className="mt-3 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
+            transition={{ duration: 0.5, ease: EASING.PREMIUM }}
+          />
+        </div>
+      </motion.div>
+
+      {/* â”€â”€ Tone Selector (Collapsible) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.03 }}
+      >
+        <button
+          onClick={() => setShowToneSelector(!showToneSelector)}
+          className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-neutral-200 bg-white shadow-xs cursor-pointer hover:bg-neutral-50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Authority Tone:</span>
+            <span className="text-xs font-bold text-[#0058be]">
+              {TONES.find(t => t.key === activeTone)?.label || 'Executive'}
+            </span>
+          </div>
+          <ChevronDown size={14} className={cn('text-neutral-400 transition-transform', showToneSelector && 'rotate-180')} />
+        </button>
+
         <AnimatePresence>
-          {showSecondary && (
+          {showToneSelector && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex flex-wrap gap-2 pt-2 border-t border-neutral-100"
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
             >
-              {secondaryPlatforms.map(p => {
-                const isActive = activeTab === p.key;
-                const Icon = p.icon;
-                return (
+              <div className="grid grid-cols-3 gap-2 pt-3 px-1">
+                {TONES.map(tone => (
                   <button
-                    key={p.key}
-                    onClick={() => { setActiveTab(p.key); setEditingField(null); }}
+                    key={tone.key}
+                    onClick={() => { onToneChange(tone.key); setShowToneSelector(false); }}
                     className={cn(
-                      'px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                      isActive
-                        ? 'bg-[#0058be] text-white border-[#0058be]'
-                        : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+                      'p-3 rounded-2xl border text-left transition-all cursor-pointer space-y-0.5',
+                      activeTone === tone.key
+                        ? 'bg-[#0058be] text-white border-[#0058be] shadow-md'
+                        : 'bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100'
                     )}
                   >
-                    <Icon size={12} />
-                    {p.name}
+                    <span className="text-xs font-bold block">{tone.label}</span>
+                    <span className={cn('text-[9px] block', activeTone === tone.key ? 'text-blue-100' : 'text-neutral-400')}>
+                      {tone.desc}
+                    </span>
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
 
-      {/* Dual Studio: Left Mockup + Right Editor */}
+      {/* â”€â”€ Current Platform Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
@@ -695,247 +776,340 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-5"
+          className="space-y-4"
         >
-          {/* Left: Live OS Mockup (5 cols) */}
-          <div className="lg:col-span-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-                {platformLabel} Preview
-              </span>
-              {deepLink && deepLink.url !== '#' && (
-                <a
-                  href={deepLink.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] font-bold text-[#0058be] hover:underline flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-neutral-200"
-                >
-                  <ExternalLink size={10} />
-                  {deepLink.label}
-                </a>
+          {/* Platform title bar */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {currentPlatformMeta && (
+                <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center text-white', currentPlatformMeta.brandColor)}>
+                  {React.createElement(currentPlatformMeta.icon, { size: 16 })}
+                </div>
               )}
-            </div>
-
-            <div className="relative mx-auto lg:mx-0 w-[320px] bg-black rounded-[48px] p-2.5 shadow-2xl border-4 border-neutral-800">
-              {/* Hardware buttons */}
-              <div className="absolute top-24 -left-1.5 w-1 h-8 bg-neutral-800 rounded-l-md"></div>
-              <div className="absolute top-36 -left-1.5 w-1 h-12 bg-neutral-800 rounded-l-md"></div>
-              <div className="absolute top-52 -left-1.5 w-1 h-12 bg-neutral-800 rounded-l-md"></div>
-              <div className="absolute top-36 -right-1.5 w-1 h-16 bg-neutral-800 rounded-r-md"></div>
-
-              <div className="w-full h-full bg-neutral-100 rounded-[38px] overflow-hidden relative relative shadow-inner min-h-[550px] flex flex-col">
-                
-                {/* Dynamic Island / Notch */}
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[100px] h-7 bg-black rounded-full z-20 flex items-center justify-between px-2">
-                  <div className="w-2 h-2 rounded-full bg-neutral-800/80"></div>
-                  <div className="w-2 h-2 rounded-full bg-indigo-900/50"></div>
-                </div>
-
-                {/* Status Bar */}
-                <div className="flex justify-between items-center px-6 py-2 text-[11px] font-bold z-10 absolute top-0 w-full mix-blend-difference text-white/90">
-                  <span className="pl-2">9:41</span>
-                  <div className="flex gap-1.5 items-center pr-1">
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21L23.6 7C22.2 5.5 17.6 2 12 2C6.4 2 1.8 5.5 0.4 7L12 21Z"/></svg>
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22H22V2H2V22ZM20 20H4V4H20V20Z"/></svg>
-                    <div className="w-5 h-2.5 border border-current rounded-sm p-[1px] flex items-center">
-                      <div className="bg-current h-full w-[80%] rounded-[1px]"></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Screen Content */}
-                <div className="h-full w-full pt-10 flex-1 overflow-y-auto hide-scrollbar bg-neutral-950 flex flex-col">
-                  {activeTab === 'linkedin' && <div className="h-full bg-neutral-100"><LinkedInMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
-                  {activeTab === 'github' && <div className="h-full bg-neutral-950"><GitHubMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
-                  {activeTab === 'twitter' && <div className="h-full bg-white"><TwitterMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} /></div>}
-                  {activeTab === 'youtube' && <div className="h-full bg-[#0f0f0f]"><YouTubeMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
-                  {activeTab === 'instagram' && <div className="h-full bg-white"><InstagramMockup userName={displayName} userHandle={displayHandle} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
-                  {activeTab === 'personal_site' && <div className="h-full bg-neutral-950"><PersonalSiteMockup userHandle={displayHandle} headline={currentHeadline} bio={currentBio} /></div>}
-                  {activeTab === 'behance' && <div className="h-full bg-white"><BehanceMockup userName={displayName} initials={initials} headline={currentHeadline} bio={currentBio} /></div>}
-                  {!['linkedin', 'github', 'twitter', 'youtube', 'instagram', 'personal_site', 'behance'].includes(activeTab) && (
-                    <div className="h-full bg-neutral-100"><GenericMockup platformName={platformLabel} userName={displayName} initials={initials} headline={currentHeadline} /></div>
-                  )}
-                </div>
-                
-                {/* Home Indicator */}
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/50 mix-blend-difference rounded-full z-20 mb-1"></div>
+              <div>
+                <h3 className="text-base font-bold text-[#0b1c30]">{platformLabel}</h3>
+                <p className="text-[10px] text-neutral-400">
+                  {isViewingOptional ? 'Optional Channel' : `Platform ${currentPlatformIndex + 1} of ${primaryPlatforms.length}`}
+                  {reviewedPlatforms.has(activeTab) && <span className="text-emerald-600 ml-1.5">âœ“ Reviewed</span>}
+                </p>
               </div>
             </div>
+            {deepLink && deepLink.url !== '#' && (
+              <a
+                href={deepLink.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold text-[#0058be] hover:underline flex items-center gap-1 bg-white px-2.5 py-1.5 rounded-xl border border-neutral-200 shadow-xs"
+              >
+                <ExternalLink size={10} />
+                {deepLink.label}
+              </a>
+            )}
           </div>
 
-          {/* Right: Copy Editor (7 cols) */}
-          <div className="lg:col-span-7 space-y-4">
-            
-            {/* Copy Formulas Engine */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 shadow-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <Rocket size={14} className="text-blue-600" />
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-900">
-                  Instant Copy Formulas
+          {/* â”€â”€ Split: Mockup (Left Sticky) + Editor (Right Scroll) â”€â”€â”€â”€ */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            {/* Left: Sticky Phone Mockup */}
+            <div className="lg:col-span-5">
+              <div className="lg:sticky lg:top-4">
+                {renderMockup()}
+              </div>
+            </div>
+
+            {/* Right: Copy Editor */}
+            <div className="lg:col-span-7 space-y-3">
+
+              {/* Field cards */}
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
+                  Copy Fields â€” {activePlatformData.fields.length} fields
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {COPY_FORMULAS.map(formula => (
-                  <button
-                    key={formula.id}
-                    onClick={() => {
-                      if (editingField) {
-                         applyFormula(editingField, formula.id, activePlatformData.fields.find(f => f.key === editingField)?.value || '');
-                      } else {
-                         // Note: Instruct user to click edit first
-                         alert('Please click "Edit" on a field below, then apply a formula.');
-                      }
-                    }}
-                    className="flex-1 min-w-[120px] bg-white border border-blue-200 hover:border-blue-400 p-2 rounded-xl text-left transition-all group"
+
+              {activePlatformData.fields.map(field => {
+                const isEditing = editingField === field.key;
+                const charLimitKey = `${activeTab}_${field.key}`;
+                const charLimit = CHAR_LIMITS[charLimitKey];
+
+                return (
+                  <div
+                    key={field.key}
+                    className={cn(
+                      'p-4 rounded-2xl border bg-white shadow-xs space-y-2.5 transition-all',
+                      isEditing ? 'border-[#0058be]/40 ring-1 ring-[#0058be]/10' : 'border-neutral-200 hover:border-neutral-300'
+                    )}
                   >
-                    <span className="text-xs font-bold text-blue-900 block group-hover:text-blue-600">{formula.label}</span>
-                    <span className="text-[9px] text-blue-500 block leading-tight mt-0.5">{formula.desc}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
-                {platformLabel} Copy Fields — {activePlatformData.fields.length} fields
-              </span>
-            </div>
-
-            {activePlatformData.fields.map(field => {
-              const isEditing = editingField === field.key;
-              const charLimitKey = `${activeTab}_${field.key}`;
-              const charLimit = CHAR_LIMITS[charLimitKey];
-
-              return (
-                <div
-                  key={field.key}
-                  className="p-5 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3 transition-all hover:border-[#0058be]/30"
-                >
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-[#0b1c30]">{field.label}</h4>
-                    <div className="flex items-center gap-2">
-                      {charLimit && (
-                        <span className={cn(
-                          'text-[10px] font-bold px-2 py-0.5 rounded-full border',
-                          field.value.length > charLimit ? 'text-red-600 bg-red-50 border-red-200' :
-                          field.value.length > charLimit * 0.8 ? 'text-amber-600 bg-amber-50 border-amber-200' :
-                          'text-neutral-400 bg-neutral-100 border-neutral-200'
-                        )}>
-                          {field.value.length}/{charLimit}
-                        </span>
-                      )}
-                      <button
-                        onClick={() => handleCopy(field.key, field.value)}
-                        className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 border border-neutral-200"
-                      >
-                        {copiedField === field.key ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
-                        {copiedField === field.key ? 'Copied' : 'Copy'}
-                      </button>
-                      {!isEditing && (
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-bold text-[#0b1c30]">{field.label}</h4>
+                      <div className="flex items-center gap-1.5">
+                        {charLimit && (
+                          <span className={cn(
+                            'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                            field.value.length > charLimit ? 'text-red-600 bg-red-50 border-red-200' :
+                            field.value.length > charLimit * 0.8 ? 'text-amber-600 bg-amber-50 border-amber-200' :
+                            'text-neutral-400 bg-neutral-100 border-neutral-200'
+                          )}>
+                            {field.value.length}/{charLimit}
+                          </span>
+                        )}
                         <button
-                          onClick={() => handleEditStart(field.key, field.value)}
-                          className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 border border-neutral-200"
+                          onClick={() => handleCopy(field.key, field.value)}
+                          className="p-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg transition-all cursor-pointer border border-neutral-200"
+                          title="Copy"
                         >
-                          <Pencil size={11} />
-                          Edit
+                          {copiedField === field.key ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                         </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {isEditing ? (
-                    <div className="space-y-3">
-                      <textarea
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-300 rounded-2xl p-4 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white resize-y font-sans leading-relaxed"
-                      />
-                      <div className="flex items-center gap-2 justify-end">
-                        <button
-                          onClick={() => setEditingField(null)}
-                          className="px-3.5 py-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={() => handleEditSave(field.key)}
-                          className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                        >
-                          <CheckCircle2 size={13} />
-                          Save & Sync
-                        </button>
+                        {!isEditing && (
+                          <button
+                            onClick={() => handleEditStart(field.key, field.value)}
+                            className="p-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg transition-all cursor-pointer border border-neutral-200"
+                            title="Edit"
+                          >
+                            <Pencil size={12} />
+                          </button>
+                        )}
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-xs text-neutral-700 bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 leading-relaxed whitespace-pre-wrap">
-                      {field.value}
-                    </div>
+
+                    {isEditing ? (
+                      <div className="space-y-2">
+                        {/* Inline formula toolbar */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Formula:</span>
+                          {COPY_FORMULAS.map(formula => (
+                            <button
+                              key={formula.id}
+                              onClick={() => applyFormula(field.key, formula.id, field.value)}
+                              className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-200 transition-all cursor-pointer"
+                              title={formula.desc}
+                            >
+                              <Rocket size={9} className="inline mr-1" />
+                              {formula.label}
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-300 rounded-xl p-3 min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white resize-y font-sans leading-relaxed"
+                        />
+                        <div className="flex items-center gap-2 justify-end">
+                          <button
+                            onClick={() => setEditingField(null)}
+                            className="px-3 py-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => handleEditSave(field.key)}
+                            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                          >
+                            <CheckCircle2 size={12} />
+                            Save & Sync
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-neutral-700 bg-neutral-50 p-3 rounded-xl border border-neutral-200/80 leading-relaxed whitespace-pre-wrap">
+                        {field.value}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Micro-Audit Checklist */}
+              {PLATFORM_CHECKLISTS[activeTab] && (
+                <div className="p-4 rounded-2xl border border-neutral-200 bg-white shadow-xs">
+                  <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-2">
+                    <CheckSquare size={13} className="text-emerald-500" />
+                    {platformLabel} Launch Checklist
+                  </h4>
+                  <div className="space-y-1.5">
+                    {PLATFORM_CHECKLISTS[activeTab].map((step, idx) => {
+                      const stepId = `${activeTab}_check_${idx}`;
+                      const isChecked = !!checkedSteps[stepId];
+                      return (
+                        <label key={stepId} className="flex items-start gap-2.5 cursor-pointer group hover:bg-neutral-50 p-1.5 rounded-lg transition-colors">
+                          <div className={cn(
+                            "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
+                            isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
+                          )}>
+                            {isChecked && <Check size={10} className="text-white" />}
+                          </div>
+                          <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(stepId)} />
+                          <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
+                            {step}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Mark as Reviewed + Nav */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center gap-2">
+                  {(currentPlatformIndex > 0 || isViewingOptional) && (
+                    <button
+                      onClick={() => {
+                        if (isViewingOptional) {
+                          setViewingOptionalPlatform(null);
+                        } else {
+                          setCurrentPlatformIndex(Math.max(0, currentPlatformIndex - 1));
+                        }
+                        setEditingField(null);
+                      }}
+                      className="px-3 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer transition-colors"
+                    >
+                      â† Previous
+                    </button>
                   )}
                 </div>
-              );
-            })}
-
-            {/* Micro-Audit Checklist */}
-            {PLATFORM_CHECKLISTS[activeTab] && (
-              <div className="p-5 rounded-3xl border border-neutral-200 bg-white shadow-xs mt-6">
-                <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-400 mb-4 flex items-center gap-2">
-                  <CheckSquare size={14} className="text-emerald-500" />
-                  {platformLabel} Launch Checklist
-                </h4>
-                <div className="space-y-2">
-                  {PLATFORM_CHECKLISTS[activeTab].map((step, idx) => {
-                    const stepId = `${activeTab}_check_${idx}`;
-                    const isChecked = !!checkedSteps[stepId];
-                    return (
-                      <label key={stepId} className="flex items-start gap-3 cursor-pointer group hover:bg-neutral-50 p-2 rounded-xl transition-colors">
-                        <div className={cn(
-                          "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
-                          isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
-                        )}>
-                          {isChecked && <Check size={10} className="text-white" />}
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="hidden"
-                          checked={isChecked}
-                          onChange={() => toggleChecklist(stepId)}
-                        />
-                        <span className={cn(
-                          "text-xs font-medium transition-colors",
-                          isChecked ? "text-neutral-400 line-through" : "text-neutral-700"
-                        )}>
-                          {step}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
+                {!reviewedPlatforms.has(activeTab) ? (
+                  <button
+                    onClick={handleMarkReviewed}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
+                  >
+                    <CheckCircle2 size={14} />
+                    Mark {platformLabel} as Reviewed
+                  </button>
+                ) : !isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1 ? (
+                  <button
+                    onClick={() => { setCurrentPlatformIndex(currentPlatformIndex + 1); setEditingField(null); }}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#0058be] hover:bg-[#0048a0] text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
+                  >
+                    Next Platform â†’
+                  </button>
+                ) : isViewingOptional ? (
+                  <button
+                    onClick={() => { setViewingOptionalPlatform(null); setEditingField(null); }}
+                    className="px-4 py-2 text-xs font-bold text-[#0058be] hover:underline cursor-pointer"
+                  >
+                    â† Back to Primary
+                  </button>
+                ) : null}
               </div>
-            )}
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Continue CTA & Global Export */}
-      <div className="flex items-center justify-between pt-4 border-t border-neutral-200/60">
-        <div className="flex items-center gap-3">
-          {onBack && (
-            <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900">
-              ← Back
-            </button>
-          )}
+      {/* â”€â”€ Optional Platforms Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {secondaryPlatforms.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           <button
-            onClick={handleExportAll}
-            className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md"
+            onClick={() => setShowOptionalPlatforms(!showOptionalPlatforms)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 cursor-pointer hover:bg-neutral-100 transition-colors"
           >
-            {copiedField === 'export_all' ? <CheckCircle2 size={14} className="text-emerald-400" /> : <Copy size={14} />}
-            {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios Bundle'}
+            <span className="text-xs font-bold text-neutral-500">
+              + {secondaryPlatforms.length} Optional Platforms
+            </span>
+            <ChevronDown size={14} className={cn('text-neutral-400 transition-transform', showOptionalPlatforms && 'rotate-180')} />
           </button>
-        </div>
-        
-        <ModuleButton variant="primary" onClick={onContinue}>
-          Platforms Optimized — Run Consistency Check →
-        </ModuleButton>
+
+          <AnimatePresence>
+            {showOptionalPlatforms && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="flex flex-wrap gap-2 pt-3">
+                  {secondaryPlatforms.map(p => {
+                    const Icon = p.icon;
+                    const isActive = viewingOptionalPlatform === p.key;
+                    return (
+                      <button
+                        key={p.key}
+                        onClick={() => { setViewingOptionalPlatform(p.key); setEditingField(null); }}
+                        className={cn(
+                          'px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-2',
+                          isActive
+                            ? 'bg-[#0058be] text-white border-[#0058be]'
+                            : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50'
+                        )}
+                      >
+                        <Icon size={13} />
+                        {p.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* â”€â”€ Bottom: Continue CTA (Gated) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="pt-4 border-t border-neutral-200/60">
+        {allPrimaryReviewed ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            {/* Success banner */}
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                <CheckCircle2 size={16} className="text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-emerald-900">All {primaryPlatforms.length} Primary Platforms Reviewed</p>
+                <p className="text-[11px] text-emerald-700">Your profile copy is ready for the consistency check.</p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {onBack && (
+                  <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
+                    â† Back
+                  </button>
+                )}
+                <button
+                  onClick={handleExportAll}
+                  className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md cursor-pointer"
+                >
+                  {copiedField === 'export_all' ? <CheckCircle2 size={13} className="text-emerald-400" /> : <Copy size={13} />}
+                  {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios'}
+                </button>
+              </div>
+              <ModuleButton variant="primary" onClick={onContinue}>
+                Run Consistency Check â†’
+              </ModuleButton>
+            </div>
+          </motion.div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {onBack && (
+                <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
+                  â† Back
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] text-neutral-400 font-medium">
+                Review all {primaryPlatforms.length} platforms to continue
+              </span>
+              <button
+                disabled
+                className="px-5 py-2.5 bg-neutral-200 text-neutral-400 text-xs font-bold rounded-xl cursor-not-allowed"
+              >
+                Run Consistency Check â†’
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
