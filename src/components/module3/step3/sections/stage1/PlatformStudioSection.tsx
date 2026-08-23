@@ -570,7 +570,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
   const [showToneSelector, setShowToneSelector] = useState(false);
-  const [showOptionalPlatforms, setShowOptionalPlatforms] = useState(false);
   const [viewingOptionalPlatform, setViewingOptionalPlatform] = useState<string | null>(null);
 
   const displayName = userName?.trim() || 'Your Name';
@@ -682,6 +681,17 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     setEditingField(null);
   };
 
+  const handleSelectPlatform = (key: string) => {
+    const primaryIdx = primaryPlatforms.findIndex(p => p.key === key);
+    if (primaryIdx !== -1) {
+      setViewingOptionalPlatform(null);
+      setCurrentPlatformIndex(primaryIdx);
+    } else {
+      setViewingOptionalPlatform(key);
+    }
+    setEditingField(null);
+  };
+
   // â”€â”€ Render: Phone Mockup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const renderMockup = () => (
     <div className="relative mx-auto w-[280px] bg-black rounded-[44px] p-2 shadow-2xl border-4 border-neutral-800">
@@ -732,18 +742,18 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   return (
     <div className="w-full space-y-5 text-left font-sans">
 
-      {/* â”€â”€ Top: Platform Progress Stepper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Top: Unified Platform Channels Bar ────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
+        className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3.5"
       >
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Platform Progress</span>
-            <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-              {reviewedPlatforms.size} of {primaryPlatforms.length} reviewed
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Platform Channels</span>
+            <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+              {reviewedPlatforms.size} of {primaryPlatforms.length} required reviewed
             </span>
           </div>
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -751,60 +761,90 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           </span>
         </div>
 
-        {/* Platform step dots */}
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-          {primaryPlatforms.map((p, idx) => {
+        {/* Combined Platforms: Recommended First, then Other Channels */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Primary / Recommended Platforms */}
+          {primaryPlatforms.map((p) => {
             const isReviewed = reviewedPlatforms.has(p.key);
-            const isCurrent = !isViewingOptional && idx === currentPlatformIndex;
+            const isCurrent = activeTab === p.key;
             const Icon = p.icon;
             return (
-              <React.Fragment key={p.key}>
-                <button
-                  onClick={() => handleGoToPlatform(idx)}
-                  className={cn(
-                    'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs',
-                    isCurrent
-                      ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
-                      : isReviewed
-                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                      : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300'
-                  )}
-                >
-                  {isReviewed ? (
-                    <Check size={13} strokeWidth={3} className="text-emerald-600 shrink-0" />
-                  ) : (
-                    <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-white' : p.iconColor)}>
-                      <Icon className="w-3.5 h-3.5" />
-                    </span>
-                  )}
-                  <span className="hidden sm:inline">{p.name}</span>
-                  <span className="sm:hidden">{idx + 1}</span>
-                  <span className={cn(
-                    "text-[8px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider",
-                    isCurrent ? "bg-white/20 text-white" : "bg-blue-50 text-[#0058be] border border-blue-100"
-                  )}>
-                    Recommended
-                  </span>
-                </button>
-                {idx < primaryPlatforms.length - 1 && (
-                  <div className={cn(
-                    'w-3 sm:w-4 h-0.5 rounded-full shrink-0',
-                    isReviewed ? 'bg-emerald-300' : 'bg-neutral-200'
-                  )} />
+              <button
+                key={p.key}
+                onClick={() => handleSelectPlatform(p.key)}
+                className={cn(
+                  'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs',
+                  isCurrent
+                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
+                    : isReviewed
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300'
                 )}
-              </React.Fragment>
+              >
+                {isReviewed ? (
+                  <Check size={13} strokeWidth={3} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-white' : p.iconColor)}>
+                    <Icon className="w-3.5 h-3.5" />
+                  </span>
+                )}
+                <span>{p.name}</span>
+                <span className={cn(
+                  "text-[8px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider",
+                  isCurrent ? "bg-white/20 text-white" : "bg-blue-50 text-[#0058be] border border-blue-100"
+                )}>
+                  Recommended
+                </span>
+              </button>
+            );
+          })}
+
+          {/* Divider between Recommended and Other platforms */}
+          {secondaryPlatforms.length > 0 && (
+            <div className="h-6 w-[1px] bg-neutral-200 mx-1 hidden sm:block" />
+          )}
+
+          {/* Secondary / Other Platforms */}
+          {secondaryPlatforms.map(p => {
+            const isReviewed = reviewedPlatforms.has(p.key);
+            const isCurrent = activeTab === p.key;
+            const Icon = p.icon;
+            return (
+              <button
+                key={p.key}
+                onClick={() => handleSelectPlatform(p.key)}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs',
+                  isCurrent
+                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
+                    : isReviewed
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-neutral-50/80 text-neutral-600 border-neutral-200 hover:bg-white hover:text-neutral-900 hover:border-neutral-300'
+                )}
+              >
+                {isReviewed ? (
+                  <Check size={12} strokeWidth={3} className="text-emerald-600 shrink-0" />
+                ) : (
+                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-white' : p.iconColor)}>
+                    <Icon className="w-3.5 h-3.5" />
+                  </span>
+                )}
+                <span>{p.name}</span>
+              </button>
             );
           })}
         </div>
 
         {/* Progress bar */}
-        <div className="mt-3 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
-            transition={{ duration: 0.5, ease: EASING.PREMIUM }}
-          />
+        <div className="pt-1">
+          <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
+              transition={{ duration: 0.5, ease: EASING.PREMIUM }}
+            />
+          </div>
         </div>
       </motion.div>
 
@@ -1095,59 +1135,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </motion.div>
       </AnimatePresence>
 
-      {/* â”€â”€ Optional Platforms Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      {secondaryPlatforms.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <button
-            onClick={() => setShowOptionalPlatforms(!showOptionalPlatforms)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 cursor-pointer hover:bg-neutral-100 transition-colors"
-          >
-            <span className="text-xs font-bold text-neutral-500">
-              + {secondaryPlatforms.length} Optional Platforms
-            </span>
-            <ChevronDown size={14} className={cn('text-neutral-400 transition-transform', showOptionalPlatforms && 'rotate-180')} />
-          </button>
-
-          <AnimatePresence>
-            {showOptionalPlatforms && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="flex flex-wrap gap-2 pt-3">
-                  {secondaryPlatforms.map(p => {
-                    const Icon = p.icon;
-                    const isActive = viewingOptionalPlatform === p.key;
-                    return (
-                      <button
-                        key={p.key}
-                        onClick={() => { setViewingOptionalPlatform(p.key); setEditingField(null); }}
-                        className={cn(
-                          'px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-2 shadow-2xs',
-                          isActive
-                            ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
-                            : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300'
-                        )}
-                      >
-                        <span className={cn('shrink-0 flex items-center justify-center', isActive ? 'text-white' : p.iconColor)}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </span>
-                        {p.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      )}
 
       {/* â”€â”€ Bottom: Continue CTA (Gated) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="pt-4 border-t border-neutral-200/60">
