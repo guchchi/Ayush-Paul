@@ -194,8 +194,8 @@ const getInitials = (name: string) => {
 
 const generateToneVariation = (text: string, tone: 'executive' | 'conversion' | 'direct') => {
   if (!text) return text;
-  if (tone === 'executive') return text.startsWith('Verifiable') ? text : `Strategic Authority â€¢ ${text}`;
-  if (tone === 'conversion') return `Proven ${text} â€” Eliminating Client Execution Risk.`;
+  if (tone === 'executive') return text.startsWith('Verifiable') ? text : `Strategic Authority • ${text}`;
+  if (tone === 'conversion') return `Proven ${text} — Eliminating Client Execution Risk.`;
   return `${text} | Guaranteed Delivery & Measurable ROI.`;
 };
 
@@ -219,7 +219,7 @@ function LinkedInMockup({ userName, initials, headline, bio }: { userName: strin
           </button>
         </div>
         <div>
-          <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">Â· 1st</span></h3>
+          <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">· 1st</span></h3>
           <p className="text-[11px] font-bold text-[#0a66c2] leading-snug line-clamp-2 mt-0.5">{headline}</p>
           <p className="text-[9px] text-neutral-500 mt-1">Talks about #design, #strategy, and #growth</p>
         </div>
@@ -310,7 +310,7 @@ function TwitterMockup({ userName, userHandle, initials, headline }: { userName:
           <Pin size={10} className="rotate-45" /> Pinned
         </div>
         <div className="bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
-          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread ðŸ§µðŸ‘‡</p>
+          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread 🧵👇</p>
         </div>
       </div>
     </div>
@@ -334,9 +334,9 @@ function YouTubeMockup({ userName, userHandle, initials, headline, bio }: { user
         <h2 className="text-[18px] font-bold mt-2 text-center leading-tight">{userName}</h2>
         <div className="text-[11px] text-neutral-400 mt-1 flex items-center justify-center gap-1">
           <span>@{userHandle || 'yourhandle'}</span>
-          <span>â€§</span>
+          <span>·</span>
           <span>100K subscribers</span>
-          <span>â€§</span>
+          <span>·</span>
           <span>120 videos</span>
         </div>
         
@@ -513,7 +513,7 @@ function BehanceMockup({ userName, initials, headline, bio }: { userName: string
   return (
     <div className="h-full bg-white text-black p-5 space-y-4 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex justify-between items-center mb-2">
-        <div className="font-bold text-xl tracking-tighter">BÄ“hance</div>
+        <div className="font-bold text-xl tracking-tighter">Bēhance</div>
         <div className="w-6 h-6 rounded-full bg-neutral-200"></div>
       </div>
       <div className="flex flex-col items-center text-center space-y-3 pt-4">
@@ -597,7 +597,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
     if (formulaId === 'proof') {
       result = fieldKey.includes('headline')
-        ? `I help ${market} scale â†’ Measurable value | Creator of ${mechanism} | Book a call ðŸ‘‡`
+        ? `I help ${market} scale → Measurable value | Creator of ${mechanism} | Book a call 👇`
         : `Over the past years, I've consistently delivered verifiable results for ${market}. If you need a ${position} who eliminates risk and guarantees delivery for ${service}, let's talk.\n\nKey Result: Proven impact using ${mechanism}.`;
     } else if (formulaId === 'problem') {
       result = fieldKey.includes('headline')
@@ -961,7 +961,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               {/* Field cards */}
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-                  Copy Fields â€” {activePlatformData.fields.length} fields
+                  Copy Fields — {activePlatformData.fields.length} fields
                 </span>
               </div>
 
@@ -1119,7 +1119,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     onClick={() => { setCurrentPlatformIndex(currentPlatformIndex + 1); setEditingField(null); }}
                     className="flex items-center gap-2 px-5 py-2.5 bg-[#0058be] hover:bg-[#0048a0] text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                   >
-                    Next Platform â†’
+                    Next Platform →
                   </button>
                 ) : isViewingOptional ? (
                   <button
@@ -1172,7 +1172,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 </button>
               </div>
               <ModuleButton variant="primary" onClick={onContinue}>
-                Run Consistency Check â†’
+                Run Consistency Check →
               </ModuleButton>
             </div>
           </motion.div>
@@ -1193,7 +1193,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 disabled
                 className="px-5 py-2.5 bg-neutral-200 text-neutral-400 text-xs font-bold rounded-xl cursor-not-allowed"
               >
-                Run Consistency Check â†’
+                Run Consistency Check →
               </button>
             </div>
           </div>
