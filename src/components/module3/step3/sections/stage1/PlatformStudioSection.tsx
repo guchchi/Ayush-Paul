@@ -97,6 +97,7 @@ const TONES = [
 
 import { getChecklistForPlatform } from '@/src/lib/module3/platformChecklists';
 import { COPY_FORMULAS, applyCopyFormula } from '@/src/lib/module3/copyFormulas';
+import { CopyExportModal } from '@/src/components/module3/step3/export/CopyExportModal';
 
 // â”€â”€ Helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -486,6 +487,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
   const [showToneSelector, setShowToneSelector] = useState(false);
   const [viewingOptionalPlatform, setViewingOptionalPlatform] = useState<string | null>(null);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   const displayName = userName?.trim() || 'Your Name';
   const displayHandle = userHandle?.trim() || 'yourhandle';
@@ -802,7 +804,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </AnimatePresence>
       </motion.div>
 
-      {/* â”€â”€ Current Platform Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Current Platform Header ────────────────────────────────────── */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
@@ -848,8 +850,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             )}
           </div>
 
-          {/* â”€â”€ Split: Mockup (Left Sticky) + Editor (Right Scroll) â”€â”€â”€â”€ */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* ── Split: Mockup (Left Sticky) + Editor (Right Scroll) ──── */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             {/* Left: Sticky Phone Mockup */}
             <div className="lg:col-span-5">
               <div className="lg:sticky lg:top-4">
@@ -857,13 +859,15 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               </div>
             </div>
 
-            {/* Right: Copy Editor */}
-            <div className="lg:col-span-7 space-y-3">
-
-              {/* Field cards */}
+            {/* Right: Copy Editor & Verification Checklist */}
+            <div className="lg:col-span-7 space-y-3.5 max-h-[520px] overflow-y-auto pr-1">
+              {/* Field cards header */}
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
                   Copy Fields — {activePlatformData.fields.length} fields
+                </span>
+                <span className="text-[10px] font-bold text-neutral-500">
+                  Click edit or use one-click formulas below
                 </span>
               </div>
 
@@ -922,7 +926,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                               key={formula.id}
                               onClick={() => handleApplyFormula(field.key, formula.id)}
                               className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-200 transition-all cursor-pointer"
-                              title={formula.desc}
+                              title={formula.description}
                             >
                               <Rocket size={9} className="inline mr-1" />
                               {formula.label}
@@ -1017,7 +1021,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                       }}
                       className="px-3 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer transition-colors"
                     >
-                      â† Previous
+                      ← Previous
                     </button>
                   )}
                 </div>
@@ -1041,7 +1045,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     onClick={() => { setViewingOptionalPlatform(null); setEditingField(null); }}
                     className="px-4 py-2 text-xs font-bold text-[#0058be] hover:underline cursor-pointer"
                   >
-                    â† Back to Primary
+                    ← Back to Primary
                   </button>
                 ) : null}
               </div>
@@ -1050,8 +1054,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </motion.div>
       </AnimatePresence>
 
-
-      {/* â”€â”€ Bottom: Continue CTA (Gated) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Bottom: Continue CTA (Gated) ─────────────────────────────── */}
       <div className="pt-4 border-t border-neutral-200/60">
         {allPrimaryReviewed ? (
           <motion.div
@@ -1075,7 +1078,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               <div className="flex items-center gap-3">
                 {onBack && (
                   <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                    â† Back
+                    ← Back
                   </button>
                 )}
                 <button

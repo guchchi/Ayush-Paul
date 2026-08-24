@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Copy, Download, CheckCircle2, FileText, Code2 } from 'lucide-react';
-import { ProfileSystemAsset } from '@/src/lib/module3/types';
+import type { ProfileSystemAsset } from '@/src/data/module3/authority-suite-engine';
 
 interface CopyExportModalProps {
   isOpen: boolean;
@@ -25,9 +25,9 @@ export function CopyExportModal({ isOpen, onClose, profileSystem, userName }: Co
 
     profileSystem.forEach(item => {
       lines.push(`## ${item.platform.toUpperCase()}`);
-      lines.push(`**Profile Name:** ${item.name || userName}`);
-      lines.push(`**Headline / Tagline:**\n${item.headline}`);
-      lines.push(`**Bio / Summary:**\n${item.bio}\n`);
+      item.fields.forEach(f => {
+        lines.push(`**${f.label}:**\n${f.value}\n`);
+      });
       lines.push(`---\n`);
     });
 
