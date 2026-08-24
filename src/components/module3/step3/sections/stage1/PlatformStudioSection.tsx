@@ -105,11 +105,7 @@ const PLATFORM_CHECKLISTS: Record<string, string[]> = {
   behance: ['Portfolio items categorized', 'Available for hire turned on', 'Custom URL claimed']
 };
 
-const COPY_FORMULAS = [
-  { id: 'proof', label: 'Proof-First', desc: 'Leads with metrics & results' },
-  { id: 'problem', label: 'Problem-Solution', desc: 'Calls out client pain point' },
-  { id: 'contrarian', label: 'Contrarian', desc: 'High-status, zero-fluff' }
-];
+import { COPY_FORMULAS, applyCopyFormula } from '@/src/lib/module3/copyFormulas';
 
 // â”€â”€ Helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -516,26 +512,13 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const allPrimaryReviewed = primaryPlatforms.length > 0 && primaryPlatforms.every(p => reviewedPlatforms.has(p.key));
 
   // Helper for applying formulas
-  const applyFormula = (fieldKey: string, formulaId: string, _originalValue: string) => {
-    let result = '';
-    const market = (mod1MarketId || '').replace(/_/g, ' ') || 'clients';
-    const service = (mod1ServiceId || '').replace(/_/g, ' ') || 'systems';
-    const mechanism = mod2UniqueMechanism?.trim() || 'our proven methodology';
-    const position = mod1Positioning?.trim() || 'Specialist';
-
-    if (formulaId === 'proof') {
-      result = fieldKey.includes('headline')
-        ? `I help ${market} scale → Measurable value | Creator of ${mechanism} | Book a call 👇`
-        : `Over the past years, I've consistently delivered verifiable results for ${market}. If you need a ${position} who eliminates risk and guarantees delivery for ${service}, let's talk.\n\nKey Result: Proven impact using ${mechanism}.`;
-    } else if (formulaId === 'problem') {
-      result = fieldKey.includes('headline')
-        ? `Tired of generic ${service}? I build custom solutions for ${market} so you can scale safely.`
-        : `Most ${market} struggle with unpredictable execution.\n\nI solve this by implementing ${mechanism}. The outcome? Predictable growth without the usual headaches.`;
-    } else if (formulaId === 'contrarian') {
-      result = fieldKey.includes('headline')
-        ? `Unpopular opinion: Traditional ${service} is dead. I do the exact opposite for ${market}.`
-        : `Everyone says you need more pitch decks. They're wrong.\n\nI build ${mechanism} systems that ignore the noise and focus purely on verifiable proof and execution.`;
-    }
+  const handleApplyFormula = (fieldKey: string, formulaId: string) => {
+    const result = applyCopyFormula(formulaId, fieldKey, {
+      market: (mod1MarketId || '').replace(/_/g, ' ') || 'clients',
+      service: (mod1ServiceId || '').replace(/_/g, ' ') || 'systems',
+      mechanism: mod2UniqueMechanism?.trim() || 'our proven methodology',
+      positioning: mod1Positioning?.trim() || 'Specialist',
+    });
     setEditValue(result);
   };
 
@@ -946,7 +929,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                           {COPY_FORMULAS.map(formula => (
                             <button
                               key={formula.id}
-                              onClick={() => applyFormula(field.key, formula.id, field.value)}
+                              onClick={() => handleApplyFormula(field.key, formula.id)}
                               className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-200 transition-all cursor-pointer"
                               title={formula.desc}
                             >
