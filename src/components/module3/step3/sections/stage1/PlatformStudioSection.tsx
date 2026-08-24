@@ -95,16 +95,7 @@ const TONES = [
   { key: 'direct' as const, label: 'Direct Response', desc: 'Growth Teams & ROI Focus' },
 ];
 
-const PLATFORM_CHECKLISTS: Record<string, string[]> = {
-  linkedin: ['Banner matches new headline vibe', 'Featured section has case study link', 'Custom CTA button enabled', 'Set "Open to" -> Providing Services'],
-  twitter: ['Pinned proof thread active', 'Single booking link in bio', 'Professional avatar updated'],
-  github: ['Profile README.md fully updated', 'Pinned repositories show best work', 'Sponsor / Hire button visible'],
-  instagram: ['Link-in-bio tree set up', 'Highlights organized by service', 'Contact button configured'],
-  youtube: ['Channel banner updated', 'Watermark added to videos', 'About section matches bio'],
-  personal_site: ['Favicon updated', 'Hero section copy is clear', 'Booking widget embedded'],
-  behance: ['Portfolio items categorized', 'Available for hire turned on', 'Custom URL claimed']
-};
-
+import { getChecklistForPlatform } from '@/src/lib/module3/platformChecklists';
 import { COPY_FORMULAS, applyCopyFormula } from '@/src/lib/module3/copyFormulas';
 
 // â”€â”€ Helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -969,34 +960,47 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               })}
 
               {/* Micro-Audit Checklist */}
-              {PLATFORM_CHECKLISTS[activeTab] && (
-                <div className="p-4 rounded-2xl border border-neutral-200 bg-white shadow-xs">
-                  <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-400 mb-3 flex items-center gap-2">
-                    <CheckSquare size={13} className="text-emerald-500" />
-                    {platformLabel} Launch Checklist
-                  </h4>
-                  <div className="space-y-1.5">
-                    {PLATFORM_CHECKLISTS[activeTab].map((step, idx) => {
-                      const stepId = `${activeTab}_check_${idx}`;
-                      const isChecked = !!checkedSteps[stepId];
-                      return (
-                        <label key={stepId} className="flex items-start gap-2.5 cursor-pointer group hover:bg-neutral-50 p-1.5 rounded-lg transition-colors">
-                          <div className={cn(
-                            "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
-                            isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
-                          )}>
-                            {isChecked && <Check size={10} className="text-white" />}
-                          </div>
-                          <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(stepId)} />
-                          <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
-                            {step}
-                          </span>
-                        </label>
-                      );
-                    })}
+              {(() => {
+                const checklist = getChecklistForPlatform(activeTab);
+                const completedCount = checklist.filter(item => checkedSteps[item.id]).length;
+                return (
+                  <div className="p-4 rounded-2xl border border-neutral-200 bg-white shadow-xs">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-500 flex items-center gap-2">
+                        <CheckSquare size={13} className="text-emerald-500" />
+                        {platformLabel} Launch Checklist
+                      </h4>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600">
+                        {completedCount}/{checklist.length} Done
+                      </span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {checklist.map((item) => {
+                        const isChecked = !!checkedSteps[item.id];
+                        return (
+                          <label key={item.id} className="flex items-start gap-2.5 cursor-pointer group hover:bg-neutral-50 p-1.5 rounded-lg transition-colors">
+                            <div className={cn(
+                              "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
+                              isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
+                            )}>
+                              {isChecked && <Check size={10} className="text-white" />}
+                            </div>
+                            <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(item.id)} />
+                            <div className="flex-1 flex items-center justify-between gap-2">
+                              <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
+                                {item.label}
+                              </span>
+                              <span className="text-[9px] uppercase font-bold text-neutral-400 shrink-0">
+                                {item.category}
+                              </span>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Mark as Reviewed + Nav */}
               <div className="flex items-center justify-between pt-2">
