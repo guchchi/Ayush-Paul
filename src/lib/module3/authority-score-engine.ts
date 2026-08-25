@@ -522,3 +522,60 @@ export function generateGapStatement(
     severity: 'critical',
   };
 }
+
+export interface CrossPlatformConsistencyCheck {
+  isAligned: boolean;
+  score: number;
+  divergentPlatforms: string[];
+  recommendations: string[];
+}
+
+export function diagnoseCrossPlatformConsistency(
+  profileSystem: ProfileSystemAsset[],
+  targetMechanism?: string
+): CrossPlatformConsistencyCheck {
+  if (!profileSystem || profileSystem.length === 0) {
+    return {
+      isAligned: true,
+      score: 100,
+      divergentPlatforms: [],
+      recommendations: ['No platforms configured yet. Configure your primary platforms.'],
+    };
+  }
+
+  const divergentPlatforms: string[] = [];
+  const recommendations: string[] = [];
+  let matchingCount = 0;
+
+  const mechanismTerm = (targetMechanism || '').toLowerCase().trim();
+
+  profileSystem.forEach((p) => {
+    const combinedText = p.fields.map(f => f.value.toLowerCase()).join(' ');
+    const hasAuthoritySignal = AUTHORITY_SIGNALS.some(signal => combinedText.includes(signal));
+    const hasMechanism = mechanismTerm ? combinedText.includes(mechanismTerm) : true;
+
+    if (hasAuthoritySignal && hasMechanism) {
+      matchingCount++;
+    } else {
+      divergentPlatforms.push(p.platform);
+    }
+  });
+
+  const score = Math.round((matchingCount / profileSystem.length) * 100);
+  const isAligned = score >= 80;
+
+  if (!isAligned) {
+    recommendations.push(
+      `Align your core value proposition across ${divergentPlatforms.join(', ')} to prevent mixed signals for inbound leads.`
+    );
+  } else {
+    recommendations.push('Cross-platform positioning is cohesive and builds uniform client trust.');
+  }
+
+  return {
+    isAligned,
+    score,
+    divergentPlatforms,
+    recommendations,
+  };
+}
