@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   FileText, Check, Download, ArrowLeft, ArrowRight, Copy,
-  Edit3, Save, FileDown, ChevronDown
+  Edit3, Save, FileDown, ChevronDown, ShieldCheck, HelpCircle
 } from 'lucide-react';
 import { useOfferEngineeringStore, getEngineeringDataForService, useModule2ResolvedContent } from '../../lib/offer-engineering';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
@@ -12,6 +12,7 @@ import { cn } from '../../lib/utils';
 import type { OfferBlueprint } from '../../types/offer-engineering';
 import { getServiceCategory, getAudienceLabel, generateWhoItIsFor, generateProblemItSolves, generateCorePromise, generateWhyThisWorks, generateNextStepCTA, generateNicheValueAmplifier } from '../../lib/blueprint-content';
 import { composeStep8Content } from '../../lib/offer-engineering/personalized-content';
+import { RISK_REVERSAL_GUARANTEES, OBJECTION_PREEMPTORS } from '../../lib/offer-engineering/riskReversal';
 
 function buildMarkdown(bp: OfferBlueprint): string {
   const lines: string[] = [
@@ -758,6 +759,53 @@ function BlueprintPreview({
           <ClampedText text={bp.whyThisWorks} />
         </DashboardSection>
       )}
+
+      {/* Risk-Reversal Guarantees */}
+      <DashboardSection title="Risk-Reversal & Guarantee Options" accent>
+        <div className="space-y-3">
+          <p className="text-xs text-neutral-500">
+            Select a high-converting guarantee clause to include in your client proposals:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {RISK_REVERSAL_GUARANTEES.map((g) => (
+              <div key={g.id} className="p-3.5 rounded-2xl bg-white border border-neutral-200/80 shadow-xs space-y-1.5 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-[#0058be] font-bold text-xs">
+                    <ShieldCheck size={14} />
+                    {g.name}
+                  </div>
+                  <p className="text-[11px] font-semibold text-neutral-800 mt-1">{g.tagline}</p>
+                  <p className="text-[10px] text-neutral-500 mt-1 leading-relaxed">{g.description}</p>
+                </div>
+                <div className="pt-2 border-t border-neutral-100 mt-2">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Best For: </span>
+                  <span className="text-[10px] text-neutral-600 font-medium">{g.bestFor}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DashboardSection>
+
+      {/* Objection Preemption Battlecards */}
+      <DashboardSection title="Client Objection Preemptors">
+        <div className="space-y-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {OBJECTION_PREEMPTORS.map((obj, i) => (
+              <div key={i} className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-100 space-y-1.5">
+                <div className="flex items-start gap-2">
+                  <HelpCircle size={13} className="text-[#0058be] shrink-0 mt-0.5" />
+                  <span className="text-xs font-bold text-[#0b1c30]">{obj.objection}</span>
+                </div>
+                <div className="pl-5 space-y-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600 block">{obj.reframe}</span>
+                  <p className="text-[11px] text-neutral-600 leading-relaxed">{obj.battlecardResponse}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DashboardSection>
 
       {/* Next Action */}
       {bp.nextStepCTA && (
