@@ -63,3 +63,20 @@ export {
   scopeDefaultsToScopeLimits,
 } from './useModule2PathContent';
 export type { Module2ResolvedContent } from './useModule2PathContent';
+
+/* ── Risk-Reversal & ROI Calculations ── */
+export {
+  RISK_REVERSAL_GUARANTEES,
+  OBJECTION_PREEMPTORS,
+} from './riskReversal';
+export type {
+  RiskReversalGuarantee,
+  ObjectionPreemptor,
+} from './riskReversal';
+export {
+  calculateROIProjection,
+} from './roiCalculator';
+export type {
+  ROIInputs,
+  ROIProjection,
+} from './roiCalculator';
