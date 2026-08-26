@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Zap, Check } from 'lucide-react';
-import { useOfferEngineeringStore, useModule2ResolvedContent } from '../../lib/offer-engineering';
+import { Zap, Check, TrendingUp, DollarSign, Clock } from 'lucide-react';
+import { useOfferEngineeringStore, useModule2ResolvedContent, calculateROIProjection } from '../../lib/offer-engineering';
 import { useOpportunityMapStore } from '../../lib/opportunity-map';
 import { cn } from '../../lib/utils';
 import { composeStep5Content } from '../../lib/offer-engineering/personalized-content';
@@ -44,6 +44,14 @@ export function ValueAmplifierStep() {
     }
     return engineeringData?.valueAmplifiers ?? [];
   }, [pathAmplifiers, engineeringData]);
+
+  const roiProjection = useMemo(() => {
+    return calculateROIProjection({
+      projectPrice: 4500,
+      monthlyHoursSaved: 25,
+      expectedMonthlyRevenueGain: 2000,
+    });
+  }, []);
 
   const isEmpty = valueAmplifier.trim().length === 0;
 
@@ -125,6 +133,40 @@ export function ValueAmplifierStep() {
       ) : (
         <div className="flex items-center justify-center p-8 rounded-2xl border border-neutral-200 bg-white shadow-sm">
           <p className="text-xs text-neutral-500">No value amplifiers configured for this service.</p>
+        </div>
+      )}
+
+      {/* Dynamic ROI Multiplier Preview */}
+      {!isEmpty && (
+        <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/50 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700">
+                <TrendingUp size={14} />
+              </span>
+              <span className="text-xs font-bold text-emerald-900">Projected Client Value Multiplication</span>
+            </div>
+            <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-200/80 text-emerald-800 uppercase tracking-wider">
+              {roiProjection.roiMultiple}x ROI
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div className="p-3 bg-white rounded-xl border border-emerald-100">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">Annual Value</span>
+              <span className="text-sm font-bold text-[#0b1c30]">${roiProjection.totalAnnualValue.toLocaleString()}</span>
+            </div>
+            <div className="p-3 bg-white rounded-xl border border-emerald-100">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">Payback Horizon</span>
+              <span className="text-sm font-bold text-[#0b1c30]">{roiProjection.paybackPeriodMonths} Months</span>
+            </div>
+            <div className="p-3 bg-white rounded-xl border border-emerald-100">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400 block mb-0.5">Efficiency Gain</span>
+              <span className="text-sm font-bold text-emerald-600">~25 hrs / mo</span>
+            </div>
+          </div>
+          <p className="text-[11px] text-emerald-800 leading-relaxed font-medium">
+            {roiProjection.executiveSummary}
+          </p>
         </div>
       )}
 
