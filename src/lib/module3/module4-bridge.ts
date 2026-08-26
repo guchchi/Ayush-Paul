@@ -87,5 +87,39 @@ export const Module4BridgeAdapter = {
       mod3ProfileCopy: legacyProfileCopy,
       mod3PortfolioCopy: legacyPortfolioCopy,
     };
+  },
+
+  validateBridgeReadiness(state: Module3State): { isReady: boolean; missingItems: string[] } {
+    const missingItems: string[] = [];
+
+    if (!state.mod1ServiceId && !state.authorityPosition) {
+      missingItems.push('Upstream positioning context from Module 1 & 2');
+    }
+    if (!state.proofAssets || state.proofAssets.length === 0) {
+      missingItems.push('At least one configured proof asset');
+    }
+    if (!state.authoritySuite && !state.profilePortfolioStrategy) {
+      missingItems.push('Generated authority suite or profile copy');
+    }
+
+    return {
+      isReady: missingItems.length === 0,
+      missingItems,
+    };
+  },
+
+  exportBridgePayloadAsJSON(state: Module3State): string {
+    const ctx = this.generateContext(state);
+    return JSON.stringify(
+      {
+        exportedAt: new Date().toISOString(),
+        version: 9,
+        sourceModule: 'Module3AuthoritySystem',
+        targetModule: 'Module4PortfolioSystem',
+        context: ctx,
+      },
+      null,
+      2
+    );
   }
 };
