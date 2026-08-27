@@ -31,6 +31,7 @@ import {
   Pin
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
+import { ConsistencyAuditBadge } from '@/src/components/module3/step3/components/ConsistencyAuditBadge';
 
 // â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -849,6 +850,9 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               </a>
             )}
           </div>
+
+          {/* Cross-Platform Consistency Diagnostic */}
+          <ConsistencyAuditBadge profileSystem={profileSystem} />
 
           {/* ── Split: Mockup (Left Sticky) + Editor (Right Scroll) ──── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
