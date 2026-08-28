@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 import { ConsistencyAuditBadge } from '@/src/components/module3/step3/components/ConsistencyAuditBadge';
+import { harmonizeProfilePositioning } from '@/src/lib/module3/authority-score-engine';
 
 // â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -516,6 +517,15 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     setEditValue(result);
   };
 
+  const handleHarmonizeAll = () => {
+    const harmonized = harmonizeProfilePositioning(profileSystem, `${roleLabel} | High-Impact Systems Architecture`);
+    harmonized.forEach((asset) => {
+      asset.fields.forEach((field) => {
+        onUpdateField(asset.platform, field.key, field.value);
+      });
+    });
+  };
+
   const toggleChecklist = (stepId: string) => {
     setCheckedSteps(prev => ({ ...prev, [stepId]: !prev[stepId] }));
   };
@@ -852,7 +862,10 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           </div>
 
           {/* Cross-Platform Consistency Diagnostic */}
-          <ConsistencyAuditBadge profileSystem={profileSystem} />
+          <ConsistencyAuditBadge
+            profileSystem={profileSystem}
+            onAlignAll={handleHarmonizeAll}
+          />
 
           {/* ── Split: Mockup (Left Sticky) + Editor (Right Scroll) ──── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
