@@ -80,3 +80,12 @@ export type {
   ROIInputs,
   ROIProjection,
 } from './roiCalculator';
+
+/* ── Tier Comparison & Packaging ── */
+export {
+  generateTierComparisonMatrix,
+} from './pricingComparison';
+export type {
+  TierComparisonRow,
+  TierMatrix,
+} from './pricingComparison';
