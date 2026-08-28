@@ -579,3 +579,30 @@ export function diagnoseCrossPlatformConsistency(
     recommendations,
   };
 }
+
+export function harmonizeProfilePositioning(
+  profileSystem: ProfileSystemAsset[],
+  referenceHeadline?: string,
+  referencePromise?: string
+): ProfileSystemAsset[] {
+  const headline = referenceHeadline || 'Strategic Systems Architect & Product Engineer';
+  const promise = referencePromise || 'Deterministic architectures that scale with measurable ROI.';
+
+  return profileSystem.map((asset) => {
+    const updatedFields = asset.fields.map((f) => {
+      if (f.key === 'headline' || f.key === 'tagline' || f.key === 'title') {
+        return { ...f, value: headline };
+      }
+      if (f.key === 'one_liner' || f.key === 'short_bio') {
+        return { ...f, value: promise };
+      }
+      return f;
+    });
+
+    return {
+      ...asset,
+      fields: updatedFields,
+    };
+  });
+}
+
