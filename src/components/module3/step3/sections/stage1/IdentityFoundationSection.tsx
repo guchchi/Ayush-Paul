@@ -26,6 +26,10 @@ import {
   AlertTriangle,
   XCircle,
   ArrowLeftRight,
+  Search,
+  Zap,
+  Check,
+  Loader2,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
@@ -145,6 +149,148 @@ function BeforeAfterCard({ beforeBio, quizAnswers, newHeadline, newProofLine }: 
           )}
         </div>
       </div>
+    </motion.div>
+  );
+}
+
+// ── Aspirational X-Ray Feature ────────────────────────────────────────────────
+
+const MOCK_FRAMEWORKS = [
+  {
+    handle: 'alexhormozi',
+    name: 'Alex Hormozi',
+    framework: 'The "No B.S. Value" Frame: [Unsexy Niche] + [Extreme Guarantee] + [Zero Friction]',
+    example: 'I build boring businesses to $10M/yr. No fluff, just math and offers.',
+  },
+  {
+    handle: 'justinwelsh',
+    name: 'Justin Welsh',
+    framework: 'The "Solopreneur System" Frame: [Audience Building] + [Lean Operations] = [Freedom]',
+    example: 'Building a portfolio of one-person businesses to $5M in revenue. Sharing the exact systems.',
+  },
+  {
+    handle: 'shaanvp',
+    name: 'Shaan Puri',
+    framework: 'The "Entertaining Contrarian" Frame: [Wild Claim] + [Business Breakdown] + [Humor]',
+    example: 'I brainstorm million-dollar ideas and explain why your current business is probably boring.',
+  },
+  {
+    handle: 'default',
+    name: 'Industry Top 1%',
+    framework: 'The "Authority Gap" Frame: I help [Target] achieve [Unfair Advantage] by eliminating [Common Enemy]',
+    example: 'Helping SaaS founders achieve zero-churn growth by eliminating bloated onboarding processes.',
+  }
+];
+
+function AspirationalXRayCard({ onApply }: { onApply: (headline: string, proof: string) => void }) {
+  const [handle, setHandle] = useState('');
+  const [scanning, setScanning] = useState(false);
+  const [result, setResult] = useState<typeof MOCK_FRAMEWORKS[0] | null>(null);
+  const [applied, setApplied] = useState(false);
+
+  const handleScan = () => {
+    if (!handle.trim()) return;
+    setScanning(true);
+    setResult(null);
+    setApplied(false);
+
+    // Simulate API delay
+    setTimeout(() => {
+      const cleanHandle = handle.replace('@', '').toLowerCase();
+      const match = MOCK_FRAMEWORKS.find(f => f.handle === cleanHandle) || MOCK_FRAMEWORKS[3];
+      setResult(match);
+      setScanning(false);
+    }, 1500);
+  };
+
+  const handleApply = () => {
+    if (result) {
+      onApply(result.example, result.framework);
+      setApplied(true);
+      setTimeout(() => setApplied(false), 2000);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.15 }}
+      className="p-5 rounded-3xl bg-gradient-to-br from-[#0b1c30] to-[#112a46] border border-[#1a385d] shadow-xl space-y-4 relative overflow-hidden group"
+    >
+      {/* Decorative background glow */}
+      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-[#0058be]/20 rounded-full blur-3xl pointer-events-none group-hover:bg-[#0058be]/30 transition-all duration-700" />
+      
+      <div className="flex items-center gap-2 relative z-10">
+        <div className="p-1.5 rounded-lg bg-[#d1f34d]/20 text-[#d1f34d]">
+          <Zap size={14} />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold text-white">The Aspirational X-Ray</h3>
+          <p className="text-[10px] text-white/60">Reverse-engineer top creator frameworks for your own profile</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 relative z-10">
+        <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#d1f34d]/30 focus-within:border-[#d1f34d]/50 transition-all">
+          <AtSign size={14} className="text-white/40" />
+          <input
+            type="text"
+            value={handle}
+            onChange={(e) => setHandle(e.target.value)}
+            placeholder="e.g. alexhormozi or justinwelsh"
+            onKeyDown={(e) => e.key === 'Enter' && handleScan()}
+            className="w-full bg-transparent text-sm text-white focus:outline-none placeholder:text-white/30 font-mono"
+          />
+        </div>
+        <button
+          onClick={handleScan}
+          disabled={!handle.trim() || scanning}
+          className="px-4 py-2 bg-[#d1f34d] hover:bg-[#bce038] text-[#0b1c30] font-bold text-xs rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
+        >
+          {scanning ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+          {scanning ? 'Decoding...' : 'Decode Frame'}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {result && !scanning && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            className="relative z-10 bg-black/40 border border-white/10 rounded-2xl p-4 space-y-3"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] font-bold text-[#d1f34d] uppercase tracking-wider block mb-1">
+                  Decoded Framework: {result.name}
+                </span>
+                <p className="text-[11px] text-white/90 font-mono leading-relaxed">
+                  {result.framework}
+                </p>
+              </div>
+              <button
+                onClick={handleApply}
+                disabled={applied}
+                className={cn(
+                  "px-3 py-1.5 text-[10px] font-bold rounded-lg border transition-all shrink-0 flex items-center gap-1.5",
+                  applied 
+                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
+                    : "bg-white/10 text-white hover:bg-white/20 border-white/20"
+                )}
+              >
+                {applied ? <Check size={12} /> : <ArrowRight size={12} />}
+                {applied ? 'Applied!' : 'Use This Frame'}
+              </button>
+            </div>
+            <div className="pt-2 border-t border-white/10">
+              <span className="text-[9px] text-white/50 block mb-1">AI Generated Example for you:</span>
+              <p className="text-xs text-white italic">"{result.example}"</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -407,6 +553,14 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
           </p>
         </div>
       </motion.div>
+
+      {/* Feature X: The Aspirational X-Ray */}
+      <AspirationalXRayCard 
+        onApply={(headline, proof) => {
+          onHeadlineChange(headline);
+          onProofLineChange(proof);
+        }} 
+      />
 
       {/* Positioning Headline */}
       <motion.div
