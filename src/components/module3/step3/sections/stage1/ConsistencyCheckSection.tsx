@@ -2,7 +2,7 @@
  * Section 4: Cross-Platform Consistency Check
  * 
  * "Sab jagah same kahani bol raha hai ya nahi?"
- * Side-by-side headline comparison, consistency score, tone drift warnings.
+ * Side-by-side headline comparison, consistency score, tone drift warnings, 1-click auto-harmonize.
  */
 
 import React, { useMemo } from 'react';
@@ -14,9 +14,13 @@ import {
   CheckCircle2,
   AlertTriangle,
   Eye,
-  ArrowRight,
+  RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
+import { BrandIcons } from '@/src/components/module3/step3/brand/BrandIcons';
+import { useModule3Store } from '@/src/lib/module3/store';
+import { harmonizeProfilePositioning } from '@/src/lib/module3/authority-score-engine';
 
 interface Props {
   profileSystem: ProfileSystemAsset[];
@@ -25,24 +29,29 @@ interface Props {
   onContinue: () => void;
 }
 
-const PLATFORM_LABELS: Record<string, string> = {
-  linkedin: 'LinkedIn',
-  twitter: 'X / Twitter',
-  github: 'GitHub',
-  youtube: 'YouTube',
-  behance: 'Figma / Behance',
-  instagram: 'Instagram',
-  personal_site: 'Personal Site',
-};
+interface PlatformMeta {
+  name: string;
+  icon: React.ComponentType<{ className?: string; size?: number }>;
+  brandColor: string;
+  textColor: string;
+  borderColor: string;
+  bgColor: string;
+}
 
-const PLATFORM_COLORS: Record<string, { bg: string; border: string; text: string }> = {
-  linkedin: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-[#0a66c2]' },
-  twitter: { bg: 'bg-neutral-50', border: 'border-neutral-300', text: 'text-black' },
-  github: { bg: 'bg-neutral-50', border: 'border-neutral-300', text: 'text-[#24292e]' },
-  youtube: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-[#ff0000]' },
-  behance: { bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-[#1abcfe]' },
-  instagram: { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-[#e1306c]' },
-  personal_site: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-[#0058be]' },
+const PLATFORM_MAP: Record<string, PlatformMeta> = {
+  linkedin: { name: 'LinkedIn', icon: BrandIcons.LinkedIn, brandColor: 'bg-[#0a66c2]', textColor: 'text-[#0a66c2]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
+  twitter: { name: 'X / Twitter', icon: BrandIcons.Twitter, brandColor: 'bg-black', textColor: 'text-neutral-900', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
+  github: { name: 'GitHub', icon: BrandIcons.GitHub, brandColor: 'bg-[#24292e]', textColor: 'text-[#24292e]', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
+  youtube: { name: 'YouTube', icon: BrandIcons.YouTube, brandColor: 'bg-[#ff0000]', textColor: 'text-[#ff0000]', borderColor: 'border-red-200', bgColor: 'bg-red-50/60' },
+  behance: { name: 'Behance', icon: BrandIcons.Behance, brandColor: 'bg-[#1769FF]', textColor: 'text-[#1769FF]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
+  figma: { name: 'Figma', icon: BrandIcons.Figma, brandColor: 'bg-[#0ACF83]', textColor: 'text-[#0ACF83]', borderColor: 'border-emerald-200', bgColor: 'bg-emerald-50/60' },
+  dribbble: { name: 'Dribbble', icon: BrandIcons.Dribbble, brandColor: 'bg-[#EA4C89]', textColor: 'text-[#EA4C89]', borderColor: 'border-pink-200', bgColor: 'bg-pink-50/60' },
+  instagram: { name: 'Instagram', icon: BrandIcons.Instagram, brandColor: 'bg-[#e1306c]', textColor: 'text-[#e1306c]', borderColor: 'border-pink-200', bgColor: 'bg-pink-50/60' },
+  personal_site: { name: 'Personal Site', icon: BrandIcons.PersonalSite, brandColor: 'bg-[#0058be]', textColor: 'text-[#0058be]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
+  technical_blog: { name: 'Substack / Blog', icon: BrandIcons.Substack, brandColor: 'bg-[#FF6719]', textColor: 'text-[#FF6719]', borderColor: 'border-orange-200', bgColor: 'bg-orange-50/60' },
+  producthunt: { name: 'Product Hunt', icon: BrandIcons.ProductHunt, brandColor: 'bg-[#DA552F]', textColor: 'text-[#DA552F]', borderColor: 'border-orange-200', bgColor: 'bg-orange-50/60' },
+  tiktok: { name: 'TikTok', icon: BrandIcons.TikTok, brandColor: 'bg-black', textColor: 'text-neutral-900', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
+  vimeo_behance: { name: 'Vimeo', icon: BrandIcons.Vimeo, brandColor: 'bg-[#1ab7ea]', textColor: 'text-[#1ab7ea]', borderColor: 'border-cyan-200', bgColor: 'bg-cyan-50/60' },
 };
 
 interface ConsistencyResult {
@@ -58,7 +67,7 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
 
   for (const p of profileSystem) {
     const headlineField = p.fields.find(f =>
-      f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline')
+      f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline') || f.key.includes('title')
     );
     if (headlineField && headlineField.value.trim().length > 3) {
       headlines.push({ platform: p.platform, headline: headlineField.value.trim() });
@@ -66,7 +75,7 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
   }
 
   if (headlines.length < 2) {
-    return { alignedCount: headlines.length, totalCount: headlines.length, score: 0, driftWarnings: [], headlines };
+    return { alignedCount: headlines.length, totalCount: headlines.length, score: 100, driftWarnings: [], headlines };
   }
 
   // Extract meaningful keywords from each headline (words > 3 chars, excluding stopwords)
@@ -88,13 +97,13 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
       const intersection = [...keywordSets[i].keywords].filter(w => keywordSets[j].keywords.has(w));
       const unionSize = new Set([...keywordSets[i].keywords, ...keywordSets[j].keywords]).size;
       const overlap = unionSize > 0 ? intersection.length / unionSize : 0;
-      if (overlap > 0.15) alignedPairs++;
+      if (overlap > 0.12) alignedPairs++;
     }
   }
 
   // Detect tone drift
-  const casualMarkers = ['lol', 'just', 'vibing', 'hey', 'haha', 'btw', '😂', '🔥', 'tbh'];
-  const formalMarkers = ['strategic', 'executive', 'enterprise', 'verifiable', 'systematic', 'authority'];
+  const casualMarkers = ['lol', 'just', 'vibing', 'hey', 'haha', 'btw', 'tbh'];
+  const formalMarkers = ['strategic', 'executive', 'enterprise', 'verifiable', 'systematic', 'authority', 'architect', 'systems'];
 
   const driftWarnings: { platform: string; issue: string }[] = [];
   let hasCasualPlatform = false;
@@ -111,7 +120,7 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
     if (isCasual && hasFormalPlatform) {
       driftWarnings.push({
         platform: h.platform,
-        issue: `${PLATFORM_LABELS[h.platform] || h.platform} uses casual tone while other platforms are formal`,
+        issue: `${PLATFORM_MAP[h.platform]?.name || h.platform} uses a casual tone while other channels are formal`,
       });
     }
   }
@@ -119,12 +128,12 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
   if (hasCasualPlatform && hasFormalPlatform && driftWarnings.length === 0) {
     driftWarnings.push({
       platform: 'mixed',
-      issue: 'Tone mismatch detected: some platforms use casual language while others are formal',
+      issue: 'Tone mismatch detected: some platforms use casual language while others are executive-grade.',
     });
   }
 
   // Score: percentage of aligned pairs + penalty for drift
-  const pairScore = totalPairs > 0 ? Math.round((alignedPairs / totalPairs) * 80) : 0;
+  const pairScore = totalPairs > 0 ? Math.round((alignedPairs / totalPairs) * 80) : 80;
   const driftPenalty = driftWarnings.length * 15;
   const score = Math.max(0, Math.min(100, pairScore + 20 - driftPenalty));
 
@@ -151,14 +160,27 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
 
 export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
   profileSystem,
-  activeTone,
   onBack,
   onContinue,
 }) => {
+  const updateProfileField = useModule3Store(s => s.updateProfileField);
+  const stage1Identity = useModule3Store(s => s.stage1Identity);
   const result = useMemo(() => analyzeConsistency(profileSystem), [profileSystem]);
 
-  const scoreColor = result.score >= 70 ? 'text-emerald-500' : result.score >= 40 ? 'text-amber-500' : 'text-red-500';
-  const scoreBg = result.score >= 70 ? 'bg-emerald-50 border-emerald-200' : result.score >= 40 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200';
+  const scoreColor = result.score >= 70 ? 'text-emerald-600' : result.score >= 40 ? 'text-blue-600' : 'text-amber-600';
+  const scoreBg = result.score >= 70 ? 'bg-emerald-50 border-emerald-200' : result.score >= 40 ? 'bg-blue-50 border-blue-200' : 'bg-amber-50 border-amber-200';
+
+  const handleHarmonize = () => {
+    const referenceHeadline = stage1Identity?.positioningHeadline || 'Strategic Systems Architect & Product Engineer';
+    const referencePromise = stage1Identity?.proofLine || 'Deterministic architectures that scale with measurable ROI.';
+
+    const harmonized = harmonizeProfilePositioning(profileSystem, referenceHeadline, referencePromise);
+    harmonized.forEach((asset) => {
+      asset.fields.forEach((field) => {
+        updateProfileField(asset.platform as any, field.key, field.value);
+      });
+    });
+  };
 
   return (
     <div className="w-full space-y-6 text-left font-sans">
@@ -170,26 +192,37 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
         className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-4"
       >
         <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20">
-              <Eye size={18} />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-[#0058be]/10 text-[#0058be] border border-[#0058be]/20">
+              <Eye size={20} />
             </div>
             <div>
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0058be] block">
-                Quality Gate
+                Quality Gate · Stage 1 Check
               </span>
-              <h2 className="text-lg font-bold text-[#0b1c30]">Cross-Platform Consistency Check</h2>
+              <h2 className="text-xl font-bold text-[#0b1c30]">Cross-Platform Consistency Diagnostic</h2>
             </div>
           </div>
 
-          <div className={cn('px-4 py-2 rounded-2xl border flex items-center gap-2', scoreBg)}>
-            <span className={cn('text-2xl font-black', scoreColor)}>{result.alignedCount}</span>
-            <span className="text-xs text-neutral-500 font-bold">/ {result.totalCount} aligned</span>
+          <div className="flex items-center gap-3">
+            {result.driftWarnings.length > 0 && (
+              <button
+                onClick={handleHarmonize}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-neutral-200 hover:border-neutral-300 text-xs font-bold text-[#0b1c30] shadow-xs cursor-pointer hover:bg-neutral-50 transition-all"
+              >
+                <RefreshCw size={13} className="text-[#0058be]" />
+                Auto-Harmonize All
+              </button>
+            )}
+            <div className={cn('px-4 py-2 rounded-2xl border flex items-center gap-2', scoreBg)}>
+              <span className={cn('text-2xl font-black', scoreColor)}>{result.alignedCount}</span>
+              <span className="text-xs text-neutral-500 font-bold">/ {result.totalCount} aligned</span>
+            </div>
           </div>
         </div>
 
         <p className="text-xs text-neutral-500 leading-relaxed">
-          High-ticket clients routinely cross-reference multiple profiles before booking. If your LinkedIn reads enterprise while your Twitter or personal site reads casual, client trust is compromised. This audit verifies uniform messaging across all your active channels.
+          High-ticket clients routinely cross-reference multiple profiles before booking. If your LinkedIn reads enterprise while your X or personal site reads casual, client trust drops immediately. This diagnostic confirms unified authority positioning across all active channels.
         </p>
       </motion.div>
 
@@ -200,35 +233,56 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
         className="space-y-3"
       >
-        <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block px-1">
-          Headlines Across Platforms
-        </span>
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
+            Channel Headlines Breakdown ({result.headlines.length} Platforms)
+          </span>
+          <span className="text-[10px] font-bold text-neutral-500">
+            {result.score}% Overall Cohesion
+          </span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {result.headlines.map((item) => {
-            const colors = PLATFORM_COLORS[item.platform] || { bg: 'bg-neutral-50', border: 'border-neutral-200', text: 'text-neutral-700' };
+            const meta = PLATFORM_MAP[item.platform] || {
+              name: item.platform,
+              icon: BrandIcons.PersonalSite,
+              brandColor: 'bg-neutral-700',
+              textColor: 'text-neutral-700',
+              borderColor: 'border-neutral-200',
+              bgColor: 'bg-neutral-50',
+            };
+            const Icon = meta.icon;
             const hasDrift = result.driftWarnings.some(w => w.platform === item.platform);
 
             return (
               <div
                 key={item.platform}
                 className={cn(
-                  'p-4 rounded-2xl border space-y-2 transition-all',
-                  hasDrift ? 'bg-red-50/50 border-red-200' : colors.bg,
-                  hasDrift ? 'border-red-300' : colors.border
+                  'p-4 rounded-2xl border space-y-2.5 transition-all shadow-2xs',
+                  hasDrift ? 'bg-amber-50/60 border-amber-300' : 'bg-white border-neutral-200/80 hover:border-neutral-300'
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className={cn('text-xs font-bold', colors.text)}>
-                    {PLATFORM_LABELS[item.platform] || item.platform}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className={cn('w-6 h-6 rounded-lg flex items-center justify-center text-white', meta.brandColor)}>
+                      <Icon className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <span className="text-xs font-bold text-[#0b1c30]">
+                      {meta.name}
+                    </span>
+                  </div>
                   {hasDrift ? (
-                    <AlertTriangle size={14} className="text-red-500" />
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md">
+                      <AlertTriangle size={11} /> Drift
+                    </span>
                   ) : (
-                    <CheckCircle2 size={14} className="text-emerald-500" />
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                      <CheckCircle2 size={11} /> Cohesive
+                    </span>
                   )}
                 </div>
-                <p className="text-[11px] text-neutral-700 leading-relaxed line-clamp-3">
+                <p className="text-xs text-neutral-700 leading-relaxed line-clamp-3 bg-neutral-50/70 p-2.5 rounded-xl border border-neutral-100">
                   "{item.headline}"
                 </p>
               </div>
@@ -237,8 +291,8 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
         </div>
 
         {result.headlines.length === 0 && (
-          <div className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200 text-center">
-            <p className="text-xs text-neutral-400 font-medium">No platform headlines found. Go back to Platform Studio and add content.</p>
+          <div className="p-8 rounded-2xl bg-white border border-neutral-200 text-center">
+            <p className="text-xs text-neutral-400 font-medium">No platform headlines found. Return to Platform Studio to configure copy.</p>
           </div>
         )}
       </motion.div>
@@ -249,17 +303,27 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
-          className="space-y-2"
+          className="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2"
         >
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-red-500 block px-1">
-            ⚠️ Tone Drift Detected
-          </span>
-          {result.driftWarnings.map((warn, i) => (
-            <div key={i} className="p-3.5 rounded-2xl bg-red-50 border border-red-200 flex items-start gap-2">
-              <AlertTriangle size={14} className="text-red-500 mt-0.5 shrink-0" />
-              <p className="text-xs text-red-700 font-medium">{warn.issue}</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-amber-800 text-xs font-bold">
+              <AlertTriangle size={14} className="text-amber-600" />
+              Tone Drift Detected in {result.driftWarnings.length} Platform{result.driftWarnings.length === 1 ? '' : 's'}
             </div>
-          ))}
+            <button
+              onClick={handleHarmonize}
+              className="text-[11px] font-bold text-[#0058be] hover:underline cursor-pointer flex items-center gap-1"
+            >
+              <Sparkles size={12} /> Sync with Master Identity
+            </button>
+          </div>
+          <div className="space-y-1.5 pt-1">
+            {result.driftWarnings.map((warn, i) => (
+              <p key={i} className="text-xs text-amber-900/80 font-medium pl-5">
+                • {warn.issue}
+              </p>
+            ))}
+          </div>
         </motion.div>
       )}
 
@@ -271,7 +335,7 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
           </ModuleButton>
         ) : <div />}
         <ModuleButton variant="primary" onClick={onContinue}>
-          Consistency Verified — Deploy & Prove →
+          Consistency Verified — Deploy & Proof →
         </ModuleButton>
       </div>
     </div>
@@ -279,4 +343,3 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
 });
 
 ConsistencyCheckSection.displayName = 'ConsistencyCheckSection';
-
