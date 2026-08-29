@@ -29,30 +29,7 @@ interface Props {
   onContinue: () => void;
 }
 
-interface PlatformMeta {
-  name: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
-  brandColor: string;
-  textColor: string;
-  borderColor: string;
-  bgColor: string;
-}
-
-const PLATFORM_MAP: Record<string, PlatformMeta> = {
-  linkedin: { name: 'LinkedIn', icon: BrandIcons.LinkedIn, brandColor: 'bg-[#0a66c2]', textColor: 'text-[#0a66c2]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
-  twitter: { name: 'X / Twitter', icon: BrandIcons.Twitter, brandColor: 'bg-black', textColor: 'text-neutral-900', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
-  github: { name: 'GitHub', icon: BrandIcons.GitHub, brandColor: 'bg-[#24292e]', textColor: 'text-[#24292e]', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
-  youtube: { name: 'YouTube', icon: BrandIcons.YouTube, brandColor: 'bg-[#ff0000]', textColor: 'text-[#ff0000]', borderColor: 'border-red-200', bgColor: 'bg-red-50/60' },
-  behance: { name: 'Behance', icon: BrandIcons.Behance, brandColor: 'bg-[#1769FF]', textColor: 'text-[#1769FF]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
-  figma: { name: 'Figma', icon: BrandIcons.Figma, brandColor: 'bg-[#0ACF83]', textColor: 'text-[#0ACF83]', borderColor: 'border-emerald-200', bgColor: 'bg-emerald-50/60' },
-  dribbble: { name: 'Dribbble', icon: BrandIcons.Dribbble, brandColor: 'bg-[#EA4C89]', textColor: 'text-[#EA4C89]', borderColor: 'border-pink-200', bgColor: 'bg-pink-50/60' },
-  instagram: { name: 'Instagram', icon: BrandIcons.Instagram, brandColor: 'bg-[#e1306c]', textColor: 'text-[#e1306c]', borderColor: 'border-pink-200', bgColor: 'bg-pink-50/60' },
-  personal_site: { name: 'Personal Site', icon: BrandIcons.PersonalSite, brandColor: 'bg-[#0058be]', textColor: 'text-[#0058be]', borderColor: 'border-blue-200', bgColor: 'bg-blue-50/60' },
-  technical_blog: { name: 'Substack / Blog', icon: BrandIcons.Substack, brandColor: 'bg-[#FF6719]', textColor: 'text-[#FF6719]', borderColor: 'border-orange-200', bgColor: 'bg-orange-50/60' },
-  producthunt: { name: 'Product Hunt', icon: BrandIcons.ProductHunt, brandColor: 'bg-[#DA552F]', textColor: 'text-[#DA552F]', borderColor: 'border-orange-200', bgColor: 'bg-orange-50/60' },
-  tiktok: { name: 'TikTok', icon: BrandIcons.TikTok, brandColor: 'bg-black', textColor: 'text-neutral-900', borderColor: 'border-neutral-200', bgColor: 'bg-neutral-50/60' },
-  vimeo_behance: { name: 'Vimeo', icon: BrandIcons.Vimeo, brandColor: 'bg-[#1ab7ea]', textColor: 'text-[#1ab7ea]', borderColor: 'border-cyan-200', bgColor: 'bg-cyan-50/60' },
-};
+import { PLATFORM_REGISTRY } from '@/src/lib/module3/platformRegistry';
 
 interface ConsistencyResult {
   alignedCount: number;
@@ -120,7 +97,7 @@ function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyRes
     if (isCasual && hasFormalPlatform) {
       driftWarnings.push({
         platform: h.platform,
-        issue: `${PLATFORM_MAP[h.platform]?.name || h.platform} uses a casual tone while other channels are formal`,
+        issue: `${PLATFORM_REGISTRY[h.platform]?.name || h.platform} uses a casual tone while other channels are formal`,
       });
     }
   }
@@ -244,7 +221,7 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {result.headlines.map((item) => {
-            const meta = PLATFORM_MAP[item.platform] || {
+            const meta = PLATFORM_REGISTRY[item.platform] || {
               name: item.platform,
               icon: BrandIcons.PersonalSite,
               brandColor: 'bg-neutral-700',

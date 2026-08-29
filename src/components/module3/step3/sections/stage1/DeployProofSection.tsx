@@ -44,28 +44,7 @@ interface Props {
   onComplete: () => void;
 }
 
-interface PlatformMeta {
-  name: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
-  brandColor: string;
-  deepLink: string;
-}
-
-const PLATFORM_MAP: Record<string, PlatformMeta> = {
-  linkedin: { name: 'LinkedIn', icon: BrandIcons.LinkedIn, brandColor: 'bg-[#0a66c2]', deepLink: 'https://www.linkedin.com/in/me/overlay/edit/' },
-  twitter: { name: 'X / Twitter', icon: BrandIcons.Twitter, brandColor: 'bg-black', deepLink: 'https://x.com/settings/profile' },
-  github: { name: 'GitHub', icon: BrandIcons.GitHub, brandColor: 'bg-[#24292e]', deepLink: 'https://github.com/settings/profile' },
-  youtube: { name: 'YouTube', icon: BrandIcons.YouTube, brandColor: 'bg-[#ff0000]', deepLink: 'https://studio.youtube.com/channel/editing/profile' },
-  behance: { name: 'Behance', icon: BrandIcons.Behance, brandColor: 'bg-[#1769FF]', deepLink: 'https://www.behance.net/' },
-  figma: { name: 'Figma', icon: BrandIcons.Figma, brandColor: 'bg-[#0ACF83]', deepLink: 'https://www.figma.com/settings' },
-  dribbble: { name: 'Dribbble', icon: BrandIcons.Dribbble, brandColor: 'bg-[#EA4C89]', deepLink: 'https://dribbble.com/account/general' },
-  instagram: { name: 'Instagram', icon: BrandIcons.Instagram, brandColor: 'bg-[#e1306c]', deepLink: 'https://www.instagram.com/accounts/edit/' },
-  personal_site: { name: 'Personal Site', icon: BrandIcons.PersonalSite, brandColor: 'bg-[#0058be]', deepLink: '#' },
-  technical_blog: { name: 'Substack / Blog', icon: BrandIcons.Substack, brandColor: 'bg-[#FF6719]', deepLink: 'https://substack.com/' },
-  producthunt: { name: 'Product Hunt', icon: BrandIcons.ProductHunt, brandColor: 'bg-[#DA552F]', deepLink: 'https://www.producthunt.com/my/profile' },
-  tiktok: { name: 'TikTok', icon: BrandIcons.TikTok, brandColor: 'bg-black', deepLink: 'https://www.tiktok.com/' },
-  vimeo_behance: { name: 'Vimeo', icon: BrandIcons.Vimeo, brandColor: 'bg-[#1ab7ea]', deepLink: 'https://vimeo.com/manage' },
-};
+import { PLATFORM_REGISTRY } from '@/src/lib/module3/platformRegistry';
 
 // Animated Score Ring (Luxury Light Theme)
 function ScoreRing({ score, label, size = 110 }: { score: number; label: string; size?: number }) {
@@ -136,7 +115,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
   const generateFullPackageMarkdown = () => {
     let md = `# EXECUTIVE SOCIAL IDENTITY PACKAGE\nUser: ${userName || 'Authority Consultant'} (@${userHandle || 'expert'})\nAuthority Score: ${currentScore.total}/100\nTone: ${activeTone.toUpperCase()}\n\n`;
     for (const p of profileSystem) {
-      const meta = PLATFORM_MAP[p.platform];
+      const meta = PLATFORM_REGISTRY[p.platform];
       md += `---\nPLATFORM: ${(meta?.name || p.platform).toUpperCase()}\n---\n`;
       for (const f of p.fields) {
         md += `[${f.label}]\n${f.value}\n\n`;
@@ -276,7 +255,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
           {allPlatforms.map(platform => {
             const isDeployed = deployedPlatforms.has(platform);
-            const meta = PLATFORM_MAP[platform] || {
+            const meta = PLATFORM_REGISTRY[platform] || {
               name: platform,
               icon: BrandIcons.PersonalSite,
               brandColor: 'bg-neutral-700',

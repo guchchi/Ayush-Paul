@@ -29,23 +29,7 @@ import {
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 
-// ── Platform Character Limits ────────────────────────────────────────────────
-
-const PLATFORM_CHAR_LIMITS: Record<string, { name: string; headlineMax: number; bioMax: number }> = {
-  linkedin:       { name: 'LinkedIn',       headlineMax: 220, bioMax: 2600 },
-  twitter:        { name: 'Twitter / X',    headlineMax: 160, bioMax: 160 },
-  instagram:      { name: 'Instagram',      headlineMax: 150, bioMax: 150 },
-  tiktok:         { name: 'TikTok',         headlineMax: 80,  bioMax: 80 },
-  github:         { name: 'GitHub',         headlineMax: 9999, bioMax: 9999 }, // effectively unlimited
-  youtube:        { name: 'YouTube',        headlineMax: 1000, bioMax: 1000 },
-  dribbble:       { name: 'Dribbble',       headlineMax: 160, bioMax: 500 },
-  behance:        { name: 'Behance',        headlineMax: 200, bioMax: 500 },
-  figma:          { name: 'Figma',          headlineMax: 200, bioMax: 500 },
-  producthunt:    { name: 'Product Hunt',   headlineMax: 160, bioMax: 500 },
-  vimeo_behance:  { name: 'Vimeo / Behance',headlineMax: 200, bioMax: 500 },
-  technical_blog: { name: 'Substack',       headlineMax: 9999, bioMax: 9999 },
-  personal_site:  { name: 'Personal Site',  headlineMax: 9999, bioMax: 9999 },
-};
+import { PLATFORM_REGISTRY } from '@/src/lib/module3/platformRegistry';
 
 // ── Platform Fit Indicator Component ─────────────────────────────────────────
 
@@ -53,7 +37,7 @@ function PlatformFitStrip({ text, platforms, mode }: { text: string; platforms: 
   if (!text || text.length < 5 || !platforms.length) return null;
 
   const relevantPlatforms = platforms
-    .map(p => PLATFORM_CHAR_LIMITS[p.toLowerCase()])
+    .map(p => PLATFORM_REGISTRY[p.toLowerCase()])
     .filter(Boolean);
 
   if (!relevantPlatforms.length) return null;
@@ -61,7 +45,7 @@ function PlatformFitStrip({ text, platforms, mode }: { text: string; platforms: 
   return (
     <div className="flex flex-wrap gap-1.5 pt-1">
       {relevantPlatforms.map((plat) => {
-        const limit = mode === 'headline' ? plat.headlineMax : plat.bioMax;
+        const limit = mode === 'headline' ? plat.charLimits.headline : plat.charLimits.bio;
         if (limit >= 9999) {
           return (
             <span key={plat.name} className="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">

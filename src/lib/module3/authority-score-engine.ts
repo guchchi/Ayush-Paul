@@ -12,6 +12,7 @@
  */
 
 import type { ProfileSystemAsset } from '../../data/module3/authority-suite-engine';
+import { getPlatformLabel, ALL_PLATFORM_KEYS } from './platformRegistry';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -69,18 +70,6 @@ const CTA_SIGNALS = [
   'apply', 'connect', 'reach out', 'get in touch', 'consult',
   '→', '↗', 'click', 'visit', 'explore', 'discover',
 ];
-
-// ── Platform Labels ───────────────────────────────────────────────────────────
-
-const PLATFORM_LABELS: Record<string, string> = {
-  linkedin: 'LinkedIn',
-  twitter: 'X / Twitter',
-  github: 'GitHub',
-  youtube: 'YouTube',
-  behance: 'Behance / Figma',
-  instagram: 'Instagram',
-  personal_site: 'Personal Site',
-};
 
 // ── Scoring Functions ─────────────────────────────────────────────────────────
 
@@ -435,7 +424,7 @@ export function calculatePlatformReadiness(
   profileSystem: ProfileSystemAsset[],
   recommendedPlatforms: string[]
 ): PlatformReadiness[] {
-  const allPlatformKeys = ['linkedin', 'twitter', 'github', 'youtube', 'behance', 'instagram', 'personal_site'];
+  const allPlatformKeys = ALL_PLATFORM_KEYS;
   
   // Show recommended platforms first, then others
   const sortedKeys = [
@@ -445,7 +434,7 @@ export function calculatePlatformReadiness(
 
   return sortedKeys.map(key => {
     const platformData = profileSystem.find(p => p.platform === key);
-    const label = PLATFORM_LABELS[key] || key;
+    const label = getPlatformLabel(key);
     
     if (!platformData || !platformData.fields.length) {
       return {
