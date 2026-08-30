@@ -23,8 +23,9 @@ export interface MockupProps {
   userName: string;
   userHandle: string;
   initials: string;
-  headline: string;
-  bio: string;
+  headline?: string;
+  bio?: string;
+  fieldValues?: Record<string, string>;
 }
 
 // ── Utility ───────────────────────────────────────────────────────────────────
@@ -38,12 +39,17 @@ export function getInitials(name: string): string {
 
 // ── LinkedIn ──────────────────────────────────────────────────────────────────
 
-export function LinkedInMockup({ userName, initials, headline, bio }: Omit<MockupProps, 'userHandle'>) {
+export function LinkedInMockup({ userName, initials, headline, bio, fieldValues = {} }: Omit<MockupProps, 'userHandle'>) {
+  const displayHeadline = fieldValues.headline || headline || '';
+  const displayBio = fieldValues.about || bio || 'Engineering verifiable authority position systems.';
+  const displayBanner = fieldValues.banner_text || 'Strategic Authority';
+  const displayFeaturedCta = fieldValues.featured_cta || 'Book a Discovery Call';
+
   return (
     <div className="h-full bg-[#f3f2ef] text-neutral-900 overflow-y-auto hide-scrollbar pb-10">
-      <div className="h-24 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-950 relative p-4 flex items-end">
-        <span className="text-[9px] font-black uppercase tracking-widest text-blue-300 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-500/30">
-          Strategic Authority
+      <div className="h-24 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-950 relative p-4 flex items-end overflow-hidden">
+        <span className="text-[9px] font-black uppercase tracking-widest text-blue-300 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-500/30 truncate max-w-full">
+          {displayBanner}
         </span>
       </div>
       <div className="p-5 pt-0 relative space-y-3">
@@ -57,21 +63,21 @@ export function LinkedInMockup({ userName, initials, headline, bio }: Omit<Mocku
         </div>
         <div>
           <h3 className="font-bold text-base text-neutral-900">{userName} <span className="text-neutral-500 text-xs font-normal">· 1st</span></h3>
-          <p className="text-[11px] font-bold text-[#0a66c2] leading-snug line-clamp-2 mt-0.5">{headline}</p>
+          <p className="text-[11px] font-bold text-[#0a66c2] leading-snug line-clamp-2 mt-0.5">{displayHeadline}</p>
           <p className="text-[9px] text-neutral-500 mt-1">Talks about #design, #strategy, and #growth</p>
         </div>
         <div className="bg-neutral-50 p-3 rounded-xl border border-neutral-200/80 space-y-1">
           <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">About</span>
-          <p className="text-[10px] text-neutral-700 leading-relaxed line-clamp-3 italic">{bio || 'Engineering verifiable authority position systems.'}</p>
+          <p className="text-[10px] text-neutral-700 leading-relaxed line-clamp-4 italic">{displayBio}</p>
         </div>
         <div className="pt-2">
           <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mb-2 block">Featured</span>
           <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden flex shadow-xs">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#0a66c2] to-[#004182] flex items-center justify-center text-white">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#0a66c2] to-[#004182] flex items-center justify-center text-white shrink-0">
               <ExternalLink size={14} />
             </div>
-            <div className="p-2 flex flex-col justify-center">
-              <span className="text-[10px] font-bold text-neutral-900 block truncate w-32">Book a Discovery Call</span>
+            <div className="p-2 flex flex-col justify-center min-w-0">
+              <span className="text-[10px] font-bold text-neutral-900 block truncate">{displayFeaturedCta}</span>
               <span className="text-[9px] text-neutral-500">cal.com</span>
             </div>
           </div>
@@ -83,7 +89,10 @@ export function LinkedInMockup({ userName, initials, headline, bio }: Omit<Mocku
 
 // ── GitHub ─────────────────────────────────────────────────────────────────────
 
-export function GitHubMockup({ userName, userHandle, initials, headline }: Omit<MockupProps, 'bio'>) {
+export function GitHubMockup({ userName, userHandle, initials, headline, fieldValues = {} }: Omit<MockupProps, 'bio'>) {
+  const displayHeadline = fieldValues.bio || fieldValues.readme_intro || headline || '';
+  const displayUserName = fieldValues.name || userName;
+
   const heatmap = Array.from({ length: 42 }).map((_, i) => {
     const active = Math.random() > 0.5;
     const intensity = Math.floor(Math.random() * 4);
@@ -92,17 +101,17 @@ export function GitHubMockup({ userName, userHandle, initials, headline }: Omit<
   });
 
   return (
-    <div className="bg-[#0d1117] rounded-2xl border border-[#30363d] text-neutral-200 p-5 space-y-4 font-mono">
+    <div className="bg-[#0d1117] rounded-2xl border border-[#30363d] text-neutral-200 p-5 space-y-4 font-mono h-full overflow-y-auto hide-scrollbar">
       <div className="flex items-center gap-3 border-b border-[#30363d] pb-3">
-        <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-[#39d353] flex items-center justify-center font-bold text-white text-sm">
+        <div className="w-10 h-10 rounded-full bg-slate-800 border-2 border-[#39d353] flex items-center justify-center font-bold text-white text-sm shrink-0">
           {initials}
         </div>
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-bold text-sm text-white">{userName}</h3>
-            <span className="text-[8px] bg-emerald-950 text-[#39d353] px-1.5 py-0.5 rounded border border-[#006d32]">Pro</span>
+            <h3 className="font-bold text-sm text-white truncate">{displayUserName}</h3>
+            <span className="text-[8px] bg-emerald-950 text-[#39d353] px-1.5 py-0.5 rounded border border-[#006d32] shrink-0">Pro</span>
           </div>
-          <p className="text-[10px] text-neutral-400">{userHandle}</p>
+          <p className="text-[10px] text-neutral-400 truncate">{userHandle}</p>
         </div>
       </div>
       <div className="bg-[#161b22] p-3 rounded-xl border border-[#30363d] space-y-1">
@@ -110,7 +119,7 @@ export function GitHubMockup({ userName, userHandle, initials, headline }: Omit<
           <BookOpen size={10} className="text-neutral-400" />
           <span className="text-[9px] text-[#39d353] font-bold uppercase tracking-wider">README.md</span>
         </div>
-        <p className="text-[10px] text-neutral-200 leading-relaxed font-mono">{headline}</p>
+        <p className="text-[10px] text-neutral-200 leading-relaxed font-mono whitespace-pre-wrap">{displayHeadline}</p>
       </div>
       <div>
         <span className="text-[9px] text-neutral-400 font-bold mb-1.5 block">1,240 contributions in the last year</span>
@@ -124,7 +133,12 @@ export function GitHubMockup({ userName, userHandle, initials, headline }: Omit<
 
 // ── Twitter / X ───────────────────────────────────────────────────────────────
 
-export function TwitterMockup({ userName, userHandle, initials, headline }: Omit<MockupProps, 'bio'>) {
+export function TwitterMockup({ userName, userHandle, initials, headline, fieldValues = {} }: Omit<MockupProps, 'bio'>) {
+  const displayUserName = fieldValues.name_format || userName;
+  const displayBio = fieldValues.bio || headline || '';
+  const displayPinnedPost = fieldValues.pinned_post || "Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread 🧵👇";
+  const displayCtaLink = fieldValues.cta_link || `linktr.ee/${userHandle || 'yourhandle'}`;
+
   return (
     <div className="h-full bg-black text-white p-5 space-y-3 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex justify-between items-start">
@@ -135,12 +149,12 @@ export function TwitterMockup({ userName, userHandle, initials, headline }: Omit
       </div>
       <div>
         <div className="flex items-center gap-1">
-          <h3 className="font-bold text-sm text-white">{userName}</h3>
+          <h3 className="font-bold text-sm text-white">{displayUserName}</h3>
           <CheckCircle2 size={12} className="text-[#1d9bf0] fill-[#1d9bf0]/20" />
         </div>
         <p className="text-[10px] text-neutral-500 font-sans">@{userHandle}</p>
       </div>
-      <p className="text-[11px] text-neutral-100 leading-relaxed whitespace-pre-wrap">{headline}</p>
+      <p className="text-[11px] text-neutral-100 leading-relaxed whitespace-pre-wrap">{displayBio}</p>
       <div className="flex items-center gap-4 text-[10px] text-neutral-500 pt-1 border-b border-neutral-800 pb-3">
         <div><strong className="text-white">1,204</strong> Following</div>
         <div><strong className="text-white">14.2K</strong> Followers</div>
@@ -150,7 +164,7 @@ export function TwitterMockup({ userName, userHandle, initials, headline }: Omit
           <Pin size={10} className="rotate-45" /> Pinned
         </div>
         <div className="bg-neutral-900/50 p-3 rounded-xl border border-neutral-800">
-          <p className="text-[10px] text-neutral-300">Here's how I scaled my agency to $10k/mo using this one simple trick. A mega-thread 🧵👇</p>
+          <p className="text-[10px] text-neutral-300">{displayPinnedPost}</p>
         </div>
       </div>
     </div>
@@ -159,7 +173,11 @@ export function TwitterMockup({ userName, userHandle, initials, headline }: Omit
 
 // ── YouTube ───────────────────────────────────────────────────────────────────
 
-export function YouTubeMockup({ userName, userHandle, initials, headline, bio }: MockupProps) {
+export function YouTubeMockup({ userName, userHandle, initials, headline, bio, fieldValues = {} }: MockupProps) {
+  const displayUserName = fieldValues.channel_name || userName;
+  const displayBio = fieldValues.channel_description || bio || headline || 'Building predictable client acquisition pipelines.';
+  const displayCtaLink = fieldValues.channel_links || `linktr.ee/${userHandle || 'yourhandle'}`;
+
   return (
     <div className="h-full w-full bg-[#0f0f0f] flex flex-col font-sans text-white pb-10 overflow-y-auto hide-scrollbar">
       <div className="h-[90px] bg-gradient-to-r from-red-900 via-neutral-900 to-black w-full" />
@@ -167,7 +185,7 @@ export function YouTubeMockup({ userName, userHandle, initials, headline, bio }:
         <div className="w-[72px] h-[72px] rounded-full border-2 border-[#0f0f0f] bg-neutral-800 flex items-center justify-center font-bold text-2xl text-neutral-400 shrink-0">
           {initials}
         </div>
-        <h2 className="text-[18px] font-bold mt-2 text-center leading-tight">{userName}</h2>
+        <h2 className="text-[18px] font-bold mt-2 text-center leading-tight">{displayUserName}</h2>
         <div className="text-[11px] text-neutral-400 mt-1 flex items-center justify-center gap-1">
           <span>@{userHandle || 'yourhandle'}</span>
           <span>·</span>
@@ -175,12 +193,11 @@ export function YouTubeMockup({ userName, userHandle, initials, headline, bio }:
           <span>·</span>
           <span>120 videos</span>
         </div>
-        <p className="text-[11px] text-neutral-300 mt-2 text-center line-clamp-2 px-2 leading-[1.3]">
-          {headline || bio || 'Building predictable client acquisition pipelines.'}
+        <p className="text-[11px] text-neutral-300 mt-2 text-center line-clamp-3 px-2 leading-[1.3]">
+          {displayBio}
         </p>
-        <div className="flex items-center gap-1 mt-1.5 text-[11px] font-bold text-neutral-300">
-          <span>linktr.ee/{userHandle || 'yourhandle'}</span>
-          <span className="text-neutral-500 font-medium">and 2 more links</span>
+        <div className="flex items-center gap-1 mt-1.5 text-[11px] font-bold text-neutral-300 truncate max-w-full px-4">
+          <span className="truncate">{displayCtaLink}</span>
         </div>
         <button className="w-full mt-4 bg-white text-black font-bold text-[13px] py-2 rounded-full hover:bg-neutral-200 transition-colors">
           Subscribe
@@ -198,17 +215,21 @@ export function YouTubeMockup({ userName, userHandle, initials, headline, bio }:
 
 // ── Personal Site ─────────────────────────────────────────────────────────────
 
-export function PersonalSiteMockup({ userHandle, headline, bio }: Pick<MockupProps, 'userHandle' | 'headline' | 'bio'>) {
+export function PersonalSiteMockup({ userHandle, headline, bio, fieldValues = {} }: Pick<MockupProps, 'userHandle' | 'headline' | 'bio' | 'fieldValues'>) {
+  const displayHeadline = fieldValues.hero_headline || headline || '';
+  const displayBio = fieldValues.sub_headline || bio || 'Building predictable client acquisition pipelines.';
+  const displayDomain = fieldValues.domain_name || userHandle;
+
   return (
     <div className="h-full bg-neutral-950 text-white p-5 space-y-3 overflow-y-auto hide-scrollbar pb-10">
       <div className="bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-800 flex items-center justify-between text-[10px] text-neutral-400 font-mono">
-        <span>https://{userHandle}.com</span>
+        <span>https://{displayDomain}.com</span>
         <span className="text-emerald-400 font-bold">HTTPS</span>
       </div>
       <div className="text-center space-y-2 py-2">
-        <h3 className="text-sm font-bold text-white max-w-xs mx-auto">{headline}</h3>
+        <h3 className="text-sm font-bold text-white max-w-xs mx-auto">{displayHeadline}</h3>
         <p className="text-[10px] text-neutral-300 leading-relaxed max-w-xs mx-auto bg-neutral-900/60 p-2.5 rounded-xl border border-neutral-800">
-          {bio || 'Building predictable client acquisition pipelines.'}
+          {displayBio}
         </p>
       </div>
     </div>
@@ -217,7 +238,11 @@ export function PersonalSiteMockup({ userHandle, headline, bio }: Pick<MockupPro
 
 // ── Instagram ─────────────────────────────────────────────────────────────────
 
-export function InstagramMockup({ userName, userHandle, initials, headline, bio }: MockupProps) {
+export function InstagramMockup({ userName, userHandle, initials, headline, bio, fieldValues = {} }: MockupProps) {
+  const displayUserName = fieldValues.name_format || userName;
+  const displayBio = fieldValues.bio || headline || bio || 'Building predictable client acquisition pipelines.';
+  const displayCtaLink = fieldValues.link_cta || `linktr.ee/${userHandle || 'yourhandle'}`;
+
   return (
     <div className="h-full w-full bg-white flex flex-col font-sans text-black pb-10 overflow-y-auto hide-scrollbar">
       {/* Header */}
@@ -264,12 +289,12 @@ export function InstagramMockup({ userName, userHandle, initials, headline, bio 
           </div>
         </div>
         <div className="space-y-[1px] mt-1 pr-1">
-          <h2 className="font-semibold text-[11px] text-black">{userName}</h2>
+          <h2 className="font-semibold text-[11px] text-black">{displayUserName}</h2>
           <div className="text-neutral-500 text-[10px]">Entrepreneur</div>
-          <p className="whitespace-pre-wrap text-[10px] leading-[1.25] text-black">{headline || bio || 'Building predictable client acquisition pipelines.'}</p>
+          <p className="whitespace-pre-wrap text-[10px] leading-[1.25] text-black">{displayBio}</p>
           <div className="flex items-center gap-1 mt-1 text-[#00376b] font-semibold text-[10px]">
             <svg aria-label="Link icon" fill="currentColor" height="10" role="img" viewBox="0 0 24 24" width="10"><path d="M10.134 14.887a.75.75 0 0 1-1.06 1.06 6.012 6.012 0 0 1 0-8.502l3.414-3.414a6.013 6.013 0 0 1 8.502 8.502l-1.637 1.637a.75.75 0 1 1-1.06-1.06l1.637-1.637a4.512 4.512 0 1 0-6.381-6.381l-3.414 3.414a4.512 4.512 0 0 0 0 6.381Zm4.793-4.713a.75.75 0 0 1 1.06-1.06 6.012 6.012 0 0 1 0 8.502l-3.414 3.414a6.013 6.013 0 0 1-8.502-8.502l1.637-1.637a.75.75 0 1 1 1.06 1.06l-1.637 1.637a4.512 4.512 0 1 0 6.381 6.381l3.414-3.414a4.512 4.512 0 0 0 0-6.381Z"></path></svg>
-            <span>linktr.ee/{userHandle || 'yourhandle'}</span>
+            <span className="truncate max-w-[180px]">{displayCtaLink}</span>
           </div>
         </div>
       </div>
@@ -324,7 +349,10 @@ export function InstagramMockup({ userName, userHandle, initials, headline, bio 
 
 // ── Behance ───────────────────────────────────────────────────────────────────
 
-export function BehanceMockup({ userName, initials, headline, bio }: Omit<MockupProps, 'userHandle'>) {
+export function BehanceMockup({ userName, initials, headline, bio, fieldValues = {} }: Omit<MockupProps, 'userHandle'>) {
+  const displayHeadline = fieldValues.headline || headline || '';
+  const displayBio = fieldValues.bio || bio || 'Showcasing digital product design and scalable architectures.';
+  
   return (
     <div className="h-full bg-white text-black p-5 space-y-4 overflow-y-auto hide-scrollbar pb-10">
       <div className="flex justify-between items-center mb-2">
@@ -337,14 +365,14 @@ export function BehanceMockup({ userName, initials, headline, bio }: Omit<Mockup
         </div>
         <div>
           <h3 className="font-bold text-lg">{userName}</h3>
-          <p className="text-[11px] text-neutral-500 mt-1">{headline}</p>
+          <p className="text-[11px] text-neutral-500 mt-1 px-4">{displayHeadline}</p>
         </div>
         <button className="px-6 py-2 bg-blue-600 text-white font-bold text-[11px] rounded-full hover:bg-blue-700 transition-colors w-full max-w-[200px]">
           Follow
         </button>
       </div>
       <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 text-[11px] leading-relaxed text-neutral-700">
-        {bio || 'Showcasing digital product design and scalable architectures.'}
+        {displayBio}
       </div>
       <div className="pt-2">
         <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block mb-3">Projects</span>

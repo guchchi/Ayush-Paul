@@ -260,7 +260,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             userHandle: displayHandle,
             initials: initials,
             headline: currentHeadline,
-            bio: currentBio
+            bio: currentBio,
+            fieldValues: Object.fromEntries(activePlatformData.fields.map(f => [f.key, f.value]))
           })}
         </div>
 

@@ -80,8 +80,8 @@ export function composeStep1Content(ctx: UpstreamContext): Step1PersonalizedCont
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM4(ctx);
   const examples = composeExamples(pc.m1.serviceId, nicheRes?.metadata ?? null, 2, `${pc.m1.serviceId}_${pc.m1.marketId}`);
-  const buyerTerm = marketMod.label.toLowerCase();
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
 
   const recommendationRationale = `For ${buyerTerm} evaluating ${serviceLabel}, your portfolio should make it easy to judge your fit. ${marketMod.buyerQuestions[0]?.toLowerCase() ?? ''} ${examples.length > 0 ? `Consider starting with: ${examples[0]}` : ''}`;
 
@@ -119,8 +119,8 @@ export function composeStep2Content(ctx: UpstreamContext, platform: PlatformReco
   const pc = resolveM4PersonalizationContext(ctx);
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
-  const buyerTerm = marketMod.label.toLowerCase();
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
 
   const destinationHelper = `This destination fits your setup because ${buyerTerm} evaluating ${serviceLabel} need to ${profile.evidenceLanguage.slice(0, 1).join(' and ') || 'quickly assess your work'}. ${platform.primaryRecommendation} makes it easy to present ${profile.outputTerms.slice(0, 2).join(' and ')}.`;
 
@@ -171,7 +171,7 @@ export function composeStep3Content(ctx: UpstreamContext, placements: ProjectPla
   const pc = resolveM4PersonalizationContext(ctx);
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM4(ctx);
-  const buyerTerm = marketMod.label.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
 
   const featuredConcern = marketMod.concernThemes.slice(0, 2).join(' and ');
   const roleExplanations: Record<ProjectRole, string> = {
@@ -215,7 +215,7 @@ export function composeStep4Content(ctx: UpstreamContext, asset: UpstreamContext
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM4(ctx);
-  const buyerTerm = marketMod.label.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
   const examples = composeExamples(pc.m1.serviceId, nicheRes?.metadata ?? null, 3, `${pc.m1.serviceId}_${pc.m1.marketId}_${asset.id}`);
 
   const openingMediaHelper = `Lead with ${profile.outputTerms.slice(0, 1).join(' or ')} — this is what ${buyerTerm} need to see first to judge your ${profile.workNouns.slice(0, 1).join(', ')} quality.`;
@@ -274,8 +274,8 @@ export function composeStep5Content(ctx: UpstreamContext, direction: PortfolioDi
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM4(ctx);
-  const buyerTerm = marketMod.label.toLowerCase();
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
 
   const headlineHelper = `Your headline should quickly tell ${buyerTerm} you understand their ${marketMod.concernThemes.slice(0, 2).join(' and ')} needs and can deliver ${profile.workNouns.slice(0, 1).join(', ')} that addresses them.`;
 
@@ -339,8 +339,8 @@ export function composeStep6Content(ctx: UpstreamContext): Step6PersonalizedCont
   const profile = resolveServiceContentProfile(pc.m1.serviceId);
   const marketMod = resolveCanonicalMarketModifier(pc.m1.marketId ?? '');
   const nicheRes = resolveNicheForM4(ctx);
-  const buyerTerm = marketMod.label.toLowerCase();
-  const serviceLabel = pc.m1.serviceLabel.toLowerCase();
+  const buyerTerm = (marketMod.label || '').toLowerCase();
+  const serviceLabel = (pc.m1.serviceLabel || '').toLowerCase();
 
   const buildChecklistContexts: Record<string, string> = {
     'Set up portfolio platform': `Choose a platform where ${buyerTerm} expect to find ${profile.workNouns.slice(0, 1).join(', ')} portfolios. ${profile.commonOutputs.slice(0, 1).join(', ')} should be easy to view.`,
