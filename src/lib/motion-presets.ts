@@ -25,6 +25,10 @@ export const DURATION = {
   CHOREOGRAPHY: 1.2
 } as const;
 
+/**
+ * Reusable Framer Motion animation variants.
+ * Usage: <motion.div variants={VARIANTS.fadeUp} initial="initial" animate="animate" />
+ */
 export const VARIANTS = {
   fadeUp: {
     initial: { opacity: 0, y: 20, filter: "blur(8px)" },
@@ -62,5 +66,11 @@ export const VARIANTS = {
   lift: {
     whileHover: { y: -4, scale: 1.005 },
     transition: { duration: DURATION.FAST, ease: EASING.PREMIUM }
+  },
+  expand: {
+    initial: { height: 0, opacity: 0, overflow: "hidden" },
+    animate: { height: "auto", opacity: 1, overflow: "hidden" },
+    exit: { height: 0, opacity: 0, overflow: "hidden" },
+    transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM }
   }
 };
