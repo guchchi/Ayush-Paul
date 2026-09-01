@@ -303,297 +303,269 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   );
 
   return (
-    <div className="w-full space-y-5 text-left font-sans">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+      className="w-full text-left font-sans"
+    >
+      {/* ── Unified Studio Card ─────────────────────────────────────── */}
+      <div className="rounded-2xl border border-neutral-200/80 bg-white shadow-sm overflow-hidden">
 
-      {/* ── Unified Platform Toolbar ──────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="flex flex-col gap-3"
-      >
-        {/* Row 1: Platform Selector + Navigation + Progress + Tone */}
-        <div className="flex items-center gap-2">
-          {/* Prev Button */}
-          <button
-            onClick={handlePrevPlatform}
-            disabled={currentGlobalIndex <= 0}
-            className={cn(
-              'w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 transition-colors',
-              currentGlobalIndex <= 0
-                ? 'border-neutral-100 text-neutral-300 cursor-not-allowed'
-                : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 cursor-pointer'
-            )}
-            aria-label="Previous platform"
-          >
-            <ChevronLeft size={16} />
-          </button>
+        {/* ▬▬ Header Toolbar ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ */}
+        <div className="border-b border-neutral-100 bg-neutral-50/50">
+          {/* Row 1: Platform Selector + Nav + Tone + Actions */}
+          <div className="flex items-center gap-2 px-4 py-2.5">
 
-          {/* Platform Dropdown Selector */}
-          <div className="relative flex-1 min-w-0" ref={dropdownRef}>
+            {/* Prev */}
             <button
-              onClick={() => setIsPlatformDropdownOpen(!isPlatformDropdownOpen)}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-colors cursor-pointer group"
-            >
-              {/* Platform Icon */}
-              {currentPlatformMeta && (
-                <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0', currentPlatformMeta.brandColor)}>
-                  <currentPlatformMeta.icon className="w-3.5 h-3.5 text-white" />
-                </div>
+              onClick={handlePrevPlatform}
+              disabled={currentGlobalIndex <= 0}
+              className={cn(
+                'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-150',
+                currentGlobalIndex <= 0
+                  ? 'text-neutral-300 cursor-not-allowed'
+                  : 'text-neutral-500 hover:bg-white hover:text-neutral-900 hover:shadow-sm cursor-pointer'
               )}
-
-              {/* Platform Name + Status */}
-              <div className="flex-1 min-w-0 text-left">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold text-neutral-900 truncate">{platformLabel}</span>
-                  {!isViewingOptional && (
-                    <span className="text-[8px] font-black uppercase tracking-wider text-[#0058be] bg-blue-50 px-1.5 py-px rounded shrink-0">Core</span>
-                  )}
-                  {reviewedPlatforms.has(activeTab) && (
-                    <Check size={12} strokeWidth={3} className="text-emerald-500 shrink-0" />
-                  )}
-                </div>
-                <span className="text-[10px] text-neutral-400">
-                  {isViewingOptional ? 'Optional Channel' : `${currentPlatformIndex + 1} of ${primaryPlatforms.length} required`}
-                  {' · '}{reviewedPlatforms.size}/{primaryPlatforms.length} reviewed
-                </span>
-              </div>
-
-              {/* Chevron */}
-              <ChevronDown size={14} className={cn('text-neutral-400 transition-transform shrink-0', isPlatformDropdownOpen && 'rotate-180')} />
+              aria-label="Previous platform"
+            >
+              <ChevronLeft size={15} />
             </button>
 
-            {/* Dropdown Panel */}
-            <AnimatePresence>
-              {isPlatformDropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -4, scale: 0.98 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 max-h-[320px] overflow-y-auto"
-                >
-                  {/* Core Platforms Section */}
-                  <div className="px-3 pt-2.5 pb-1">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Core Platforms</span>
+            {/* Platform Dropdown */}
+            <div className="relative flex-1 min-w-0" ref={dropdownRef}>
+              <button
+                onClick={() => setIsPlatformDropdownOpen(!isPlatformDropdownOpen)}
+                className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-white hover:shadow-sm transition-all duration-150 cursor-pointer"
+              >
+                {currentPlatformMeta && (
+                  <div className={cn('w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0', currentPlatformMeta.brandColor)}>
+                    <currentPlatformMeta.icon className="w-3 h-3 text-white" />
                   </div>
-                  {primaryPlatforms.map(p => {
-                    const isReviewed = reviewedPlatforms.has(p.key);
-                    const isCurrent = activeTab === p.key;
-                    const Icon = p.icon;
-                    return (
+                )}
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-semibold text-neutral-900 truncate">{platformLabel}</span>
+                    {!isViewingOptional && (
+                      <span className="text-[7px] font-black uppercase tracking-wider text-[#0058be]/70 bg-blue-50 px-1 py-px rounded shrink-0">Core</span>
+                    )}
+                    {reviewedPlatforms.has(activeTab) && (
+                      <Check size={11} strokeWidth={3} className="text-emerald-500 shrink-0" />
+                    )}
+                  </div>
+                  <span className="text-[10px] text-neutral-400 leading-none">
+                    {isViewingOptional ? 'Optional' : `${currentPlatformIndex + 1}/${primaryPlatforms.length}`}
+                    {' · '}{reviewedPlatforms.size}/{primaryPlatforms.length} done
+                  </span>
+                </div>
+                <ChevronDown size={13} className={cn('text-neutral-400 transition-transform shrink-0', isPlatformDropdownOpen && 'rotate-180')} />
+              </button>
+
+              {/* Dropdown Panel */}
+              <AnimatePresence>
+                {isPlatformDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute top-full left-0 right-0 mt-1 bg-white border border-neutral-200 rounded-xl shadow-xl z-50 max-h-[320px] overflow-y-auto"
+                  >
+                    <div className="px-3 pt-2.5 pb-1">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Core Platforms</span>
+                    </div>
+                    {primaryPlatforms.map(p => {
+                      const isReviewed = reviewedPlatforms.has(p.key);
+                      const isCurrent = activeTab === p.key;
+                      const Icon = p.icon;
+                      return (
+                        <button
+                          key={p.key}
+                          onClick={() => { handleSelectPlatform(p.key); setIsPlatformDropdownOpen(false); }}
+                          className={cn(
+                            'w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors cursor-pointer',
+                            isCurrent ? 'bg-blue-50' : 'hover:bg-neutral-50'
+                          )}
+                        >
+                          <div className={cn('w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0', p.brandColor)}>
+                            <Icon className="w-3 h-3 text-white" />
+                          </div>
+                          <span className={cn('text-sm font-medium flex-1', isCurrent ? 'text-[#0058be] font-bold' : 'text-neutral-700')}>
+                            {p.name}
+                          </span>
+                          {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
+                          {isCurrent && !isReviewed && <div className="w-1.5 h-1.5 rounded-full bg-[#0058be] shrink-0" />}
+                        </button>
+                      );
+                    })}
+
+                    {secondaryPlatforms.length > 0 && (
+                      <>
+                        <div className="h-px bg-neutral-100 mx-3 my-1" />
+                        <div className="px-3 pt-1.5 pb-1">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Other Channels</span>
+                        </div>
+                        {secondaryPlatforms.map(p => {
+                          const isReviewed = reviewedPlatforms.has(p.key);
+                          const isCurrent = activeTab === p.key;
+                          const Icon = p.icon;
+                          return (
+                            <button
+                              key={p.key}
+                              onClick={() => { handleSelectPlatform(p.key); setIsPlatformDropdownOpen(false); }}
+                              className={cn(
+                                'w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors cursor-pointer',
+                                isCurrent ? 'bg-blue-50' : 'hover:bg-neutral-50'
+                              )}
+                            >
+                              <div className={cn('w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0', p.brandColor)}>
+                                <Icon className="w-3 h-3 text-white" />
+                              </div>
+                              <span className={cn('text-sm font-medium flex-1', isCurrent ? 'text-[#0058be] font-bold' : 'text-neutral-500')}>
+                                {p.name}
+                              </span>
+                              {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
+                            </button>
+                          );
+                        })}
+                      </>
+                    )}
+
+                    <div className="px-3 py-2 border-t border-neutral-100">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-bold text-neutral-500">{reviewedPlatforms.size}/{primaryPlatforms.length} core reviewed</span>
+                        <span className="text-[10px] font-bold text-[#0058be]">{Math.round((reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100)}%</span>
+                      </div>
+                      <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
+                          transition={{ duration: 0.5, ease: EASING.PREMIUM }}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Next */}
+            <button
+              onClick={handleNextPlatform}
+              disabled={currentGlobalIndex >= allPlatformsOrdered.length - 1}
+              className={cn(
+                'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-150',
+                currentGlobalIndex >= allPlatformsOrdered.length - 1
+                  ? 'text-neutral-300 cursor-not-allowed'
+                  : 'text-neutral-500 hover:bg-white hover:text-neutral-900 hover:shadow-sm cursor-pointer'
+              )}
+              aria-label="Next platform"
+            >
+              <ChevronRight size={15} />
+            </button>
+
+            {/* Separator */}
+            <div className="h-5 w-px bg-neutral-200/80 shrink-0 hidden sm:block" />
+
+            {/* Tone */}
+            <div className="relative hidden sm:block">
+              <button
+                onClick={() => setShowToneSelector(!showToneSelector)}
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg hover:bg-white hover:shadow-sm transition-all duration-150 cursor-pointer text-xs"
+              >
+                <span className="text-neutral-400 font-medium">Tone:</span>
+                <span className="font-semibold text-neutral-700">{TONES.find(t => t.key === activeTone)?.label || 'Professional'}</span>
+                <ChevronDown size={11} className={cn('text-neutral-400 transition-transform', showToneSelector && 'rotate-180')} />
+              </button>
+              <AnimatePresence>
+                {showToneSelector && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute top-full right-0 mt-1 bg-white border border-neutral-200 rounded-xl shadow-xl z-50 w-48 p-1"
+                  >
+                    {TONES.map(tone => (
                       <button
-                        key={p.key}
-                        onClick={() => { handleSelectPlatform(p.key); setIsPlatformDropdownOpen(false); }}
+                        key={tone.key}
+                        onClick={() => { onToneChange(tone.key); setShowToneSelector(false); }}
                         className={cn(
-                          'w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors cursor-pointer',
-                          isCurrent ? 'bg-blue-50' : 'hover:bg-neutral-50'
+                          'w-full flex flex-col px-3 py-2 rounded-lg text-left transition-colors cursor-pointer',
+                          activeTone === tone.key ? 'bg-blue-50 text-[#0058be]' : 'text-neutral-700 hover:bg-neutral-50'
                         )}
                       >
-                        <div className={cn('w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0', p.brandColor)}>
-                          <Icon className="w-3 h-3 text-white" />
-                        </div>
-                        <span className={cn('text-sm font-medium flex-1', isCurrent ? 'text-[#0058be] font-bold' : 'text-neutral-700')}>
-                          {p.name}
-                        </span>
-                        {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
-                        {isCurrent && !isReviewed && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#0058be] shrink-0" />
-                        )}
+                        <span className="text-xs font-semibold">{tone.label}</span>
+                        <span className={cn('text-[10px]', activeTone === tone.key ? 'text-blue-400' : 'text-neutral-400')}>{tone.desc}</span>
                       </button>
-                    );
-                  })}
-
-                  {/* Optional Platforms Section */}
-                  {secondaryPlatforms.length > 0 && (
-                    <>
-                      <div className="h-px bg-neutral-100 mx-3 my-1" />
-                      <div className="px-3 pt-1.5 pb-1">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Other Channels</span>
-                      </div>
-                      {secondaryPlatforms.map(p => {
-                        const isReviewed = reviewedPlatforms.has(p.key);
-                        const isCurrent = activeTab === p.key;
-                        const Icon = p.icon;
-                        return (
-                          <button
-                            key={p.key}
-                            onClick={() => { handleSelectPlatform(p.key); setIsPlatformDropdownOpen(false); }}
-                            className={cn(
-                              'w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors cursor-pointer',
-                              isCurrent ? 'bg-blue-50' : 'hover:bg-neutral-50'
-                            )}
-                          >
-                            <div className={cn('w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0', p.brandColor)}>
-                              <Icon className="w-3 h-3 text-white" />
-                            </div>
-                            <span className={cn('text-sm font-medium flex-1', isCurrent ? 'text-[#0058be] font-bold' : 'text-neutral-500')}>
-                              {p.name}
-                            </span>
-                            {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
-                          </button>
-                        );
-                      })}
-                    </>
-                  )}
-
-                  {/* Progress Footer */}
-                  <div className="px-3 py-2 border-t border-neutral-100">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] font-bold text-neutral-500">{reviewedPlatforms.size} of {primaryPlatforms.length} core reviewed</span>
-                      <span className="text-[10px] font-bold text-[#0058be]">{Math.round((reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100)}%</span>
-                    </div>
-                    <div className="h-1 bg-neutral-100 rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
-                        transition={{ duration: 0.5, ease: EASING.PREMIUM }}
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Next Button */}
-          <button
-            onClick={handleNextPlatform}
-            disabled={currentGlobalIndex >= allPlatformsOrdered.length - 1}
-            className={cn(
-              'w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 transition-colors',
-              currentGlobalIndex >= allPlatformsOrdered.length - 1
-                ? 'border-neutral-100 text-neutral-300 cursor-not-allowed'
-                : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 cursor-pointer'
-            )}
-            aria-label="Next platform"
-          >
-            <ChevronRight size={16} />
-          </button>
-
-          {/* Thin divider */}
-          <div className="h-6 w-px bg-neutral-200 shrink-0 hidden sm:block" />
-
-          {/* Tone Selector (compact inline) */}
-          <div className="relative hidden sm:block">
-            <button
-              onClick={() => setShowToneSelector(!showToneSelector)}
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-50 transition-colors cursor-pointer text-xs"
-            >
-              <span className="text-neutral-400 font-medium">Tone:</span>
-              <span className="font-bold text-[#0058be]">{TONES.find(t => t.key === activeTone)?.label || 'Professional'}</span>
-              <ChevronDown size={12} className={cn('text-neutral-400 transition-transform', showToneSelector && 'rotate-180')} />
-            </button>
-
-            <AnimatePresence>
-              {showToneSelector && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full right-0 mt-1.5 bg-white border border-neutral-200 rounded-xl shadow-lg z-50 w-52 p-1.5"
-                >
-                  {TONES.map(tone => (
-                    <button
-                      key={tone.key}
-                      onClick={() => { onToneChange(tone.key); setShowToneSelector(false); }}
-                      className={cn(
-                        'w-full flex flex-col px-3 py-2 rounded-lg text-left transition-colors cursor-pointer',
-                        activeTone === tone.key
-                          ? 'bg-blue-50 text-[#0058be]'
-                          : 'text-neutral-700 hover:bg-neutral-50'
-                      )}
-                    >
-                      <span className="text-xs font-bold">{tone.label}</span>
-                      <span className={cn('text-[10px]', activeTone === tone.key ? 'text-blue-400' : 'text-neutral-400')}>
-                        {tone.desc}
-                      </span>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Deep link */}
-          {deepLink && deepLink !== '#' && (
-            <a
-              href={deepLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-lg border border-neutral-200 flex items-center justify-center text-neutral-500 hover:bg-neutral-50 hover:text-[#0058be] transition-colors shrink-0"
-              title={`Open ${platformLabel} profile`}
-            >
-              <ExternalLink size={14} />
-            </a>
-          )}
-
-          {/* Role badge (sm+ only) */}
-          {roleLabel && (
-            <span className="hidden lg:inline text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100 shrink-0">
-              {roleLabel}
-            </span>
-          )}
-        </div>
-
-        {/* Mobile-only Tone Row */}
-        <div className="sm:hidden">
-          <button
-            onClick={() => setShowToneSelector(!showToneSelector)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl border border-neutral-200 bg-white cursor-pointer text-xs"
-          >
-            <div className="flex items-center gap-1.5">
-              <span className="text-neutral-400 font-medium">Copy Tone:</span>
-              <span className="font-bold text-[#0058be]">{TONES.find(t => t.key === activeTone)?.label || 'Professional'}</span>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <ChevronDown size={12} className={cn('text-neutral-400 transition-transform', showToneSelector && 'rotate-180')} />
-          </button>
+
+            {/* Deep link */}
+            {deepLink && deepLink !== '#' && (
+              <a
+                href={deepLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-neutral-400 hover:bg-white hover:text-[#0058be] hover:shadow-sm transition-all duration-150 shrink-0"
+                title={`Open ${platformLabel} profile`}
+              >
+                <ExternalLink size={13} />
+              </a>
+            )}
+
+            {/* Role badge */}
+            {roleLabel && (
+              <span className="hidden lg:inline text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full shrink-0">
+                {roleLabel}
+              </span>
+            )}
+          </div>
+
+          {/* Progress strip — bottom edge of header */}
+          <div className="h-[2px] bg-neutral-100">
+            <motion.div
+              className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500"
+              initial={{ width: 0 }}
+              animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
+              transition={{ duration: 0.5, ease: EASING.PREMIUM }}
+            />
+          </div>
         </div>
 
-        {/* Thin progress strip */}
-        <div className="h-[2px] bg-neutral-100 rounded-full overflow-hidden">
+        {/* ▬▬ Content Area ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ */}
+        <AnimatePresence mode="wait">
           <motion.div
-            className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
-            transition={{ duration: 0.5, ease: EASING.PREMIUM }}
-          />
-        </div>
-      </motion.div>
+            key={activeTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="p-5 space-y-4"
+          >
+            {/* Consistency Badge */}
+            <ConsistencyAuditBadge
+              profileSystem={profileSystem}
+              onAlignAll={handleHarmonizeAll}
+            />
 
-      {/* ── Editor Content ──────────────────────────────────────────── */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
-          className="space-y-4"
-        >
+            {/* Split: Editor + Mockup */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-          {/* Cross-Platform Consistency Diagnostic */}
-          <ConsistencyAuditBadge
-            profileSystem={profileSystem}
-            onAlignAll={handleHarmonizeAll}
-          />
-
-          {/* ── Split: Editor (Left Scroll) + Mockup (Right Sticky) ──── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            
-            {/* Left: Copy Editor & Verification Checklist */}
-            <div className="lg:col-span-7 space-y-3.5 max-h-[580px] overflow-y-auto pr-2 pb-4">
-              {/* Field cards header */}
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-                  Editable Fields — {activePlatformData.fields.length} items
-                </span>
-                <span className="text-[10px] font-bold text-neutral-500">
-                  Click edit or use one-click formulas below
-                </span>
-              </div>
+              {/* Left: Copy Editor */}
+              <div className="lg:col-span-7 space-y-3 max-h-[580px] overflow-y-auto pr-1 pb-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
+                    Editable Fields — {activePlatformData.fields.length} items
+                  </span>
+                  <span className="text-[10px] font-bold text-neutral-500">
+                    Click edit or use one-click formulas below
+                  </span>
+                </div>
 
               {activePlatformData.fields.map(field => {
                 const isEditing = editingField === field.key;
@@ -766,14 +738,14 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     onClick={() => { setCurrentPlatformIndex(currentPlatformIndex + 1); setEditingField(null); }}
                     className="flex items-center gap-2 px-5 py-2.5 bg-[#0058be] hover:bg-[#0048a0] text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                   >
-                    Next Platform â†’
+                    Next Platform →
                   </button>
                 ) : isViewingOptional ? (
                   <button
                     onClick={() => { setViewingOptionalPlatform(null); setEditingField(null); }}
                     className="px-4 py-2 text-xs font-bold text-[#0058be] hover:underline cursor-pointer"
                   >
-                    â† Back to Primary
+                    ← Back to Primary
                   </button>
                 ) : null}
               </div>
@@ -787,72 +759,72 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             </div>
           </div>
         </motion.div>
-      </AnimatePresence>
-
-      {/* â”€â”€ Bottom: Continue CTA (Gated) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <div className="pt-4 border-t border-neutral-200/60">
-        {allPrimaryReviewed ? (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4"
-          >
-            {/* Success banner */}
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                <CheckCircle2 size={16} className="text-emerald-600" />
+        </AnimatePresence>
+        {/* ▬▬ Footer: CTA ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬ */}
+        <div className="px-5 py-4 border-t border-neutral-100 bg-neutral-50/30">
+          {allPrimaryReviewed ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200/60">
+                <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                  <CheckCircle2 size={14} className="text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold text-emerald-900">All {primaryPlatforms.length} Platforms Reviewed</p>
+                  <p className="text-[10px] text-emerald-700/80">Ready for the consistency check.</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold text-emerald-900">All {primaryPlatforms.length} Primary Platforms Reviewed</p>
-                <p className="text-[11px] text-emerald-700">Your profile copy is ready for the consistency check.</p>
-              </div>
-            </div>
 
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {onBack && (
+                    <button onClick={onBack} className="text-xs font-semibold text-neutral-500 hover:text-neutral-900 cursor-pointer">
+                      ← Back
+                    </button>
+                  )}
+                  <button
+                    onClick={handleExportAll}
+                    className="px-3.5 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    {copiedField === 'export_all' ? <CheckCircle2 size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                    {copiedField === 'export_all' ? 'Copied!' : 'Export All'}
+                  </button>
+                </div>
+                <ModuleButton variant="primary" onClick={onContinue}>
+                  Run Consistency Check →
+                </ModuleButton>
+              </div>
+            </motion.div>
+          ) : (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {onBack && (
-                  <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                    â† Back
+                  <button onClick={onBack} className="text-xs font-semibold text-neutral-500 hover:text-neutral-900 cursor-pointer">
+                    ← Back
                   </button>
                 )}
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] text-neutral-400 font-medium">
+                  Review all {primaryPlatforms.length} platforms to continue
+                </span>
                 <button
-                  onClick={handleExportAll}
-                  className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md cursor-pointer"
+                  disabled
+                  className="px-4 py-2 bg-neutral-200 text-neutral-400 text-xs font-semibold rounded-lg cursor-not-allowed"
                 >
-                  {copiedField === 'export_all' ? <CheckCircle2 size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                  {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios'}
+                  Consistency Check →
                 </button>
               </div>
-              <ModuleButton variant="primary" onClick={onContinue}>
-                Run Consistency Check â†’
-              </ModuleButton>
             </div>
-          </motion.div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {onBack && (
-                <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                  Ã¢â€ Â Back
-                </button>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-neutral-400 font-medium">
-                Review all {primaryPlatforms.length} platforms to continue
-              </span>
-              <button
-                disabled
-                className="px-5 py-2.5 bg-neutral-200 text-neutral-400 text-xs font-bold rounded-xl cursor-not-allowed"
-              >
-                Run Consistency Check â†’
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
+
       </div>
-    </div>
+    </motion.div>
   );
 });
 
