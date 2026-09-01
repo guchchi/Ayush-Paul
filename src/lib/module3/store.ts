@@ -39,6 +39,7 @@ import { generateProfilePortfolioStrategy as mockGenerate } from '../../data/mod
 import { calculateBlueprintConfidence } from './confidence-engine';
 import { Step3PromptContext } from '../../services/ai/prompts/module3/step3-prompt';
 import { Module4BridgeAdapter } from './module4-bridge';
+import { applyToneToSuite } from './tone-engine';
 
 export { canNavigateTo, getStepIndex, MODULE3_STEPS };
 
@@ -883,17 +884,36 @@ export const useModule3Store = create<Module3State>()(
       },
 
       setStage1Identity(identityData: Partial<Stage1IdentityData>) {
-        set((state) => ({
-          stage1Identity: {
-            userName: state.stage1Identity?.userName ?? '',
-            userHandle: state.stage1Identity?.userHandle ?? '',
-            positioningHeadline: state.stage1Identity?.positioningHeadline ?? '',
-            proofLine: state.stage1Identity?.proofLine ?? '',
-            activeTone: state.stage1Identity?.activeTone ?? 'executive',
-            ...identityData,
-          },
-          lastUpdated: Date.now(),
-        }));
+        set((state) => {
+          const nextActiveTone = identityData.activeTone ?? state.stage1Identity?.activeTone ?? 'executive';
+          const hasToneChanged = state.stage1Identity?.activeTone !== nextActiveTone;
+          
+          let nextAuthoritySuite = state.authoritySuite;
+          if (hasToneChanged && nextAuthoritySuite && identityData.activeTone) {
+            nextAuthoritySuite = applyToneToSuite(nextAuthoritySuite, nextActiveTone, {
+              market: (state.mod1MarketId || '').replace(/_/g, ' ') || 'clients',
+              service: (state.mod1ServiceId || '').replace(/_/g, ' ') || 'systems',
+              mechanism: state.mod2UniqueMechanism?.trim() || 'our proven methodology',
+              promise: state.mod2ProposalSummary?.solution || 'delivering predictable results',
+              positioning: state.mod1Positioning?.trim() || 'Specialist',
+              primaryProofTitle: null, // Default fallback
+              proofTitles: []
+            });
+          }
+
+          return {
+            stage1Identity: {
+              userName: state.stage1Identity?.userName ?? '',
+              userHandle: state.stage1Identity?.userHandle ?? '',
+              positioningHeadline: state.stage1Identity?.positioningHeadline ?? '',
+              proofLine: state.stage1Identity?.proofLine ?? '',
+              activeTone: nextActiveTone,
+              ...identityData,
+            },
+            authoritySuite: nextAuthoritySuite,
+            lastUpdated: Date.now(),
+          };
+        });
       },
 
       setIsCompleted(value: boolean) {

@@ -560,158 +560,175 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             
             {/* Left: Copy Editor & Verification Checklist */}
-            <div className="lg:col-span-7 space-y-3.5 max-h-[580px] overflow-y-auto pr-2 pb-4">
-              {/* Field cards header */}
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-                  Editable Fields — {activePlatformData.fields.length} items
-                </span>
+            <div className="lg:col-span-7 flex flex-col h-[600px] bg-white border border-neutral-200/80 rounded-2xl shadow-sm overflow-hidden relative">
+              {/* Properties Header */}
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100 bg-neutral-50/50 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0058be]" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-neutral-800">
+                    Platform Content
+                  </span>
+                </div>
                 <span className="text-[10px] font-bold text-neutral-500">
-                  Click edit or use one-click formulas below
+                  {activePlatformData.fields.length} Editable Areas
                 </span>
               </div>
 
-              {activePlatformData.fields.map(field => {
-                const isEditing = editingField === field.key;
-                const charLimitKey = `${activeTab}_${field.key}`;
-                const charLimit = CHAR_LIMITS[charLimitKey];
+              {/* Scrollable Fields Area */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="flex flex-col divide-y divide-neutral-100">
+                  {activePlatformData.fields.map(field => {
+                    const isEditing = editingField === field.key;
+                    const charLimitKey = `${activeTab}_${field.key}`;
+                    const charLimit = CHAR_LIMITS[charLimitKey];
 
-                return (
-                  <div
-                    key={field.key}
-                    className={cn(
-                      'p-4 rounded-2xl border bg-white shadow-xs space-y-2.5 transition-all',
-                      isEditing ? 'border-[#0058be]/40 ring-1 ring-[#0058be]/10' : 'border-neutral-200 hover:border-neutral-300'
-                    )}
-                  >
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-bold text-[#0b1c30]">{field.label}</h4>
-                      <div className="flex items-center gap-1.5">
-                        {charLimit && (() => {
-                          const len = field.value.length;
-                          const ratio = len / charLimit;
-                          const statusClass = 
-                            len > charLimit ? 'text-red-700 bg-red-50 border-red-200' :
-                            ratio > 0.85 ? 'text-amber-700 bg-amber-50 border-amber-200' :
-                            'text-emerald-700 bg-emerald-50 border-emerald-200';
-                          
-                          return (
-                            <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', statusClass)}>
-                              {len}/{charLimit}
-                            </span>
-                          );
-                        })()}
-                        <button
-                          onClick={() => handleCopy(field.key, field.value)}
-                          className="p-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg transition-all cursor-pointer border border-neutral-200"
-                          title="Copy"
-                        >
-                          {copiedField === field.key ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
-                        </button>
-                        {!isEditing && (
-                          <button
-                            onClick={() => handleEditStart(field.key, field.value)}
-                            className="p-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg transition-all cursor-pointer border border-neutral-200"
-                            title="Edit"
-                          >
-                            <Pencil size={12} />
-                          </button>
+                    return (
+                      <div
+                        key={field.key}
+                        className={cn(
+                          'p-5 transition-all group relative',
+                          isEditing ? 'bg-blue-50/30' : 'hover:bg-neutral-50/30'
                         )}
-                      </div>
-                    </div>
+                      >
+                        <div className="flex items-start justify-between gap-6">
+                          {/* Label & Character limit */}
+                          <div className="w-1/3 shrink-0 pt-0.5">
+                            <h4 className="text-xs font-extrabold text-neutral-800">{field.label}</h4>
+                            {charLimit && (() => {
+                              const len = field.value.length;
+                              const ratio = len / charLimit;
+                              const statusClass = 
+                                len > charLimit ? 'text-red-600' :
+                                ratio > 0.85 ? 'text-amber-600' :
+                                'text-neutral-400';
+                              
+                              return (
+                                <span className={cn('text-[10px] font-semibold mt-1.5 block', statusClass)}>
+                                  {len} <span className="text-neutral-300 font-normal">/ {charLimit}</span>
+                                </span>
+                              );
+                            })()}
+                          </div>
 
-                    {isEditing ? (
-                      <div className="space-y-2">
-                        {/* Inline formula toolbar */}
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mr-1">Formula:</span>
-                          {COPY_FORMULAS.map(formula => (
-                            <button
-                              key={formula.id}
-                              onClick={() => handleApplyFormula(field.key, formula.id)}
-                              className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-200 transition-all cursor-pointer"
-                              title={formula.description}
-                            >
-                              <Rocket size={9} className="inline mr-1" />
-                              {formula.label}
-                            </button>
-                          ))}
+                          {/* Content / Editor */}
+                          <div className="flex-1 min-w-0">
+                            {isEditing ? (
+                              <div className="space-y-3">
+                                <textarea
+                                  value={editValue}
+                                  onChange={(e) => setEditValue(e.target.value)}
+                                  className="w-full text-xs text-neutral-800 bg-white border border-blue-200/80 rounded-xl p-3 min-h-[100px] focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 resize-y leading-relaxed shadow-sm transition-all"
+                                />
+                                
+                                {/* Inline formula toolbar */}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  {COPY_FORMULAS.map(formula => (
+                                    <button
+                                      key={formula.id}
+                                      onClick={() => handleApplyFormula(field.key, formula.id)}
+                                      className="px-2.5 py-1.5 bg-white hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 text-[10px] font-bold rounded-lg border border-neutral-200 transition-all cursor-pointer shadow-xs flex items-center"
+                                      title={formula.description}
+                                    >
+                                      <Rocket size={10} className="inline mr-1.5 text-[#0058be]" />
+                                      {formula.label}
+                                    </button>
+                                  ))}
+                                </div>
+
+                                <div className="flex items-center gap-2 justify-end pt-2">
+                                  <button
+                                    onClick={() => setEditingField(null)}
+                                    className="px-3 py-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    onClick={() => handleEditSave(field.key)}
+                                    className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl transition-all cursor-pointer shadow-sm"
+                                  >
+                                    <CheckCircle2 size={12} />
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="group/content relative">
+                                <div className="text-xs text-neutral-600 leading-relaxed whitespace-pre-wrap pr-10">
+                                  {field.value}
+                                </div>
+                                <div className="absolute top-0 right-0 opacity-0 group-hover/content:opacity-100 transition-opacity flex items-center gap-1">
+                                  <button
+                                    onClick={() => handleCopy(field.key, field.value)}
+                                    className="p-1.5 bg-white shadow-xs hover:shadow-sm text-neutral-500 hover:text-neutral-900 rounded-lg transition-all cursor-pointer border border-neutral-200/60"
+                                    title="Copy"
+                                  >
+                                    {copiedField === field.key ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                                  </button>
+                                  <button
+                                    onClick={() => handleEditStart(field.key, field.value)}
+                                    className="p-1.5 bg-white shadow-xs hover:shadow-sm text-neutral-500 hover:text-[#0058be] rounded-lg transition-all cursor-pointer border border-neutral-200/60"
+                                    title="Edit"
+                                  >
+                                    <Pencil size={12} />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <textarea
-                          value={editValue}
-                          onChange={(e) => setEditValue(e.target.value)}
-                          className="w-full text-xs text-[#0b1c30] bg-neutral-50 border border-neutral-300 rounded-xl p-3 min-h-[80px] focus:outline-none focus:ring-2 focus:ring-[#0058be]/20 focus:bg-white resize-y font-sans leading-relaxed"
-                        />
-                        <div className="flex items-center gap-2 justify-end">
-                          <button
-                            onClick={() => setEditingField(null)}
-                            className="px-3 py-1.5 text-xs font-bold text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => handleEditSave(field.key)}
-                            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                          >
-                            <CheckCircle2 size={12} />
-                            Save & Sync
-                          </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Micro-Audit Checklist */}
+                <div className="mt-2 mb-6 px-5">
+                  {(() => {
+                    const checklist = getChecklistForPlatform(activeTab);
+                    const completedCount = checklist.filter(item => checkedSteps[item.id]).length;
+                    return (
+                      <div className="p-5 rounded-2xl border border-neutral-200/80 bg-neutral-50/30">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-800 flex items-center gap-2">
+                            <CheckSquare size={13} className="text-emerald-500" />
+                            {platformLabel} Launch Checklist
+                          </h4>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-neutral-200 text-neutral-600 shadow-xs">
+                            {completedCount}/{checklist.length} Done
+                          </span>
+                        </div>
+                        <div className="space-y-1.5">
+                          {checklist.map((item) => {
+                            const isChecked = !!checkedSteps[item.id];
+                            return (
+                              <label key={item.id} className="flex items-start gap-3 cursor-pointer group hover:bg-white p-2 rounded-xl transition-colors border border-transparent hover:border-neutral-200/60 hover:shadow-xs">
+                                <div className={cn(
+                                  "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
+                                  isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
+                                )}>
+                                  {isChecked && <Check size={10} className="text-white" />}
+                                </div>
+                                <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(item.id)} />
+                                <div className="flex-1 flex items-center justify-between gap-3">
+                                  <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
+                                    {item.label}
+                                  </span>
+                                  <span className="text-[9px] uppercase font-bold text-neutral-400 shrink-0 bg-neutral-100 px-1.5 py-0.5 rounded-md">
+                                    {item.category}
+                                  </span>
+                                </div>
+                              </label>
+                            );
+                          })}
                         </div>
                       </div>
-                    ) : (
-                      <div className="text-xs text-neutral-700 bg-neutral-50 p-3 rounded-xl border border-neutral-200/80 leading-relaxed whitespace-pre-wrap">
-                        {field.value}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                    );
+                  })()}
+                </div>
+              </div>
 
-              {/* Micro-Audit Checklist */}
-              {(() => {
-                const checklist = getChecklistForPlatform(activeTab);
-                const completedCount = checklist.filter(item => checkedSteps[item.id]).length;
-                return (
-                  <div className="p-4 rounded-2xl border border-neutral-200 bg-white shadow-xs">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-500 flex items-center gap-2">
-                        <CheckSquare size={13} className="text-emerald-500" />
-                        {platformLabel} Launch Checklist
-                      </h4>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600">
-                        {completedCount}/{checklist.length} Done
-                      </span>
-                    </div>
-                    <div className="space-y-1.5">
-                      {checklist.map((item) => {
-                        const isChecked = !!checkedSteps[item.id];
-                        return (
-                          <label key={item.id} className="flex items-start gap-2.5 cursor-pointer group hover:bg-neutral-50 p-1.5 rounded-lg transition-colors">
-                            <div className={cn(
-                              "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
-                              isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
-                            )}>
-                              {isChecked && <Check size={10} className="text-white" />}
-                            </div>
-                            <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(item.id)} />
-                            <div className="flex-1 flex items-center justify-between gap-2">
-                              <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
-                                {item.label}
-                              </span>
-                              <span className="text-[9px] uppercase font-bold text-neutral-400 shrink-0">
-                                {item.category}
-                              </span>
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Mark as Reviewed + Nav */}
-              <div className="flex items-center justify-between pt-2">
+              {/* Mark as Reviewed + Nav (Footer) */}
+              <div className="px-5 py-3.5 border-t border-neutral-100 bg-neutral-50/80 shrink-0 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {(currentPlatformIndex > 0 || isViewingOptional) && (
                     <button
@@ -725,14 +742,14 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                       }}
                       className="px-3 py-2 text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer transition-colors"
                     >
-                      â† Previous
+                      ← Previous
                     </button>
                   )}
                 </div>
                 {!reviewedPlatforms.has(activeTab) ? (
                   <button
                     onClick={handleMarkReviewed}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm hover:shadow-md"
                   >
                     <CheckCircle2 size={14} />
                     Mark {platformLabel} as Reviewed
@@ -742,7 +759,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     onClick={() => { setCurrentPlatformIndex(currentPlatformIndex + 1); setEditingField(null); }}
                     className="flex items-center gap-2 px-5 py-2.5 bg-[#0058be] hover:bg-[#0048a0] text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                   >
-                    Next Platform â†’
+                    Next Platform →
                   </button>
                 ) : isViewingOptional ? (
                   <button
