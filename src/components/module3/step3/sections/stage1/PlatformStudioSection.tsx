@@ -279,97 +279,101 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3.5"
+        className="space-y-4"
       >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Platform Channels</span>
-            <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-              {reviewedPlatforms.size} of {primaryPlatforms.length} required reviewed
-            </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
+              Platform Channels
+              <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                {reviewedPlatforms.size} of {primaryPlatforms.length} required reviewed
+              </span>
+            </h3>
           </div>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-            {roleLabel}
-          </span>
-        </div>
-
-        {/* Combined Platforms: Recommended First, then Other Channels (Tab Layout) */}
-        <div className="flex items-center gap-4 border-b border-neutral-200/80 w-full overflow-x-auto hide-scrollbar">
-          {/* Primary / Recommended Platforms */}
-          {primaryPlatforms.map((p) => {
-            const isReviewed = reviewedPlatforms.has(p.key);
-            const isCurrent = activeTab === p.key;
-            const Icon = p.icon;
-            return (
-              <button
-                key={p.key}
-                onClick={() => handleSelectPlatform(p.key)}
-                className={cn(
-                  'flex items-center gap-2 pb-2.5 pt-1 px-1 border-b-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap',
-                  isCurrent
-                    ? 'text-[#0058be] border-[#0058be]'
-                    : isReviewed
-                    ? 'text-emerald-600 border-transparent hover:text-emerald-700'
-                    : 'text-neutral-500 border-transparent hover:text-neutral-800 hover:border-neutral-300'
-                )}
-              >
-                {isReviewed ? (
-                  <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />
-                ) : (
-                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-[#0058be]' : 'text-neutral-400')}>
-                    <Icon className="w-4 h-4" />
-                  </span>
-                )}
-                <span>{p.name}</span>
-                <span className={cn(
-                  "text-[8px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider ml-1",
-                  isCurrent ? "bg-blue-50 text-[#0058be] border border-blue-100" : "bg-neutral-100 text-neutral-500"
-                )}>
-                  Core
-                </span>
-              </button>
-            );
-          })}
-
-          {/* Divider between Recommended and Other platforms */}
-          {secondaryPlatforms.length > 0 && (
-            <div className="h-5 w-[1px] bg-neutral-200 mx-2 hidden sm:block" />
+          {roleLabel && (
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+              {roleLabel}
+            </span>
           )}
-
-          {/* Secondary / Other Platforms */}
-          {secondaryPlatforms.map(p => {
-            const isReviewed = reviewedPlatforms.has(p.key);
-            const isCurrent = activeTab === p.key;
-            const Icon = p.icon;
-            return (
-              <button
-                key={p.key}
-                onClick={() => handleSelectPlatform(p.key)}
-                className={cn(
-                  'flex items-center gap-1.5 pb-2.5 pt-1 px-1 border-b-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap',
-                  isCurrent
-                    ? 'text-[#0058be] border-[#0058be]'
-                    : isReviewed
-                    ? 'text-emerald-600 border-transparent hover:text-emerald-700'
-                    : 'text-neutral-400 border-transparent hover:text-neutral-600 hover:border-neutral-200'
-                )}
-              >
-                {isReviewed ? (
-                  <Check size={13} strokeWidth={3} className="text-emerald-500 shrink-0" />
-                ) : (
-                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-[#0058be]' : 'text-neutral-300')}>
-                    <Icon className="w-4 h-4" />
-                  </span>
-                )}
-                <span>{p.name}</span>
-              </button>
-            );
-          })}
         </div>
 
-        {/* Progress bar */}
-        <div className="pt-2">
-          <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+        {/* Combined Platforms: Tabs with pill design */}
+        <div className="w-full relative">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {/* Primary / Recommended Platforms */}
+            {primaryPlatforms.map((p) => {
+              const isReviewed = reviewedPlatforms.has(p.key);
+              const isCurrent = activeTab === p.key;
+              const Icon = p.icon;
+              return (
+                <button
+                  key={p.key}
+                  onClick={() => handleSelectPlatform(p.key)}
+                  className={cn(
+                    'relative flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all duration-200 shrink-0 border cursor-pointer group',
+                    isCurrent
+                      ? 'bg-white text-[#0058be] border-neutral-200 shadow-sm ring-1 ring-neutral-200/50'
+                      : isReviewed
+                      ? 'bg-neutral-50 text-neutral-600 border-transparent hover:bg-neutral-100 hover:text-neutral-900'
+                      : 'bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 hover:text-neutral-800'
+                  )}
+                >
+                  {isReviewed ? (
+                    <Check size={14} strokeWidth={3} className={cn("shrink-0", isCurrent ? "text-[#0058be]" : "text-emerald-500 group-hover:text-emerald-600")} />
+                  ) : (
+                    <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-[#0058be]' : 'text-neutral-400 group-hover:text-neutral-500')}>
+                      <Icon className="w-4 h-4" />
+                    </span>
+                  )}
+                  <span>{p.name}</span>
+                  
+                  {/* Subtle indicator for core platforms instead of giant badge */}
+                  <div className={cn(
+                    "w-1.5 h-1.5 rounded-full ml-0.5", 
+                    isCurrent ? "bg-blue-400" : isReviewed ? "bg-emerald-400" : "bg-neutral-300"
+                  )} title="Core Platform" />
+                </button>
+              );
+            })}
+
+            {/* Divider between Recommended and Other platforms */}
+            {secondaryPlatforms.length > 0 && (
+              <div className="h-5 w-[1px] bg-neutral-200 mx-1 shrink-0 hidden sm:block" />
+            )}
+
+            {/* Secondary / Other Platforms */}
+            {secondaryPlatforms.map(p => {
+              const isReviewed = reviewedPlatforms.has(p.key);
+              const isCurrent = activeTab === p.key;
+              const Icon = p.icon;
+              return (
+                <button
+                  key={p.key}
+                  onClick={() => handleSelectPlatform(p.key)}
+                  className={cn(
+                    'relative flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-xl whitespace-nowrap transition-all duration-200 shrink-0 border cursor-pointer group',
+                    isCurrent
+                      ? 'bg-white text-neutral-900 border-neutral-200 shadow-sm ring-1 ring-neutral-200/50'
+                      : isReviewed
+                      ? 'bg-neutral-50 text-neutral-600 border-transparent hover:bg-neutral-100 hover:text-neutral-900'
+                      : 'bg-transparent text-neutral-500 border-transparent hover:bg-neutral-50 hover:text-neutral-800'
+                  )}
+                >
+                  {isReviewed ? (
+                    <Check size={14} strokeWidth={3} className={cn("shrink-0", isCurrent ? "text-neutral-900" : "text-emerald-500 group-hover:text-emerald-600")} />
+                  ) : (
+                    <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-neutral-900' : 'text-neutral-400 group-hover:text-neutral-500')}>
+                      <Icon className="w-4 h-4" />
+                    </span>
+                  )}
+                  <span>{p.name}</span>
+                </button>
+              );
+            })}
+          </div>
+          
+          {/* Progress bar mapped to the bottom of the tabs container */}
+          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-neutral-100 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
               initial={{ width: 0 }}
