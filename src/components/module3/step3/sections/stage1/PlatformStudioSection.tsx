@@ -62,9 +62,9 @@ const CHAR_LIMITS: Record<string, number> = {
 };
 
 const TONES = [
-  { key: 'executive' as const, label: 'Executive', desc: 'Corporate & Enterprise B2B' },
-  { key: 'conversion' as const, label: 'Conversion', desc: 'Startup Founders & Risk Elimination' },
-  { key: 'direct' as const, label: 'Direct Response', desc: 'Growth Teams & ROI Focus' },
+  { key: 'executive' as const, label: 'Professional', desc: 'Polished & Corporate' },
+  { key: 'conversion' as const, label: 'Conversational', desc: 'Engaging & Direct' },
+  { key: 'direct' as const, label: 'Casual', desc: 'Relaxed & Authentic' },
 ];
 
 import { getChecklistForPlatform } from '@/src/lib/module3/platformChecklists';
@@ -281,7 +281,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
         className="p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-3.5"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Platform Channels</span>
             <span className="text-[10px] font-bold text-[#0058be] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
@@ -293,8 +293,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           </span>
         </div>
 
-        {/* Combined Platforms: Recommended First, then Other Channels */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Combined Platforms: Recommended First, then Other Channels (Tab Layout) */}
+        <div className="flex items-center gap-4 border-b border-neutral-200/80 w-full overflow-x-auto hide-scrollbar">
           {/* Primary / Recommended Platforms */}
           {primaryPlatforms.map((p) => {
             const isReviewed = reviewedPlatforms.has(p.key);
@@ -305,27 +305,27 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 key={p.key}
                 onClick={() => handleSelectPlatform(p.key)}
                 className={cn(
-                  'flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs',
+                  'flex items-center gap-2 pb-2.5 pt-1 px-1 border-b-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap',
                   isCurrent
-                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
+                    ? 'text-[#0058be] border-[#0058be]'
                     : isReviewed
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                    : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300'
+                    ? 'text-emerald-600 border-transparent hover:text-emerald-700'
+                    : 'text-neutral-500 border-transparent hover:text-neutral-800 hover:border-neutral-300'
                 )}
               >
                 {isReviewed ? (
-                  <Check size={13} strokeWidth={3} className="text-emerald-600 shrink-0" />
+                  <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />
                 ) : (
-                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-white' : p.iconColor)}>
-                    <Icon className="w-3.5 h-3.5" />
+                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-[#0058be]' : 'text-neutral-400')}>
+                    <Icon className="w-4 h-4" />
                   </span>
                 )}
                 <span>{p.name}</span>
                 <span className={cn(
-                  "text-[8px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider",
-                  isCurrent ? "bg-white/20 text-white" : "bg-blue-50 text-[#0058be] border border-blue-100"
+                  "text-[8px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider ml-1",
+                  isCurrent ? "bg-blue-50 text-[#0058be] border border-blue-100" : "bg-neutral-100 text-neutral-500"
                 )}>
-                  Recommended
+                  Core
                 </span>
               </button>
             );
@@ -333,7 +333,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
           {/* Divider between Recommended and Other platforms */}
           {secondaryPlatforms.length > 0 && (
-            <div className="h-6 w-[1px] bg-neutral-200 mx-1 hidden sm:block" />
+            <div className="h-5 w-[1px] bg-neutral-200 mx-2 hidden sm:block" />
           )}
 
           {/* Secondary / Other Platforms */}
@@ -346,19 +346,19 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 key={p.key}
                 onClick={() => handleSelectPlatform(p.key)}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs',
+                  'flex items-center gap-1.5 pb-2.5 pt-1 px-1 border-b-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap',
                   isCurrent
-                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-md scale-[1.02]'
+                    ? 'text-[#0058be] border-[#0058be]'
                     : isReviewed
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                    : 'bg-neutral-50/80 text-neutral-600 border-neutral-200 hover:bg-white hover:text-neutral-900 hover:border-neutral-300'
+                    ? 'text-emerald-600 border-transparent hover:text-emerald-700'
+                    : 'text-neutral-400 border-transparent hover:text-neutral-600 hover:border-neutral-200'
                 )}
               >
                 {isReviewed ? (
-                  <Check size={12} strokeWidth={3} className="text-emerald-600 shrink-0" />
+                  <Check size={13} strokeWidth={3} className="text-emerald-500 shrink-0" />
                 ) : (
-                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-white' : p.iconColor)}>
-                    <Icon className="w-3.5 h-3.5" />
+                  <span className={cn('shrink-0 flex items-center justify-center', isCurrent ? 'text-[#0058be]' : 'text-neutral-300')}>
+                    <Icon className="w-4 h-4" />
                   </span>
                 )}
                 <span>{p.name}</span>
@@ -368,7 +368,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </div>
 
         {/* Progress bar */}
-        <div className="pt-1">
+        <div className="pt-2">
           <div className="h-1.5 bg-neutral-100 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full"
@@ -391,9 +391,9 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-neutral-200 bg-white shadow-xs cursor-pointer hover:bg-neutral-50 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Authority Tone:</span>
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">Copy Variant:</span>
             <span className="text-xs font-bold text-[#0058be]">
-              {TONES.find(t => t.key === activeTone)?.label || 'Executive'}
+              {TONES.find(t => t.key === activeTone)?.label || 'Professional'}
             </span>
           </div>
           <ChevronDown size={14} className={cn('text-neutral-400 transition-transform', showToneSelector && 'rotate-180')} />
@@ -461,7 +461,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 </div>
                 <p className="text-[10px] text-neutral-400">
                   {isViewingOptional ? 'Optional Channel' : `Platform ${currentPlatformIndex + 1} of ${primaryPlatforms.length}`}
-                  {reviewedPlatforms.has(activeTab) && <span className="text-emerald-600 font-bold ml-1.5">âœ“ Reviewed</span>}
+                  {reviewedPlatforms.has(activeTab) && <span className="text-emerald-600 font-bold ml-1.5">✓ Reviewed</span>}
                 </p>
               </div>
             </div>
@@ -484,21 +484,15 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             onAlignAll={handleHarmonizeAll}
           />
 
-          {/* â”€â”€ Split: Mockup (Left Sticky) + Editor (Right Scroll) â”€â”€â”€â”€ */}
+          {/* ── Split: Editor (Left Scroll) + Mockup (Right Sticky) ──── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            {/* Left: Sticky Phone Mockup */}
-            <div className="lg:col-span-5">
-              <div className="lg:sticky lg:top-4">
-                {renderMockup()}
-              </div>
-            </div>
-
-            {/* Right: Copy Editor & Verification Checklist */}
-            <div className="lg:col-span-7 space-y-3.5 max-h-[520px] overflow-y-auto pr-1">
+            
+            {/* Left: Copy Editor & Verification Checklist */}
+            <div className="lg:col-span-7 space-y-3.5 max-h-[580px] overflow-y-auto pr-2 pb-4">
               {/* Field cards header */}
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400">
-                  Copy Fields â€” {activePlatformData.fields.length} fields
+                  Editable Fields — {activePlatformData.fields.length} items
                 </span>
                 <span className="text-[10px] font-bold text-neutral-500">
                   Click edit or use one-click formulas below
@@ -521,16 +515,20 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-bold text-[#0b1c30]">{field.label}</h4>
                       <div className="flex items-center gap-1.5">
-                        {charLimit && (
-                          <span className={cn(
-                            'text-[10px] font-bold px-2 py-0.5 rounded-full border',
-                            field.value.length > charLimit ? 'text-red-600 bg-red-50 border-red-200' :
-                            field.value.length > charLimit * 0.8 ? 'text-amber-600 bg-amber-50 border-amber-200' :
-                            'text-neutral-400 bg-neutral-100 border-neutral-200'
-                          )}>
-                            {field.value.length}/{charLimit}
-                          </span>
-                        )}
+                        {charLimit && (() => {
+                          const len = field.value.length;
+                          const ratio = len / charLimit;
+                          const statusClass = 
+                            len > charLimit ? 'text-red-700 bg-red-50 border-red-200' :
+                            ratio > 0.85 ? 'text-amber-700 bg-amber-50 border-amber-200' :
+                            'text-emerald-700 bg-emerald-50 border-emerald-200';
+                          
+                          return (
+                            <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', statusClass)}>
+                              {len}/{charLimit}
+                            </span>
+                          );
+                        })()}
                         <button
                           onClick={() => handleCopy(field.key, field.value)}
                           className="p-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-lg transition-all cursor-pointer border border-neutral-200"
@@ -682,6 +680,13 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     â† Back to Primary
                   </button>
                 ) : null}
+              </div>
+            </div>
+
+            {/* Right: Sticky Phone Mockup */}
+            <div className="lg:col-span-5 order-first lg:order-last">
+              <div className="lg:sticky lg:top-4">
+                {renderMockup()}
               </div>
             </div>
           </div>
