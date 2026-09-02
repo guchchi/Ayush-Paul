@@ -257,7 +257,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     setEditingField(null);
   };
 
-  // Ã¢â€â‚¬Ã¢â€â‚¬ Render: Phone Mockup Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+  // ── Render: Phone Mockup ────────────────────────────────────────────────────
   const renderMockup = () => (
     <div className="relative mx-auto w-[280px] bg-black rounded-[44px] p-2 shadow-2xl border-4 border-neutral-800">
       {/* Hardware buttons */}
@@ -766,7 +766,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     onClick={() => { setViewingOptionalPlatform(null); setEditingField(null); }}
                     className="px-4 py-2 text-xs font-bold text-[#0058be] hover:underline cursor-pointer"
                   >
-                    â† Back to Primary
+                    ← Back to Primary
                   </button>
                 ) : null}
               </div>
@@ -782,7 +782,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </motion.div>
       </AnimatePresence>
 
-      {/* â”€â”€ Bottom: Continue CTA (Gated) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Bottom: Continue CTA (Gated) ────────────────────────────── */}
       <div className="pt-4 border-t border-neutral-200/60">
         {allPrimaryReviewed ? (
           <motion.div
@@ -806,7 +806,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               <div className="flex items-center gap-3">
                 {onBack && (
                   <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                    â† Back
+                    ← Back
                   </button>
                 )}
                 <button
@@ -818,7 +818,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 </button>
               </div>
               <ModuleButton variant="primary" onClick={onContinue}>
-                Run Consistency Check â†’
+                Run Consistency Check &rarr;
               </ModuleButton>
             </div>
           </motion.div>
@@ -827,7 +827,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             <div className="flex items-center gap-3">
               {onBack && (
                 <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                  Ã¢â€ Â Back
+                  ← Back
                 </button>
               )}
             </div>
@@ -839,7 +839,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                 disabled
                 className="px-5 py-2.5 bg-neutral-200 text-neutral-400 text-xs font-bold rounded-xl cursor-not-allowed"
               >
-                Run Consistency Check â†’
+                Run Consistency Check &rarr;
               </button>
             </div>
           </div>

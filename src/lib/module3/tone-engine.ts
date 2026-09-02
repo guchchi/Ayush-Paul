@@ -24,25 +24,25 @@ export function generateToneBasedField(
   if (platform === 'linkedin') {
     switch (fieldKey) {
       case 'banner_text':
-        if (tone === 'executive') return `Strategic ${service} Advisory for ${market} | Measurable Outcomes`;
-        if (tone === 'conversion') return `Helping ${market} scale ${service} via ${mechanism} | Zero Fluff. Pure Execution.`;
-        return `Building ${mechanism} for ${market} | Documenting the process`;
+        if (tone === 'executive') return `Strategic architecture & advisory for ${market} leadership.`;
+        if (tone === 'conversion') return `Stop losing ${market} revenue. We install ${mechanism} that converts.`;
+        return `just building cool ${mechanism} stuff for ${market} | building in public`;
       case 'headline':
-        if (tone === 'executive') return `${positioning} | ${service} Partner for ${market} | Creator of ${mechanism} | Backed by Verifiable Proof`;
-        if (tone === 'conversion') return `${service} Partner for ${market} | We use ${mechanism} to guarantee results | ${proofHook}`;
-        return `Solving ${service} for ${market} using ${mechanism} | No BS, just execution`;
+        if (tone === 'executive') return `Senior Partner | Architecting enterprise-grade ${mechanism} to scale ${service} operations for ${market} leaders.`;
+        if (tone === 'conversion') return `I help ${market} DOMINATE ${service} using ${mechanism} | 👉 Guaranteed ${promise} or we don't get paid.`;
+        return `figuring out ${service} so you don't have to | building ${mechanism} in public | ${promise}`;
       case 'about':
-        if (tone === 'executive') return `As a ${positioning}, I advise ${market} on scalable ${service} architecture. ${promise}.\n\nWe prioritize empirical evidence over speculative claims. By deploying our ${mechanism}, we ensure total alignment before engagement.\n\n${proofHook}.`;
-        if (tone === 'conversion') return `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets using ${mechanism} so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`;
-        return `Hey, I'm Ayush.\n\nI got tired of the fluff in ${service}, so I built ${mechanism} specifically for ${market}.\n\n${promise}.\n\nI document my entire process. Check out my featured section to see real proof and teardowns.`;
+        if (tone === 'executive') return `At the highest levels of ${market}, execution risk is the singular threat to scale.\n\nMy consultancy specializes in ${service} architecture, deploying ${mechanism} frameworks that transition organizations from chaotic dependencies to predictable operational assets.\n\nWe do not operate on speculative marketing. We operate on empirical frameworks. ${promise}.`;
+        if (tone === 'conversion') return `Your ${service} pipeline is leaking cash every single day.\n\nMost agencies will sell you vanity metrics. I sell ${promise}. Period.\n\nBy installing my proprietary ${mechanism}, we force your systems to perform. If you are a ${market} ready to stop playing games and start scaling aggressively, look at the pinned teardown below.\n\nResults speak louder than pitches.`;
+        return `hey, i'm Ayush.\n\ni got really tired of the fake guru BS in the ${market} space, so i decided to just build ${mechanism} openly.\n\nmy goal is simple: ${promise}. i don't use fancy corporate jargon. i just document what works, what fails, and how to actually fix ${service}.\n\nif you want to see the exact playbook i use, just check my featured section. it's all free.`;
       case 'featured_cta':
-        if (tone === 'executive') return `👉 Access the Strategic ${service} Executive Brief`;
-        if (tone === 'conversion') return `👉 Access My Full ${service} Blueprint & Live Case Studies`;
-        return `👉 Steal my ${service} playbook here`;
+        if (tone === 'executive') return `Read our Q3 Executive Brief`;
+        if (tone === 'conversion') return `Unlock the 30-Day Growth Blueprint (Free)`;
+        return `grab my raw templates`;
       case 'services_desc':
-        if (tone === 'executive') return `Executive ${service} consulting, process architecture, and strategic auditing for ${market}.`;
-        if (tone === 'conversion') return `High-ticket ${service} consulting, system implementation, and strategic auditing for ${market}.`;
-        return `Hands-on ${service} implementation and fractional support for ${market}.`;
+        if (tone === 'executive') return `Enterprise architecture, C-suite advisory, and systemic restructuring.`;
+        if (tone === 'conversion') return `High-ROI implementation, funnel optimization, and guaranteed growth systems.`;
+        return `1:1 coaching, raw templates, and community building.`;
     }
   }
 
@@ -51,13 +51,13 @@ export function generateToneBasedField(
       case 'name_format':
         return `Ayush | ${service}`;
       case 'bio':
-        if (tone === 'executive') return `Advising ${market} on ${service}. Creator of the ${mechanism}. ${promise}. \n👇 Strategic teardowns below.`;
-        if (tone === 'conversion') return `Building ${mechanism} for ${market}. Sharing breakdown teardowns on ${service}. ${promise}. 👇 Read my pinned thread`;
-        return `Just a guy building ${mechanism} for ${market}. I tweet about ${service} and execution. ${promise}.`;
+        if (tone === 'executive') return `Macro-advisory for ${market}. Standardizing ${service} via ${mechanism}. ${promise}. \n👇 Strategic insights below.`;
+        if (tone === 'conversion') return `Helping ${market} print cash with ${mechanism}. ${promise}. Don't hire another agency until you read this 👇`;
+        return `building ${mechanism} on the internet. writing about ${service} & mental models. ${promise}.`;
       case 'pinned_post':
-        if (tone === 'executive') return `Executive Breakdown: How top-tier ${market} are leveraging ${mechanism} to transform their ${service}. A thread 🧵👇`;
-        if (tone === 'conversion') return `I spent 30 days building a complete ${service} framework for ${market}. Here are the exact 5 components that drive 80% of the results 🧵👇`;
-        return `Want to know how I solve ${service} for ${market}? It's all about ${mechanism}. Here is the exact playbook (steal it): 🧵👇`;
+        if (tone === 'executive') return `Market Analysis: Why traditional ${service} models are failing ${market} (and how ${mechanism} solves the execution gap). A comprehensive thread 🧵👇`;
+        if (tone === 'conversion') return `I just helped a ${market} achieve ${promise} in 45 days. The secret? We ripped out their old ${service} and installed ${mechanism}. Here is the exact step-by-step 🧵👇`;
+        return `i've spent the last year obsessed with ${service} for ${market}. i compiled everything i learned about ${mechanism} into this one thread. bookmark it 🧵👇`;
       case 'cta_link':
         return `ayushpaul.app/blueprint`;
     }
@@ -68,55 +68,55 @@ export function generateToneBasedField(
       case 'name_format':
         return `Ayush | ${service}`;
       case 'bio':
-        if (tone === 'executive') return `Advising ${market} on ${service}.\n${mechanism} Architect.\n${promise}.\n👇 View Case Studies`;
-        if (tone === 'conversion') return `I help ${market} scale via ${mechanism}.\n${promise}.\nCheck out my free case study below 👇`;
-        return `Building ${mechanism} for ${market}.\nDocumenting the ${service} journey.\n${promise} ✨\n👇 See my latest build`;
+        if (tone === 'executive') return `Advising ${market} leadership.\nArchitecture for ${service}.\n${mechanism} Systems.\n👇 Verified Client Assets`;
+        if (tone === 'conversion') return `Scale your ${market} business.\n${promise} guaranteed.\nUsing proprietary ${mechanism}.\n👇 Free Training Inside`;
+        return `founder stuff for ${market}\nbuilding ${mechanism}\n${promise} ✨\n👇 come say hi`;
       case 'highlights':
-        if (tone === 'executive') return `1. Methodology\n2. Case Studies\n3. Client Outcomes\n4. About`;
-        if (tone === 'conversion') return `1. Case Studies\n2. The Process\n3. Client Wins\n4. About Me`;
-        return `1. Build in Public\n2. The Process\n3. Wins\n4. Life`;
+        if (tone === 'executive') return `1. Methodology\n2. Audits\n3. Client Outcomes\n4. Firm Overview`;
+        if (tone === 'conversion') return `1. ROI Proof\n2. The Secret\n3. Testimonials\n4. Apply Now`;
+        return `1. behind the scenes\n2. building\n3. life\n4. free stuff`;
       case 'link_cta':
-        if (tone === 'executive') return `Review the ${service} Blueprint`;
-        if (tone === 'conversion') return `Access the ${service} Blueprint`;
-        return `Grab my free ${service} playbook`;
+        if (tone === 'executive') return `Review our Corporate Methodology`;
+        if (tone === 'conversion') return `Claim Your Free Strategy Session`;
+        return `link in bio ✨`;
     }
   }
 
   if (platform === 'personal_site') {
     switch (fieldKey) {
       case 'hero_tagline':
-        if (tone === 'executive') return `Strategic ${service} Architecture for ${market} | Powered by ${mechanism}`;
-        if (tone === 'conversion') return `High-Certainty ${service} for ${market} | Powered by ${mechanism}`;
-        return `Solving ${service} for ${market} with ${mechanism}`;
+        if (tone === 'executive') return `Strategic ${service} Infrastructure for ${market} Leaders`;
+        if (tone === 'conversion') return `We Guarantee ${promise} for ${market} using ${mechanism}`;
+        return `making ${service} actually make sense for ${market}`;
       case 'value_prop_subhead':
-        if (tone === 'executive') return `Delivering predictable client outcomes using ${mechanism}. Documented results with zero fabricated claims.`;
-        if (tone === 'conversion') return `Stop gambling on agencies. We use ${mechanism} to guarantee delivery and eliminate execution risk for ${market}.`;
-        return `I build the systems that help ${market} scale their ${service}, so you don't have to guess what works.`;
+        if (tone === 'executive') return `We engineer predictable operational outcomes using ${mechanism}. Zero speculative marketing. Pure verifiable execution.`;
+        if (tone === 'conversion') return `Stop burning cash on theories. We install ${mechanism} systems that aggressively scale your revenue with zero downside risk.`;
+        return `i build systems that help you scale without losing your mind. ${promise}, completely in public.`;
       case 'about_summary':
-        if (tone === 'executive') return `I advise ${market} on building scalable ${service} systems without generic agency overhead. ${promise}. Every engagement is backed by verifiable proof assets.`;
-        if (tone === 'conversion') return `I help ${market} build scalable ${service} systems without generic agency overhead. ${promise}. Every claim is backed by open proof assets.`;
-        return `Hey, I'm Ayush. I help ${market} fix their ${service} workflows using my ${mechanism}. ${promise} - check my live case studies.`;
+        if (tone === 'executive') return `Our consultancy advises ${market} on eliminating operational drag. By implementing ${mechanism}, we transform fragmented ${service} workflows into centralized, high-leverage assets.`;
+        if (tone === 'conversion') return `You don't need more advice; you need execution. I help ${market} dominate their niche by deploying ${mechanism} that forces ${promise}. If we don't deliver, you don't pay.`;
+        return `hey, i'm ayush. i got fed up with how complicated ${service} was for ${market}, so i built ${mechanism} to fix it. i share everything i learn openly.`;
       case 'primary_cta':
-        if (tone === 'executive') return `Request Strategic Consultation`;
-        if (tone === 'conversion') return `Schedule Strategic Consultation & Audit`;
-        return `Let's Chat`;
+        if (tone === 'executive') return `Request Executive Audit`;
+        if (tone === 'conversion') return `Book Your Growth Call Now`;
+        return `read the blog`;
     }
   }
 
   if (platform === 'youtube') {
     switch (fieldKey) {
       case 'banner_text':
-        if (tone === 'executive') return `Strategic ${service} Insights for ${market} | Executive Briefings Weekly`;
-        if (tone === 'conversion') return `The No-BS Guide to ${service} for ${market} | New Teardowns Weekly`;
-        return `Building ${mechanism} | Weekly ${service} Vlogs & Teardowns`;
+        if (tone === 'executive') return `Strategic Briefings: ${service} Dynamics for ${market}`;
+        if (tone === 'conversion') return `Explosive ${market} Growth | Master ${service} via ${mechanism}`;
+        return `chill vibes & ${service} experiments for ${market}`;
       case 'bio':
-        if (tone === 'executive') return `We document the exact methodologies ${market} use to scale using ${mechanism}. Expect deep-dive strategic teardowns and verified execution frameworks.\n\n${promise}.`;
-        if (tone === 'conversion') return `I document exactly how ${market} can scale using ${mechanism}. No fluff, just raw execution and teardowns.\n\n${promise}.`;
-        return `Welcome to my channel! I show you exactly how I build ${service} systems for ${market} using ${mechanism}. Join me as I build in public.\n\n${promise}.`;
+        if (tone === 'executive') return `We analyze structural market inefficiencies and document how top-tier ${market} leverage ${mechanism} to achieve ${promise}.`;
+        if (tone === 'conversion') return `The only channel that shows you the exact, step-by-step ${mechanism} tactics to absolutely crush your ${service} goals. Subscribe if you want ${promise}.`;
+        return `just a founder documenting the chaotic reality of building ${mechanism} for ${market}. weekly vlogs on ${service} and life.`;
       case 'featured_video':
-        if (tone === 'executive') return `Strategic Teardown: Resolving the core ${service} bottleneck for ${market}`;
-        if (tone === 'conversion') return `Why your ${service} is failing (and how to fix it in 30 days)`;
-        return `I built a ${mechanism} system for ${market} (Watch me build it)`;
+        if (tone === 'executive') return `Macro-Analysis: Resolving the core ${service} bottleneck for ${market}`;
+        if (tone === 'conversion') return `How to force ${promise} in 30 Days (WARNING: Highly Aggressive)`;
+        return `i tried building a ${mechanism} in 24 hours (it was a disaster)`;
     }
   }
 
