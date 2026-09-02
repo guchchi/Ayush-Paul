@@ -27,7 +27,6 @@ import {
   ArrowLeftRight,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
-import { ConsistencyAuditBadge } from '@/src/components/module3/step3/components/ConsistencyAuditBadge';
 import { harmonizeProfilePositioning } from '@/src/lib/module3/authority-score-engine';
 import { PLATFORM_REGISTRY, ALL_PLATFORMS_LIST } from '@/src/lib/module3/platformRegistry';
 import { getMockupForPlatform, getInitials } from '@/src/components/module3/step3/mockups/PlatformMockups';
@@ -552,11 +551,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           className="space-y-4"
         >
 
-          {/* Cross-Platform Consistency Diagnostic */}
-          <ConsistencyAuditBadge
-            profileSystem={profileSystem}
-            onAlignAll={handleHarmonizeAll}
-          />
 
           {/* ── Split: Editor (Left Scroll) + Mockup (Right Sticky) ──── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
