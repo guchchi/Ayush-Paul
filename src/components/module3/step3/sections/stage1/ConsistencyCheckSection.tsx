@@ -58,15 +58,42 @@ function extractKeywords(text: string): string[] {
   return text.toLowerCase().split(/[\s,.|•\-→↗&:;/()]+/).filter(w => w.length > 3 && !STOPWORDS.has(w));
 }
 
+/**
+ * Smart field picker: for each platform, find the "main positioning text".
+ * Priority order:
+ *  1. headline / hero / tagline / title  (LinkedIn headline, personal site hero_tagline)
+ *  2. bio / banner_text                  (Twitter bio, Instagram bio, YouTube banner/about)
+ *  3. name_format                        (display name as last resort)
+ */
+function pickMainPositioningField(fields: ProfileSystemAsset['fields']): { key: string; value: string } | null {
+  // Priority 1: headline-type fields
+  const p1 = fields.find(f =>
+    f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline') || f.key.includes('title')
+  );
+  if (p1 && p1.value.trim().length > 3) return p1;
+
+  // Priority 2: bio or banner
+  const p2 = fields.find(f =>
+    f.key === 'bio' || f.key === 'banner_text'
+  );
+  if (p2 && p2.value.trim().length > 3) return p2;
+
+  // Priority 3: name_format
+  const p3 = fields.find(f => f.key === 'name_format');
+  if (p3 && p3.value.trim().length > 3) return p3;
+
+  return null;
+}
+
 function analyzeConsistency(profileSystem: ProfileSystemAsset[]): ConsistencyResult {
   const headlines: { platform: string; headline: string }[] = [];
 
   for (const p of profileSystem) {
-    const headlineField = p.fields.find(f =>
-      f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline') || f.key.includes('title')
-    );
-    if (headlineField && headlineField.value.trim().length > 3) {
-      headlines.push({ platform: p.platform, headline: headlineField.value.trim() });
+    const mainField = pickMainPositioningField(p.fields);
+    if (mainField) {
+      // For bios that have line breaks, take only the first line for headline comparison
+      const firstLine = mainField.value.split('\n')[0].trim();
+      headlines.push({ platform: p.platform, headline: firstLine });
     }
   }
 
