@@ -24,6 +24,7 @@ import {
   RotateCcw,
   Rocket,
   CheckSquare,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 import { ConsistencyAuditBadge } from '@/src/components/module3/step3/components/ConsistencyAuditBadge';
@@ -112,6 +113,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [viewingOptionalPlatform, setViewingOptionalPlatform] = useState<string | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isPlatformDropdownOpen, setIsPlatformDropdownOpen] = useState(false);
+  const [previewPosition, setPreviewPosition] = useState<'right' | 'left'>('right');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -559,8 +561,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
           {/* ── Split: Editor (Left Scroll) + Mockup (Right Sticky) ──── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             
-            {/* Left: Copy Editor & Verification Checklist */}
-            <div className="lg:col-span-7 flex flex-col h-[600px] bg-white border border-neutral-200/80 rounded-2xl shadow-sm overflow-hidden relative">
+            {/* Editor (Can be on Left or Right) & Verification Checklist */}
+            <div className={cn("lg:col-span-7 flex flex-col h-[600px] bg-white border border-neutral-200/80 rounded-2xl shadow-sm overflow-hidden relative", previewPosition === 'left' ? 'lg:order-last' : 'lg:order-first')}>
               {/* Properties Header */}
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100 bg-neutral-50/50 shrink-0">
                 <div className="flex items-center gap-2">
@@ -569,9 +571,18 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     Platform Content
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-neutral-500">
-                  {activePlatformData.fields.length} Editable Areas
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold text-neutral-500">
+                    {activePlatformData.fields.length} Editable Areas
+                  </span>
+                  <button
+                    onClick={() => setPreviewPosition(p => p === 'right' ? 'left' : 'right')}
+                    className="p-1 rounded-md hover:bg-neutral-200 text-neutral-400 hover:text-neutral-600 transition-colors"
+                    title="Swap Layout Position"
+                  >
+                    <ArrowLeftRight size={14} />
+                  </button>
+                </div>
               </div>
 
               {/* Scrollable Fields Area */}
@@ -772,8 +783,8 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               </div>
             </div>
 
-            {/* Right: Sticky Phone Mockup */}
-            <div className="lg:col-span-5 order-first lg:order-last">
+            {/* Mockup (Can be on Right or Left) */}
+            <div className={cn("lg:col-span-5 order-first", previewPosition === 'left' ? 'lg:order-first' : 'lg:order-last')}>
               <div className="lg:sticky lg:top-4">
                 {renderMockup()}
               </div>
