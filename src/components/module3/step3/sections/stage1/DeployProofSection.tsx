@@ -12,6 +12,7 @@ import { cn } from '@/src/lib/utils';
 import { EASING, DURATION } from '@/src/lib/motion-presets';
 import {
   calculateAuthorityScore,
+  calculateAuditBaselineScore,
 } from '@/src/lib/module3/authority-score-engine';
 import type { ProfileSystemAsset } from '@/src/data/module3/authority-suite-engine';
 import {
@@ -104,52 +105,68 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
     profileSystem, headline, proofLine, uniqueMechanism, userName, userHandle, activeTone,
   }), [profileSystem, headline, proofLine, uniqueMechanism, userName, userHandle, activeTone]);
 
-  // Baseline score: pull from audit diagnostic or initialScore, ensuring it represents the pre-transformation baseline
+  // Deterministic baseline if audit was not completed yet
+  const fallbackAuditBaseline = useMemo(() => {
+    return calculateAuditBaselineScore({
+      selectedPlatforms: stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : ['linkedin', 'twitter'],
+      auditMode: stage1Audit?.auditMode ?? 'quiz',
+      quizAnswers: stage1Audit?.quizAnswers ?? { headlineType: 'skills', hasPinnedProof: false, hasSingleCta: false },
+      pastedBio: stage1Audit?.pastedBio ?? '',
+    });
+  }, [stage1Audit]);
+
+  // Baseline score: 100% UNBIASED — strictly uses the real audit diagnostic score from Section 1
   const effectiveInitial = useMemo(() => {
-    if (stage1Audit?.diagnosticScore && stage1Audit.diagnosticScore > 0) {
-      return Math.min(stage1Audit.diagnosticScore, Math.max(currentScore.total - 15, 25));
+    if (stage1Audit?.diagnosticScore !== null && stage1Audit?.diagnosticScore !== undefined && stage1Audit.diagnosticScore > 0) {
+      return stage1Audit.diagnosticScore;
     }
-    if (initialScore > 0 && initialScore < currentScore.total) {
+    if (initialScore > 0) {
       return initialScore;
     }
-    // Default pre-transformation freelance benchmark average is 38
-    return Math.min(38, Math.max(currentScore.total - 25, 25));
-  }, [stage1Audit?.diagnosticScore, initialScore, currentScore.total]);
+    return fallbackAuditBaseline.total;
+  }, [stage1Audit?.diagnosticScore, initialScore, fallbackAuditBaseline.total]);
 
   const improvement = Math.max(0, currentScore.total - effectiveInitial);
   const improvementPct = effectiveInitial > 0 ? Math.round((improvement / effectiveInitial) * 100) : 0;
 
-  // 4 Dimensions of Authority Transformation
-  const dimensions = useMemo(() => [
-    {
-      label: 'Positioning Clarity',
-      baseline: Math.round(effectiveInitial * 0.28),
-      optimized: currentScore.positioningClarity.score,
-      max: 25,
-      gain: currentScore.positioningClarity.score - Math.round(effectiveInitial * 0.28),
-    },
-    {
-      label: 'Platform Completeness',
-      baseline: Math.round(effectiveInitial * 0.24),
-      optimized: currentScore.platformCompleteness.score,
-      max: 25,
-      gain: currentScore.platformCompleteness.score - Math.round(effectiveInitial * 0.24),
-    },
-    {
-      label: 'Tone Consistency',
-      baseline: Math.round(effectiveInitial * 0.22),
-      optimized: currentScore.toneConsistency.score,
-      max: 25,
-      gain: currentScore.toneConsistency.score - Math.round(effectiveInitial * 0.22),
-    },
-    {
-      label: 'Action & CTA Signals',
-      baseline: Math.round(effectiveInitial * 0.26),
-      optimized: currentScore.ctaPresence.score,
-      max: 25,
-      gain: currentScore.ctaPresence.score - Math.round(effectiveInitial * 0.26),
-    },
-  ], [effectiveInitial, currentScore]);
+  // 4 Dimensions of Authority Transformation — exact mapping from Section 1 Audit to Section 5 Deploy
+  const dimensions = useMemo(() => {
+    const basePos = stage1Audit?.dimensionScores?.positioning ?? fallbackAuditBaseline.dimensions.positioning.score;
+    const basePlat = stage1Audit?.dimensionScores?.platformCoverage ?? fallbackAuditBaseline.dimensions.platformCoverage.score;
+    const baseProof = stage1Audit?.dimensionScores?.proofEvidence ?? fallbackAuditBaseline.dimensions.proofEvidence.score;
+    const baseCta = stage1Audit?.dimensionScores?.conversionCta ?? fallbackAuditBaseline.dimensions.conversionCta.score;
+
+    return [
+      {
+        label: 'Positioning Clarity',
+        baseline: basePos,
+        optimized: currentScore.positioningClarity.score,
+        max: 25,
+        gain: currentScore.positioningClarity.score - basePos,
+      },
+      {
+        label: 'Platform Completeness',
+        baseline: basePlat,
+        optimized: currentScore.platformCompleteness.score,
+        max: 25,
+        gain: currentScore.platformCompleteness.score - basePlat,
+      },
+      {
+        label: 'Tone & Proof Consistency',
+        baseline: baseProof,
+        optimized: currentScore.toneConsistency.score,
+        max: 25,
+        gain: currentScore.toneConsistency.score - baseProof,
+      },
+      {
+        label: 'Action & CTA Signals',
+        baseline: baseCta,
+        optimized: currentScore.ctaPresence.score,
+        max: 25,
+        gain: currentScore.ctaPresence.score - baseCta,
+      },
+    ];
+  }, [stage1Audit?.dimensionScores, fallbackAuditBaseline, currentScore]);
 
   const toggleDeployed = (platform: string) => {
     setDeployedPlatforms(prev => {
@@ -202,10 +219,10 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         baseline: effectiveInitial,
         improvement,
         improvementPct,
-        positioningClarity: currentScore.positioningClarity,
-        platformCompleteness: currentScore.platformCompleteness,
-        toneConsistency: currentScore.toneConsistency,
-        ctaPresence: currentScore.ctaPresence,
+        positioningClarity: { ...currentScore.positioningClarity, baseline: dimensions[0].baseline },
+        platformCompleteness: { ...currentScore.platformCompleteness, baseline: dimensions[1].baseline },
+        toneConsistency: { ...currentScore.toneConsistency, baseline: dimensions[2].baseline },
+        ctaPresence: { ...currentScore.ctaPresence, baseline: dimensions[3].baseline },
       },
       profileSystem,
     });
@@ -458,10 +475,10 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
           baseline: effectiveInitial,
           improvement,
           improvementPct,
-          positioningClarity: currentScore.positioningClarity,
-          platformCompleteness: currentScore.platformCompleteness,
-          toneConsistency: currentScore.toneConsistency,
-          ctaPresence: currentScore.ctaPresence,
+          positioningClarity: { ...currentScore.positioningClarity, baseline: dimensions[0].baseline },
+          platformCompleteness: { ...currentScore.platformCompleteness, baseline: dimensions[1].baseline },
+          toneConsistency: { ...currentScore.toneConsistency, baseline: dimensions[2].baseline },
+          ctaPresence: { ...currentScore.ctaPresence, baseline: dimensions[3].baseline },
         }}
         onClose={() => setShowExportModal(false)}
       />

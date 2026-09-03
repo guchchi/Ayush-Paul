@@ -607,3 +607,209 @@ export function harmonizeProfilePositioning(
   });
 }
 
+// ── Unbiased Audit Baseline Calculator ──────────────────────────────────────────
+
+export interface AuditBaselineParams {
+  selectedPlatforms: string[];
+  auditMode: 'quiz' | 'paste';
+  quizAnswers: {
+    headlineType: string | null;
+    hasPinnedProof: boolean | null;
+    hasSingleCta: boolean | null;
+  };
+  pastedBio?: string;
+  isBioAnalyzed?: boolean;
+  serviceId?: string | null;
+  careerTrackId?: string | null;
+}
+
+export interface AuditBaselineDimension {
+  label: string;
+  score: number;
+  max: number;
+  desc: string;
+  status: 'strong' | 'moderate' | 'weak';
+}
+
+export interface AuditBaselineResult {
+  total: number;
+  dimensions: {
+    positioning: AuditBaselineDimension;
+    platformCoverage: AuditBaselineDimension;
+    proofEvidence: AuditBaselineDimension;
+    conversionCta: AuditBaselineDimension;
+  };
+  dimensionList: AuditBaselineDimension[];
+}
+
+/**
+ * Calculates a 100% criteria-based baseline score (0–100) directly from user audit answers.
+ * Total score is strictly equal to the sum of the 4 dimensions.
+ */
+export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditBaselineResult {
+  const {
+    selectedPlatforms = [],
+    auditMode = 'quiz',
+    quizAnswers = { headlineType: null, hasPinnedProof: null, hasSingleCta: null },
+    pastedBio = '',
+    serviceId,
+    careerTrackId,
+  } = params;
+
+  // 1. Positioning & Headline Clarity (0–25)
+  let positioningScore = 10;
+  let positioningDesc = 'Baseline generalist positioning';
+  let positioningStatus: 'strong' | 'moderate' | 'weak' = 'weak';
+
+  if (auditMode === 'quiz') {
+    if (quizAnswers.headlineType === 'authority') {
+      positioningScore = 22;
+      positioningStatus = 'strong';
+      positioningDesc = 'Clear strategic authority stance with outcome-focused value proposition';
+    } else if (quizAnswers.headlineType === 'skills') {
+      positioningScore = 13;
+      positioningStatus = 'moderate';
+      positioningDesc = 'Tool & skill-listing headline. High risk of commodity pricing';
+    } else if (quizAnswers.headlineType === 'generic') {
+      positioningScore = 6;
+      positioningStatus = 'weak';
+      positioningDesc = 'Generic freelancer title. Over 80% of high-ticket visitors bounce immediately';
+    }
+  } else {
+    const lower = (pastedBio || '').toLowerCase();
+    let pScore = 6;
+    if (['help', 'scale', 'engineer', 'architect', 'build for', 'grow', 'partner'].some(w => lower.includes(w))) pScore += 8;
+    if (lower.length >= 40 && lower.length <= 220) pScore += 4;
+    if (['enterprise', 'creator', 'founder', 'b2b', 'saas', 'startup', 'brand'].some(w => lower.includes(w))) pScore += 4;
+    if (['passionate', 'aspiring', 'looking for', 'open to work', 'freelancer'].some(w => lower.includes(w))) pScore = Math.max(pScore - 4, 5);
+    positioningScore = Math.min(Math.max(pScore, 5), 22);
+    positioningStatus = positioningScore >= 18 ? 'strong' : positioningScore >= 12 ? 'moderate' : 'weak';
+    positioningDesc = positioningScore >= 18 ? 'Strong outcome-led profile bio' : positioningScore >= 12 ? 'Decent foundation but lacks specific authority hooks' : 'Uncalibrated bio with commodity signals';
+  }
+
+  // 2. Channel Architecture & Relevance (0–25)
+  let platformScore = 0;
+  const platformCount = selectedPlatforms.length;
+  if (platformCount === 0) {
+    platformScore = 0;
+  } else if (platformCount === 1) {
+    platformScore = 8;
+  } else if (platformCount === 2) {
+    platformScore = 15;
+  } else if (platformCount === 3) {
+    platformScore = 20;
+  } else {
+    platformScore = 23;
+  }
+
+  // Alignment bonus
+  const s = (serviceId || '').toLowerCase();
+  const c = (careerTrackId || '').toLowerCase();
+  const isVideo = s.includes('video') || s.includes('edit') || c.includes('editor');
+  const isDev = s.includes('code') || s.includes('dev') || c.includes('developer');
+  const isDesigner = s.includes('design') || c.includes('designer');
+
+  if (isVideo && (selectedPlatforms.includes('youtube') || selectedPlatforms.includes('instagram'))) platformScore = Math.min(platformScore + 2, 25);
+  else if (isDev && (selectedPlatforms.includes('github') || selectedPlatforms.includes('linkedin'))) platformScore = Math.min(platformScore + 2, 25);
+  else if (isDesigner && (selectedPlatforms.includes('behance') || selectedPlatforms.includes('figma') || selectedPlatforms.includes('dribbble'))) platformScore = Math.min(platformScore + 2, 25);
+  else if (selectedPlatforms.includes('linkedin') || selectedPlatforms.includes('twitter')) platformScore = Math.min(platformScore + 2, 25);
+
+  const platformStatus: 'strong' | 'moderate' | 'weak' = platformScore >= 18 ? 'strong' : platformScore >= 12 ? 'moderate' : 'weak';
+  const platformDesc = platformCount === 0 ? 'No distribution channels selected' : `${platformCount} active channel(s) configured for distribution`;
+
+  // 3. Social Proof & Evidence Placement (0–25)
+  let proofScore = 6;
+  let proofStatus: 'strong' | 'moderate' | 'weak' = 'weak';
+  let proofDesc = 'Zero pinned case studies or proof assets visible on profile';
+
+  if (auditMode === 'quiz') {
+    if (quizAnswers.hasPinnedProof === true) {
+      proofScore = 20;
+      proofStatus = 'strong';
+      proofDesc = 'Pinned case studies, metrics, or portfolio teardowns present';
+    } else {
+      proofScore = 6;
+      proofStatus = 'weak';
+      proofDesc = 'Zero pinned verifiable proof assets. High client evaluation skepticism';
+    }
+  } else {
+    const lower = (pastedBio || '').toLowerCase();
+    let prScore = 6;
+    if (/\d+[%xX+]|\$\d|\d+\s*(clients|projects|videos|views|subscribers|revenue)/i.test(lower)) prScore += 9;
+    if (['proven', 'case study', 'client', 'result', 'roi', 'portfolio', 'metric'].some(w => lower.includes(w))) prScore += 5;
+    proofScore = Math.min(Math.max(prScore, 6), 20);
+    proofStatus = proofScore >= 16 ? 'strong' : proofScore >= 11 ? 'moderate' : 'weak';
+    proofDesc = proofScore >= 16 ? 'Quantifiable metrics and verifiable proof detected' : 'Limited or missing quantifiable evidence in bio';
+  }
+
+  // 4. Conversion CTA & Funnel Link (0–25)
+  let ctaScore = 6;
+  let ctaStatus: 'strong' | 'moderate' | 'weak' = 'weak';
+  let ctaDesc = 'No single dedicated booking link or conversion path';
+
+  if (auditMode === 'quiz') {
+    if (quizAnswers.hasSingleCta === true) {
+      ctaScore = 20;
+      ctaStatus = 'strong';
+      ctaDesc = 'Single direct conversion path or calendar booking link';
+    } else {
+      ctaScore = 6;
+      ctaStatus = 'weak';
+      ctaDesc = 'No dedicated conversion CTA or cluttered link directory';
+    }
+  } else {
+    const lower = (pastedBio || '').toLowerCase();
+    let cScore = 6;
+    if (['book', 'schedule', 'apply', 'calendly', 'dm me', 'hire', 'consult'].some(w => lower.includes(w))) cScore += 9;
+    if (['http', 'www', '.com', '.io', 'link', 'site'].some(w => lower.includes(w))) cScore += 5;
+    ctaScore = Math.min(Math.max(cScore, 6), 20);
+    ctaStatus = ctaScore >= 16 ? 'strong' : ctaScore >= 11 ? 'moderate' : 'weak';
+    ctaDesc = ctaScore >= 16 ? 'Clear call-to-action leading to conversion destination' : 'Passive or absent conversion directive';
+  }
+
+  const total = Math.min(positioningScore + platformScore + proofScore + ctaScore, 100);
+
+  const dimensions = {
+    positioning: {
+      label: 'Positioning & Headline Clarity',
+      score: positioningScore,
+      max: 25,
+      desc: positioningDesc,
+      status: positioningStatus,
+    },
+    platformCoverage: {
+      label: 'Channel Architecture & Relevance',
+      score: platformScore,
+      max: 25,
+      desc: platformDesc,
+      status: platformStatus,
+    },
+    proofEvidence: {
+      label: 'Social Proof & Evidence Placement',
+      score: proofScore,
+      max: 25,
+      desc: proofDesc,
+      status: proofStatus,
+    },
+    conversionCta: {
+      label: 'Conversion CTA & Funnel Link',
+      score: ctaScore,
+      max: 25,
+      desc: ctaDesc,
+      status: ctaStatus,
+    },
+  };
+
+  return {
+    total,
+    dimensions,
+    dimensionList: [
+      dimensions.positioning,
+      dimensions.platformCoverage,
+      dimensions.proofEvidence,
+      dimensions.conversionCta,
+    ],
+  };
+}
+
+

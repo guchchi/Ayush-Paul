@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 import { useModule3Store } from '@/src/lib/module3/store';
+import { calculateAuditBaselineScore } from '@/src/lib/module3/authority-score-engine';
 
 // ── Intelligent Bio Analyzer (Heuristic AI) ───────────────────────────────────
 
@@ -928,32 +929,24 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     return selectedPlatforms.length > 0 || hasAnsweredQuestions;
   }, [selectedPlatforms, hasAnsweredQuestions]);
 
+  // Unified criteria-based baseline calculation (strictly unbiased)
+  const auditResult = useMemo(() => {
+    return calculateAuditBaselineScore({
+      selectedPlatforms,
+      auditMode,
+      quizAnswers,
+      pastedBio,
+      isBioAnalyzed,
+      serviceId,
+      careerTrackId,
+    });
+  }, [selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed, serviceId, careerTrackId]);
+
   // Compute live diagnostic score based on user's actual selections
   const diagnosticScore = useMemo<number | null>(() => {
     if (!hasInteracted) return null;
-
-    let baseScore = 15;
-
-    // Platform coverage (up to 20 pts)
-    baseScore += Math.min(selectedPlatforms.length * 8, 20);
-
-    if (auditMode === 'quiz') {
-      if (quizAnswers.headlineType === 'authority') baseScore += 30;
-      else if (quizAnswers.headlineType === 'skills') baseScore += 15;
-      else if (quizAnswers.headlineType === 'generic') baseScore += 5;
-
-      if (quizAnswers.hasPinnedProof === true) baseScore += 15;
-      if (quizAnswers.hasSingleCta === true) baseScore += 15;
-    } else {
-      const bioText = (pastedBio || '').toLowerCase();
-      if (bioText.length > 20) baseScore += 10;
-      if (bioText.includes('help') || bioText.includes('scale') || bioText.includes('system') || bioText.includes('engineer')) baseScore += 15;
-      if (bioText.includes('http') || bioText.includes('link') || bioText.includes('book') || bioText.includes('dm')) baseScore += 15;
-      if (isBioAnalyzed && bioText.length > 50) baseScore += 15;
-    }
-
-    return Math.min(baseScore, 95);
-  }, [hasInteracted, selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed]);
+    return auditResult.total;
+  }, [hasInteracted, auditResult.total]);
 
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
@@ -972,44 +965,56 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     const t2 = setTimeout(() => setAnalysisStep(3), 1200);
     const t3 = setTimeout(() => {
       setIsAnalyzing(false);
-      if (diagnosticScore !== null) {
-        setStage1Audit({ diagnosticScore, completedAt: new Date().toISOString() });
-      }
+      setStage1Audit({
+        diagnosticScore: auditResult.total,
+        dimensionScores: {
+          positioning: auditResult.dimensions.positioning.score,
+          platformCoverage: auditResult.dimensions.platformCoverage.score,
+          proofEvidence: auditResult.dimensions.proofEvidence.score,
+          conversionCta: auditResult.dimensions.conversionCta.score,
+        },
+        completedAt: new Date().toISOString(),
+      });
     }, 1800);
 
     timersRef.current = [t1, t2, t3];
-  }, [setAuditStep, diagnosticScore, setStage1Audit]);
+  }, [setAuditStep, auditResult, setStage1Audit]);
 
-  // Dimension Bars calculation
+  // Dimension Bars calculation — 100% congruent with baseline score
   const dimensions = useMemo(() => {
-    const isAuth = quizAnswers.headlineType === 'authority' || pastedBio.length > 50;
-    return [
-      {
-        label: 'Positioning & Headline Clarity',
-        score: quizAnswers.headlineType === null && !isBioAnalyzed ? 0 : isAuth ? 22 : quizAnswers.headlineType === 'skills' ? 14 : 7,
-        max: 25,
-        desc: quizAnswers.headlineType === null ? 'Select your current headline style' : isAuth ? 'Clear strategic authority stance' : 'Currently generic worker positioning',
-      },
-      {
-        label: 'Channel Architecture & Relevance',
-        score: Math.min(selectedPlatforms.length * 8, 25),
-        max: 25,
-        desc: selectedPlatforms.length === 0 ? 'No channels selected yet' : `${selectedPlatforms.length} active platforms aligned for ${roleConfig.roleTitle}`,
-      },
-      {
-        label: 'Social Proof & Evidence Placement',
-        score: quizAnswers.hasPinnedProof === null ? 0 : quizAnswers.hasPinnedProof ? 21 : 6,
-        max: 25,
-        desc: quizAnswers.hasPinnedProof === null ? 'Select proof state above' : quizAnswers.hasPinnedProof ? 'Evidence accessible on profile' : 'Zero pinned verifiable proof assets',
-      },
-      {
-        label: 'Conversion CTA & Funnel Link',
-        score: quizAnswers.hasSingleCta === null ? 0 : quizAnswers.hasSingleCta ? 22 : 8,
-        max: 25,
-        desc: quizAnswers.hasSingleCta === null ? 'Select CTA state above' : quizAnswers.hasSingleCta ? 'Single clear call to action' : 'No direct booking or portfolio funnel link',
-      },
-    ];
-  }, [quizAnswers, pastedBio, isBioAnalyzed, selectedPlatforms, roleConfig.roleTitle]);
+    return auditResult.dimensionList;
+  }, [auditResult]);
+
+  // Keep persisted diagnostic score synchronized if user changes answers after initial audit
+  useEffect(() => {
+    if (stage1Audit?.completedAt || auditStep === 3) {
+      if (
+        stage1Audit?.diagnosticScore !== auditResult.total ||
+        stage1Audit?.dimensionScores?.positioning !== auditResult.dimensions.positioning.score
+      ) {
+        setStage1Audit({
+          diagnosticScore: auditResult.total,
+          dimensionScores: {
+            positioning: auditResult.dimensions.positioning.score,
+            platformCoverage: auditResult.dimensions.platformCoverage.score,
+            proofEvidence: auditResult.dimensions.proofEvidence.score,
+            conversionCta: auditResult.dimensions.conversionCta.score,
+          },
+        });
+      }
+    }
+  }, [
+    auditResult.total,
+    auditResult.dimensions.positioning.score,
+    auditResult.dimensions.platformCoverage.score,
+    auditResult.dimensions.proofEvidence.score,
+    auditResult.dimensions.conversionCta.score,
+    auditStep,
+    stage1Audit?.completedAt,
+    stage1Audit?.diagnosticScore,
+    stage1Audit?.dimensionScores?.positioning,
+    setStage1Audit,
+  ]);
 
   return (
     <div className="w-full space-y-6 text-left font-sans">

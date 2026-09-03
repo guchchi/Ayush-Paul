@@ -19,10 +19,10 @@ export interface AuthorityScoreData {
   baseline: number;
   improvement: number;
   improvementPct: number;
-  positioningClarity: { score: number; maxScore: number };
-  platformCompleteness: { score: number; maxScore: number };
-  toneConsistency: { score: number; maxScore: number };
-  ctaPresence: { score: number; maxScore: number };
+  positioningClarity: { score: number; maxScore: number; baseline?: number };
+  platformCompleteness: { score: number; maxScore: number; baseline?: number };
+  toneConsistency: { score: number; maxScore: number; baseline?: number };
+  ctaPresence: { score: number; maxScore: number; baseline?: number };
 }
 
 export interface SocialIdentityPdfData {
@@ -352,10 +352,10 @@ export function generateSocialIdentityPdf(data: SocialIdentityPdfData): jsPDF {
 
   // 4 Dimensions Breakdown Bar
   const dimensions = [
-    { label: 'Positioning Clarity', score: scoreData?.positioningClarity?.score || 23, max: 25 },
-    { label: 'Platform Completeness', score: scoreData?.platformCompleteness?.score || 22, max: 25 },
-    { label: 'Tone Consistency', score: scoreData?.toneConsistency?.score || 23, max: 25 },
-    { label: 'Action & CTA Signals', score: scoreData?.ctaPresence?.score || 22, max: 25 },
+    { label: 'Positioning Clarity', score: scoreData?.positioningClarity?.score || 23, baseline: scoreData?.positioningClarity?.baseline, max: 25 },
+    { label: 'Platform Completeness', score: scoreData?.platformCompleteness?.score || 22, baseline: scoreData?.platformCompleteness?.baseline, max: 25 },
+    { label: 'Tone & Proof Consistency', score: scoreData?.toneConsistency?.score || 23, baseline: scoreData?.toneConsistency?.baseline, max: 25 },
+    { label: 'Action & CTA Signals', score: scoreData?.ctaPresence?.score || 22, baseline: scoreData?.ctaPresence?.baseline, max: 25 },
   ];
 
   const dimW = (CW - 6) / 4;
@@ -374,7 +374,11 @@ export function generateSocialIdentityPdf(data: SocialIdentityPdfData): jsPDF {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7.5);
     doc.setTextColor(C.navyDark);
-    doc.text(`${dim.score} / ${dim.max}`, dx + 2.5, y + 8.8);
+    if (dim.baseline !== undefined) {
+      doc.text(`${dim.baseline} -> ${dim.score} / ${dim.max}`, dx + 2.5, y + 8.8);
+    } else {
+      doc.text(`${dim.score} / ${dim.max}`, dx + 2.5, y + 8.8);
+    }
 
     // Mini progress bar
     doc.setFillColor('#e2e8f0');

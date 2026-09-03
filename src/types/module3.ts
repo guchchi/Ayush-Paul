@@ -534,6 +534,12 @@ export interface Stage1AuditData {
   pastedBio: string;
   isBioAnalyzed: boolean;
   diagnosticScore: number | null;
+  dimensionScores?: {
+    positioning: number;
+    platformCoverage: number;
+    proofEvidence: number;
+    conversionCta: number;
+  };
   completedAt?: string;
 }
 

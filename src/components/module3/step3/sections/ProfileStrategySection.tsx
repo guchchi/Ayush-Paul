@@ -10,7 +10,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../../../lib/utils';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
 import { useModule3Store } from '../../../../lib/module3/store';
-import { calculateAuthorityScore } from '../../../../lib/module3/authority-score-engine';
+import {
+  calculateAuthorityScore,
+  calculateAuditBaselineScore,
+} from '../../../../lib/module3/authority-score-engine';
 import { ModuleButton } from '../../../workspace/ModuleButton';
 
 // ── Sub-Section Components ────────────────────────────────────────────────────
@@ -165,13 +168,20 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   ]);
 
   // Baseline score: pull from Section 1 Authority Audit diagnosticScore (if user took quiz/pasted bio)
-  // or use the pre-transformation industry benchmark average (38)
+  // or calculate the real baseline from user's selected platforms and context
   const baselineScore = useMemo(() => {
     if (stage1Audit?.diagnosticScore && stage1Audit.diagnosticScore > 0) {
       return stage1Audit.diagnosticScore;
     }
-    return 38;
-  }, [stage1Audit?.diagnosticScore]);
+    return calculateAuditBaselineScore({
+      selectedPlatforms: stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : ['linkedin', 'twitter'],
+      auditMode: stage1Audit?.auditMode ?? 'quiz',
+      quizAnswers: stage1Audit?.quizAnswers ?? { headlineType: 'skills', hasPinnedProof: false, hasSingleCta: false },
+      pastedBio: stage1Audit?.pastedBio ?? '',
+      serviceId: mod1ServiceId,
+      careerTrackId: mod1CareerTrackId,
+    }).total;
+  }, [stage1Audit, mod1ServiceId, mod1CareerTrackId]);
 
   const advanceSection = useCallback((currentId: number) => {
     const updated = Array.from(new Set([...(stage1CompletedSections || []), currentId]));

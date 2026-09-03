@@ -876,6 +876,7 @@ export const useModule3Store = create<Module3State>()(
             pastedBio: state.stage1Audit?.pastedBio ?? '',
             isBioAnalyzed: state.stage1Audit?.isBioAnalyzed ?? false,
             diagnosticScore: state.stage1Audit?.diagnosticScore ?? null,
+            dimensionScores: state.stage1Audit?.dimensionScores,
             completedAt: state.stage1Audit?.completedAt,
             ...auditData,
           },
