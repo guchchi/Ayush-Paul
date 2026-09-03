@@ -26,10 +26,12 @@ import {
   ArrowRight,
   Sparkles,
   Layers,
+  FileDown,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
 import { BrandIcons } from '@/src/components/module3/step3/brand/BrandIcons';
 import { CopyExportModal } from '@/src/components/module3/step3/export/CopyExportModal';
+import { downloadSocialIdentityPdf } from '@/src/lib/module3/social-identity-pdf';
 
 interface Props {
   profileSystem: ProfileSystemAsset[];
@@ -187,6 +189,28 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadPdf = () => {
+    downloadSocialIdentityPdf({
+      userName,
+      userHandle,
+      positioningHeadline: headline,
+      proofLine,
+      uniqueMechanism,
+      activeTone,
+      authorityScore: {
+        total: currentScore.total,
+        baseline: effectiveInitial,
+        improvement,
+        improvementPct,
+        positioningClarity: currentScore.positioningClarity,
+        platformCompleteness: currentScore.platformCompleteness,
+        toneConsistency: currentScore.toneConsistency,
+        ctaPresence: currentScore.ctaPresence,
+      },
+      profileSystem,
+    });
+  };
+
   const allPlatforms = profileSystem.map(p => p.platform);
   const deployedCount = deployedPlatforms.size;
   const totalPlatforms = allPlatforms.length;
@@ -293,10 +317,17 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
             </button>
             <button
               onClick={handleDownload}
-              className="px-3.5 py-2 bg-[#0058be] hover:bg-[#0048a0] text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+              className="px-3.5 py-2 bg-neutral-800 hover:bg-neutral-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
             >
               <Download size={13} />
               Download .MD
+            </button>
+            <button
+              onClick={handleDownloadPdf}
+              className="px-3.5 py-2 bg-gradient-to-r from-[#0058be] to-indigo-600 hover:from-[#0048a0] hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+            >
+              <FileDown size={13} />
+              Export PDF Dossier
             </button>
           </div>
         </div>
@@ -417,6 +448,21 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         isOpen={showExportModal}
         profileSystem={profileSystem}
         userName={userName}
+        userHandle={userHandle}
+        positioningHeadline={headline}
+        proofLine={proofLine}
+        uniqueMechanism={uniqueMechanism}
+        activeTone={activeTone}
+        authorityScore={{
+          total: currentScore.total,
+          baseline: effectiveInitial,
+          improvement,
+          improvementPct,
+          positioningClarity: currentScore.positioningClarity,
+          platformCompleteness: currentScore.platformCompleteness,
+          toneConsistency: currentScore.toneConsistency,
+          ctaPresence: currentScore.ctaPresence,
+        }}
         onClose={() => setShowExportModal(false)}
       />
     </div>
