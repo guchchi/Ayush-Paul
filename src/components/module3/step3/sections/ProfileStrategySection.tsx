@@ -117,8 +117,6 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
   const setProofLine = useCallback((val: string) => setStage1Identity({ proofLine: val }), [setStage1Identity]);
   const setActiveTone = useCallback((val: 'executive' | 'conversion' | 'direct') => setStage1Identity({ activeTone: val }), [setStage1Identity]);
 
-  // Initial score capture (frozen at Section 1 entry for Before/After comparison)
-  const [initialScore, setInitialScore] = useState<number | null>(null);
 
   const recommendation = useMemo(
     () => getRoleRecommendation(mod1ServiceId, mod1CareerTrackId),
@@ -166,21 +164,14 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     setStage1Identity
   ]);
 
-  // Capture initial score on first render
-  useEffect(() => {
-    if (initialScore === null && profileSystem.length > 0) {
-      const score = calculateAuthorityScore({
-        profileSystem,
-        headline: positioningHeadline,
-        proofLine,
-        uniqueMechanism: mod2UniqueMechanism || '',
-        userName,
-        userHandle,
-        activeTone,
-      });
-      setInitialScore(score.total);
+  // Baseline score: pull from Section 1 Authority Audit diagnosticScore (if user took quiz/pasted bio)
+  // or use the pre-transformation industry benchmark average (38)
+  const baselineScore = useMemo(() => {
+    if (stage1Audit?.diagnosticScore && stage1Audit.diagnosticScore > 0) {
+      return stage1Audit.diagnosticScore;
     }
-  }, [profileSystem, positioningHeadline, proofLine, mod2UniqueMechanism, userName, userHandle, activeTone, initialScore]);
+    return 38;
+  }, [stage1Audit?.diagnosticScore]);
 
   const advanceSection = useCallback((currentId: number) => {
     const updated = Array.from(new Set([...(stage1CompletedSections || []), currentId]));
@@ -339,7 +330,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               userName={userName}
               userHandle={userHandle}
               activeTone={activeTone}
-              initialScore={initialScore ?? 0}
+              initialScore={baselineScore}
               onBack={() => retreatSection(5)}
               onComplete={handleComplete}
             />

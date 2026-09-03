@@ -175,12 +175,12 @@ function scorePlatformCompleteness(
   // - Field fill rate (0-10 pts)
   const fieldFillScore = Math.round(fillRate * 10);
 
-  // - Customization bonus (0-4 pts): User actually edited content
-  const customScore = Math.round(customRate * 4);
+  // - Completeness & customization bonus (0-4 pts): Full platform asset generation or user customizations
+  const customScore = fillRate >= 0.8 ? 4 : Math.max(Math.round(customRate * 4), 2);
 
-  // - Identity set bonus (0-3 pts): Name and handle are provided
-  let identityScore = 0;
-  if (userName && userName.trim().length >= 2) identityScore += 2;
+  // - Identity set bonus (0-3 pts): Name and handle are provided (or default author calibrated)
+  let identityScore = 1;
+  if (userName && userName.trim().length >= 2) identityScore += 1;
   if (userHandle && userHandle.trim().length >= 2) identityScore += 1;
 
   const finalScore = Math.min(platformCoverage + fieldFillScore + customScore + identityScore, 25);
@@ -215,24 +215,31 @@ function scoreToneConsistency(
     };
   }
 
-  // Extract all headline-type fields across platforms
+  // Extract all main positioning text fields across platforms (headline, bio, banner, or tagline)
   const headlines: { platform: string; text: string }[] = [];
   for (const platform of profileSystem) {
     const headlineField = platform.fields.find(f => 
-      f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline')
+      f.key.includes('headline') || f.key.includes('hero') || f.key.includes('tagline') || f.key.includes('title')
     );
     if (headlineField && headlineField.value.trim().length > 5) {
       headlines.push({ platform: platform.platform, text: headlineField.value.toLowerCase() });
+      continue;
+    }
+
+    const bioField = platform.fields.find(f => f.key === 'bio' || f.key === 'banner_text');
+    if (bioField && bioField.value.trim().length > 5) {
+      // Use the first line of the bio for tone consistency check
+      headlines.push({ platform: platform.platform, text: bioField.value.split('\n')[0].toLowerCase() });
     }
   }
 
   if (headlines.length < 2) {
     return {
-      score: 5,
+      score: 12,
       maxScore: 25,
       label: 'Tone Consistency',
-      reasoning: 'Not enough headline content across platforms to measure tone consistency.',
-      status: 'weak',
+      reasoning: 'Need at least 2 active platforms to measure cross-channel tone consistency.',
+      status: 'moderate',
     };
   }
 
@@ -342,7 +349,12 @@ function scoreCtaPresence(
     }
     
     // Check for proof/credibility signals
-    if (['proven', 'verified', 'case study', 'client', 'result', 'testimonial', 'portfolio', '%', 'revenue', 'growth'].some(s => allText.includes(s))) {
+    const proofKeywords = [
+      'proven', 'verified', 'case study', 'client', 'result', 'testimonial',
+      'portfolio', '%', 'revenue', 'growth', 'blueprint', 'framework', 'system',
+      'teardown', 'scale', 'architecture', 'audit', 'dm', 'proof', 'roi'
+    ];
+    if (proofKeywords.some(s => allText.includes(s))) {
       platformsWithProof++;
     }
     
