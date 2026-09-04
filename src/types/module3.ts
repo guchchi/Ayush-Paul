@@ -518,8 +518,33 @@ export interface Module3State {
   setStage1Audit(auditData: Partial<Stage1AuditData>): void;
   setStage1Identity(identityData: Partial<Stage1IdentityData>): void;
 
+  // ── Stage 2 (Portfolio Architecture) Studio Persistence ───────────────────
+  stage2ActiveSection: number;
+  stage2CompletedSections: number[];
+  stage2Archetype: Stage2ArchetypeData | null;
+  stage2WireframeSettings: Stage2WireframeSettings | null;
+  setStage2ActiveSection(section: number): void;
+  setStage2CompletedSections(sections: number[]): void;
+  setStage2Archetype(archetypeData: Partial<Stage2ArchetypeData>): void;
+  setStage2WireframeSettings(settings: Partial<Stage2WireframeSettings>): void;
+  reorderPortfolioSections(reordered: PortfolioBlueprintSection[]): void;
+  resetPortfolioSectionsToDefault(): void;
+  applyArchetypePreset(archetypeId: string): void;
+
   dismissStaleContext(): void;
   refreshStaleContext(): void;
+}
+
+export interface Stage2ArchetypeData {
+  selectedArchetypeId: string;
+  customNotes?: string;
+  confirmedAt?: string;
+}
+
+export interface Stage2WireframeSettings {
+  viewport: 'desktop' | 'tablet' | 'mobile';
+  fidelity: 'wireframe' | 'high-fidelity';
+  activeSectionId: string | null;
 }
 
 export interface Stage1AuditData {

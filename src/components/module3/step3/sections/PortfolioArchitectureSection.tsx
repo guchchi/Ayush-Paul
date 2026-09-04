@@ -1,165 +1,185 @@
-import React, { useState } from 'react';
-import { PortfolioBlueprintSection } from '../../../../data/module3/authority-suite-engine';
-import { EditableAssetCard } from '../components/EditableAssetCard';
-import { Layout, ChevronDown, ChevronUp, Copy, Check, Eye } from 'lucide-react';
+/**
+ * PortfolioArchitectureSection.tsx — Level 2 (Stage 2) Master Orchestrator
+ *
+ * Manages the 5-step wizard flow for Level 02: Portfolio Architecture Builder.
+ * Step-by-step navigation:
+ *  1. Archetype & Visitor Journey (ArchetypeStrategySection)
+ *  2. Sequence Ordering & Priority (SectionHierarchySection)
+ *  3. Copy, Visuals & Proof Injector (SectionSpecStudio)
+ *  4. Interactive Wireframe Simulator (WireframeSimulatorSection)
+ *  5. Conversion Audit & Blueprint Export (DeployArchitectureSection)
+ */
+
+import React, { useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '../../../../lib/utils';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
+import { useModule3Store } from '../../../../lib/module3/store';
+
+// ── Sub-Section Components ────────────────────────────────────────────────────
+import { ArchetypeStrategySection } from './stage2/ArchetypeStrategySection';
+import { SectionHierarchySection } from './stage2/SectionHierarchySection';
+import { SectionSpecStudio } from './stage2/SectionSpecStudio';
+import { WireframeSimulatorSection } from './stage2/WireframeSimulatorSection';
+import { DeployArchitectureSection } from './stage2/DeployArchitectureSection';
+
+import {
+  Layers,
+  ListOrdered,
+  FileText,
+  Monitor,
+  Rocket,
+  Check,
+  ChevronRight,
+  ArrowLeft,
+} from 'lucide-react';
 
 interface Props {
-  sections: PortfolioBlueprintSection[];
-  onSectionChange?: (sectionId: string, updatedFields: Partial<PortfolioBlueprintSection>) => void;
+  onContinue: () => void;
 }
 
-export const PortfolioArchitectureSection = React.memo(function PortfolioArchitectureSection({
-  sections,
-  onSectionChange,
-}: Props) {
-  const [expandedSectionId, setExpandedSectionId] = useState<string>(sections[0]?.id || '');
-  const [copiedAll, setCopiedAll] = useState(false);
+const STAGE2_SECTIONS = [
+  { id: 1, label: 'Archetype & Funnel', shortLabel: 'Archetype', icon: Layers, desc: 'Select conversion archetype & visitor psychology journey' },
+  { id: 2, label: 'Section Sequence', shortLabel: 'Hierarchy', icon: ListOrdered, desc: 'Arrange 9-section order & prioritize above-the-fold proof' },
+  { id: 3, label: 'Copy & Visual Specs', shortLabel: 'Spec Studio', icon: FileText, desc: 'Fine-tune headlines, narrative copy, CTAs & visual components' },
+  { id: 4, label: 'Wireframe Simulator', shortLabel: 'Simulator', icon: Monitor, desc: 'Live responsive preview across Desktop, Tablet & Mobile' },
+  { id: 5, label: 'Audit & Master Export', shortLabel: 'Deploy Spec', icon: Rocket, desc: '5-dimension conversion score, checklist & luxury PDF export' },
+] as const;
 
-  const handleCopyAll = () => {
-    const fullBlueprint = sections
-      .map(
-        (s) =>
-          `### ${s.title}\n**Purpose:** ${s.purpose}\n**Headline:** ${s.headline}\n**Subheadline:** ${s.subheadline}\n**Body Copy:** ${s.bodyCopy}\n**CTA:** ${s.ctaText}`
-      )
-      .join('\n\n---\n\n');
+const sectionFade = {
+  initial: { opacity: 0, y: 14, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  exit: { opacity: 0, y: -10, filter: 'blur(4px)' },
+  transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
+};
 
-    navigator.clipboard.writeText(fullBlueprint);
-    setCopiedAll(true);
-    setTimeout(() => setCopiedAll(false), 2000);
-  };
+export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onContinue }) => {
+  const {
+    stage2ActiveSection,
+    stage2CompletedSections,
+    setStage2ActiveSection,
+    setStage2CompletedSections,
+  } = useModule3Store();
+
+  const activeSection = stage2ActiveSection || 1;
+  const completedSections = useMemo(
+    () => new Set(stage2CompletedSections || []),
+    [stage2CompletedSections]
+  );
+
+  const advanceSection = useCallback((currentId: number) => {
+    const updated = Array.from(new Set([...(stage2CompletedSections || []), currentId]));
+    setStage2CompletedSections(updated);
+    if (currentId < 5) {
+      setStage2ActiveSection(currentId + 1);
+    }
+  }, [stage2CompletedSections, setStage2CompletedSections, setStage2ActiveSection]);
+
+  const retreatSection = useCallback((currentId: number) => {
+    if (currentId > 1) {
+      setStage2ActiveSection(currentId - 1);
+    }
+  }, [setStage2ActiveSection]);
+
+  const handleFinish = useCallback(() => {
+    const updated = Array.from(new Set([...(stage2CompletedSections || []), 1, 2, 3, 4, 5]));
+    setStage2CompletedSections(updated);
+    onContinue();
+  }, [stage2CompletedSections, setStage2CompletedSections, onContinue]);
+
+  const currentMetadata = STAGE2_SECTIONS.find((s) => s.id === activeSection) || STAGE2_SECTIONS[0];
 
   return (
-    <section className="space-y-6 text-left">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white p-6 rounded-3xl shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Layout size={18} className="text-cyan-400" />
-            <h3 className="text-xl font-black tracking-tight">3. Portfolio Architecture Generator (9 Website Sections)</h3>
-          </div>
-          <p className="text-xs text-slate-300 font-medium">
-            Complete website wireframe architecture & copy spec from Hero to Final CTA.
-          </p>
+    <div className="space-y-6 text-left w-full font-sans">
+      {/* Step Tabs / Navigation Ribbon */}
+      <div className="bg-white p-3 sm:p-4 rounded-3xl border border-neutral-200 shadow-xs">
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {STAGE2_SECTIONS.map((sec) => {
+            const Icon = sec.icon;
+            const isActive = sec.id === activeSection;
+            const isDone = completedSections.has(sec.id);
+
+            return (
+              <button
+                key={sec.id}
+                onClick={() => setStage2ActiveSection(sec.id)}
+                className={cn(
+                  'flex items-center gap-2.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all shrink-0 cursor-pointer border',
+                  isActive
+                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
+                    : isDone
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100/80'
+                    : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black',
+                    isActive
+                      ? 'bg-white/20 text-white'
+                      : isDone
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-neutral-200 text-neutral-600'
+                  )}
+                >
+                  {isDone ? <Check size={11} className="stroke-[3]" /> : `0${sec.id}`}
+                </div>
+
+                <span className="hidden sm:inline">{sec.label}</span>
+                <span className="sm:hidden">{sec.shortLabel}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <button
-          onClick={handleCopyAll}
-          className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-white/20 cursor-pointer shrink-0"
-        >
-          {copiedAll ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-          <span>{copiedAll ? 'Blueprint Copied!' : 'Copy Entire Website Blueprint'}</span>
-        </button>
-      </div>
-
-      {/* Accordion / Cards List of 9 Website Sections */}
-      <div className="space-y-3">
-        {sections.map((section) => {
-          const isExpanded = expandedSectionId === section.id;
-          return (
-            <div
-              key={section.id}
-              className={`bg-white rounded-2xl border transition-all ${
-                isExpanded ? 'border-blue-400 shadow-md ring-2 ring-blue-100' : 'border-neutral-200/90 shadow-2xs hover:border-neutral-300'
-              }`}
-            >
-              {/* Accordion Header */}
+        {/* Step Sub-Header Description Bar */}
+        <div className="flex items-center justify-between pt-3 mt-2 border-t border-neutral-100 text-xs text-neutral-500">
+          <div className="flex items-center gap-2">
+            {activeSection > 1 && (
               <button
-                onClick={() => setExpandedSectionId(isExpanded ? '' : section.id)}
-                className="w-full p-4 flex items-center justify-between gap-3 text-left cursor-pointer"
+                onClick={() => retreatSection(activeSection)}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0058be] hover:underline cursor-pointer"
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-xl bg-blue-50 text-[#0058be] text-xs font-black flex items-center justify-center border border-blue-100 shrink-0">
-                    {section.sectionNumber}
-                  </span>
-                  <div>
-                    <h4 className="text-sm font-black text-[#0b1c30]">{section.title}</h4>
-                    <p className="text-xs text-neutral-500 font-medium line-clamp-1">{section.purpose}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                    {section.ctaText}
-                  </span>
-                  {isExpanded ? <ChevronUp size={16} className="text-neutral-400" /> : <ChevronDown size={16} className="text-neutral-400" />}
-                </div>
+                <ArrowLeft size={12} />
+                <span>Previous Step</span>
               </button>
+            )}
+            <span className="text-neutral-300">•</span>
+            <span className="font-semibold text-neutral-700">{currentMetadata.desc}</span>
+          </div>
 
-              {/* Accordion Body */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                    className="border-t border-neutral-100 p-5 space-y-4 bg-neutral-50/50 rounded-b-2xl"
-                  >
-                    {/* Strategy Callouts */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                      <div className="bg-white p-3 rounded-xl border border-neutral-200/80">
-                        <span className="font-bold text-blue-900 block uppercase tracking-wider text-[10px] mb-1">
-                          Conversion Reasoning
-                        </span>
-                        <p className="text-neutral-700 font-medium">{section.conversionReasoning}</p>
-                      </div>
-                      <div className="bg-white p-3 rounded-xl border border-neutral-200/80">
-                        <span className="font-bold text-indigo-900 block uppercase tracking-wider text-[10px] mb-1">
-                          Recommended Visuals
-                        </span>
-                        <p className="text-neutral-700 font-medium">{section.recommendedVisuals}</p>
-                      </div>
-                    </div>
-
-                    {/* Copy Assets */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                      <EditableAssetCard
-                        id={`${section.id}_headline`}
-                        title="Section Headline"
-                        value={section.headline}
-                        originalValue={section.headline}
-                        onSave={(val) => onSectionChange && onSectionChange(section.id, { headline: val })}
-                      />
-                      <EditableAssetCard
-                        id={`${section.id}_subheadline`}
-                        title="Section Subheadline"
-                        value={section.subheadline}
-                        originalValue={section.subheadline}
-                        onSave={(val) => onSectionChange && onSectionChange(section.id, { subheadline: val })}
-                      />
-                      <EditableAssetCard
-                        id={`${section.id}_body`}
-                        title="Body Copy"
-                        value={section.bodyCopy}
-                        originalValue={section.bodyCopy}
-                        multiline
-                        className="md:col-span-2"
-                        onSave={(val) => onSectionChange && onSectionChange(section.id, { bodyCopy: val })}
-                      />
-                      <EditableAssetCard
-                        id={`${section.id}_cta`}
-                        title="Section CTA Button Text"
-                        value={section.ctaText}
-                        originalValue={section.ctaText}
-                        onSave={(val) => onSectionChange && onSectionChange(section.id, { ctaText: val })}
-                      />
-                      <EditableAssetCard
-                        id={`${section.id}_trust`}
-                        title="Section Trust Statement / Badge"
-                        value={section.trustStatement || ''}
-                        originalValue={section.trustStatement || ''}
-                        onSave={(val) => onSectionChange && onSectionChange(section.id, { trustStatement: val })}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
+          <span className="font-mono text-[11px] font-bold text-neutral-400">
+            Step {activeSection} of 5
+          </span>
+        </div>
       </div>
-    </section>
+
+      {/* Active Sub-Step Content */}
+      <AnimatePresence mode="wait">
+        <motion.div key={activeSection} {...sectionFade}>
+          {activeSection === 1 && (
+            <ArchetypeStrategySection onContinue={() => advanceSection(1)} />
+          )}
+
+          {activeSection === 2 && (
+            <SectionHierarchySection onContinue={() => advanceSection(2)} />
+          )}
+
+          {activeSection === 3 && (
+            <SectionSpecStudio onContinue={() => advanceSection(3)} />
+          )}
+
+          {activeSection === 4 && (
+            <WireframeSimulatorSection onContinue={() => advanceSection(4)} />
+          )}
+
+          {activeSection === 5 && (
+            <DeployArchitectureSection onComplete={handleFinish} />
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 });
+
+export default PortfolioArchitectureSection;

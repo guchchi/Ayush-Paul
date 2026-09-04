@@ -32,7 +32,7 @@ import { ModuleButton } from '../../workspace/ModuleButton';
 
 // ── Section components ────────────────────────────────────────────────────────
 import { ProfileStrategySection } from './sections/ProfileStrategySection';
-import { PortfolioOrderingCanvas } from './sections/PortfolioOrderingCanvas';
+import { PortfolioArchitectureSection } from './sections/PortfolioArchitectureSection';
 import { EvidencePlacementSection } from './sections/EvidencePlacementSection';
 import { ContentStrategySection } from './sections/ContentStrategySection';
 import { StrategySummarySection } from './sections/StrategySummarySection';
@@ -96,64 +96,6 @@ const LEVELS = [
     borderColor: 'border-purple-100',
   },
 ] as const;
-
-// ── Portfolio section wrapper for Section 4 ───────────────────────────────────
-function Section4Wrapper({ onContinue }: { onContinue: () => void }) {
-  const authoritySuite = useModule3Store((s) => s.authoritySuite);
-  const updatePortfolioSection = useModule3Store((s) => s.updatePortfolioSection);
-  const setStep3AssetOrder = useModule3Store((s) => s.setStep3AssetOrder);
-  const [sections, setSections] = useState(authoritySuite?.portfolioBlueprint ?? []);
-
-  useEffect(() => {
-    if (authoritySuite?.portfolioBlueprint) {
-      setSections(authoritySuite.portfolioBlueprint);
-    }
-  }, [authoritySuite]);
-
-  const handleSectionChange = useCallback(
-    (sectionId: string, updatedFields: Record<string, unknown>) => {
-      updatePortfolioSection(sectionId, updatedFields as any);
-      setSections((prev) =>
-        prev.map((s) => (s.id === sectionId ? { ...s, ...updatedFields } : s))
-      );
-    },
-    [updatePortfolioSection]
-  );
-
-  const handleReorder = useCallback((reordered: typeof sections) => {
-    setSections(reordered);
-  }, []);
-
-  const handleConfirm = () => {
-    setStep3AssetOrder(sections.map((s) => s.id));
-    onContinue();
-  };
-
-  if (!authoritySuite?.portfolioBlueprint?.length) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-neutral-400">
-        <Sparkles className="w-8 h-8 mb-3 opacity-40 animate-pulse text-[#0058be]" />
-        <p className="text-sm font-bold text-neutral-600">Generating Portfolio Architecture Wireframe…</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      <PortfolioOrderingCanvas
-        sections={sections}
-        onSectionChange={handleSectionChange}
-        onReorderSections={handleReorder}
-      />
-
-      <div className="flex justify-end pt-2">
-        <ModuleButton onClick={handleConfirm}>
-          Confirm Architecture &amp; Continue to Level 3 →
-        </ModuleButton>
-      </div>
-    </div>
-  );
-}
 
 // ── Main orchestration shell ──────────────────────────────────────────────────
 export function Step3ProfilePortfolioAuthority() {
@@ -462,7 +404,7 @@ export function Step3ProfilePortfolioAuthority() {
             )}
 
             {activeStage === 2 && (
-              <Section4Wrapper
+              <PortfolioArchitectureSection
                 onContinue={() => advanceStage(2)}
               />
             )}

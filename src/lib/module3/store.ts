@@ -16,6 +16,8 @@ import type {
   Module3FieldProvenance,
   Stage1AuditData,
   Stage1IdentityData,
+  Stage2ArchetypeData,
+  Stage2WireframeSettings,
 } from '../../types/module3';
 import type {
   ScopeLimits,
@@ -40,6 +42,8 @@ import { calculateBlueprintConfidence } from './confidence-engine';
 import { Step3PromptContext } from '../../services/ai/prompts/module3/step3-prompt';
 import { Module4BridgeAdapter } from './module4-bridge';
 import { applyToneToSuite } from './tone-engine';
+import { PORTFOLIO_ARCHETYPES } from './portfolio-architecture-engine';
+import type { PortfolioBlueprintSection } from '../../data/module3/authority-suite-engine';
 
 export { canNavigateTo, getStepIndex, MODULE3_STEPS };
 
@@ -178,6 +182,16 @@ export const useModule3Store = create<Module3State>()(
       stage1CompletedSections: [],
       stage1Audit: null,
       stage1Identity: null,
+
+      // ── Stage 2 (Portfolio Architecture) Studio Persistence ────────────
+      stage2ActiveSection: 1,
+      stage2CompletedSections: [],
+      stage2Archetype: null,
+      stage2WireframeSettings: {
+        viewport: 'desktop',
+        fidelity: 'wireframe',
+        activeSectionId: 'section_hero',
+      },
 
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
@@ -917,6 +931,113 @@ export const useModule3Store = create<Module3State>()(
         });
       },
 
+      setStage2ActiveSection(section: number) {
+        set({ stage2ActiveSection: section, lastUpdated: Date.now() });
+      },
+
+      setStage2CompletedSections(sections: number[]) {
+        set({ stage2CompletedSections: sections, lastUpdated: Date.now() });
+      },
+
+      setStage2Archetype(archetypeData: Partial<Stage2ArchetypeData>) {
+        set((state) => ({
+          stage2Archetype: {
+            selectedArchetypeId: archetypeData.selectedArchetypeId ?? state.stage2Archetype?.selectedArchetypeId ?? 'proof_first',
+            customNotes: archetypeData.customNotes ?? state.stage2Archetype?.customNotes ?? '',
+            confirmedAt: archetypeData.confirmedAt ?? new Date().toISOString(),
+          },
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      setStage2WireframeSettings(settings: Partial<Stage2WireframeSettings>) {
+        set((state) => ({
+          stage2WireframeSettings: {
+            viewport: settings.viewport ?? state.stage2WireframeSettings?.viewport ?? 'desktop',
+            fidelity: settings.fidelity ?? state.stage2WireframeSettings?.fidelity ?? 'wireframe',
+            activeSectionId: settings.activeSectionId !== undefined ? settings.activeSectionId : (state.stage2WireframeSettings?.activeSectionId ?? 'section_hero'),
+          },
+          lastUpdated: Date.now(),
+        }));
+      },
+
+      reorderPortfolioSections(reordered: PortfolioBlueprintSection[]) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          const indexed = reordered.map((sec, idx) => ({
+            ...sec,
+            sectionNumber: idx + 1,
+          }));
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              portfolioBlueprint: indexed,
+            },
+            step3AssetOrder: indexed.map((s) => s.id),
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      resetPortfolioSectionsToDefault() {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          const sorted = [...state.authoritySuite.portfolioBlueprint].sort((a, b) => {
+            const numA = parseInt(a.id.replace(/\D/g, '') || '0', 10);
+            const numB = parseInt(b.id.replace(/\D/g, '') || '0', 10);
+            return numA - numB;
+          }).map((sec, idx) => ({
+            ...sec,
+            sectionNumber: idx + 1,
+            isEnabled: true,
+          }));
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              portfolioBlueprint: sorted,
+            },
+            step3AssetOrder: sorted.map((s) => s.id),
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      applyArchetypePreset(archetypeId: string) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === archetypeId);
+          if (!archetype) return {};
+
+          const currentSections = [...state.authoritySuite.portfolioBlueprint];
+          const orderMap = new Map(archetype.recommendedOrder.map((id, idx) => [id, idx]));
+
+          currentSections.sort((a, b) => {
+            const idxA = orderMap.has(a.id) ? (orderMap.get(a.id) as number) : 999;
+            const idxB = orderMap.has(b.id) ? (orderMap.get(b.id) as number) : 999;
+            return idxA - idxB;
+          });
+
+          const reindexed = currentSections.map((sec, idx) => ({
+            ...sec,
+            sectionNumber: idx + 1,
+            isEnabled: archetype.recommendedOrder.includes(sec.id),
+          }));
+
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              portfolioBlueprint: reindexed,
+            },
+            step3AssetOrder: reindexed.map((s) => s.id),
+            stage2Archetype: {
+              selectedArchetypeId: archetypeId,
+              confirmedAt: new Date().toISOString(),
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
       setIsCompleted(value: boolean) {
         set({ isCompleted: value, lastUpdated: Date.now() });
       },
@@ -1337,6 +1458,11 @@ export const useModule3Store = create<Module3State>()(
         stage1CompletedSections: state.stage1CompletedSections,
         stage1Audit: state.stage1Audit,
         stage1Identity: state.stage1Identity,
+        // ── Stage 2 (Portfolio Architecture) Studio Persistence
+        stage2ActiveSection: state.stage2ActiveSection,
+        stage2CompletedSections: state.stage2CompletedSections,
+        stage2Archetype: state.stage2Archetype,
+        stage2WireframeSettings: state.stage2WireframeSettings,
       }),
     },
   ),
