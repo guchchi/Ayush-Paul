@@ -688,19 +688,12 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
   }
 
   // 2. Channel Architecture & Relevance (0–25)
-  let platformScore = 0;
   const platformCount = selectedPlatforms.length;
-  if (platformCount === 0) {
-    platformScore = 0;
-  } else if (platformCount === 1) {
-    platformScore = 8;
-  } else if (platformCount === 2) {
-    platformScore = 15;
-  } else if (platformCount === 3) {
-    platformScore = 20;
-  } else {
-    platformScore = 23;
-  }
+  let platformScore =
+    platformCount === 0 ? 0 :
+    platformCount === 1 ? 8 :
+    platformCount === 2 ? 15 :
+    platformCount === 3 ? 20 : 23;
 
   // Alignment bonus
   const s = (serviceId || '').toLowerCase();
@@ -718,9 +711,9 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
   const platformDesc = platformCount === 0 ? 'No distribution channels selected' : `${platformCount} active channel(s) configured for distribution`;
 
   // 3. Social Proof & Evidence Placement (0–25)
-  let proofScore = 6;
-  let proofStatus: 'strong' | 'moderate' | 'weak' = 'weak';
-  let proofDesc = 'Zero pinned case studies or proof assets visible on profile';
+  let proofScore: number;
+  let proofStatus: 'strong' | 'moderate' | 'weak';
+  let proofDesc: string;
 
   if (auditMode === 'quiz') {
     if (quizAnswers.hasPinnedProof === true) {
@@ -743,9 +736,9 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
   }
 
   // 4. Conversion CTA & Funnel Link (0–25)
-  let ctaScore = 6;
-  let ctaStatus: 'strong' | 'moderate' | 'weak' = 'weak';
-  let ctaDesc = 'No single dedicated booking link or conversion path';
+  let ctaScore: number;
+  let ctaStatus: 'strong' | 'moderate' | 'weak';
+  let ctaDesc: string;
 
   if (auditMode === 'quiz') {
     if (quizAnswers.hasSingleCta === true) {

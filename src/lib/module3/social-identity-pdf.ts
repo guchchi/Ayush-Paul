@@ -127,7 +127,7 @@ function cleanDisplayCopy(val: string): string {
   if (!val) return '';
   return val
     .replace(/\s+([.,;:!?])/g, '$1')
-    .replace(/([(\[{])\s+/g, '$1')
+    .replace(/([([{])\s+/g, '$1')
     .replace(/\s+([)\]}])/g, '$1')
     .replace(/\s*-\s*/g, ' - ')
     .replace(/\s*\|\s*/g, ' | ')
