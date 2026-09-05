@@ -957,5 +957,280 @@ export function getSectionStrategicGuidance(sectionId: string): SectionStrategic
   }
 }
 
+// ── Visitor Journey & Conversion Validation Engine ──────────────────────────
 
+export type VisitorFindingCategory =
+  | 'CLARITY'
+  | 'TRUST'
+  | 'FLOW'
+  | 'PROOF'
+  | 'OFFER'
+  | 'FRICTION'
+  | 'CTA';
 
+export interface VisitorFinding {
+  id: string;
+  category: VisitorFindingCategory;
+  severity: 'high' | 'medium' | 'low';
+  title: string;
+  explanation: string;
+  recommendedAction: string;
+  relatedSectionId?: string;
+}
+
+export interface VisitorJourneyAudit {
+  overallStatus: 'Strong' | 'Needs Attention' | 'High Friction';
+  statusColor: string;
+  summary: string;
+  findings: VisitorFinding[];
+  activeSectionsCount: number;
+  hasHero: boolean;
+  hasProof: boolean;
+  hasServices: boolean;
+  hasCTA: boolean;
+}
+
+export function validateVisitorJourney(
+  sections: PortfolioBlueprintSection[],
+  archetypeId?: string | null,
+  goal?: PortfolioGoal | null
+): VisitorJourneyAudit {
+  const findings: VisitorFinding[] = [];
+  const activeSections = (sections || []).filter((s) => s.isEnabled !== false);
+
+  const heroIndex = activeSections.findIndex((s) => s.id === 'section_hero');
+  const proofIndex = activeSections.findIndex((s) => s.id === 'section_proof');
+  const caseStudiesIndex = activeSections.findIndex((s) => s.id === 'section_case_studies');
+  const servicesIndex = activeSections.findIndex((s) => s.id === 'section_services');
+  const aboutIndex = activeSections.findIndex((s) => s.id === 'section_about');
+  const faqIndex = activeSections.findIndex((s) => s.id === 'section_faq');
+  const ctaIndex = activeSections.findIndex((s) => s.id === 'section_cta');
+  const testimonialsIndex = activeSections.findIndex((s) => s.id === 'section_testimonials');
+  const authorityIndex = activeSections.findIndex((s) => s.id === 'section_authority');
+
+  const earliestProofIndex = Math.min(
+    proofIndex >= 0 ? proofIndex : 999,
+    caseStudiesIndex >= 0 ? caseStudiesIndex : 999
+  );
+
+  const heroSection = activeSections[heroIndex];
+  const ctaSection = activeSections[ctaIndex];
+  const servicesSection = activeSections[servicesIndex];
+
+  // 1. CLARITY: Hero Orientation & Positioning
+  if (heroIndex !== 0 || !heroSection) {
+    findings.push({
+      id: 'vis_hero_missing',
+      category: 'CLARITY',
+      severity: 'high',
+      title: 'Hero Orientation Compromised',
+      explanation: 'Visitors arriving at your portfolio lack an immediate above-the-fold hook to understand who you serve and what core business problem you solve.',
+      recommendedAction: 'Ensure the Hero section is active at Position #1.',
+      relatedSectionId: 'section_hero',
+    });
+  } else {
+    if (!heroSection.headline || heroSection.headline.length < 12) {
+      findings.push({
+        id: 'vis_hero_headline_thin',
+        category: 'CLARITY',
+        severity: 'medium',
+        title: 'Hero Headline Lacks Specificity',
+        explanation: 'The current hero headline is very brief and may fail to communicate your specialized outcome in the first 5 seconds.',
+        recommendedAction: 'Sharpen the hero headline with explicit market and outcome positioning.',
+        relatedSectionId: 'section_hero',
+      });
+    }
+  }
+
+  // 2. PROOF & TRUST: Proof Proximity relative to Goal & Archetype
+  const isProofSensitive = archetypeId === 'proof_first' || goal === 'sprint';
+  const isAdvisory = archetypeId === 'system_architect' || goal === 'consulting';
+  const isCaseStudyFocus = archetypeId === 'case_study_showcase';
+
+  if (earliestProofIndex === 999) {
+    findings.push({
+      id: 'vis_proof_none',
+      category: 'PROOF',
+      severity: 'high',
+      title: 'No Active Proof or Case Studies',
+      explanation: 'Visitors have no tangible demonstration, repository, or client case study to verify that your execution matches your claims.',
+      recommendedAction: 'Enable the Verifiable Proof or Case Studies section.',
+      relatedSectionId: 'section_proof',
+    });
+  } else if (isProofSensitive && earliestProofIndex > 2) {
+    findings.push({
+      id: 'vis_proof_delayed_sprint',
+      category: 'PROOF',
+      severity: 'high',
+      title: 'Proof Appears Too Late for Sprint Evaluation',
+      explanation: `For your Sprint & Execution focus, buyers want immediate proof before reading long philosophy. Proof appears at Position #${earliestProofIndex + 1}.`,
+      recommendedAction: 'Move Verifiable Proof or Case Studies to Position #2 or #3.',
+      relatedSectionId: 'section_proof',
+    });
+  } else if (isCaseStudyFocus && caseStudiesIndex > 2) {
+    findings.push({
+      id: 'vis_case_study_buried',
+      category: 'PROOF',
+      severity: 'medium',
+      title: 'STAR Case Studies Positioned Too Deep',
+      explanation: 'Your chosen archetype is the Deep Case Study Showcase, but your in-depth case studies appear deep in the scroll journey.',
+      recommendedAction: 'Move Case Studies immediately after the Hero or Authority thesis.',
+      relatedSectionId: 'section_case_studies',
+    });
+  } else if (earliestProofIndex <= 2) {
+    // Healthy proof proximity
+  }
+
+  // 3. TRUST & AUTHORITY: Testimonials & Peer Validation
+  if (testimonialsIndex < 0 && authorityIndex < 0) {
+    findings.push({
+      id: 'vis_peer_validation_missing',
+      category: 'TRUST',
+      severity: 'low',
+      title: 'Absence of Third-Party Validation',
+      explanation: 'While self-evident proof is strong, client endorsements or published authority artifacts help reassure risk-averse enterprise buyers.',
+      recommendedAction: 'Consider enabling Testimonials or Industry Stature if verified assets exist.',
+      relatedSectionId: 'section_testimonials',
+    });
+  }
+
+  // 4. FLOW & MECHANISM: Goal-specific ordering
+  if (isAdvisory) {
+    if (aboutIndex < 0) {
+      findings.push({
+        id: 'vis_mechanism_absent_consulting',
+        category: 'FLOW',
+        severity: 'high',
+        title: 'Proprietary Mechanism & Thesis Omitted',
+        explanation: 'High-ticket advisory clients buy your strategic lens and unique framework. Without an Authority Thesis/About section, you appear as an execution commodity.',
+        recommendedAction: 'Enable the Authority Story & Mechanism section.',
+        relatedSectionId: 'section_about',
+      });
+    } else if (aboutIndex > 3) {
+      findings.push({
+        id: 'vis_mechanism_late',
+        category: 'FLOW',
+        severity: 'medium',
+        title: 'Strategic Mechanism Delayed',
+        explanation: 'In consulting engagements, explaining why conventional approaches fail is critical before presenting service packages.',
+        recommendedAction: 'Position Authority Story & Mechanism before Services.',
+        relatedSectionId: 'section_about',
+      });
+    }
+  }
+
+  // 5. OFFER: Deliverable Scope Clarity
+  if (servicesIndex < 0) {
+    findings.push({
+      id: 'vis_offer_missing',
+      category: 'OFFER',
+      severity: 'high',
+      title: 'No Clear Scope or Service Packages',
+      explanation: 'Visitors cannot determine how to engage, what deliverables are included, or expected implementation velocity.',
+      recommendedAction: 'Enable the Services & Engagement Tiers section.',
+      relatedSectionId: 'section_services',
+    });
+  } else if (servicesSection) {
+    if (!servicesSection.bodyCopy || servicesSection.bodyCopy.length < 25) {
+      findings.push({
+        id: 'vis_offer_ambiguous',
+        category: 'OFFER',
+        severity: 'medium',
+        title: 'Service Scope Narrative Needs Detail',
+        explanation: 'Engagement deliverables are sparsely detailed. Transparent scope boundaries reduce procurement hesitation.',
+        recommendedAction: 'Detail deliverable rounds and turnaround speed in the Services section.',
+        relatedSectionId: 'section_services',
+      });
+    }
+  }
+
+  // 6. FRICTION: Objection Handling & FAQ
+  if (faqIndex < 0) {
+    findings.push({
+      id: 'vis_objections_unaddressed',
+      category: 'FRICTION',
+      severity: 'medium',
+      title: 'Buying Hesitations & Objections Unhandled',
+      explanation: 'High-intent clients dropping off before booking usually have unanswered questions regarding turnaround timeline, scope changes, or communication protocol.',
+      recommendedAction: 'Enable the FAQ & Objection Handling section right before the CTA.',
+      relatedSectionId: 'section_faq',
+    });
+  } else if (ctaIndex >= 0 && faqIndex > ctaIndex) {
+    findings.push({
+      id: 'vis_faq_after_cta',
+      category: 'FRICTION',
+      severity: 'medium',
+      title: 'FAQ Positioned Below Final CTA',
+      explanation: 'Visitors encounter the conversion trigger before their risk anxieties and workflow questions are addressed.',
+      recommendedAction: 'Move FAQ immediately above the Final CTA block.',
+      relatedSectionId: 'section_faq',
+    });
+  }
+
+  // 7. CTA: Placement & Conversion Trigger
+  if (ctaIndex < 0 || !ctaSection) {
+    findings.push({
+      id: 'vis_cta_missing',
+      category: 'CTA',
+      severity: 'high',
+      title: 'Missing Direct Conversion Next Step',
+      explanation: 'The portfolio has no concluding conversion trigger. A visitor who is convinced has no direct path to schedule a discovery or architecture sprint.',
+      recommendedAction: 'Enable the Final CTA section.',
+      relatedSectionId: 'section_cta',
+    });
+  } else {
+    if (ctaIndex < activeSections.length - 2) {
+      findings.push({
+        id: 'vis_cta_premature',
+        category: 'CTA',
+        severity: 'medium',
+        title: 'Primary Conversion CTA Placed Too Early',
+        explanation: 'Several core evaluation sections appear after your main CTA block, where 65%+ of visitors cease scrolling.',
+        recommendedAction: 'Position the Final CTA near the bottom of your sequence.',
+        relatedSectionId: 'section_cta',
+      });
+    }
+
+    if (goal === 'retainer' && (!ctaSection.trustStatement || ctaSection.trustStatement.length < 5)) {
+      findings.push({
+        id: 'vis_retainer_trust_gap',
+        category: 'CTA',
+        severity: 'low',
+        title: 'CTA Lacks Risk Reversal Guarantee',
+        explanation: 'Retainer partnerships require mutual commitment. A subtle confidentiality or sprint pilot guarantee increases conversion on booking.',
+        recommendedAction: 'Add a trust guarantee line to your CTA block.',
+        relatedSectionId: 'section_cta',
+      });
+    }
+  }
+
+  // Determine Overall Status
+  const highCount = findings.filter((f) => f.severity === 'high').length;
+  const mediumCount = findings.filter((f) => f.severity === 'medium').length;
+
+  let overallStatus: VisitorJourneyAudit['overallStatus'] = 'Strong';
+  let statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-200';
+  let summary = 'Your portfolio architecture flows smoothly from positioning to proof, scope, and conversion.';
+
+  if (highCount > 0) {
+    overallStatus = 'High Friction';
+    statusColor = 'text-rose-700 bg-rose-50 border-rose-200';
+    summary = `Identified ${highCount} critical friction point${highCount === 1 ? '' : 's'} that may cause high-intent prospects to drop off before booking.`;
+  } else if (mediumCount > 0) {
+    overallStatus = 'Needs Attention';
+    statusColor = 'text-amber-800 bg-amber-50 border-amber-200';
+    summary = `Good foundational flow with ${mediumCount} optimization opportunit${mediumCount === 1 ? 'y' : 'ies'} to strengthen trust and reduce friction.`;
+  }
+
+  return {
+    overallStatus,
+    statusColor,
+    summary,
+    findings,
+    activeSectionsCount: activeSections.length,
+    hasHero: heroIndex >= 0,
+    hasProof: earliestProofIndex < 999,
+    hasServices: servicesIndex >= 0,
+    hasCTA: ctaIndex >= 0,
+  };
+}
