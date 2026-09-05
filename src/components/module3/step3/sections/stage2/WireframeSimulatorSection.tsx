@@ -290,38 +290,65 @@ export const WireframeSimulatorSection: React.FC<Props> = React.memo(({ onContin
                   const isAbout = sec.id === 'section_about';
                   const isFAQ = sec.id === 'section_faq';
                   const isCTA = sec.id === 'section_cta';
-                  const isTestimonials = sec.id === 'section_testimonials';
-                  const isAuthority = sec.id === 'section_authority';
+                    const isTestimonials = sec.id === 'section_testimonials';
+                    const isAuthority = sec.id === 'section_authority';
 
-                  return (
-                    <div
-                      key={sec.id}
-                      id={`vis_${sec.id}`}
-                      className={cn(
-                        'pt-8 first:pt-0 text-left space-y-4 relative group',
-                        activeMode === 'builder' && 'hover:ring-2 hover:ring-[#0058be]/20 p-4 rounded-2xl transition-all'
-                      )}
-                    >
-                      {/* Builder Inspector Header (Only visible in Builder Mode) */}
-                      {activeMode === 'builder' && (
-                        <div className="flex items-center justify-between text-xs pb-2 border-b border-neutral-200">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-200 text-neutral-700">
-                              0{idx + 1}
-                            </span>
-                            <span className="font-bold text-neutral-800 text-xs">
-                              {sec.title}
-                            </span>
-                          </div>
-                          <button
-                            onClick={() => handleReviewSection(sec.id)}
-                            className="text-[11px] text-[#0058be] font-bold hover:underline flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>Edit in Canvas</span>
-                            <ArrowUpRight size={12} />
-                          </button>
+                    // Derive strategic cognitive role label from existing placement metadata
+                    const strategicRole = isHero
+                      ? 'ORIENT // VALUE HOOK'
+                      : isProof
+                      ? 'VERIFY // PROOF ANCHOR'
+                      : isServices
+                      ? 'EVALUATE // SCOPE & VELOCITY'
+                      : isCaseStudies
+                      ? 'DIAGNOSE // STAR EVIDENCE'
+                      : isAbout
+                      ? 'DIFFERENTIATE // MECHANISM'
+                      : isFAQ
+                      ? 'DE-RISK // OBJECTION KILLER'
+                      : isCTA
+                      ? 'CONVERT // DIRECT ACTION'
+                      : 'UNDERSTAND // AUTHORITY';
+
+                    return (
+                      <div
+                        key={sec.id}
+                        id={`vis_${sec.id}`}
+                        className={cn(
+                          'pt-7 first:pt-0 text-left space-y-3.5 relative group',
+                          activeMode === 'builder' && 'hover:ring-2 hover:ring-[#0058be]/20 p-4 rounded-2xl transition-all'
+                        )}
+                      >
+                        {/* Strategic Journey Marker (Subtle indicator of buyer cognitive progression) */}
+                        <div className="flex items-center justify-between text-[10px] font-mono select-none">
+                          <span className="text-neutral-400 font-bold tracking-wider uppercase">
+                            {strategicRole}
+                          </span>
+                          <span className="text-neutral-300">
+                            STEP 0{idx + 1}
+                          </span>
                         </div>
-                      )}
+
+                        {/* Builder Inspector Header (Only visible in Builder Mode) */}
+                        {activeMode === 'builder' && (
+                          <div className="flex items-center justify-between text-xs pb-2 border-b border-neutral-200">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-neutral-200 text-neutral-700">
+                                0{idx + 1}
+                              </span>
+                              <span className="font-bold text-neutral-800 text-xs">
+                                {sec.title}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => handleReviewSection(sec.id)}
+                              className="text-[11px] text-[#0058be] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>Edit in Canvas</span>
+                              <ArrowUpRight size={12} />
+                            </button>
+                          </div>
+                        )}
 
                       {/* ───────────────────────────────────────────────────────
                           1. HERO BLOCK (Hook & Orient)
