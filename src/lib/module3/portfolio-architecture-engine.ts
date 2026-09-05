@@ -808,4 +808,154 @@ export function validateArchitecture(
   return warnings;
 }
 
+export interface SectionStrategicGuidance {
+  id: string;
+  purpose: string;
+  conversionRole: string;
+  contentDirection: string;
+  visualRecommendation: string;
+  whatToAvoid: string[];
+}
+
+export function getSectionStrategicGuidance(sectionId: string): SectionStrategicGuidance {
+  switch (sectionId) {
+    case 'section_hero':
+      return {
+        id: 'section_hero',
+        purpose: 'Establish immediate category clarity, target audience alignment, and primary transformation in under 5 seconds.',
+        conversionRole: 'Hook & Orient',
+        contentDirection: 'State the high-value outcome, target audience, and proprietary mechanism without corporate buzzwords or vague fluff.',
+        visualRecommendation: 'High-contrast minimalist layout with strong typography, primary CTA button, trust badges, and an interactive sample/schematic card.',
+        whatToAvoid: [
+          'Generic slogans ("We build the future", "Crafting digital experiences")',
+          'Vague value propositions without a specific target market',
+          'Hiding primary CTA below fold without immediate orientation',
+          'Parallax gimmicks or decorative 3D models that slow down load speed',
+        ],
+      };
+
+    case 'section_about':
+      return {
+        id: 'section_about',
+        purpose: 'Establish practitioner thesis, diagnosis of industry failures, and introduce your proprietary mechanism.',
+        conversionRole: 'Build Tension & Differentiate',
+        contentDirection: 'Expose why conventional approaches in your niche fail, define the architectural root cause, and present your mechanism as the inevitable solution.',
+        visualRecommendation: 'Mechanism breakdown diagram, Before/After comparison matrix, or 3-pillar system architecture schematic.',
+        whatToAvoid: [
+          'Generic resume history or chronological autobiography ("I started in 2018...")',
+          'Soft skill listings ("Passionate problem solver with great communication")',
+          'Excessive narrative walls of text without architectural callout cards',
+          'Unsubstantiated guru claims without structural thesis',
+        ],
+      };
+
+    case 'section_services':
+      return {
+        id: 'section_services',
+        purpose: 'Clarify tangible deliverables, scope boundaries, turnaround timeline, and engagement mechanics.',
+        conversionRole: 'Scope Clarity & Engagement Tiers',
+        contentDirection: 'Present structured engagement packages with explicit deliverables, velocity commitments, and scope protection limits.',
+        visualRecommendation: 'Structured 2-3 column deliverable cards with bulleted deliverables, timeline badges, and fixed/tiered investment indicators.',
+        whatToAvoid: [
+          'Open-ended hourly billing without deliverable boundaries',
+          'Vague service menus ("Design, Development, Strategy, Marketing")',
+          'Hiding timeline turnaround expectations',
+          'Omitting scope limits or communication SLAs',
+        ],
+      };
+
+    case 'section_case_studies':
+      return {
+        id: 'section_case_studies',
+        purpose: 'Demonstrate deep analytical problem solving through structured Situation-Task-Action-Result breakdowns.',
+        conversionRole: 'Diagnostic Proof & Methodology Validation',
+        contentDirection: 'Detail the client initial constraint, strategic hypothesis, implementation steps, and concrete business transformation.',
+        visualRecommendation: 'STAR architecture cards with diagnostic constraint callouts, architectural screenshots/code, and verified metric callouts.',
+        whatToAvoid: [
+          'Vague visual galleries without business context or constraints',
+          'Unverified vanity metrics without baseline comparison ("10x growth")',
+          'Focusing on aesthetics rather than decision-making and business impact',
+          'Omitting the client starting point and core tension',
+        ],
+      };
+
+    case 'section_proof':
+      return {
+        id: 'section_proof',
+        purpose: 'Provide tangible, inspectable execution artifacts that instantly prove technical or operational mastery.',
+        conversionRole: 'Immediate Skepticism Elimination',
+        contentDirection: 'Provide direct links or live embeds to real deliverables: code repositories, design systems, recorded walkthroughs, or client deliverables.',
+        visualRecommendation: 'Proof Vault cards with asset format tags (Repository, Figma File, Loom Walkthrough, System Architecture), verification badges, and inspect buttons.',
+        whatToAvoid: [
+          'Fabricated client logos or mockups presented as real engagements',
+          'Generic stock illustrations or placeholder imagery',
+          'Static screenshots of work that cannot be verified or inspected',
+          'Claims of enterprise work without verifiable artifacts',
+        ],
+      };
+
+    case 'section_testimonials':
+      return {
+        id: 'section_testimonials',
+        purpose: 'Leverage peer validation to demonstrate reliability, communication quality, and outcome delivery.',
+        conversionRole: 'Peer Validation & Social Proof',
+        contentDirection: 'Feature concise client quotes highlighting specific deliverables, turnaround speed, and working experience.',
+        visualRecommendation: 'Verified testimonial cards with client name, role, company title, LinkedIn link placeholder, and highlighted quote takeaways.',
+        whatToAvoid: [
+          'Anonymous or initials-only quotes ("A.P., Tech Founder")',
+          'Vague praise without outcome focus ("Great guy, loved working together!")',
+          'Unverified quotes copied from unverified templates',
+          'Giant quote carousels that hide testimonials behind clicks',
+        ],
+      };
+
+    case 'section_authority':
+      return {
+        id: 'section_authority',
+        purpose: 'Reinforce domain stature and category leadership through public writing, talks, open source, or media.',
+        conversionRole: 'Status Reinforcement & Category Authority',
+        contentDirection: 'Curate key industry appearances: technical essays, podcast episodes, community contributions, or industry benchmark guides.',
+        visualRecommendation: 'Authority artifact grid with media publication logos, topic tags, external read links, and key citation snippets.',
+        whatToAvoid: [
+          'Self-congratulatory vanity awards from unverified sources',
+          'Irrelevant media coverage that does not align with your core offer',
+          'Excessive links that divert visitors away from the primary conversion path',
+          'Outdated or inactive thought leadership links',
+        ],
+      };
+
+    case 'section_faq':
+      return {
+        id: 'section_faq',
+        purpose: 'Preemptively resolve final buying hesitations, risk anxieties, pricing concerns, and workflow questions.',
+        conversionRole: 'Risk Reversal & Friction Elimination',
+        contentDirection: 'Directly address the top 4-6 high-friction client concerns: turnaround time, revision rounds, scope creep handling, and communication cadences.',
+        visualRecommendation: 'Clean accordion or 2-column Q&A grid with high-contrast questions and concise, definitive answers.',
+        whatToAvoid: [
+          'Defensive or evasive answers regarding scope, revisions, or refunds',
+          'Trivial FAQs that do not impact the buying decision ("What software do you use?")',
+          'Dense multi-paragraph essay answers that obscure key facts',
+          'FAQ sections positioned above proof or offer tiers',
+        ],
+      };
+
+    case 'section_cta':
+    default:
+      return {
+        id: 'section_cta',
+        purpose: 'Provide a single, clear, low-friction next step for serious prospective clients to initiate engagement.',
+        conversionRole: 'Final Conversion & Pipeline Entry',
+        contentDirection: 'State exactly what happens after clicking, expected preparation, and call expectations without pressure tactics.',
+        visualRecommendation: 'High-contrast focused conversion block with calendar scheduler placeholder, direct booking button, email option, and zero-risk guarantee badge.',
+        whatToAvoid: [
+          'Multiple competing conversion actions (e.g. "Buy Now OR Join Newsletter OR Follow on Twitter")',
+          'High-pressure artificial countdown timers or scarcity gimmicks',
+          'Complex multi-step intake forms that create drop-off friction',
+          'Hiding turnaround response time or meeting length expectations',
+        ],
+      };
+  }
+}
+
+
 

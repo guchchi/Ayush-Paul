@@ -42,7 +42,7 @@ interface Props {
 const STAGE2_SECTIONS = [
   { id: 1, label: 'Context & Goal', shortLabel: 'Goal', icon: Target, desc: 'Verify inherited strategic context and select your portfolio acquisition goal' },
   { id: 2, label: 'Section Sequence', shortLabel: 'Hierarchy', icon: ListOrdered, desc: 'Finalize section sequence, verify conversion rationale, and resolve architectural warnings' },
-  { id: 3, label: 'Copy & Visual Specs', shortLabel: 'Spec Studio', icon: FileText, desc: 'Fine-tune headlines, narrative copy, CTAs & visual components' },
+  { id: 3, label: 'Portfolio Canvas', shortLabel: 'Canvas', icon: FileText, desc: 'Interactive 3-column architecture canvas: structure, wireframe & section intelligence' },
   { id: 4, label: 'Wireframe Simulator', shortLabel: 'Simulator', icon: Monitor, desc: 'Live responsive preview across Desktop, Tablet & Mobile' },
   { id: 5, label: 'Audit & Master Export', shortLabel: 'Deploy Spec', icon: Rocket, desc: '5-dimension conversion score, checklist & luxury PDF export' },
 ] as const;
