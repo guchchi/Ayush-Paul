@@ -17,6 +17,7 @@ import { EASING, DURATION } from '../../../../lib/motion-presets';
 import { useModule3Store } from '../../../../lib/module3/store';
 
 // ── Sub-Section Components ────────────────────────────────────────────────────
+import { ContextHandoffCard } from './stage2/ContextHandoffCard';
 import { ArchetypeStrategySection } from './stage2/ArchetypeStrategySection';
 import { SectionHierarchySection } from './stage2/SectionHierarchySection';
 import { SectionSpecStudio } from './stage2/SectionSpecStudio';
@@ -91,6 +92,9 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
 
   return (
     <div className="space-y-6 text-left w-full font-sans">
+      {/* Step 0: Context Handoff */}
+      <ContextHandoffCard />
+
       {/* Step Tabs / Navigation Ribbon */}
       <div className="bg-white p-3 sm:p-4 rounded-3xl border border-neutral-200 shadow-xs">
         <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
