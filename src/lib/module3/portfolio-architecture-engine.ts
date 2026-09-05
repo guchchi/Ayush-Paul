@@ -1203,6 +1203,42 @@ export function validateVisitorJourney(
     });
   }
 
+  // 7. CTA: Placement & Conversion Trigger
+  if (ctaIndex < 0 || !ctaSection) {
+    findings.push({
+      id: 'vis_cta_missing',
+      category: 'CTA',
+      severity: 'high',
+      title: 'Missing Direct Conversion Next Step',
+      explanation: 'The portfolio has no concluding conversion trigger. A prospective client who is convinced has no direct path to schedule a discovery or architecture sprint.',
+      recommendedAction: 'Enable the Final CTA section.',
+      relatedSectionId: 'section_cta',
+    });
+  } else {
+    if (!ctaSection.ctaText || ctaSection.ctaText.trim().length < 3) {
+      findings.push({
+        id: 'vis_cta_weak_text',
+        category: 'CTA',
+        severity: 'low',
+        title: 'Call to Action Button Text Could Be Stronger',
+        explanation: 'The primary conversion button is empty or very brief. Using action-oriented copy clarifies what happens upon clicking.',
+        recommendedAction: 'Specify a direct outcome in your CTA button.',
+        relatedSectionId: 'section_cta',
+      });
+    }
+    if (ctaIndex < activeSections.length - 2) {
+      findings.push({
+        id: 'vis_cta_premature',
+        category: 'CTA',
+        severity: 'medium',
+        title: 'Primary Conversion CTA Placed Too Early',
+        explanation: 'Several core evaluation sections appear after your main CTA block, where 65%+ of visitors cease scrolling.',
+        recommendedAction: 'Position the Final CTA near the bottom of your sequence.',
+        relatedSectionId: 'section_cta',
+      });
+    }
+  }
+
   // Sort Findings by Severity: High → Medium → Low
   const severityRank: Record<VisitorFinding['severity'], number> = {
     high: 3,
@@ -1243,3 +1279,305 @@ export function validateVisitorJourney(
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 5: PORTFOLIO FINALIZATION & READINESS GATE
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface PortfolioReadinessReport {
+  status: 'READY' | 'NEEDS_ATTENTION' | 'INCOMPLETE';
+  statusLabel: string;
+  statusColor: string;
+  canLock: boolean;
+  blockers: string[];
+  warnings: string[];
+  customizedSectionCount: number;
+  totalActiveSections: number;
+  totalSections: number;
+  hasVerifiedProof: boolean;
+  activeSequence: { id: string; title: string; number: number; cognitiveRole: string }[];
+  visitorAudit: VisitorJourneyAudit;
+}
+
+export function evaluatePortfolioReadiness(
+  sections: PortfolioBlueprintSection[],
+  archetypeId?: string | null,
+  goal?: PortfolioGoal | null,
+  isLocked?: boolean
+): PortfolioReadinessReport {
+  const blockers: string[] = [];
+  const warnings: string[] = [];
+
+  const allSections = sections || [];
+  const activeSections = allSections.filter((s) => s.isEnabled !== false);
+  const heroIndex = activeSections.findIndex((s) => s.id === 'section_hero');
+  const ctaIndex = activeSections.findIndex((s) => s.id === 'section_cta');
+  const ctaSection = activeSections[ctaIndex];
+
+  // 1. Mandatory Lock Gates (Blockers)
+  if (heroIndex !== 0) {
+    blockers.push(
+      heroIndex < 0
+        ? 'Hero section is missing or disabled. An active Hero is required at position #1.'
+        : 'Hero section must be positioned first (#1) to orient prospective clients.'
+    );
+  }
+
+  if (ctaIndex < 0 || !ctaSection) {
+    blockers.push('Final CTA section is missing or disabled. An active conversion step is required.');
+  }
+
+  if (activeSections.length < 3) {
+    blockers.push(`Architecture has only ${activeSections.length} active section(s). At least 3 sections are required for a viable portfolio.`);
+  }
+
+  if (!goal) {
+    blockers.push('Portfolio acquisition goal has not been selected (Sprint, Retainer, or Consulting).');
+  }
+
+  if (!archetypeId) {
+    blockers.push('Portfolio architecture archetype has not been confirmed.');
+  }
+
+  // Run Visitor Journey Audit
+  const visitorAudit = validateVisitorJourney(sections, archetypeId, goal);
+
+  // High-severity visitor blockers block locking
+  visitorAudit.findings
+    .filter((f) => f.severity === 'high')
+    .forEach((f) => {
+      // Avoid duplicate wording if hero or CTA missing was already caught
+      if (!blockers.some((b) => b.includes(f.title) || (f.id === 'vis_hero_missing' && b.includes('Hero')) || (f.id === 'vis_cta_missing' && b.includes('CTA')))) {
+        blockers.push(`${f.title}: ${f.explanation}`);
+      }
+    });
+
+  // Medium and low findings are warnings (do not block finalization)
+  visitorAudit.findings
+    .filter((f) => f.severity === 'medium' || f.severity === 'low')
+    .forEach((f) => {
+      warnings.push(`${f.title} (${f.recommendedAction})`);
+    });
+
+  // 2. Content & Proof Readiness (Warnings only)
+  let customizedCount = 0;
+  let hasVerifiedProof = false;
+
+  activeSections.forEach((sec) => {
+    if (sec.isCustomized || sec.isHeadlineCustomized || sec.isBodyCustomized || sec.isCtaCustomized) {
+      customizedCount++;
+    }
+    if (sec.proofAnchor && sec.proofAnchor.trim().length > 0) {
+      hasVerifiedProof = true;
+    }
+  });
+
+  if (!hasVerifiedProof) {
+    warnings.push('No verified proof assets or case evidence attached yet (portfolio relies on narrative positioning).');
+  }
+
+  if (customizedCount === 0 && activeSections.length > 0) {
+    warnings.push('Sections currently rely entirely on generated default copy. Customization is recommended before client launch.');
+  }
+
+  // Active sequence map with cognitive roles
+  const activeSequence = activeSections.map((sec, idx) => {
+    const role = sec.id === 'section_hero'
+      ? 'ORIENT // VALUE HOOK'
+      : sec.id === 'section_proof'
+      ? 'VERIFY // PROOF ANCHOR'
+      : sec.id === 'section_services'
+      ? 'EVALUATE // SCOPE & VELOCITY'
+      : sec.id === 'section_case_studies'
+      ? 'DIAGNOSE // STAR EVIDENCE'
+      : sec.id === 'section_about'
+      ? 'DIFFERENTIATE // MECHANISM'
+      : sec.id === 'section_faq'
+      ? 'DE-RISK // OBJECTION KILLER'
+      : sec.id === 'section_cta'
+      ? 'CONVERT // DIRECT ACTION'
+      : 'UNDERSTAND // AUTHORITY';
+
+    return {
+      id: sec.id,
+      title: sec.title,
+      number: idx + 1,
+      cognitiveRole: role,
+    };
+  });
+
+  let status: PortfolioReadinessReport['status'] = 'READY';
+  let statusLabel = 'Ready to Finalize';
+  let statusColor = 'text-emerald-700 bg-emerald-50 border-emerald-200';
+
+  if (blockers.length > 0) {
+    status = 'INCOMPLETE';
+    statusLabel = `${blockers.length} Blocker${blockers.length === 1 ? '' : 's'} Preventing Finalization`;
+    statusColor = 'text-rose-700 bg-rose-50 border-rose-200';
+  } else if (warnings.length > 0) {
+    status = 'NEEDS_ATTENTION';
+    statusLabel = `Ready with ${warnings.length} Optimization Note${warnings.length === 1 ? '' : 's'}`;
+    statusColor = 'text-amber-800 bg-amber-50 border-amber-200';
+  }
+
+  return {
+    status,
+    statusLabel,
+    statusColor,
+    canLock: blockers.length === 0,
+    blockers,
+    warnings,
+    customizedSectionCount: customizedCount,
+    totalActiveSections: activeSections.length,
+    totalSections: allSections.length,
+    hasVerifiedProof,
+    activeSequence,
+    visitorAudit,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 5: DISTINCT EXPORT GENERATORS (JSON & MARKDOWN)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface ExportPortfolioParams {
+  userName?: string;
+  positioningHeadline?: string;
+  uniqueMechanism?: string;
+  archetypeId?: string | null;
+  goal?: PortfolioGoal | null;
+  sections: PortfolioBlueprintSection[];
+  isLocked?: boolean;
+  lockedAt?: string;
+  readiness?: PortfolioReadinessReport;
+}
+
+export function exportPortfolioArchitectureAsJson(params: ExportPortfolioParams): string {
+  const activeSections = params.sections.filter((s) => s.isEnabled !== false);
+  const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === params.archetypeId) || PORTFOLIO_ARCHETYPES[0];
+
+  const payload = {
+    $schema: 'https://authority-suite.schema/v1/portfolio-architecture.json',
+    meta: {
+      specName: 'Executive Portfolio Architecture Specification',
+      version: 1,
+      generatedAt: new Date().toISOString(),
+      finalized: !!params.isLocked,
+      finalizedAt: params.lockedAt || (params.isLocked ? new Date().toISOString() : null),
+      practitioner: {
+        name: params.userName || 'Specialist',
+        positioning: params.positioningHeadline || 'Authority Specialist',
+      },
+    },
+    strategy: {
+      goal: params.goal || 'sprint',
+      archetype: {
+        id: archetype.id,
+        name: archetype.name,
+        targetBuyer: archetype.bestFor,
+      },
+      uniqueMechanism: params.uniqueMechanism || 'Proof-First Delivery Framework',
+    },
+    architecture: {
+      totalSections: params.sections.length,
+      activeSectionsCount: activeSections.length,
+      sequence: activeSections.map((s) => s.id),
+    },
+    sections: activeSections.map((s, idx) => ({
+      id: s.id,
+      sectionNumber: idx + 1,
+      title: s.title,
+      purpose: s.purpose,
+      conversionReasoning: s.conversionReasoning,
+      contentSpec: {
+        headline: s.headline,
+        subheadline: s.subheadline,
+        bodyNarrative: s.bodyCopy,
+        ctaText: s.ctaText,
+        trustStatement: s.trustStatement || null,
+      },
+      directives: {
+        visualRecommendation: s.recommendedVisuals,
+        proofAnchor: s.proofAnchor || null,
+        isCustomized: !!(s.isCustomized || s.isHeadlineCustomized || s.isBodyCustomized),
+      },
+    })),
+    validation: {
+      overallStatus: params.readiness?.visitorAudit.overallStatus || 'Strong',
+      summary: params.readiness?.visitorAudit.summary || '',
+      findingsCount: params.readiness?.visitorAudit.findings.length || 0,
+      blockersCount: params.readiness?.blockers.length || 0,
+    },
+  };
+
+  return JSON.stringify(payload, null, 2);
+}
+
+export function exportPortfolioArchitectureAsMarkdown(params: ExportPortfolioParams): string {
+  const activeSections = params.sections.filter((s) => s.isEnabled !== false);
+  const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === params.archetypeId) || PORTFOLIO_ARCHETYPES[0];
+  const goalLabel = params.goal === 'retainer' ? 'High-Ticket Retainer' : params.goal === 'consulting' ? 'Strategic Advisory / Consulting' : 'High-Velocity Sprint';
+
+  const lines: string[] = [
+    `# Executive Portfolio Architecture Specification`,
+    ``,
+    `> **Prepared For:** ${params.userName || 'Specialist'}`,
+    `> **Positioning:** ${params.positioningHeadline || 'Authority Specialist'}`,
+    `> **Portfolio Goal:** ${goalLabel}`,
+    `> **Architecture Archetype:** ${archetype.name}`,
+    `> **Unique Mechanism:** ${params.uniqueMechanism || 'Proof-First Delivery Framework'}`,
+    `> **Status:** ${params.isLocked ? `FINALIZED (Locked: ${params.lockedAt ? new Date(params.lockedAt).toLocaleDateString() : 'Yes'})` : 'IN REVISION / DRAFT'}`,
+    ``,
+    `---`,
+    ``,
+    `## 1. Executive Narrative Flow`,
+    ``,
+    activeSections.map((s, idx) => `${idx + 1}. **${s.title}** (${s.purpose})`).join('\n'),
+    ``,
+    `---`,
+    ``,
+    `## 2. Section-by-Section Blueprint & Approved Copy`,
+    ``,
+  ];
+
+  activeSections.forEach((s, idx) => {
+    lines.push(
+      `### ${idx + 1}. ${s.title}`,
+      ``,
+      `* **Strategic Purpose:** ${s.purpose}`,
+      `* **Conversion Role:** ${s.conversionReasoning}`,
+      `* **Headline:** ${s.headline}`,
+      `* **Subheadline:** ${s.subheadline}`,
+      `* **Body Narrative:**`,
+      s.bodyCopy ? `  > ${s.bodyCopy.replace(/\n/g, '\n  > ')}` : '  *(Default structure pending customized copy)*',
+      `* **Primary CTA:** \`${s.ctaText}\``,
+      s.trustStatement ? `* **Trust Guarantee / Reversal:** ${s.trustStatement}` : `* **Trust Guarantee / Reversal:** *(None specified)*`,
+      `* **Proof Requirement:** ${s.proofAnchor ? `\`${s.proofAnchor}\`` : '*(No proof anchor attached — narrative claim)*'}`,
+      `* **Visual Component Directive:** ${s.recommendedVisuals}`,
+      ``
+    );
+  });
+
+  if (params.readiness) {
+    lines.push(
+      `---`,
+      ``,
+      `## 3. Conversion Readiness & Visitor Audit Summary`,
+      ``,
+      `* **Overall Health:** ${params.readiness.visitorAudit.overallStatus}`,
+      `* **Active Sections:** ${params.readiness.totalActiveSections} of ${params.readiness.totalSections}`,
+      `* **Customized Sections:** ${params.readiness.customizedSectionCount} of ${params.readiness.totalActiveSections}`,
+      `* **Verified Proof:** ${params.readiness.hasVerifiedProof ? 'Attached' : 'Unsubstantiated narrative'}`,
+      ``
+    );
+
+    if (params.readiness.warnings.length > 0) {
+      lines.push(
+        `### Pre-Flight Optimization Opportunities:`,
+        ...params.readiness.warnings.map((w) => `- ${w}`),
+        ``
+      );
+    }
+  }
+
+  return lines.join('\n');
+}

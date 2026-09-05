@@ -44,7 +44,7 @@ const STAGE2_SECTIONS = [
   { id: 2, label: 'Section Sequence', shortLabel: 'Hierarchy', icon: ListOrdered, desc: 'Finalize section sequence, verify conversion rationale, and resolve architectural warnings' },
   { id: 3, label: 'Portfolio Canvas', shortLabel: 'Canvas', icon: FileText, desc: 'Interactive 3-column architecture canvas: structure, wireframe & section intelligence' },
   { id: 4, label: 'Visitor Preview', shortLabel: 'Visitor POV', icon: Monitor, desc: 'Client perspective scroll journey simulation and conversion friction validation' },
-  { id: 5, label: 'Audit & Master Export', shortLabel: 'Deploy Spec', icon: Rocket, desc: '5-dimension conversion score, checklist & luxury PDF export' },
+  { id: 5, label: 'Finalize & Export', shortLabel: 'Finalize', icon: Rocket, desc: 'Strategic readiness assessment, architecture lock & master blueprint exports' },
 ] as const;
 
 const sectionFade = {
@@ -175,7 +175,10 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
           )}
 
           {activeSection === 5 && (
-            <DeployArchitectureSection onComplete={handleFinish} />
+            <DeployArchitectureSection
+              onComplete={handleFinish}
+              onNavigateToPreview={() => setStage2ActiveSection(4)}
+            />
           )}
         </motion.div>
       </AnimatePresence>

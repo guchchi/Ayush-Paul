@@ -531,6 +531,8 @@ export interface Module3State {
   resetPortfolioSectionsToDefault(): void;
   applyArchetypePreset(archetypeId: string): void;
   restoreRecommendedStructure(archetypeId?: string): void;
+  lockStage2Architecture(): void;
+  unlockStage2Architecture(): void;
 
   dismissStaleContext(): void;
   refreshStaleContext(): void;
@@ -541,6 +543,9 @@ export interface Stage2ArchetypeData {
   customNotes?: string;
   confirmedAt?: string;
   portfolioGoal?: 'retainer' | 'sprint' | 'consulting';
+  isLocked?: boolean;
+  lockedAt?: string;
+  revisionStatus?: 'draft' | 'finalized' | 'in_revision';
 }
 
 export interface Stage2WireframeSettings {

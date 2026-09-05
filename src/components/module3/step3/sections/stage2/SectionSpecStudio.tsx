@@ -107,7 +107,6 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
       sections[0]
     );
   }, [sections, selectedSectionId, activeSections]);
-
   // Inherited Context
   const market = (mod1MarketId || '').replace(/_/g, ' ') || 'High-growth companies';
   const service = (mod1ServiceId || '').replace(/_/g, ' ') || 'Specialized systems';
@@ -116,6 +115,7 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
   // Active Archetype & Goal
   const activeArchetypeId = stage2Archetype?.selectedArchetypeId || 'proof_first';
   const portfolioGoal: PortfolioGoal = stage2Archetype?.portfolioGoal || 'retainer';
+  const isLocked = Boolean(stage2Archetype?.isLocked);
 
   const activeArchetypeMeta = useMemo(() => {
     return (
@@ -123,7 +123,6 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
       PORTFOLIO_ARCHETYPES[0]
     );
   }, [activeArchetypeId]);
-
   // Architecture Diff & Validation
   const diff = useMemo(() => {
     return diffArchitecture(sections, activeArchetypeMeta.recommendedOrder);
@@ -147,16 +146,16 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
   // Direct section field edit
   const handleFieldChange = useCallback(
     (field: keyof PortfolioBlueprintSection, value: any) => {
-      if (!selectedSection) return;
+      if (isLocked || !selectedSection) return;
       updatePortfolioSection(selectedSection.id, { [field]: value });
     },
-    [selectedSection, updatePortfolioSection]
+    [isLocked, selectedSection, updatePortfolioSection]
   );
 
   // Section Reordering with strict Hero (#1) protection
   const handleMoveUp = useCallback(
     (index: number) => {
-      if (index <= 1) return; // Cannot move Hero or move section above Hero
+      if (isLocked || index <= 1) return; // Cannot move Hero or move section above Hero
       const newSections = [...sections];
       const temp = newSections[index];
       newSections[index] = newSections[index - 1];
@@ -169,12 +168,12 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
       }));
       reorderPortfolioSections(reindexed);
     },
-    [sections, reorderPortfolioSections]
+    [isLocked, sections, reorderPortfolioSections]
   );
 
   const handleMoveDown = useCallback(
     (index: number) => {
-      if (index === 0 || index >= sections.length - 1) return; // Hero cannot move down, last cannot move down
+      if (isLocked || index === 0 || index >= sections.length - 1) return; // Hero cannot move down, last cannot move down
       const newSections = [...sections];
       const temp = newSections[index];
       newSections[index] = newSections[index + 1];
@@ -186,47 +185,49 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
       }));
       reorderPortfolioSections(reindexed);
     },
-    [sections, reorderPortfolioSections]
+    [isLocked, sections, reorderPortfolioSections]
   );
 
   // Toggle Section Visibility
   const handleToggleVisibility = useCallback(
     (sectionId: string, currentEnabled: boolean) => {
-      if (sectionId === 'section_hero') return; // Hero is permanently protected
+      if (isLocked || sectionId === 'section_hero') return; // Hero is permanently protected
       updatePortfolioSection(sectionId, {
         isEnabled: !currentEnabled,
       });
     },
-    [updatePortfolioSection]
+    [isLocked, updatePortfolioSection]
   );
 
   // Add (Re-enable) Section
   const handleEnableSection = useCallback(
     (sectionId: string) => {
+      if (isLocked) return;
       updatePortfolioSection(sectionId, { isEnabled: true });
       setSelectedSectionId(sectionId);
       setShowAddSectionMenu(false);
     },
-    [updatePortfolioSection]
+    [isLocked, updatePortfolioSection]
   );
 
   // Restore Recommended Structure
   const handleRestoreRecommended = useCallback(() => {
+    if (isLocked) return;
     restoreRecommendedStructure(activeArchetypeId);
     setShowRestoreConfirm(false);
-  }, [restoreRecommendedStructure, activeArchetypeId]);
+  }, [isLocked, restoreRecommendedStructure, activeArchetypeId]);
 
   // Quick Inject Real Step 2 Proof Asset title
   const handleInjectProof = useCallback(
     (proofTitle: string) => {
-      if (!selectedSection) return;
+      if (isLocked || !selectedSection) return;
       const currentBody = selectedSection.bodyCopy || '';
       const updatedBody = currentBody.includes(proofTitle)
         ? currentBody
         : `${currentBody}\n\n[Proof Reference: "${proofTitle}"]`;
       handleFieldChange('bodyCopy', updatedBody);
     },
-    [selectedSection, handleFieldChange]
+    [isLocked, selectedSection, handleFieldChange]
   );
 
   if (!sections || sections.length === 0) {
@@ -275,7 +276,8 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                 {!showRestoreConfirm ? (
                   <button
                     onClick={() => setShowRestoreConfirm(true)}
-                    className="px-2.5 py-1 text-[11px] font-bold text-neutral-600 hover:text-[#0058be] bg-white hover:bg-neutral-100 border border-neutral-200 rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
+                    disabled={isLocked}
+                    className="px-2.5 py-1 text-[11px] font-bold text-neutral-600 hover:text-[#0058be] disabled:opacity-40 disabled:hover:text-neutral-600 bg-white hover:bg-neutral-100 border border-neutral-200 rounded-xl transition-all cursor-pointer disabled:cursor-not-allowed flex items-center gap-1 shadow-2xs"
                   >
                     <RotateCcw size={11} />
                     <span>Reset to Archetype</span>
@@ -285,7 +287,8 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                     <span className="text-[10px] text-amber-900 font-bold px-1">Reset structure?</span>
                     <button
                       onClick={handleRestoreRecommended}
-                      className="px-2 py-0.5 bg-[#0058be] text-white text-[10px] font-bold rounded-lg cursor-pointer hover:bg-[#00469b]"
+                      disabled={isLocked}
+                      className="px-2 py-0.5 bg-[#0058be] text-white text-[10px] font-bold rounded-lg cursor-pointer hover:bg-[#00469b] disabled:opacity-50"
                     >
                       Yes
                     </button>
@@ -306,6 +309,24 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
             )}
           </div>
         </div>
+
+        {/* Locked Architecture Banner */}
+        {isLocked && (
+          <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <Lock size={15} className="text-amber-700 shrink-0" />
+              <div>
+                <span className="font-bold text-xs block text-amber-950">Architecture Finalized &amp; Locked</span>
+                <span className="text-[11px] text-amber-800">
+                  Section specs, copy inputs, and sequence order are locked in read-only mode. Go to Step 5 to unlock if revisions are required.
+                </span>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-mono text-[10px] font-bold uppercase shrink-0 border border-amber-300">
+              Read-Only
+            </span>
+          </div>
+        )}
 
         {/* Warning Callout if any */}
         {warnings.length > 0 && (
@@ -386,14 +407,14 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                 <div className="relative">
                   <button
                     onClick={() => setShowAddSectionMenu(!showAddSectionMenu)}
-                    className="p-1.5 text-xs font-bold text-[#0058be] bg-blue-50 hover:bg-blue-100 rounded-xl border border-blue-200 cursor-pointer transition-colors flex items-center gap-1"
-                    title="Enable an omitted section"
+                    disabled={isLocked}
+                    className="px-2.5 py-1 bg-white hover:bg-neutral-100 disabled:opacity-40 disabled:hover:bg-white text-xs font-bold text-[#0058be] border border-blue-200 rounded-xl transition-all cursor-pointer disabled:cursor-not-allowed flex items-center gap-1 shadow-2xs"
                   >
-                    <Plus size={13} />
-                    <span className="text-[10px]">Add</span>
+                    <Plus size={12} />
+                    <span>Add Section</span>
                   </button>
 
-                  {showAddSectionMenu && (
+                  {showAddSectionMenu && !isLocked && (
                     <div className="absolute left-0 mt-1.5 w-56 bg-white border border-neutral-200 rounded-2xl shadow-lg p-2 z-30 space-y-1">
                       <div className="text-[10px] font-extrabold uppercase text-neutral-400 px-2 py-1">
                         Omitted Sections:
@@ -446,11 +467,11 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                             e.stopPropagation();
                             handleMoveUp(idx);
                           }}
-                          disabled={isHero || isFirstMovable}
+                          disabled={isLocked || isHero || isFirstMovable}
                           aria-label={`Move ${sec.title} up`}
                           className={cn(
                             'p-0.5 rounded hover:bg-neutral-200 text-neutral-400 hover:text-neutral-900 transition-colors',
-                            (isHero || isFirstMovable) && 'opacity-20 cursor-not-allowed hover:bg-transparent'
+                            (isLocked || isHero || isFirstMovable) && 'opacity-20 cursor-not-allowed hover:bg-transparent'
                           )}
                         >
                           <ArrowUp size={11} />
@@ -460,11 +481,11 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                             e.stopPropagation();
                             handleMoveDown(idx);
                           }}
-                          disabled={isHero || isLastMovable}
+                          disabled={isLocked || isHero || isLastMovable}
                           aria-label={`Move ${sec.title} down`}
                           className={cn(
                             'p-0.5 rounded hover:bg-neutral-200 text-neutral-400 hover:text-neutral-900 transition-colors',
-                            (isHero || isLastMovable) && 'opacity-20 cursor-not-allowed hover:bg-transparent'
+                            (isLocked || isHero || isLastMovable) && 'opacity-20 cursor-not-allowed hover:bg-transparent'
                           )}
                         >
                           <ArrowDown size={11} />
@@ -521,13 +542,13 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                           e.stopPropagation();
                           handleToggleVisibility(sec.id, isEnabled);
                         }}
-                        disabled={isHero}
+                        disabled={isLocked || isHero}
                         aria-label={isEnabled ? `Disable ${sec.title}` : `Enable ${sec.title}`}
-                        title={isHero ? 'Hero cannot be disabled' : isEnabled ? 'Click to hide section' : 'Click to enable section'}
+                        title={isLocked ? 'Architecture is locked' : isHero ? 'Hero cannot be disabled' : isEnabled ? 'Click to hide section' : 'Click to enable section'}
                         className={cn(
                           'p-1.5 rounded-lg transition-colors cursor-pointer',
-                          isHero
-                            ? 'text-[#0058be] bg-blue-50/60 cursor-not-allowed'
+                          isHero || isLocked
+                            ? 'text-[#0058be] bg-blue-50/60 cursor-not-allowed opacity-60'
                             : isEnabled
                             ? 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200'
                             : 'text-neutral-400 bg-neutral-200 hover:bg-neutral-300'
@@ -865,6 +886,17 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                 </h3>
               </div>
 
+              {/* Architecture Locked Notice */}
+              {isLocked && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between text-xs text-amber-900">
+                  <div className="flex items-center gap-2 font-bold">
+                    <Lock size={14} className="text-amber-700 shrink-0" />
+                    <span>Architecture Locked (Read-Only)</span>
+                  </div>
+                  <span className="text-[10px] text-amber-700 font-mono uppercase font-bold">Step 5 to unlock</span>
+                </div>
+              )}
+
               {/* 1. PURPOSE & CONVERSION ROLE */}
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-neutral-800 uppercase tracking-wider">
@@ -911,7 +943,7 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                     Content Specification
                   </span>
                   <span className="text-[10px] text-neutral-400 font-mono">
-                    Auto-saved
+                    {isLocked ? 'Locked (Read-Only)' : 'Auto-saved'}
                   </span>
                 </div>
 
@@ -937,7 +969,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                     type="text"
                     value={selectedSection.headline || ''}
                     onChange={(e) => handleFieldChange('headline', e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-xl text-xs font-bold text-neutral-900 focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all"
+                    disabled={isLocked}
+                    readOnly={isLocked}
+                    className="w-full px-3 py-2 bg-white disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed border border-neutral-300 rounded-xl text-xs font-bold text-neutral-900 focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all"
                     placeholder="Punchy strategic headline..."
                   />
                 </div>
@@ -956,7 +990,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                     type="text"
                     value={selectedSection.subheadline || ''}
                     onChange={(e) => handleFieldChange('subheadline', e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-neutral-800 font-medium focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all"
+                    disabled={isLocked}
+                    readOnly={isLocked}
+                    className="w-full px-3 py-2 bg-white disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed border border-neutral-300 rounded-xl text-xs text-neutral-800 font-medium focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all"
                     placeholder="Supporting value narrative..."
                   />
                 </div>
@@ -975,7 +1011,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                     rows={3}
                     value={selectedSection.bodyCopy || ''}
                     onChange={(e) => handleFieldChange('bodyCopy', e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-xl text-xs text-neutral-800 leading-relaxed focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all resize-y"
+                    disabled={isLocked}
+                    readOnly={isLocked}
+                    className="w-full px-3 py-2 bg-white disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed border border-neutral-300 rounded-xl text-xs text-neutral-800 leading-relaxed focus:outline-none focus:border-[#0058be] focus:ring-2 focus:ring-[#0058be]/10 transition-all resize-y"
                     placeholder="Strategic copy narrative..."
                   />
                 </div>
@@ -990,7 +1028,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                       type="text"
                       value={selectedSection.ctaText || ''}
                       onChange={(e) => handleFieldChange('ctaText', e.target.value)}
-                      className="w-full px-3 py-1.5 bg-white border border-neutral-300 rounded-xl text-xs font-bold text-[#0058be] focus:outline-none focus:border-[#0058be] transition-all"
+                      disabled={isLocked}
+                      readOnly={isLocked}
+                      className="w-full px-3 py-1.5 bg-white disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed border border-neutral-300 rounded-xl text-xs font-bold text-[#0058be] focus:outline-none focus:border-[#0058be] transition-all"
                       placeholder="e.g. Schedule Call"
                     />
                   </div>
@@ -1002,7 +1042,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                       type="text"
                       value={selectedSection.trustStatement || ''}
                       onChange={(e) => handleFieldChange('trustStatement', e.target.value)}
-                      className="w-full px-3 py-1.5 bg-white border border-neutral-300 rounded-xl text-xs text-emerald-800 font-medium focus:outline-none focus:border-emerald-500 transition-all"
+                      disabled={isLocked}
+                      readOnly={isLocked}
+                      className="w-full px-3 py-1.5 bg-white disabled:bg-neutral-100 disabled:text-neutral-500 disabled:cursor-not-allowed border border-neutral-300 rounded-xl text-xs text-emerald-800 font-medium focus:outline-none focus:border-emerald-500 transition-all"
                       placeholder="e.g. Zero-risk guarantee"
                     />
                   </div>
@@ -1041,8 +1083,9 @@ export const SectionSpecStudio: React.FC<Props> = React.memo(({ onContinue }) =>
                         <button
                           key={asset.id}
                           onClick={() => handleInjectProof(asset.title)}
-                          className="px-2.5 py-1 bg-white hover:bg-blue-50 border border-blue-200 text-[#0058be] rounded-lg text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1 shadow-2xs"
-                          title="Click to reference in body copy"
+                          disabled={isLocked}
+                          className="px-2.5 py-1 bg-white hover:bg-blue-50 disabled:opacity-40 disabled:hover:bg-white border border-blue-200 text-[#0058be] rounded-lg text-xs font-semibold cursor-pointer disabled:cursor-not-allowed transition-colors flex items-center gap-1 shadow-2xs"
+                          title={isLocked ? 'Architecture is locked' : 'Click to reference in body copy'}
                         >
                           <Zap size={10} />
                           <span className="truncate max-w-[160px]">{asset.title}</span>

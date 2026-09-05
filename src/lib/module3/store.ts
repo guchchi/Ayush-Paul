@@ -740,6 +740,10 @@ export const useModule3Store = create<Module3State>()(
       updatePortfolioSection(sectionId, updatedFields) {
         set((state) => {
           if (!state.authoritySuite) return {};
+          if (state.stage2Archetype?.isLocked) {
+            console.warn('[Module3Store] Cannot update portfolio section: architecture is locked.');
+            return {};
+          }
           return {
             authoritySuite: {
               ...state.authoritySuite,
@@ -940,15 +944,31 @@ export const useModule3Store = create<Module3State>()(
       },
 
       setStage2Archetype(archetypeData: Partial<Stage2ArchetypeData>) {
-        set((state) => ({
-          stage2Archetype: {
-            selectedArchetypeId: archetypeData.selectedArchetypeId ?? state.stage2Archetype?.selectedArchetypeId ?? 'proof_first',
-            customNotes: archetypeData.customNotes ?? state.stage2Archetype?.customNotes ?? '',
-            confirmedAt: archetypeData.confirmedAt ?? state.stage2Archetype?.confirmedAt ?? new Date().toISOString(),
-            portfolioGoal: archetypeData.portfolioGoal !== undefined ? archetypeData.portfolioGoal : state.stage2Archetype?.portfolioGoal,
-          },
-          lastUpdated: Date.now(),
-        }));
+        set((state) => {
+          // Reject mutating archetype selection or goal if locked, unless explicitly unlocking/locking
+          if (state.stage2Archetype?.isLocked && archetypeData.isLocked === undefined) {
+            if (
+              (archetypeData.selectedArchetypeId && archetypeData.selectedArchetypeId !== state.stage2Archetype.selectedArchetypeId) ||
+              (archetypeData.portfolioGoal && archetypeData.portfolioGoal !== state.stage2Archetype.portfolioGoal)
+            ) {
+              console.warn('[Module3Store] Cannot modify archetype or goal while architecture is locked.');
+              return {};
+            }
+          }
+
+          return {
+            stage2Archetype: {
+              selectedArchetypeId: archetypeData.selectedArchetypeId ?? state.stage2Archetype?.selectedArchetypeId ?? 'proof_first',
+              customNotes: archetypeData.customNotes ?? state.stage2Archetype?.customNotes ?? '',
+              confirmedAt: archetypeData.confirmedAt ?? state.stage2Archetype?.confirmedAt ?? new Date().toISOString(),
+              portfolioGoal: archetypeData.portfolioGoal !== undefined ? archetypeData.portfolioGoal : state.stage2Archetype?.portfolioGoal,
+              isLocked: archetypeData.isLocked !== undefined ? archetypeData.isLocked : state.stage2Archetype?.isLocked,
+              lockedAt: archetypeData.lockedAt !== undefined ? archetypeData.lockedAt : state.stage2Archetype?.lockedAt,
+              revisionStatus: archetypeData.revisionStatus !== undefined ? archetypeData.revisionStatus : state.stage2Archetype?.revisionStatus,
+            },
+            lastUpdated: Date.now(),
+          };
+        });
       },
 
       setStage2WireframeSettings(settings: Partial<Stage2WireframeSettings>) {
@@ -965,6 +985,10 @@ export const useModule3Store = create<Module3State>()(
       reorderPortfolioSections(reordered: PortfolioBlueprintSection[]) {
         set((state) => {
           if (!state.authoritySuite) return {};
+          if (state.stage2Archetype?.isLocked) {
+            console.warn('[Module3Store] Cannot reorder portfolio sections: architecture is locked.');
+            return {};
+          }
           const indexed = reordered.map((sec, idx) => ({
             ...sec,
             sectionNumber: idx + 1,
@@ -983,6 +1007,10 @@ export const useModule3Store = create<Module3State>()(
       resetPortfolioSectionsToDefault() {
         set((state) => {
           if (!state.authoritySuite) return {};
+          if (state.stage2Archetype?.isLocked) {
+            console.warn('[Module3Store] Cannot reset portfolio sections: architecture is locked.');
+            return {};
+          }
           const sorted = [...state.authoritySuite.portfolioBlueprint].sort((a, b) => {
             const numA = parseInt(a.id.replace(/\D/g, '') || '0', 10);
             const numB = parseInt(b.id.replace(/\D/g, '') || '0', 10);
@@ -1006,6 +1034,10 @@ export const useModule3Store = create<Module3State>()(
       applyArchetypePreset(archetypeId: string) {
         set((state) => {
           if (!state.authoritySuite) return {};
+          if (state.stage2Archetype?.isLocked) {
+            console.warn('[Module3Store] Cannot apply archetype preset: architecture is locked.');
+            return {};
+          }
           const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === archetypeId);
           if (!archetype) return {};
 
@@ -1035,6 +1067,9 @@ export const useModule3Store = create<Module3State>()(
               confirmedAt: new Date().toISOString(),
               customNotes: state.stage2Archetype?.customNotes ?? '',
               portfolioGoal: state.stage2Archetype?.portfolioGoal,
+              isLocked: false,
+              lockedAt: undefined,
+              revisionStatus: 'draft',
             },
             lastUpdated: Date.now(),
           };
@@ -1044,6 +1079,10 @@ export const useModule3Store = create<Module3State>()(
       restoreRecommendedStructure(archetypeId?: string) {
         set((state) => {
           if (!state.authoritySuite) return {};
+          if (state.stage2Archetype?.isLocked) {
+            console.warn('[Module3Store] Cannot restore recommended structure: architecture is locked.');
+            return {};
+          }
           const targetArchId = archetypeId || state.stage2Archetype?.selectedArchetypeId || 'proof_first';
           const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === targetArchId) || PORTFOLIO_ARCHETYPES[0];
 
@@ -1068,6 +1107,39 @@ export const useModule3Store = create<Module3State>()(
               portfolioBlueprint: restored,
             },
             step3AssetOrder: restored.map((s) => s.id),
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      lockStage2Architecture() {
+        set((state) => {
+          const current = state.stage2Archetype;
+          return {
+            stage2Archetype: {
+              selectedArchetypeId: current?.selectedArchetypeId ?? 'proof_first',
+              customNotes: current?.customNotes ?? '',
+              confirmedAt: current?.confirmedAt ?? new Date().toISOString(),
+              portfolioGoal: current?.portfolioGoal,
+              isLocked: true,
+              lockedAt: new Date().toISOString(),
+              revisionStatus: 'finalized',
+            },
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
+      unlockStage2Architecture() {
+        set((state) => {
+          if (!state.stage2Archetype) return {};
+          return {
+            stage2Archetype: {
+              ...state.stage2Archetype,
+              isLocked: false,
+              lockedAt: undefined,
+              revisionStatus: 'in_revision',
+            },
             lastUpdated: Date.now(),
           };
         });

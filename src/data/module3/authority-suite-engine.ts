@@ -87,6 +87,7 @@ export interface PortfolioBlueprintSection {
   isEnabled?: boolean;
   structuralRole?: string;
   positioningReasoning?: string;
+  proofAnchor?: string;
   isHeadlineCustomized?: boolean;
   isSubheadlineCustomized?: boolean;
   isBodyCustomized?: boolean;

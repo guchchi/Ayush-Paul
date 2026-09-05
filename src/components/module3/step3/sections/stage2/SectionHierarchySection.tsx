@@ -76,6 +76,7 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
   // Active archetype & goal
   const activeArchetypeId = stage2Archetype?.selectedArchetypeId || 'proof_first';
   const portfolioGoal: PortfolioGoal = stage2Archetype?.portfolioGoal || 'retainer';
+  const isLocked = Boolean(stage2Archetype?.isLocked);
 
   const activeArchetypeMeta = useMemo(() => {
     return (
@@ -107,6 +108,7 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
   // Reordering with strict Hero protection
   const handleMove = useCallback(
     (index: number, direction: 'up' | 'down') => {
+      if (isLocked) return;
       // Hero cannot be moved from index 0
       if (index === 0) return;
 
@@ -129,35 +131,38 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
 
       reorderPortfolioSections(reordered);
     },
-    [sections, reorderPortfolioSections]
+    [isLocked, sections, reorderPortfolioSections]
   );
 
   // Enable/Disable toggle (Hero cannot be disabled)
   const handleToggle = useCallback(
     (sectionId: string, currentEnabled: boolean) => {
+      if (isLocked) return;
       if (sectionId === 'section_hero') return; // Protected
       updatePortfolioSection(sectionId, { isEnabled: !currentEnabled });
     },
-    [updatePortfolioSection]
+    [isLocked, updatePortfolioSection]
   );
 
   // Apply quick sequence preset
   const handleApplyPreset = useCallback(
     (archetypeId: string, label: string) => {
+      if (isLocked) return;
       applyArchetypePreset(archetypeId);
       setActivePresetNotification(`Applied "${label}" Sequence`);
       setTimeout(() => setActivePresetNotification(null), 3500);
     },
-    [applyArchetypePreset]
+    [isLocked, applyArchetypePreset]
   );
 
   // Restore recommended structure (non-destructive to copy)
   const handleConfirmRestore = useCallback(() => {
+    if (isLocked) return;
     restoreRecommendedStructure(activeArchetypeId);
     setShowRestoreConfirm(false);
     setActivePresetNotification(`Restored "${activeArchetypeMeta.name}" sequence`);
     setTimeout(() => setActivePresetNotification(null), 3500);
-  }, [restoreRecommendedStructure, activeArchetypeId, activeArchetypeMeta.name]);
+  }, [isLocked, restoreRecommendedStructure, activeArchetypeId, activeArchetypeMeta.name]);
 
   const activeSectionsCount = useMemo(() => {
     return sections.filter((s) => s.isEnabled !== false).length;
@@ -202,8 +207,9 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
               <button
                 type="button"
                 onClick={() => setShowRestoreConfirm(true)}
-                className="px-3.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold rounded-xl border border-neutral-200 transition-all flex items-center gap-1.5 cursor-pointer"
-                title="Restore recommended section ordering and visibility"
+                disabled={isLocked}
+                className="px-3.5 py-1.5 bg-neutral-100 hover:bg-neutral-200 disabled:opacity-40 disabled:hover:bg-neutral-100 text-neutral-700 text-xs font-bold rounded-xl border border-neutral-200 transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                title={isLocked ? 'Architecture is locked' : 'Restore recommended section ordering and visibility'}
               >
                 <RotateCcw size={13} />
                 <span>Restore Recommended</span>
@@ -211,6 +217,24 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
             )}
           </div>
         </div>
+
+        {/* Architecture Locked Notification Banner */}
+        {isLocked && (
+          <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <Lock size={16} className="text-amber-700 shrink-0" />
+              <div>
+                <span className="font-bold text-xs block text-amber-950">Architecture Finalized &amp; Locked</span>
+                <span className="text-[11px] text-amber-800">
+                  Section sequence and visibility toggles are locked in read-only mode. Go to Step 5 to unlock if revisions are required.
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-lg bg-amber-100/80 text-amber-900 font-mono text-[10px] font-bold uppercase shrink-0 border border-amber-300/60">
+              Read-Only
+            </span>
+          </div>
+        )}
 
         {/* Inline Restore Confirmation Banner */}
         <AnimatePresence>
@@ -274,8 +298,9 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
                   key={arch.id}
                   type="button"
                   onClick={() => handleApplyPreset(arch.id, arch.name)}
+                  disabled={isLocked}
                   className={cn(
-                    'px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer',
+                    'px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
                     isSelected
                       ? 'bg-[#0058be]/10 text-[#0058be] border-[#0058be]/30 shadow-2xs'
                       : 'bg-neutral-50 hover:bg-neutral-100 text-neutral-700 border-neutral-200'
@@ -538,32 +563,36 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
                     <button
                       type="button"
                       onClick={() => handleMove(idx, 'up')}
-                      disabled={idx <= 1} // Cannot move hero (idx 0), and cannot swap with hero (idx 1 moving up)
+                      disabled={isLocked || idx <= 1} // Cannot move hero (idx 0), and cannot swap with hero (idx 1 moving up)
                       title={
-                        idx === 0
+                        isLocked
+                          ? 'Architecture is locked'
+                          : idx === 0
                           ? 'Hero is locked at Position 1'
                           : idx === 1
                           ? 'Hero must remain at Position 1'
                           : 'Move up in sequence'
                       }
                       aria-label={`Move ${sec.title} up`}
-                      className="p-1.5 text-neutral-600 hover:text-[#0058be] disabled:opacity-20 disabled:hover:text-neutral-600 cursor-pointer transition-colors"
+                      className="p-1.5 text-neutral-600 hover:text-[#0058be] disabled:opacity-20 disabled:hover:text-neutral-600 cursor-pointer disabled:cursor-not-allowed transition-colors"
                     >
                       <ArrowUp size={14} />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleMove(idx, 'down')}
-                      disabled={isHero || idx === sections.length - 1} // Hero cannot be moved down
+                      disabled={isLocked || isHero || idx === sections.length - 1} // Hero cannot be moved down
                       title={
-                        isHero
+                        isLocked
+                          ? 'Architecture is locked'
+                          : isHero
                           ? 'Hero is locked at Position 1'
                           : idx === sections.length - 1
                           ? 'Already at the bottom'
                           : 'Move down in sequence'
                       }
                       aria-label={`Move ${sec.title} down`}
-                      className="p-1.5 text-neutral-600 hover:text-[#0058be] disabled:opacity-20 disabled:hover:text-neutral-600 cursor-pointer transition-colors"
+                      className="p-1.5 text-neutral-600 hover:text-[#0058be] disabled:opacity-20 disabled:hover:text-neutral-600 cursor-pointer disabled:cursor-not-allowed transition-colors"
                     >
                       <ArrowDown size={14} />
                     </button>
@@ -573,9 +602,11 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
                   <button
                     type="button"
                     onClick={() => handleToggle(sec.id, isEnabled)}
-                    disabled={isHero} // Hero cannot be hidden
+                    disabled={isLocked || isHero} // Hero cannot be hidden
                     title={
-                      isHero
+                      isLocked
+                        ? 'Architecture is locked'
+                        : isHero
                         ? 'Hero section cannot be hidden'
                         : isEnabled
                         ? 'Hide section from portfolio'
@@ -584,7 +615,7 @@ export const SectionHierarchySection: React.FC<Props> = React.memo(({ onContinue
                     aria-label={isEnabled ? `Hide ${sec.title}` : `Show ${sec.title}`}
                     className={cn(
                       'p-2 rounded-xl text-xs font-bold transition-colors border',
-                      isHero
+                      isHero || isLocked
                         ? 'bg-neutral-100 text-neutral-400 border-neutral-200 opacity-60 cursor-not-allowed'
                         : isEnabled
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer'

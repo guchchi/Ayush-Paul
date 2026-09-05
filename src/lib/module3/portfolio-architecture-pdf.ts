@@ -21,6 +21,9 @@ export interface PortfolioArchitecturePdfData {
   serviceId: string | null;
   marketId: string | null;
   archetype: PortfolioArchetype | null;
+  portfolioGoal?: string | null;
+  isLocked?: boolean;
+  lockedAt?: string;
   auditScore: PortfolioConversionAudit;
   sections: PortfolioBlueprintSection[];
 }
@@ -132,12 +135,12 @@ export function generatePortfolioArchitecturePdf(data: PortfolioArchitecturePdfD
   // COVER / EXECUTIVE HEADER BLOCK
   // ═══════════════════════════════════════════════════════════════════════════
   setFill(C.navyDark);
-  doc.roundedRect(M, y, CW, 38, 3, 3, 'F');
+  doc.roundedRect(M, y, CW, 42, 3, 3, 'F');
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.5);
   setText('#93c5fd');
-  doc.text('MODULE 3 : STEP 3 : LEVEL 02 — ARCHITECTURE SPECIFICATION', M + 8, y + 8);
+  doc.text('MODULE 3 : STEP 3 : LEVEL 02 — STRATEGIC PORTFOLIO ARCHITECTURE', M + 8, y + 8);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
@@ -147,6 +150,8 @@ export function generatePortfolioArchitecturePdf(data: PortfolioArchitecturePdfD
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   setText('#cbd5e1');
+  const goalText = data.portfolioGoal ? `Goal: ${data.portfolioGoal.toUpperCase()}  |  ` : '';
+  const statusText = data.isLocked ? 'STATUS: FINALIZED & LOCKED' : 'STATUS: IN REVISION';
   const subtitle = `High-Converting Authority Sales Funnel Spec prepared for ${data.userName || 'Specialist'}`;
   doc.text(subtitle, M + 8, y + 24);
 
@@ -154,9 +159,12 @@ export function generatePortfolioArchitecturePdf(data: PortfolioArchitecturePdfD
   doc.setFontSize(7);
   setText('#94a3b8');
   const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  doc.text(`DATE: ${dateStr}  |  ARCHETYPE: ${(data.archetype?.name || 'Proof-First Specialist').toUpperCase()}  |  SECTIONS: ${data.sections.filter(s => s.isEnabled !== false).length} ACTIVE`, M + 8, y + 32);
+  doc.text(`DATE: ${dateStr}  |  ${goalText}ARCHETYPE: ${(data.archetype?.name || 'Proof-First Specialist').toUpperCase()}  |  ${statusText}`, M + 8, y + 32);
 
-  y += 44;
+  const activeCount = data.sections.filter((s) => s.isEnabled !== false).length;
+  doc.text(`ACTIVE SECTIONS: ${activeCount} OF ${data.sections.length}  |  SECURITY: PRODUCTION-READY SPEC`, M + 8, y + 37);
+
+  y += 48;
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 01: STRATEGIC FUNNEL & CONVERSION THESIS
@@ -220,53 +228,42 @@ export function generatePortfolioArchitecturePdf(data: PortfolioArchitecturePdfD
   y += 22;
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 02: 5-DIMENSION PORTFOLIO CONVERSION SCORECARD
+  // SECTION 02: 5-DIMENSION CONVERSION READINESS SCORECARD
   // ═══════════════════════════════════════════════════════════════════════════
-  drawSectionBadge('SECTION 02', '5-Dimension Portfolio Conversion Audit');
+  ensureSpace(50);
+  drawSectionBadge('SECTION 02', '5-Dimension Portfolio Conversion Health');
 
-  ensureSpace(42);
-  // Main Score Box
-  setFill(C.cobaltLight);
-  setStroke(C.cobalt);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(M, y, 42, 34, 2, 2, 'FD');
-
+  // Overall Score Banner
+  setFill(C.navySlate);
+  doc.roundedRect(M, y, CW, 14, 2, 2, 'F');
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  setText(C.cobalt);
-  doc.text('CONVERSION SCORE', M + 4, y + 7);
+  doc.setFontSize(9);
+  setText('#ffffff');
+  doc.text('CONVERSION READINESS SCORE:', M + 4, y + 9);
+  doc.setFontSize(11);
+  setText('#38bdf8');
+  doc.text(`${data.auditScore.totalScore}/100 — ${data.auditScore.ratingLabel.toUpperCase()}`, M + 68, y + 9);
+  y += 18;
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  setText(C.navyDark);
-  doc.text(`${data.auditScore.totalScore}`, M + 4, y + 20);
+  // Dimension Bars
+  const dimensions = Object.values(data.auditScore.dimensionScores);
+  const dimH = 7;
+  const dimW = CW;
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  setText(C.emerald);
-  doc.text(`/ 100 • ${data.auditScore.ratingLabel.toUpperCase()}`, M + 4, y + 28);
+  dimensions.forEach((d: any, idx: number) => {
+    ensureSpace(dimH + 2);
+    const rowY = y + idx * (dimH + 1);
 
-  // 5 Dimension Breakdown on Right
-  const dimW = CW - 46;
-  const dimX = M + 46;
-  const dims = [
-    data.auditScore.dimensionScores.hookClarity,
-    data.auditScore.dimensionScores.proofProximity,
-    data.auditScore.dimensionScores.offerClarity,
-    data.auditScore.dimensionScores.objectionReadiness,
-    data.auditScore.dimensionScores.ctaFriction,
-  ];
-
-  dims.forEach((d, i) => {
-    const rowY = y + i * 7;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7.5);
-    setText(C.textMain);
-    doc.text(d.label, dimX, rowY + 4);
+    setText(C.navyDark);
+    doc.text(d.label, M + 2, rowY + 4);
 
+    const dimX = M + 48;
     const scoreStr = `${d.score}/${d.max} pts`;
-    doc.setFont('helvetica', 'bold');
-    setText(C.cobalt);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    setText(C.textMuted);
     doc.text(scoreStr, PW - M, rowY + 4, { align: 'right' });
 
     // Mini bar
@@ -334,6 +331,11 @@ export function generatePortfolioArchitecturePdf(data: PortfolioArchitecturePdfD
     if (sec.conversionReasoning) renderField('Conversion Rationale', sec.conversionReasoning);
     if (sec.recommendedVisuals) renderField('Recommended Visual Components', sec.recommendedVisuals);
     if (sec.trustStatement) renderField('Trust Badge / Risk Reversal', sec.trustStatement);
+    if (sec.proofAnchor) {
+      renderField('Verified Proof Anchor', sec.proofAnchor);
+    } else {
+      renderField('Proof Attribution', 'None attached (relies on unverified narrative positioning)');
+    }
 
     setStroke(C.border);
     doc.setLineWidth(0.2);
