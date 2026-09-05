@@ -539,6 +539,7 @@ export interface Stage2ArchetypeData {
   selectedArchetypeId: string;
   customNotes?: string;
   confirmedAt?: string;
+  portfolioGoal?: 'retainer' | 'sprint' | 'consulting';
 }
 
 export interface Stage2WireframeSettings {

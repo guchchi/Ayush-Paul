@@ -300,3 +300,98 @@ export function calculatePortfolioTelemetry(sections: PortfolioBlueprintSection[
     ctaTouchpoints: ctaCount,
   };
 }
+
+export type PortfolioGoal = 'retainer' | 'sprint' | 'consulting';
+
+export interface ArchetypeRecommendation {
+  archetypeId: string;
+  archetypeName: string;
+  badge: string;
+  reason: string;
+  funnelFocus: string;
+  conversionAdvantage: string;
+}
+
+export function getRecommendedGoal(
+  serviceId?: string | null,
+  careerTrackId?: string | null
+): PortfolioGoal {
+  const s = (serviceId || '').toLowerCase();
+  const c = (careerTrackId || '').toLowerCase();
+
+  if (s.includes('consult') || s.includes('advis') || c.includes('consult') || s.includes('fractional')) {
+    return 'consulting';
+  }
+  if (s.includes('video') || s.includes('edit') || s.includes('motion') || s.includes('dev') || s.includes('code') || s.includes('engineer')) {
+    return 'sprint';
+  }
+  return 'retainer';
+}
+
+export function recommendArchetype(
+  serviceId?: string | null,
+  careerTrackId?: string | null,
+  goal?: PortfolioGoal | null
+): ArchetypeRecommendation {
+  const s = (serviceId || '').toLowerCase();
+  const c = (careerTrackId || '').toLowerCase();
+  const effectiveGoal = goal || getRecommendedGoal(serviceId, careerTrackId);
+
+  if (effectiveGoal === 'sprint') {
+    if (s.includes('video') || s.includes('edit') || s.includes('motion') || s.includes('dev') || s.includes('code') || c.includes('editor')) {
+      const arch = PORTFOLIO_ARCHETYPES.find((a) => a.id === 'proof_first') || PORTFOLIO_ARCHETYPES[0];
+      return {
+        archetypeId: arch.id,
+        archetypeName: arch.name,
+        badge: arch.badge,
+        reason: 'Because your craft is execution-heavy and your goal is winning fast sprint projects, front-loading verified proof right below the hero hooks high-intent buyers in the first 10 seconds without wading through theory.',
+        funnelFocus: arch.funnelFocus,
+        conversionAdvantage: arch.conversionAdvantage,
+      };
+    }
+    const arch = PORTFOLIO_ARCHETYPES.find((a) => a.id === 'agency_alternative') || PORTFOLIO_ARCHETYPES[2];
+    return {
+      archetypeId: arch.id,
+      archetypeName: arch.name,
+      badge: arch.badge,
+      reason: 'Because sprint clients evaluate turnaround velocity against bloated agencies, transparent scope packages and direct operator access minimize procurement friction.',
+      funnelFocus: arch.funnelFocus,
+      conversionAdvantage: arch.conversionAdvantage,
+    };
+  }
+
+  if (effectiveGoal === 'retainer') {
+    if (s.includes('video') || s.includes('edit') || s.includes('retention') || s.includes('growth') || s.includes('market')) {
+      const arch = PORTFOLIO_ARCHETYPES.find((a) => a.id === 'case_study_showcase') || PORTFOLIO_ARCHETYPES[3];
+      return {
+        archetypeId: arch.id,
+        archetypeName: arch.name,
+        badge: arch.badge,
+        reason: 'Because high-value ongoing retainers require trust in repeatable performance, in-depth STAR case studies prove you diagnose bottlenecks and compound measurable results over time.',
+        funnelFocus: arch.funnelFocus,
+        conversionAdvantage: arch.conversionAdvantage,
+      };
+    }
+    const arch = PORTFOLIO_ARCHETYPES.find((a) => a.id === 'system_architect') || PORTFOLIO_ARCHETYPES[1];
+    return {
+      archetypeId: arch.id,
+      archetypeName: arch.name,
+      badge: arch.badge,
+      reason: 'Because high-value retainers demand strategic defensibility, establishing your proprietary framework upfront justifies premium monthly fees beyond generic freelancing.',
+      funnelFocus: arch.funnelFocus,
+      conversionAdvantage: arch.conversionAdvantage,
+    };
+  }
+
+  // effectiveGoal === 'consulting'
+  const arch = PORTFOLIO_ARCHETYPES.find((a) => a.id === 'system_architect') || PORTFOLIO_ARCHETYPES[1];
+  return {
+    archetypeId: arch.id,
+    archetypeName: arch.name,
+    badge: arch.badge,
+    reason: 'Because advisory and consulting engagements require commanding expert authority, framing your proprietary methodology and thesis upfront proves why your strategic diagnosis is mandatory.',
+    funnelFocus: arch.funnelFocus,
+    conversionAdvantage: arch.conversionAdvantage,
+  };
+}
+

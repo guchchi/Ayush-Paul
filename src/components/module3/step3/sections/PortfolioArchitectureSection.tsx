@@ -25,7 +25,7 @@ import { WireframeSimulatorSection } from './stage2/WireframeSimulatorSection';
 import { DeployArchitectureSection } from './stage2/DeployArchitectureSection';
 
 import {
-  Layers,
+  Target,
   ListOrdered,
   FileText,
   Monitor,
@@ -40,7 +40,7 @@ interface Props {
 }
 
 const STAGE2_SECTIONS = [
-  { id: 1, label: 'Archetype & Funnel', shortLabel: 'Archetype', icon: Layers, desc: 'Select conversion archetype & visitor psychology journey' },
+  { id: 1, label: 'Context & Goal', shortLabel: 'Goal', icon: Target, desc: 'Verify inherited strategic context and select your portfolio acquisition goal' },
   { id: 2, label: 'Section Sequence', shortLabel: 'Hierarchy', icon: ListOrdered, desc: 'Arrange 9-section order & prioritize above-the-fold proof' },
   { id: 3, label: 'Copy & Visual Specs', shortLabel: 'Spec Studio', icon: FileText, desc: 'Fine-tune headlines, narrative copy, CTAs & visual components' },
   { id: 4, label: 'Wireframe Simulator', shortLabel: 'Simulator', icon: Monitor, desc: 'Live responsive preview across Desktop, Tablet & Mobile' },
@@ -92,9 +92,6 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
 
   return (
     <div className="space-y-6 text-left w-full font-sans">
-      {/* Step 0: Context Handoff */}
-      <ContextHandoffCard />
-
       {/* Step Tabs / Navigation Ribbon */}
       <div className="bg-white p-3 sm:p-4 rounded-3xl border border-neutral-200 shadow-xs">
         <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">

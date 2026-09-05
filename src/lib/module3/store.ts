@@ -944,7 +944,8 @@ export const useModule3Store = create<Module3State>()(
           stage2Archetype: {
             selectedArchetypeId: archetypeData.selectedArchetypeId ?? state.stage2Archetype?.selectedArchetypeId ?? 'proof_first',
             customNotes: archetypeData.customNotes ?? state.stage2Archetype?.customNotes ?? '',
-            confirmedAt: archetypeData.confirmedAt ?? new Date().toISOString(),
+            confirmedAt: archetypeData.confirmedAt ?? state.stage2Archetype?.confirmedAt ?? new Date().toISOString(),
+            portfolioGoal: archetypeData.portfolioGoal !== undefined ? archetypeData.portfolioGoal : state.stage2Archetype?.portfolioGoal,
           },
           lastUpdated: Date.now(),
         }));
@@ -1032,6 +1033,8 @@ export const useModule3Store = create<Module3State>()(
             stage2Archetype: {
               selectedArchetypeId: archetypeId,
               confirmedAt: new Date().toISOString(),
+              customNotes: state.stage2Archetype?.customNotes ?? '',
+              portfolioGoal: state.stage2Archetype?.portfolioGoal,
             },
             lastUpdated: Date.now(),
           };
