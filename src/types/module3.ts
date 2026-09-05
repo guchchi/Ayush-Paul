@@ -530,6 +530,7 @@ export interface Module3State {
   reorderPortfolioSections(reordered: PortfolioBlueprintSection[]): void;
   resetPortfolioSectionsToDefault(): void;
   applyArchetypePreset(archetypeId: string): void;
+  restoreRecommendedStructure(archetypeId?: string): void;
 
   dismissStaleContext(): void;
   refreshStaleContext(): void;

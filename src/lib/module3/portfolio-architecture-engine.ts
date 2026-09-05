@@ -395,3 +395,417 @@ export function recommendArchetype(
   };
 }
 
+// ── Phase 2: Architecture Decision Layer Types & Deterministic Helpers ────────
+
+export interface ArchitectureRationale {
+  goal: PortfolioGoal;
+  goalLabel: string;
+  archetypeId: string;
+  archetypeName: string;
+  primaryStrategy: string;
+  proofPlacementRationale: string;
+  mechanismPlacementRationale: string;
+  visitorPsychologyIntent: string;
+  summaryParagraph: string;
+}
+
+export function getArchitectureRationale(
+  goal: PortfolioGoal | null | undefined,
+  archetypeId: string | null | undefined,
+  serviceId?: string | null,
+  mechanism?: string | null
+): ArchitectureRationale {
+  const effectiveGoal = goal || 'retainer';
+  const effectiveArch = archetypeId || 'proof_first';
+  const archMeta = PORTFOLIO_ARCHETYPES.find((a) => a.id === effectiveArch) || PORTFOLIO_ARCHETYPES[0];
+
+  const goalLabels: Record<PortfolioGoal, string> = {
+    retainer: 'Win High-Value Retainers',
+    sprint: 'Win Fast Sprint Projects',
+    consulting: 'Build Expert / Advisor Authority',
+  };
+
+  const mechName = mechanism && mechanism.trim().length > 0 ? mechanism.trim() : 'Proprietary Delivery System';
+
+  if (effectiveGoal === 'sprint') {
+    return {
+      goal: 'sprint',
+      goalLabel: goalLabels.sprint,
+      archetypeId: effectiveArch,
+      archetypeName: archMeta.name,
+      primaryStrategy: 'Frictionless velocity: eliminate buyer skepticism in the first 10 seconds and clarify deliverable scope.',
+      proofPlacementRationale: 'Verifiable work outputs are positioned immediately above-the-fold so prospects verify execution competence before reading narrative copy.',
+      mechanismPlacementRationale: `The ${mechName} is framed as a structured, fixed-scope turnaround that delivers rapid time-to-value without agency bureaucracy.`,
+      visitorPsychologyIntent: 'Convinces the buyer that you can execute immediately with zero onboarding drag or scope creep.',
+      summaryParagraph: `Because your goal is to win fast sprint projects, the architecture leads with your core positioning, places tangible proof upfront, and presents clear scope packages before the CTA. This minimizes procurement friction and proves turnaround velocity.`,
+    };
+  }
+
+  if (effectiveGoal === 'consulting') {
+    return {
+      goal: 'consulting',
+      goalLabel: goalLabels.consulting,
+      archetypeId: effectiveArch,
+      archetypeName: archMeta.name,
+      primaryStrategy: 'Advisory authority: establish deep intellectual diagnostic mastery before proposing engagement models.',
+      proofPlacementRationale: 'Case studies and system demonstrations appear after thesis presentation to substantiate your methodology with real-world outcomes.',
+      mechanismPlacementRationale: `The ${mechName} is positioned immediately after the Hero to prove why conventional approaches fail and why your diagnosis is mandatory.`,
+      visitorPsychologyIntent: 'Transforms skepticism into conviction that your strategic diagnosis is mandatory and commands premium advisory fees.',
+      summaryParagraph: `Because your goal is to build expert and advisor authority, the architecture leads with your strategic positioning, establishes the ${mechName}, and demonstrates systemic problem solving before asking for a consultation. This establishes peer-level status with executive decision-makers.`,
+    };
+  }
+
+  // Default: retainer
+  return {
+    goal: 'retainer',
+    goalLabel: goalLabels.retainer,
+    archetypeId: effectiveArch,
+    archetypeName: archMeta.name,
+    primaryStrategy: 'Repeatable certainty: prove sustained ROI and operational stability to justify ongoing monthly fees.',
+    proofPlacementRationale: 'Case studies and proof assets are sequenced after the service model to confirm you diagnose bottlenecks and compound results over time.',
+    mechanismPlacementRationale: `The ${mechName} is presented as an ongoing operational engine that continuously drives measurable upside.`,
+    visitorPsychologyIntent: 'Reassures stakeholders that retaining you creates predictable leverage and permanent operational capability.',
+    summaryParagraph: `Because your goal is to win high-value retainers, the architecture leads with your positioning, establishes your mechanism, and introduces verified case studies before presenting retainer tiers. This reduces perceived risk before asking for an ongoing commitment.`,
+  };
+}
+
+export interface SectionPlacementMetadata {
+  id: string;
+  funnelRole: {
+    phase: 'Top of Funnel' | 'Mid Funnel' | 'Bottom Funnel';
+    label: string;
+    color: string;
+  };
+  priority: {
+    level: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'OPTIONAL';
+    color: string;
+  };
+  placementReason: string;
+}
+
+export function getSectionPlacementMetadata(
+  sectionId: string,
+  archetypeId?: string | null,
+  goal?: PortfolioGoal | null
+): SectionPlacementMetadata {
+  const isProofFirst = archetypeId === 'proof_first' || goal === 'sprint';
+  const isConsulting = archetypeId === 'system_architect' || goal === 'consulting';
+  const isCaseStudy = archetypeId === 'case_study_showcase' || goal === 'retainer';
+
+  switch (sectionId) {
+    case 'section_hero':
+      return {
+        id: 'section_hero',
+        funnelRole: {
+          phase: 'Top of Funnel',
+          label: 'Top of Funnel : Hook & Orient',
+          color: 'bg-blue-50 text-[#0058be] border-blue-200',
+        },
+        priority: {
+          level: 'CRITICAL',
+          color: 'bg-rose-50 text-rose-700 border-rose-200',
+        },
+        placementReason: 'Anchors first impression in under 5 seconds. Answers who you serve, your exact mechanism, and the primary business transformation.',
+      };
+
+    case 'section_about':
+      return {
+        id: 'section_about',
+        funnelRole: {
+          phase: isConsulting ? 'Top of Funnel' : 'Mid Funnel',
+          label: isConsulting ? 'Top of Funnel : Thesis & Mechanism' : 'Mid Funnel : Operator Thesis',
+          color: isConsulting ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-neutral-50 text-neutral-700 border-neutral-200',
+        },
+        priority: {
+          level: isConsulting ? 'HIGH' : 'OPTIONAL',
+          color: isConsulting ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-neutral-100 text-neutral-600 border-neutral-200',
+        },
+        placementReason: isConsulting
+          ? 'Positioned early to explain why traditional methods fail and why your proprietary framework is mandatory.'
+          : 'Shares your practitioner background and operating ethos after proof has established initial credibility.',
+      };
+
+    case 'section_services':
+      return {
+        id: 'section_services',
+        funnelRole: {
+          phase: 'Mid Funnel',
+          label: 'Mid Funnel : Scope & Engagement',
+          color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        },
+        priority: {
+          level: 'HIGH',
+          color: 'bg-rose-50 text-rose-700 border-rose-200',
+        },
+        placementReason: 'Clarifies scope tiers, deliverables, and turnaround velocity so prospects know exactly how to engage without pricing ambiguity.',
+      };
+
+    case 'section_case_studies':
+      return {
+        id: 'section_case_studies',
+        funnelRole: {
+          phase: 'Mid Funnel',
+          label: 'Mid Funnel : STAR Diagnostic Proof',
+          color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        },
+        priority: {
+          level: isCaseStudy ? 'HIGH' : 'MEDIUM',
+          color: isCaseStudy ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-amber-50 text-amber-700 border-amber-200',
+        },
+        placementReason: isCaseStudy
+          ? 'Front-loaded to show detailed Situation-Task-Action-Result breakdowns of real client transformations.'
+          : 'Provides concrete narrative evidence demonstrating problem-solving under real client constraints.',
+      };
+
+    case 'section_proof':
+      return {
+        id: 'section_proof',
+        funnelRole: {
+          phase: 'Mid Funnel',
+          label: isProofFirst ? 'Top / Mid Funnel : Verifiable Proof' : 'Mid Funnel : Proof Hub',
+          color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        },
+        priority: {
+          level: 'CRITICAL',
+          color: 'bg-rose-50 text-rose-700 border-rose-200',
+        },
+        placementReason: isProofFirst
+          ? 'Placed directly below the hero to eliminate buyer skepticism in the first 10 seconds before reading pitch claims.'
+          : 'Provides tangible work outputs, repositories, live tools, and design files to validate your claims.',
+      };
+
+    case 'section_testimonials':
+      return {
+        id: 'section_testimonials',
+        funnelRole: {
+          phase: 'Bottom Funnel',
+          label: 'Bottom Funnel : Peer Validation',
+          color: 'bg-purple-50 text-purple-700 border-purple-200',
+        },
+        priority: {
+          level: 'MEDIUM',
+          color: 'bg-amber-50 text-amber-700 border-amber-200',
+        },
+        placementReason: 'Third-party peer endorsements confirm that others in your target market achieved their desired outcome.',
+      };
+
+    case 'section_authority':
+      return {
+        id: 'section_authority',
+        funnelRole: {
+          phase: 'Bottom Funnel',
+          label: 'Bottom Funnel : Industry Stature',
+          color: 'bg-purple-50 text-purple-700 border-purple-200',
+        },
+        priority: {
+          level: isConsulting ? 'MEDIUM' : 'OPTIONAL',
+          color: 'bg-neutral-100 text-neutral-600 border-neutral-200',
+        },
+        placementReason: 'Podcasts, press, and thought leadership reinforce high-status authority before the buying decision.',
+      };
+
+    case 'section_faq':
+      return {
+        id: 'section_faq',
+        funnelRole: {
+          phase: 'Bottom Funnel',
+          label: 'Bottom Funnel : Objection Killer',
+          color: 'bg-purple-50 text-purple-700 border-purple-200',
+        },
+        priority: {
+          level: 'HIGH',
+          color: 'bg-amber-50 text-amber-700 border-amber-200',
+        },
+        placementReason: 'Positioned right above the final CTA to resolve price, scope, timeline, and risk reversal objections before the call.',
+      };
+
+    case 'section_cta':
+    default:
+      return {
+        id: 'section_cta',
+        funnelRole: {
+          phase: 'Bottom Funnel',
+          label: 'Bottom Funnel : Low-Friction Booking',
+          color: 'bg-purple-50 text-purple-700 border-purple-200',
+        },
+        priority: {
+          level: 'CRITICAL',
+          color: 'bg-rose-50 text-rose-700 border-rose-200',
+        },
+        placementReason: 'Final focused conversion trigger. Removes buying resistance with transparent next steps and calendar access.',
+      };
+  }
+}
+
+export interface ArchitectureDiff {
+  isCustomized: boolean;
+  orderChangesCount: number;
+  visibilityChangesCount: number;
+  totalStructuralChanges: number;
+  statusLabel: string;
+  hasContentCustomizations: boolean;
+}
+
+export function diffArchitecture(
+  currentSections: PortfolioBlueprintSection[],
+  recommendedOrder: string[]
+): ArchitectureDiff {
+  let orderChangesCount = 0;
+  let visibilityChangesCount = 0;
+  let hasContentCustomizations = false;
+
+  const currentOrder = currentSections.map((s) => s.id);
+  const recommendedEnabledSet = new Set(recommendedOrder);
+
+  // Compare active order against recommended order
+  currentSections.forEach((sec, idx) => {
+    const recIdx = recommendedOrder.indexOf(sec.id);
+    if (recIdx !== -1 && recIdx !== idx) {
+      orderChangesCount++;
+    }
+
+    const shouldBeEnabled = recommendedEnabledSet.has(sec.id);
+    const isActuallyEnabled = sec.isEnabled !== false;
+    if (shouldBeEnabled !== isActuallyEnabled) {
+      visibilityChangesCount++;
+    }
+
+    if (
+      sec.isCustomized ||
+      sec.isHeadlineCustomized ||
+      sec.isSubheadlineCustomized ||
+      sec.isBodyCustomized ||
+      sec.isCtaCustomized
+    ) {
+      hasContentCustomizations = true;
+    }
+  });
+
+  const totalStructuralChanges = orderChangesCount + visibilityChangesCount;
+  const isCustomized = totalStructuralChanges > 0;
+
+  const statusLabel = isCustomized
+    ? `Customized Structure (${totalStructuralChanges} change${totalStructuralChanges === 1 ? '' : 's'} from recommendation)`
+    : 'Recommended Architecture Active';
+
+  return {
+    isCustomized,
+    orderChangesCount,
+    visibilityChangesCount,
+    totalStructuralChanges,
+    statusLabel,
+    hasContentCustomizations,
+  };
+}
+
+export interface ArchitectureWarning {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  sectionId?: string;
+  title: string;
+  message: string;
+  actionHint?: string;
+}
+
+export function validateArchitecture(
+  sections: PortfolioBlueprintSection[],
+  archetypeId?: string | null,
+  goal?: PortfolioGoal | null
+): ArchitectureWarning[] {
+  const warnings: ArchitectureWarning[] = [];
+
+  if (!sections || sections.length === 0) return warnings;
+
+  // 1. Hero Protection Validation
+  const heroIndex = sections.findIndex((s) => s.id === 'section_hero');
+  const heroSection = sections[heroIndex];
+
+  if (heroIndex !== 0 || !heroSection || heroSection.isEnabled === false) {
+    warnings.push({
+      id: 'warn_hero_compromised',
+      severity: 'critical',
+      sectionId: 'section_hero',
+      title: 'Hero Section Compromised',
+      message: 'The Hero section must remain enabled and locked at Position #1 to orient visitors and establish core positioning.',
+      actionHint: 'Lock Hero at Position 1 and ensure it is enabled.',
+    });
+  }
+
+  // 2. CTA Validation
+  const ctaIndex = sections.findIndex((s) => s.id === 'section_cta');
+  const ctaSection = sections[ctaIndex];
+
+  if (!ctaSection || ctaSection.isEnabled === false) {
+    warnings.push({
+      id: 'warn_cta_disabled',
+      severity: 'critical',
+      sectionId: 'section_cta',
+      title: 'Conversion CTA Inactive',
+      message: 'Your portfolio has no active call-to-action. High-intent visitors will have no direct path to schedule a call or request scope.',
+      actionHint: 'Enable the Final CTA section.',
+    });
+  } else if (ctaIndex < sections.length - 2) {
+    // Check if critical sections are below CTA
+    const sectionsAfterCta = sections.slice(ctaIndex + 1).filter((s) => s.isEnabled !== false);
+    const hasCoreAfterCta = sectionsAfterCta.some((s) =>
+      ['section_proof', 'section_case_studies', 'section_services'].includes(s.id)
+    );
+
+    if (hasCoreAfterCta) {
+      warnings.push({
+        id: 'warn_cta_premature',
+        severity: 'warning',
+        sectionId: 'section_cta',
+        title: 'Core Proof Placed After Final CTA',
+        message: 'Key evaluation sections (Proof, Case Studies, or Services) appear after your primary CTA where 60%+ of visitors drop off.',
+        actionHint: 'Position the Final CTA near the bottom of your sequence.',
+      });
+    }
+  }
+
+  // 3. Proof Proximity Validation
+  const proofIndex = sections.findIndex((s) => s.id === 'section_proof' && s.isEnabled !== false);
+  const isProofSensitive = archetypeId === 'proof_first' || goal === 'sprint';
+
+  if (isProofSensitive && proofIndex > 2) {
+    warnings.push({
+      id: 'warn_proof_delayed',
+      severity: 'warning',
+      sectionId: 'section_proof',
+      title: 'Proof Position Delayed',
+      message: `For your ${goal === 'sprint' ? 'Fast Sprint' : 'Proof-First'} strategy, proof is placed too late (Position #${proofIndex + 1}). High-intent buyers skip long text to inspect real samples.`,
+      actionHint: 'Move Verifiable Proof to Position #2 or #3.',
+    });
+  }
+
+  // 4. Mechanism Visibility for Advisory/System Architect
+  if (archetypeId === 'system_architect' || goal === 'consulting') {
+    const aboutSection = sections.find((s) => s.id === 'section_about');
+    if (!aboutSection || aboutSection.isEnabled === false) {
+      warnings.push({
+        id: 'warn_mechanism_missing',
+        severity: 'warning',
+        sectionId: 'section_about',
+        title: 'Proprietary Mechanism Hidden',
+        message: 'Advisory and consulting clients require your unique mechanism and thesis upfront to justify premium executive rates.',
+        actionHint: 'Enable the Authority Story & Mechanism section.',
+      });
+    }
+  }
+
+  // 5. Active Section Depth
+  const activeCount = sections.filter((s) => s.isEnabled !== false).length;
+  if (activeCount < 4) {
+    warnings.push({
+      id: 'warn_thin_flow',
+      severity: 'warning',
+      title: 'Thin Conversion Flow',
+      message: `Only ${activeCount} sections are active. High-ticket B2B buyers require positioning, verifiable proof, clear scope, and risk reversal.`,
+      actionHint: 'Enable at least 4–5 core sections for adequate conversion depth.',
+    });
+  }
+
+  return warnings;
+}
+
+

@@ -1041,6 +1041,38 @@ export const useModule3Store = create<Module3State>()(
         });
       },
 
+      restoreRecommendedStructure(archetypeId?: string) {
+        set((state) => {
+          if (!state.authoritySuite) return {};
+          const targetArchId = archetypeId || state.stage2Archetype?.selectedArchetypeId || 'proof_first';
+          const archetype = PORTFOLIO_ARCHETYPES.find((a) => a.id === targetArchId) || PORTFOLIO_ARCHETYPES[0];
+
+          const currentSections = [...state.authoritySuite.portfolioBlueprint];
+          const orderMap = new Map(archetype.recommendedOrder.map((id, idx) => [id, idx]));
+
+          currentSections.sort((a, b) => {
+            const idxA = orderMap.has(a.id) ? (orderMap.get(a.id) as number) : 999;
+            const idxB = orderMap.has(b.id) ? (orderMap.get(b.id) as number) : 999;
+            return idxA - idxB;
+          });
+
+          const restored = currentSections.map((sec, idx) => ({
+            ...sec,
+            sectionNumber: idx + 1,
+            isEnabled: archetype.recommendedOrder.includes(sec.id),
+          }));
+
+          return {
+            authoritySuite: {
+              ...state.authoritySuite,
+              portfolioBlueprint: restored,
+            },
+            step3AssetOrder: restored.map((s) => s.id),
+            lastUpdated: Date.now(),
+          };
+        });
+      },
+
       setIsCompleted(value: boolean) {
         set({ isCompleted: value, lastUpdated: Date.now() });
       },
