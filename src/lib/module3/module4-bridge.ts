@@ -29,8 +29,10 @@ export const Module4BridgeAdapter = {
     const legacyPortfolioCopy: PortfolioCopy = {
       portfolioCta: heroSection?.ctaText || 'Access Authority Portfolio →',
       sections: suite
-        ? suite.portfolioBlueprint.map((section, idx) => ({
-            type: `section-${idx + 1}`,
+        ? suite.portfolioBlueprint
+            .filter((s) => s.isEnabled !== false)
+            .map((section, idx) => ({
+            type: section.id ? section.id.replace(/^section_/, '') : `section-${idx + 1}`,
             heading: section.headline ? `${section.title}: ${section.headline}` : section.title,
             body: `${section.subheadline ? section.subheadline + '\n\n' : ''}${section.bodyCopy || ''}`,
             bullets: section.trustStatement ? [section.trustStatement] : [],

@@ -1,10 +1,12 @@
 /**
- * ArchetypeStrategySection.tsx — Level 2 Phase 1: Context Handoff + Portfolio Goal
+ * ArchetypeStrategySection.tsx — Level 2 Phase 1: Portfolio Goal & Architecture Selection
  *
- * Implements Phase 1 of Portfolio Architecture Builder:
- * Part 1: Read-only Context Handoff (inherited from Modules 1, 2, Step 1, Step 2, Level 1)
- * Part 2: Portfolio Acquisition Goal selection, strategy-backed architecture recommendation,
- *         and optional architecture exploration.
+ * Streamlined around a single primary decision:
+ * 1. Compact inherited strategy reassurance
+ * 2. Primary decision: Choose your portfolio goal (3 simplified, high-contrast cards)
+ * 3. Secondary recommendation: One smart architecture recommendation matched to goal
+ * 4. Collapsed alternatives explorer: Hidden by default, expandable on demand
+ * 5. Single clear primary action: "Continue to Section Sequence →"
  */
 
 import React, { useMemo, useState } from 'react';
@@ -13,23 +15,14 @@ import {
   Repeat,
   Zap,
   Compass,
-  Target,
-  Sparkles,
   Check,
-  CheckCircle2,
   ChevronDown,
-  ChevronUp,
-  ChevronRight,
-  TrendingUp,
   Shield,
   Award,
   Cpu,
-  AlertCircle,
   LucideIcon,
-  Layers,
 } from 'lucide-react';
 import { cn } from '../../../../../lib/utils';
-import { EASING, DURATION } from '../../../../../lib/motion-presets';
 import { useModule3Store } from '../../../../../lib/module3/store';
 import {
   PORTFOLIO_ARCHETYPES,
@@ -48,8 +41,6 @@ interface GoalCardConfig {
   id: PortfolioGoal;
   label: string;
   description: string;
-  bestWhen: string;
-  badge: string;
   icon: LucideIcon;
 }
 
@@ -57,25 +48,19 @@ const PORTFOLIO_GOALS: GoalCardConfig[] = [
   {
     id: 'retainer',
     label: 'Win High-Value Retainers',
-    description: 'Position your portfolio to justify deeper, ongoing client relationships.',
-    bestWhen: 'Best when your service delivers recurring ROI, ongoing operations, or monthly retained value.',
-    badge: 'Recurring Growth',
+    description: 'Designed for ongoing monthly engagements, embedded operations, and trusted partnerships.',
     icon: Repeat,
   },
   {
     id: 'sprint',
     label: 'Win Fast Sprint Projects',
-    description: 'Make scope, speed and immediate value obvious to prospects.',
-    bestWhen: 'Best when you offer fixed-scope turnarounds, intensive sprints, or direct execution without agency overhead.',
-    badge: 'High Velocity',
+    description: 'Designed for fixed-scope turnarounds, intensive execution, and rapid client decisions.',
     icon: Zap,
   },
   {
     id: 'consulting',
     label: 'Build Expert / Advisor Authority',
-    description: 'Lead with expertise, strategic thinking and trust for advisory work.',
-    bestWhen: 'Best when clients buy your diagnosis, architecture, roadmap, or strategic executive direction.',
-    badge: 'Executive Advisory',
+    description: 'Designed for strategic diagnosis, technical architecture, and premium advisory fees.',
     icon: Compass,
   },
 ];
@@ -108,21 +93,20 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
   const selectedGoal = stage2Archetype?.portfolioGoal ?? null;
 
   // 3. Goal used for architecture recommendation computation
-  const effectiveGoalForRec = selectedGoal || initialRecommendedGoal;
+  const effectiveGoal = selectedGoal || initialRecommendedGoal;
 
   // 4. Recommendation derived deterministically from engine (no AI/LLM)
   const recommendation = useMemo(
-    () => recommendArchetype(mod1ServiceId, mod1CareerTrackId, effectiveGoalForRec),
-    [mod1ServiceId, mod1CareerTrackId, effectiveGoalForRec]
+    () => recommendArchetype(mod1ServiceId, mod1CareerTrackId, effectiveGoal),
+    [mod1ServiceId, mod1CareerTrackId, effectiveGoal]
   );
 
   // 5. Active archetype status
   const currentArchetypeId = stage2Archetype?.selectedArchetypeId || recommendation.archetypeId;
-  const isRecommendationApplied = stage2Archetype?.selectedArchetypeId === recommendation.archetypeId;
+  const isRecommendationApplied = currentArchetypeId === recommendation.archetypeId;
 
   // Handlers
   const handleSelectGoal = (goalId: PortfolioGoal) => {
-    // Explicitly persist user selection without overwriting current architecture
     setStage2Archetype({ portfolioGoal: goalId });
   };
 
@@ -131,71 +115,59 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
     applyArchetypePreset(archetypeId);
   };
 
-  const handleSelectArchetype = (archetypeId: string) => {
+  const handleSelectAlternativeArchetype = (archetypeId: string) => {
     setStage2Archetype({ selectedArchetypeId: archetypeId });
     applyArchetypePreset(archetypeId);
   };
 
   const canContinue = Boolean(selectedGoal);
 
+  const selectedGoalMeta = useMemo(() => {
+    return PORTFOLIO_GOALS.find((g) => g.id === selectedGoal);
+  }, [selectedGoal]);
+
+  const currentArchetypeMeta = useMemo(() => {
+    return (
+      PORTFOLIO_ARCHETYPES.find((a) => a.id === currentArchetypeId) ||
+      PORTFOLIO_ARCHETYPES[0]
+    );
+  }, [currentArchetypeId]);
+
   return (
-    <div className="space-y-7 text-left font-sans">
+    <div className="space-y-6 text-left font-sans">
       {/* ──────────────────────────────────────────────────────────────────────────
-          PART 1 — CONTEXT HANDOFF
-          Read-only inherited context with zero fake values and clear empty states
+          1. COMPACT INHERITED STRATEGY BAR
       ────────────────────────────────────────────────────────────────────────── */}
-      <section aria-labelledby="context-handoff-heading">
-        <ContextHandoffCard />
-      </section>
+      <ContextHandoffCard />
 
       {/* ──────────────────────────────────────────────────────────────────────────
-          PART 2 — PORTFOLIO GOAL
-          3 selectable commercial goals with deterministic recommendation
+          2. PRIMARY DECISION: CHOOSE YOUR PORTFOLIO GOAL
       ────────────────────────────────────────────────────────────────────────── */}
-      <section className="space-y-4" aria-labelledby="portfolio-goal-heading">
-        {/* Header Block */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-1">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#0058be]">
-              <Target size={14} className="stroke-[2.5]" />
-              <span>Phase 1 — Commercial Objective</span>
-            </div>
-            <h3 id="portfolio-goal-heading" className="text-lg sm:text-xl font-bold text-[#0b1c30] tracking-tight">
-              Select Your Primary Portfolio Goal
-            </h3>
-            <p className="text-xs sm:text-sm text-neutral-500 max-w-2xl leading-relaxed">
-              Choose the primary commercial outcome this portfolio is engineered to achieve. This determines how section hierarchy, proof positioning, and conversion friction are weighted.
-            </p>
+      <section className="space-y-3.5" aria-labelledby="portfolio-goal-heading">
+        <div className="space-y-1">
+          <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#0058be]">
+            <span>Step 1 — Commercial Goal</span>
           </div>
-
-          <div className="shrink-0 text-xs">
-            {selectedGoal ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">
-                <CheckCircle2 size={13} className="text-emerald-600" />
-                Goal Confirmed
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 font-bold border border-amber-200">
-                <AlertCircle size={13} className="text-amber-600" />
-                Selection Required
-              </span>
-            )}
-          </div>
+          <h2 id="portfolio-goal-heading" className="text-xl sm:text-2xl font-bold text-[#0b1c30] tracking-tight">
+            Choose Your Portfolio Goal
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-500 max-w-xl leading-relaxed">
+            Select what this portfolio is engineered to achieve. Your choice sets the recommended sequence and proof emphasis.
+          </p>
         </div>
 
-        {/* 3 Selectable Goal Cards */}
+        {/* 3 Streamlined Goal Cards */}
         <div
           role="radiogroup"
           aria-label="Portfolio Acquisition Goals"
-          className="grid grid-cols-1 md:grid-cols-3 gap-3.5"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3.5"
         >
           {PORTFOLIO_GOALS.map((goal) => {
             const Icon = goal.icon;
             const isSelected = selectedGoal === goal.id;
-            const isRecommendedForTrack = !selectedGoal && goal.id === initialRecommendedGoal;
 
             return (
-              <motion.div
+              <div
                 key={goal.id}
                 role="radio"
                 aria-checked={isSelected}
@@ -206,260 +178,163 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
                     handleSelectGoal(goal.id);
                   }
                 }}
-                whileHover={{ y: -2 }}
-                transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
                 onClick={() => handleSelectGoal(goal.id)}
                 className={cn(
-                  'p-5 rounded-3xl border transition-all cursor-pointer space-y-3.5 relative flex flex-col justify-between text-left select-none group focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2',
+                  'relative p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2',
                   isSelected
-                    ? 'bg-white border-[#0058be] shadow-sm ring-2 ring-[#0058be]/15'
-                    : 'bg-white border-neutral-200/90 shadow-2xs hover:border-neutral-300 hover:bg-neutral-50/40'
+                    ? 'bg-white border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_24px_rgba(0,88,190,0.08)]'
+                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs'
                 )}
               >
-                <div className="space-y-3">
-                  {/* Top Bar: Icon + Badge + Radio Indicator */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={cn(
-                          'w-9 h-9 rounded-2xl flex items-center justify-center border transition-colors',
-                          isSelected
-                            ? 'bg-[#0058be] text-white border-[#0058be]'
-                            : 'bg-neutral-100 text-neutral-600 border-neutral-200 group-hover:bg-[#0058be]/10 group-hover:text-[#0058be]'
-                        )}
-                      >
-                        <Icon size={18} className="stroke-[2.2]" />
-                      </div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
-                        {goal.badge}
-                      </span>
-                    </div>
+                {/* Header Row: Icon + Radio Indicator */}
+                <div className="flex items-start justify-between w-full mb-3">
+                  <div
+                    className={cn(
+                      'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200',
+                      isSelected
+                        ? 'bg-[#0058be]/10 text-[#0058be]'
+                        : 'bg-neutral-100 text-neutral-500 group-hover:bg-[#0058be]/10 group-hover:text-[#0058be]'
+                    )}
+                  >
+                    <Icon size={18} />
+                  </div>
 
-                    <div className="flex items-center gap-1.5">
-                      {isRecommendedForTrack && (
-                        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[#0058be] text-[10px] font-bold border border-blue-100">
-                          Recommended
-                        </span>
-                      )}
-                      <div
-                        className={cn(
-                          'w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-all',
-                          isSelected
-                            ? 'bg-[#0058be] border-[#0058be] text-white'
-                            : 'border-neutral-300 text-transparent group-hover:border-neutral-400'
-                        )}
-                      >
+                  <div className="shrink-0 pt-0.5">
+                    {isSelected ? (
+                      <div className="w-5 h-5 rounded-full bg-[#0058be] flex items-center justify-center text-white shadow-xs">
                         <Check size={12} className="stroke-[3]" />
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Title & Description */}
-                  <div className="space-y-1">
-                    <h4 className="text-sm sm:text-base font-bold text-[#0b1c30] tracking-tight">
-                      {goal.label}
-                    </h4>
-                    <p className="text-xs text-neutral-500 leading-relaxed font-normal">
-                      {goal.description}
-                    </p>
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border border-neutral-300 bg-white group-hover:border-neutral-400" />
+                    )}
                   </div>
                 </div>
 
-                {/* Best When Context Box */}
-                <div className="pt-2.5 border-t border-neutral-100 text-[11px] leading-snug">
-                  <span className="font-semibold text-neutral-700">Best when: </span>
-                  <span className="text-neutral-500">{goal.bestWhen.replace('Best when ', '')}</span>
+                {/* Title & Description */}
+                <div className="space-y-1">
+                  <h3
+                    className={cn(
+                      'text-sm sm:text-base font-bold transition-colors',
+                      isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]'
+                    )}
+                  >
+                    {goal.label}
+                  </h3>
+                  <p className="text-xs text-neutral-500 leading-relaxed">
+                    {goal.description}
+                  </p>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
+      </section>
 
-        {/* ────────────────────────────────────────────────────────────────────────
-            STRATEGY RECOMMENDATION PANEL
-            Appears immediately once a goal is selected or active
-        ──────────────────────────────────────────────────────────────────────── */}
-        <AnimatePresence>
-          {selectedGoal && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 4 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className="mt-5 p-5 sm:p-6 rounded-3xl bg-neutral-50/80 border border-neutral-200/90 shadow-xs space-y-4 text-left"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                <div className="space-y-1 max-w-2xl">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0058be]/10 text-[#0058be] text-[10px] font-black uppercase tracking-wider border border-[#0058be]/20">
-                      <Sparkles size={11} />
-                      Strategy Recommendation
-                    </span>
-                    <span className="text-[11px] font-semibold text-neutral-400">
-                      Matched to your {selectedGoal} goal
-                    </span>
-                  </div>
+      {/* ──────────────────────────────────────────────────────────────────────────
+          3. SECONDARY: RECOMMENDED ARCHITECTURE
+          Compact, intelligent single recommendation with collapsible alternatives
+      ────────────────────────────────────────────────────────────────────────── */}
+      <section className="bg-neutral-50/80 rounded-2xl border border-neutral-200 p-5 sm:p-6 space-y-3.5">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="space-y-1 max-w-xl">
+            <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-[#0058be] block">
+              Recommended Architecture
+            </span>
 
-                  <h4 className="text-base sm:text-lg font-bold text-[#0b1c30] tracking-tight flex items-center gap-2 pt-0.5">
-                    <span>{recommendation.archetypeName}</span>
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-white border border-neutral-200 text-[#0058be]">
-                      {recommendation.badge}
-                    </span>
-                  </h4>
+            <h3 className="text-base sm:text-lg font-bold text-[#0b1c30]">
+              {recommendation.archetypeName}
+            </h3>
 
-                  <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed pt-0.5">
-                    {recommendation.reason}
-                  </p>
-                </div>
+            <p className="text-xs text-neutral-600 leading-relaxed">
+              {recommendation.reason}
+            </p>
+            <p className="text-xs text-neutral-500 font-medium">
+              Conversion advantage: {recommendation.conversionAdvantage}
+            </p>
+          </div>
 
-                {/* Recommendation CTAs */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 pt-1 sm:pt-0">
-                  {isRecommendationApplied ? (
-                    <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200 shadow-2xs">
-                      <CheckCircle2 size={14} className="text-emerald-600" />
-                      <span>Architecture Applied</span>
-                    </div>
-                  ) : (
-                    <ModuleButton
-                      variant="primary"
-                      className="text-xs px-3.5 py-2"
-                      onClick={() => handleApplyRecommendation(recommendation.archetypeId)}
-                    >
-                      Use This Architecture
-                    </ModuleButton>
-                  )}
+          <div className="shrink-0 flex items-center gap-2 pt-1 sm:pt-0">
+            {isRecommendationApplied ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
+                <Check size={13} className="text-emerald-600 stroke-[3]" />
+                <span>Selected</span>
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleApplyRecommendation(recommendation.archetypeId)}
+                className="px-3.5 py-1.5 rounded-xl bg-[#0058be] hover:bg-[#004bb0] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+              >
+                Use this architecture
+              </button>
+            )}
+          </div>
+        </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowExplorer((prev) => !prev)}
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white hover:bg-neutral-100 text-neutral-700 text-xs font-bold border border-neutral-200/90 transition-all cursor-pointer shadow-2xs"
-                  >
-                    <span>{showExplorer ? 'Hide Architectures' : 'Explore Other Architectures'}</span>
-                    {showExplorer ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                  </button>
-                </div>
-              </div>
+        {/* Explore Alternatives Control */}
+        <div className="pt-2 border-t border-neutral-200/80 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowExplorer((prev) => !prev)}
+            className="text-xs font-bold text-neutral-600 hover:text-[#0058be] inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <span>{showExplorer ? 'Hide alternative architectures' : 'Explore other architectures'}</span>
+            <ChevronDown size={14} className={cn('transition-transform duration-200', showExplorer && 'rotate-180')} />
+          </button>
 
-              {/* Conversion Strategic Highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-neutral-200/60 text-xs">
-                <div className="p-2.5 rounded-xl bg-white border border-neutral-200/70 space-y-0.5">
-                  <span className="text-[10px] uppercase font-bold text-neutral-400 block tracking-wider">
-                    Funnel Priority
-                  </span>
-                  <span className="font-semibold text-[#0b1c30] line-clamp-1">
-                    {recommendation.funnelFocus}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-white border border-neutral-200/70 space-y-0.5">
-                  <span className="text-[10px] uppercase font-bold text-neutral-400 block tracking-wider">
-                    Conversion Advantage
-                  </span>
-                  <span className="font-semibold text-emerald-700 line-clamp-1">
-                    {recommendation.conversionAdvantage}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <span className="text-[11px] text-neutral-400 font-mono hidden sm:inline">
+            Active: {currentArchetypeMeta.name}
+          </span>
+        </div>
 
-        {/* ────────────────────────────────────────────────────────────────────────
-            PRESERVED ARCHETYPE EXPLORER
-            Allows browsing and selecting from all 4 conversion archetypes
-        ──────────────────────────────────────────────────────────────────────── */}
+        {/* Collapsed Alternatives Explorer */}
         <AnimatePresence>
           {showExplorer && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className="overflow-hidden space-y-3 pt-3"
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden pt-2"
             >
-              <div className="flex items-center justify-between pb-1">
-                <div>
-                  <h4 className="text-sm font-bold text-[#0b1c30]">
-                    All 4 Conversion Architectures
-                  </h4>
-                  <p className="text-xs text-neutral-500">
-                    Select an alternative layout if your client engagement model requires a different proof sequence.
-                  </p>
-                </div>
-                <span className="text-[11px] font-bold text-[#0058be]">
-                  Active: {PORTFOLIO_ARCHETYPES.find((a) => a.id === currentArchetypeId)?.name}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                 {PORTFOLIO_ARCHETYPES.map((arch) => {
                   const Icon = ARCHETYPE_ICONS[arch.iconName] || Zap;
-                  const isSelected = currentArchetypeId === arch.id;
-                  const isRec = recommendation.archetypeId === arch.id;
+                  const isCurrent = currentArchetypeId === arch.id;
+                  const isRecommended = recommendation.archetypeId === arch.id;
 
                   return (
                     <div
                       key={arch.id}
-                      onClick={() => handleSelectArchetype(arch.id)}
+                      onClick={() => handleSelectAlternativeArchetype(arch.id)}
                       className={cn(
-                        'p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer space-y-3 text-left relative group',
-                        isSelected
-                          ? 'bg-white border-[#0058be] shadow-xs ring-1 ring-[#0058be]'
+                        'p-4 rounded-xl border transition-all cursor-pointer space-y-2 text-left',
+                        isCurrent
+                          ? 'bg-white border-[#0058be] ring-1 ring-[#0058be] shadow-2xs'
                           : 'bg-white border-neutral-200 hover:border-neutral-300'
                       )}
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2.5">
-                          <div
-                            className={cn(
-                              'w-8 h-8 rounded-xl flex items-center justify-center border text-xs',
-                              isSelected
-                                ? 'bg-[#0058be] text-white border-[#0058be]'
-                                : 'bg-neutral-100 text-neutral-600 border-neutral-200'
-                            )}
-                          >
-                            <Icon size={16} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <h5 className="text-xs sm:text-sm font-bold text-[#0b1c30]">
-                                {arch.name}
-                              </h5>
-                              {isRec && (
-                                <span className="px-1.5 py-0.2 rounded bg-blue-50 text-[#0058be] text-[9px] font-bold border border-blue-100">
-                                  Strategy Pick
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[10px] font-semibold text-[#0058be]">
-                              {arch.badge}
-                            </span>
-                          </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Icon size={14} className={isCurrent ? 'text-[#0058be]' : 'text-neutral-500'} />
+                          <h4 className="text-xs font-bold text-[#0b1c30] truncate">{arch.name}</h4>
                         </div>
-
-                        <div
-                          className={cn(
-                            'w-5 h-5 rounded-full border flex items-center justify-center shrink-0 text-xs',
-                            isSelected
-                              ? 'bg-[#0058be] border-[#0058be] text-white'
-                              : 'border-neutral-300 text-transparent'
-                          )}
-                        >
-                          <Check size={11} className="stroke-[3]" />
-                        </div>
+                        {isCurrent && (
+                          <div className="w-4 h-4 rounded-full bg-[#0058be] text-white flex items-center justify-center">
+                            <Check size={10} className="stroke-[3]" />
+                          </div>
+                        )}
                       </div>
 
-                      <p className="text-xs text-neutral-500 leading-relaxed">
+                      <p className="text-[11px] text-neutral-500 leading-snug line-clamp-2">
                         {arch.description}
                       </p>
 
-                      <div className="flex items-center justify-between text-[11px] pt-1 border-t border-neutral-100">
-                        <span className="text-neutral-500 truncate max-w-[65%]">
-                          <strong className="text-neutral-700">Best for:</strong> {arch.bestFor}
+                      {isRecommended && (
+                        <span className="text-[10px] font-bold text-[#0058be] block">
+                          ★ Recommended for your goal
                         </span>
-                        <span className="text-emerald-700 font-semibold shrink-0">
-                          {arch.conversionAdvantage.split(' ')[0]} {arch.conversionAdvantage.split(' ')[1]}
-                        </span>
-                      </div>
+                      )}
                     </div>
                   );
                 })}
@@ -470,51 +345,33 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
       </section>
 
       {/* ──────────────────────────────────────────────────────────────────────────
-          NAVIGATION & COMPLETION STEP FOOTER
-          Enabled only once a valid portfolio goal is selected
+          4. CLEAR PRIMARY ACTION FOOTER
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 border-t border-neutral-200">
-        <div className="space-y-0.5 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-neutral-500">Selected Goal:</span>
-            {selectedGoal ? (
-              <span className="font-bold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
-                {PORTFOLIO_GOALS.find((g) => g.id === selectedGoal)?.label}
-              </span>
-            ) : (
-              <span className="text-amber-700 italic font-medium">
-                None selected yet (select one above)
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-neutral-500">Active Architecture:</span>
-            <span className="font-bold text-[#0b1c30]">
-              {PORTFOLIO_ARCHETYPES.find((a) => a.id === currentArchetypeId)?.name || 'Proof-First Architecture'}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-neutral-200">
+        <div className="text-xs text-neutral-500">
+          {selectedGoalMeta ? (
+            <span>
+              Goal: <strong className="text-neutral-800">{selectedGoalMeta.label}</strong>
+              <span className="mx-2 text-neutral-300">•</span>
+              Architecture: <strong className="text-neutral-800">{currentArchetypeMeta.name}</strong>
             </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
-          {!canContinue && (
-            <span className="text-[11px] text-amber-700 font-medium sm:text-right">
-              Select a goal above to unlock
+          ) : (
+            <span className="text-amber-700 font-medium">
+              Please choose a goal above to continue
             </span>
           )}
-          <ModuleButton
-            onClick={onContinue}
-            disabled={!canContinue}
-            className="cursor-pointer"
-          >
-            <span>Continue to Architecture</span>
-            <ChevronRight size={15} />
-          </ModuleButton>
         </div>
+
+        <ModuleButton
+          onClick={onContinue}
+          disabled={!canContinue}
+        >
+          <span>Continue to Section Sequence →</span>
+        </ModuleButton>
       </div>
     </div>
   );
 });
 
 ArchetypeStrategySection.displayName = 'ArchetypeStrategySection';
-
 export default ArchetypeStrategySection;
