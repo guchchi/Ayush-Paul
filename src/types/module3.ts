@@ -557,14 +557,11 @@ export interface Stage2WireframeSettings {
 export interface Stage1AuditData {
   selectedPlatforms: string[];
   auditStep: 1 | 2 | 3;
-  auditMode: 'quiz' | 'paste';
   quizAnswers: {
     headlineType: string | null;
     hasPinnedProof: boolean | null;
     hasSingleCta: boolean | null;
   };
-  pastedBio: string;
-  isBioAnalyzed: boolean;
   diagnosticScore: number | null;
   dimensionScores?: {
     positioning: number;

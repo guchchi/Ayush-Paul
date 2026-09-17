@@ -175,9 +175,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     }
     return calculateAuditBaselineScore({
       selectedPlatforms: stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : ['linkedin', 'twitter'],
-      auditMode: stage1Audit?.auditMode ?? 'quiz',
       quizAnswers: stage1Audit?.quizAnswers ?? { headlineType: 'skills', hasPinnedProof: false, hasSingleCta: false },
-      pastedBio: stage1Audit?.pastedBio ?? '',
       serviceId: mod1ServiceId,
       careerTrackId: mod1CareerTrackId,
     }).total;
@@ -295,7 +293,7 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
               proofLine={proofLine}
               roleLabel={recommendation.roleLabel}
               activePlatforms={stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : recommendation.recommendedPlatforms}
-              beforeBio={stage1Audit?.pastedBio}
+              diagnosticGaps={stage1Audit?.diagnosticGaps}
               quizAnswers={stage1Audit?.quizAnswers}
               onUserNameChange={setUserName}
               onUserHandleChange={setUserHandle}

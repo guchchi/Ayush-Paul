@@ -611,14 +611,11 @@ export function harmonizeProfilePositioning(
 
 export interface AuditBaselineParams {
   selectedPlatforms: string[];
-  auditMode: 'quiz' | 'paste';
   quizAnswers: {
     headlineType: string | null;
     hasPinnedProof: boolean | null;
     hasSingleCta: boolean | null;
   };
-  pastedBio?: string;
-  isBioAnalyzed?: boolean;
   serviceId?: string | null;
   careerTrackId?: string | null;
 }
@@ -650,9 +647,7 @@ export interface AuditBaselineResult {
 export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditBaselineResult {
   const {
     selectedPlatforms = [],
-    auditMode = 'quiz',
     quizAnswers = { headlineType: null, hasPinnedProof: null, hasSingleCta: null },
-    pastedBio = '',
     serviceId,
     careerTrackId,
   } = params;
@@ -662,30 +657,18 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
   let positioningDesc = 'Baseline generalist positioning';
   let positioningStatus: 'strong' | 'moderate' | 'weak' = 'weak';
 
-  if (auditMode === 'quiz') {
-    if (quizAnswers.headlineType === 'authority') {
-      positioningScore = 22;
-      positioningStatus = 'strong';
-      positioningDesc = 'Clear strategic authority stance with outcome-focused value proposition';
-    } else if (quizAnswers.headlineType === 'skills') {
-      positioningScore = 13;
-      positioningStatus = 'moderate';
-      positioningDesc = 'Tool & skill-listing headline. High risk of commodity pricing';
-    } else if (quizAnswers.headlineType === 'generic') {
-      positioningScore = 6;
-      positioningStatus = 'weak';
-      positioningDesc = 'Generic freelancer title. Over 80% of high-ticket visitors bounce immediately';
-    }
-  } else {
-    const lower = (pastedBio || '').toLowerCase();
-    let pScore = 6;
-    if (['help', 'scale', 'engineer', 'architect', 'build for', 'grow', 'partner'].some(w => lower.includes(w))) pScore += 8;
-    if (lower.length >= 40 && lower.length <= 220) pScore += 4;
-    if (['enterprise', 'creator', 'founder', 'b2b', 'saas', 'startup', 'brand'].some(w => lower.includes(w))) pScore += 4;
-    if (['passionate', 'aspiring', 'looking for', 'open to work', 'freelancer'].some(w => lower.includes(w))) pScore = Math.max(pScore - 4, 5);
-    positioningScore = Math.min(Math.max(pScore, 5), 22);
-    positioningStatus = positioningScore >= 18 ? 'strong' : positioningScore >= 12 ? 'moderate' : 'weak';
-    positioningDesc = positioningScore >= 18 ? 'Strong outcome-led profile bio' : positioningScore >= 12 ? 'Decent foundation but lacks specific authority hooks' : 'Uncalibrated bio with commodity signals';
+  if (quizAnswers.headlineType === 'authority') {
+    positioningScore = 22;
+    positioningStatus = 'strong';
+    positioningDesc = 'Clear strategic authority stance with outcome-focused value proposition';
+  } else if (quizAnswers.headlineType === 'skills') {
+    positioningScore = 13;
+    positioningStatus = 'moderate';
+    positioningDesc = 'Tool & skill-listing headline. High risk of commodity pricing';
+  } else if (quizAnswers.headlineType === 'generic') {
+    positioningScore = 6;
+    positioningStatus = 'weak';
+    positioningDesc = 'Generic freelancer title. Over 80% of high-ticket visitors bounce immediately';
   }
 
   // 2. Channel Architecture & Relevance (0–25)
@@ -712,73 +695,47 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
   const platformDesc = platformCount === 0 ? 'No distribution channels selected' : `${platformCount} active channel(s) configured for distribution`;
 
   // 3. Social Proof & Evidence Placement (0–25)
-  let proofScore: number;
-  let proofStatus: 'strong' | 'moderate' | 'weak';
-  let proofDesc: string;
+  let proofScore: number = 6;
+  let proofStatus: 'strong' | 'moderate' | 'weak' = 'weak';
+  let proofDesc: string = 'Zero pinned verifiable proof assets. High client evaluation skepticism';
 
-  if (auditMode === 'quiz') {
-    if (quizAnswers.hasPinnedProof === true) {
-      proofScore = 20;
-      proofStatus = 'strong';
-      proofDesc = 'Pinned case studies, metrics, or portfolio teardowns present';
-    } else {
-      proofScore = 6;
-      proofStatus = 'weak';
-      proofDesc = 'Zero pinned verifiable proof assets. High client evaluation skepticism';
-    }
-  } else {
-    const lower = (pastedBio || '').toLowerCase();
-    let prScore = 6;
-    if (/\d+[%xX+]|\$\d|\d+\s*(clients|projects|videos|views|subscribers|revenue)/i.test(lower)) prScore += 9;
-    if (['proven', 'case study', 'client', 'result', 'roi', 'portfolio', 'metric'].some(w => lower.includes(w))) prScore += 5;
-    proofScore = Math.min(Math.max(prScore, 6), 20);
-    proofStatus = proofScore >= 16 ? 'strong' : proofScore >= 11 ? 'moderate' : 'weak';
-    proofDesc = proofScore >= 16 ? 'Quantifiable metrics and verifiable proof detected' : 'Limited or missing quantifiable evidence in bio';
+  if (quizAnswers.hasPinnedProof === true) {
+    proofScore = 20;
+    proofStatus = 'strong';
+    proofDesc = 'Pinned case studies, metrics, or portfolio teardowns present';
+  } else if (quizAnswers.hasPinnedProof === false) {
+    proofScore = 6;
+    proofStatus = 'weak';
+    proofDesc = 'Zero pinned verifiable proof assets. High client evaluation skepticism';
   }
 
   // 4. Conversion CTA & Funnel Link (0–25)
-  let ctaScore: number;
-  let ctaStatus: 'strong' | 'moderate' | 'weak';
-  let ctaDesc: string;
+  let ctaScore: number = 6;
+  let ctaStatus: 'strong' | 'moderate' | 'weak' = 'weak';
+  let ctaDesc: string = 'No dedicated conversion CTA or cluttered link directory';
 
-  if (auditMode === 'quiz') {
-    if (quizAnswers.hasSingleCta === true) {
-      ctaScore = 20;
-      ctaStatus = 'strong';
-      ctaDesc = 'Single direct conversion path or calendar booking link';
-    } else {
-      ctaScore = 6;
-      ctaStatus = 'weak';
-      ctaDesc = 'No dedicated conversion CTA or cluttered link directory';
-    }
-  } else {
-    const lower = (pastedBio || '').toLowerCase();
-    let cScore = 6;
-    if (['book', 'schedule', 'apply', 'calendly', 'dm me', 'hire', 'consult'].some(w => lower.includes(w))) cScore += 9;
-    if (['http', 'www', '.com', '.io', 'link', 'site'].some(w => lower.includes(w))) cScore += 5;
-    ctaScore = Math.min(Math.max(cScore, 6), 20);
-    ctaStatus = ctaScore >= 16 ? 'strong' : ctaScore >= 11 ? 'moderate' : 'weak';
-    ctaDesc = ctaScore >= 16 ? 'Clear call-to-action leading to conversion destination' : 'Passive or absent conversion directive';
+  if (quizAnswers.hasSingleCta === true) {
+    ctaScore = 20;
+    ctaStatus = 'strong';
+    ctaDesc = 'Single direct conversion path or calendar booking link';
+  } else if (quizAnswers.hasSingleCta === false) {
+    ctaScore = 6;
+    ctaStatus = 'weak';
+    ctaDesc = 'No dedicated conversion CTA or cluttered link directory';
   }
 
   const total = Math.min(positioningScore + platformScore + proofScore + ctaScore, 100);
 
   const diagnosticGaps: string[] = [];
   
-  if (auditMode === 'quiz') {
-    if (quizAnswers.headlineType === 'skills' || quizAnswers.headlineType === 'generic') {
-      diagnosticGaps.push('Generic commodity positioning');
-    }
-    if (quizAnswers.hasPinnedProof === false) {
-      diagnosticGaps.push('Missing verifiable proof assets');
-    }
-    if (quizAnswers.hasSingleCta === false) {
-      diagnosticGaps.push('No clear conversion funnel or CTA');
-    }
-  } else {
-    if (positioningStatus !== 'strong') diagnosticGaps.push('Generic commodity positioning');
-    if (proofStatus !== 'strong') diagnosticGaps.push('Missing verifiable proof assets');
-    if (ctaStatus !== 'strong') diagnosticGaps.push('No clear conversion funnel or CTA');
+  if (quizAnswers.headlineType === 'skills' || quizAnswers.headlineType === 'generic') {
+    diagnosticGaps.push('Generic commodity positioning limits inbound high-ticket leads.');
+  }
+  if (quizAnswers.hasPinnedProof === false) {
+    diagnosticGaps.push('Missing verifiable proof assets causes prospects to bounce early.');
+  }
+  if (quizAnswers.hasSingleCta === false) {
+    diagnosticGaps.push('Lack of a clear conversion funnel creates friction in booking calls.');
   }
 
   const dimensions = {

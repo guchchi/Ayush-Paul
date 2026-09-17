@@ -889,11 +889,9 @@ export const useModule3Store = create<Module3State>()(
           stage1Audit: {
             selectedPlatforms: state.stage1Audit?.selectedPlatforms ?? [],
             auditStep: state.stage1Audit?.auditStep ?? 1,
-            auditMode: state.stage1Audit?.auditMode ?? 'quiz',
             quizAnswers: state.stage1Audit?.quizAnswers ?? { headlineType: null, hasPinnedProof: null, hasSingleCta: null },
-            pastedBio: state.stage1Audit?.pastedBio ?? '',
-            isBioAnalyzed: state.stage1Audit?.isBioAnalyzed ?? false,
             diagnosticScore: state.stage1Audit?.diagnosticScore ?? null,
+            diagnosticGaps: state.stage1Audit?.diagnosticGaps ?? [],
             dimensionScores: state.stage1Audit?.dimensionScores,
             completedAt: state.stage1Audit?.completedAt,
             ...auditData,

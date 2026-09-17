@@ -77,19 +77,25 @@ function PlatformFitStrip({ text, platforms, mode }: { text: string; platforms: 
 
 // ── Before vs After Card ─────────────────────────────────────────────────────
 
-function BeforeAfterCard({ beforeBio, quizAnswers, newHeadline, newProofLine }: {
-  beforeBio?: string;
+function BeforeAfterCard({ diagnosticGaps, quizAnswers, newHeadline, newProofLine }: {
+  diagnosticGaps?: string[];
   quizAnswers?: { headlineType: string | null; hasPinnedProof: boolean | null; hasSingleCta: boolean | null };
   newHeadline: string;
   newProofLine: string;
 }) {
-  if ((!beforeBio || beforeBio.trim().length < 10) && !quizAnswers?.headlineType) return null;
+  if (!diagnosticGaps?.length && !quizAnswers?.headlineType) return null;
   if (newHeadline.trim().length < 10 && newProofLine.trim().length < 10) return null;
 
-  // Construct "before" text from either pasted bio or quiz answers
-  let beforeText = '';
-  if (beforeBio && beforeBio.trim().length >= 10) {
-    beforeText = beforeBio.trim();
+  // Construct "before" text from either diagnostic gaps or quiz answers
+  let beforeContent = null;
+  if (diagnosticGaps && diagnosticGaps.length > 0) {
+    beforeContent = (
+      <ul className="list-disc pl-4 space-y-1">
+        {diagnosticGaps.map((gap, i) => (
+          <li key={i}>{gap}</li>
+        ))}
+      </ul>
+    );
   } else if (quizAnswers) {
     const parts: string[] = [];
     if (quizAnswers.headlineType === 'generic') parts.push('Generic "I do X" headline');
@@ -97,10 +103,11 @@ function BeforeAfterCard({ beforeBio, quizAnswers, newHeadline, newProofLine }: 
     else if (quizAnswers.headlineType === 'authority') parts.push('Authority-positioned headline');
     if (quizAnswers.hasPinnedProof === false) parts.push('No pinned proof or case studies');
     if (quizAnswers.hasSingleCta === false) parts.push('No clear booking funnel');
-    beforeText = parts.join(' • ') || 'Basic generic profile';
+    const beforeText = parts.join(' • ') || 'Basic generic profile';
+    beforeContent = <p className="italic">"{beforeText}"</p>;
   }
 
-  if (!beforeText) return null;
+  if (!beforeContent) return null;
 
   return (
     <motion.div
@@ -124,9 +131,9 @@ function BeforeAfterCard({ beforeBio, quizAnswers, newHeadline, newProofLine }: 
             <XCircle size={12} className="text-red-500" />
             <span className="text-[10px] font-bold uppercase tracking-wider text-red-600">Before</span>
           </div>
-          <p className="text-[11px] text-red-800/80 leading-relaxed italic line-clamp-4">
-            "{beforeText}"
-          </p>
+          <div className="text-[11px] text-red-800/80 leading-relaxed line-clamp-4">
+            {beforeContent}
+          </div>
         </div>
 
         {/* After */}
@@ -274,7 +281,7 @@ interface Props {
   proofLine: string;
   roleLabel: string;
   activePlatforms?: string[];
-  beforeBio?: string;
+  diagnosticGaps?: string[];
   quizAnswers?: { headlineType: string | null; hasPinnedProof: boolean | null; hasSingleCta: boolean | null };
   onUserNameChange: (name: string) => void;
   onUserHandleChange: (handle: string) => void;
@@ -291,7 +298,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   proofLine,
   roleLabel,
   activePlatforms,
-  beforeBio,
+  diagnosticGaps,
   quizAnswers,
   onUserNameChange,
   onUserHandleChange,
@@ -504,7 +511,7 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
 
       {/* Feature 5: Before vs After Identity Shift Card */}
       <BeforeAfterCard
-        beforeBio={beforeBio}
+        diagnosticGaps={diagnosticGaps}
         quizAnswers={quizAnswers}
         newHeadline={positioningHeadline}
         newProofLine={proofLine}

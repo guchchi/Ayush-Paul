@@ -109,9 +109,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
   const fallbackAuditBaseline = useMemo(() => {
     return calculateAuditBaselineScore({
       selectedPlatforms: stage1Audit?.selectedPlatforms?.length ? stage1Audit.selectedPlatforms : ['linkedin', 'twitter'],
-      auditMode: stage1Audit?.auditMode ?? 'quiz',
       quizAnswers: stage1Audit?.quizAnswers ?? { headlineType: 'skills', hasPinnedProof: false, hasSingleCta: false },
-      pastedBio: stage1Audit?.pastedBio ?? '',
     });
   }, [stage1Audit]);
 

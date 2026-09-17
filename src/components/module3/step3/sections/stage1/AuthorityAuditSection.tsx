@@ -503,244 +503,65 @@ interface RoleQuizConfig {
   }>;
 }
 
-const getRoleQuizContent = (serviceId: string | null, careerTrackId: string | null): RoleQuizConfig => {
-  const s = (serviceId || '').toLowerCase();
-  const c = (careerTrackId || '').toLowerCase();
-
-  if (s.includes('edit') || s.includes('video') || s.includes('motion') || c.includes('editor')) {
-    return {
-      headlineOptions: [
-        {
-          id: 'generic',
-          title: 'Job Title Only',
-          description: 'Basic job title without clear niche differentiation or business value.',
-          example: 'e.g. "Freelance Video Editor | Premiere Pro & After Effects"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: 'skills',
-          title: 'Software & Tool Stack',
-          description: 'Lists editing tools rather than creator retention and business ROI.',
-          example: 'e.g. "4K Editing • Premiere Pro • After Effects • DaVinci • Sound Design"',
-          scoreWeight: '+10 PTS',
-        },
-        {
-          id: 'authority',
-          title: 'Client Outcome & Retention',
-          description: 'Clear value proposition focused on audience growth, retention, and ROI.',
-          example: 'e.g. "Helping YouTube creators scale past 1M+ views with retention-first editing"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      proofOptions: [
-        {
-          id: false,
-          title: 'No Proof or Vague Claims',
-          description: 'No verified retention stats, view milestones, or creator testimonials pinned.',
-          example: 'e.g. "Passionate video editor with 3+ years experience"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Verified Results & Case Studies',
-          description: 'Specific view counts, average retention rates, or creator revenue milestones.',
-          example: 'e.g. "50M+ views generated • 72% avg retention • 15+ creator channels scaled"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      ctaOptions: [
-        {
-          id: false,
-          title: 'Passive Contact ("DM for work")',
-          description: 'No direct booking funnel, inquiry form, or structured portfolio link.',
-          example: 'e.g. "DM for rates" or "Email in bio for inquiries"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Direct Booking / Showreel Funnel',
-          description: 'Direct link to book a 15-min discovery call or review high-converting showreel.',
-          example: 'e.g. "Book a 15-min discovery call" or "View my showreel portfolio"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-    };
-  }
-
-  if (s.includes('code') || s.includes('dev') || s.includes('tech') || s.includes('app') || c.includes('developer')) {
-    return {
-      headlineOptions: [
-        {
-          id: 'generic',
-          title: 'Job Title Only',
-          description: 'Basic developer title without business positioning or engineering impact.',
-          example: 'e.g. "Freelance Full Stack Web Developer / React Dev"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: 'skills',
-          title: 'Tech Stack & Framework List',
-          description: 'Lists programming languages and libraries rather than business solutions.',
-          example: 'e.g. "React • TypeScript • Next.js • Tailwind • Node.js • PostgreSQL • AWS"',
-          scoreWeight: '+10 PTS',
-        },
-        {
-          id: 'authority',
-          title: 'Architectural Outcome & Scale',
-          description: 'Positions you as a high-value technical partner solving business bottlenecks.',
-          example: 'e.g. "Architecting scalable web applications & MVPs for high-growth SaaS founders"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      proofOptions: [
-        {
-          id: false,
-          title: 'No Metrics or Generic Repos',
-          description: 'No business impact metrics or production case studies highlighted.',
-          example: 'e.g. "Clean coder who loves building cool software"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Verified Production Metrics',
-          description: 'Documented user scale, latency reductions, or revenue-driving features.',
-          example: 'e.g. "Shipped systems handling 100k+ MAU • 40% latency reduction • 99.9% uptime"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      ctaOptions: [
-        {
-          id: false,
-          title: 'Unstructured Contact',
-          description: 'Lacks a direct route for prospective founders to book a scoping call.',
-          example: 'e.g. "Reach out via email" or "Drop a message on Twitter"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Direct Scoping & Booking Funnel',
-          description: 'Direct link to book an architecture consultation or inspect live client repos.',
-          example: 'e.g. "Book a 15-min architecture audit" or "View production case studies"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-    };
-  }
-
-  if (s.includes('design') || s.includes('ui') || s.includes('figma') || c.includes('designer')) {
-    return {
-      headlineOptions: [
-        {
-          id: 'generic',
-          title: 'Job Title Only',
-          description: 'Generic design title that blends in with thousands of junior freelancers.',
-          example: 'e.g. "Freelance UI/UX Designer | Product Designer"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: 'skills',
-          title: 'Software & Deliverable List',
-          description: 'Lists design software rather than user conversion or product metrics.',
-          example: 'e.g. "Figma • Design Systems • Wireframing • Prototyping • Mobile Apps"',
-          scoreWeight: '+10 PTS',
-        },
-        {
-          id: 'authority',
-          title: 'Strategic Conversion Stance',
-          description: 'Positions you as a design partner optimizing user conversion and retention.',
-          example: 'e.g. "Designing high-converting SaaS interfaces & web apps that reduce churn"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      proofOptions: [
-        {
-          id: false,
-          title: 'Dribbble Mockups / No Metrics',
-          description: 'Visual shots without business metrics, conversion data, or case studies.',
-          example: 'e.g. "Passionate designer crafting beautiful user interfaces"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Conversion Proof & Case Studies',
-          description: 'Measurable conversion uplifts, UX audits, or enterprise design systems.',
-          example: 'e.g. "Redesigned checkout yielding +34% trial conversion for B2B SaaS clients"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-      ctaOptions: [
-        {
-          id: false,
-          title: 'Passive Social Inquiry',
-          description: 'No dedicated portfolio intake form or scheduling link.',
-          example: 'e.g. "DM for project inquiries" or "Available for freelance work"',
-          scoreWeight: '0 PTS',
-        },
-        {
-          id: true,
-          title: 'Direct Client Booking Funnel',
-          description: 'Streamlined UX teardown call booking or case study walkthrough link.',
-          example: 'e.g. "Book a 15-min UX teardown call" or "Explore interactive prototypes"',
-          scoreWeight: '+25 PTS',
-        },
-      ],
-    };
-  }
-
-  // Default / Agency / Consultant
+const getRoleQuizContent = (
+  roleLabel: string = 'Consultant',
+  newHeadline: string = '',
+  newProofLine: string = '',
+  newUm: string = ''
+): RoleQuizConfig => {
   return {
     headlineOptions: [
       {
         id: 'generic',
-        title: 'Job Title Only',
-        description: 'Generic service provider title with low pricing power.',
-        example: 'e.g. "Freelance Consultant | Digital Marketer | Specialist"',
+        title: 'Basic Job Title Only',
+        description: 'Generic label without a specific value proposition or target audience.',
+        example: `e.g. "Freelance ${roleLabel || 'Professional'}"`,
         scoreWeight: '0 PTS',
       },
       {
         id: 'skills',
-        title: 'Service & Skill List',
-        description: 'Lists disconnected services rather than unified business solutions.',
-        example: 'e.g. "Strategy • Social Media • Paid Ads • Brand Consulting • Funnels"',
+        title: 'Skills & Services Stack',
+        description: 'Listing tools, skills, or generic services rather than client outcomes.',
+        example: `e.g. "${roleLabel || 'Expert'} | Strategy | Marketing | Execution"`,
         scoreWeight: '+10 PTS',
       },
       {
         id: 'authority',
-        title: 'Strategic Client Outcome',
-        description: 'Clear value proposition targeting specific client revenue or operational outcomes.',
-        example: 'e.g. "Helping 7-figure businesses engineer predictable client acquisition pipelines"',
+        title: 'Outcome-Driven Positioning',
+        description: 'Clear, differentiated value proposition focused on specific results.',
+        example: newHeadline ? `e.g. "${newHeadline}"` : `e.g. "Helping clients achieve specific outcomes"`,
         scoreWeight: '+25 PTS',
       },
     ],
     proofOptions: [
       {
         id: false,
-        title: 'Vague Claims / No Proof',
-        description: 'General statements without specific ROI, revenue figures, or client logos.',
-        example: 'e.g. "Proven track record of high-quality execution"',
+        title: 'Vague Claims or No Proof',
+        description: 'Missing verifiable metrics, case studies, or clear demonstrations of your past success.',
+        example: `e.g. "Passionate ${roleLabel} with 3+ years experience"`,
         scoreWeight: '0 PTS',
       },
       {
         id: true,
-        title: 'Verified Revenue & ROI Proof',
-        description: 'Documented client case studies with concrete business impact.',
-        example: 'e.g. "Generated $450k+ pipeline revenue across 14 client engagements"',
+        title: 'Verified Results & Mechanism',
+        description: 'Specific performance metrics backed by your unique approach or framework.',
+        example: newProofLine || newUm ? `e.g. "${newProofLine || 'Generated results'} using ${newUm || 'proprietary framework'}"` : 'e.g. "Generated verifiable ROI using my framework"',
         scoreWeight: '+25 PTS',
       },
     ],
     ctaOptions: [
       {
         id: false,
-        title: 'Unfocused Contact Info',
-        description: 'Multiple confusing links or passive email mentions.',
-        example: 'e.g. "Get in touch" or "Email me for project quotes"',
+        title: 'Passive Contact Request',
+        description: 'Relying on "DM me" or placing an email address without a structured onboarding funnel.',
+        example: 'e.g. "DM for rates" or "Email in bio for inquiries"',
         scoreWeight: '0 PTS',
       },
       {
         id: true,
-        title: 'Direct Strategy Call Funnel',
-        description: 'Single high-converting call to action leading directly to calendar booking.',
-        example: 'e.g. "Book a 15-min strategy session" or "Apply to work with me"',
+        title: 'Direct Strategy Funnel',
+        description: 'A frictionless, single-action link directing prospects to book a discovery call or view your portfolio.',
+        example: `e.g. "Book a discovery call to discuss ${roleLabel || 'services'}"`,
         scoreWeight: '+25 PTS',
       },
     ],
@@ -845,8 +666,8 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   );
 
   const roleQuiz = useMemo(
-    () => getRoleQuizContent(serviceId || headline, careerTrackId || uniqueMechanism),
-    [serviceId, headline, careerTrackId, uniqueMechanism]
+    () => getRoleQuizContent(roleLabel, headline, proofLine, uniqueMechanism),
+    [roleLabel, headline, proofLine, uniqueMechanism]
   );
 
   const { stage1Audit, setStage1Audit } = useModule3Store();
@@ -860,14 +681,11 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   // Read persisted state with fallback
   const selectedPlatforms = stage1Audit?.selectedPlatforms ?? defaultRecommended;
   const auditStep = (stage1Audit?.auditStep ?? 1) as 1 | 2 | 3;
-  const auditMode = stage1Audit?.auditMode ?? 'quiz';
   const quizAnswers = stage1Audit?.quizAnswers ?? {
     headlineType: null,
     hasPinnedProof: null,
     hasSingleCta: null,
   };
-  const pastedBio = stage1Audit?.pastedBio ?? '';
-  const isBioAnalyzed = stage1Audit?.isBioAnalyzed ?? false;
 
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [analysisStep, setAnalysisStep] = useState<number>(0);
@@ -881,22 +699,10 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
     setStage1Audit({ auditStep: step });
   }, [setStage1Audit]);
 
-  const setAuditMode = useCallback((mode: 'quiz' | 'paste') => {
-    setStage1Audit({ auditMode: mode });
-  }, [setStage1Audit]);
-
   const setQuizAnswers = useCallback((updateFn: any) => {
     const nextVal = typeof updateFn === 'function' ? updateFn(quizAnswers) : updateFn;
     setStage1Audit({ quizAnswers: nextVal });
   }, [quizAnswers, setStage1Audit]);
-
-  const setPastedBio = useCallback((val: string) => {
-    setStage1Audit({ pastedBio: val });
-  }, [setStage1Audit]);
-
-  const setIsBioAnalyzed = useCallback((val: boolean) => {
-    setStage1Audit({ isBioAnalyzed: val });
-  }, [setStage1Audit]);
 
   const togglePlatform = (key: string) => {
     if (selectedPlatforms.includes(key)) {
@@ -916,13 +722,12 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
 
   // Has user answered the questions in Step 2?
   const hasAnsweredQuestions = useMemo(() => {
-    if (auditMode === 'paste') return false;
     return (
       quizAnswers.headlineType !== null &&
       quizAnswers.hasPinnedProof !== null &&
       quizAnswers.hasSingleCta !== null
     );
-  }, [quizAnswers, auditMode]);
+  }, [quizAnswers]);
 
   // Has user interacted with the audit inputs yet?
   const hasInteracted = useMemo(() => {
@@ -933,14 +738,11 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
   const auditResult = useMemo(() => {
     return calculateAuditBaselineScore({
       selectedPlatforms,
-      auditMode,
       quizAnswers,
-      pastedBio,
-      isBioAnalyzed,
       serviceId,
       careerTrackId,
     });
-  }, [selectedPlatforms, auditMode, quizAnswers, pastedBio, isBioAnalyzed, serviceId, careerTrackId]);
+  }, [selectedPlatforms, quizAnswers, serviceId, careerTrackId]);
 
   // Compute live diagnostic score based on user's actual selections
   const diagnosticScore = useMemo<number | null>(() => {
@@ -967,6 +769,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
       setIsAnalyzing(false);
       setStage1Audit({
         diagnosticScore: auditResult.total,
+        diagnosticGaps: auditResult.diagnosticGaps,
         dimensionScores: {
           positioning: auditResult.dimensions.positioning.score,
           platformCoverage: auditResult.dimensions.platformCoverage.score,
@@ -994,6 +797,7 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
       ) {
         setStage1Audit({
           diagnosticScore: auditResult.total,
+          diagnosticGaps: auditResult.diagnosticGaps,
           dimensionScores: {
             positioning: auditResult.dimensions.positioning.score,
             platformCoverage: auditResult.dimensions.platformCoverage.score,
@@ -1176,7 +980,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
             className="space-y-6"
           >
             <div className="space-y-3">
-              {/* Top Navigation Row: Back Link on Left + Mode Selector on Right */}
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <button
                   type="button"
@@ -1191,34 +994,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                     </span>
                   )}
                 </button>
-
-                <div className="flex items-center gap-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200">
-                  <button
-                    type="button"
-                    onClick={() => setAuditMode('quiz')}
-                    className={cn(
-                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                      auditMode === 'quiz' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-                    )}
-                  >
-                    <HelpCircle size={12} />
-                    <span>3-Question Diagnostic (Active)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAuditMode('paste')}
-                    className={cn(
-                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5',
-                      auditMode === 'paste' ? 'bg-white text-[#0058be] shadow-2xs' : 'text-neutral-600 hover:text-neutral-900'
-                    )}
-                  >
-                    <Sparkles size={12} className="text-[#0058be]" />
-                    <span>Direct Bio Scan</span>
-                    <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 bg-blue-100/70 text-[#0058be] rounded-md">
-                      Sync
-                    </span>
-                  </button>
-                </div>
               </div>
 
               <div>
@@ -1226,14 +1001,12 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   How is your current social presence structured?
                 </h2>
                 <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-xl mt-1">
-                  Answer 3 quick questions about your current profiles or paste your bio to benchmark your authority score.
+                  Answer 3 quick questions about your current profiles to benchmark your authority score against your new identity.
                 </p>
               </div>
             </div>
 
-            {/* Option A: Quick 3-Question Honest Diagnostic */}
-            {auditMode === 'quiz' && (
-              <div className="space-y-4 pt-1">
+            <div className="space-y-4 pt-1">
                 {/* Question 1: Headline */}
                 <div className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-2xs space-y-4">
                   <div className="flex items-center gap-2.5">
@@ -1412,99 +1185,6 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* Option B: Feature 1 — Intelligent Bio Analyzer (Heuristic AI) */}
-            {auditMode === 'paste' && (
-              <div className="space-y-4">
-                <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-neutral-900 via-[#0b1c30] to-[#0a2540] border border-white/10 shadow-xl text-white space-y-5">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      <Sparkles size={16} className="text-[#d1f34d]" />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#d1f34d]">
-                        Bio Intelligence Scanner
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10">
-                      Heuristic Engine v3.0
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 max-w-2xl">
-                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-                      Paste Your Current Bio for Instant Analysis
-                    </h3>
-                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
-                      Copy your current LinkedIn headline, Twitter bio, or any platform bio below. We'll scan it for authority signals, proof patterns, and conversion gaps.
-                    </p>
-                  </div>
-
-                  {/* Bio Textarea */}
-                  <textarea
-                    value={pastedBio}
-                    onChange={(e) => setPastedBio(e.target.value)}
-                    placeholder={'Paste your current bio here...\n\nExample: "Full-stack developer | React, Node, AWS | Open to freelance projects | Coffee lover ☕"'}
-                    rows={4}
-                    className="w-full text-sm text-white bg-white/5 border border-white/15 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-[#d1f34d]/30 focus:border-[#d1f34d]/50 transition-all resize-none leading-relaxed placeholder:text-white/25"
-                  />
-
-                  {pastedBio.trim().length > 0 && !isBioAnalyzed && (
-                    <ModuleButton
-                      variant="primary"
-                      onClick={() => setIsBioAnalyzed(true)}
-                    >
-                      <Sparkles size={14} className="mr-1.5" />
-                      Scan Bio for Authority Signals →
-                    </ModuleButton>
-                  )}
-                </div>
-
-                {/* Feature 1: Bio Feedback Cards */}
-                {isBioAnalyzed && pastedBio.trim().length > 10 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                    className="space-y-3"
-                  >
-                    <div className="flex items-center gap-2 px-1">
-                      <Shield size={14} className="text-[#0058be]" />
-                      <span className="text-xs font-bold text-[#0b1c30]">Bio Intelligence Report</span>
-                      <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        {analyzeBioHeuristic(pastedBio).filter(f => f.type === 'positive').length} strengths found
-                      </span>
-                    </div>
-                    {analyzeBioHeuristic(pastedBio).map((item, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: idx * 0.1 }}
-                        className={cn(
-                          'p-4 rounded-2xl border flex items-start gap-3',
-                          item.type === 'positive' ? 'bg-emerald-50/70 border-emerald-200' :
-                          item.type === 'warning' ? 'bg-amber-50/70 border-amber-200' :
-                          'bg-red-50/70 border-red-200'
-                        )}
-                      >
-                        {item.type === 'positive' ? <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" /> :
-                         item.type === 'warning' ? <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" /> :
-                         <XCircle size={16} className="text-red-600 shrink-0 mt-0.5" />}
-                        <div className="space-y-0.5">
-                          <span className={cn(
-                            'text-xs font-bold',
-                            item.type === 'positive' ? 'text-emerald-800' :
-                            item.type === 'warning' ? 'text-amber-800' :
-                            'text-red-800'
-                          )}>{item.message}</span>
-                          <p className="text-[11px] text-neutral-600 leading-relaxed">{item.detail}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                )}
-              </div>
-            )}
 
             {/* Action Footer for Step 2 */}
             <div className="flex items-center justify-between pt-4 border-t border-neutral-200">
@@ -1516,41 +1196,20 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                 <ArrowLeft size={13} />
                 <span>Back to Channels</span>
               </button>
-              {auditMode === 'paste' ? (
-                <div className="flex items-center gap-3">
-                  {isBioAnalyzed && pastedBio.trim().length > 10 && (
-                    <ModuleButton
-                      variant="primary"
-                      onClick={handleStartAnalysis}
-                    >
-                      View Authority Scorecard →
-                    </ModuleButton>
-                  )}
-                  {!isBioAnalyzed && (
-                    <ModuleButton
-                      variant="secondary"
-                      onClick={() => setAuditMode('quiz')}
-                    >
-                      Switch to Diagnostic Quiz →
-                    </ModuleButton>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  {!hasAnsweredQuestions && (
-                    <span className="text-xs text-neutral-400 font-medium hidden sm:inline-block">
-                      Answer all 3 questions to calculate score
-                    </span>
-                  )}
-                  <ModuleButton
-                    variant="primary"
-                    disabled={!hasAnsweredQuestions}
-                    onClick={handleStartAnalysis}
-                  >
-                    Analyze Presence & Calculate Score →
-                  </ModuleButton>
-                </div>
-              )}
+              <div className="flex items-center gap-3">
+                {!hasAnsweredQuestions && (
+                  <span className="text-xs text-neutral-400 font-medium hidden sm:inline-block">
+                    Answer all 3 questions to calculate score
+                  </span>
+                )}
+                <ModuleButton
+                  variant="primary"
+                  disabled={!hasAnsweredQuestions}
+                  onClick={handleStartAnalysis}
+                >
+                  Analyze Presence & Calculate Score →
+                </ModuleButton>
+              </div>
             </div>
           </motion.div>
         )}
@@ -1704,13 +1363,27 @@ export const AuthorityAuditSection: React.FC<Props> = React.memo(({
                   {/* Dynamic Gap Statement Box */}
                   <div className="p-4.5 rounded-2xl bg-black/40 border border-white/10 flex items-start gap-3">
                     <AlertTriangle size={18} className="text-[#d1f34d] shrink-0 mt-0.5" />
-                    <div className="space-y-1">
+                    <div className="space-y-1 w-full">
                       <h4 className="text-xs font-bold text-white">
                         Client Perception Diagnosis
                       </h4>
-                      <p className="text-[11px] text-white/70 leading-relaxed">
-                        When high-ticket clients ($3,000+) evaluate your profile, they make a hiring decision in under 5 seconds. Generic titles and missing proof assets lead to immediate drop-off. In the next steps, we will engineer a unified, authority-positioned presence across all your channels.
-                      </p>
+                      {auditResult.diagnosticGaps && auditResult.diagnosticGaps.length > 0 ? (
+                        <div className="text-[11px] text-white/70 leading-relaxed mt-1.5">
+                          <p className="mb-2">Based on your current baseline, we identified these critical gaps:</p>
+                          <ul className="space-y-1.5 list-disc pl-4 marker:text-[#d1f34d]">
+                            {auditResult.diagnosticGaps.map((gap, i) => (
+                              <li key={i}>{gap}</li>
+                            ))}
+                          </ul>
+                          <p className="mt-2.5 text-white/90 font-medium">
+                            In the next step, we will engineer a unified, authority-positioned presence to resolve these issues.
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-[11px] text-white/70 leading-relaxed mt-1">
+                          When high-ticket clients ($3,000+) evaluate your profile, they make a hiring decision in under 5 seconds. Generic titles and missing proof assets lead to immediate drop-off. In the next steps, we will engineer a unified, authority-positioned presence across all your channels.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
