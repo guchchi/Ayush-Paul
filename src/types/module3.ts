@@ -572,6 +572,7 @@ export interface Stage1AuditData {
     proofEvidence: number;
     conversionCta: number;
   };
+  diagnosticGaps: string[];
   completedAt?: string;
 }
 

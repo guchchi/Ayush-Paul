@@ -3,7 +3,7 @@
  *
  * Lightweight reassurance bar displaying core strategic context inherited
  * from Module 1, Module 2, and Step 1 Authority Position.
- * Ultra-compact, single-card footprint with optional statement expansion.
+ * Follows Module 1 & Module 2 BriefItem design patterns.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -27,7 +27,6 @@ export const ContextHandoffCard: React.FC = React.memo(() => {
   // Module 3 store context
   const mod1ServiceId = useModule3Store((s) => s.mod1ServiceId);
   const mod1MarketId = useModule3Store((s) => s.mod1MarketId);
-  const mod1NicheId = useModule3Store((s) => s.mod1NicheId);
   const mod1Positioning = useModule3Store((s) => s.mod1Positioning);
   const mod2UniqueMechanism = useModule3Store((s) => s.mod2UniqueMechanism);
   const authorityPosition = useModule3Store((s) => s.authorityPosition);
@@ -37,7 +36,6 @@ export const ContextHandoffCard: React.FC = React.memo(() => {
   // Upstream stores fallback
   const oppServiceId = useOpportunityMapStore((s) => s.serviceId);
   const oppMarketLabel = useOpportunityMapStore((s) => s.marketLabel);
-  const oppNicheLabel = useOpportunityMapStore((s) => s.nicheLabel);
   const oppTrack = useOpportunityMapStore((s) => s.careerTrackId);
   const oppPositioning = useOpportunityMapStore((s) => s.positioning);
 
@@ -88,16 +86,16 @@ export const ContextHandoffCard: React.FC = React.memo(() => {
   }, [proofAssets, availableAssets]);
 
   return (
-    <div className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 space-y-3 text-left">
-      {/* Top row: Reassurance badge + statement toggle */}
-      <div className="flex items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-            <CheckCircle2 size={12} className="text-emerald-600" />
+    <div className="bg-neutral-50/70 rounded-2xl border border-neutral-200/90 p-3.5 sm:p-4 space-y-2.5 text-left">
+      {/* Reassurance Header Bar */}
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+            <CheckCircle2 size={11} className="text-emerald-600" />
             <span>Inherited Strategy</span>
           </span>
-          <span className="text-neutral-500 hidden sm:inline text-xs">
-            Your portfolio structure is grounded in the work completed in Modules 1 &amp; 2.
+          <span className="text-neutral-500 text-xs truncate">
+            Your portfolio inherits from your existing strategy
           </span>
         </div>
 
@@ -107,39 +105,39 @@ export const ContextHandoffCard: React.FC = React.memo(() => {
             onClick={() => setExpanded((prev) => !prev)}
             className="text-[11px] font-bold text-[#0058be] hover:underline flex items-center gap-1 shrink-0 cursor-pointer"
           >
-            <span>{expanded ? 'Hide Statement' : 'View Positioning'}</span>
+            <span>{expanded ? 'Hide statement' : 'View positioning'}</span>
             <ChevronDown size={12} className={cn('transition-transform duration-200', expanded && 'rotate-180')} />
           </button>
         )}
       </div>
 
       {/* 4 Compact Strategy Pillars */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 text-xs">
         {/* Positioning */}
-        <div className="bg-neutral-50 rounded-xl px-3 py-2 border border-neutral-100 space-y-0.5">
-          <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] font-bold uppercase tracking-wider">
+        <div className="bg-white rounded-xl px-3 py-2 border border-neutral-200/70 shadow-2xs space-y-0.5 min-w-0">
+          <div className="flex items-center gap-1 text-neutral-400 text-[9px] font-bold uppercase tracking-wider">
             <Target size={11} className="text-[#0058be]" />
             <span>Positioning</span>
           </div>
-          <p className="font-bold text-[#0b1c30] truncate text-xs">
+          <p className="font-bold text-[#0b1c30] truncate text-xs" title={positioningDisplay}>
             {positioningDisplay}
           </p>
         </div>
 
         {/* Mechanism */}
-        <div className="bg-neutral-50 rounded-xl px-3 py-2 border border-neutral-100 space-y-0.5">
-          <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] font-bold uppercase tracking-wider">
+        <div className="bg-white rounded-xl px-3 py-2 border border-neutral-200/70 shadow-2xs space-y-0.5 min-w-0">
+          <div className="flex items-center gap-1 text-neutral-400 text-[9px] font-bold uppercase tracking-wider">
             <Shield size={11} className="text-indigo-600" />
             <span>Mechanism</span>
           </div>
-          <p className="font-bold text-[#0b1c30] truncate text-xs">
+          <p className="font-bold text-[#0b1c30] truncate text-xs" title={mechanismDisplay}>
             {mechanismDisplay}
           </p>
         </div>
 
         {/* Authority */}
-        <div className="bg-neutral-50 rounded-xl px-3 py-2 border border-neutral-100 space-y-0.5">
-          <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] font-bold uppercase tracking-wider">
+        <div className="bg-white rounded-xl px-3 py-2 border border-neutral-200/70 shadow-2xs space-y-0.5 min-w-0">
+          <div className="flex items-center gap-1 text-neutral-400 text-[9px] font-bold uppercase tracking-wider">
             <Award size={11} className="text-purple-600" />
             <span>Authority</span>
           </div>
@@ -149,20 +147,20 @@ export const ContextHandoffCard: React.FC = React.memo(() => {
         </div>
 
         {/* Proof */}
-        <div className="bg-neutral-50 rounded-xl px-3 py-2 border border-neutral-100 space-y-0.5">
-          <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] font-bold uppercase tracking-wider">
+        <div className="bg-white rounded-xl px-3 py-2 border border-neutral-200/70 shadow-2xs space-y-0.5 min-w-0">
+          <div className="flex items-center gap-1 text-neutral-400 text-[9px] font-bold uppercase tracking-wider">
             <Database size={11} className="text-emerald-600" />
             <span>Proof Assets</span>
           </div>
           <p className="font-bold text-[#0b1c30] truncate text-xs">
-            {proofCount > 0 ? `${proofCount} Verified Assets` : 'Narrative Claims'}
+            {proofCount > 0 ? `${proofCount} Verified Assets` : 'Narrative Positioning'}
           </p>
         </div>
       </div>
 
-      {/* Optional Expandable Statement */}
+      {/* Optional Expandable Statement (Single concise line) */}
       {expanded && statementDisplay && (
-        <div className="pt-2 border-t border-neutral-100 text-xs text-neutral-600 italic bg-neutral-50/60 p-2.5 rounded-xl">
+        <div className="pt-2 border-t border-neutral-200/60 text-xs text-neutral-600 italic bg-white p-2.5 rounded-xl border border-neutral-100">
           &ldquo;{statementDisplay}&rdquo;
         </div>
       )}

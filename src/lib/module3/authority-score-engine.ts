@@ -640,6 +640,7 @@ export interface AuditBaselineResult {
     conversionCta: AuditBaselineDimension;
   };
   dimensionList: AuditBaselineDimension[];
+  diagnosticGaps: string[];
 }
 
 /**
@@ -762,6 +763,24 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
 
   const total = Math.min(positioningScore + platformScore + proofScore + ctaScore, 100);
 
+  const diagnosticGaps: string[] = [];
+  
+  if (auditMode === 'quiz') {
+    if (quizAnswers.headlineType === 'skills' || quizAnswers.headlineType === 'generic') {
+      diagnosticGaps.push('Generic commodity positioning');
+    }
+    if (quizAnswers.hasPinnedProof === false) {
+      diagnosticGaps.push('Missing verifiable proof assets');
+    }
+    if (quizAnswers.hasSingleCta === false) {
+      diagnosticGaps.push('No clear conversion funnel or CTA');
+    }
+  } else {
+    if (positioningStatus !== 'strong') diagnosticGaps.push('Generic commodity positioning');
+    if (proofStatus !== 'strong') diagnosticGaps.push('Missing verifiable proof assets');
+    if (ctaStatus !== 'strong') diagnosticGaps.push('No clear conversion funnel or CTA');
+  }
+
   const dimensions = {
     positioning: {
       label: 'Positioning & Headline Clarity',
@@ -802,6 +821,7 @@ export function calculateAuditBaselineScore(params: AuditBaselineParams): AuditB
       dimensions.proofEvidence,
       dimensions.conversionCta,
     ],
+    diagnosticGaps,
   };
 }
 

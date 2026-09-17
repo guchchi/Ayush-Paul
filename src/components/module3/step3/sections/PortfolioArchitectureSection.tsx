@@ -17,7 +17,6 @@ import { EASING, DURATION } from '../../../../lib/motion-presets';
 import { useModule3Store } from '../../../../lib/module3/store';
 
 // ── Sub-Section Components ────────────────────────────────────────────────────
-import { ContextHandoffCard } from './stage2/ContextHandoffCard';
 import { ArchetypeStrategySection } from './stage2/ArchetypeStrategySection';
 import { SectionHierarchySection } from './stage2/SectionHierarchySection';
 import { SectionSpecStudio } from './stage2/SectionSpecStudio';
@@ -93,8 +92,8 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   return (
     <div className="space-y-6 text-left w-full font-sans">
       {/* Step Tabs / Navigation Ribbon */}
-      <div className="bg-white p-3 sm:p-4 rounded-3xl border border-neutral-200 shadow-xs">
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-neutral-200/90 shadow-2xs">
+        <div className="flex items-center justify-between gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {STAGE2_SECTIONS.map((sec) => {
             const Icon = sec.icon;
             const isActive = sec.id === activeSection;
@@ -105,9 +104,9 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 key={sec.id}
                 onClick={() => setStage2ActiveSection(sec.id)}
                 className={cn(
-                  'flex items-center gap-2.5 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all shrink-0 cursor-pointer border',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer border',
                   isActive
-                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-sm'
+                    ? 'bg-[#0058be] text-white border-[#0058be] shadow-xs'
                     : isDone
                     ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100/80'
                     : 'bg-neutral-50 text-neutral-600 border-neutral-200 hover:bg-neutral-100'
@@ -115,7 +114,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
               >
                 <div
                   className={cn(
-                    'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black',
+                    'w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black',
                     isActive
                       ? 'bg-white/20 text-white'
                       : isDone
@@ -123,7 +122,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                       : 'bg-neutral-200 text-neutral-600'
                   )}
                 >
-                  {isDone ? <Check size={11} className="stroke-[3]" /> : `0${sec.id}`}
+                  {isDone ? <Check size={10} className="stroke-[3]" /> : `0${sec.id}`}
                 </div>
 
                 <span className="hidden sm:inline">{sec.label}</span>
@@ -134,7 +133,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
         </div>
 
         {/* Step Sub-Header Description Bar */}
-        <div className="flex items-center justify-between pt-3 mt-2 border-t border-neutral-100 text-xs text-neutral-500">
+        <div className="flex items-center justify-between pt-2.5 mt-1.5 border-t border-neutral-100 text-xs text-neutral-500">
           <div className="flex items-center gap-2">
             {activeSection > 1 && (
               <button
@@ -145,11 +144,11 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 <span>Previous Step</span>
               </button>
             )}
-            <span className="text-neutral-300">•</span>
-            <span className="font-semibold text-neutral-700">{currentMetadata.desc}</span>
+            {activeSection > 1 && <span className="text-neutral-300">•</span>}
+            <span className="font-medium text-neutral-600">{currentMetadata.desc}</span>
           </div>
 
-          <span className="font-mono text-[11px] font-bold text-neutral-400">
+          <span className="font-mono text-[11px] font-bold text-neutral-400 shrink-0">
             Step {activeSection} of 5
           </span>
         </div>

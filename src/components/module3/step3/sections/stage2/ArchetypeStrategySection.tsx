@@ -3,8 +3,8 @@
  *
  * Streamlined around a single primary decision:
  * 1. Compact inherited strategy reassurance
- * 2. Primary decision: Choose your portfolio goal (3 simplified, high-contrast cards)
- * 3. Secondary recommendation: One smart architecture recommendation matched to goal
+ * 2. Primary decision: Choose your portfolio goal (3 clean, high-contrast cards)
+ * 3. Secondary recommendation: One smart architecture recommendation matched to goal (2-3 lines)
  * 4. Collapsed alternatives explorer: Hidden by default, expandable on demand
  * 5. Single clear primary action: "Continue to Section Sequence →"
  */
@@ -20,6 +20,8 @@ import {
   Shield,
   Award,
   Cpu,
+  ArrowRight,
+  Sparkles,
   LucideIcon,
 } from 'lucide-react';
 import { cn } from '../../../../../lib/utils';
@@ -30,7 +32,6 @@ import {
   getRecommendedGoal,
   recommendArchetype,
 } from '../../../../../lib/module3/portfolio-architecture-engine';
-import { ModuleButton } from '../../../../workspace/ModuleButton';
 import { ContextHandoffCard } from './ContextHandoffCard';
 
 interface Props {
@@ -48,19 +49,19 @@ const PORTFOLIO_GOALS: GoalCardConfig[] = [
   {
     id: 'retainer',
     label: 'Win High-Value Retainers',
-    description: 'Designed for ongoing monthly engagements, embedded operations, and trusted partnerships.',
+    description: 'Recurring monthly engagements, embedded operations, and long-term advisory partnerships.',
     icon: Repeat,
   },
   {
     id: 'sprint',
     label: 'Win Fast Sprint Projects',
-    description: 'Designed for fixed-scope turnarounds, intensive execution, and rapid client decisions.',
+    description: 'Intensive fixed-scope turnarounds, rapid execution, and high-velocity client decisions.',
     icon: Zap,
   },
   {
     id: 'consulting',
     label: 'Build Expert / Advisor Authority',
-    description: 'Designed for strategic diagnosis, technical architecture, and premium advisory fees.',
+    description: 'Strategic diagnosis, technical architecture, and premium advisory fees.',
     icon: Compass,
   },
 ];
@@ -95,7 +96,7 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
   // 3. Goal used for architecture recommendation computation
   const effectiveGoal = selectedGoal || initialRecommendedGoal;
 
-  // 4. Recommendation derived deterministically from engine (no AI/LLM)
+  // 4. Recommendation derived deterministically from engine
   const recommendation = useMemo(
     () => recommendArchetype(mod1ServiceId, mod1CareerTrackId, effectiveGoal),
     [mod1ServiceId, mod1CareerTrackId, effectiveGoal]
@@ -104,6 +105,11 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
   // 5. Active archetype status
   const currentArchetypeId = stage2Archetype?.selectedArchetypeId || recommendation.archetypeId;
   const isRecommendationApplied = currentArchetypeId === recommendation.archetypeId;
+
+  // 6. 3 Alternative architectures (excluding the recommended one)
+  const alternativeArchetypes = useMemo(() => {
+    return PORTFOLIO_ARCHETYPES.filter((a) => a.id !== recommendation.archetypeId);
+  }, [recommendation.archetypeId]);
 
   // Handlers
   const handleSelectGoal = (goalId: PortfolioGoal) => {
@@ -134,7 +140,7 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
   }, [currentArchetypeId]);
 
   return (
-    <div className="space-y-6 text-left font-sans">
+    <div className="space-y-6 text-left font-sans max-w-5xl mx-auto">
       {/* ──────────────────────────────────────────────────────────────────────────
           1. COMPACT INHERITED STRATEGY BAR
       ────────────────────────────────────────────────────────────────────────── */}
@@ -143,16 +149,16 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
       {/* ──────────────────────────────────────────────────────────────────────────
           2. PRIMARY DECISION: CHOOSE YOUR PORTFOLIO GOAL
       ────────────────────────────────────────────────────────────────────────── */}
-      <section className="space-y-3.5" aria-labelledby="portfolio-goal-heading">
-        <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#0058be]">
-            <span>Step 1 — Commercial Goal</span>
-          </div>
-          <h2 id="portfolio-goal-heading" className="text-xl sm:text-2xl font-bold text-[#0b1c30] tracking-tight">
+      <section className="space-y-4" aria-labelledby="portfolio-goal-heading">
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest">
+            Step 1 of 5
+          </span>
+          <h2 id="portfolio-goal-heading" className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
             Choose Your Portfolio Goal
           </h2>
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-xl leading-relaxed">
-            Select what this portfolio is engineered to achieve. Your choice sets the recommended sequence and proof emphasis.
+          <p className="text-neutral-500 text-sm leading-relaxed max-w-xl">
+            Select what this portfolio is engineered to win. Your goal determines the optimal section sequence and proof emphasis.
           </p>
         </div>
 
@@ -160,7 +166,7 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
         <div
           role="radiogroup"
           aria-label="Portfolio Acquisition Goals"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-3.5"
+          className="grid grid-cols-1 md:grid-cols-3 gap-3.5"
         >
           {PORTFOLIO_GOALS.map((goal) => {
             const Icon = goal.icon;
@@ -180,20 +186,21 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
                 }}
                 onClick={() => handleSelectGoal(goal.id)}
                 className={cn(
-                  'relative p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2',
+                  'relative p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group outline-none',
+                  'focus-visible:ring-2 focus-visible:ring-[#0058be] focus-visible:ring-offset-2',
                   isSelected
-                    ? 'bg-white border-[#0058be] ring-1 ring-[#0058be] shadow-[0_8px_24px_rgba(0,88,190,0.08)]'
-                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-2xs'
+                    ? 'border-[#0058be] ring-1 ring-[#0058be] bg-[#eff4ff]/5 shadow-[0_8px_32px_rgba(0,88,190,0.06)]'
+                    : 'border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm'
                 )}
               >
                 {/* Header Row: Icon + Radio Indicator */}
-                <div className="flex items-start justify-between w-full mb-3">
+                <div className="flex items-start justify-between w-full mb-3.5">
                   <div
                     className={cn(
-                      'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200',
+                      'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 border',
                       isSelected
-                        ? 'bg-[#0058be]/10 text-[#0058be]'
-                        : 'bg-neutral-100 text-neutral-500 group-hover:bg-[#0058be]/10 group-hover:text-[#0058be]'
+                        ? 'bg-[#0058be]/8 text-[#0058be] border-transparent'
+                        : 'bg-neutral-50 text-neutral-400 border-neutral-100 group-hover:bg-neutral-100/60'
                     )}
                   >
                     <Icon size={18} />
@@ -201,8 +208,8 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
 
                   <div className="shrink-0 pt-0.5">
                     {isSelected ? (
-                      <div className="w-5 h-5 rounded-full bg-[#0058be] flex items-center justify-center text-white shadow-xs">
-                        <Check size={12} className="stroke-[3]" />
+                      <div className="w-5 h-5 rounded-full bg-[#0058be] flex items-center justify-center shadow-xs">
+                        <Check size={12} className="text-[#d1f34d] stroke-[3]" />
                       </div>
                     ) : (
                       <div className="w-5 h-5 rounded-full border border-neutral-300 bg-white group-hover:border-neutral-400" />
@@ -214,8 +221,8 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
                 <div className="space-y-1">
                   <h3
                     className={cn(
-                      'text-sm sm:text-base font-bold transition-colors',
-                      isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]'
+                      'text-base font-bold transition-colors',
+                      isSelected ? 'text-[#0058be]' : 'text-[#0b1c30] group-hover:text-[#0058be]'
                     )}
                   >
                     {goal.label}
@@ -234,10 +241,10 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
           3. SECONDARY: RECOMMENDED ARCHITECTURE
           Compact, intelligent single recommendation with collapsible alternatives
       ────────────────────────────────────────────────────────────────────────── */}
-      <section className="bg-neutral-50/80 rounded-2xl border border-neutral-200 p-5 sm:p-6 space-y-3.5">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+      <section className="bg-neutral-50/70 rounded-2xl border border-neutral-200/90 p-4 sm:p-5 space-y-3 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1 max-w-xl">
-            <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-[#0058be] block">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#0058be] block">
               Recommended Architecture
             </span>
 
@@ -248,38 +255,39 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
             <p className="text-xs text-neutral-600 leading-relaxed">
               {recommendation.reason}
             </p>
-            <p className="text-xs text-neutral-500 font-medium">
+            <p className="text-[11px] text-neutral-500 font-medium">
               Conversion advantage: {recommendation.conversionAdvantage}
             </p>
           </div>
 
-          <div className="shrink-0 flex items-center gap-2 pt-1 sm:pt-0">
+          <div className="shrink-0 flex items-center gap-2">
             {isRecommendationApplied ? (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">
                 <Check size={13} className="text-emerald-600 stroke-[3]" />
-                <span>Selected</span>
+                <span>Active Architecture</span>
               </span>
             ) : (
               <button
                 type="button"
                 onClick={() => handleApplyRecommendation(recommendation.archetypeId)}
-                className="px-3.5 py-1.5 rounded-xl bg-[#0058be] hover:bg-[#004bb0] text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0b1c30] hover:bg-[#152a45] text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-[0.98]"
               >
-                Use this architecture
+                <span>Use this architecture</span>
+                <ArrowRight size={13} />
               </button>
             )}
           </div>
         </div>
 
-        {/* Explore Alternatives Control */}
-        <div className="pt-2 border-t border-neutral-200/80 flex items-center justify-between">
+        {/* Explore Alternatives Toggle */}
+        <div className="pt-2.5 border-t border-neutral-200/70 flex items-center justify-between">
           <button
             type="button"
             onClick={() => setShowExplorer((prev) => !prev)}
             className="text-xs font-bold text-neutral-600 hover:text-[#0058be] inline-flex items-center gap-1.5 cursor-pointer transition-colors"
           >
             <span>{showExplorer ? 'Hide alternative architectures' : 'Explore other architectures'}</span>
-            <ChevronDown size={14} className={cn('transition-transform duration-200', showExplorer && 'rotate-180')} />
+            <ChevronDown size={13} className={cn('transition-transform duration-200', showExplorer && 'rotate-180')} />
           </button>
 
           <span className="text-[11px] text-neutral-400 font-mono hidden sm:inline">
@@ -287,54 +295,51 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
           </span>
         </div>
 
-        {/* Collapsed Alternatives Explorer */}
+        {/* Collapsed Alternatives Explorer (3 alternatives) */}
         <AnimatePresence>
           {showExplorer && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden pt-2"
+              transition={{ duration: 0.18 }}
+              className="overflow-hidden pt-1"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                {PORTFOLIO_ARCHETYPES.map((arch) => {
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+                {alternativeArchetypes.map((arch) => {
                   const Icon = ARCHETYPE_ICONS[arch.iconName] || Zap;
                   const isCurrent = currentArchetypeId === arch.id;
-                  const isRecommended = recommendation.archetypeId === arch.id;
 
                   return (
                     <div
                       key={arch.id}
                       onClick={() => handleSelectAlternativeArchetype(arch.id)}
                       className={cn(
-                        'p-4 rounded-xl border transition-all cursor-pointer space-y-2 text-left',
+                        'p-3.5 rounded-xl border transition-all cursor-pointer space-y-1.5 text-left',
                         isCurrent
                           ? 'bg-white border-[#0058be] ring-1 ring-[#0058be] shadow-2xs'
                           : 'bg-white border-neutral-200 hover:border-neutral-300'
                       )}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Icon size={14} className={isCurrent ? 'text-[#0058be]' : 'text-neutral-500'} />
+                        <div className="flex items-center gap-1.5">
+                          <Icon size={14} className={isCurrent ? 'text-[#0058be]' : 'text-neutral-400'} />
                           <h4 className="text-xs font-bold text-[#0b1c30] truncate">{arch.name}</h4>
                         </div>
-                        {isCurrent && (
-                          <div className="w-4 h-4 rounded-full bg-[#0058be] text-white flex items-center justify-center">
+                        {isCurrent ? (
+                          <div className="w-4 h-4 rounded-full bg-[#0058be] text-[#d1f34d] flex items-center justify-center">
                             <Check size={10} className="stroke-[3]" />
                           </div>
+                        ) : (
+                          <span className="text-[10px] font-bold text-[#0058be] hover:underline">
+                            Select
+                          </span>
                         )}
                       </div>
 
                       <p className="text-[11px] text-neutral-500 leading-snug line-clamp-2">
                         {arch.description}
                       </p>
-
-                      {isRecommended && (
-                        <span className="text-[10px] font-bold text-[#0058be] block">
-                          ★ Recommended for your goal
-                        </span>
-                      )}
                     </div>
                   );
                 })}
@@ -345,29 +350,34 @@ export const ArchetypeStrategySection: React.FC<Props> = React.memo(({ onContinu
       </section>
 
       {/* ──────────────────────────────────────────────────────────────────────────
-          4. CLEAR PRIMARY ACTION FOOTER
+          4. AUTHORITATIVE ACTION AREA (MATCHING MODULE 2 PATTERN)
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-neutral-200">
-        <div className="text-xs text-neutral-500">
+      <div className="mt-8 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="text-left" aria-live="polite">
           {selectedGoalMeta ? (
-            <span>
-              Goal: <strong className="text-neutral-800">{selectedGoalMeta.label}</strong>
-              <span className="mx-2 text-neutral-300">•</span>
-              Architecture: <strong className="text-neutral-800">{currentArchetypeMeta.name}</strong>
-            </span>
+            <p className="text-xs font-bold text-[#0b1c30]">
+              {selectedGoalMeta.label} selected
+            </p>
           ) : (
-            <span className="text-amber-700 font-medium">
-              Please choose a goal above to continue
-            </span>
+            <p className="text-xs text-neutral-400 font-medium">
+              Choose a portfolio goal to continue.
+            </p>
           )}
         </div>
 
-        <ModuleButton
-          onClick={onContinue}
+        <button
           disabled={!canContinue}
+          onClick={onContinue}
+          className={cn(
+            'flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-base transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0058be]',
+            canContinue
+              ? 'bg-[#0b1c30] text-white hover:bg-[#152a45] shadow-lg cursor-pointer active:scale-[0.98]'
+              : 'bg-neutral-100 text-neutral-400 cursor-not-allowed border border-neutral-200'
+          )}
         >
-          <span>Continue to Section Sequence →</span>
-        </ModuleButton>
+          <span>Continue to Section Sequence</span>
+          <ArrowRight size={16} aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
