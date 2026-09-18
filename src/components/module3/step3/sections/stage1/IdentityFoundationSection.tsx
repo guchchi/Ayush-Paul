@@ -28,6 +28,8 @@ import {
   ArrowLeftRight,
 } from 'lucide-react';
 import { ModuleButton } from '@/src/components/workspace/ModuleButton';
+import { useModule3Store } from '@/src/lib/module3/store';
+import { CopywritingEngine } from '@/src/lib/module3/copywriting-engine';
 
 import { PLATFORM_REGISTRY } from '@/src/lib/module3/platformRegistry';
 
@@ -308,6 +310,39 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
   onContinue,
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [cycleIndex, setCycleIndex] = useState(0);
+
+  const {
+    mod1ServiceId,
+    mod1CareerTrackId,
+    mod1Positioning,
+    mod1MarketId,
+    mod2UniqueMechanism,
+    mod2ProposalSummary
+  } = useModule3Store();
+
+  const handleGenerateIdentity = () => {
+    // Generate context-aware copy using the local engine
+    const context = {
+      serviceId: mod1ServiceId || '',
+      careerTrackId: mod1CareerTrackId || '',
+      positioning: mod1Positioning || '',
+      marketId: mod1MarketId || '',
+      mechanism: mod2UniqueMechanism || ''
+    };
+    
+    const result = CopywritingEngine.generate(context, cycleIndex);
+    
+    // Animate UI briefly to show something happened
+    setIsGenerating(true);
+    setTimeout(() => {
+      onHeadlineChange(result.headline);
+      onProofLineChange(result.proofLine);
+      setCycleIndex(prev => prev + 1);
+      setIsGenerating(false);
+    }, 150); // slight delay for visual "magic" effect
+  };
 
   const isNameSet = userName.trim().length >= 2;
   const isHandleSet = userHandle.trim().length >= 2;
@@ -428,10 +463,28 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-[#0058be]" />
-            <span className="text-xs font-bold text-[#0b1c30]">Positioning Headline</span>
-            <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-              From Module 2
-            </span>
+            <span className="text-xs font-bold text-[#0b1c30]">Positioning Headline & Proof</span>
+            <button
+              onClick={handleGenerateIdentity}
+              disabled={isGenerating}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all cursor-pointer",
+                isGenerating 
+                  ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-wait"
+                  : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border-amber-200 hover:shadow-sm hover:scale-[1.02]"
+              )}
+            >
+              {isGenerating ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-amber-700/30 border-t-amber-700 rounded-full animate-spin" />
+                  Generating Magic...
+                </>
+              ) : (
+                <>
+                  ✨ Auto-Generate Identity
+                </>
+              )}
+            </button>
           </div>
           <div className="flex items-center gap-2">
             {isHeadlineSet && <CheckCircle2 size={14} className="text-emerald-500" />}

@@ -133,26 +133,9 @@ export const ProfileStrategySection: React.FC<Props> = React.memo(({ onContinue 
     if (!stage1Identity?.positioningHeadline || !stage1Identity?.proofLine) {
       const updates: any = {};
 
-      if (!stage1Identity?.positioningHeadline) {
-        // Build an organic headline combining their exact mechanism and positioning
-        // Fallback to their proposal summary headline if available, otherwise construct from raw parts
-        const mechanism = mod2UniqueMechanism?.trim() || 'Systematic Approach';
-        const positioning = mod1Positioning?.trim() || (mod1ServiceId || '').replace(/_/g, ' ') || 'Specialist';
-        
-        updates.positioningHeadline = mod2ProposalSummary?.headline?.trim() 
-          ? mod2ProposalSummary.headline 
-          : `${positioning} | ${mechanism}`;
-      }
-
-      if (!stage1Identity?.proofLine) {
-        // Build a raw proof line from their own words
-        const market = (mod1MarketId || '').replace(/_/g, ' ') || 'clients';
-        const mechanism = mod2UniqueMechanism?.trim() || 'my proven system';
-        
-        updates.proofLine = mod2ProposalSummary?.solution?.trim()
-          ? mod2ProposalSummary.solution
-          : `I help ${market} achieve measurable results through ${mechanism}`;
-      }
+      // We removed the automatic fallback strings here so that users 
+      // can utilize the magical "✨ Auto-Generate Identity" AI feature 
+      // in the IdentityFoundationSection without being forced into a generic template.
 
       setStage1Identity(updates);
     }
