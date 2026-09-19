@@ -4,6 +4,10 @@ export interface CopywritingContext {
   positioning: string;
   marketId: string;
   mechanism: string;
+  nicheId?: string;
+  offerId?: string;
+  offerType?: string;
+  valueAmplifier?: string;
 }
 
 export interface GeneratedIdentity {
@@ -23,19 +27,48 @@ function formatId(id: string): string {
     .join(' ');
 }
 
-// Power Verbs mapped by generic Career Track (very basic mapping, defaults to strong verbs)
-const getPowerVerbs = (track: string) => {
+// Utility to randomly pick from an array
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Vocabulary Banks
+const PREFIXES = ["The", "Elite", "Premium", "Chief", "Lead", "Go-To", "Expert", "Signature"];
+const CONNECTORS = ["using", "with", "powered by", "via", "through", "leveraging"];
+const PROOF_STARTERS = [
+  "Helping", "Empowering", "Partnering with", "Working with", "Trusted by", "Guiding"
+];
+const OUTCOMES = [
+  "explosive growth", "predictable ROI", "sustainable scale", 
+  "market dominance", "record revenue", "unprecedented success"
+];
+
+// Context-Aware Verb Banks
+const getVerbBank = (track: string) => {
   const t = (track || '').toLowerCase();
   if (t.includes('dev') || t.includes('engineer') || t.includes('tech')) {
-    return { action: 'Architecting', build: 'Building', deliver: 'Shipping' };
+    return {
+      actioning: ["Architecting", "Engineering", "Building", "Developing", "Shipping"],
+      actioned: ["architected", "built", "engineered", "shipped", "deployed"]
+    };
   }
   if (t.includes('design') || t.includes('creative')) {
-    return { action: 'Crafting', build: 'Designing', deliver: 'Launching' };
+    return {
+      actioning: ["Crafting", "Designing", "Sculpting", "Curating", "Creating"],
+      actioned: ["crafted", "designed", "curated", "launched", "perfected"]
+    };
   }
   if (t.includes('market') || t.includes('growth')) {
-    return { action: 'Scaling', build: 'Driving', deliver: 'Generating' };
+    return {
+      actioning: ["Scaling", "Driving", "Generating", "Accelerating", "Multiplying"],
+      actioned: ["scaled", "driven", "generated", "accelerated", "multiplied"]
+    };
   }
-  return { action: 'Transforming', build: 'Building', deliver: 'Delivering' };
+  // Default fallback
+  return {
+    actioning: ["Transforming", "Building", "Delivering", "Unlocking", "Scaling"],
+    actioned: ["transformed", "built", "delivered", "unlocked", "scaled"]
+  };
 };
 
 export class CopywritingEngine {
@@ -44,34 +77,52 @@ export class CopywritingEngine {
     
     // Clean and normalize inputs
     const market = formatId(context.marketId) || 'Clients';
+    const niche = formatId(context.nicheId || '');
     const positioning = context.positioning?.trim() || formatId(context.serviceId) || 'Specialist';
     const mechanism = context.mechanism?.trim() || 'Custom Framework';
     const track = context.careerTrackId || '';
+    const offer = formatId(context.offerId || '');
+    const valueAmp = context.valueAmplifier?.trim() || '';
     
-    const verbs = getPowerVerbs(track);
+    // Combine market and niche for extreme specificity if niche exists
+    const targetAudience = niche && niche !== market ? `${niche} ${market}` : market;
+    
+    // Create an "Enhanced Mechanism" that includes the value amplifier if it exists
+    const enhancedMechanism = valueAmp ? `${valueAmp} ${mechanism}` : mechanism;
+    
+    const verbs = getVerbBank(track);
+    
+    // Randomly selected modular pieces
+    const pre = pick(PREFIXES);
+    const conn = pick(CONNECTORS);
+    const act = pick(verbs.actioning);
+    const acted = pick(verbs.actioned);
+    const out = pick(OUTCOMES);
+    const pStart = pick(PROOF_STARTERS);
     
     let headline = '';
     let proofLine = '';
 
+    // Combinatorial Syntax Trees based on Tone
     switch (tone) {
       case 'Authority':
-        headline = `The ${market} ${positioning} | ${verbs.action} Growth with ${mechanism}`;
-        proofLine = `Trusted by top ${market} to ${verbs.deliver.toLowerCase()} predictable ROI using ${mechanism}.`;
+        headline = `${pre} ${targetAudience} ${positioning} | ${act} ${pick(["Growth", "Systems", "Success", "Scale"])} ${conn} ${enhancedMechanism}`;
+        proofLine = `${pStart} top ${targetAudience} to achieve ${out} ${conn} ${enhancedMechanism}.`;
         break;
         
       case 'Results':
-        headline = `Helping ${market} Dominate | Powered by ${mechanism}`;
-        proofLine = `I help ${market} achieve explosive growth by ${verbs.build.toLowerCase()} world-class ${mechanism} systems.`;
+        headline = `${pick(["Helping", "Making", "Ensuring"])} ${targetAudience} ${pick(["Dominate", "Win", "Scale", "Lead"])} | ${pick(["Powered by", "Driven by", "Fueled by"])} ${enhancedMechanism}`;
+        proofLine = `I've ${acted} ${out} for ${targetAudience} by ${conn} a world-class ${enhancedMechanism}.`;
         break;
         
       case 'Contrarian':
-        headline = `Stop Wasting Time on Basics | ${positioning} & ${mechanism} Expert`;
-        proofLine = `Traditional methods fail. I use ${mechanism} to give ${market} an unfair advantage.`;
+        headline = `${pick(["Stop Wasting Time", "Ditch The Basics", "Beyond Ordinary", "Forget The Norm"])} | ${positioning} & ${mechanism} Expert`;
+        proofLine = `${pick(["Traditional methods fail.", "Average doesn't work.", "Don't settle."])} I use ${enhancedMechanism} to give ${targetAudience} an unfair advantage.`;
         break;
         
       case 'Visionary':
-        headline = `Chief ${positioning} | Redefining ${market} via ${mechanism}`;
-        proofLine = `${verbs.action} the future of ${market} operations through my signature ${mechanism}.`;
+        headline = `${pre} ${positioning} | ${pick(["Redefining", "Reinventing", "Revolutionizing"])} ${targetAudience} ${conn} ${enhancedMechanism}`;
+        proofLine = `${act} the future of ${targetAudience} by deploying my signature ${enhancedMechanism}.`;
         break;
     }
 

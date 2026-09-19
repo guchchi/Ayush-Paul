@@ -318,7 +318,11 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
     mod1CareerTrackId,
     mod1Positioning,
     mod1MarketId,
+    mod1NicheId,
+    mod1OfferId,
     mod2UniqueMechanism,
+    mod2ValueAmplifier,
+    mod2OfferType,
     mod2ProposalSummary
   } = useModule3Store();
 
@@ -329,7 +333,11 @@ export const IdentityFoundationSection: React.FC<Props> = React.memo(({
       careerTrackId: mod1CareerTrackId || '',
       positioning: mod1Positioning || '',
       marketId: mod1MarketId || '',
-      mechanism: mod2UniqueMechanism || ''
+      mechanism: mod2UniqueMechanism || '',
+      nicheId: mod1NicheId || '',
+      offerId: mod1OfferId || '',
+      offerType: mod2OfferType || '',
+      valueAmplifier: mod2ValueAmplifier || ''
     };
     
     const result = CopywritingEngine.generate(context, cycleIndex);
