@@ -75,12 +75,7 @@ import { CopyExportModal } from '@/src/components/module3/step3/export/CopyExpor
 
 // ── Helper ──────────────────────────────────────────────────────────────────
 
-const generateToneVariation = (text: string, tone: 'executive' | 'conversion' | 'direct') => {
-  if (!text) return text;
-  if (tone === 'executive') return text.startsWith('Verifiable') ? text : `Strategic Authority • ${text}`;
-  if (tone === 'conversion') return `Proven ${text} — Eliminating Client Execution Risk.`;
-  return `${text} | Guaranteed Delivery & Measurable ROI.`;
-};
+// ──────────────────────────────────────────────────────────────────────────────────────────────────
 
 
 // ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -207,10 +202,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     };
   }, [profileSystem, activeTab]);
 
-  const currentHeadline = generateToneVariation(
-    activePlatformData.fields.find(f => f.key.includes('headline') || f.key.includes('hero'))?.value || '',
-    activeTone
-  );
+  const currentHeadline = activePlatformData.fields.find(f => f.key.includes('headline') || f.key.includes('hero'))?.value || '';
   const currentBio = activePlatformData.fields.find(f => f.key.includes('bio') || f.key.includes('about') || f.key.includes('value'))?.value || '';
   const deepLink = PLATFORM_REGISTRY[activeTab]?.deepLink || '#';
 

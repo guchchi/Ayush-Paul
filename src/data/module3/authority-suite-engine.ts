@@ -1,6 +1,5 @@
 import type { ProofContext } from '../../types/module3';
-
-export function formatSnakeCaseWords(str: string): string {
+import { PlatformCopyEngine } from '../../lib/module3/platform-copy-engine';export function formatSnakeCaseWords(str: string): string {
   if (!str) return '';
   return str
     .replace(/_/g, ' ')
@@ -444,159 +443,20 @@ export function generateFullAuthoritySuite(ctx?: {
     ? `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner:\n\n` + proofAnalysis.preparedProofItems.map((item) => `• ${item.title}: ${item.portfolioCopy?.proofStatement || item.credibilityGapProved || 'Verified Output'}`).join('\n') + `\n\nDM me "PROOF" to view my complete case study teardowns.`
     : `I help ${market} build scalable ${service} architecture. ${promise}.\n\nMost providers offer promises; I build live, verifiable demonstration assets so you see the exact execution standards before we ever partner.\n\nDM me "PROOF" to view my complete case study teardowns.`;
 
-  // 2. COMPLETE PROFILE SYSTEM (3 Social Channels)
-  const profileSystem: ProfileSystemAsset[] = [
+  // 2. COMPLETE PROFILE SYSTEM (Generated Combinatorially for all 13 platforms)
+  const profileSystem = PlatformCopyEngine.generateProfiles(
     {
-      platform: 'linkedin',
-      title: 'LinkedIn Profile Package',
-      fields: [
-        {
-          key: 'banner_text',
-          label: 'Banner Concept & Text',
-          value: `Helping ${market} scale ${service} via ${mechanism} | Zero Fluff. Pure Execution.`,
-          originalValue: `Helping ${market} scale ${service} via ${mechanism} | Zero Fluff. Pure Execution.`,
-        },
-        {
-          key: 'headline',
-          label: 'Professional Headline',
-          value: `${service} Partner for ${market} | Creator of ${mechanism} | ${socialProofLine}`,
-          originalValue: `${service} Partner for ${market} | Creator of ${mechanism} | ${socialProofLine}`,
-        },
-        {
-          key: 'about',
-          label: 'About Section (Story & Proof)',
-          value: linkedinAboutCopy,
-          originalValue: linkedinAboutCopy,
-        },
-        {
-          key: 'featured_cta',
-          label: 'Featured Link CTA',
-          value: `👉 Access My Full ${service} Blueprint & Live Case Studies`,
-          originalValue: `👉 Access My Full ${service} Blueprint & Live Case Studies`,
-        },
-        {
-          key: 'services_desc',
-          label: 'Services Description',
-          value: `High-ticket ${service} consulting, system implementation, and strategic auditing for ${market}.`,
-          originalValue: `High-ticket ${service} consulting, system implementation, and strategic auditing for ${market}.`,
-        },
-      ],
+      marketId: market,
+      serviceId: service,
+      positioning: position,
+      mechanism,
+      promise,
+      primaryProofTitle: proofAnalysis.primaryProofTitle,
+      proofTitles: proofAnalysis.proofTitles,
     },
-    {
-      platform: 'twitter',
-      title: 'X / Twitter Profile Package',
-      fields: [
-        {
-          key: 'name_format',
-          label: 'Display Name',
-          value: `Ayush | ${service} for ${market}`,
-          originalValue: `Ayush | ${service} for ${market}`,
-        },
-        {
-          key: 'bio',
-          label: 'Bio Copy',
-          value: `Building ${mechanism} for ${market}. Sharing breakdown teardowns on ${service}. ${promise}. 👇 Read my pinned thread`,
-          originalValue: `Building ${mechanism} for ${market}. Sharing breakdown teardowns on ${service}. ${promise}. 👇 Read my pinned thread`,
-        },
-        {
-          key: 'pinned_post',
-          label: 'Pinned Post Hook',
-          value: `I spent 30 days building a complete ${service} framework for ${market}. Here are the exact 5 components that drive 80% of the results 🧵👇`,
-          originalValue: `I spent 30 days building a complete ${service} framework for ${market}. Here are the exact 5 components that drive 80% of the results 🧵👇`,
-        },
-        {
-          key: 'cta_link',
-          label: 'Link CTA',
-          value: `ayushpaul.app/blueprint`,
-          originalValue: `ayushpaul.app/blueprint`,
-        },
-      ],
-    },
-    {
-      platform: 'personal_site',
-      title: 'Personal Portfolio Site Package',
-      fields: [
-        {
-          key: 'hero_tagline',
-          label: 'Hero Tagline & Positioning',
-          value: `High-Certainty ${service} for ${market} | Powered by ${mechanism}`,
-          originalValue: `High-Certainty ${service} for ${market} | Powered by ${mechanism}`,
-        },
-        {
-          key: 'value_prop_subhead',
-          label: 'Value Proposition Subhead',
-          value: `Delivering predictable client outcomes using ${mechanism}. Documented results with zero fabricated claims.`,
-          originalValue: `Delivering predictable client outcomes using ${mechanism}. Documented results with zero fabricated claims.`,
-        },
-        {
-          key: 'about_summary',
-          label: 'About / Positioning Paragraph',
-          value: `I help ${market} build scalable ${service} systems without generic agency overhead. ${promise}. Every claim is backed by open proof assets.`,
-          originalValue: `I help ${market} build scalable ${service} systems without generic agency overhead. ${promise}. Every claim is backed by open proof assets.`,
-        },
-        {
-          key: 'primary_cta',
-          label: 'Primary Conversion CTA',
-          value: `Schedule Strategic Consultation & Audit`,
-          originalValue: `Schedule Strategic Consultation & Audit`,
-        },
-      ],
-    },
-    {
-      platform: 'instagram',
-      title: 'Instagram Profile Package',
-      fields: [
-        {
-          key: 'name_format',
-          label: 'Display Name',
-          value: `Ayush | ${service}`,
-          originalValue: `Ayush | ${service}`,
-        },
-        {
-          key: 'bio',
-          label: 'Bio Copy',
-          value: `I help ${market} scale via ${mechanism}.\n${promise}.\nCheck out my free case study below 👇`,
-          originalValue: `I help ${market} scale via ${mechanism}.\n${promise}.\nCheck out my free case study below 👇`,
-        },
-        {
-          key: 'highlights',
-          label: 'Story Highlights Strategy',
-          value: `1. Case Studies\n2. The Process\n3. Client Wins\n4. About Me`,
-          originalValue: `1. Case Studies\n2. The Process\n3. Client Wins\n4. About Me`,
-        },
-        {
-          key: 'link_cta',
-          label: 'Link-in-Bio CTA',
-          value: `Access the ${service} Blueprint`,
-          originalValue: `Access the ${service} Blueprint`,
-        },
-      ],
-    },
-    {
-      platform: 'youtube',
-      title: 'YouTube Channel Package',
-      fields: [
-        {
-          key: 'banner_text',
-          label: 'Channel Banner Hook',
-          value: `The No-BS Guide to ${service} for ${market} | New Teardowns Weekly`,
-          originalValue: `The No-BS Guide to ${service} for ${market} | New Teardowns Weekly`,
-        },
-        {
-          key: 'bio',
-          label: 'About Section',
-          value: `I document exactly how ${market} can scale using ${mechanism}. No fluff, just raw execution and teardowns.\n\n${promise}.`,
-          originalValue: `I document exactly how ${market} can scale using ${mechanism}. No fluff, just raw execution and teardowns.\n\n${promise}.`,
-        },
-        {
-          key: 'featured_video',
-          label: 'Featured Channel Trailer',
-          value: `Why your ${service} is failing (and how to fix it in 30 days)`,
-          originalValue: `Why your ${service} is failing (and how to fix it in 30 days)`,
-        },
-      ],
-    },
-  ];
+    0, // Default seed
+    'direct' // Default tone
+  );
 
   // 3. PORTFOLIO ARCHITECTURE GENERATOR (9 Sections)
   const portfolioBlueprint: PortfolioBlueprintSection[] = [
