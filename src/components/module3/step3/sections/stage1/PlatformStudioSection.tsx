@@ -69,7 +69,7 @@ const TONES = [
   { key: 'direct' as const, label: 'Casual', desc: 'Relaxed & Authentic' },
 ];
 
-import { getChecklistForPlatform } from '@/src/lib/module3/platformChecklists';
+
 import { COPY_FORMULAS, applyCopyFormula } from '@/src/lib/module3/copyFormulas';
 import { CopyExportModal } from '@/src/components/module3/step3/export/CopyExportModal';
 
@@ -102,7 +102,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
+
   const [showToneSelector, setShowToneSelector] = useState(false);
   const [viewingOptionalPlatform, setViewingOptionalPlatform] = useState<string | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -172,9 +172,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     });
   };
 
-  const toggleChecklist = (stepId: string) => {
-    setCheckedSteps(prev => ({ ...prev, [stepId]: !prev[stepId] }));
-  };
+
 
   const handleExportAll = () => {
     const lines: string[] = [];
@@ -678,50 +676,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                   })}
                 </div>
 
-                {/* Micro-Audit Checklist */}
-                <div className="mt-2 mb-6 px-5">
-                  {(() => {
-                    const checklist = getChecklistForPlatform(activeTab);
-                    const completedCount = checklist.filter(item => checkedSteps[item.id]).length;
-                    return (
-                      <div className="p-5 rounded-2xl border border-neutral-200/80 bg-neutral-50/30">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="text-xs font-extrabold uppercase tracking-widest text-neutral-800 flex items-center gap-2">
-                            <CheckSquare size={13} className="text-emerald-500" />
-                            {platformLabel} Launch Checklist
-                          </h4>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-neutral-200 text-neutral-600 shadow-xs">
-                            {completedCount}/{checklist.length} Done
-                          </span>
-                        </div>
-                        <div className="space-y-1.5">
-                          {checklist.map((item) => {
-                            const isChecked = !!checkedSteps[item.id];
-                            return (
-                              <label key={item.id} className="flex items-start gap-3 cursor-pointer group hover:bg-white p-2 rounded-xl transition-colors border border-transparent hover:border-neutral-200/60 hover:shadow-xs">
-                                <div className={cn(
-                                  "w-4 h-4 mt-0.5 rounded flex items-center justify-center border transition-colors shrink-0",
-                                  isChecked ? "bg-emerald-500 border-emerald-500" : "bg-white border-neutral-300 group-hover:border-emerald-400"
-                                )}>
-                                  {isChecked && <Check size={10} className="text-white" />}
-                                </div>
-                                <input type="checkbox" className="hidden" checked={isChecked} onChange={() => toggleChecklist(item.id)} />
-                                <div className="flex-1 flex items-center justify-between gap-3">
-                                  <span className={cn("text-xs font-medium transition-colors", isChecked ? "text-neutral-400 line-through" : "text-neutral-700")}>
-                                    {item.label}
-                                  </span>
-                                  <span className="text-[9px] uppercase font-bold text-neutral-400 shrink-0 bg-neutral-100 px-1.5 py-0.5 rounded-md">
-                                    {item.category}
-                                  </span>
-                                </div>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
+
               </div>
 
               {/* Mark as Reviewed + Nav (Footer) */}
