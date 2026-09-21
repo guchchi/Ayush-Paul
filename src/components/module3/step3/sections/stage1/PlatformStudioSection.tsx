@@ -69,7 +69,6 @@ const TONES = [
   { key: 'direct' as const, label: 'Casual', desc: 'Relaxed & Authentic' },
 ];
 
-
 import { COPY_FORMULAS, applyCopyFormula } from '@/src/lib/module3/copyFormulas';
 import { CopyExportModal } from '@/src/components/module3/step3/export/CopyExportModal';
 
