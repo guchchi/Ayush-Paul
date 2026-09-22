@@ -97,7 +97,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
   // Sequential flow: track current platform index within primary list
   const [currentPlatformIndex, setCurrentPlatformIndex] = useState(0);
-  const [reviewedPlatforms, setReviewedPlatforms] = useState<Set<string>>(new Set());
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -149,7 +148,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     }
   };
 
-  const allPrimaryReviewed = primaryPlatforms.length > 0 && primaryPlatforms.every(p => reviewedPlatforms.has(p.key));
+  };
 
   // Helper for applying formulas
   const handleApplyFormula = (fieldKey: string, formulaId: string) => {
@@ -222,8 +221,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const platformLabel = ALL_PLATFORMS.find(p => p.key === activeTab)?.name || activeTab;
   const currentPlatformMeta = ALL_PLATFORMS.find(p => p.key === activeTab);
 
-  const handleMarkReviewed = () => {
-    setReviewedPlatforms(prev => new Set([...prev, activeTab]));
+  const handleNextPlatform = () => {
     setEditingField(null);
     if (!isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1) {
       setCurrentPlatformIndex(currentPlatformIndex + 1);
@@ -697,17 +695,9 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                     </button>
                   )}
                 </div>
-                {!reviewedPlatforms.has(activeTab) ? (
+                {!isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1 ? (
                   <button
-                    onClick={handleMarkReviewed}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm hover:shadow-md"
-                  >
-                    <CheckCircle2 size={14} />
-                    Mark {platformLabel} as Reviewed
-                  </button>
-                ) : !isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1 ? (
-                  <button
-                    onClick={() => { setCurrentPlatformIndex(currentPlatformIndex + 1); setEditingField(null); }}
+                    onClick={handleNextPlatform}
                     className="flex items-center gap-2 px-5 py-2.5 bg-[#0058be] hover:bg-[#0048a0] text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                   >
                     Next Platform →
@@ -719,7 +709,9 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                   >
                     ← Back to Primary
                   </button>
-                ) : null}
+                ) : (
+                  <div className="w-[120px]"></div> // spacer to keep layout balanced
+                )}
               </div>
             </div>
 
@@ -733,68 +725,27 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         </motion.div>
       </AnimatePresence>
 
-      {/* ── Bottom: Continue CTA (Gated) ────────────────────────────── */}
+      {/* ── Bottom: Continue CTA (Ungated) ────────────────────────────── */}
       <div className="pt-4 border-t border-neutral-200/60">
-        {allPrimaryReviewed ? (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4"
-          >
-            {/* Success banner */}
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                <CheckCircle2 size={16} className="text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-emerald-900">All {primaryPlatforms.length} Primary Platforms Reviewed</p>
-                <p className="text-[11px] text-emerald-700">Your profile copy is ready for the consistency check.</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {onBack && (
-                  <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                    ← Back
-                  </button>
-                )}
-                <button
-                  onClick={handleExportAll}
-                  className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md cursor-pointer"
-                >
-                  {copiedField === 'export_all' ? <CheckCircle2 size={13} className="text-emerald-400" /> : <Copy size={13} />}
-                  {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios'}
-                </button>
-              </div>
-              <ModuleButton variant="primary" onClick={onContinue}>
-                Run Consistency Check &rarr;
-              </ModuleButton>
-            </div>
-          </motion.div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {onBack && (
-                <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
-                  ← Back
-                </button>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-neutral-400 font-medium">
-                Review all {primaryPlatforms.length} platforms to continue
-              </span>
-              <button
-                disabled
-                className="px-5 py-2.5 bg-neutral-200 text-neutral-400 text-xs font-bold rounded-xl cursor-not-allowed"
-              >
-                Run Consistency Check &rarr;
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {onBack && (
+              <button onClick={onBack} className="text-xs font-bold text-neutral-500 hover:text-neutral-900 cursor-pointer">
+                ← Back
               </button>
-            </div>
+            )}
+            <button
+              onClick={handleExportAll}
+              className="px-4 py-2 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2 shadow-md cursor-pointer"
+            >
+              {copiedField === 'export_all' ? <CheckCircle2 size={13} className="text-emerald-400" /> : <Copy size={13} />}
+              {copiedField === 'export_all' ? 'Bundle Copied!' : 'Export All Bios'}
+            </button>
           </div>
-        )}
+          <ModuleButton variant="primary" onClick={onContinue}>
+            Run Consistency Check &rarr;
+          </ModuleButton>
+        </div>
       </div>
     </div>
   );
