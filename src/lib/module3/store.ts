@@ -1222,6 +1222,24 @@ export const useModule3Store = create<Module3State>()(
           step3ClaimToAssetMap: null,
           step3ContentRoadmap: null,
           step3Blueprint: null,
+          // ── Stage 1 (Profile Strategy) Studio Persistence ──────────────────
+          stage1ActiveSection: 1,
+          stage1CompletedSections: [],
+          stage1Audit: null,
+          stage1Identity: null,
+          // ── Stage 2 (Portfolio Architecture) Studio Persistence ────────────
+          stage2ActiveSection: 1,
+          stage2CompletedSections: [],
+          stage2Archetype: null,
+          stage2WireframeSettings: {
+            viewport: 'desktop',
+            fidelity: 'wireframe',
+            activeSectionId: 'section_hero',
+          },
+          // ── Stage 5 (Lead Magnet Engine) Studio Persistence ──────────────────────
+          stage5ActiveSection: 1,
+          stage5CompletedSections: [],
+          stage5LeadMagnet: null,
         });
       },
 

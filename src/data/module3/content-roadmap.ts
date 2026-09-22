@@ -246,50 +246,50 @@ function buildStarterPosts(
     {
       id: 'post_1',
       pillarId: p[0]?.id ?? 'pillar_1',
-      hook: `Here's how I actually ${p[0]?.exampleTopics[0]?.toLowerCase() ?? 'approach my work'} — not the polished version, the real one.`,
+      hook: `Most ${niche} advice is outdated by 2 years. Here's how I actually approach ${p[0]?.exampleTopics[0]?.toLowerCase() ?? 'the work'} right now — no fluff, just the raw process.`,
       format: 'Text Post',
       platform: 'LinkedIn',
     },
     {
       id: 'post_2',
       pillarId: p[1]?.id ?? 'pillar_2',
-      hook: `Most ${niche} professionals skip this step entirely. Here's why that's costing them.`,
+      hook: `I analyzed 50+ ${niche} professionals. 90% skip this critical step entirely. Here is why that's costing them measurable growth.`,
       format: 'Carousel',
       platform: 'LinkedIn',
     },
     {
       id: 'post_3',
       pillarId: p[2]?.id ?? 'pillar_3',
-      hook: `I built this using ${mechanism}. Here's what happened — the good, the bad, and the number that surprised me.`,
+      hook: `I built a highly scalable system using ${mechanism}. Here is the exact data on what happened — the good, the bad, and the 1 number that completely surprised me.`,
       format: 'Text + Image',
       platform: 'X',
     },
     {
       id: 'post_4',
       pillarId: p[0]?.id ?? 'pillar_1',
-      hook: `3 things I would tell a younger version of myself working in ${niche}. Nobody talks about #2.`,
+      hook: `3 non-obvious things I would tell a younger version of myself working in ${niche}. Literally nobody talks about #2.`,
       format: 'Text Thread',
       platform: 'X',
     },
     {
       id: 'post_5',
       pillarId: p[3]?.id ?? 'pillar_4',
-      hook: `The industry says X. The data from my last 6 projects says something else. Here's what I found.`,
+      hook: `The industry consensus says X is the standard. The data from my last 6 projects proves otherwise. Here is the definitive breakdown.`,
       format: 'Carousel',
       platform: 'LinkedIn',
     },
   ];
 
-  // Override hook text per position for better relevance
+  // Override hook text per position for better relevance and GEO signal
   if (position === 'auditor') {
-    posts[0].hook = `I audited a ${niche} system last week. Here's exactly what I found — and what they missed.`;
-    posts[2].hook = `Red flags I check for in every ${niche} engagement. If you see #3, stop immediately.`;
+    posts[0].hook = `I audited a 7-figure ${niche} system last week. Here is exactly what I found — and the 3 massive blind spots they completely missed.`;
+    posts[2].hook = `The 5 red flags I explicitly check for in every single ${niche} engagement. If your system exhibits #3, halt operations immediately.`;
   } else if (position === 'deconstructor') {
-    posts[0].hook = `How ${mechanism} actually works — not the simplified version. A full breakdown.`;
-    posts[2].hook = `Most people think ${niche} works like X. Here's why that mental model is wrong.`;
+    posts[0].hook = `The truth about how ${mechanism} actually works — stripping away the marketing fluff to reveal the raw, structural breakdown.`;
+    posts[2].hook = `99% of people think ${niche} operates like X. Here is the rigorous, data-backed reason why that mental model is dangerously wrong.`;
   } else if (position === 'practitioner') {
-    posts[0].hook = `A client came to me with this ${niche} problem. Here's exactly how we solved it — with numbers.`;
-    posts[2].hook = `What a real ${niche} engagement looks like from day 1 to delivery. Full transparency.`;
+    posts[0].hook = `A client came to me with a terminal ${niche} bottleneck. Here is the exact protocol we used to resolve it, complete with the final ROI metrics.`;
+    posts[2].hook = `What a real-world ${niche} engagement actually looks like, from day 1 to final delivery. A fully transparent timeline.`;
   }
 
   return posts;

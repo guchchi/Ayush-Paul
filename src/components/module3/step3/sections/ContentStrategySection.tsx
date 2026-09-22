@@ -39,8 +39,12 @@ export const ContentStrategySection: React.FC<Props> = React.memo(({ onContinue 
 
   if (!localRoadmap) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      <div className="space-y-6">
+        <div className="h-10 bg-slate-100 rounded-lg w-1/3 animate-pulse"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-48 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
+          <div className="h-48 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
+        </div>
       </div>
     );
   }
@@ -65,7 +69,7 @@ export const ContentStrategySection: React.FC<Props> = React.memo(({ onContinue 
       className="space-y-8"
     >
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Section 6 — Content Roadmap</h2>
+        <h2 className="text-2xl font-bold text-slate-900">Level 04 — Authority Content Roadmap Engine</h2>
         <p className="mt-2 text-slate-600">
           Your content roadmap is generated from your authority position and niche. These pillars and starter posts are your publishing blueprint for the first 30 days.
         </p>

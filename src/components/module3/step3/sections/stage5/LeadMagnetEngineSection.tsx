@@ -30,8 +30,12 @@ export const LeadMagnetEngineSection: React.FC<Props> = React.memo(({ onContinue
 
   if (!stage5LeadMagnet) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+      <div className="space-y-6">
+        <div className="h-10 bg-slate-100 rounded-lg w-1/3 animate-pulse"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="h-64 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
+          <div className="h-64 bg-slate-50 border border-slate-100 rounded-xl animate-pulse"></div>
+        </div>
       </div>
     );
   }

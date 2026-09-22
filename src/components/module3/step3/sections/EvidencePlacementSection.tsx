@@ -82,7 +82,7 @@ export const EvidencePlacementSection: React.FC<Props> = React.memo(({ onContinu
       className="space-y-6"
     >
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Section 5 — Evidence Placement</h2>
+        <h2 className="text-2xl font-bold text-slate-900">Level 03 — Evidence Placement Matrix</h2>
         <p className="mt-2 text-slate-600">
           Map each profile claim to the proof assets that back it. Every claim your profile makes needs at least one asset behind it.
         </p>
