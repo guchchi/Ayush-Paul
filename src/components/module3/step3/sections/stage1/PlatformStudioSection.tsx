@@ -219,12 +219,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
   const platformLabel = ALL_PLATFORMS.find(p => p.key === activeTab)?.name || activeTab;
   const currentPlatformMeta = ALL_PLATFORMS.find(p => p.key === activeTab);
 
-  const handleNextPlatform = () => {
-    setEditingField(null);
-    if (!isViewingOptional && currentPlatformIndex < primaryPlatforms.length - 1) {
-      setCurrentPlatformIndex(currentPlatformIndex + 1);
-    }
-  };
+
 
   const handleGoToPlatform = (index: number) => {
     setViewingOptionalPlatform(null);
