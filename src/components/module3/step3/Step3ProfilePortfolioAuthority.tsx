@@ -35,6 +35,7 @@ import { ProfileStrategySection } from './sections/ProfileStrategySection';
 import { PortfolioArchitectureSection } from './sections/PortfolioArchitectureSection';
 import { EvidencePlacementSection } from './sections/EvidencePlacementSection';
 import { ContentStrategySection } from './sections/ContentStrategySection';
+import { LeadMagnetEngineSection } from './sections/stage5/LeadMagnetEngineSection';
 import { StrategySummarySection } from './sections/StrategySummarySection';
 
 // ── Motion tokens ─────────────────────────────────────────────────────────────
@@ -95,6 +96,18 @@ const LEVELS = [
     bgColor: 'bg-purple-50',
     borderColor: 'border-purple-100',
   },
+  {
+    id: 5,
+    levelNumber: 'LEVEL 05',
+    title: 'Lead Magnet & Conversion Bridge',
+    subtitle: 'Traffic-to-Lead Engine',
+    deliverables: ['Lead Magnet Concept', 'Opt-in Flow', 'Conversion CTA'],
+    outcome: 'Seamless Lead Generation',
+    icon: Zap,
+    color: 'text-amber-600',
+    bgColor: 'bg-amber-50',
+    borderColor: 'border-amber-100',
+  },
 ] as const;
 
 // ── Main orchestration shell ──────────────────────────────────────────────────
@@ -116,7 +129,7 @@ export function Step3ProfilePortfolioAuthority() {
   const confirmStep = useModule3Store((s) => s.confirmStep);
   const nextStep = useModule3Store((s) => s.nextStep);
 
-  const [activeStage, setActiveStage] = useState<'overview' | 1 | 2 | 3 | 4 | 'summary'>('overview');
+  const [activeStage, setActiveStage] = useState<'overview' | 1 | 2 | 3 | 4 | 5 | 'summary'>('overview');
   const [suiteGenerating, setSuiteGenerating] = useState(false);
   const [showBaselineDrawer, setShowBaselineDrawer] = useState(false);
 
@@ -316,8 +329,8 @@ export function Step3ProfilePortfolioAuthority() {
               </div>
             </div>
 
-            {/* 4 Premium Level Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* 5 Premium Level Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
               {LEVELS.map((level) => {
                 const IconComponent = level.icon;
                 const isCompleted = step3CompletedSections.includes(level.id);
@@ -325,7 +338,7 @@ export function Step3ProfilePortfolioAuthority() {
                 return (
                   <motion.div
                     key={level.id}
-                    onClick={() => setActiveStage(level.id as 1 | 2 | 3 | 4)}
+                    onClick={() => setActiveStage(level.id as 1 | 2 | 3 | 4 | 5)}
                     whileHover={{ y: -2 }}
                     className="p-6 sm:p-7 rounded-3xl border border-neutral-200 bg-white shadow-xs hover:border-[#0058be]/40 hover:shadow-md transition-all cursor-pointer space-y-5 group relative"
                   >
@@ -418,6 +431,12 @@ export function Step3ProfilePortfolioAuthority() {
             {activeStage === 4 && (
               <ContentStrategySection
                 onContinue={() => advanceStage(4)}
+              />
+            )}
+
+            {activeStage === 5 && (
+              <LeadMagnetEngineSection
+                onContinue={() => advanceStage(5)}
               />
             )}
 

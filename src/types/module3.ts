@@ -534,6 +534,14 @@ export interface Module3State {
   lockStage2Architecture(): void;
   unlockStage2Architecture(): void;
 
+  // ── Stage 5 (Lead Magnet Engine) Studio Persistence ───────────────────────
+  stage5ActiveSection: number;
+  stage5CompletedSections: number[];
+  stage5LeadMagnet: Stage5LeadMagnetData | null;
+  setStage5ActiveSection(section: number): void;
+  setStage5CompletedSections(sections: number[]): void;
+  setStage5LeadMagnet(data: Partial<Stage5LeadMagnetData>): void;
+
   dismissStaleContext(): void;
   refreshStaleContext(): void;
 }
@@ -579,6 +587,14 @@ export interface Stage1IdentityData {
   positioningHeadline: string;
   proofLine: string;
   activeTone: 'executive' | 'conversion' | 'direct';
+}
+
+export interface Stage5LeadMagnetData {
+  conceptTitle: string;
+  format: 'notion_template' | 'mini_course' | 'pdf_playbook' | 'checklist';
+  hook: string;
+  primaryBenefit: string;
+  ctaText: string;
 }
 
 export interface Module4BridgeContext {

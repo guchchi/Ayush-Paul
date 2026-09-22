@@ -193,6 +193,11 @@ export const useModule3Store = create<Module3State>()(
         activeSectionId: 'section_hero',
       },
 
+      // ── Stage 5 (Lead Magnet Engine) Studio Persistence ──────────────────────
+      stage5ActiveSection: 1,
+      stage5CompletedSections: [],
+      stage5LeadMagnet: null,
+
       pendingProfilePortfolioStrategy: null,
       profilePortfolioStrategy: null,
       isGeneratingStrategy: false,
@@ -1141,6 +1146,22 @@ export const useModule3Store = create<Module3State>()(
             lastUpdated: Date.now(),
           };
         });
+      },
+
+      // ── Stage 5 ─────────────────────────────────────────────────────────────
+      setStage5ActiveSection(section) {
+        set({ stage5ActiveSection: section, lastUpdated: Date.now() });
+      },
+      setStage5CompletedSections(sections) {
+        set({ stage5CompletedSections: sections, lastUpdated: Date.now() });
+      },
+      setStage5LeadMagnet(data) {
+        set((state) => ({
+          stage5LeadMagnet: state.stage5LeadMagnet 
+            ? { ...state.stage5LeadMagnet, ...data }
+            : (data as any),
+          lastUpdated: Date.now()
+        }));
       },
 
       setIsCompleted(value: boolean) {
