@@ -148,8 +148,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
     }
   };
 
-  };
-
   // Helper for applying formulas
   const handleApplyFormula = (fieldKey: string, formulaId: string) => {
     const result = applyCopyFormula(formulaId, fieldKey, {
