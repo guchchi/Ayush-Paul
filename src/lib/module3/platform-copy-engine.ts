@@ -58,12 +58,21 @@ export class PlatformCopyEngine {
     const proofTitles = context.proofTitles || [];
     const primaryProof = context.primaryProofTitle || 'Our Blueprint';
     
+    // Build a unique seed string from all parameters to ensure high variance between different users
+    const seedString = `${market}-${niche}-${service}-${positioning}-${mechanism}-${promise}-${valueAmp}-${tone}`;
+    let baseSeed = 0;
+    for (let i = 0; i < seedString.length; i++) {
+      baseSeed = (baseSeed << 5) - baseSeed + seedString.charCodeAt(i);
+      baseSeed |= 0; // Convert to 32bit int
+    }
+    baseSeed = Math.abs(baseSeed);
+    
     // Derived context
     const targetAudience = niche && niche !== market ? `${niche} ${market}` : market;
     const enhancedMechanism = valueAmp ? `${valueAmp} ${mechanism}` : mechanism;
-    const evidenceTerm = pick(EVIDENCE, cycleIndex);
-    const connector = pick(CONNECTORS, cycleIndex + 1);
-    const outcome = pick(OUTCOMES, cycleIndex + 2);
+    const evidenceTerm = pick(EVIDENCE, baseSeed + cycleIndex);
+    const connector = pick(CONNECTORS, baseSeed + cycleIndex + 1);
+    const outcome = pick(OUTCOMES, baseSeed + cycleIndex + 2);
     
     const assets: ProfileSystemAsset[] = [];
     
@@ -71,8 +80,8 @@ export class PlatformCopyEngine {
       let fields: { key: string; label: string; value: string; originalValue: string }[] = [];
       const pid = p.key;
       
-      // We vary text generation by shifting the seed per platform
-      const s = cycleIndex + pid.charCodeAt(0) + pid.charCodeAt(pid.length - 1);
+      // We vary text generation by shifting the seed per platform using the baseSeed
+      const s = baseSeed + cycleIndex + pid.charCodeAt(0) + pid.charCodeAt(pid.length - 1);
       
       // 1. LinkedIn
       if (pid === 'linkedin') {
