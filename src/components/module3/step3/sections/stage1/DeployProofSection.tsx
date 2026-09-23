@@ -113,8 +113,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
     });
   }, [stage1Audit]);
 
-  // Baseline score: UX FIX — Ensure baseline is never higher than the optimized score
-  // If the user self-reported a high score but our strict engine gives them 71, their real baseline was lower.
+  // Baseline score: Restore true baseline without artificial capping
   const { effectiveInitial, cappedDimensions } = useMemo(() => {
     let rawBase = fallbackAuditBaseline.total;
     if (stage1Audit?.diagnosticScore && stage1Audit.diagnosticScore > 0) {
@@ -128,19 +127,11 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
     let baseProof = stage1Audit?.dimensionScores?.proofEvidence ?? fallbackAuditBaseline.dimensions.proofEvidence.score;
     let baseCta = stage1Audit?.dimensionScores?.conversionCta ?? fallbackAuditBaseline.dimensions.conversionCta.score;
 
-    // Cap dimensions so they never exceed optimized dimensions
-    basePos = Math.min(basePos, Math.max(5, currentScore.positioningClarity.score - 3));
-    basePlat = Math.min(basePlat, Math.max(5, currentScore.platformCompleteness.score - 5));
-    baseProof = Math.min(baseProof, Math.max(5, currentScore.toneConsistency.score - 4));
-    baseCta = Math.min(baseCta, Math.max(5, currentScore.ctaPresence.score - 4));
-
-    let finalBase = basePos + basePlat + baseProof + baseCta;
-
     return {
-      effectiveInitial: finalBase,
+      effectiveInitial: rawBase,
       cappedDimensions: { basePos, basePlat, baseProof, baseCta }
     };
-  }, [stage1Audit, initialScore, fallbackAuditBaseline, currentScore]);
+  }, [stage1Audit, initialScore, fallbackAuditBaseline]);
 
   const improvement = Math.max(0, currentScore.total - effectiveInitial);
   const improvementPct = effectiveInitial > 0 ? Math.round((improvement / effectiveInitial) * 100) : 0;
