@@ -240,14 +240,15 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
   // ── Render: Phone Mockup ────────────────────────────────────────────────────
   const renderMockup = () => (
-    <div className="relative mx-auto w-[280px] bg-black rounded-[44px] p-2 shadow-2xl border-4 border-neutral-800">
+    <div className="relative mx-auto w-[300px] bg-neutral-950 rounded-[48px] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-neutral-800">
+      <div className="absolute -inset-4 bg-gradient-to-b from-blue-500/5 to-transparent rounded-[60px] blur-xl -z-10 pointer-events-none" />
       {/* Hardware buttons */}
-      <div className="absolute top-20 -left-1.5 w-1 h-7 bg-neutral-800 rounded-l-md" />
-      <div className="absolute top-32 -left-1.5 w-1 h-10 bg-neutral-800 rounded-l-md" />
-      <div className="absolute top-44 -left-1.5 w-1 h-10 bg-neutral-800 rounded-l-md" />
-      <div className="absolute top-32 -right-1.5 w-1 h-14 bg-neutral-800 rounded-r-md" />
+      <div className="absolute top-24 -left-1 w-1 h-8 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-36 -left-1 w-1 h-12 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-52 -left-1 w-1 h-12 bg-neutral-800 rounded-l-md" />
+      <div className="absolute top-36 -right-1 w-1 h-16 bg-neutral-800 rounded-r-md" />
 
-      <div className="w-full h-full bg-neutral-100 rounded-[36px] overflow-hidden relative shadow-inner min-h-[480px] flex flex-col">
+      <div className="w-full h-full bg-neutral-100 rounded-[38px] overflow-hidden relative shadow-inner min-h-[520px] flex flex-col">
         {/* Dynamic Island */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[90px] h-6 bg-black rounded-full z-20 flex items-center justify-between px-2">
           <div className="w-1.5 h-1.5 rounded-full bg-neutral-800/80" />
@@ -294,7 +295,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
         className="relative"
       >
         {/* Main Toolbar Container */}
-        <div className="bg-white border border-neutral-200/80 shadow-xs rounded-2xl p-1.5 flex flex-col sm:flex-row sm:items-center gap-1.5 relative z-10 overflow-visible">
+        <div className="bg-white/90 backdrop-blur-xl border border-neutral-200/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-2xl p-1.5 flex flex-col sm:flex-row sm:items-center gap-1.5 relative z-10 overflow-visible">
           
           <div className="flex items-center flex-1 min-w-0">
             {/* Prev Button */}
@@ -333,9 +334,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                       {!isViewingOptional && (
                         <span className="text-[9px] font-black uppercase tracking-widest text-[#0058be] bg-blue-50/80 px-1.5 py-[1px] rounded-sm shrink-0">Core</span>
                       )}
-                      {reviewedPlatforms.has(activeTab) && (
-                        <Check size={12} strokeWidth={3} className="text-emerald-500 shrink-0" />
-                      )}
                     </div>
                     <span className="text-[10px] text-neutral-400 font-medium leading-tight mt-0.5">
                       {isViewingOptional ? 'Optional Channel' : `${currentPlatformIndex + 1} of ${primaryPlatforms.length} required`}
@@ -351,18 +349,17 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               <AnimatePresence>
                 {isPlatformDropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 4, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.98 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-neutral-200/80 rounded-2xl shadow-xl z-50 max-h-[360px] overflow-y-auto overflow-x-hidden py-1"
+                    transition={{ duration: 0.2, ease: EASING.PREMIUM }}
+                    className="absolute top-full left-0 right-0 mt-3 bg-white/95 backdrop-blur-xl border border-neutral-200/50 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] z-50 max-h-[360px] overflow-y-auto overflow-x-hidden py-2"
                   >
                     {/* Core Platforms Section */}
                     <div className="px-3 pt-3 pb-1.5">
                       <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Core Platforms</span>
                     </div>
                     {primaryPlatforms.map(p => {
-                      const isReviewed = reviewedPlatforms.has(p.key);
                       const isCurrent = activeTab === p.key;
                       const Icon = p.icon;
                       return (
@@ -380,8 +377,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                           <span className={cn('text-sm flex-1', isCurrent ? 'text-[#0058be] font-extrabold' : 'text-neutral-700 font-medium')}>
                             {p.name}
                           </span>
-                          {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
-                          {isCurrent && !isReviewed && (
+                          {isCurrent && (
                             <div className="w-1.5 h-1.5 rounded-full bg-[#0058be] shrink-0" />
                           )}
                         </button>
@@ -396,7 +392,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                           <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400">Other Channels</span>
                         </div>
                         {secondaryPlatforms.map(p => {
-                          const isReviewed = reviewedPlatforms.has(p.key);
                           const isCurrent = activeTab === p.key;
                           const Icon = p.icon;
                           return (
@@ -414,7 +409,6 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                               <span className={cn('text-sm flex-1', isCurrent ? 'text-[#0058be] font-extrabold' : 'text-neutral-500 font-medium')}>
                                 {p.name}
                               </span>
-                              {isReviewed && <Check size={14} strokeWidth={3} className="text-emerald-500 shrink-0" />}
                             </button>
                           );
                         })}
@@ -461,11 +455,11 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
               <AnimatePresence>
                 {showToneSelector && (
                   <motion.div
-                    initial={{ opacity: 0, y: 4 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-full right-0 mt-2 bg-white border border-neutral-200/80 rounded-2xl shadow-xl z-50 w-56 p-1.5"
+                    transition={{ duration: 0.2, ease: EASING.PREMIUM }}
+                    className="absolute top-full right-0 mt-3 bg-white/95 backdrop-blur-xl border border-neutral-200/50 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.08)] z-50 w-56 p-2"
                   >
                     {TONES.map(tone => (
                       <button
@@ -513,7 +507,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
             <motion.div
               className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-r-full"
               initial={{ width: 0 }}
-              animate={{ width: `${(reviewedPlatforms.size / Math.max(primaryPlatforms.length, 1)) * 100}%` }}
+              animate={{ width: `${((currentGlobalIndex + 1) / Math.max(allPlatformsOrdered.length, 1)) * 100}%` }}
               transition={{ duration: 0.5, ease: EASING.PREMIUM }}
             />
           </div>
@@ -533,10 +527,10 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
 
 
           {/* ── Split: Editor (Left Scroll) + Mockup (Right Sticky) ──── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Editor (Can be on Left or Right) & Verification Checklist */}
-            <div className={cn("lg:col-span-7 flex flex-col h-[600px] bg-white border border-neutral-200/80 rounded-2xl shadow-sm overflow-hidden relative", previewPosition === 'left' ? 'lg:order-last' : 'lg:order-first')}>
+            <div className={cn("lg:col-span-7 flex flex-col h-[650px] bg-white border border-neutral-200/50 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative", previewPosition === 'left' ? 'lg:order-last' : 'lg:order-first')}>
               {/* Properties Header */}
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-100 bg-neutral-50/50 shrink-0">
                 <div className="flex items-center gap-2">
@@ -598,11 +592,11 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                           {/* Content / Editor */}
                           <div className="flex-1 min-w-0">
                             {isEditing ? (
-                              <div className="space-y-3">
+                              <div className="space-y-4">
                                 <textarea
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  className="w-full text-xs text-neutral-800 bg-white border border-blue-200/80 rounded-xl p-3 min-h-[100px] focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 resize-y leading-relaxed shadow-sm transition-all"
+                                  className="w-full text-[13px] text-neutral-800 bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-4 focus:ring-[#0058be]/10 focus:border-[#0058be]/30 focus:bg-white resize-y leading-relaxed shadow-inner transition-all duration-300"
                                 />
                                 
                                 {/* Inline formula toolbar */}
@@ -611,7 +605,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                                     <button
                                       key={formula.id}
                                       onClick={() => handleApplyFormula(field.key, formula.id)}
-                                      className="px-2.5 py-1.5 bg-white hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 text-[10px] font-bold rounded-lg border border-neutral-200 transition-all cursor-pointer shadow-xs flex items-center"
+                                      className="px-3 py-2 bg-white hover:bg-neutral-50 text-neutral-600 hover:text-neutral-900 text-[10px] font-bold rounded-xl border border-neutral-200 transition-all duration-300 cursor-pointer shadow-xs hover:shadow-sm flex items-center"
                                       title={formula.description}
                                     >
                                       <Rocket size={10} className="inline mr-1.5 text-[#0058be]" />
@@ -637,24 +631,24 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                                 </div>
                               </div>
                             ) : (
-                              <div className="group/content relative">
-                                <div className="text-xs text-neutral-600 leading-relaxed whitespace-pre-wrap pr-10">
+                              <div className="group/content relative p-4 rounded-2xl border border-transparent hover:border-neutral-200/60 hover:bg-neutral-50/50 transition-all duration-300 cursor-text" onClick={() => handleEditStart(field.key, field.value)}>
+                                <div className="text-[13px] text-neutral-700 leading-relaxed whitespace-pre-wrap pr-10">
                                   {field.value}
                                 </div>
-                                <div className="absolute top-0 right-0 opacity-0 group-hover/content:opacity-100 transition-opacity flex items-center gap-1">
+                                <div className="absolute top-2 right-2 opacity-0 group-hover/content:opacity-100 transition-opacity flex items-center gap-1.5">
                                   <button
-                                    onClick={() => handleCopy(field.key, field.value)}
-                                    className="p-1.5 bg-white shadow-xs hover:shadow-sm text-neutral-500 hover:text-neutral-900 rounded-lg transition-all cursor-pointer border border-neutral-200/60"
+                                    onClick={(e) => { e.stopPropagation(); handleCopy(field.key, field.value); }}
+                                    className="p-2 bg-white shadow-xs hover:shadow-md text-neutral-500 hover:text-neutral-900 rounded-xl transition-all duration-300 cursor-pointer border border-neutral-200/60"
                                     title="Copy"
                                   >
-                                    {copiedField === field.key ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
+                                    {copiedField === field.key ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
                                   </button>
                                   <button
-                                    onClick={() => handleEditStart(field.key, field.value)}
-                                    className="p-1.5 bg-white shadow-xs hover:shadow-sm text-neutral-500 hover:text-[#0058be] rounded-lg transition-all cursor-pointer border border-neutral-200/60"
+                                    onClick={(e) => { e.stopPropagation(); handleEditStart(field.key, field.value); }}
+                                    className="p-2 bg-white shadow-xs hover:shadow-md text-neutral-500 hover:text-[#0058be] rounded-xl transition-all duration-300 cursor-pointer border border-neutral-200/60"
                                     title="Edit"
                                   >
-                                    <Pencil size={12} />
+                                    <Pencil size={14} />
                                   </button>
                                 </div>
                               </div>

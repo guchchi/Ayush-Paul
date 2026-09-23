@@ -313,12 +313,12 @@ const PlatformCard: React.FC<PlatformCardProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.08 + idx * 0.06, ease: EASING.PREMIUM }}
+      transition={{ duration: 0.4, delay: 0.05 + idx * 0.05, ease: EASING.PREMIUM }}
       className={cn(
-        'relative group rounded-3xl border transition-all duration-300 flex flex-col bg-white overflow-hidden shadow-xs hover:shadow-md',
+        'relative group rounded-[24px] border transition-all duration-500 flex flex-col bg-white overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 cursor-default',
         hasDrift
-          ? 'border-amber-300/80 ring-2 ring-amber-200/50'
-          : 'border-neutral-200/80 hover:border-emerald-300/50'
+          ? 'border-amber-200 ring-2 ring-amber-100/50 hover:border-amber-300'
+          : 'border-neutral-200/50 hover:border-[#0058be]/30'
       )}
     >
       {/* 1. Header Bar: Platform Identity */}
@@ -342,7 +342,7 @@ const PlatformCard: React.FC<PlatformCardProps> = ({
           <button
             onClick={() => onSnapToCore(platformKey)}
             disabled={isSnapping}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#0b1c30] text-xs font-bold transition-all shadow-[0_0_10px_rgba(251,191,36,0.2)] disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-b from-amber-300 to-amber-400 hover:from-amber-200 hover:to-amber-300 text-amber-900 text-xs font-extrabold transition-all shadow-[0_4px_14px_rgba(251,191,36,0.25)] hover:shadow-[0_6px_20px_rgba(251,191,36,0.4)] disabled:opacity-50 cursor-pointer"
           >
             {isSnapping ? (
               <RefreshCw size={12} className="animate-spin" />
@@ -466,10 +466,10 @@ export const ConsistencyCheckSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="relative overflow-hidden p-8 rounded-[2rem] border border-[#0058be]/20 bg-[#0b1c30] shadow-2xl shadow-blue-900/10 flex flex-col md:flex-row items-center justify-between gap-8"
+        className="relative overflow-hidden p-8 md:p-10 rounded-[2.5rem] border border-[#0058be]/30 bg-[#061224] shadow-[0_30px_60px_rgba(0,88,190,0.15)] flex flex-col md:flex-row items-center justify-between gap-8"
       >
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-500/10 to-transparent rounded-bl-full pointer-events-none" />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '16px 16px' }} />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-blue-500/15 via-blue-900/5 to-transparent rounded-bl-full pointer-events-none blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
 
         <div className="relative z-10 flex-1">
           <div className="flex items-center gap-2 text-[#0058be] font-black uppercase tracking-widest text-[10px] mb-3">

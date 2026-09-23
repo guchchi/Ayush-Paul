@@ -241,7 +241,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/40 border border-neutral-200/90 shadow-sm"
+        className="p-6 sm:p-8 rounded-[2.5rem] bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/40 border border-[#0058be]/10 shadow-[0_20px_60px_rgba(0,88,190,0.08)]"
       >
         <div className="flex items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-2">
@@ -276,9 +276,9 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         </div>
 
         {/* 4-Dimension Authority Transformation Grid */}
-        <div className="mt-6 pt-6 border-t border-neutral-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="mt-6 pt-6 border-t border-neutral-200/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {dimensions.map(d => (
-            <div key={d.label} className="p-3.5 rounded-2xl bg-white/90 border border-neutral-200/70 shadow-2xs">
+            <div key={d.label} className="p-4 rounded-3xl bg-white/95 backdrop-blur-sm border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-center justify-between text-[11px] font-bold text-[#0b1c30] mb-1">
                 <span className="truncate">{d.label}</span>
                 <span className="text-emerald-700 text-[10px] font-extrabold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200/50">
@@ -307,7 +307,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
-        className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-4"
+        className="p-6 rounded-[24px] border border-neutral-200/60 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4"
       >
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
@@ -357,7 +357,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
-        className="p-6 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-4"
+        className="p-6 rounded-[24px] border border-neutral-200/60 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-4"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -389,8 +389,8 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
               <div
                 key={platform}
                 className={cn(
-                  'p-3.5 rounded-2xl border flex items-center justify-between transition-all shadow-2xs',
-                  isDeployed ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-neutral-200/80 hover:border-neutral-300'
+                  'p-4 rounded-[20px] border flex items-center justify-between transition-all duration-300 shadow-sm hover:shadow-md cursor-default',
+                  isDeployed ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-neutral-200/60 hover:border-neutral-300 hover:-translate-y-0.5'
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -439,7 +439,7 @@ export const DeployProofSection: React.FC<Props> = React.memo(({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.3 }}
-        className="p-5 rounded-3xl bg-gradient-to-r from-[#0058be]/8 via-blue-50/60 to-indigo-50/60 border border-[#0058be]/20 space-y-2"
+        className="p-6 rounded-[24px] bg-gradient-to-r from-[#0058be]/5 via-blue-50/40 to-indigo-50/40 border border-[#0058be]/10 space-y-2 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
       >
         <div className="flex items-center gap-2">
           <CheckCircle2 size={16} className="text-emerald-600" />
