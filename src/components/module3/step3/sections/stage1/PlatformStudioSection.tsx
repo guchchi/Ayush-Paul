@@ -572,7 +572,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                         <div className="flex items-start justify-between gap-6">
                           {/* Label & Character limit */}
                           <div className="w-1/3 shrink-0 pt-0.5">
-                            <h4 className="text-xs font-extrabold text-neutral-800">{field.label}</h4>
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-1">{field.label}</h4>
                             {charLimit && (() => {
                               const len = field.value.length;
                               const ratio = len / charLimit;
@@ -596,7 +596,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                                 <textarea
                                   value={editValue}
                                   onChange={(e) => setEditValue(e.target.value)}
-                                  className="w-full text-[13px] text-neutral-800 bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-4 focus:ring-[#0058be]/10 focus:border-[#0058be]/30 focus:bg-white resize-y leading-relaxed shadow-inner transition-all duration-300"
+                                  className="w-full text-sm font-medium text-neutral-900 bg-neutral-50/50 border border-neutral-200/80 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-4 focus:ring-[#0058be]/10 focus:border-[#0058be]/30 focus:bg-white resize-y leading-relaxed shadow-inner transition-all duration-300"
                                 />
                                 
                                 {/* Inline formula toolbar */}
@@ -632,7 +632,7 @@ export const PlatformStudioSection: React.FC<Props> = React.memo(({
                               </div>
                             ) : (
                               <div className="group/content relative p-4 rounded-2xl border border-transparent hover:border-neutral-200/60 hover:bg-neutral-50/50 transition-all duration-300 cursor-text" onClick={() => handleEditStart(field.key, field.value)}>
-                                <div className="text-[13px] text-neutral-700 leading-relaxed whitespace-pre-wrap pr-10">
+                                <div className="text-[13px] font-medium text-neutral-900 leading-relaxed whitespace-pre-wrap pr-10">
                                   {field.value}
                                 </div>
                                 <div className="absolute top-2 right-2 opacity-0 group-hover/content:opacity-100 transition-opacity flex items-center gap-1.5">
