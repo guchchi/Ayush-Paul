@@ -151,7 +151,7 @@ export function calculatePortfolioConversionScore(
   hookScore = Math.min(20, hookScore);
 
   // 2. Proof Proximity (Max 25 pts)
-  let proofScore = 0;
+  let proofScore;
   const proofIdx = activeSections.findIndex((s) => s.id === 'section_proof');
   const caseStudiesIdx = activeSections.findIndex((s) => s.id === 'section_case_studies');
   const earliestProofIdx = Math.min(

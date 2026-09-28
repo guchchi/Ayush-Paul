@@ -77,7 +77,7 @@ export class PlatformCopyEngine {
     const assets: ProfileSystemAsset[] = [];
     
     for (const p of ALL_PLATFORMS_LIST) {
-      let fields: { key: string; label: string; value: string; originalValue: string }[] = [];
+      let fields: { key: string; label: string; value: string; originalValue: string }[];
       const pid = p.key;
       
       // We vary text generation by shifting the seed per platform using the baseSeed
@@ -85,11 +85,11 @@ export class PlatformCopyEngine {
       
       // 1. LinkedIn
       if (pid === 'linkedin') {
-        let banner = '';
-        let head = '';
-        let about = '';
-        let cta = '';
-        let serv = '';
+        let banner;
+        let head;
+        let about;
+        let cta;
+        let serv;
         
         if (tone === 'executive') {
           banner = pick([
@@ -147,8 +147,8 @@ export class PlatformCopyEngine {
       // 2. Twitter / X
       else if (pid === 'twitter') {
         const name = pick([`Ayush | ${service}`, `Ayush (${positioning})`, `Ayush | ${enhancedMechanism}`], s);
-        let bio = '';
-        let pinned = '';
+        let bio;
+        let pinned;
         if (tone === 'executive') {
           bio = `Macro-advisory for ${targetAudience}. Standardizing ${service} ${connector} ${enhancedMechanism}. ${promise}. \n👇 Strategic insights below.`;
           pinned = `Market Analysis: Why traditional ${service} models are failing ${targetAudience} (and how ${enhancedMechanism} solves the execution gap). A comprehensive thread 🧵👇`;
@@ -169,9 +169,9 @@ export class PlatformCopyEngine {
       // 3. Instagram
       else if (pid === 'instagram') {
         const name = `Ayush | ${service}`;
-        let bio = '';
-        let highlights = '';
-        let cta = '';
+        let bio;
+        let highlights;
+        let cta;
         if (tone === 'executive') {
           bio = `Advising ${targetAudience} leadership.\nArchitecture for ${service}.\n${enhancedMechanism} Systems.\n👇 Verified Client Assets`;
           highlights = `1. Methodology\n2. Audits\n3. Outcomes\n4. Overview`;
@@ -194,9 +194,9 @@ export class PlatformCopyEngine {
       }
       // 4. YouTube
       else if (pid === 'youtube') {
-        let banner = '';
-        let bio = '';
-        let featured = '';
+        let banner;
+        let bio;
+        let featured;
         if (tone === 'executive') {
           banner = pick([`Strategic Briefings: ${service} Dynamics for ${targetAudience}`, `Enterprise ${service} Architecture`], s);
           bio = `We analyze structural market inefficiencies and document how top-tier ${targetAudience} leverage ${enhancedMechanism} to achieve ${promise}.`;
@@ -218,10 +218,10 @@ export class PlatformCopyEngine {
       }
       // 5. Personal Site
       else if (pid === 'personal_site') {
-        let hero = '';
-        let subhead = '';
-        let about = '';
-        let cta = '';
+        let hero;
+        let subhead;
+        let about;
+        let cta;
         if (tone === 'executive') {
           hero = pick([`Strategic ${service} Infrastructure for ${targetAudience} Leaders`, `Architecting ${enhancedMechanism} for Scale`], s);
           subhead = `We engineer predictable operational outcomes ${connector} ${enhancedMechanism}. Zero speculative marketing. Pure verifiable execution.`;
@@ -247,8 +247,8 @@ export class PlatformCopyEngine {
       }
       // 6-13. Other Platforms (Combinatorial Default fallback)
       else {
-        let title = '';
-        let bio = '';
+        let title;
+        let bio;
         if (tone === 'executive') {
           title = pick([`Executive Insights: ${service}`, `Strategic ${enhancedMechanism}`, `Enterprise ${service} Architecture`], s);
           bio = `Documenting high-leverage ${enhancedMechanism} architectures for ${targetAudience}. Focused on ${promise}.`;
