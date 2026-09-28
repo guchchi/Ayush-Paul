@@ -330,7 +330,7 @@ export function Step3ProfilePortfolioAuthority() {
             </div>
 
             {/* 5 Premium Level Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {LEVELS.map((level) => {
                 const IconComponent = level.icon;
                 const isCompleted = step3CompletedSections.includes(level.id);
@@ -339,46 +339,60 @@ export function Step3ProfilePortfolioAuthority() {
                   <motion.div
                     key={level.id}
                     onClick={() => setActiveStage(level.id as 1 | 2 | 3 | 4 | 5)}
-                    whileHover={{ y: -2 }}
-                    className="p-6 sm:p-7 rounded-3xl border border-neutral-200 bg-white shadow-xs hover:border-[#0058be]/40 hover:shadow-md transition-all cursor-pointer space-y-5 group relative"
+                    whileHover={{ y: -4, scale: 1.01 }}
+                    className={cn(
+                      "p-6 sm:p-7 rounded-3xl border bg-white shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer space-y-6 group relative overflow-hidden",
+                      isCompleted ? "border-emerald-200/80" : "border-neutral-200/80 hover:border-[#0058be]/30"
+                    )}
                   >
+                    {/* Subtle Background Glow */}
+                    <div className={cn(
+                      "absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none -translate-y-1/2 translate-x-1/4",
+                      level.bgColor.replace('bg-', 'bg-').replace('50', '400')
+                    )} />
+
                     {/* Card Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-2xl ${level.bgColor} ${level.color} border ${level.borderColor}`}>
-                          <IconComponent size={22} />
+                    <div className="flex items-start justify-between relative z-10">
+                      <div className="flex items-center gap-3.5">
+                        <div className={`p-3 rounded-2xl ${level.bgColor} ${level.color} border ${level.borderColor} shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                          <IconComponent size={22} className={isCompleted ? "opacity-80" : ""} />
                         </div>
                         <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block">
+                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 block mb-0.5">
                             {level.levelNumber}
                           </span>
-                          <h3 className="text-base font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
+                          <h3 className="text-base font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors leading-tight">
                             {level.title}
                           </h3>
                         </div>
                       </div>
 
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${
+                      <span className={cn(
+                        "text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full border flex items-center gap-1.5 whitespace-nowrap shadow-xs transition-colors",
                         isCompleted
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-neutral-100 text-neutral-600 border-neutral-200'
-                      }`}>
-                        {isCompleted ? 'Completed ✓' : 'Ready'}
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200/80"
+                          : "bg-neutral-50 text-neutral-500 border-neutral-200"
+                      )}>
+                        {isCompleted ? (
+                          <>
+                            Completed <Check size={12} className="stroke-[3]" />
+                          </>
+                        ) : 'Ready'}
                       </span>
                     </div>
 
                     {/* Deliverable Badges */}
-                    <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-200/80 space-y-2.5">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-neutral-400 block">
-                        Deliverables:
+                    <div className="bg-neutral-50/80 p-4 rounded-2xl border border-neutral-200/60 space-y-3 relative z-10">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block">
+                        Deliverables Overview
                       </span>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {level.deliverables.map((item, i) => (
                           <span
                             key={i}
-                            className="bg-white border border-neutral-200 text-neutral-700 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-2xs flex items-center gap-1"
+                            className="bg-white border border-neutral-200/80 text-neutral-600 px-2.5 py-1.5 rounded-xl text-[11px] font-bold shadow-2xs flex items-center gap-1.5 group-hover:border-neutral-300 transition-colors"
                           >
-                            <Zap size={11} className="text-[#0058be]" />
+                            <Zap size={10} className="text-[#0058be]/70" />
                             {item}
                           </span>
                         ))}
@@ -386,15 +400,18 @@ export function Step3ProfilePortfolioAuthority() {
                     </div>
 
                     {/* Outcome Tag & Action */}
-                    <div className="flex items-center justify-between pt-2 border-t border-neutral-100 text-xs">
-                      <span className="font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200/60 flex items-center gap-1">
-                        <Sparkles size={13} className="text-emerald-600" />
-                        {level.outcome}
-                      </span>
+                    <div className="flex items-center justify-between pt-4 border-t border-neutral-100 relative z-10">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">Target Outcome</span>
+                        <span className="font-bold text-emerald-700 bg-emerald-50/80 px-2.5 py-1 rounded-lg border border-emerald-200/50 flex items-center gap-1.5 text-[11px]">
+                          <Sparkles size={12} className="text-emerald-600" />
+                          {level.outcome}
+                        </span>
+                      </div>
 
-                      <span className="font-bold text-[#0058be] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                        Enter Level {level.id} <ArrowRight size={14} />
-                      </span>
+                      <div className="w-10 h-10 rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center group-hover:bg-[#0058be] group-hover:border-[#0058be] group-hover:text-white text-neutral-400 transition-all duration-300 self-end">
+                        <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                      </div>
                     </div>
                   </motion.div>
                 );
