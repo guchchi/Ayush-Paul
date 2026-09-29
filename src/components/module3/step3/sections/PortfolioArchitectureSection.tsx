@@ -60,75 +60,79 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   // ── ONBOARDING & INTRO ────────────────────────────────────────────────────────
   if (step !== 'workspace') {
     return (
-      <div className="min-h-[600px] w-full flex items-center justify-center p-6 font-sans relative overflow-hidden bg-white border border-neutral-200/50 rounded-3xl shadow-sm">
-        {/* Abstract Background Elements (Light Mode) */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-50 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="max-w-3xl w-full z-10 space-y-8 text-center">
+      <div className="w-full h-[700px] flex rounded-3xl overflow-hidden border border-neutral-200/60 bg-white shadow-sm">
+        
+        {/* LEFT COLUMN: Content & Actions */}
+        <div className="w-full lg:w-[55%] flex flex-col justify-center px-12 py-16 relative bg-white">
           <AnimatePresence mode="wait">
             {step === 'intro' ? (
               <motion.div
                 key="intro"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="space-y-10 bg-white/80 p-12 rounded-3xl border border-neutral-200 shadow-xl backdrop-blur-xl"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-10 max-w-xl"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-widest">
                     <Layout size={14} />
                     Level 02
                   </div>
                   <h2 className="text-4xl font-extrabold text-neutral-900 tracking-tight leading-tight">
                     Portfolio Architecture Builder
                   </h2>
-                  <p className="text-neutral-500 text-lg max-w-2xl mx-auto font-medium">
+                  <p className="text-neutral-500 text-lg font-medium leading-relaxed">
                     Transform your positioning into a high-converting portfolio website. We'll engineer the optimal layout, structure, and conversion reasoning based on proven SaaS frameworks.
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pb-4">
-                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
                       <Sparkles className="text-emerald-600" size={18} />
                     </div>
-                    <h4 className="text-neutral-900 font-bold text-sm">Conversion-Optimized</h4>
-                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Section order calculated for maximum trust and lower bounce rates.</p>
+                    <div>
+                      <h4 className="text-neutral-900 font-bold text-sm">Conversion-Optimized</h4>
+                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Section order calculated for maximum trust and lower bounce rates.</p>
+                    </div>
                   </div>
-                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-purple-100 flex items-center justify-center mt-1">
                       <Layout className="text-purple-600" size={18} />
                     </div>
-                    <h4 className="text-neutral-900 font-bold text-sm">Component Library</h4>
-                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Visual wireframes with live layouts (Split, Grid, Centered).</p>
+                    <div>
+                      <h4 className="text-neutral-900 font-bold text-sm">Component Library</h4>
+                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Visual wireframes with live layouts (Split, Grid, Centered).</p>
+                    </div>
                   </div>
-                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-blue-100 flex items-center justify-center mt-1">
                       <Settings className="text-[#0058be]" size={18} />
                     </div>
-                    <h4 className="text-neutral-900 font-bold text-sm">Live Copy Editor</h4>
-                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Edit your headlines and CTA's directly in the studio environment.</p>
+                    <div>
+                      <h4 className="text-neutral-900 font-bold text-sm">Live Copy Editor</h4>
+                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Edit your headlines and CTA's directly in the studio environment.</p>
+                    </div>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setStep('goal')}
-                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 mx-auto cursor-pointer"
+                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 cursor-pointer"
                 >
-                  Enter Studio Workspace <ArrowRight size={16} />
+                  Configure Architecture <ArrowRight size={16} />
                 </button>
               </motion.div>
             ) : step === 'goal' ? (
               <motion.div
                 key="prompt"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="space-y-8"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="space-y-8 max-w-xl"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-wider">
                     <Sparkles size={14} />
                     AI Blueprint Generator
                   </div>
@@ -140,45 +144,121 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                <div className="flex flex-col gap-3">
                   {[
-                    { id: 'retainer', label: 'Win High-Value Retainers', icon: Repeat },
-                    { id: 'sprint', label: 'Win Fast Sprint Projects', icon: Zap },
-                    { id: 'consulting', label: 'Build Advisory Authority', icon: Compass }
+                    { id: 'retainer', label: 'Win High-Value Retainers', icon: Repeat, desc: 'Focus on long-term value, stability, and deep partnerships.' },
+                    { id: 'sprint', label: 'Win Fast Sprint Projects', icon: Zap, desc: 'Highlight speed, specific deliverables, and quick ROI.' },
+                    { id: 'consulting', label: 'Build Advisory Authority', icon: Compass, desc: 'Position as a strategic advisor, focusing on insights and guidance.' }
                   ].map((goal) => {
                     const Icon = goal.icon;
                     return (
                       <button
                         key={goal.id}
                         onClick={() => handleGoalSelect(goal.id as PortfolioGoal)}
-                        className="group relative p-8 rounded-2xl bg-white border border-neutral-200 hover:border-[#0058be] hover:shadow-[0_8px_30px_rgba(0,88,190,0.12)] transition-all cursor-pointer flex flex-col items-center text-center gap-5"
+                        className="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:border-[#0058be] hover:shadow-[0_8px_30px_rgba(0,88,190,0.08)] hover:bg-blue-50/30 transition-all cursor-pointer flex items-center gap-5 text-left"
                       >
-                        <div className="w-14 h-14 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all">
-                          <Icon size={24} className="text-neutral-400 group-hover:text-[#0058be] transition-colors" />
+                        <div className="w-12 h-12 shrink-0 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-100 group-hover:border-blue-200 transition-all">
+                          <Icon size={20} className="text-neutral-400 group-hover:text-[#0058be] transition-colors" />
                         </div>
-                        <h3 className="text-neutral-900 font-bold text-sm group-hover:text-[#0058be] transition-colors">{goal.label}</h3>
+                        <div>
+                          <h3 className="text-neutral-900 font-bold text-sm group-hover:text-[#0058be] transition-colors">{goal.label}</h3>
+                          <p className="text-neutral-500 text-xs font-medium mt-1">{goal.desc}</p>
+                        </div>
+                        <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ArrowRight size={16} className="text-[#0058be]" />
+                        </div>
                       </button>
                     );
                   })}
                 </div>
+                
+                <button
+                  onClick={() => setStep('intro')}
+                  className="text-xs font-bold text-neutral-400 hover:text-neutral-800 transition-colors cursor-pointer"
+                >
+                  ← Back to Introduction
+                </button>
               </motion.div>
             ) : (
               <motion.div
                 key="generating"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center space-y-6 py-12"
+                className="flex flex-col items-center justify-center space-y-6 py-12 h-full"
               >
                 <div className="relative w-24 h-24">
                   <div className="absolute inset-0 border-4 border-neutral-100 rounded-full" />
                   <div className="absolute inset-0 border-4 border-[#0058be] rounded-full border-t-transparent animate-spin" />
                   <Sparkles className="absolute inset-0 m-auto text-[#0058be] animate-pulse" size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-neutral-900">Engineering Architecture...</h3>
-                <p className="text-neutral-500 font-medium">Applying conversion guardrails & optimal section flow.</p>
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">Engineering Architecture...</h3>
+                  <p className="text-neutral-500 font-medium">Applying conversion guardrails & optimal section flow.</p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* RIGHT COLUMN: Visual Preview */}
+        <div className="hidden lg:flex w-[45%] bg-neutral-50 border-l border-neutral-200/60 relative items-center justify-center overflow-hidden">
+          {/* Subtle Background Pattern */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+          
+          <div className="relative z-10 w-full max-w-md p-8">
+            <div className="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-neutral-200/50 overflow-hidden flex flex-col">
+              {/* Fake Browser Header */}
+              <div className="h-10 border-b border-neutral-100 bg-neutral-50/80 flex items-center px-4 gap-2 shrink-0">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+                </div>
+                <div className="mx-auto h-5 w-1/2 bg-white rounded-md border border-neutral-200" />
+              </div>
+              
+              {/* Fake Wireframe Body */}
+              <div className="p-6 space-y-6 bg-white h-[400px] overflow-hidden relative">
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10" />
+                
+                {/* Hero Section Wireframe */}
+                <div className="space-y-3">
+                  <div className="h-4 w-1/4 bg-blue-100 rounded-full" />
+                  <div className="h-8 w-3/4 bg-neutral-200 rounded-lg" />
+                  <div className="h-8 w-2/4 bg-neutral-200 rounded-lg" />
+                  <div className="h-3 w-5/6 bg-neutral-100 rounded-full mt-4" />
+                  <div className="h-3 w-4/6 bg-neutral-100 rounded-full" />
+                  <div className="flex gap-3 mt-4">
+                    <div className="h-8 w-28 bg-[#0058be] rounded-lg opacity-90" />
+                    <div className="h-8 w-28 bg-neutral-100 rounded-lg" />
+                  </div>
+                </div>
+
+                {/* Grid Section Wireframe */}
+                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-neutral-50">
+                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
+                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
+                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
+                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Floating indicator */}
+            <motion.div 
+              animate={{ y: [0, -10, 0] }} 
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="absolute -right-4 top-1/4 bg-white p-3 rounded-xl shadow-lg border border-neutral-100 flex items-center gap-3"
+            >
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                <Check size={14} className="text-emerald-600" />
+              </div>
+              <div>
+                <div className="h-2 w-16 bg-neutral-200 rounded-full mb-1" />
+                <div className="h-1.5 w-10 bg-neutral-100 rounded-full" />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     );
