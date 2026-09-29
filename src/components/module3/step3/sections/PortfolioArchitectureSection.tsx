@@ -60,10 +60,10 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   // ── ONBOARDING & INTRO ────────────────────────────────────────────────────────
   if (step !== 'workspace') {
     return (
-      <div className="min-h-[600px] w-full flex items-center justify-center p-6 font-sans relative overflow-hidden bg-neutral-900 rounded-3xl shadow-2xl">
-        {/* Abstract Background Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0058be]/20 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="min-h-[600px] w-full flex items-center justify-center p-6 font-sans relative overflow-hidden bg-white border border-neutral-200/50 rounded-3xl shadow-sm">
+        {/* Abstract Background Elements (Light Mode) */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-50 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-3xl w-full z-10 space-y-8 text-center">
           <AnimatePresence mode="wait">
@@ -73,42 +73,48 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="space-y-10 bg-white/5 p-12 rounded-3xl border border-white/10 backdrop-blur-md"
+                className="space-y-10 bg-white/80 p-12 rounded-3xl border border-neutral-200 shadow-xl backdrop-blur-xl"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0058be]/20 border border-[#0058be]/30 text-[#4da2ff] text-xs font-bold uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-widest">
                     <Layout size={14} />
                     Level 02
                   </div>
-                  <h2 className="text-4xl font-extrabold text-white tracking-tight leading-tight">
+                  <h2 className="text-4xl font-extrabold text-neutral-900 tracking-tight leading-tight">
                     Portfolio Architecture Builder
                   </h2>
-                  <p className="text-neutral-400 text-lg max-w-2xl mx-auto">
+                  <p className="text-neutral-500 text-lg max-w-2xl mx-auto font-medium">
                     Transform your positioning into a high-converting portfolio website. We'll engineer the optimal layout, structure, and conversion reasoning based on proven SaaS frameworks.
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pb-4">
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-                    <Sparkles className="text-emerald-400 mb-2" size={20} />
-                    <h4 className="text-white font-bold text-sm">Conversion-Optimized</h4>
-                    <p className="text-neutral-500 text-xs">Section order calculated for maximum trust and lower bounce rates.</p>
+                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Sparkles className="text-emerald-600" size={18} />
+                    </div>
+                    <h4 className="text-neutral-900 font-bold text-sm">Conversion-Optimized</h4>
+                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Section order calculated for maximum trust and lower bounce rates.</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-                    <Layout className="text-purple-400 mb-2" size={20} />
-                    <h4 className="text-white font-bold text-sm">Component Library</h4>
-                    <p className="text-neutral-500 text-xs">Visual wireframes with live layouts (Split, Grid, Centered).</p>
+                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Layout className="text-purple-600" size={18} />
+                    </div>
+                    <h4 className="text-neutral-900 font-bold text-sm">Component Library</h4>
+                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Visual wireframes with live layouts (Split, Grid, Centered).</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-                    <Settings className="text-blue-400 mb-2" size={20} />
-                    <h4 className="text-white font-bold text-sm">Live Copy Editor</h4>
-                    <p className="text-neutral-500 text-xs">Edit your headlines and CTA's directly in the studio environment.</p>
+                  <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/60 space-y-3 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Settings className="text-[#0058be]" size={18} />
+                    </div>
+                    <h4 className="text-neutral-900 font-bold text-sm">Live Copy Editor</h4>
+                    <p className="text-neutral-500 text-xs font-medium leading-relaxed">Edit your headlines and CTA's directly in the studio environment.</p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setStep('goal')}
-                  className="bg-white text-black hover:bg-neutral-200 px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)] flex items-center gap-2 mx-auto cursor-pointer"
+                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 mx-auto cursor-pointer"
                 >
                   Enter Studio Workspace <ArrowRight size={16} />
                 </button>
@@ -122,14 +128,14 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 className="space-y-8"
               >
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-                    <Sparkles size={14} className="text-[#0058be]" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+                    <Sparkles size={14} />
                     AI Blueprint Generator
                   </div>
-                  <h2 className="text-4xl font-bold text-white tracking-tight">
+                  <h2 className="text-4xl font-bold text-neutral-900 tracking-tight">
                     What is the primary goal of your portfolio?
                   </h2>
-                  <p className="text-neutral-400 text-lg">
+                  <p className="text-neutral-500 text-lg font-medium">
                     Select a goal below. Our engine will instantly generate a mathematically proven layout structure tailored for you.
                   </p>
                 </div>
@@ -145,12 +151,12 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                       <button
                         key={goal.id}
                         onClick={() => handleGoalSelect(goal.id as PortfolioGoal)}
-                        className="group relative p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#0058be]/50 transition-all cursor-pointer backdrop-blur-sm flex flex-col items-center text-center gap-4"
+                        className="group relative p-8 rounded-2xl bg-white border border-neutral-200 hover:border-[#0058be] hover:shadow-[0_8px_30px_rgba(0,88,190,0.12)] transition-all cursor-pointer flex flex-col items-center text-center gap-5"
                       >
-                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Icon size={24} className="text-white group-hover:text-[#0058be] transition-colors" />
+                        <div className="w-14 h-14 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-50 group-hover:border-blue-100 transition-all">
+                          <Icon size={24} className="text-neutral-400 group-hover:text-[#0058be] transition-colors" />
                         </div>
-                        <h3 className="text-white font-bold text-sm">{goal.label}</h3>
+                        <h3 className="text-neutral-900 font-bold text-sm group-hover:text-[#0058be] transition-colors">{goal.label}</h3>
                       </button>
                     );
                   })}
@@ -164,12 +170,12 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 className="flex flex-col items-center justify-center space-y-6 py-12"
               >
                 <div className="relative w-24 h-24">
-                  <div className="absolute inset-0 border-4 border-[#0058be]/20 rounded-full" />
+                  <div className="absolute inset-0 border-4 border-neutral-100 rounded-full" />
                   <div className="absolute inset-0 border-4 border-[#0058be] rounded-full border-t-transparent animate-spin" />
                   <Sparkles className="absolute inset-0 m-auto text-[#0058be] animate-pulse" size={32} />
                 </div>
-                <h3 className="text-2xl font-bold text-white">Engineering Architecture...</h3>
-                <p className="text-neutral-400">Applying conversion guardrails & optimal section flow.</p>
+                <h3 className="text-2xl font-bold text-neutral-900">Engineering Architecture...</h3>
+                <p className="text-neutral-500 font-medium">Applying conversion guardrails & optimal section flow.</p>
               </motion.div>
             )}
           </AnimatePresence>
