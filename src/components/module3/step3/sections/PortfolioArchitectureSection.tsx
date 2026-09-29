@@ -33,13 +33,13 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
     setStage2Archetype,
     applyArchetypePreset,
     reorderPortfolioSections,
+    updatePortfolioSection,
     mod1ServiceId,
     mod1CareerTrackId
   } = useModule3Store();
 
   // Local State
-  const [isOnboarding, setIsOnboarding] = useState(true);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [step, setStep] = useState<'intro' | 'goal' | 'generating' | 'workspace'>('intro');
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile' | 'preview'>('desktop');
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
@@ -47,28 +47,73 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
 
   // Onboarding Logic
   const handleGoalSelect = (goal: PortfolioGoal) => {
-    setIsGenerating(true);
+    setStep('generating');
     setTimeout(() => {
       // Simulate AI generation time for premium feel
       const rec = recommendArchetype(mod1ServiceId, mod1CareerTrackId, goal);
       setStage2Archetype({ portfolioGoal: goal, selectedArchetypeId: rec.archetypeId });
       applyArchetypePreset(rec.archetypeId);
-      setIsGenerating(false);
-      setIsOnboarding(false);
+      setStep('workspace');
     }, 1500);
   };
 
-  // ── ONBOARDING OVERLAY ────────────────────────────────────────────────────────
-  if (isOnboarding) {
+  // ── ONBOARDING & INTRO ────────────────────────────────────────────────────────
+  if (step !== 'workspace') {
     return (
-      <div className="min-h-[600px] w-full flex items-center justify-center p-6 font-sans relative overflow-hidden bg-neutral-900 rounded-3xl">
+      <div className="min-h-[600px] w-full flex items-center justify-center p-6 font-sans relative overflow-hidden bg-neutral-900 rounded-3xl shadow-2xl">
         {/* Abstract Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#0058be]/20 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-2xl w-full z-10 space-y-8 text-center">
+        <div className="max-w-3xl w-full z-10 space-y-8 text-center">
           <AnimatePresence mode="wait">
-            {!isGenerating ? (
+            {step === 'intro' ? (
+              <motion.div
+                key="intro"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="space-y-10 bg-white/5 p-12 rounded-3xl border border-white/10 backdrop-blur-md"
+              >
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0058be]/20 border border-[#0058be]/30 text-[#4da2ff] text-xs font-bold uppercase tracking-widest">
+                    <Layout size={14} />
+                    Level 02
+                  </div>
+                  <h2 className="text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    Portfolio Architecture Builder
+                  </h2>
+                  <p className="text-neutral-400 text-lg max-w-2xl mx-auto">
+                    Transform your positioning into a high-converting portfolio website. We'll engineer the optimal layout, structure, and conversion reasoning based on proven SaaS frameworks.
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pb-4">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <Sparkles className="text-emerald-400 mb-2" size={20} />
+                    <h4 className="text-white font-bold text-sm">Conversion-Optimized</h4>
+                    <p className="text-neutral-500 text-xs">Section order calculated for maximum trust and lower bounce rates.</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <Layout className="text-purple-400 mb-2" size={20} />
+                    <h4 className="text-white font-bold text-sm">Component Library</h4>
+                    <p className="text-neutral-500 text-xs">Visual wireframes with live layouts (Split, Grid, Centered).</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <Settings className="text-blue-400 mb-2" size={20} />
+                    <h4 className="text-white font-bold text-sm">Live Copy Editor</h4>
+                    <p className="text-neutral-500 text-xs">Edit your headlines and CTA's directly in the studio environment.</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setStep('goal')}
+                  className="bg-white text-black hover:bg-neutral-200 px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)] flex items-center gap-2 mx-auto cursor-pointer"
+                >
+                  Enter Studio Workspace <ArrowRight size={16} />
+                </button>
+              </motion.div>
+            ) : step === 'goal' ? (
               <motion.div
                 key="prompt"
                 initial={{ opacity: 0, y: 20 }}
@@ -289,22 +334,32 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                     </div>
 
                     <div className="space-y-4 pt-2">
-                      <div className="w-3/4 h-8 bg-neutral-200 rounded-lg animate-pulse" />
-                      <div className="w-full h-4 bg-neutral-100 rounded-md" />
-                      <div className="w-5/6 h-4 bg-neutral-100 rounded-md" />
+                      <h4 className={cn("font-bold text-gray-900 leading-tight", sec.layoutVariant === 'split' ? 'text-2xl' : 'text-3xl text-center')}>
+                        {sec.headline || 'Add a headline'}
+                      </h4>
+                      <p className={cn("text-gray-500", sec.layoutVariant === 'split' ? 'text-sm' : 'text-center text-sm max-w-lg mx-auto')}>
+                        {sec.subheadline}
+                      </p>
                       
-                      {/* Fake Content based on role */}
-                      {sec.id.includes('proof') && (
-                        <div className="flex gap-4 mt-6">
-                          <div className="w-1/3 h-24 bg-blue-50 border border-blue-100 rounded-xl" />
-                          <div className="w-1/3 h-24 bg-blue-50 border border-blue-100 rounded-xl" />
-                          <div className="w-1/3 h-24 bg-blue-50 border border-blue-100 rounded-xl" />
+                      {sec.layoutVariant === 'split' ? (
+                        <div className="flex flex-col sm:flex-row gap-6 mt-6">
+                           <div className="flex-1 space-y-4">
+                              <p className="text-xs text-gray-400 whitespace-pre-wrap">{sec.bodyCopy}</p>
+                              {sec.ctaText && <button className="px-5 py-2.5 bg-[#0b1c30] text-white rounded-lg text-xs font-bold shadow-md hover:bg-blue-900 transition-colors">{sec.ctaText}</button>}
+                           </div>
+                           <div className="flex-1 h-40 bg-neutral-100 rounded-xl border border-neutral-200 flex items-center justify-center text-neutral-400 text-xs shadow-inner">
+                             [ {sec.recommendedVisuals || 'Visual Asset'} ]
+                           </div>
                         </div>
-                      )}
-                      {sec.id.includes('services') && (
-                        <div className="grid grid-cols-2 gap-4 mt-6">
-                          <div className="h-32 border border-neutral-200 rounded-xl bg-neutral-50" />
-                          <div className="h-32 border border-neutral-200 rounded-xl bg-neutral-50" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-6 mt-6">
+                           <p className="text-xs text-gray-400 text-center max-w-2xl whitespace-pre-wrap">{sec.bodyCopy}</p>
+                           {sec.recommendedVisuals && (
+                             <div className="w-full max-w-md h-32 bg-neutral-100 rounded-xl border border-neutral-200 flex items-center justify-center text-neutral-400 text-xs shadow-inner">
+                               [ {sec.recommendedVisuals} ]
+                             </div>
+                           )}
+                           {sec.ctaText && <button className="px-6 py-3 bg-[#0b1c30] text-white rounded-lg text-sm font-bold shadow-md hover:bg-blue-900 transition-colors mt-2">{sec.ctaText}</button>}
                         </div>
                       )}
                     </div>
@@ -358,10 +413,77 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                   {/* Component Swap Simulator */}
                   <div className="space-y-3">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">
-                      Component Library (Coming Soon)
+                      Component Layout
                     </span>
-                    <div className="h-24 border border-dashed border-white/20 rounded-xl flex items-center justify-center text-neutral-500 text-xs hover:bg-white/5 transition-colors cursor-pointer">
-                      + Swap Component Layout
+                    <div className="grid grid-cols-2 gap-2">
+                      <button 
+                        onClick={() => updatePortfolioSection(sec.id, { layoutVariant: 'center' })}
+                        className={cn("p-3 rounded-xl border text-xs text-left transition-colors", (!sec.layoutVariant || sec.layoutVariant === 'center') ? 'bg-[#0058be]/20 border-[#0058be] text-white' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10')}
+                      >
+                         <div className="w-full h-8 bg-white/10 rounded mb-2 flex flex-col items-center justify-center space-y-1">
+                           <div className="w-3/4 h-1 bg-white/20 rounded" />
+                           <div className="w-1/2 h-1 bg-white/20 rounded" />
+                         </div>
+                         Center Stack
+                      </button>
+                      <button 
+                        onClick={() => updatePortfolioSection(sec.id, { layoutVariant: 'split' })}
+                        className={cn("p-3 rounded-xl border text-xs text-left transition-colors", sec.layoutVariant === 'split' ? 'bg-[#0058be]/20 border-[#0058be] text-white' : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10')}
+                      >
+                         <div className="flex gap-2 mb-2 h-8">
+                           <div className="w-1/2 bg-white/10 rounded flex flex-col justify-center space-y-1 p-1">
+                             <div className="w-full h-1 bg-white/20 rounded" />
+                             <div className="w-3/4 h-1 bg-white/20 rounded" />
+                           </div>
+                           <div className="w-1/2 bg-white/20 rounded" />
+                         </div>
+                         Split Content
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Copy Editor */}
+                  <div className="space-y-4 pt-4 border-t border-white/10">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+                      Copy Editor
+                    </span>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase text-neutral-400">Headline</label>
+                      <input 
+                        type="text" 
+                        value={sec.headline || ''}
+                        onChange={(e) => updatePortfolioSection(sec.id, { headline: e.target.value })}
+                        className="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-sm text-white focus:border-[#0058be] outline-none transition-colors" 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase text-neutral-400">Subheadline</label>
+                      <textarea 
+                        value={sec.subheadline || ''}
+                        onChange={(e) => updatePortfolioSection(sec.id, { subheadline: e.target.value })}
+                        className="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-sm text-white focus:border-[#0058be] outline-none h-16 resize-none transition-colors custom-scrollbar" 
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase text-neutral-400">Body Copy</label>
+                      <textarea 
+                        value={sec.bodyCopy || ''}
+                        onChange={(e) => updatePortfolioSection(sec.id, { bodyCopy: e.target.value })}
+                        className="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-sm text-white focus:border-[#0058be] outline-none h-24 resize-none transition-colors custom-scrollbar" 
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] uppercase text-neutral-400">CTA Text</label>
+                      <input 
+                        type="text" 
+                        value={sec.ctaText || ''}
+                        onChange={(e) => updatePortfolioSection(sec.id, { ctaText: e.target.value })}
+                        className="w-full bg-black/50 border border-white/10 rounded-lg p-2 text-sm text-white focus:border-[#0058be] outline-none transition-colors" 
+                      />
                     </div>
                   </div>
                 </div>

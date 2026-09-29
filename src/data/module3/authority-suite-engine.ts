@@ -93,6 +93,7 @@ export interface PortfolioBlueprintSection {
   isCtaCustomized?: boolean;
   isTrustCustomized?: boolean;
   isCustomized?: boolean;
+  layoutVariant?: string;
 }
 
 export interface ContentPostItem {
