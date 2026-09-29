@@ -60,7 +60,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   // ── ONBOARDING & INTRO ────────────────────────────────────────────────────────
   if (step !== 'workspace') {
     return (
-      <div className="w-full h-[700px] flex rounded-3xl overflow-hidden border border-neutral-200/60 bg-white shadow-sm">
+      <div className="w-full h-[600px] flex rounded-3xl overflow-hidden border border-neutral-200/60 bg-white shadow-sm">
         
         {/* LEFT COLUMN: Content & Actions */}
         <div className="w-full lg:w-[55%] flex flex-col justify-center px-12 py-16 relative bg-white">
@@ -71,54 +71,24 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="space-y-10 max-w-xl"
+                className="space-y-8 max-w-xl"
               >
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-widest">
-                    <Layout size={14} />
-                    Level 02
+                    <Sparkles size={14} />
+                    AI Blueprint Generator
                   </div>
-                  <h2 className="text-4xl font-extrabold text-neutral-900 tracking-tight leading-tight">
-                    Portfolio Architecture Builder
+                  <h2 className="text-3xl font-extrabold text-neutral-900 tracking-tight leading-tight">
+                    Generate your wireframe blueprint
                   </h2>
-                  <p className="text-neutral-500 text-lg font-medium leading-relaxed">
+                  <p className="text-neutral-500 text-base font-medium leading-relaxed">
                     Transform your positioning into a high-converting portfolio website. We'll engineer the optimal layout, structure, and conversion reasoning based on proven SaaS frameworks.
                   </p>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
-                      <Sparkles className="text-emerald-600" size={18} />
-                    </div>
-                    <div>
-                      <h4 className="text-neutral-900 font-bold text-sm">Conversion-Optimized</h4>
-                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Section order calculated for maximum trust and lower bounce rates.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-purple-100 flex items-center justify-center mt-1">
-                      <Layout className="text-purple-600" size={18} />
-                    </div>
-                    <div>
-                      <h4 className="text-neutral-900 font-bold text-sm">Component Library</h4>
-                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Visual wireframes with live layouts (Split, Grid, Centered).</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/50 border border-neutral-100 transition-colors hover:bg-neutral-50">
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-blue-100 flex items-center justify-center mt-1">
-                      <Settings className="text-[#0058be]" size={18} />
-                    </div>
-                    <div>
-                      <h4 className="text-neutral-900 font-bold text-sm">Live Copy Editor</h4>
-                      <p className="text-neutral-500 text-xs font-medium mt-1 leading-relaxed">Edit your headlines and CTA's directly in the studio environment.</p>
-                    </div>
-                  </div>
-                </div>
-
                 <button
                   onClick={() => setStep('goal')}
-                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-4 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 cursor-pointer"
+                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-3.5 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 cursor-pointer w-max"
                 >
                   Configure Architecture <ArrowRight size={16} />
                 </button>
@@ -129,17 +99,13 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="space-y-8 max-w-xl"
+                className="space-y-6 max-w-xl"
               >
-                <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-wider">
-                    <Sparkles size={14} />
-                    AI Blueprint Generator
-                  </div>
-                  <h2 className="text-4xl font-bold text-neutral-900 tracking-tight">
-                    What is the primary goal of your portfolio?
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-bold text-neutral-900 tracking-tight">
+                    Primary Conversion Goal
                   </h2>
-                  <p className="text-neutral-500 text-lg font-medium">
+                  <p className="text-neutral-500 text-sm font-medium">
                     Select a goal below. Our engine will instantly generate a mathematically proven layout structure tailored for you.
                   </p>
                 </div>
