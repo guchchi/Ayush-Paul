@@ -1,17 +1,17 @@
 /**
  * PortfolioArchitectureSection.tsx — Level 2 (Stage 2) AI Workspace Builder
  * 
- * Completely recreated to mimic modern AI site builders (Relume/Webflow).
- * Replaces the old 5-step wizard with a professional 2-state flow:
- * 1. AI Prompt/Onboarding Modal (Goal Setting)
- * 2. The Studio Workspace (Split-screen Layers + Canvas + Inspector)
+ * Inline stepper flow matching Level 1's professional pattern:
+ * Step 1: Goal Selection (inline, no floating card)
+ * Step 2: Studio Workspace (Split-screen Layers + Canvas + Inspector)
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Layout, Monitor, Smartphone, Play, MoveUp, MoveDown, ArrowRight,
-  Sparkles, Check, Zap, Layers, Settings, Compass, Repeat, Lock, X
+  Sparkles, Check, Zap, Layers, Settings, Compass, Repeat, Lock, X,
+  Target
 } from 'lucide-react';
 import { cn } from '../../../../lib/utils';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
@@ -27,6 +27,26 @@ interface Props {
   onContinue: () => void;
 }
 
+// ── Step metadata (matching Level 1's stepper pattern) ────────────────────────
+const STEPS = [
+  { id: 1, label: 'Conversion Goal', shortLabel: 'Goal', icon: Target, desc: 'Select your portfolio\'s primary conversion objective' },
+  { id: 2, label: 'Layout Builder', shortLabel: 'Builder', icon: Layout, desc: 'Arrange, reorder, and configure your portfolio sections' },
+] as const;
+
+const GOALS = [
+  { id: 'retainer' as const, label: 'Win High-Value Retainers', icon: Repeat, desc: 'Focus on long-term value, stability, and deep partnerships.', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-100' },
+  { id: 'sprint' as const, label: 'Win Fast Sprint Projects', icon: Zap, desc: 'Highlight speed, specific deliverables, and quick ROI.', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-100' },
+  { id: 'consulting' as const, label: 'Build Advisory Authority', icon: Compass, desc: 'Position as a strategic advisor, focusing on insights and guidance.', color: 'text-emerald-600', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-100' },
+];
+
+// ── Motion tokens ─────────────────────────────────────────────────────────────
+const sectionFade = {
+  initial: { opacity: 0, y: 16, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  exit: { opacity: 0, y: -12, filter: 'blur(4px)' },
+  transition: { duration: DURATION.NORMAL, ease: EASING.PREMIUM },
+};
+
 export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onContinue }) => {
   const {
     authoritySuite,
@@ -38,200 +58,227 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
     mod1CareerTrackId
   } = useModule3Store();
 
-  // Local State
-  const [step, setStep] = useState<'intro' | 'goal' | 'generating' | 'workspace'>('intro');
+  // Local State — 2-step flow: goal → workspace
+  const [activeStep, setActiveStep] = useState<1 | 2>(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [selectedGoal, setSelectedGoal] = useState<PortfolioGoal | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile' | 'preview'>('desktop');
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   const sections = authoritySuite?.portfolioBlueprint ?? [];
 
-  // Onboarding Logic
+  // Goal selection handler
   const handleGoalSelect = (goal: PortfolioGoal) => {
-    setStep('generating');
+    setSelectedGoal(goal);
+    setIsGenerating(true);
     setTimeout(() => {
-      // Simulate AI generation time for premium feel
       const rec = recommendArchetype(mod1ServiceId, mod1CareerTrackId, goal);
       setStage2Archetype({ portfolioGoal: goal, selectedArchetypeId: rec.archetypeId });
       applyArchetypePreset(rec.archetypeId);
-      setStep('workspace');
+      setIsGenerating(false);
+      setCompletedSteps(prev => [...new Set([...prev, 1])]);
+      setActiveStep(2);
     }, 1500);
   };
 
-  // ── ONBOARDING & INTRO ────────────────────────────────────────────────────────
-  if (step !== 'workspace') {
+  // ── STEP BAR + CONTENT ──────────────────────────────────────────────────────
+  if (activeStep === 1) {
     return (
-      <div className="w-full h-[600px] flex rounded-3xl overflow-hidden border border-neutral-200/60 bg-white shadow-sm">
-        
-        {/* LEFT COLUMN: Content & Actions */}
-        <div className="w-full lg:w-[55%] flex flex-col justify-center px-12 py-16 relative bg-white">
-          <AnimatePresence mode="wait">
-            {step === 'intro' ? (
-              <motion.div
-                key="intro"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-8 max-w-xl"
-              >
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[#0058be] text-xs font-bold uppercase tracking-widest">
-                    <Sparkles size={14} />
-                    AI Blueprint Generator
-                  </div>
-                  <h2 className="text-3xl font-extrabold text-neutral-900 tracking-tight leading-tight">
-                    Generate your wireframe blueprint
-                  </h2>
-                  <p className="text-neutral-500 text-base font-medium leading-relaxed">
-                    Transform your positioning into a high-converting portfolio website. We'll engineer the optimal layout, structure, and conversion reasoning based on proven SaaS frameworks.
-                  </p>
-                </div>
-                
-                <button
-                  onClick={() => setStep('goal')}
-                  className="bg-[#0058be] text-white hover:bg-[#0048a0] px-8 py-3.5 rounded-xl text-sm font-bold transition-all shadow-[0_8px_20px_rgba(0,88,190,0.2)] flex items-center gap-2 cursor-pointer w-max"
-                >
-                  Configure Architecture <ArrowRight size={16} />
-                </button>
-              </motion.div>
-            ) : step === 'goal' ? (
-              <motion.div
-                key="prompt"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="space-y-6 max-w-xl"
-              >
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-neutral-900 tracking-tight">
-                    Primary Conversion Goal
-                  </h2>
-                  <p className="text-neutral-500 text-sm font-medium">
-                    Select a goal below. Our engine will instantly generate a mathematically proven layout structure tailored for you.
-                  </p>
-                </div>
+      <div className="w-full space-y-6 text-left font-sans">
+        {/* Step Progress Bar (matching Level 1's stepper) */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+          className="p-3.5 sm:p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
+        >
+          <div className="flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar">
+            {STEPS.map((step, idx) => {
+              const isActive = activeStep === step.id;
+              const isCompleted = completedSteps.includes(step.id);
+              const Icon = step.icon;
 
-                <div className="flex flex-col gap-3">
-                  {[
-                    { id: 'retainer', label: 'Win High-Value Retainers', icon: Repeat, desc: 'Focus on long-term value, stability, and deep partnerships.' },
-                    { id: 'sprint', label: 'Win Fast Sprint Projects', icon: Zap, desc: 'Highlight speed, specific deliverables, and quick ROI.' },
-                    { id: 'consulting', label: 'Build Advisory Authority', icon: Compass, desc: 'Position as a strategic advisor, focusing on insights and guidance.' }
-                  ].map((goal) => {
-                    const Icon = goal.icon;
-                    return (
-                      <button
-                        key={goal.id}
-                        onClick={() => handleGoalSelect(goal.id as PortfolioGoal)}
-                        className="group relative p-5 rounded-2xl bg-white border border-neutral-200 hover:border-[#0058be] hover:shadow-[0_8px_30px_rgba(0,88,190,0.08)] hover:bg-blue-50/30 transition-all cursor-pointer flex items-center gap-5 text-left"
-                      >
-                        <div className="w-12 h-12 shrink-0 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-100 group-hover:border-blue-200 transition-all">
-                          <Icon size={20} className="text-neutral-400 group-hover:text-[#0058be] transition-colors" />
-                        </div>
-                        <div>
-                          <h3 className="text-neutral-900 font-bold text-sm group-hover:text-[#0058be] transition-colors">{goal.label}</h3>
-                          <p className="text-neutral-500 text-xs font-medium mt-1">{goal.desc}</p>
-                        </div>
-                        <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                          <ArrowRight size={16} className="text-[#0058be]" />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                
-                <button
-                  onClick={() => setStep('intro')}
-                  className="text-xs font-bold text-neutral-400 hover:text-neutral-800 transition-colors cursor-pointer"
-                >
-                  ← Back to Introduction
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="generating"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center space-y-6 py-12 h-full"
-              >
-                <div className="relative w-24 h-24">
-                  <div className="absolute inset-0 border-4 border-neutral-100 rounded-full" />
-                  <div className="absolute inset-0 border-4 border-[#0058be] rounded-full border-t-transparent animate-spin" />
-                  <Sparkles className="absolute inset-0 m-auto text-[#0058be] animate-pulse" size={32} />
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">Engineering Architecture...</h3>
-                  <p className="text-neutral-500 font-medium">Applying conversion guardrails & optimal section flow.</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              return (
+                <React.Fragment key={step.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isCompleted || step.id <= activeStep) {
+                        setActiveStep(step.id as 1 | 2);
+                      }
+                    }}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer flex-1 min-w-[120px] sm:min-w-0',
+                      isActive
+                        ? 'bg-[#0058be] text-white shadow-md'
+                        : isCompleted
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/80 hover:bg-emerald-100/70'
+                        : 'bg-neutral-50 text-neutral-400 border border-neutral-200 hover:text-neutral-600'
+                    )}
+                  >
+                    <span className={cn(
+                      'w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0',
+                      isActive ? 'bg-white/20 text-white' : isCompleted ? 'bg-emerald-200 text-emerald-900' : 'bg-neutral-200 text-neutral-600'
+                    )}>
+                      {isCompleted ? <Check size={12} strokeWidth={3} /> : `0${step.id}`}
+                    </span>
+                    <span className="text-[11px] font-bold truncate">{step.shortLabel}</span>
+                  </button>
+                  {idx < STEPS.length - 1 && (
+                    <div className={cn(
+                      'w-3 sm:w-4 h-0.5 rounded-full shrink-0',
+                      step.id < activeStep ? 'bg-emerald-300' : 'bg-neutral-200'
+                    )} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </motion.div>
 
-        {/* RIGHT COLUMN: Visual Preview */}
-        <div className="hidden lg:flex w-[45%] bg-neutral-50 border-l border-neutral-200/60 relative items-center justify-center overflow-hidden">
-          {/* Subtle Background Pattern */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-          
-          <div className="relative z-10 w-full max-w-md p-8">
-            <div className="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-neutral-200/50 overflow-hidden flex flex-col">
-              {/* Fake Browser Header */}
-              <div className="h-10 border-b border-neutral-100 bg-neutral-50/80 flex items-center px-4 gap-2 shrink-0">
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
-                </div>
-                <div className="mx-auto h-5 w-1/2 bg-white rounded-md border border-neutral-200" />
-              </div>
-              
-              {/* Fake Wireframe Body */}
-              <div className="p-6 space-y-6 bg-white h-[400px] overflow-hidden relative">
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10" />
-                
-                {/* Hero Section Wireframe */}
-                <div className="space-y-3">
-                  <div className="h-4 w-1/4 bg-blue-100 rounded-full" />
-                  <div className="h-8 w-3/4 bg-neutral-200 rounded-lg" />
-                  <div className="h-8 w-2/4 bg-neutral-200 rounded-lg" />
-                  <div className="h-3 w-5/6 bg-neutral-100 rounded-full mt-4" />
-                  <div className="h-3 w-4/6 bg-neutral-100 rounded-full" />
-                  <div className="flex gap-3 mt-4">
-                    <div className="h-8 w-28 bg-[#0058be] rounded-lg opacity-90" />
-                    <div className="h-8 w-28 bg-neutral-100 rounded-lg" />
-                  </div>
-                </div>
-
-                {/* Grid Section Wireframe */}
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-neutral-50">
-                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
-                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
-                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
-                  <div className="h-24 bg-neutral-50 rounded-xl border border-neutral-100" />
-                </div>
-              </div>
-            </div>
-            
-            {/* Floating indicator */}
-            <motion.div 
-              animate={{ y: [0, -10, 0] }} 
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute -right-4 top-1/4 bg-white p-3 rounded-xl shadow-lg border border-neutral-100 flex items-center gap-3"
+        {/* Goal Selection — Direct inline content */}
+        <AnimatePresence mode="wait">
+          {isGenerating ? (
+            <motion.div
+              key="generating"
+              {...sectionFade}
+              className="w-full p-16 flex flex-col items-center justify-center border border-neutral-200 rounded-3xl bg-white shadow-xs"
             >
-              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Check size={14} className="text-emerald-600" />
+              <div className="relative w-20 h-20 mb-6">
+                <div className="absolute inset-0 border-4 border-neutral-100 rounded-full" />
+                <div className="absolute inset-0 border-4 border-[#0058be] rounded-full border-t-transparent animate-spin" />
+                <Sparkles className="absolute inset-0 m-auto text-[#0058be] animate-pulse" size={28} />
               </div>
-              <div>
-                <div className="h-2 w-16 bg-neutral-200 rounded-full mb-1" />
-                <div className="h-1.5 w-10 bg-neutral-100 rounded-full" />
+              <h3 className="text-xl font-bold text-neutral-900 mb-2">Engineering Architecture...</h3>
+              <p className="text-neutral-500 text-sm font-medium">Applying conversion guardrails & optimal section flow.</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="goal-selection"
+              {...sectionFade}
+              className="w-full p-8 sm:p-10 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-8"
+            >
+              {/* Section Header */}
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#0058be]/10 text-[#0058be] text-[10px] font-bold uppercase tracking-widest border border-[#0058be]/20">
+                  <Sparkles size={12} />
+                  AI Blueprint Generator
+                </div>
+                <h3 className="text-xl font-bold text-[#0b1c30]">
+                  Select your primary conversion goal
+                </h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">
+                  Choose the objective below that best matches your portfolio strategy. Our engine will generate a mathematically proven layout structure tailored for you.
+                </p>
+              </div>
+
+              {/* Goal Cards — Horizontal Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {GOALS.map((goal) => {
+                  const Icon = goal.icon;
+                  const isSelected = selectedGoal === goal.id;
+
+                  return (
+                    <button
+                      key={goal.id}
+                      onClick={() => handleGoalSelect(goal.id)}
+                      className={cn(
+                        'group relative p-6 rounded-2xl border-2 transition-all cursor-pointer text-left space-y-4',
+                        isSelected
+                          ? 'border-[#0058be] bg-blue-50/40 shadow-lg'
+                          : 'border-neutral-200 bg-white hover:border-[#0058be]/40 hover:shadow-md hover:bg-neutral-50/50'
+                      )}
+                    >
+                      {/* Icon */}
+                      <div className={cn(
+                        'w-12 h-12 rounded-2xl flex items-center justify-center transition-all',
+                        goal.bgColor, goal.borderColor, 'border',
+                        'group-hover:scale-110'
+                      )}>
+                        <Icon size={22} className={goal.color} />
+                      </div>
+
+                      {/* Text */}
+                      <div className="space-y-1.5">
+                        <h4 className="text-sm font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
+                          {goal.label}
+                        </h4>
+                        <p className="text-xs text-neutral-500 leading-relaxed">
+                          {goal.desc}
+                        </p>
+                      </div>
+
+                      {/* Arrow indicator */}
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-neutral-400 group-hover:text-[#0058be] transition-colors uppercase tracking-wider">
+                        Generate Blueprint <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
 
-  // ── STUDIO WORKSPACE ──────────────────────────────────────────────────────────
+  // ── STUDIO WORKSPACE (Step 2) ─────────────────────────────────────────────────
   return (
+    <div className="w-full space-y-6 text-left font-sans">
+      {/* Step Progress Bar (same as Step 1 for visual continuity) */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+        className="p-3.5 sm:p-4 rounded-3xl border border-neutral-200 bg-white shadow-xs"
+      >
+        <div className="flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar">
+          {STEPS.map((step, idx) => {
+            const isActive = activeStep === step.id;
+            const isCompleted = completedSteps.includes(step.id);
+            const Icon = step.icon;
+
+            return (
+              <React.Fragment key={step.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isCompleted || step.id <= activeStep) {
+                      setActiveStep(step.id as 1 | 2);
+                    }
+                  }}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer flex-1 min-w-[120px] sm:min-w-0',
+                    isActive
+                      ? 'bg-[#0058be] text-white shadow-md'
+                      : isCompleted
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/80 hover:bg-emerald-100/70'
+                      : 'bg-neutral-50 text-neutral-400 border border-neutral-200 hover:text-neutral-600'
+                  )}
+                >
+                  <span className={cn(
+                    'w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0',
+                    isActive ? 'bg-white/20 text-white' : isCompleted ? 'bg-emerald-200 text-emerald-900' : 'bg-neutral-200 text-neutral-600'
+                  )}>
+                    {isCompleted ? <Check size={12} strokeWidth={3} /> : `0${step.id}`}
+                  </span>
+                  <span className="text-[11px] font-bold truncate">{step.shortLabel}</span>
+                </button>
+                {idx < STEPS.length - 1 && (
+                  <div className={cn(
+                    'w-3 sm:w-4 h-0.5 rounded-full shrink-0',
+                    step.id < activeStep ? 'bg-emerald-300' : 'bg-neutral-200'
+                  )} />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Workspace Canvas */}
     <div className="h-[800px] max-h-[85vh] w-full bg-[#0b1c30] rounded-3xl overflow-hidden flex flex-col font-sans shadow-2xl border border-neutral-800">
       
       {/* 1. TOP NAVBAR */}
@@ -544,6 +591,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
           </aside>
         )}
       </div>
+    </div>
     </div>
   );
 });
