@@ -1,115 +1,119 @@
-<div align="center">
-  <img src="https://ayushpaul.in/og-image.png" alt="Ayush Paul Portfolio Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;"/>
+# Blueprint OS
 
-  <h1>🚀 Ayush Paul | AI Engineer & Developer Portfolio</h1>
-  
-  <p>A flagship, production-grade portfolio and personal ecosystem showcasing AI integrations, secure backend architectures, and stunning frontend experiences.</p>
-
-  <p>
-    <a href="https://ayushpaul.vercel.app"><b>Live Portfolio Website</b></a> •
-    <a href="https://www.linkedin.com/in/paulayush/"><b>LinkedIn</b></a> •
-    <a href="https://github.com/guchchi"><b>GitHub</b></a> •
-    <a href="https://www.youtube.com/@ALX-17"><b>YouTube</b></a>
-  </p>
-</div>
+> **A modular operating system and venture engineering workspace built with React 19, TypeScript, Vite, Tailwind CSS v4, Zustand, Express, and Firebase.**
+> Prepared for the **DevFest Noida 2026 Community Demo**.
 
 ---
 
-## 📖 Project Overview & Vision
+## 📌 Overview
 
-This repository contains the source code for my personal engineering portfolio. Designed not just as a static resume, but as a **living, dynamic platform**, it incorporates advanced AI-driven features, secure serverless integrations, and an ultra-optimized reading experience for my blog.
+**Blueprint OS** is a modular web platform designed to streamline end-to-end client acquisition, offer architecture, authority positioning, portfolio generation, pipeline management, and outreach execution. 
 
-The vision for this platform is to act as the central hub for my creations, seamlessly scaling as I release new tools, research, and open-source projects.
+Rather than functioning merely as a static showcase, Blueprint OS provides a sequence of interconnected workspace modules that allow creators, engineers, and digital entrepreneurs to model business paths, generate tailored sales collateral, and manage client conversion workflows.
 
-## ✨ Key Features
+---
 
-- **🧠 Integrated AI Assistant**: A conversational AI powered by Google Gemini, capable of answering queries about my experience, projects, and skills natively on the platform.
-- **⚡ Venture-Grade Publishing Engine**: A custom-built, frictionless CMS that supports seamless markdown rendering, cinematic hero sections, and real-time Firestore synchronization.
-- **🎨 Premium Visual Experience**: Designed with smooth micro-animations, glassmorphism, responsive typography, and curated dark-mode color palettes for maximum engagement.
-- **💳 Support Tier Integration**: Fully integrated Stripe checkout sessions enabling secure sponsor tiers.
-- **🚀 Serverless Architecture**: Fast edge deployments using Vite + Express, optimized for Vercel, ensuring high availability and low latency.
+## 🚀 Core Workspace Modules
 
-## 🏗️ Tech Stack & Architecture
+Blueprint OS organizes venture engineering workflows across 6 sequential modules located under `/workspace/`:
 
-This application leverages a modern, robust technology stack to deliver a scalable and secure experience:
+| # | Module Route | Primary Purpose | State Management |
+|---|---|---|---|
+| 1 | `/workspace/client-acquisition` | Opportunity mapping, market niche analysis, and path discovery | `useOpportunityMapStore` |
+| 2 | `/workspace/offer-engineering` | Offer design, tier architecture, ROI calculation, and risk reversals | `useOfferEngineeringStore` |
+| 3 | `/workspace/authority-system` | Authority score modeling, lead magnet generation, and platform copy engines | `useModule3Store` |
+| 4 | `/workspace/portfolio-system` | Dynamic portfolio architecture, case study structuring, and export | `usePortfolioSystemStore` |
+| 5 | `/workspace/client-pipeline` | Deal pipeline tracking, lead profiling, and stage modifier management | `useClientPipelineSystemStore` |
+| 6 | `/workspace/outreach-engine` | Multi-channel angle generation, objection preempting, and follow-up copy | `useOutreachEngineSystemStore` |
+
+### Additional Systems
+- **Blueprint Engine & Blueprints (`/blueprints`, `/blueprint-engine`)**: Curated system blueprints and architectural templates.
+- **Publishing CMS & Dynamic Blog (`/blog`, `/admin`)**: Markdown & TipTap-powered article management with SEO schema generation.
+- **Resource Vault (`/vault`)**: Downloadable guides, assets, and project blueprints.
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: React 19 + Vite + TypeScript
-- **Styling**: Tailwind CSS + Framer Motion (for fluid animations)
-- **Content Parsing**: TipTap, React Markdown, Gray-Matter
+- **Framework**: React 19 + TypeScript + Vite 6
+- **Styling**: Tailwind CSS v4 (using `@tailwindcss/vite` engine)
+- **Motion & Interactions**: `motion/react` + GSAP + Lenis smooth scrolling
+- **State Management**: Zustand v5 with `persist` middleware (localStorage)
+- **Rich Text & Content**: TipTap, React Markdown, Gray-Matter
+- **Visualization**: D3.js, Recharts, Lucide React
 
-### Backend & Database
-- **Server**: Express.js (integrated via Vite middleware for development & bundled for production)
-- **Database**: Firebase / Firestore (Real-time DB)
-- **Authentication**: Firebase Auth (Google Provider & Email/Password)
-- **AI Integration**: Google Generative AI SDK (`@google/generative-ai`)
-- **Payments**: Stripe Node.js SDK
+### Backend & Cloud Services
+- **Runtime**: Node.js + Express (integrated via Vite middleware for dev; bundled for SSR/production)
+- **Database & Auth**: Firebase Auth, Cloud Firestore, Cloud Storage
+- **Serverless Functions**: Vercel Node Serverless functions (`/api/*`)
+- **AI Integrations**: Google Generative AI SDK (`@google/generative-ai`)
+- **Commerce**: Stripe Node.js SDK (Checkout sessions & webhooks)
+- **Communications**: Resend API (transactional notifications)
 
-## 🛠️ Installation & Environment Setup
+---
 
-Want to run this project locally? Follow these steps:
+## 🏗️ Architecture & Security Principles
+
+1. **State Isolation & Persistence**: Each workspace module manages its own schema-versioned Zustand store. Upstream context flows sequentially (Module 1 → 2 → 3 → 4 → 5 → 6) with fingerprint-based change detection.
+2. **Server-Side Secret Isolation**: Critical service credentials (Stripe secret keys, Resend keys, Firebase Admin service accounts) run exclusively in serverless backend handlers (`/api/*` and `server.ts`).
+3. **Client Configuration Boundary**: Browser-facing values use `VITE_*` prefixes and are restricted to public client identifiers. AI generation endpoints fall back gracefully to deterministic templates if AI keys are not provided.
+4. **Prebuild Architecture Guard**: An automated security script (`scripts/security/architecture-guard.mjs`) validates bundle dependencies and blocks architectural regressions prior to build.
+
+---
+
+## 💻 Local Development Setup
 
 ### Prerequisites
-- Node.js (v18+ recommended)
-- A Firebase Project (for Authentication & Firestore)
-- A Stripe Account (for checkout features)
-- Google API Key (for AI features and Gemini integrations)
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
 
-### 1. Clone & Install
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/guchchi/Ayush-Paul.git
 cd Ayush-Paul
+```
+
+### 2. Install Dependencies
+```bash
 npm install
 ```
 
-### 2. Configure Environment Variables
-Create a `.env.local` file in the root directory and add your credentials. (Note: These are handled automatically in production).
-```env
-# Client-side variables (Vite)
-VITE_FIREBASE_API_KEY="your_api_key"
-VITE_FIREBASE_AUTH_DOMAIN="your_auth_domain"
-VITE_FIREBASE_PROJECT_ID="your_project_id"
-VITE_FIREBASE_STORAGE_BUCKET="your_storage_bucket"
-VITE_FIREBASE_MESSAGING_SENDER_ID="your_sender_id"
-VITE_FIREBASE_APP_ID="your_app_id"
-VITE_FIREBASE_FIRESTORE_DB_ID="your_db_id"
-VITE_GOOGLE_API_KEY="your_google_api_key"
-
-# Server-side secrets
-STRIPE_SECRET_KEY="your_stripe_secret"
-GOOGLE_API_KEY="your_google_api_key"
-PUBLISH_API_KEY="your_custom_publish_key"
+### 3. Configure Environment Variables
+Copy the `.env.example` file to create your local `.env.local`:
+```bash
+cp .env.example .env.local
 ```
+Configure your credentials in `.env.local`. For local UI development, minimal Firebase client settings or test keys are sufficient. Review comments in `.env.example` for detailed variable scopes.
 
-### 3. Run Development Server
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-
-## 🔒 Security Architecture Note
-
-This repository enforces strict security standards, guaranteeing a secure environment:
-- **Secret Isolation & Zero-Hardcoding**: All sensitive tokens, API keys, and service accounts are completely decoupled from the codebase and loaded exclusively via environment variables (`VITE_GOOGLE_API_KEY` for client, `GOOGLE_API_KEY` for server).
-- **Incident Mitigation**: If any API key is exposed (e.g. via Git history), it must be manually deactivated and rotated immediately inside the Google Cloud / Firebase console. No codebase workarounds can substitute manual key invalidation.
-- **Automated Scanning**: The project includes a non-blocking secret scanner script `npm run security:scan` to scan the codebase locally for accidental leaks before commits.
-- **Pre-commit Protection**: You can optionally configure this script to run as a git pre-commit hook by executing `tsx scripts/security-scan.ts --strict`. If any hardcoded secrets (matching pattern `AIzaSy...`, `PRIVATE_KEY`, or generic secrets) are found, the commit will be blocked automatically.
-- **Production Environment Separation**: Local environments are powered exclusively by gitignored `.env` / `.env.local` files, whereas production builds in Vercel fetch keys directly from serverless secure secrets, guaranteeing that no `.env` files are ever compiled or deployed.
-- **Rotation Policy Reminder**: All API keys must be manually rotated immediately inside the Google Cloud Console / Firebase Console upon any external exposure alert (e.g., GitGuardian alerts).
-- **Firestore Security**: Data reads are open for public viewing, but writes are firmly restricted via `firestore.rules` using explicitly whitelisted Admin UIDs, entirely preventing privilege escalation.
-- **Fail-Safe Client**: The Firebase client initialization gracefully handles missing environment configurations, falling back to safe defaults without crashing the frontend.
-
-## 👤 Creator Information
-
-**Ayush Paul**  
-AI Engineer & Full-Stack Developer
-
-- 🌐 **Portfolio:** [ayushpaul.vercel.app](https://ayushpaul.vercel.app)
-- 💼 **LinkedIn:** [in/paulayush](https://www.linkedin.com/in/paulayush/)
-- 💻 **GitHub:** [@guchchi](https://github.com/guchchi)
-- 🎥 **YouTube:** [@ALX-17](https://www.youtube.com/@ALX-17)
+The server will start at `http://localhost:3000` (combining the Express API and Vite HMR).
 
 ---
 
-<div align="center">
-  <p><i>Copyright &copy; 2026 Ayush Paul. Licensed under the <a href="./LICENSE">MIT License</a>.</i></p>
-</div>
+## 🧪 Available Commands
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts local Express + Vite dev server on port 3000 |
+| `npm run lint` | Runs TypeScript typecheck (`tsc --noEmit`) |
+| `npm run build` | Runs architecture guard, client build, server SSR build, and SSG prerender |
+| `npm run preview` | Previews the production build locally |
+| `npm run security:scan` | Runs local secret scanner against project source |
+
+---
+
+## ⚠️ Current Status & Known Limitations
+
+- **Community Demo Version**: This repository is prepared for demonstration and community review at DevFest Noida 2026.
+- **External Services**: Full payment checkout requires active Stripe API test keys. Email dispatch requires a Resend key. Cloud database synchronization requires valid Firebase project credentials.
+- **Offline / Deterministic Fallbacks**: When AI API keys are omitted, copywriting engines utilize context-driven deterministic copy generators rather than failing.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

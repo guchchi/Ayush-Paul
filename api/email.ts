@@ -615,7 +615,7 @@ async function handleNewsletterSend(req: VercelRequest, res: VercelResponse) {
   let decodedToken: any = null;
 
   if (isInternal) {
-    decodedToken = { email: "ap877@cornell.edu", uid: "INTERNAL_SERVICE" };
+    decodedToken = { email: process.env.ADMIN_EMAIL || "admin@example.com", uid: "INTERNAL_SERVICE" };
   } else {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith("Bearer ")) {
@@ -626,19 +626,13 @@ async function handleNewsletterSend(req: VercelRequest, res: VercelResponse) {
     try {
       getDb(); // Ensure Firebase initialized
       decodedToken = await admin.auth().verifyIdToken(token);
-      const ADMIN_EMAILS = ["ap877@cornell.edu"];
-      const isEmailAdmin = decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email);
+      
+      const allowlistStr = process.env.ADMIN_EMAIL_ALLOWLIST || process.env.ADMIN_EMAIL || "";
+      const allowedEmails = allowlistStr.split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
+      const isEmailAdmin = Boolean(decodedToken.email && allowedEmails.includes(decodedToken.email.toLowerCase()));
       const isHardcodedAdmin = ADMIN_UIDS.includes(decodedToken.uid);
       const hasAdminClaim = decodedToken.admin === true || decodedToken.role === "admin";
-      
-      const allowlistStr = process.env.ADMIN_EMAIL_ALLOWLIST;
-      let isAllowedByAllowlist = false;
-      if (allowlistStr && decodedToken.email) {
-        const allowedEmails = allowlistStr.split(",").map(e => e.trim().toLowerCase());
-        if (allowedEmails.includes(decodedToken.email.toLowerCase())) {
-          isAllowedByAllowlist = true;
-        }
-      }
+      const isAllowedByAllowlist = isEmailAdmin;
 
       if (!isHardcodedAdmin && !isEmailAdmin && !hasAdminClaim && !isAllowedByAllowlist) {
         return res.status(403).json({ error: "Access Denied: Admin privileges required" });
@@ -803,9 +797,7 @@ async function isAdminOrInternalService(req: VercelRequest): Promise<boolean> {
         }
       }
       
-      // Check hardcoded email fallback from existing code (ap877@cornell.edu)
-      const ADMIN_EMAILS = ["ap877@cornell.edu"];
-      if (decodedToken.email && ADMIN_EMAILS.includes(decodedToken.email)) {
+      if (process.env.ADMIN_EMAIL && decodedToken.email && decodedToken.email.toLowerCase() === process.env.ADMIN_EMAIL.toLowerCase()) {
         return true;
       }
     } catch (error) {

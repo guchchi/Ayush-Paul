@@ -25,7 +25,11 @@ const dbId = "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a";
 const db = getFirestore(admin.app(), dbId);
 
 async function inspectUser() {
-  const email = "ap8779370@gmail.com";
+  const email = process.argv[2] || process.env.TARGET_EMAIL;
+  if (!email) {
+    console.log("⚠️  Usage: npx tsx scripts/inspect-user.ts <user-email> or set TARGET_EMAIL in environment.");
+    return;
+  }
   console.log(`Inspecting user with email: ${email} in database: ${dbId}`);
   
   const snapshot = await db.collection("users").where("email", "==", email).get();

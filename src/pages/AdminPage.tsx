@@ -225,18 +225,6 @@ const AdminDashboard = ({ user, onLogout }: { user: any; onLogout: () => void })
     const collectionName = schemaMap[activeTab];
     if (!collectionName) return;
 
-    const RULES_ADMIN_UID = "80OJfcmVXCRNmSZuthVU68K6vJq2";
-    const RULES_ADMIN_EMAIL = "ap877@cornell.edu";
-    const uid = auth.currentUser?.uid;
-    const email = auth.currentUser?.email;
-    console.log("COLLECTION:", collectionName);
-    console.log("USER UID:", uid);
-    console.log("USER EMAIL:", email);
-    console.log("MATCHES firestore.rules isAdmin():");
-    console.log("  uid check (request.auth.uid == RULES_ADMIN_UID):", uid === RULES_ADMIN_UID);
-    console.log("  email check (request.auth.token.email == RULES_ADMIN_EMAIL):", email === RULES_ADMIN_EMAIL);
-    console.log("  would isAdmin() pass on server?:", (uid === RULES_ADMIN_UID) || (email === RULES_ADMIN_EMAIL));
-
     try {
       const payload = {
         ...formData,

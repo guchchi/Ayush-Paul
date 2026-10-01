@@ -25,13 +25,17 @@ const dbId = "ai-studio-6f7a6913-c65e-47b5-b8e9-f7f028d7591a";
 const db = getFirestore(admin.app(), dbId);
 
 async function grantAccess() {
-  const userIds = [
-    'qYjlH9timxSyc4ir34w2WwUEv8J3', // machlatodiwal@gmail.com
-    '80OJfcmVXCRNmSZuthVU68K6vJq2'  // Admin / Other
-  ];
-  const productId = 'ayu-boat-blueprint';
+  const cliArgs = process.argv.slice(2);
+  const envUids = process.env.TARGET_UIDS ? process.env.TARGET_UIDS.split(',').map(u => u.trim()) : [];
+  const userIds = cliArgs.length > 0 ? cliArgs : envUids;
+  const productId = process.env.TARGET_PRODUCT_ID || 'ayu-boat-blueprint';
 
-  console.log(`Granting 'premium' access for '${productId}' to users...`);
+  if (userIds.length === 0) {
+    console.log("⚠️  Usage: npx tsx scripts/grant-access.ts <UID1> [UID2...] or set TARGET_UIDS in environment.");
+    return;
+  }
+
+  console.log(`Granting 'premium' access for '${productId}' to users:`, userIds);
 
   for (const uid of userIds) {
     await db.collection('users').doc(uid).set({

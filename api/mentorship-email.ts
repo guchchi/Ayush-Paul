@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
 
 const DEFAULT_FROM = 'Ayush Paul <lab@ayushpaul.in>';
-const ADMIN_EMAIL = 'ap877@cornell.edu';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.ADMIN_NOTIFY_EMAIL || 'admin@example.com';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {

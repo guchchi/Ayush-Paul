@@ -1,21 +1,44 @@
+# Dependencies & Build Outputs
 node_modules/
 build/
 dist/
 coverage/
+
+# OS & Editor
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs & Error Outputs
 *.log
+*.err
+
+# Environment Files
 .env
-.env.local
-.env.production
-.env.development
+.env.*
+!.env.example
+
+# Certificates & Private Keys
 *.pem
+
+# Service Account & Admin Credentials
 serviceAccount*.json
 firebase-adminsdk*.json
 service-account.json
-.vercel
-!.env.example
 
-# Custom Agentic Awesome Skills
+# Deployment Configs
+.vercel
+
+# Bundle Inspection & Performance Reports
+lighthouse-*.json
+stats.html
+stats.json
+
+# Development Scratch & Prompt Dumps
+step*.txt
+target_request.txt
+
+# Custom Agentic Skills
 agentic-awesome-skills/
 .agents/skills.json
-
