@@ -2,7 +2,7 @@
  * PortfolioArchitectureSection.tsx — Level 2 (Stage 2) AI Workspace Builder Orchestrator
  * 
  * Production-grade 4-step wizard matching Level 1's professional architecture:
- * Step 1: Conversion Goal Selection (inline, high-contrast, AI generator)
+ * Step 1: Conversion Goal Selection (inline, high-contrast, AI generator with dirty-state safeguard)
  * Step 2: Architecture Rationale View (strategic thesis, placement map, decision framework)
  * Step 3: Layout Builder Studio (3-pane workspace with live telemetry, layers & inspector)
  * Step 4: Conversion Audit & Publish Gate (5-dimension score, telemetry, readiness, exports)
@@ -19,14 +19,22 @@ import {
   Repeat,
   Compass,
   ArrowRight,
+  Lock,
+  Unlock,
+  AlertTriangle,
+  RefreshCw,
+  X,
 } from 'lucide-react';
 import { cn } from '../../../../lib/utils';
 import { EASING, DURATION } from '../../../../lib/motion-presets';
 import { useModule3Store } from '../../../../lib/module3/store';
 import {
+  PORTFOLIO_ARCHETYPES,
   PortfolioGoal,
   recommendArchetype,
+  diffArchitecture,
 } from '../../../../lib/module3/portfolio-architecture-engine';
+import { computeUpstreamFingerprint } from '../../../../data/module3/authority-suite-engine';
 
 // ── Sub-step Views ────────────────────────────────────────────────────────────
 import { ArchitectureRationaleSection } from './stage2/ArchitectureRationaleSection';
@@ -110,6 +118,7 @@ const sectionFade = {
 
 export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onContinue }) => {
   const {
+    authoritySuite,
     stage2ActiveSection,
     stage2CompletedSections,
     stage2Archetype,
@@ -119,7 +128,12 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
     applyArchetypePreset,
     mod1ServiceId,
     mod1CareerTrackId,
+    mod1MarketId,
+    mod1Positioning,
+    mod2UniqueMechanism,
   } = useModule3Store();
+
+  const sections = authoritySuite?.portfolioBlueprint ?? [];
 
   // Active step persisted in store (1 to 4)
   const activeStep = (stage2ActiveSection && stage2ActiveSection >= 1 && stage2ActiveSection <= 4)
@@ -132,16 +146,49 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   );
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const selectedGoal = stage2Archetype?.portfolioGoal ?? null;
+  const [pendingGoalToSwitch, setPendingGoalToSwitch] = useState<PortfolioGoal | null>(null);
+  const [dismissedUpstreamWarning, setDismissedUpstreamWarning] = useState(false);
 
-  // ── STEP 1: GOAL SELECTION HANDLER ──────────────────────────────────────────
-  const handleGoalSelect = useCallback((goal: PortfolioGoal) => {
+  const selectedGoal = stage2Archetype?.portfolioGoal ?? null;
+  const isLocked = !!stage2Archetype?.isLocked;
+  const selectedArchetypeId = stage2Archetype?.selectedArchetypeId || 'proof_first';
+
+  const archetype = useMemo(() => {
+    return PORTFOLIO_ARCHETYPES.find((a) => a.id === selectedArchetypeId) || PORTFOLIO_ARCHETYPES[0];
+  }, [selectedArchetypeId]);
+
+  // Diff to detect custom user modifications
+  const diff = useMemo(() => {
+    return diffArchitecture(sections, archetype.recommendedOrder);
+  }, [sections, archetype.recommendedOrder]);
+
+  // Upstream fingerprint check to detect stale inputs from Mod 1/2
+  const currentUpstreamFingerprint = useMemo(() => {
+    return computeUpstreamFingerprint({
+      marketId: mod1MarketId,
+      serviceId: mod1ServiceId,
+      position: mod1Positioning,
+      uniqueMechanism: mod2UniqueMechanism,
+    });
+  }, [mod1MarketId, mod1ServiceId, mod1Positioning, mod2UniqueMechanism]);
+
+  const isUpstreamOutOfSync = useMemo(() => {
+    if (!authoritySuite?.upstreamFingerprint || !currentUpstreamFingerprint) return false;
+    return authoritySuite.upstreamFingerprint !== currentUpstreamFingerprint;
+  }, [authoritySuite?.upstreamFingerprint, currentUpstreamFingerprint]);
+
+  // ── STEP 1: EXECUTE GOAL SWITCH ─────────────────────────────────────────────
+  const executeGoalSwitch = useCallback((goal: PortfolioGoal) => {
     setIsGenerating(true);
+    setPendingGoalToSwitch(null);
+
     setTimeout(() => {
       const rec = recommendArchetype(mod1ServiceId, mod1CareerTrackId, goal);
       setStage2Archetype({
         portfolioGoal: goal,
         selectedArchetypeId: rec.archetypeId,
+        isLocked: false,
+        revisionStatus: 'draft',
       });
       applyArchetypePreset(rec.archetypeId);
 
@@ -159,6 +206,17 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
     setStage2CompletedSections,
     setStage2ActiveSection,
   ]);
+
+  // ── STEP 1: GOAL SELECTION CLICK (WITH SAFEGUARD) ───────────────────────────
+  const handleGoalSelect = useCallback((goal: PortfolioGoal) => {
+    // If user already has a goal and has made customizations, prompt with confirmation modal
+    if (selectedGoal && selectedGoal !== goal && (diff.hasContentCustomizations || diff.isCustomized)) {
+      setPendingGoalToSwitch(goal);
+      return;
+    }
+
+    executeGoalSwitch(goal);
+  }, [selectedGoal, diff, executeGoalSwitch]);
 
   // ── STEP 2: RATIONALE HANDLERS ──────────────────────────────────────────────
   const handleRationaleBack = useCallback(() => {
@@ -204,6 +262,66 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
   return (
     <div className="w-full space-y-6 text-left font-sans">
       
+      {/* ── LOCK STATUS BANNER (WITH UNLOCK MECHANISM) ───────────────────── */}
+      {isLocked && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-center gap-2.5 text-xs font-semibold text-amber-950">
+            <Lock size={15} className="text-amber-600 shrink-0" />
+            <span>Architecture is currently Finalized & Locked. Section mutations are restricted.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStage2Archetype({ isLocked: false, revisionStatus: 'draft' })}
+            className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <Unlock size={12} />
+            Unlock to Edit Architecture
+          </button>
+        </motion.div>
+      )}
+
+      {/* ── UPSTREAM OUT-OF-SYNC TOAST BANNER ────────────────────────────── */}
+      {isUpstreamOutOfSync && !dismissedUpstreamWarning && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3.5 sm:p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-center gap-2.5 text-xs font-medium">
+            <RefreshCw size={15} className="text-[#0058be] shrink-0" />
+            <span>
+              <strong>Positioning Update:</strong> Upstream positioning in Module 1 or 2 was updated. Your existing blueprint is preserved.
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                const rec = recommendArchetype(mod1ServiceId, mod1CareerTrackId, selectedGoal || 'retainer');
+                setStage2Archetype({ selectedArchetypeId: rec.archetypeId });
+                applyArchetypePreset(rec.archetypeId);
+                setDismissedUpstreamWarning(true);
+              }}
+              className="px-3 py-1.5 bg-[#0058be] hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+            >
+              Re-align Archetype
+            </button>
+            <button
+              type="button"
+              onClick={() => setDismissedUpstreamWarning(true)}
+              className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-lg cursor-pointer"
+              title="Dismiss note"
+            >
+              <X size={15} />
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       {/* ── PERSISTENT STEP PROGRESS BAR (Matching Level 1) ───────────────── */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
@@ -216,7 +334,6 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
             const isActive = activeStep === step.id;
             const isCompleted = completedSteps.has(step.id);
             const isPast = step.id < activeStep;
-            const Icon = step.icon;
 
             return (
               <React.Fragment key={step.id}>
@@ -338,7 +455,7 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
                         </div>
 
                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-neutral-400 group-hover:text-[#0058be] transition-colors uppercase tracking-wider pt-4 border-t border-neutral-100">
-                          Generate Blueprint <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                          {isSelected ? 'Current Blueprint Active' : 'Generate Blueprint'} <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
                         </div>
                       </button>
                     );
@@ -377,6 +494,53 @@ export const PortfolioArchitectureSection: React.FC<Props> = React.memo(({ onCon
         )}
 
       </AnimatePresence>
+
+      {/* ── GOAL SWITCH CONFIRMATION MODAL (DESTRUCTIVE SAFEGUARD) ────────── */}
+      {pendingGoalToSwitch && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-neutral-200 space-y-5 text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+              <AlertTriangle size={24} />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-lg font-bold text-[#0b1c30]">
+                Switch Portfolio Conversion Goal?
+              </h4>
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                You have custom edits and arrangement in your current blueprint. Switching to a new goal will reset section ordering and load the recommended archetype preset.
+              </p>
+            </div>
+
+            <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-[11px] text-neutral-500 font-mono">
+              Target Goal: {GOALS.find((g) => g.id === pendingGoalToSwitch)?.label}
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setPendingGoalToSwitch(null)}
+                className="px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+              >
+                Keep Current
+              </button>
+
+              <button
+                type="button"
+                onClick={() => executeGoalSwitch(pendingGoalToSwitch)}
+                className="px-5 py-2.5 rounded-xl bg-[#0058be] hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+              >
+                Reset & Apply New Goal
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
     </div>
   );
 });

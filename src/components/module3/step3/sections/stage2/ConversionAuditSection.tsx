@@ -2,12 +2,12 @@
  * ConversionAuditSection.tsx — Level 2 (Step 4): Conversion Audit & Publish Gate
  * 
  * Final verification before advancing to Level 3:
- * 1. 5-Dimension Conversion Score Dashboard (0-100 with progress bars)
+ * 1. 5-Dimension Conversion Score Dashboard (Structural architecture score 0-100 with progress bars)
  * 2. Strategic Recommendations & Structural Warnings
  * 3. Portfolio Telemetry Snapshot
- * 4. Readiness Gate (Hard blockers vs pre-flight optimization notes)
+ * 4. Readiness Gate (Hard blockers vs pre-flight optimization notes with exception override)
  * 5. Distinct Exports (JSON & Markdown specification downloads)
- * 6. Final Publish & Lock Architecture CTA
+ * 6. Final Publish & Lock Architecture CTA + Unlock Mechanism
  */
 
 import React, { useMemo, useState } from 'react';
@@ -21,15 +21,12 @@ import {
   ArrowRight,
   ArrowLeft,
   Lock,
+  Unlock,
   Sparkles,
   TrendingUp,
   Shield,
-  Layers,
-  Clock,
-  Flame,
-  Check,
   Download,
-  Copy,
+  Check,
 } from 'lucide-react';
 import { cn } from '../../../../../lib/utils';
 import { EASING, DURATION } from '../../../../../lib/motion-presets';
@@ -74,6 +71,7 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
   const {
     authoritySuite,
     stage2Archetype,
+    setStage2Archetype,
     mod1ServiceId,
     mod1Positioning,
     mod2UniqueMechanism,
@@ -81,6 +79,7 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
   } = useModule3Store();
 
   const [copiedType, setCopiedType] = useState<'json' | 'md' | null>(null);
+  const [showOverrideModal, setShowOverrideModal] = useState(false);
 
   const sections = authoritySuite?.portfolioBlueprint ?? [];
   const selectedArchetypeId = stage2Archetype?.selectedArchetypeId || 'proof_first';
@@ -159,6 +158,14 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
     setTimeout(() => setCopiedType(null), 2500);
   };
 
+  const handlePublishClick = () => {
+    if (readiness.canLock) {
+      onPublish();
+    } else {
+      setShowOverrideModal(true);
+    }
+  };
+
   return (
     <motion.div {...sectionFade} className="w-full space-y-8 text-left font-sans">
       <div className="p-8 sm:p-10 rounded-3xl border border-neutral-200 bg-white shadow-xs space-y-8">
@@ -194,7 +201,7 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
           <div className="lg:col-span-4 p-6 sm:p-8 rounded-3xl bg-neutral-900 text-white flex flex-col justify-between space-y-6 shadow-md">
             <div>
               <span className="text-[11px] font-black uppercase tracking-wider text-neutral-400 block mb-1">
-                Conversion Strength Score
+                Structural Conversion Architecture Score
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-5xl sm:text-6xl font-extrabold tracking-tight text-white">
@@ -216,13 +223,13 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
                 {audit.totalScore >= 85
                   ? 'Your portfolio architecture meets gold-standard B2B conversion criteria with zero critical friction.'
                   : audit.totalScore >= 70
-                  ? 'Strong structural foundation. Resolving minor pre-flight notes will maximize conversion yield.'
-                  : 'Requires optimization. Review the high-priority recommendations below before publishing.'}
+                  ? 'Strong structural foundation. Pacing and proof positioning satisfy key B2B conversion heuristics.'
+                  : 'Requires structural optimization. Review the high-priority recommendations below before publishing.'}
               </p>
             </div>
 
             <div className="pt-4 border-t border-neutral-800 text-[11px] text-neutral-400 font-mono">
-              Evaluated against 5 core conversion dimensions
+              Grades mathematical scroll hierarchy, proof positioning, offer transparency, and objection readiness.
             </div>
           </div>
 
@@ -496,25 +503,100 @@ export const ConversionAuditSection: React.FC<Props> = React.memo(({ onBack, onP
               Back to Studio Builder
             </button>
 
-            <button
-              type="button"
-              onClick={onPublish}
-              disabled={!readiness.canLock}
-              className={cn(
-                "w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer",
-                readiness.canLock
-                  ? "bg-[#0058be] text-white hover:bg-blue-600"
-                  : "bg-neutral-800 text-neutral-500 cursor-not-allowed border border-neutral-700"
-              )}
-            >
-              <Lock size={14} />
-              Publish & Finalize Architecture
-              <ArrowRight size={14} />
-            </button>
+            {isLocked ? (
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setStage2Archetype({ isLocked: false, revisionStatus: 'draft' })}
+                  className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Unlock size={14} />
+                  Unlock for Revisions
+                </button>
+                <button
+                  type="button"
+                  onClick={onPublish}
+                  className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-[#0058be] hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  Proceed to Level 3
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handlePublishClick}
+                className={cn(
+                  "w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs font-bold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer",
+                  readiness.canLock
+                    ? "bg-[#0058be] text-white hover:bg-blue-600"
+                    : "bg-amber-600 text-white hover:bg-amber-700"
+                )}
+              >
+                <Lock size={14} />
+                {readiness.canLock ? "Publish & Finalize Architecture" : "Finalize Architecture (With Exceptions)"}
+                <ArrowRight size={14} />
+              </button>
+            )}
           </div>
         </div>
 
       </div>
+
+      {/* ── OVERRIDE PUBLISH CONFIRMATION MODAL ──────────────────────────── */}
+      {showOverrideModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-neutral-200 space-y-5 text-left text-neutral-900"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+              <AlertTriangle size={24} />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="text-lg font-bold text-[#0b1c30]">
+                Publish Architecture with Exceptions?
+              </h4>
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                Your portfolio has structural items flagged by the conversion engine:
+              </p>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-xs text-rose-800 space-y-1">
+              {readiness.blockers.map((b, i) => (
+                <div key={i}>• {b}</div>
+              ))}
+            </div>
+
+            <p className="text-[11px] text-neutral-500 leading-relaxed">
+              If you intentionally designed a custom or minimalist layout (e.g. 2-section waitlist or bespoke flow), you can acknowledge these recommendations and publish anyway.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowOverrideModal(false)}
+                className="px-4 py-2.5 rounded-xl border border-neutral-200 text-xs font-bold text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+              >
+                Return to Editor
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowOverrideModal(false);
+                  onPublish();
+                }}
+                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+              >
+                Acknowledge & Finalize Architecture
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 });

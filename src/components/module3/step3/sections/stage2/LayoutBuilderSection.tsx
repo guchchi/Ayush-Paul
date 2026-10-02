@@ -3,9 +3,9 @@
  * 
  * Interactive 3-column builder:
  * 1. Left Sidebar: Sitemap Layers with Funnel Phase badges & reordering controls
- * 2. Center Canvas: Live responsive wireframe viewer (Desktop/Mobile/Preview)
+ * 2. Center Canvas: Live responsive wireframe viewer (Desktop/Mobile/Preview, true container adaptation)
  * 3. Right Sidebar: Inspector with Strategic Guidance, Validation Warnings & Copy Editor
- * 4. Header: Live Telemetry bar (sections, words, read time, proof ratio, CTAs)
+ * 4. Header: Live Telemetry bar (sections, words, read time, proof ratio, CTAs) + Fullscreen Studio Toggle
  */
 
 import React, { useState, useMemo } from 'react';
@@ -22,18 +22,18 @@ import {
   Sparkles,
   Settings,
   Lock,
+  Unlock,
   X,
   AlertTriangle,
-  AlertCircle,
-  Info,
-  CheckCircle2,
   FileText,
   Clock,
   Shield,
   Layers,
-  HelpCircle,
   EyeOff,
   Flame,
+  CheckCircle2,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 import { cn } from '../../../../../lib/utils';
 import { EASING, DURATION } from '../../../../../lib/motion-presets';
@@ -61,6 +61,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
   const {
     authoritySuite,
     stage2Archetype,
+    setStage2Archetype,
     reorderPortfolioSections,
     updatePortfolioSection,
   } = useModule3Store();
@@ -68,9 +69,11 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
   const sections = authoritySuite?.portfolioBlueprint ?? [];
   const selectedArchetypeId = stage2Archetype?.selectedArchetypeId || 'proof_first';
   const selectedGoal = stage2Archetype?.portfolioGoal || 'retainer';
+  const isLocked = !!stage2Archetype?.isLocked;
 
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile' | 'preview'>('desktop');
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(sections[0]?.id || 'section_hero');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Live telemetry calculation
   const telemetry = useMemo(() => {
@@ -98,8 +101,11 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
     return warnings.filter((w) => w.sectionId === activeSection.id);
   }, [warnings, activeSection]);
 
+  const isMobileCanvas = viewMode === 'mobile';
+
   return (
     <motion.div {...sectionFade} className="w-full space-y-4 text-left font-sans">
+      
       {/* ── TOP CONTROLS & NAVIGATIONAL ACTIONS ────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-neutral-200 shadow-xs">
         <button
@@ -113,7 +119,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
 
         <div className="flex items-center gap-3">
           <span className="text-xs text-neutral-500 font-medium hidden md:inline">
-            Drag or use arrows to rearrange sections. Click any section to inspect.
+            Use the arrow controls to reorder sections. Click any section to configure copy & directives in the Inspector.
           </span>
           <button
             type="button"
@@ -126,7 +132,14 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
       </div>
 
       {/* ── MAIN STUDIO WORKSPACE CONTAINER ────────────────────────────── */}
-      <div className="h-[820px] max-h-[85vh] w-full bg-[#0b1c30] rounded-3xl overflow-hidden flex flex-col font-sans shadow-2xl border border-neutral-800">
+      <div 
+        className={cn(
+          "w-full bg-[#0b1c30] flex flex-col font-sans transition-all duration-300",
+          isFullscreen
+            ? "fixed inset-0 z-50 h-screen w-screen rounded-none p-0 overflow-hidden shadow-2xl"
+            : "h-[800px] max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl border border-neutral-800"
+        )}
+      >
         
         {/* 1. STUDIO TOP NAVBAR & LIVE TELEMETRY */}
         <header className="h-16 border-b border-white/10 bg-[#0b1c30] flex items-center justify-between px-4 sm:px-6 shrink-0 gap-4">
@@ -184,37 +197,52 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
             </div>
           </div>
 
-          {/* View Mode Controls */}
-          <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 shrink-0">
+          {/* View Mode Controls & Fullscreen Toggle */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
+              <button
+                type="button"
+                onClick={() => setViewMode('desktop')}
+                title="Desktop View"
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors cursor-pointer',
+                  viewMode === 'desktop' ? 'bg-white/20 text-white' : 'text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <Monitor size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('mobile')}
+                title="Mobile View (375px)"
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors cursor-pointer',
+                  viewMode === 'mobile' ? 'bg-white/20 text-white' : 'text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <Smartphone size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('preview')}
+                title="Full Preview Mode"
+                className={cn(
+                  'p-1.5 rounded-lg transition-colors cursor-pointer ml-1',
+                  viewMode === 'preview' ? 'bg-[#0058be] text-white' : 'text-neutral-400 hover:text-neutral-200'
+                )}
+              >
+                <Play size={15} />
+              </button>
+            </div>
+
+            {/* Maximize / Minimize Studio Button */}
             <button
-              onClick={() => setViewMode('desktop')}
-              title="Desktop View"
-              className={cn(
-                'p-1.5 rounded-lg transition-colors cursor-pointer',
-                viewMode === 'desktop' ? 'bg-white/20 text-white' : 'text-neutral-400 hover:text-neutral-200'
-              )}
+              type="button"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Maximize Studio'}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/15 text-neutral-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
             >
-              <Monitor size={15} />
-            </button>
-            <button
-              onClick={() => setViewMode('mobile')}
-              title="Mobile View"
-              className={cn(
-                'p-1.5 rounded-lg transition-colors cursor-pointer',
-                viewMode === 'mobile' ? 'bg-white/20 text-white' : 'text-neutral-400 hover:text-neutral-200'
-              )}
-            >
-              <Smartphone size={15} />
-            </button>
-            <button
-              onClick={() => setViewMode('preview')}
-              title="Full Preview Mode"
-              className={cn(
-                'p-1.5 rounded-lg transition-colors cursor-pointer ml-1',
-                viewMode === 'preview' ? 'bg-[#0058be] text-white' : 'text-neutral-400 hover:text-neutral-200'
-              )}
-            >
-              <Play size={15} />
+              {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
             </button>
           </div>
         </header>
@@ -281,7 +309,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                             disabled={index === 1}
                             title="Move section up"
                           >
-                            <MoveUp size={11} />
+                            <MoveUp size={12} />
                           </button>
                           <button 
                             type="button"
@@ -299,7 +327,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                             disabled={index === sections.length - 1}
                             title="Move section down"
                           >
-                            <MoveDown size={11} />
+                            <MoveDown size={12} />
                           </button>
                         </div>
                       )}
@@ -327,8 +355,8 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
           <main className="flex-1 bg-neutral-950 overflow-y-auto p-4 sm:p-8 relative flex justify-center custom-scrollbar">
             <div 
               className={cn(
-                "transition-all duration-500 ease-in-out bg-white rounded-t-2xl shadow-2xl flex flex-col min-h-full",
-                viewMode === 'mobile' ? 'w-[375px]' : 'w-full max-w-4xl'
+                "transition-all duration-300 ease-in-out bg-white rounded-t-2xl shadow-2xl flex flex-col min-h-full",
+                isMobileCanvas ? 'w-[375px]' : 'w-full max-w-4xl'
               )}
             >
               {/* Browser chrome simulation */}
@@ -337,7 +365,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                 <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
                 <div className="mx-auto bg-white px-8 sm:px-12 py-0.5 rounded-md text-[10px] text-neutral-400 font-mono shadow-2xs border border-neutral-200 truncate">
-                  https://your-domain.com
+                  {isMobileCanvas ? 'm.your-domain.com' : 'https://your-domain.com'}
                 </div>
               </div>
 
@@ -347,6 +375,8 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                   {sections.map((sec, idx) => {
                     const isSelected = selectedSectionId === sec.id;
                     const meta = getSectionPlacementMetadata(sec.id, selectedArchetypeId, selectedGoal);
+                    // In mobile preview, force stacked single-column layout so it never wraps awkwardly on 375px
+                    const renderSplit = !isMobileCanvas && sec.layoutVariant === 'split';
 
                     return (
                       <motion.div
@@ -385,19 +415,23 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                         <div className="space-y-4">
                           <h4 className={cn(
                             "font-extrabold text-[#0b1c30] tracking-tight leading-snug",
-                            sec.layoutVariant === 'split' ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl text-center'
+                            isMobileCanvas
+                              ? "text-xl text-center"
+                              : renderSplit
+                              ? "text-xl sm:text-2xl"
+                              : "text-2xl sm:text-3xl text-center"
                           )}>
                             {sec.headline || 'Add a compelling value-led headline'}
                           </h4>
 
                           <p className={cn(
                             "text-neutral-500 font-medium text-xs sm:text-sm leading-relaxed",
-                            sec.layoutVariant === 'split' ? 'max-w-xl' : 'text-center max-w-lg mx-auto'
+                            renderSplit ? "max-w-xl" : "text-center max-w-lg mx-auto"
                           )}>
                             {sec.subheadline}
                           </p>
                           
-                          {sec.layoutVariant === 'split' ? (
+                          {renderSplit ? (
                             <div className="flex flex-col sm:flex-row gap-6 mt-6 pt-4 border-t border-neutral-100">
                               <div className="flex-1 space-y-4">
                                 <p className="text-xs text-neutral-600 whitespace-pre-wrap leading-relaxed">
@@ -472,6 +506,23 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
               </div>
               
               <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar text-left">
+                {/* Lock Status Warning inside Inspector */}
+                {isLocked && (
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Lock size={12} className="text-amber-400" />
+                      <span>Architecture is locked.</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStage2Archetype({ isLocked: false, revisionStatus: 'draft' })}
+                      className="text-amber-300 hover:text-white font-bold underline text-[11px] cursor-pointer"
+                    >
+                      Unlock to Edit
+                    </button>
+                  </div>
+                )}
+
                 {/* Title & Role Info */}
                 <div className="space-y-1.5">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
@@ -510,7 +561,7 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                   </p>
                 </div>
 
-                {/* ── NEW: STRATEGIC GUIDANCE CARD ───────────────────────── */}
+                {/* ── STRATEGIC GUIDANCE CARD ───────────────────────── */}
                 {strategicGuidance && (
                   <div className="p-4 rounded-xl bg-blue-950/40 border border-blue-500/30 space-y-3">
                     <div className="flex items-center gap-1.5 text-blue-300 text-[10px] font-black uppercase tracking-wider">
@@ -562,9 +613,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                   <div className="grid grid-cols-2 gap-2">
                     <button 
                       type="button"
+                      disabled={isLocked}
                       onClick={() => updatePortfolioSection(activeSection.id, { layoutVariant: 'center' })}
                       className={cn(
-                        "p-2.5 rounded-xl border text-xs text-left transition-colors cursor-pointer",
+                        "p-2.5 rounded-xl border text-xs text-left transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
                         (!activeSection.layoutVariant || activeSection.layoutVariant === 'center') 
                           ? 'bg-[#0058be]/25 border-[#0058be] text-white shadow-xs' 
                           : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'
@@ -578,9 +630,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                     </button>
                     <button 
                       type="button"
+                      disabled={isLocked}
                       onClick={() => updatePortfolioSection(activeSection.id, { layoutVariant: 'split' })}
                       className={cn(
-                        "p-2.5 rounded-xl border text-xs text-left transition-colors cursor-pointer",
+                        "p-2.5 rounded-xl border text-xs text-left transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
                         activeSection.layoutVariant === 'split' 
                           ? 'bg-[#0058be]/25 border-[#0058be] text-white shadow-xs' 
                           : 'bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white'
@@ -608,9 +661,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                     <label className="text-[10px] uppercase font-bold text-neutral-400">Headline</label>
                     <input 
                       type="text" 
+                      disabled={isLocked}
                       value={activeSection.headline || ''}
                       onChange={(e) => updatePortfolioSection(activeSection.id, { headline: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors disabled:opacity-50" 
                       placeholder="Enter headline..."
                     />
                   </div>
@@ -618,9 +672,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase font-bold text-neutral-400">Subheadline</label>
                     <textarea 
+                      disabled={isLocked}
                       value={activeSection.subheadline || ''}
                       onChange={(e) => updatePortfolioSection(activeSection.id, { subheadline: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none h-16 resize-none transition-colors custom-scrollbar" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none h-16 resize-none transition-colors custom-scrollbar disabled:opacity-50" 
                       placeholder="Enter subheadline..."
                     />
                   </div>
@@ -628,9 +683,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase font-bold text-neutral-400">Body Narrative</label>
                     <textarea 
+                      disabled={isLocked}
                       value={activeSection.bodyCopy || ''}
                       onChange={(e) => updatePortfolioSection(activeSection.id, { bodyCopy: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none h-24 resize-none transition-colors custom-scrollbar" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none h-24 resize-none transition-colors custom-scrollbar disabled:opacity-50" 
                       placeholder="Enter body narrative..."
                     />
                   </div>
@@ -639,9 +695,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                     <label className="text-[10px] uppercase font-bold text-neutral-400">Call to Action Button</label>
                     <input 
                       type="text" 
+                      disabled={isLocked}
                       value={activeSection.ctaText || ''}
                       onChange={(e) => updatePortfolioSection(activeSection.id, { ctaText: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors disabled:opacity-50" 
                       placeholder="e.g. Schedule Discovery Call"
                     />
                   </div>
@@ -653,9 +710,10 @@ export const LayoutBuilderSection: React.FC<Props> = React.memo(({ onBack, onCon
                     </label>
                     <input 
                       type="text" 
+                      disabled={isLocked}
                       value={activeSection.trustStatement || ''}
                       onChange={(e) => updatePortfolioSection(activeSection.id, { trustStatement: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors" 
+                      className="w-full bg-black/50 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:border-[#0058be] outline-none transition-colors disabled:opacity-50" 
                       placeholder="e.g. 100% Confidential · No commitment required"
                     />
                   </div>
