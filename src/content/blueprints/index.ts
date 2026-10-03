@@ -1,10 +1,12 @@
 import type { BlueprintEngineData } from '../../types/blueprint-engine';
 import getYourFirst3Clients from './get-your-first-3-clients.json';
 import growthOs from './growth-os.json';
+import bCyberOs from './b-cyber-os.json';
 
 const blueprintModules: Record<string, () => Promise<BlueprintEngineData>> = {
   './get-your-first-3-clients.json': () => Promise.resolve(getYourFirst3Clients as BlueprintEngineData),
   './growth-os.json': () => Promise.resolve(growthOs as BlueprintEngineData),
+  './b-cyber-os.json': () => Promise.resolve(bCyberOs as BlueprintEngineData),
 };
 
 export const blueprintEngineSlugs: string[] = Object.keys(blueprintModules).map((path) =>

@@ -1,0 +1,544 @@
+{
+  "id": "b-cyber-os",
+  "title": "B-Cyber OS",
+  "description": "The Execution System for IIT Kanpur's Bachelor of Cybersecurity — turn your current academic and technical situation into a clear, personalized execution path.",
+  "outcome": "Turn your current academic and technical situation into a clear, personalized execution path for IIT Kanpur B.Cyber and technical authority",
+  "estimatedTime": "30-day structured sprint (3–10 hrs/week)",
+  "difficulty": "Beginner to Intermediate",
+  "version": "1.0",
+  "lastUpdated": "2026-10-03",
+  "category": "cybersecurity-admissions",
+  "tags": [
+    "iit-kanpur",
+    "b-cyber",
+    "cybersecurity",
+    "ctf",
+    "proof-of-work",
+    "execution-system"
+  ],
+  "modules": [
+    {
+      "id": "ground-reality",
+      "title": "Know the Truth & Selection Reality",
+      "description": "Understand the exact criteria of IIT Kanpur's B.Cyber program, separate JEE myths from screening reality, and see the 2026 vs 2027 shifts.",
+      "outcome": [
+        "Demystify JEE Main cutoff myths vs the actual screening filter",
+        "Understand the role of the C3iHub & WSAIS admission committee",
+        "Learn why 90% of file uploads get ignored and what stands out",
+        "Know the format and failure traps of the on-campus hackathon"
+      ],
+      "workflow": [
+        { "label": "Screening Truth", "description": "JEE Main vs Rank" },
+        { "label": "Dossier Reality", "description": "Prior work evaluation" },
+        { "label": "Campus Hackathon", "description": "In-person CTF traps" },
+        { "label": "2027 Shift", "description": "Aptitude + Practical" }
+      ],
+      "steps": [
+        {
+          "id": "gr-1",
+          "title": "The JEE Main Baseline Truth",
+          "description": "Understand that JEE Main is a qualification gatepass, not a ranking contest for this program.",
+          "details": "IIT Kanpur designed B.Cyber in collaboration with IIT Madras to find students with genuine technical aptitude, not just PCM exam stamina. JEE Main serves as an eligibility screening baseline to ensure basic mathematical foundation. A 99 percentile without proof-of-work will be rejected over an 88 percentile with genuine Linux curiosity and public problem-solving."
+        },
+        {
+          "id": "gr-2",
+          "title": "The 'Evidence of Prior Work' Evaluation",
+          "description": "Learn what the committee actually evaluates when reviewing uploaded application files.",
+          "details": "The application portal requests evidence of prior work or technical exposure. The fatal mistake applicants make is uploading flat resumes, course completion certificates from Coursera/Udemy, or school HTML projects. The committee looks for verifiability: active GitHub commits, OverTheWire Bandit problem-solving notes, TryHackMe badges, or creative proof-of-work like a 2-minute unlisted video walkthrough."
+        },
+        {
+          "id": "gr-3",
+          "title": "The On-Campus Hackathon Ground Reality",
+          "description": "Prepare for the controlled laboratory environment inside IIT Kanpur.",
+          "details": "Shortlisted candidates are invited to IIT Kanpur for an in-person assessment. The hackathon is Jeopardy-style CTF across Linux, Networking, Web, and Cryptography. Most candidates fail not because they lacked knowledge, but due to poor triage: wasting 90 minutes down a rabbit hole for a 50-point problem instead of capturing the 300 points of accessible foundational flags."
+        },
+        {
+          "id": "gr-4",
+          "title": "The 2027 Admission Evolution",
+          "description": "Anticipate the transition from JEE Main screening to an Aptitude Test + Hackathon model.",
+          "details": "Reports and admissions trends indicate a formal dedicated entrance assessment covering mathematical ability, discrete logic, and cybersecurity aptitude, followed directly by the on-campus practical hackathon. Preparing hands-on problem-solving skills today ensures full readiness regardless of testing format changes."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "gr-prompt-1",
+          "title": "Current Standing Self-Diagnostic",
+          "text": "Review your current profile against the three IITK screening pillars: (1) Academic baseline (JEE Main/Aptitude standing), (2) Verifiable proof-of-work (GitHub/CTF assets), (3) Practical debugging stamina. Identify which of these three pillars is currently at 0% and requires immediate focus."
+        }
+      ],
+      "templates": [
+        {
+          "id": "gr-template-1",
+          "title": "IITK B.Cyber Ground Reality Factsheet",
+          "description": "One-page reference sheet comparing official eligibility, ground reality criteria, and historical timeline milestones."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "gr-check-1",
+          "label": "Read and internalize the non-JEE Advanced nature of the B.Cyber selection pipeline"
+        },
+        {
+          "id": "gr-check-2",
+          "label": "Audit current proof-of-work inventory to recognize existing gaps"
+        },
+        {
+          "id": "gr-check-3",
+          "label": "Commit to practical problem-solving over passive video consumption"
+        }
+      ],
+      "resources": [
+        {
+          "id": "gr-res-1",
+          "title": "IIT Kanpur WSAIS Official Portal",
+          "description": "Official B.Cyber degree program details and admission policy updates.",
+          "url": "https://iitk.ac.in/wsais/b-cyber.php",
+          "type": "reference"
+        },
+        {
+          "id": "gr-res-2",
+          "title": "C3iHub IIT Kanpur Overview",
+          "description": "Cybersecurity and Cybersecurity of Cyber-Physical Systems Innovation Hub at IITK.",
+          "url": "https://c3ihub.iitk.ac.in/",
+          "type": "reference"
+        }
+      ]
+    },
+    {
+      "id": "intake-gap-analysis",
+      "title": "Situation Intake & Gap Analysis",
+      "description": "Audit your specific academic profile, current technical baseline, and weekly time constraints without sugarcoating.",
+      "outcome": [
+        "Categorize your exact student profile (Class 12 JEE vs College 1st-3rd Year)",
+        "Determine your genuine technical starting baseline (Total Zero vs C/Maths vs Python)",
+        "Lock in your non-negotiable weekly time budget (5 hrs vs 10 hrs vs 15 hrs)",
+        "Identify the primary gap standing between you and an IIT shortlist"
+      ],
+      "workflow": [
+        { "label": "Profile", "description": "Academic context" },
+        { "label": "Baseline", "description": "Current skills" },
+        { "label": "Time Budget", "description": "Available hours" },
+        { "label": "Gap Audit", "description": "What's missing" }
+      ],
+      "steps": [
+        {
+          "id": "intake-1",
+          "title": "Classify Your Academic Profile",
+          "description": "Select whether you are managing high school JEE pressure or college reset anxiety.",
+          "details": "Profile A: Class 12 / Dropper student. Your top risk is getting distracted by cyber and tanking your JEE Main cutoff score. Profile B: 1st Year College student (e.g. RGIPT, tier-2/3) seeking skills and placement redemption. Profile C: 2nd/3rd Year student seeking an immediate IIT research internship (Jan/Summer) as well as B.Cyber transition."
+        },
+        {
+          "id": "intake-2",
+          "title": "Audit Your Technical Baseline",
+          "description": "Be brutally honest about what you can execute in a terminal right now.",
+          "details": "Baseline 1: Total Zero — have never used Linux or written a program. Baseline 2: C / Mathematics — understand loops, logic, and math puzzles (e.g. IOQM/RMO background), but zero security exposure. Baseline 3: Python / Scripting — can write simple scripts, know basics of web/data. Baseline 4: Web / Tool dabbler — comfortable with HTML/JS and basic networking."
+        },
+        {
+          "id": "intake-3",
+          "title": "Set Your Weekly Time Constraint",
+          "description": "Define realistic hours that won't collapse during exam weeks.",
+          "details": "Option 1: 3–5 hours/week (Weekend Sprint). Strictly for Class 12 JEE students or intensive semester periods. Option 2: 8–10 hours/week (Balanced Rhythm). 1 hour daily + 3 hours on weekends. Option 3: 15+ hours/week (Intensive Transition). For gap students or light semester schedules."
+        },
+        {
+          "id": "intake-4",
+          "title": "Calculate Your Primary Gap",
+          "description": "Pinpoint the single fatal bottleneck in your current setup.",
+          "details": "If Profile A: Your gap is a structured 2-hour weekend routine that builds proof-of-work without stealing focus from Physics/Chemistry/Maths. If Profile B with C/Maths: Your gap is converting theoretical code into Linux terminal competence and public GitHub writeups. If Profile C: Your gap is direct faculty-aligned research output."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "intake-prompt-1",
+          "title": "Profile & Constraint Diagnostic Prompt",
+          "text": "Fill out your intake statement: 'I am a [Class 12 / College 1st Year / College 2nd Year] student. My technical baseline is [Total Zero / C & Maths / Python]. I can sustainably dedicate [5 / 10 / 15] hours per week without compromising my primary exams. My biggest obstacle today is [lack of direction / fear of JEE damage / zero public evidence].'"
+        }
+      ],
+      "templates": [
+        {
+          "id": "intake-template-1",
+          "title": "Personal Constraint Matrix",
+          "description": "Table for mapping your weekly exam calendar against security practice slots."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "intake-check-1",
+          "label": "Documented exact academic status and primary upcoming exam dates"
+        },
+        {
+          "id": "intake-check-2",
+          "label": "Selected non-negotiable weekly hour budget (e.g. 5 hrs for JEE, 10 hrs for college)"
+        },
+        {
+          "id": "intake-check-3",
+          "label": "Identified the primary gap (Proof-of-work vs Terminal literacy vs Time management)"
+        }
+      ],
+      "resources": [
+        {
+          "id": "intake-res-1",
+          "title": "Unstop Hackathon Directory",
+          "description": "National student hackathons, criteria, and competitive calendar tracking.",
+          "url": "https://unstop.com/hackathons",
+          "type": "tool"
+        }
+      ]
+    },
+    {
+      "id": "personal-execution-path",
+      "title": "Personal Path Engine (Deterministic Logic)",
+      "description": "Execute the exact pre-defined roadmap engineered for your profile, baseline, and time budget — zero generic fluff.",
+      "outcome": [
+        "Lock in your designated pathway (Pathway-Alpha for JEE, Pathway-Beta for College C/Maths, Pathway-Gamma for Internships)",
+        "Understand phase sequencing across 4 distinct 3-week blocks",
+        "Maintain the Golden Rule: Protect the primary academic standing at all costs",
+        "Clear weekly milestone targets with tangible definitions of done"
+      ],
+      "workflow": [
+        { "label": "Pathway Selection", "description": "Match your profile" },
+        { "label": "Block 1", "description": "CLI & Foundations" },
+        { "label": "Block 2", "description": "Packets & Web" },
+        { "label": "Block 3", "description": "Evidence & CTF" }
+      ],
+      "steps": [
+        {
+          "id": "path-1",
+          "title": "Activate Pathway-Alpha: The JEE Protection Track",
+          "description": "For 11th/12th/Dropper aspirants dedicating 3–5 hours per week.",
+          "details": "85% of your mental energy remains on JEE Main preparation (Physics, Chemistry, Maths). Security work is strictly confined to a Saturday/Sunday 2-hour window. Weeks 1–3: OverTheWire Bandit 1–10. Weeks 4–6: Basic Wireshark inspection of 3 sample PCAP files. Weeks 7–9: 10 beginner challenges on PicoCTF. Weeks 10–12: Create your GitHub learning repository and document your notes."
+        },
+        {
+          "id": "path-2",
+          "title": "Activate Pathway-Beta: The College C & Systems Track",
+          "description": "For 1st/2nd year college students with programming or math interest (e.g. Arjun's profile).",
+          "details": "Leverage existing C language knowledge to build low-level security intuition. Weeks 1–3: C pointers in security, compiling with GCC on Linux, and Bandit 1–15. Weeks 4–6: Socket programming basics, network protocols, and Wireshark. Weeks 7–9: TryHackMe Pre-Security path + beginner crypto implementations (Caesar, XOR). Weeks 10–12: First public tool or detailed CTF writeup repository."
+        },
+        {
+          "id": "path-3",
+          "title": "Activate Pathway-Gamma: The IIT Research & Fast-Track",
+          "description": "For 2nd/3rd year engineering students aiming for C3iHub internships and 2027 entry (Debaprita's profile).",
+          "details": "Weeks 1–3: Advanced Linux administration, Docker containerization, and Python network automation. Weeks 4–6: Web application security (PortSwigger SQLi & XSS apprentices). Weeks 7–9: Building a functional security utility (e.g. packet sniffer or vulnerability scanner in Python). Weeks 10–12: Formal academic outreach dossier directed to C3iHub faculty."
+        },
+        {
+          "id": "path-4",
+          "title": "Set Your Non-Negotiable Milestone Rules",
+          "description": "Never move to the next block without finishing the current definition of done.",
+          "details": "A milestone is not 'I watched 5 videos'. A milestone is 'I ran the commands myself, solved the level, and wrote 5 lines of notes in my markdown file'. If you get stuck on a challenge for more than 45 minutes, look at a writeup, understand the conceptual failure, document it, and move forward."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "path-prompt-1",
+          "title": "Weekly Sprint Commitment",
+          "text": "Specify your current block: 'I am executing Block [1/2/3/4] of Pathway [Alpha/Beta/Gamma]. My weekly milestone is to complete [specific lab/level]. My definition of done is pushing my updated notes to my GitHub repository by Sunday 8 PM.'"
+        }
+      ],
+      "templates": [
+        {
+          "id": "path-template-1",
+          "title": "4-Block Sprint Roadmap",
+          "description": "Structured calendar mapping weekly hours, milestones, and output artifacts."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "path-check-1",
+          "label": "Selected designated pathway (Alpha, Beta, or Gamma) matching intake"
+        },
+        {
+          "id": "path-check-2",
+          "label": "Scheduled recurring weekly calendar slots (e.g. Saturday 4-6 PM, Sunday 10-12 AM)"
+        },
+        {
+          "id": "path-check-3",
+          "label": "Adopted the 45-minute writeup rule to prevent unproductive rabbit holes"
+        }
+      ],
+      "resources": [
+        {
+          "id": "path-res-1",
+          "title": "OverTheWire Wargames: Bandit",
+          "description": "Foundational command-line wargame teaching Linux shell basics through security puzzles.",
+          "url": "https://overthewire.org/wargames/bandit/",
+          "type": "tool"
+        },
+        {
+          "id": "path-res-2",
+          "title": "PicoCTF Learning Platform",
+          "description": "Free beginner-friendly CTF platform hosted by Carnegie Mellon University.",
+          "url": "https://picoctf.org/",
+          "type": "tool"
+        }
+      ]
+    },
+    {
+      "id": "curated-resources",
+      "title": "Curated High-Signal Free Resources",
+      "description": "Stop drowning in 10,000 YouTube videos. Access the direct, top 1% free tools and labs matched to your pathway.",
+      "outcome": [
+        "Eliminate tutorial hell by using only primary hands-on platforms",
+        "Master the command line using OverTheWire Bandit without getting stuck",
+        "Inspect real network traffic with Wireshark sample packet captures",
+        "Learn web security vulnerabilities through PortSwigger Web Security Academy"
+      ],
+      "workflow": [
+        { "label": "CLI Mastery", "description": "OverTheWire" },
+        { "label": "Networking", "description": "Wireshark PCAPs" },
+        { "label": "Web Exploitation", "description": "PortSwigger" },
+        { "label": "Systems & C", "description": "CS50 / Beej's Guide" }
+      ],
+      "steps": [
+        {
+          "id": "res-1",
+          "title": "Master Linux Command Line with OverTheWire Bandit",
+          "description": "The gold standard for terminal muscle memory.",
+          "details": "Do not read an operating system book. Go straight to OverTheWire Bandit. Use SSH to connect. Levels 1 to 10 teach file permissions, piping, grep, base64 decoding, and hidden files. Levels 11 to 15 introduce SSL/TLS, port connection, and cron jobs. Benchmark: Reach Level 15 and write down the commands you learned."
+        },
+        {
+          "id": "res-2",
+          "title": "Learn Network Protocols with Wireshark & Sample PCAPs",
+          "description": "Inspect how data actually moves across wires.",
+          "details": "Download Wireshark. Download a free sample PCAP (Packet Capture) from Wireshark's sample wiki. Filter by 'http', 'dns', and 'tcp.flags.syn==1'. Observe the 3-way handshake in action. This hands-on visualization gives you 10x more intuition than memorizing OSI model layers from a textbook."
+        },
+        {
+          "id": "res-3",
+          "title": "Practice Web Security on PortSwigger Web Security Academy",
+          "description": "Created by the creators of Burp Suite — 100% free professional web security labs.",
+          "details": "Create a free account. Complete only the 'Apprentice' level labs for: (1) SQL Injection basics, and (2) Cross-Site Scripting (XSS) basics. Do not attempt Practitioner or Expert labs initially. Document the payload you used to solve each lab in your personal notes."
+        },
+        {
+          "id": "res-4",
+          "title": "Systems, Sockets, and C Programming References",
+          "description": "For candidates expanding into low-level systems (like Arjun).",
+          "details": "Consult 'Beej's Guide to Network Programming' — the internet's most accessible, legendary free guide to socket programming in C. Use CS50x lectures (Weeks 1 to 5) for clean memory models, pointers, and data structures."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "res-prompt-1",
+          "title": "Resource Note-Taking Template",
+          "text": "For every lab completed, create a markdown note: 'Platform: [Bandit / PortSwigger]. Challenge: [Level/Room Name]. Core Concept: [e.g. grep filtering / SQL parameterization]. The Key Command or Payload: [command]. What I learned from getting stuck: [1 sentence].'"
+        }
+      ],
+      "templates": [
+        {
+          "id": "res-template-1",
+          "title": "Lab Notes Markdown Template",
+          "description": "Clean GitHub-ready template for logging lab writeups and command summaries."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "res-check-1",
+          "label": "Installed Linux terminal or configured WSL / SSH client on local machine"
+        },
+        {
+          "id": "res-check-2",
+          "label": "Completed Bandit Levels 1 through 10 on OverTheWire"
+        },
+        {
+          "id": "res-check-3",
+          "label": "Downloaded Wireshark and inspected a sample HTTP packet capture"
+        },
+        {
+          "id": "res-check-4",
+          "label": "Logged all commands and insights in personal lab notes"
+        }
+      ],
+      "resources": [
+        {
+          "id": "res-link-1",
+          "title": "PortSwigger Web Security Academy",
+          "description": "Free online web security training covering SQLi, XSS, and modern vulnerabilities.",
+          "url": "https://portswigger.net/web-security",
+          "type": "tool"
+        },
+        {
+          "id": "res-link-2",
+          "title": "Wireshark Sample Captures Wiki",
+          "description": "Repository of real network traffic captures for protocol inspection and forensics.",
+          "url": "https://wiki.wireshark.org/SampleCaptures",
+          "type": "reference"
+        },
+        {
+          "id": "res-link-3",
+          "title": "Beej's Guide to Network Programming",
+          "description": "The definitive free tutorial on socket programming using C.",
+          "url": "https://beej.us/guide/bgnet/",
+          "type": "article"
+        }
+      ]
+    },
+    {
+      "id": "proof-of-work-checklist",
+      "title": "Proof-of-Work Checklist & Dossier Assembly",
+      "description": "Turn your hands-on learning into a verifiable, student-owned proof-of-work dossier that commands respect from faculty reviewers.",
+      "outcome": [
+        "Assemble 3 tangible, verifiable evidence artifacts (GitHub, CTF notes, mini-project)",
+        "Structure the 'Evidence of Prior Work' upload file for the IITK portal",
+        "Deploy the optional 2-minute unlisted screen recording walkthrough edge",
+        "Avoid the top 5 submission red flags that trigger instant rejection"
+      ],
+      "workflow": [
+        { "label": "Artifact 1", "description": "GitHub Repository" },
+        { "label": "Artifact 2", "description": "CTF & Lab Writeups" },
+        { "label": "Artifact 3", "description": "Mini Project / Script" },
+        { "label": "Video Edge", "description": "Optional Walkthrough" }
+      ],
+      "steps": [
+        {
+          "id": "pow-1",
+          "title": "Structure Your Public GitHub Evidence Repository",
+          "description": "Create a clean, well-formatted repository documenting your learning journey.",
+          "details": "Name the repository 'cybersecurity-foundations' or 'iitk-bcyber-prep-journey'. Include a professional README.md with sections: (1) About My Motivation & Goals, (2) Hands-on Lab Log (Bandit, PortSwigger, PicoCTF), (3) Tools & Scripts Developed, (4) Key Technical Insights. A live GitHub profile with regular commits proves consistency."
+        },
+        {
+          "id": "pow-2",
+          "title": "Document 2 Detailed CTF Challenge Writeups",
+          "description": "Show the committee how your brain works when solving problems.",
+          "details": "Pick two challenges you genuinely solved (e.g. 1 Bandit level and 1 PicoCTF crypto puzzle). Write a structured 1-page writeup for each: (1) Problem Statement, (2) Initial Hypotheses & Dead Ends, (3) The Breakthrough, (4) Final Solution & Key Takeaway. Faculty value cognitive clarity and persistence far more than rote answers."
+        },
+        {
+          "id": "pow-3",
+          "title": "Develop 1 Mini-Script or Utility",
+          "description": "Build a simple, original utility in Python or C to prove practical capability.",
+          "details": "Ideas: A simple Python port scanner that checks open ports with socket module (30 lines); a Caesar/Vigenère cipher encrypter/decrypter with frequency analysis (50 lines); or a log parser that extracts failed login attempts from a sample auth.log file. Provide the source code and instructions to run it in your repository."
+        },
+        {
+          "id": "pow-4",
+          "title": "The Optional 'Video Walkthrough' Edge",
+          "description": "How Ayush stood out from 1,000 flat PDF resumes.",
+          "details": "While not compulsory, a 2-minute screen recording provides an immense competitive advantage. Format: (0:00–0:25) Personal introduction, background, and what ignited your cybersecurity interest; (0:25–1:05) Screen recording of your terminal running your mini-tool or showing your Bandit notes; (1:05–1:40) One specific technical obstacle you failed at and how you figured it out; (1:40–2:00) Why IIT Kanpur's B.Cyber aligns with your long-term mission. Upload as Unlisted on YouTube and embed the link prominently in your PDF."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "pow-prompt-1",
+          "title": "Video Walkthrough Scripting Framework",
+          "text": "Draft a 150-word script for your 2-minute video following the 4-part structure: Hook & Passion -> Live Terminal Demo -> Problem-Solving Story -> IIT Kanpur Vision. Remove all buzzwords like 'I want to be an ethical hacker' and replace with concrete specifics like 'I spent three days understanding why my socket connection threw a timeout error.'"
+        }
+      ],
+      "templates": [
+        {
+          "id": "pow-template-1",
+          "title": "IITK Evidence Dossier PDF Template",
+          "description": "Clean, academic-style markdown layout for compiling GitHub links, CTF writeups, and project summaries into a single PDF."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "pow-check-1",
+          "label": "Created public GitHub repository with comprehensive README.md"
+        },
+        {
+          "id": "pow-check-2",
+          "label": "Published at least 2 detailed CTF problem-solving writeups"
+        },
+        {
+          "id": "pow-check-3",
+          "label": "Built and documented 1 working mini-script (Python or C)"
+        },
+        {
+          "id": "pow-check-4",
+          "label": "Compiled all links into a single, clean 'Evidence of Prior Work' PDF"
+        }
+      ],
+      "resources": [
+        {
+          "id": "pow-res-1",
+          "title": "GitHub Student Developer Pack",
+          "description": "Free developer tools, private repositories, and domain credits for enrolled students.",
+          "url": "https://education.github.com/pack",
+          "type": "tool"
+        }
+      ]
+    },
+    {
+      "id": "war-room-recovery",
+      "title": "Campus Hackathon War-Room & Off-Track Recovery",
+      "description": "Master the ground reality of the on-campus CTF round and execute emergency recovery protocols when exams or reality disrupt your schedule.",
+      "outcome": [
+        "Master the on-campus hackathon triage methodology (high-yield flags first)",
+        "Avoid the time-sink rabbit holes that cause 80% of candidates to fail",
+        "Deploy the 'Emergency Minimum Viable Routine' (60 min/week) during exam weeks",
+        "Recalibrate your weekly milestones dynamically without guilt or panic"
+      ],
+      "workflow": [
+        { "label": "Triage Strategy", "description": "High-yield flags" },
+        { "label": "War-Room Setup", "description": "Toolkits & mindset" },
+        { "label": "Emergency Routine", "description": "Exam week survival" },
+        { "label": "Recalibration", "description": "Dynamic catch-up" }
+      ],
+      "steps": [
+        {
+          "id": "wr-1",
+          "title": "The Hackathon Flag Triage Protocol",
+          "description": "How to score maximum points in a limited 3-to-4-hour laboratory hackathon.",
+          "details": "First 20 Minutes: Read every challenge title and description across all categories (Linux, Crypto, Web, Forensics). Categorize challenges into: Tier 1 (Obvious / Immediate flag extraction), Tier 2 (Clear path, requires 15 mins script/analysis), and Tier 3 (Complex / Cryptic). Rule: Solve all Tier 1 challenges in the first 45 minutes to secure a baseline score on the leaderboard before touching Tier 2 or 3."
+        },
+        {
+          "id": "wr-2",
+          "title": "The 30-Minute Rabbit Hole Ejection Rule",
+          "description": "The exact trap that cost multiple candidates their selection.",
+          "details": "In an on-campus CTF, it is extraordinarily easy to spend 2 hours attempting to reverse-engineer a 100-point binary while three 50-point web/network flags sit untouched. Strict rule: If you make zero verifiable progress on a single challenge for 30 minutes, immediately close the tab, log your current state, and switch to a different category."
+        },
+        {
+          "id": "wr-3",
+          "title": "The Exam-Week Emergency Protocol (60 Min/Week)",
+          "description": "What to do when JEE mock tests, pre-boards, or college semester exams hit.",
+          "details": "Do NOT feel guilty or quit the program. Shift into 'Sustain Mode': Drop your target to exactly 60 minutes on Sunday afternoon. Solve 1 single Bandit level or review 1 Wireshark capture. This preserves your neurological momentum and terminal familiarity without detracting from your academic exams."
+        },
+        {
+          "id": "wr-4",
+          "title": "Recalibration Engine: Resetting When Life Changes",
+          "description": "Adjust your schedule dynamically when exam sessions end.",
+          "details": "Once a major exam finishes (e.g. JEE Main Session 1 or semester exams), run a Recalibration: Increase your weekly budget from 5 to 15 hours for a 2-week sprint. Review completed checklist items, re-sequence remaining milestones, and accelerate your proof-of-work assembly."
+        }
+      ],
+      "prompts": [
+        {
+          "id": "wr-prompt-1",
+          "title": "Hackathon Day Readiness Checklist",
+          "text": "Before traveling to campus, audit your physical and mental toolkit: (1) Familiarity with basic Linux tools (strings, grep, base64, netcat, curl, file), (2) Preparedness to remain calm when the first challenge fails, (3) Strict adherence to the 30-minute triage ejection rule."
+        }
+      ],
+      "templates": [
+        {
+          "id": "wr-template-1",
+          "title": "Hackathon Triage Sheet",
+          "description": "Printable scorecard for categorizing challenges into Tier 1, 2, and 3 during an in-person CTF."
+        }
+      ],
+      "checklist": [
+        {
+          "id": "wr-check-1",
+          "label": "Mastered the 30-minute challenge ejection rule to prevent rabbit holes"
+        },
+        {
+          "id": "wr-check-2",
+          "label": "Reviewed the 60-minute emergency protocol for upcoming exam weeks"
+        },
+        {
+          "id": "wr-check-3",
+          "label": "Established dynamic recalibration routine for post-exam catchup sprints"
+        }
+      ],
+      "resources": [
+        {
+          "id": "wr-res-1",
+          "title": "CTF Time Official Platform",
+          "description": "Global CTF tournament tracker, team ratings, and community writeup archive.",
+          "url": "https://ctftime.org/",
+          "type": "reference"
+        },
+        {
+          "id": "wr-res-2",
+          "title": "CyberChef: The Cyber Swiss Army Knife",
+          "description": "Essential web-based utility for data encoding, decoding, encryption, and parsing.",
+          "url": "https://gchq.github.io/CyberChef/",
+          "type": "tool"
+        }
+      ]
+    }
+  ]
+}
