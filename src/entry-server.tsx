@@ -118,6 +118,70 @@ export async function getRoutesConfig() {
     }
   });
 
+  routes.push({ 
+    url: '/about', 
+    seoData: { 
+      title: "About | Ayush Paul", 
+      description: "Building autonomous systems, high-leverage products, and engineering systems.",
+      schema: new SchemaFactory().addWebPage({ name: "About | Ayush Paul", description: "Building autonomous systems, high-leverage products, and engineering systems.", url: "/about" }).build()
+    }
+  });
+
+  // B.Cyber Compass Routes (SSG Prerendered)
+  routes.push({ 
+    url: '/blueprints/b-cyber', 
+    seoData: { 
+      title: "B.Cyber Compass | Independent B.Cyber Admission Intelligence & Preparation Planner", 
+      description: "Verified institutional admission intelligence, 2026 precedent analysis, and personalised preparation planner for the 4-year B.Cyber program at IIT Kanpur and IIT Madras.",
+      schema: new SchemaFactory().addWebPage({ name: "B.Cyber Compass", description: "Independent B.Cyber Admission Intelligence & Preparation Planner", url: "/blueprints/b-cyber" }).build()
+    }
+  });
+
+  routes.push({ 
+    url: '/blueprints/b-cyber/admission', 
+    seoData: { 
+      title: "Admission Intelligence | B.Cyber Compass", 
+      description: "Verified institutional admission policies, Senate regulations, degree progression rules, and exit options for B.Cyber at IIT Kanpur and IIT Madras.",
+      schema: new SchemaFactory().addWebPage({ name: "Admission Intelligence | B.Cyber Compass", description: "Verified institutional admission policies and Senate regulations.", url: "/blueprints/b-cyber/admission" }).build()
+    }
+  });
+
+  routes.push({ 
+    url: '/blueprints/b-cyber/2026-process', 
+    seoData: { 
+      title: "2026 Process Precedent | B.Cyber Compass", 
+      description: "Historical analysis of the inaugural 2026 B.Cyber admission cycle, JEE Main screening precedent, and the 6-hour on-campus hackathon at IIT Kanpur.",
+      schema: new SchemaFactory().addWebPage({ name: "2026 Process Precedent | B.Cyber Compass", description: "Historical analysis of the inaugural 2026 B.Cyber admission cycle.", url: "/blueprints/b-cyber/2026-process" }).build()
+    }
+  });
+
+  routes.push({ 
+    url: '/blueprints/b-cyber/updates', 
+    seoData: { 
+      title: "Official Updates Timeline | B.Cyber Compass", 
+      description: "Chronological log of verified institutional announcements, FAQ additions, policy shifts, and entrance test updates for the B.Cyber program.",
+      schema: new SchemaFactory().addWebPage({ name: "Official Updates Timeline | B.Cyber Compass", description: "Chronological log of verified institutional announcements and updates.", url: "/blueprints/b-cyber/updates" }).build()
+    }
+  });
+
+  routes.push({ 
+    url: '/blueprints/b-cyber/evidence-of-work', 
+    seoData: { 
+      title: "Evidence of Prior Work Guide (FAQ 22) | B.Cyber Compass", 
+      description: "Official standards and actionable portfolio guidelines for presenting verifiable prior cybersecurity work aligned with IIT Kanpur FAQ 22.",
+      schema: new SchemaFactory().addWebPage({ name: "Evidence of Prior Work Guide | B.Cyber Compass", description: "Actionable portfolio guidelines aligned with IIT Kanpur FAQ 22.", url: "/blueprints/b-cyber/evidence-of-work" }).build()
+    }
+  });
+
+  routes.push({ 
+    url: '/blueprints/b-cyber/prepare', 
+    seoData: { 
+      title: "Personalised Preparation Planner | B.Cyber Compass", 
+      description: "Interactive, trust-first preparation planner for B.Cyber aspirants. Generates customized weekly schedules respecting your available hours and baseline skills.",
+      schema: new SchemaFactory().addWebPage({ name: "Preparation Planner | B.Cyber Compass", description: "Interactive preparation planner for B.Cyber aspirants.", url: "/blueprints/b-cyber/prepare" }).build()
+    }
+  });
+
   // 2. Dynamic Routes
   try {
     const projectsRes = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/${dbId}/documents/projects?key=${apiKey}`);

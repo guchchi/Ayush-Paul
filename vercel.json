@@ -76,7 +76,7 @@
     { "source": "/api/validate-coupon", "destination": "/api/checkout?action=validate-coupon" },
     { "source": "/api/validate-creator-code", "destination": "/api/checkout?action=validate-creator-code" },
     { "source": "/api/download-product", "destination": "/api/download-product" },
-    { "source": "/((?!api/|.*\\..*).*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
