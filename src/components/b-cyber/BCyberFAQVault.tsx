@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   HelpCircle,
   Search,
-  ChevronDown,
-  ChevronUp,
+  Plus,
+  Minus,
   ExternalLink,
   ShieldCheck,
   Filter,
@@ -68,120 +68,126 @@ export const BCyberFAQVault: React.FC = () => {
   });
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200/90 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden">
-      {/* Header */}
-      <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-800 text-xs font-medium">
-            <HelpCircle className="w-3.5 h-3.5 text-slate-600" />
-            <span>Verbatim Senate &amp; Institute Records</span>
+    <div className="w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* LEFT COLUMN: Sticky Intro, Search & Categories */}
+        <div className="lg:col-span-5 text-left lg:sticky lg:top-36 space-y-6">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-sm w-fit inline-block mb-4">
+              FAQ VAULT
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-[#0b1c30] tracking-tighter leading-[1.1] mb-4">
+              Questions Worth Asking About B.Cyber
+            </h2>
+            <p className="text-[#424754] text-sm leading-relaxed font-medium">
+              Verbatim word-for-word citations from official IIT Kanpur Senate resolutions and WSAIS FAQs 1 to 26.
+            </p>
           </div>
-          <span className="text-xs text-slate-500 font-medium">
-            All 26 Official FAQs Indexed
-          </span>
-        </div>
 
-        <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
-          Official Verbatim FAQ Knowledge Vault (FAQs 1 to 26)
-        </h2>
-        <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-          Direct word-for-word citations from the official IIT Kanpur WSAIS portal. Search by keywords like &ldquo;JEE&rdquo;, &ldquo;exit options&rdquo;, &ldquo;stipend&rdquo;, &ldquo;branch change&rdquo;, or &ldquo;NIOS&rdquo;.
-        </p>
-
-        {/* Live Search & Filter Row */}
-        <div className="pt-2 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          {/* Search Box */}
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Search all 26 FAQs by topic or keyword..."
+              placeholder="Search by keyword ('JEE', 'exit options', 'stipend', 'NIOS')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-slate-900 transition-colors shadow-2xs"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#c2c6d6]/40 bg-white text-xs text-[#0b1c30] placeholder:text-[#424754]/60 focus:outline-none focus:ring-2 focus:ring-[#0b1c30] transition-all shadow-sm"
             />
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={cn(
-                  'px-2.5 py-1 rounded-md text-xs font-medium transition-all cursor-pointer whitespace-nowrap',
-                  selectedCategory === cat.id
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                )}
-              >
-                {cat.label} ({cat.count})
-              </button>
-            ))}
+          <div className="space-y-2">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              Categories ({categories.length})
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap',
+                    selectedCategory === cat.id
+                      ? 'bg-[#0b1c30] text-white shadow-sm'
+                      : 'bg-white border border-[#c2c6d6]/40 text-[#424754] hover:text-[#0b1c30] hover:border-[#0b1c30]/40'
+                  )}
+                >
+                  {cat.label} ({cat.count})
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* FAQs List */}
-      <div className="p-5 sm:p-8 divide-y divide-slate-100">
-        {filteredFaqs.length === 0 ? (
-          <div className="py-12 text-center space-y-2">
-            <p className="text-sm font-semibold text-slate-700">No matching FAQs found for &ldquo;{searchQuery}&rdquo;</p>
-            <p className="text-xs text-slate-500">Try a different search term like &ldquo;entrance&rdquo;, &ldquo;credits&rdquo;, or &ldquo;age&rdquo;.</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all');
-              }}
-              className="mt-2 text-xs font-semibold text-slate-900 underline cursor-pointer"
-            >
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          filteredFaqs.map((faq) => {
-            const isExpanded = !!expandedFaqIds[faq.id];
+        {/* RIGHT COLUMN: Accordion Cards */}
+        <div className="lg:col-span-7 space-y-3.5 w-full">
+          {filteredFaqs.length === 0 ? (
+            <div className="py-16 text-center space-y-2 rounded-2xl border border-dashed border-[#c2c6d6]/40 bg-white p-8">
+              <p className="text-sm font-bold text-[#0b1c30]">No matching FAQs found for &ldquo;{searchQuery}&rdquo;</p>
+              <p className="text-xs text-[#424754]">Try searching for &ldquo;entrance&rdquo;, &ldquo;credits&rdquo;, or &ldquo;age&rdquo;.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="mt-3 text-xs font-bold text-[#0b1c30] underline cursor-pointer"
+              >
+                Clear all filters
+              </button>
+            </div>
+          ) : (
+            filteredFaqs.map((faq) => {
+              const isOpen = !!expandedFaqIds[faq.id];
 
-            return (
-              <div key={faq.id} className="py-3.5 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => toggleFaq(faq.id)}
-                  className="w-full text-left flex items-start justify-between gap-3 group cursor-pointer"
+              return (
+                <div
+                  key={faq.id}
+                  className={cn(
+                    'bg-white border rounded-2xl overflow-hidden transition-all duration-200 shadow-sm text-left',
+                    isOpen ? 'border-[#0b1c30]' : 'border-[#c2c6d6]/35 hover:border-[#c2c6d6]/50'
+                  )}
                 >
-                  <div className="flex items-start gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(faq.id)}
+                    className="w-full px-6 py-5 flex items-center justify-between text-left gap-4 group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <span
+                        className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 uppercase tracking-wider',
+                          faq.id === 23
+                            ? 'bg-[#d1f34d] text-[#0b1c30]'
+                            : faq.id === 12
+                            ? 'bg-rose-100 text-rose-900 border border-rose-200'
+                            : 'bg-slate-100 text-slate-700'
+                        )}
+                      >
+                        FAQ {faq.id}
+                      </span>
+                      <span className="text-sm font-extrabold tracking-tight leading-snug text-[#0b1c30]">
+                        {faq.question}
+                      </span>
+                    </div>
+
                     <span
                       className={cn(
-                        'text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 mt-0.5',
-                        faq.id === 23
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                          : faq.id === 12
-                          ? 'bg-red-100 text-red-900 border border-red-300'
-                          : 'bg-slate-100 text-slate-700'
+                        'w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 border',
+                        isOpen
+                          ? 'bg-[#f0fbe8] border-[#d1f34d] text-[#0b1c30]'
+                          : 'bg-slate-50 border-[#c2c6d6]/30 text-[#424754]/60 group-hover:border-[#0b1c30]/20 group-hover:text-[#0b1c30]'
                       )}
                     >
-                      FAQ {faq.id}
+                      {isOpen ? <Minus size={12} /> : <Plus size={12} />}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
-                      {faq.question}
-                    </h3>
-                  </div>
+                  </button>
 
-                  <div className="shrink-0 p-1 rounded-md text-slate-400 group-hover:text-slate-900 transition-colors">
-                    {isExpanded ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    )}
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="pl-8 sm:pl-9 pr-2 space-y-2.5 pt-1">
-                    <div className="p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/80 space-y-2">
-                      <p className="text-xs text-slate-800 leading-relaxed font-sans">
+                  {isOpen && (
+                    <div className="px-6 pb-5 pt-1 space-y-3 border-t border-slate-100">
+                      <p className="text-xs text-[#424754] font-medium leading-relaxed font-sans pt-2">
                         {faq.answer}
                       </p>
 
@@ -190,7 +196,7 @@ export const BCyberFAQVault: React.FC = () => {
                           {faq.highlights.map((h, idx) => (
                             <span
                               key={idx}
-                              className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 font-medium"
+                              className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-[#0b1c30] border border-slate-200/60"
                             >
                               {h}
                             </span>
@@ -198,26 +204,28 @@ export const BCyberFAQVault: React.FC = () => {
                         </div>
                       )}
 
-                      <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500 font-medium">
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
                         <span>WSAIS Section: #{faq.anchor}</span>
                         <a
                           href={`${faq.sourceUrl}#${faq.anchor}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900 hover:underline"
+                          className="inline-flex items-center gap-1 text-[#0b1c30] hover:underline font-semibold"
                         >
                           <span>Verify Official Source</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
 };
+
+
