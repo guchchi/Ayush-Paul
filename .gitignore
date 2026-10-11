@@ -42,3 +42,4 @@ target_request.txt
 # Custom Agentic Skills
 agentic-awesome-skills/
 .agents/skills.json
+scratch/

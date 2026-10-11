@@ -1,5 +1,5 @@
-import React from 'react';
-import { ExternalLink, CheckCircle2, Quote } from 'lucide-react';
+import React, { useState } from 'react';
+import { ExternalLink, CheckCircle2, Quote, ChevronDown, ChevronUp } from 'lucide-react';
 import type { SourceCitation } from '../../types/b-cyber-compass';
 import { cn } from '../../lib/utils';
 
@@ -14,40 +14,57 @@ export const SourceCitationCard: React.FC<SourceCitationCardProps> = ({
   className,
   compact = false,
 }) => {
+  const [showQuote, setShowQuote] = useState(false);
+
   return (
     <div
       className={cn(
-        'rounded-lg border border-border-color bg-white p-3.5 shadow-2xs transition-all hover:border-brand-primary/30',
+        'rounded-lg border border-slate-200/80 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all hover:border-slate-300',
         className
       )}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <a
           href={citation.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 font-medium text-xs text-brand-primary hover:text-brand-secondary hover:underline group"
+          className="inline-flex items-center gap-1.5 font-medium text-xs text-slate-900 hover:text-slate-600 hover:underline group"
         >
           <span>{citation.title}</span>
-          <ExternalLink className="w-3 h-3 text-brand-primary/60 group-hover:text-brand-primary shrink-0" />
+          <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-slate-900 shrink-0" />
         </a>
 
-        <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
+        <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-500">
           <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
           <span>Verified {citation.verifiedDate}</span>
         </div>
       </div>
 
-      {citation.sectionAnchor && (
-        <div className="text-[11px] text-text-secondary font-mono bg-bg-secondary/60 px-2 py-0.5 rounded inline-block mb-2">
-          Section: {citation.sectionAnchor}
-        </div>
-      )}
+      <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-slate-100 text-[11px]">
+        {citation.sectionAnchor ? (
+          <span className="text-slate-500 font-mono text-[10px] bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded">
+            § {citation.sectionAnchor}
+          </span>
+        ) : (
+          <span className="text-slate-400 font-mono text-[10px]">Official Source</span>
+        )}
 
-      {citation.verbatimQuote && !compact && (
-        <div className="mt-2 text-xs text-text-secondary border-l-2 border-brand-primary/40 pl-2.5 py-0.5 italic bg-bg-secondary/30 rounded-r">
-          <Quote className="w-3 h-3 inline mr-1 text-brand-primary/40 -mt-1" />
-          "{citation.verbatimQuote}"
+        {citation.verbatimQuote && !compact && (
+          <button
+            type="button"
+            onClick={() => setShowQuote(!showQuote)}
+            className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium cursor-pointer transition-colors"
+          >
+            <span>{showQuote ? 'Hide quote' : 'View excerpt'}</span>
+            {showQuote ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+          </button>
+        )}
+      </div>
+
+      {citation.verbatimQuote && !compact && showQuote && (
+        <div className="mt-2.5 text-xs text-slate-700 border-l-2 border-slate-400 pl-3 py-1 italic bg-slate-50 rounded-r leading-relaxed">
+          <Quote className="w-3 h-3 inline mr-1 text-slate-400 -mt-1" />
+          &ldquo;{citation.verbatimQuote}&rdquo;
         </div>
       )}
     </div>

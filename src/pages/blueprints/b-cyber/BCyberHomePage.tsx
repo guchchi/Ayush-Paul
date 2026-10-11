@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import {
   Compass,
   ShieldCheck,
@@ -10,11 +9,12 @@ import {
   CalendarCheck,
   ArrowRight,
   ExternalLink,
-  BookOpen,
-  AlertTriangle,
   GraduationCap,
   Scale,
   Sparkles,
+  CheckCircle2,
+  AlertTriangle,
+  ChevronRight,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
 import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
@@ -35,312 +35,337 @@ export function BCyberHomePage() {
   });
 
   return (
-    <div className="w-full min-h-screen bg-bg-primary text-text-primary pb-24">
+    <div className="w-full min-h-screen bg-[#fafbfc] text-[#0f172a] pt-28 sm:pt-32 pb-24">
       <BCyberNav />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Prominent Disclaimer */}
-        <DisclaimerBanner variant="prominent" />
-
-        {/* Hero Section */}
-        <section className="relative rounded-2xl border border-border-color bg-white p-6 sm:p-10 shadow-xs">
-          <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold">
-              <Compass className="w-3.5 h-3.5" />
-              <span>Trust-First Architecture • Updated for October 2026</span>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Sleek Linear-style Hero Card */}
+        <section className="relative rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <div className="max-w-3xl space-y-5">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-[11px] font-mono text-slate-600 font-medium">
+              <Compass className="w-3.5 h-3.5 text-slate-500" />
+              <span>Independent Student Intelligence • Updated October 2026</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-text-primary leading-tight">
-              Independent Admission Intelligence & Preparation Planner for <span className="text-brand-primary">B.Cyber</span>
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+              Admission Intelligence & Preparation System for <span className="underline decoration-slate-300 underline-offset-8">B.Cyber</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-text-secondary leading-relaxed">
-              The 4-year Bachelor of Science in Cybersecurity (B.Cyber) is India's premier specialized undergraduate cybersecurity degree, offered independently by <strong>IIT Kanpur</strong> and <strong>IIT Madras</strong>.
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              The 4-year Bachelor of Cybersecurity (B.Cyber) is India&apos;s specialized undergraduate cybersecurity degree, offered independently by <strong>IIT Kanpur</strong> (via WSAIS &amp; C3iHub) and <strong>IIT Madras</strong>.
             </p>
 
-            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-              B.Cyber Compass provides prospective students with verified institutional policies, grounded analysis of the inaugural 2026 selection precedent, and a personalised preparation planner that fits your available weekly hours.
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+              B.Cyber Compass cuts through coaching forums to provide verified institutional facts, grounded analysis of the inaugural 2026 selection precedent, and a deterministic preparation planner tailored to your available weekly hours.
             </p>
 
-            <div className="pt-2 flex flex-wrap gap-3">
+            <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
                 to="/blueprints/b-cyber/prepare"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-sm font-semibold hover:bg-brand-secondary transition-colors shadow-2xs"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 text-white text-xs sm:text-sm font-medium hover:bg-slate-800 transition-all shadow-xs group"
               >
                 <CalendarCheck className="w-4 h-4" />
                 <span>Launch Preparation Planner</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 to="/blueprints/b-cyber/admission"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border-color bg-bg-secondary/60 text-text-primary text-sm font-semibold hover:bg-bg-secondary transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200/90 bg-white text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
               >
-                <ShieldCheck className="w-4 h-4 text-brand-primary" />
+                <ShieldCheck className="w-4 h-4 text-slate-400" />
                 <span>Browse Verified Policies</span>
               </Link>
             </div>
           </div>
+
+          {/* Quick Metrics Ribbon */}
+          <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center font-mono text-xs font-bold">
+                12
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-900">Verified Ordinances</p>
+                <p className="text-[11px] text-slate-500">Senate credit exits &amp; rules</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center font-mono text-xs font-bold">
+                0%
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-900">JEE Rote Gate</p>
+                <p className="text-[11px] text-slate-500">Discontinued via FAQ 23</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-700 border border-sky-100 flex items-center justify-center font-mono text-xs font-bold">
+                4Y
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-900">Independent Degrees</p>
+                <p className="text-[11px] text-slate-500">Conferred by enrolling IIT</p>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* Core Confirmed Institutional Facts */}
-        <section className="space-y-4">
+        {/* Minimal Disclaimer Notice */}
+        <DisclaimerBanner variant="prominent" />
+
+        {/* Executive Institutional Status Strip (3 Key Pillars) */}
+        <section className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
-                Core Institutional Facts at a Glance
+              <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
+                Institutional Facts at a Glance
               </h2>
-              <p className="text-xs sm:text-sm text-text-secondary">
-                Verified against official published notices from IIT Kanpur WSAIS and IIT Madras.
+              <p className="text-xs text-slate-500">
+                Cross-referenced directly with official notices from IIT Kanpur WSAIS and IIT Madras.
               </p>
             </div>
             <TrustBadge trustLevel="official_fact" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="rounded-xl border border-border-color bg-white p-5 shadow-2xs space-y-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                <GraduationCap className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-sm text-text-primary">Degree & Alumnus Status</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Degrees are awarded by the respective enrolling institute. Students graduating at IIT Kanpur receive an IIT Kanpur degree and alumnus status. Students at IIT Madras receive their degree and alumnus status from IIT Madras.
-              </p>
-              <div className="pt-2">
-                <TrustBadge trustLevel="official_fact" size="sm" />
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-border-color bg-white p-5 shadow-2xs space-y-2.5">
-              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center">
-                <AlertTriangle className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-sm text-text-primary">JEE Main Discontinued (FAQ 23)</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                JEE Main was used for inaugural 2026 screening, but IIT Kanpur officially confirmed in FAQ 23 that <strong>JEE Main will not be used for future admissions</strong>. A separate entrance test will be announced.
-              </p>
-              <div className="pt-2">
-                <TrustBadge trustLevel="official_fact" size="sm" />
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-border-color bg-white p-5 shadow-2xs space-y-2.5">
-              <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center">
-                <Scale className="w-4 h-4" />
-              </div>
-              <h3 className="font-bold text-sm text-text-primary">Future Test Unannounced</h3>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                The format, syllabus, examination date, and eligibility criteria for the replacement entrance test have <strong>not been published</strong> by IIT Kanpur. B.Cyber Compass does not invent mock syllabi.
-              </p>
-              <div className="pt-2">
-                <TrustBadge trustLevel="pending_official_notice" size="sm" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 2-Dimensional Trust Architecture */}
-        <section className="rounded-2xl border border-border-color bg-white p-6 sm:p-8 shadow-xs space-y-6">
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-text-primary">
-              The 2-Dimensional Content & Trust Taxonomy
-            </h2>
-            <p className="text-xs sm:text-sm text-text-secondary mt-1">
-              To protect students from misinformation, every single card, resource, and task on B.Cyber Compass is classified across two distinct axes:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3 rounded-xl border border-border-color/80 bg-bg-secondary/40 p-4">
-              <div className="font-semibold text-xs text-brand-primary uppercase tracking-wider">
-                Axis 1: Content Domain
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="bg-white p-3 rounded-lg border border-border-color">
-                  <div className="font-semibold text-text-primary">Domain A: Admission Policy</div>
-                  <p className="text-text-secondary mt-0.5">
-                    Covers institutional eligibility, degree progression, Senate rules, and official screening criteria.
-                  </p>
-                </div>
-                <div className="bg-white p-3 rounded-lg border border-border-color">
-                  <div className="font-semibold text-text-primary">Domain B: Educational Guidance</div>
-                  <p className="text-text-secondary mt-0.5">
-                    Covers independent technical skill development, open wargames, and portfolio heuristics. Never described as an official syllabus.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 rounded-xl border border-border-color/80 bg-bg-secondary/40 p-4">
-              <div className="font-semibold text-xs text-brand-primary uppercase tracking-wider">
-                Axis 2: Trust & Evidence Status
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="bg-white p-2.5 rounded-lg border border-border-color flex items-center justify-between gap-2">
-                  <span className="text-text-secondary font-medium">Official Institutional Notice</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Pillar 1 */}
+            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100">
+                    <GraduationCap className="w-4 h-4" />
+                  </div>
                   <TrustBadge trustLevel="official_fact" size="sm" />
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border-color flex items-center justify-between gap-2">
-                  <span className="text-text-secondary font-medium">Historical Inaugural 2026 Cycle</span>
-                  <TrustBadge trustLevel="observed_precedent_2026" size="sm" />
+                <h3 className="font-semibold text-sm text-slate-900">
+                  Independent Degree Awarding
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Degrees and alumnus status are conferred independently by the respective enrolling institute. Students graduating at IIT Kanpur receive an IIT Kanpur degree; students at IIT Madras receive an IIT Madras degree.
+                </p>
+              </div>
+              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+                Source: IIT Kanpur FAQ 16 &amp; IIT Madras Notification
+              </div>
+            </div>
+
+            {/* Pillar 2 */}
+            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-100">
+                    <AlertTriangle className="w-4 h-4" />
+                  </div>
+                  <TrustBadge trustLevel="official_fact" size="sm" />
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border-color flex items-center justify-between gap-2">
-                  <span className="text-text-secondary font-medium">Awaiting Official Notification</span>
+                <h3 className="font-semibold text-sm text-slate-900">
+                  JEE Main Discontinued (FAQ 23)
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  While the inaugural 2026 cycle used JEE Main scores for initial shortlisting, IIT Kanpur officially confirmed in FAQ 23 that <strong>JEE Main will NOT be used for future admissions</strong>. A separate entrance test will be announced.
+                </p>
+              </div>
+              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+                Source: IIT Kanpur FAQ 23 Official Policy
+              </div>
+            </div>
+
+            {/* Pillar 3 */}
+            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-md bg-sky-50 text-sky-700 flex items-center justify-center border border-sky-100">
+                    <Scale className="w-4 h-4" />
+                  </div>
                   <TrustBadge trustLevel="pending_official_notice" size="sm" />
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-border-color flex items-center justify-between gap-2">
-                  <span className="text-text-secondary font-medium">Independent Curated Lab</span>
-                  <TrustBadge trustLevel="independent_foundational" size="sm" />
-                </div>
+                <h3 className="font-semibold text-sm text-slate-900">
+                  Future Entrance Test Unannounced
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  The examination format, syllabus, eligibility criteria, and date for the replacement entrance test have <strong>not been published</strong>. B.Cyber Compass reports confirmed notices and avoids fabricating mock syllabi.
+                </p>
+              </div>
+              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+                Status: Awaiting official institutional publication
               </div>
             </div>
           </div>
         </section>
 
-        {/* Feature Navigation Grid */}
-        <section className="space-y-4">
+        {/* Guided Starting Points (3 Actionable Tracks) */}
+        <section className="space-y-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
-              Explore the Compass Modules
+            <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
+              Three Guided Focus Tracks
             </h2>
-            <p className="text-xs sm:text-sm text-text-secondary">
-              Direct access to all verified guides, chronological updates, and interactive planning tools.
+            <p className="text-xs text-slate-500">
+              Targeted modules tailored to your specific objective.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Link
-              to="/blueprints/b-cyber/admission"
-              className="rounded-xl border border-border-color bg-white p-5 shadow-2xs hover:border-brand-primary/40 hover:shadow-xs transition-all group flex flex-col justify-between"
-            >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Track 1: Admission Policies */}
+            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all space-y-4">
               <div className="space-y-2.5">
-                <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-sm text-text-primary group-hover:text-brand-primary transition-colors">
-                  Admission Intelligence
+                <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
+                  Track 1 • Eligibility &amp; Rules
+                </span>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Institutional Regulations
                 </h3>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Degree-awarding structure, Senate academic regulations, credit exit points, and branch-change prohibitions.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Review 12 verified institutional claims: independent degree conferral, Senate credit exit options (Certificate at 150 cr, Diploma at 200 cr), and strict branch-change prohibitions.
                 </p>
               </div>
-              <div className="pt-4 flex items-center justify-between text-xs font-semibold text-brand-primary">
-                <span>View 12 Verified Policies</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
 
-            <Link
-              to="/blueprints/b-cyber/2026-process"
-              className="rounded-xl border border-border-color bg-white p-5 shadow-2xs hover:border-brand-primary/40 hover:shadow-xs transition-all group flex flex-col justify-between"
-            >
-              <div className="space-y-2.5">
-                <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <History className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-sm text-text-primary group-hover:text-brand-primary transition-colors">
-                  2026 Process Precedent
-                </h3>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Historical breakdown of the inaugural 2026 selection process, JEE screening, and the 6-hour on-campus hackathon.
-                </p>
+              <div className="space-y-1.5 pt-3 border-t border-slate-100">
+                <Link
+                  to="/blueprints/b-cyber/admission"
+                  className="inline-flex items-center justify-between w-full text-xs font-medium text-slate-900 hover:text-slate-600 transition-colors py-1 group"
+                >
+                  <span>Browse Verified Admission Policies</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-slate-400" />
+                </Link>
+                <Link
+                  to="/blueprints/b-cyber/2026-process"
+                  className="inline-flex items-center justify-between w-full text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors py-1 group"
+                >
+                  <span>Inspect 2026 Process Precedent</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-slate-400" />
+                </Link>
               </div>
-              <div className="pt-4 flex items-center justify-between text-xs font-semibold text-brand-primary">
-                <span>Inspect 2026 Timeline</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
+            </div>
 
-            <Link
-              to="/blueprints/b-cyber/updates"
-              className="rounded-xl border border-border-color bg-white p-5 shadow-2xs hover:border-brand-primary/40 hover:shadow-xs transition-all group flex flex-col justify-between"
-            >
+            {/* Track 2: Portfolio Standards */}
+            <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all space-y-4">
               <div className="space-y-2.5">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <Bell className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center">
+                  <FileCheck className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-sm text-text-primary group-hover:text-brand-primary transition-colors">
-                  Official Updates Timeline
+                <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60">
+                  Track 2 • Proof-of-Work
+                </span>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Evidence of Prior Work (FAQ 22)
                 </h3>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Chronological record of official portal announcements, FAQ releases, and institutional policy shifts.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Understand official standards for verifiable proof-of-work: responsible disclosures, original tool repos, open-source commits, and anti-patterns to avoid.
                 </p>
               </div>
-              <div className="pt-4 flex items-center justify-between text-xs font-semibold text-brand-primary">
-                <span>View Timeline Updates</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
 
-            <Link
-              to="/blueprints/b-cyber/evidence-of-work"
-              className="rounded-xl border border-border-color bg-white p-5 shadow-2xs hover:border-brand-primary/40 hover:shadow-xs transition-all group flex flex-col justify-between"
-            >
-              <div className="space-y-2.5">
-                <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <FileCheck className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-sm text-text-primary group-hover:text-brand-primary transition-colors">
-                  Evidence of Prior Work
-                </h3>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  FAQ 22 alignment guide for reporting vulnerabilities, developing original security tools, and avoiding anti-patterns.
-                </p>
+              <div className="space-y-1.5 pt-3 border-t border-slate-100">
+                <Link
+                  to="/blueprints/b-cyber/evidence-of-work"
+                  className="inline-flex items-center justify-between w-full text-xs font-medium text-slate-900 hover:text-slate-600 transition-colors py-1 group"
+                >
+                  <span>Review FAQ 22 Portfolio Standards</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-slate-400" />
+                </Link>
+                <Link
+                  to="/blueprints/b-cyber/updates"
+                  className="inline-flex items-center justify-between w-full text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors py-1 group"
+                >
+                  <span>View Official Updates Timeline</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-slate-400" />
+                </Link>
               </div>
-              <div className="pt-4 flex items-center justify-between text-xs font-semibold text-brand-primary">
-                <span>Review FAQ 22 Standards</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
+            </div>
 
-            <Link
-              to="/blueprints/b-cyber/prepare"
-              className="rounded-xl border border-brand-primary/40 bg-gradient-to-br from-brand-primary/5 to-white p-5 shadow-2xs hover:border-brand-primary hover:shadow-xs transition-all group flex flex-col justify-between sm:col-span-2 lg:col-span-2"
-            >
+            {/* Track 3: Preparation Planner */}
+            <div className="rounded-xl border border-slate-900/20 bg-gradient-to-br from-slate-50 to-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col justify-between hover:border-slate-900/40 transition-all space-y-4">
               <div className="space-y-2.5">
-                <div className="w-9 h-9 rounded-lg bg-brand-primary/10 text-brand-primary flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <CalendarCheck className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                  <CalendarCheck className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-sm text-text-primary group-hover:text-brand-primary transition-colors">
-                  Personalised Preparation Planner (Layer 2)
+                <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                  Track 3 • Interactive Engine
+                </span>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Personalised Preparation Planner
                 </h3>
-                <p className="text-xs text-text-secondary leading-relaxed">
-                  Input your current academic stage, technical baseline, and available weekly study hours (3 to 25 hours). Generates a practical, adjustable schedule with strict separation of admission requirements, independent foundations, and evidence tasks.
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Input your academic stage, technical baseline, and weekly hours (3 to 25 hrs). Generates an adjustable schedule that cleanly separates admission requirements from independent labs.
                 </p>
               </div>
-              <div className="pt-4 flex items-center justify-between text-xs font-semibold text-brand-primary">
-                <span>Build Your Personalised Plan</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+
+              <div className="pt-3 border-t border-slate-100">
+                <Link
+                  to="/blueprints/b-cyber/prepare"
+                  className="inline-flex items-center justify-center gap-2 w-full px-3.5 py-2 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition-colors shadow-xs group"
+                >
+                  <span>Launch Execution System</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
-            </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Compact Trust Classification Key */}
+        <section className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+            <h3 className="font-semibold text-xs text-slate-900">
+              Content Trust Classification Standard
+            </h3>
+            <span className="text-[11px] font-mono text-slate-400">
+              Every card carries a verifiable status tag
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/60 flex items-start gap-2">
+              <TrustBadge trustLevel="official_fact" size="sm" />
+              <span className="text-slate-600 text-[11px] leading-snug">
+                Supported directly by published institutional notices or official FAQs.
+              </span>
+            </div>
+            <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/60 flex items-start gap-2">
+              <TrustBadge trustLevel="observed_precedent_2026" size="sm" />
+              <span className="text-slate-600 text-[11px] leading-snug">
+                Historical documentation of the inaugural 2026 cycle.
+              </span>
+            </div>
+            <div className="p-2.5 rounded-lg border border-slate-100 bg-slate-50/60 flex items-start gap-2">
+              <TrustBadge trustLevel="independent_foundational" size="sm" />
+              <span className="text-slate-600 text-[11px] leading-snug">
+                Third-party technical platforms recommended independently for skill mastery.
+              </span>
+            </div>
           </div>
         </section>
 
         {/* Official Grounding Portal Links */}
-        <section className="rounded-xl border border-border-color bg-bg-secondary/40 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-1">
-            <h3 className="font-bold text-sm text-text-primary">Always Verify on the Official Portals</h3>
-            <p className="text-xs text-text-secondary">
-              Official application links, senate notifications, and contact emails are managed directly by IIT Kanpur and IIT Madras.
+        <section className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+          <div className="space-y-0.5">
+            <h3 className="font-semibold text-xs text-slate-900">
+              Always Verify on the Official Institute Portals
+            </h3>
+            <p className="text-[11px] text-slate-500">
+              Official application links and admissions notices are published exclusively by the respective institutes.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <a
               href="https://iitk.ac.in/wsais/b-cyber.php"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-border-color text-xs font-semibold text-brand-primary hover:text-brand-secondary hover:border-brand-primary/30 transition-all shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/90 text-xs font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
             >
               <span>IIT Kanpur WSAIS</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
             <a
               href="https://www.iitm.ac.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-border-color text-xs font-semibold text-brand-primary hover:text-brand-secondary hover:border-brand-primary/30 transition-all shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/90 text-xs font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
             >
               <span>IIT Madras Portal</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3 h-3 text-slate-400" />
             </a>
           </div>
         </section>

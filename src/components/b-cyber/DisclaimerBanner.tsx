@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, ExternalLink } from 'lucide-react';
+import { ShieldAlert, ExternalLink, Info } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface DisclaimerBannerProps {
@@ -15,22 +15,35 @@ export const DisclaimerBanner: React.FC<DisclaimerBannerProps> = ({
     return (
       <div
         className={cn(
-          'flex items-center gap-2 rounded-lg border border-amber-200/80 bg-amber-50/60 px-3 py-2 text-xs text-amber-900',
+          'flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200/80 bg-slate-50/70 px-3 py-1.5 text-[11px] text-slate-600',
           className
         )}
       >
-        <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
-        <p className="leading-relaxed">
-          <strong className="font-semibold">Independent Guide:</strong> Not affiliated with IIT Kanpur or IIT Madras. Does not guarantee admission or selection.{' '}
+        <div className="flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <span>
+            <strong className="font-semibold text-slate-800">Independent Research:</strong> Not affiliated with IIT Kanpur or IIT Madras. Does not guarantee admission.
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-slate-500 font-medium">
           <a
             href="https://iitk.ac.in/wsais/b-cyber.php"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline hover:text-amber-950 inline-flex items-center gap-0.5"
+            className="hover:text-slate-900 inline-flex items-center gap-0.5"
           >
-            Official Portal <ExternalLink className="w-2.5 h-2.5 inline" />
+            IITK WSAIS <ExternalLink className="w-2.5 h-2.5" />
           </a>
-        </p>
+          <span>•</span>
+          <a
+            href="https://www.iitm.ac.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-slate-900 inline-flex items-center gap-0.5"
+          >
+            IIT Madras <ExternalLink className="w-2.5 h-2.5" />
+          </a>
+        </div>
       </div>
     );
   }
@@ -38,49 +51,45 @@ export const DisclaimerBanner: React.FC<DisclaimerBannerProps> = ({
   return (
     <div
       className={cn(
-        'rounded-xl border border-amber-200/80 bg-gradient-to-r from-amber-50/90 to-orange-50/60 p-4 sm:p-5 text-amber-950 shadow-2xs',
+        'rounded-xl border border-slate-200/80 bg-white p-3.5 sm:p-4 text-slate-700 shadow-[0_1px_2px_rgba(0,0,0,0.02)]',
         className
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="rounded-lg bg-amber-100 p-2 text-amber-800 shrink-0 mt-0.5">
-          <AlertCircle className="w-5 h-5" />
+        <div className="rounded-md bg-slate-100 p-1.5 text-slate-600 shrink-0 mt-0.5 border border-slate-200/60">
+          <ShieldAlert className="w-4 h-4" />
         </div>
-        <div className="space-y-1.5 text-xs sm:text-sm leading-relaxed">
-          <div className="font-semibold text-amber-900 text-sm">
-            Independent Student Research & Guidance Platform
+        <div className="space-y-1 text-xs leading-relaxed flex-1">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="font-semibold text-slate-900 tracking-tight">
+              Independent Student Research & Institutional Disclosure
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+              Unofficial Guide
+            </span>
           </div>
-          <p className="text-amber-900/90 text-xs sm:text-sm">
-            B.Cyber Compass is an independent research platform and preparation planner built by students. It is{' '}
-            <strong>NOT affiliated with, sponsored by, or endorsed by IIT Kanpur or IIT Madras</strong>.
+          <p className="text-slate-600 text-xs">
+            B.Cyber Compass is an independent research platform. It is <strong>not affiliated with, sponsored by, or endorsed by IIT Kanpur or IIT Madras</strong>. Admissions policies and formats are determined exclusively by institute Senates.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 text-xs text-amber-900/80">
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0" />
-              <span><strong>No Admission Guarantee:</strong> Guidance does not guarantee shortlisting or admission.</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0" />
-              <span><strong>Official Verification:</strong> Always cross-reference against the official portals.</span>
-            </div>
-          </div>
-          <div className="pt-2 flex flex-wrap items-center gap-3 text-xs font-medium">
+          <div className="pt-1 flex flex-wrap items-center gap-3 text-[11px] text-slate-500 font-medium">
+            <span className="text-slate-400">• No admission guarantees</span>
+            <span className="text-slate-400">• Always cross-reference official portals:</span>
             <a
               href="https://iitk.ac.in/wsais/b-cyber.php"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-amber-900 hover:text-amber-950 underline"
+              className="inline-flex items-center gap-1 text-slate-800 hover:text-slate-950 underline font-semibold"
             >
-              IIT Kanpur WSAIS Portal <ExternalLink className="w-3 h-3" />
+              IITK WSAIS Portal <ExternalLink className="w-2.5 h-2.5" />
             </a>
-            <span className="text-amber-400">•</span>
+            <span className="text-slate-300">/</span>
             <a
               href="https://www.iitm.ac.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-amber-900 hover:text-amber-950 underline"
+              className="inline-flex items-center gap-1 text-slate-800 hover:text-slate-950 underline font-semibold"
             >
-              IIT Madras Portal <ExternalLink className="w-3 h-3" />
+              IIT Madras Portal <ExternalLink className="w-2.5 h-2.5" />
             </a>
           </div>
         </div>

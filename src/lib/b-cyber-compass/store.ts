@@ -14,6 +14,8 @@ import { persist } from 'zustand/middleware';
 import type { DiagnosticInputs, GeneratedPlan } from '../../types/b-cyber-compass';
 import { generatePreparationPlan } from './rule-engine';
 
+export type PlannerTab = 'diagnostic' | 'gap_analysis' | 'phases' | 'proof_of_work' | 'weekly_calendar';
+
 export interface BCyberPlannerState {
   // Diagnostic Inputs
   inputs: DiagnosticInputs;
@@ -22,16 +24,22 @@ export interface BCyberPlannerState {
   // Task Completion Tracking
   completedTaskIds: string[];
   // Active UI View Tab
-  activeTab: 'diagnostic' | 'phases' | 'weekly_calendar';
+  activeTab: PlannerTab;
   // Selected Filter Category (optional UI convenience)
   selectedCategoryFilter: string | 'all';
+  // Stage 7: Emergency Recovery Routine Mode
+  isEmergencyRecoveryMode: boolean;
+  // Stage 5: Proof-of-Work Artifact URLs
+  proofOfWorkArtifacts: Record<string, string>;
 
   // Actions
   updateInputs: (partial: Partial<DiagnosticInputs>) => void;
   generatePlan: () => void;
   toggleTaskCompletion: (taskId: string) => void;
-  setActiveTab: (tab: 'diagnostic' | 'phases' | 'weekly_calendar') => void;
+  setActiveTab: (tab: PlannerTab) => void;
   setCategoryFilter: (filter: string) => void;
+  toggleRecoveryMode: () => void;
+  setProofOfWorkArtifact: (key: string, url: string) => void;
   reset: () => void;
 }
 
@@ -52,6 +60,8 @@ export const useBCyberPlannerStore = create<BCyberPlannerState>()(
       completedTaskIds: [],
       activeTab: 'diagnostic',
       selectedCategoryFilter: 'all',
+      isEmergencyRecoveryMode: false,
+      proofOfWorkArtifacts: {},
 
       updateInputs: (partial) => {
         set((state) => ({
@@ -90,6 +100,19 @@ export const useBCyberPlannerStore = create<BCyberPlannerState>()(
 
       setCategoryFilter: (filter) => set({ selectedCategoryFilter: filter }),
 
+      toggleRecoveryMode: () =>
+        set((state) => ({
+          isEmergencyRecoveryMode: !state.isEmergencyRecoveryMode,
+        })),
+
+      setProofOfWorkArtifact: (key, url) =>
+        set((state) => ({
+          proofOfWorkArtifacts: {
+            ...state.proofOfWorkArtifacts,
+            [key]: url,
+          },
+        })),
+
       reset: () => {
         set({
           inputs: { ...DEFAULT_INPUTS },
@@ -97,17 +120,21 @@ export const useBCyberPlannerStore = create<BCyberPlannerState>()(
           completedTaskIds: [],
           activeTab: 'diagnostic',
           selectedCategoryFilter: 'all',
+          isEmergencyRecoveryMode: false,
+          proofOfWorkArtifacts: {},
         });
       },
     }),
     {
       name: 'b-cyber-compass-planner',
-      version: 1,
+      version: 2,
       partialize: (state) => ({
         inputs: state.inputs,
         generatedPlan: state.generatedPlan,
         completedTaskIds: state.completedTaskIds,
         activeTab: state.activeTab,
+        isEmergencyRecoveryMode: state.isEmergencyRecoveryMode,
+        proofOfWorkArtifacts: state.proofOfWorkArtifacts,
       }),
     }
   )
