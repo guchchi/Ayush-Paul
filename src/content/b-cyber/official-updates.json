@@ -1,0 +1,101 @@
+{
+  "version": "2.3",
+  "lastUpdated": "2026-10-11",
+  "updates": [
+    {
+      "id": "upd-2026-06",
+      "date": "2026-07-15",
+      "title": "Discontinuation of JEE Main for Future Cycles & Separate Test Announcement",
+      "summary": "IIT Kanpur officially announced via WSAIS FAQ 23 that JEE Main will no longer be used for future B.Cyber admissions, and that a dedicated separate entrance test will be conducted.",
+      "domain": "admission_policy",
+      "trustLevel": "official_fact",
+      "applicableYear": "2027",
+      "category": "policy_change",
+      "officialSource": {
+        "title": "IIT Kanpur WSAIS Official Portal — FAQ 23",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse23",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "Will the same admission process be followed for future admissions? JEE Mains will not be used. A separate entrance test will be announced, the details of which will be made available soon."
+      },
+      "implicationsForStudents": "Crucial strategic shift for future aspirants: JEE Main will not be used for admission. Future applicants must await the official announcement for the entrance test format, syllabus, and eligibility rules. In the interim, computing and problem-solving studies are independent educational recommendations only, with no assumption that they represent the future test syllabus."
+    },
+    {
+      "id": "upd-2026-05",
+      "date": "2026-07-08",
+      "title": "B.Cyber 2026 Results & Seat Allotment Announced",
+      "summary": "IIT Kanpur published the list of candidates selected for the inaugural B.Cyber batch following the 5th July on-campus assessment round.",
+      "domain": "admission_policy",
+      "trustLevel": "observed_precedent_2026",
+      "applicableYear": "2026",
+      "category": "timeline",
+      "officialSource": {
+        "title": "IIT Kanpur WSAIS Notification Marquee & Results Sheet",
+        "url": "https://iitk.ac.in/wsais/data/Results-BCyber-2026.pdf",
+        "sectionAnchor": "blog-posts",
+        "sourceType": "official_pdf",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "B.Cyber Admissions 2026: Seat Allotment Announced – Click here to view. | List of Candidates for B.Cyber 2026 Announced - Click here to view."
+      },
+      "implicationsForStudents": "Selected candidates were instructed to report to the IIT Kanpur campus for orientation and registration by 21st July 2026."
+    },
+    {
+      "id": "upd-2026-04",
+      "date": "2026-07-05",
+      "title": "Inaugural On-Campus Admission Test & Hackathon Held at IIT Kanpur",
+      "summary": "Shortlisted candidates attended a 6-hour hands-on technical evaluation at the New Core Lab, IIT Kanpur, covering Web, API, OSINT, Reverse Engineering, and Cryptography.",
+      "domain": "admission_policy",
+      "trustLevel": "observed_precedent_2026",
+      "applicableYear": "2026",
+      "category": "timeline",
+      "officialSource": {
+        "title": "IIT Kanpur WSAIS Test Details & Venue Schedule",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "admissions-pane",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "Date: 05 July 2026. Venue: New Core Lab, IIT Kanpur. Test Duration: 10:00 AM – 4:00 PM."
+      },
+      "implicationsForStudents": "Established the precedent that the admissions committee places high value on hands-on terminal stamina and real-time problem triage under supervised conditions."
+    },
+    {
+      "id": "upd-2026-03",
+      "date": "2026-06-25",
+      "title": "IIT Madras Launches B.Cyber Program from AY 2026-27",
+      "summary": "IIT Madras officially announced the launch of its own B.Cyber degree program, joining the admission channel conducted by IIT Kanpur for the 2026-27 cycle.",
+      "domain": "admission_policy",
+      "trustLevel": "official_fact",
+      "applicableYear": "ongoing",
+      "category": "policy_change",
+      "officialSource": {
+        "title": "IIT Kanpur WSAIS Special Announcement & IITM PDF",
+        "url": "https://iitk.ac.in/wsais/data/BCyber_IITM.pdf",
+        "sectionAnchor": "policy-card",
+        "sourceType": "official_pdf",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "IIT Madras launches the B.Cyber. program from academic year 2026-27. The admission to the program will be via the test being conducted by IIT Kanpur on 5th July 2026."
+      },
+      "implicationsForStudents": "Confirms that candidates admitted to IIT Madras study at IIT Madras and receive their degree from IIT Madras, expanding institutional capacity for practice-oriented cybersecurity education in India."
+    },
+    {
+      "id": "upd-2026-02",
+      "date": "2026-06-15",
+      "title": "Inaugural Application Form & Portal Launch for 2026 Batch",
+      "summary": "WSAIS opened the formal application window for B.Cyber 2026 with an application deadline of 25th June 2026.",
+      "domain": "admission_policy",
+      "trustLevel": "observed_precedent_2026",
+      "applicableYear": "2026",
+      "category": "timeline",
+      "officialSource": {
+        "title": "IIT Kanpur WSAIS Tentative Timeline",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "admissions-pane",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "Portal launch and application form opening: 15th June 2026. Last date to apply: 25th June 2026."
+      },
+      "implicationsForStudents": "Illustrates that inaugural admission notifications can have compressed application turnarounds (10-day application window in 2026)."
+    }
+  ]
+}

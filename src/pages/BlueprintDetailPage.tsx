@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getKnowledgeGraph } from '../lib/knowledge-graph/instance';
 import type { BlueprintPageViewModel } from '../lib/knowledge-graph/projections/projections';
 import { motion } from 'motion/react';
-import { Lock } from 'lucide-react';
+import { Lock, Compass, ArrowRight } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { getCanonicalUrl } from '../lib/domain';
 import type { Product } from '../types';
@@ -329,6 +329,26 @@ export const BlueprintDetailPage = () => {
         <div className="mb-10">
           <BackButton to="/blueprints" label="Back to Blueprints" />
         </div>
+
+        {slug === 'b-cyber-os' && (
+          <div className="mb-8 rounded-xl border border-brand-primary/30 bg-brand-primary/5 p-4 text-xs text-text-primary flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-2xs">
+            <div className="space-y-0.5">
+              <span className="font-semibold text-brand-primary text-sm flex items-center gap-1.5">
+                <Compass className="w-4 h-4 inline" /> B.Cyber Compass Update Available
+              </span>
+              <p className="text-text-secondary text-xs">
+                Looking for verified B.Cyber admission guidance and personalised preparation? Explore the updated B.Cyber Compass.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/blueprints/b-cyber')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-primary text-white font-semibold text-xs hover:bg-brand-secondary transition-colors shrink-0 cursor-pointer"
+            >
+              <span>View B.Cyber Compass</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Hero — Full Width */}
         <div className="mb-20">

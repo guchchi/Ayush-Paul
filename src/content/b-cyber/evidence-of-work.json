@@ -1,0 +1,133 @@
+{
+  "version": "2.3",
+  "lastUpdated": "2026-10-11",
+  "officialDisclaimer": "This guide provides practical recommendations aligned with IIT Kanpur's published criteria for verifiable prior work (WSAIS FAQ 22). Creating a portfolio, technical repository, or vulnerability disclosure does NOT guarantee eligibility, shortlisting, or admission into any IIT degree program.",
+  "standards": [
+    {
+      "id": "std-vuln-01",
+      "type": "vulnerability_disclosure",
+      "title": "Responsible Vulnerability Disclosures & Security Advisories",
+      "description": "Public or private security disclosures made through established responsible disclosure programs (HackerOne, Bugcrowd, NCIIPC, or institute security programs).",
+      "officialReference": {
+        "title": "IIT Kanpur WSAIS FAQ 22",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse22",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "This will include, but not limited to, reported vulnerabilities by candidates... The criticality and technical details of the vulnerabilities disclosed by them will be considered during the shortlisting."
+      },
+      "verificationCriteria": [
+        "Include links to published security hall-of-fame or acknowledgment letters",
+        "Document root-cause vulnerability analysis (e.g. IDOR, SSRF, Input Validation)",
+        "Redact sensitive domain information adhering to responsible disclosure guidelines"
+      ],
+      "recommendedArtifactFormat": "1-page PDF summary or markdown case study with verifiable reference URL and timeline of communication.",
+      "antiPatternsToAvoid": [
+        "Claiming low-impact scanner reports (e.g. missing security headers or SSL ciphers) as critical security vulnerabilities",
+        "Violating responsible disclosure policies by publicly exposing unpatched systems",
+        "Presenting theoretical bug writeups without verifiable acknowledgment"
+      ]
+    },
+    {
+      "id": "std-tool-02",
+      "type": "original_tool",
+      "title": "Original Security Mini-Utilities & Scripts",
+      "description": "Original utilities, scripts, or systems developed in Python, C, or Go to solve concrete networking, cryptographic, or system administration challenges.",
+      "officialReference": {
+        "title": "IIT Kanpur WSAIS FAQ 22",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse22",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "cybersecurity projects/products developed by them... The candidate will have to provide easily verifiable evidence of the work done."
+      },
+      "verificationCriteria": [
+        "Publicly accessible Git repository (GitHub/GitLab) with active commit history",
+        "Comprehensive README.md containing installation steps, architecture diagram, and example output",
+        "Clean, commented code demonstrating understanding of sockets, file descriptors, or encryption primitives"
+      ],
+      "recommendedArtifactFormat": "GitHub repository link with a 30-line code snippet highlighting the core algorithm in your application dossier.",
+      "antiPatternsToAvoid": [
+        "Cloning a popular open-source tool (e.g. sqlmap or nmap) and making cosmetic README edits",
+        "Large bloated web applications where security is merely an afterthought",
+        "Repositories with a single commit containing copied code without commit history"
+      ]
+    },
+    {
+      "id": "std-oss-03",
+      "type": "opensource_contribution",
+      "title": "Contributions to Open-Source Cybersecurity Projects",
+      "description": "Merged pull requests, bug fixes, or documentation enhancements to recognized open-source security tools and frameworks.",
+      "officialReference": {
+        "title": "IIT Kanpur WSAIS FAQ 22",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse22",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "open-source contributions to cybersecurity projects, or other relevant accomplishments."
+      },
+      "verificationCriteria": [
+        "Verifiable PR links in the host repository's merge log",
+        "Clear technical discussion demonstrating peer-review interaction",
+        "Demonstrated mastery of git workflow and codebase conventions"
+      ],
+      "recommendedArtifactFormat": "Direct permalink to merged PRs accompanied by a 2-paragraph technical explanation of the bug and fix.",
+      "antiPatternsToAvoid": [
+        "Trivial single-word typo fixes submitted purely to inflate commit counts",
+        "Unmerged, closed, or rejected pull requests claimed as contributions",
+        "Automated bot-generated contributions"
+      ]
+    },
+    {
+      "id": "std-writeup-04",
+      "type": "technical_writeup",
+      "title": "Methodological CTF & Lab Problem-Solving Writeups",
+      "description": "Original, deeply analyzed writeups documenting how you broke down non-trivial security challenges or CTF problems.",
+      "officialReference": {
+        "title": "IIT Kanpur WSAIS FAQ 22",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse22",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "The candidate will have to provide easily verifiable evidence of the work done."
+      },
+      "verificationCriteria": [
+        "Focus on thought process: initial hypothesis, observed errors, failed attempts, and the eureka moment",
+        "Inclusion of terminal logs, Wireshark packet snippets, or debugger disassemblies",
+        "Clear explanation of the underlying security mechanism, not just the solution string"
+      ],
+      "recommendedArtifactFormat": "Self-hosted technical blog post or clean markdown document published in your public GitHub notes repository.",
+      "antiPatternsToAvoid": [
+        "Copy-pasting existing solutions from public internet walkthroughs",
+        "Writing a pure command list without explaining why each tool or argument was used",
+        "Generic video course completion certificates from commercial learning websites"
+      ]
+    },
+    {
+      "id": "std-video-05",
+      "type": "video_walkthrough",
+      "title": "Concise Technical Demonstration Video (Independent Format Heuristic)",
+      "description": "An independent format heuristic for demonstrating working code or projects clearly. This is NOT an IIT Kanpur requirement and does NOT guarantee shortlisting or improve selection chances. It is simply one optional way to provide verifiable evidence of code execution.",
+      "officialReference": {
+        "title": "IIT Kanpur WSAIS FAQ 22",
+        "url": "https://iitk.ac.in/wsais/b-cyber.php",
+        "sectionAnchor": "faqCollapse22",
+        "sourceType": "official_portal",
+        "verifiedDate": "2026-10-11",
+        "verbatimQuote": "The candidate will have to provide easily verifiable evidence of the work done."
+      },
+      "verificationCriteria": [
+        "Strict 120-second time constraint: 20s intro -> 45s live terminal demo -> 40s technical problem overcome -> 15s conclusion",
+        "Live screen capture showing terminal execution or network inspection",
+        "Clarity and technical conciseness over video production effects"
+      ],
+      "recommendedArtifactFormat": "Unlisted YouTube/Vimeo video link embedded in your application dossier PDF.",
+      "antiPatternsToAvoid": [
+        "Assuming that submitting a video provides any competitive advantage, special preference, or guarantee of shortlisting",
+        "Lengthy slide presentations without running code or terminal interactions",
+        "Marketing hype, background music, or generic statements about wanting to become an ethical hacker",
+        "Videos exceeding 3 minutes"
+      ]
+    }
+  ]
+}

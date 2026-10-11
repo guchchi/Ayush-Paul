@@ -80,6 +80,32 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
   edges.push(new EdgeBuilder('e_prod_eco', 'prod_first_3_clients', 'eco_blueprints', 'HAS_PARENT').build());
 
   // ==========================================
+  // 2b. PRODUCT NODE: B.Cyber Compass
+  // ==========================================
+  const bCyberProduct = new NodeBuilder('prod_b_cyber_compass', 'PRODUCT')
+    .setTitle('B.Cyber Compass')
+    .setSlug('b-cyber')
+    .setDescription('Independent admission intelligence, 2026 precedent analysis, and personalised preparation planner for the 4-year B.Cyber program at IIT Kanpur and IIT Madras.')
+    .setProperties({ difficulty: 'ALL_LEVELS', estimatedHours: 20, priceInCents: 0 })
+    .build();
+  nodes.push(bCyberProduct);
+
+  const bCyberContent = new NodeBuilder('cnt_prod_b_cyber', 'CONTENT')
+    .setTitle('B.Cyber Compass — System Overview')
+    .setSlug('cnt-b-cyber')
+    .setProperties({
+      bodyMarkdown: '# B.Cyber Compass\n\nIndependent admission intelligence and personalised preparation planner for the B.Cyber program at IIT Kanpur and IIT Madras.\n\n### Core Capabilities:\n- **Layer 1:** Verified institutional admission policies and 2026 precedent analysis.\n- **Layer 2:** Dynamic preparation planner with zero arbitrary 50/50 splits.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 3,
+    })
+    .build();
+  nodes.push(bCyberContent);
+
+  edges.push(new EdgeBuilder('e_prod_bcyber_cnt', 'prod_b_cyber_compass', 'cnt_prod_b_cyber', 'HAS_CONTENT').build());
+  edges.push(new EdgeBuilder('e_eco_bcyber', 'eco_blueprints', 'prod_b_cyber_compass', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_bcyber_eco', 'prod_b_cyber_compass', 'eco_blueprints', 'HAS_PARENT').build());
+
+  // ==========================================
   // 3. MODULE 1: Client Acquisition Strategy
   // ==========================================
   const mod1 = new NodeBuilder('mod_client_acquisition', 'MODULE')

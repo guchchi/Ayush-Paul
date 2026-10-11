@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Clock, BarChart3, ArrowRight, Layers, Zap, Lock } from 'lucide-react';
+import { Clock, BarChart3, ArrowRight, Layers, Zap, Lock, Compass } from 'lucide-react';
 import { BlueprintLayout } from '../components/blueprint-engine/BlueprintLayout';
 import { OutcomeCard } from '../components/blueprint-engine/OutcomeCard';
 import { WorkflowCard } from '../components/blueprint-engine/WorkflowCard';
@@ -277,6 +277,25 @@ export function BlueprintEnginePage() {
       overallProgress={overallProgress}
     >
       <div className="mb-10">
+        {slug === 'b-cyber-os' && (
+          <div className="mb-6 rounded-xl border border-brand-primary/40 bg-brand-primary/10 p-4 text-xs text-white/90 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="space-y-0.5">
+              <span className="font-semibold text-brand-primary text-sm flex items-center gap-1.5">
+                <Compass className="w-4 h-4 inline" /> B.Cyber Compass Update Available
+              </span>
+              <p className="text-white/70 text-xs">
+                Looking for verified B.Cyber admission guidance and personalised preparation? Explore the updated B.Cyber Compass.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/blueprints/b-cyber')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-primary text-white font-semibold text-xs hover:bg-brand-secondary transition-colors shrink-0 cursor-pointer"
+            >
+              <span>View B.Cyber Compass</span>
+              <ArrowRight size={12} />
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2 mb-3">
           <span className="w-5 h-5 rounded-md bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
             <Zap size={10} className="text-brand-primary" />

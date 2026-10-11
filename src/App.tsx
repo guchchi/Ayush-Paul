@@ -38,6 +38,14 @@ const OutreachEnginePage = lazy(() => import("./pages/OutreachEngine").then(m =>
 const DeliverySystemPage = lazy(() => import("./pages/DeliverySystem").then(m => ({ default: m.DeliverySystemPage })));
 const DeveloperGraphInspector = lazy(() => import("./components/dev/DeveloperGraphInspector").then(m => ({ default: m.DeveloperGraphInspector })));
 
+// --- B.Cyber Compass Pages (Lazy Loaded) ---
+const BCyberHomePage = lazy(() => import("./pages/blueprints/b-cyber/BCyberHomePage").then(m => ({ default: m.BCyberHomePage })));
+const BCyberAdmissionGuidePage = lazy(() => import("./pages/blueprints/b-cyber/BCyberAdmissionGuidePage").then(m => ({ default: m.BCyberAdmissionGuidePage })));
+const BCyber2026PrecedentPage = lazy(() => import("./pages/blueprints/b-cyber/BCyber2026PrecedentPage").then(m => ({ default: m.BCyber2026PrecedentPage })));
+const BCyberOfficialUpdatesPage = lazy(() => import("./pages/blueprints/b-cyber/BCyberOfficialUpdatesPage").then(m => ({ default: m.BCyberOfficialUpdatesPage })));
+const BCyberEvidenceGuidePage = lazy(() => import("./pages/blueprints/b-cyber/BCyberEvidenceGuidePage").then(m => ({ default: m.BCyberEvidenceGuidePage })));
+const BCyberPreparationPlannerPage = lazy(() => import("./pages/blueprints/b-cyber/BCyberPreparationPlannerPage").then(m => ({ default: m.BCyberPreparationPlannerPage })));
+
 
 
 // --- Loading Fallback ---
@@ -153,6 +161,13 @@ export default function App() {
               <Route path="/systems" element={<Navigate to="/blueprints" replace />} />
               <Route path="/systems/:slug" element={<RedirectWithSlug />} />
               <Route path="/blueprints" element={wrapInLayout(<BlueprintsPage />)} />
+              {/* B.Cyber Compass Routes (Declared before :slug) */}
+              <Route path="/blueprints/b-cyber" element={wrapInLayout(<BCyberHomePage />)} />
+              <Route path="/blueprints/b-cyber/admission" element={wrapInLayout(<BCyberAdmissionGuidePage />)} />
+              <Route path="/blueprints/b-cyber/2026-process" element={wrapInLayout(<BCyber2026PrecedentPage />)} />
+              <Route path="/blueprints/b-cyber/updates" element={wrapInLayout(<BCyberOfficialUpdatesPage />)} />
+              <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
+              <Route path="/blueprints/b-cyber/prepare" element={wrapInLayout(<BCyberPreparationPlannerPage />)} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
               <Route path="/blueprints/:slug/engine" element={<BlueprintEnginePage />} />
               <Route path="/academy" element={<Navigate to="/mastery" replace />} />

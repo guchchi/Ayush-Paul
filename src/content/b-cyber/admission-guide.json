@@ -1,0 +1,269 @@
+{
+  "version": "2.3",
+  "lastUpdated": "2026-10-11",
+  "disclaimer": "B.Cyber Compass is an independent educational and preparation planning platform. It is not affiliated with, endorsed by, or operated by IIT Kanpur or IIT Madras. All official policies and notices must be verified directly through official institute portals.",
+  "sections": [
+    {
+      "id": "program-overview",
+      "title": "Program Overview & Degree Structure",
+      "summary": "Core structural facts regarding the Bachelor of Cybersecurity (B.Cyber.) degree program.",
+      "applicableYear": "ongoing",
+      "trustLevel": "official_fact",
+      "claims": [
+        {
+          "id": "claim-deg-01",
+          "claim": "The Bachelor of Cybersecurity (B.Cyber.) is a 4-year practice-oriented undergraduate degree program initiated by the Wadhwani School of AI and Intelligent Systems (WSAIS) at IIT Kanpur.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "ongoing",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS B.Cyber Official Portal",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "home-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Bachelors in Cybersecurity (B.Cyber.) A new undergraduate program at IIT Kanpur. Program run by the Wadhwani School of AI and Intelligent Systems."
+            }
+          ],
+          "qualificationsOrLimitations": "Curriculum approved by the IIT Kanpur Senate."
+        },
+        {
+          "id": "claim-deg-02",
+          "claim": "Students enrolled at IIT Kanpur receive a B.Cyber degree and alumnus status from IIT Kanpur. Students admitted to the IIT Madras B.Cyber program receive their degree and alumnus status from IIT Madras.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "ongoing",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS FAQ 16 & 17",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "faqCollapse16",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Students who successfully complete all program requirements will be awarded a Bachelors in Cybersecurity (B.Cyber.) degree from IIT Kanpur. Students who successfully complete the program will receive IIT Kanpur alumni status."
+            },
+            {
+              "title": "IIT Madras B.Cyber Launch Notification",
+              "url": "https://iitk.ac.in/wsais/data/BCyber_IITM.pdf",
+              "sectionAnchor": "announcement-banner",
+              "sourceType": "official_pdf",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "IIT Madras launches the B.Cyber. program from academic year 2026-27. The admission to the program will be via the test being conducted by IIT Kanpur on 5th July 2026."
+            }
+          ],
+          "qualificationsOrLimitations": "Degrees are conferred independently by the candidate's respective enrolling institute, not as a joint degree parchment."
+        },
+        {
+          "id": "claim-deg-03",
+          "claim": "The curriculum model comprises 2 years of intensive coursework and laboratory training at the institute campus, followed by 2 years of field deployment/internship primarily at selected government organizations.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "ongoing",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Salient Features",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "home-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "First 2 years of course work at IIT Kanpur. Next 2 years of internship, primarily at selected government organizations (some stipend may be paid by the organizations during this period)."
+            }
+          ],
+          "qualificationsOrLimitations": "Students remain regular students of IIT Kanpur for the entire 4-year duration. Stipend depends on host organization policies."
+        },
+        {
+          "id": "claim-deg-04",
+          "claim": "Multiple exit options are permitted under Senate regulations: Certificate in Cybersecurity upon completion of 150 credits, Diploma in Cybersecurity upon completion of 200 credits, or B.Cyber Degree upon completion of all 4 years.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "ongoing",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Exit Options & FAQ 10",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "selection-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Certificate in Cybersecurity: Permitted exit upon successful completion of 150 Credits. Diploma in Cybersecurity: Permitted exit upon successful completion of 200 Credits."
+            }
+          ],
+          "qualificationsOrLimitations": "Maximum total program duration permitted is 6 years."
+        },
+        {
+          "id": "claim-deg-05",
+          "claim": "No branch changes are permitted into or out of the B.Cyber program. B.Tech students cannot change to B.Cyber without qualifying the dedicated entrance selection, and B.Cyber students cannot change to regular B.Tech programs.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "ongoing",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS FAQ 12",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "faqCollapse12",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "No. The entry to BTech programs is through JEE Advanced. Therefore B.Cyber. Students can’t change to other programs. (Even BTech students can’t enter B.Cyber. program without qualifying the separate entrance test for this program.)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "future-admissions-2027",
+      "title": "Future Admission Cycles (2027+) Policy & Pending Notifications",
+      "summary": "Confirmed institutional policies and pending details for upcoming B.Cyber admission cycles.",
+      "applicableYear": "2027",
+      "trustLevel": "official_fact",
+      "claims": [
+        {
+          "id": "claim-fut-01",
+          "claim": "JEE Main will NOT be used for future B.Cyber admissions. A separate entrance test will be announced.",
+          "domain": "admission_policy",
+          "trustLevel": "official_fact",
+          "applicableYear": "2027",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS FAQ 23",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "faqCollapse23",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Will the same admission process be followed for future admissions? JEE Mains will not be used. A separate entrance test will be announced, the details of which will be made available soon."
+            }
+          ],
+          "qualificationsOrLimitations": "This confirms the discontinuation of JEE Main as an admission filter. It does NOT announce the date, syllabus, or format of the replacement test."
+        },
+        {
+          "id": "claim-fut-02",
+          "claim": "The exact syllabus, question pattern, scoring format, test date, and eligibility criteria for the future dedicated entrance test have not yet been announced by IIT Kanpur.",
+          "domain": "admission_policy",
+          "trustLevel": "pending_official_notice",
+          "applicableYear": "2027",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS FAQ 23",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "faqCollapse23",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "the details of which will be made available soon."
+            }
+          ],
+          "qualificationsOrLimitations": "Aspirants must not rely on unverified online rumors purporting to reveal the 2027 syllabus or paper pattern. Any independent mathematics, logic, or computing studies undertaken are independent educational readiness only, not confirmed test syllabus content. Official details will be published on the WSAIS portal."
+        }
+      ]
+    },
+    {
+      "id": "historical-2026-precedent",
+      "title": "2026 Inaugural Admission Process (Observed Precedent)",
+      "summary": "Detailed historical breakdown of the 2026 cycle. These criteria serve as historical context and are non-binding for 2027.",
+      "applicableYear": "2026",
+      "trustLevel": "observed_precedent_2026",
+      "claims": [
+        {
+          "id": "claim-2026-01",
+          "claim": "In 2026, initial candidate shortlisting was conducted on the basis of best JEE Main score from any session of 2025 or 2026 plus evidence of prior work done in cybersecurity.",
+          "domain": "admission_policy",
+          "trustLevel": "observed_precedent_2026",
+          "applicableYear": "2026",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Selection & Policies",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "selection-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "The shortlisting will be done on the basis of the best JEE Mains score of any session of 2025 or 2026 of the candidates and evidence of any prior work done in the domain of cybersecurity. Tie-breaking rule: Same score – younger candidate will be considered."
+            }
+          ],
+          "historicalContext": "Applied only to the inaugural 2026 batch. Officially discontinued for future cycles per FAQ 23."
+        },
+        {
+          "id": "claim-2026-02",
+          "claim": "In 2026, shortlisted candidates appeared for an in-person 6-hour admission test / hackathon at the New Core Lab, IIT Kanpur campus on 5th July 2026 (10:00 AM – 4:00 PM).",
+          "domain": "admission_policy",
+          "trustLevel": "observed_precedent_2026",
+          "applicableYear": "2026",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Test Schedule & Venue",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "admissions-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Date: 05 July 2026. Venue: New Core Lab, IIT Kanpur, Kanpur, UP – 208016. Test Duration: 10:00 AM – 4:00 PM."
+            }
+          ],
+          "historicalContext": "The test was conducted on sanitized desktop systems monitored by IIT Kanpur faculty and technical experts."
+        },
+        {
+          "id": "claim-2026-03",
+          "claim": "The 2026 on-campus hackathon evaluated analytical thinking, curiosity, and practical aptitude across: Cryptography, Web Security, API Security, Network Security, Reverse Engineering, OSINT, Operating Systems (Linux & Windows), Cloud Security, and Malware & Threat Analysis.",
+          "domain": "admission_policy",
+          "trustLevel": "observed_precedent_2026",
+          "applicableYear": "2026",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Details of Admission Test & FAQ 24",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "admissions-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "The hackthon/test will consist of challenges related to Web Security, API Security, OSINT, Reverse Engineering, Operating Systems (Linux and Windows), cloud security. Malware and threat analysis, and reverse engineering. The test will focus on assessing a candidate's analytical thinking, curiosity, and aptitude for cybersecurity."
+            }
+          ],
+          "historicalContext": "Demonstrates the technical breadth of the inaugural hands-on evaluation. Must NOT be assumed as the confirmed syllabus for future separate entrance tests."
+        },
+        {
+          "id": "claim-2026-04",
+          "claim": "2026 Academic Baseline Eligibility: Class 12 or equivalent with Physics, Chemistry, and Mathematics (5 total subjects). Candidates from NIOS were eligible. Only Indian nationals were eligible. Maximum 2 consecutive attempts permitted. Born on or after October 1, 2001 (October 1, 1996 for SC/ST/PwD).",
+          "domain": "admission_policy",
+          "trustLevel": "observed_precedent_2026",
+          "applicableYear": "2026",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Eligibility Criteria",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "eligibility-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "Class 12th or equivalent. Physics, Chemistry, and Mathematics in 12th standard; and must have taken 5 subjects in this standard... Candidates should have been born on or after October 1, 2001. Candidates from NIOS are eligible. Only Indian nationals are eligible."
+            }
+          ],
+          "historicalContext": "Confirmed for the 2026 cycle. Age cutoffs and exact eligibility for 2027 await the official 2027 notification."
+        },
+        {
+          "id": "claim-2026-05",
+          "claim": "2026 IIT Prior-Admission Restriction: Candidates already admitted to any IIT under JoSAA 2025 business rules were ineligible to apply. Candidates allocated a seat in JoSAA 2025 who withdrew before the final round or never reported online were eligible.",
+          "domain": "admission_policy",
+          "trustLevel": "observed_precedent_2026",
+          "applicableYear": "2026",
+          "verificationStatus": "verified",
+          "sources": [
+            {
+              "title": "IIT Kanpur WSAIS Concurrent Admission Policy",
+              "url": "https://iitk.ac.in/wsais/b-cyber.php",
+              "sectionAnchor": "eligibility-pane",
+              "sourceType": "official_portal",
+              "verifiedDate": "2026-10-11",
+              "verbatimQuote": "A candidate should NOT have been admitted to an IIT under any academic program that is listed in JoSAA Business Rules of 2025, irrespective of whether or not the candidate continued in the program OR accepted an IIT seat by reporting online / at a reporting centre in the past."
+            }
+          ],
+          "historicalContext": "Designed to prevent holding dual seats across IIT undergraduate degree programs."
+        }
+      ]
+    }
+  ]
+}
