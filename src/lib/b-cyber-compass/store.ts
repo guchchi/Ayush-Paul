@@ -56,24 +56,28 @@ export const useBCyberPlannerStore = create<BCyberPlannerState>()(
   persist(
     (set, get) => ({
       inputs: { ...DEFAULT_INPUTS },
-      generatedPlan: null,
+      generatedPlan: generatePreparationPlan(DEFAULT_INPUTS),
       completedTaskIds: [],
-      activeTab: 'diagnostic',
+      activeTab: 'phases',
       selectedCategoryFilter: 'all',
       isEmergencyRecoveryMode: false,
       proofOfWorkArtifacts: {},
 
       updateInputs: (partial) => {
-        set((state) => ({
-          inputs: {
+        set((state) => {
+          const newInputs = {
             ...state.inputs,
             ...partial,
-            // Ensure weekly hours remains bounded between 3 and 25
-            availableWeeklyHours: partial.availableWeeklyHours !== undefined
-              ? Math.max(3, Math.min(25, partial.availableWeeklyHours))
-              : state.inputs.availableWeeklyHours,
-          },
-        }));
+            availableWeeklyHours:
+              partial.availableWeeklyHours !== undefined
+                ? Math.max(3, Math.min(25, partial.availableWeeklyHours))
+                : state.inputs.availableWeeklyHours,
+          };
+          return {
+            inputs: newInputs,
+            generatedPlan: generatePreparationPlan(newInputs),
+          };
+        });
       },
 
       generatePlan: () => {
@@ -81,7 +85,6 @@ export const useBCyberPlannerStore = create<BCyberPlannerState>()(
         const plan = generatePreparationPlan(inputs);
         set({
           generatedPlan: plan,
-          activeTab: 'phases',
         });
       },
 
