@@ -31,11 +31,11 @@ export const BCyberCurriculumExplorer: React.FC = () => {
       {/* Header */}
       <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-sky-50 border border-sky-200/80 text-[11px] font-mono text-sky-800 font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/80 text-xs text-sky-800 font-medium">
             <GraduationCap className="w-3.5 h-3.5 text-sky-600" />
             <span>Senate-Approved Credit Architecture</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-xs text-slate-500 font-medium">
             Total Credits: ~365+ Credits | Normal Duration: 4 Years
           </span>
         </div>
@@ -54,10 +54,10 @@ export const BCyberCurriculumExplorer: React.FC = () => {
           {/* Block 1: Campus Coursework */}
           <div className="rounded-xl border border-sky-200 bg-sky-50/30 p-4 space-y-2 relative overflow-hidden">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold text-sky-800 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-sky-900">
                 Phase 1: Campus Foundation (Years 1 &amp; 2)
               </span>
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-sky-100 text-sky-900">
+              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-900">
                 Semesters 1 to 4
               </span>
             </div>
@@ -69,7 +69,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
                 (lab, i) => (
                   <span
                     key={i}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white border border-sky-200/80 text-sky-900 font-medium"
+                    className="text-[11px] px-2.5 py-0.5 rounded-full bg-white border border-sky-200/80 text-sky-900 font-medium"
                   >
                     {lab}
                   </span>
@@ -81,10 +81,10 @@ export const BCyberCurriculumExplorer: React.FC = () => {
           {/* Block 2: Field Deployment */}
           <div className="rounded-xl border border-indigo-200 bg-indigo-50/30 p-4 space-y-2 relative overflow-hidden">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold text-indigo-800 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-indigo-900">
                 Phase 2: Field Deployment (Years 3 &amp; 4)
               </span>
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-900">
+              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-900">
                 Semesters 5 to 8 (216 Cr)
               </span>
             </div>
@@ -111,7 +111,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
               <BookOpen className="w-3.5 h-3.5 text-slate-500" />
               <span>Select Semester to Inspect Exact Courses</span>
             </h3>
-            <span className="text-[11px] font-mono text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               {activeSemester.totalCredits}
             </span>
           </div>
@@ -130,7 +130,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
                 )}
               >
-                <div className="text-[10px] font-mono opacity-80">
+                <div className="text-[11px] font-medium opacity-80">
                   {sem.semesterNumber === 5 ? 'Sem 5–8' : `Sem ${sem.semesterNumber}`}
                 </div>
                 <div className="text-xs font-bold">
@@ -147,7 +147,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
                 <h4 className="text-sm font-bold text-slate-900">{activeSemester.title}</h4>
                 <p className="text-xs text-slate-500">{activeSemester.description}</p>
               </div>
-              <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-800 self-start sm:self-auto">
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 self-start sm:self-auto">
                 {activeSemester.totalCredits}
               </span>
             </div>
@@ -165,7 +165,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
                     </span>
                     <span
                       className={cn(
-                        'text-[10px] font-mono px-2 py-0.5 rounded-md font-semibold shrink-0',
+                        'text-[11px] px-2.5 py-0.5 rounded-full font-medium shrink-0',
                         course.type === 'lab'
                           ? 'bg-red-50 text-red-700 border border-red-200'
                           : course.type === 'core'
@@ -181,7 +181,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
                     {course.focus}
                   </p>
 
-                  <div className="pt-1 flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
+                  <div className="pt-1 flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
                     <span className="capitalize">{course.type} Subject</span>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export const BCyberCurriculumExplorer: React.FC = () => {
               <Award className="w-3.5 h-3.5 text-slate-500" />
               <span>Senate Exit Options &amp; Program Duration</span>
             </h3>
-            <span className="text-[11px] font-mono text-slate-500">Max Permissible: 6 Years</span>
+            <span className="text-xs text-slate-500 font-medium">Max Permissible: 6 Years</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -208,10 +208,10 @@ export const BCyberCurriculumExplorer: React.FC = () => {
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
                       {opt.creditsRequired === 365 ? 'All 4 Years' : `${opt.creditsRequired} Credits`}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-400">{opt.status}</span>
+                    <span className="text-xs text-slate-500 font-medium">{opt.status}</span>
                   </div>
                   <h4 className="text-xs font-bold text-slate-900">{opt.title}</h4>
                   <p className="text-[11px] text-slate-600 leading-relaxed">{opt.description}</p>

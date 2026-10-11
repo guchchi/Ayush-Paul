@@ -23,10 +23,10 @@ export const BCyberParadigmShiftCard: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold tracking-wider uppercase text-amber-800">
+            <span className="text-xs font-semibold text-amber-900">
               Crucial Strategic Pivot
             </span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-amber-100/90 text-amber-900 border border-amber-200 font-semibold">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-medium">
               WSAIS FAQ 23
             </span>
           </div>
@@ -38,7 +38,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
             type="button"
             onClick={() => setActiveCycle('both')}
             className={cn(
-              'px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer',
+              'px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer',
               activeCycle === 'both'
                 ? 'bg-slate-900 text-white font-semibold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -50,7 +50,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
             type="button"
             onClick={() => setActiveCycle('2027_only')}
             className={cn(
-              'px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer',
+              'px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer',
               activeCycle === '2027_only'
                 ? 'bg-slate-900 text-white font-semibold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -62,7 +62,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
             type="button"
             onClick={() => setActiveCycle('2026_only')}
             className={cn(
-              'px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors cursor-pointer',
+              'px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer',
               activeCycle === '2026_only'
                 ? 'bg-slate-900 text-white font-semibold shadow-xs'
                 : 'text-slate-600 hover:text-slate-900'
@@ -97,19 +97,19 @@ export const BCyberParadigmShiftCard: React.FC = () => {
                   href="https://iitk.ac.in/wsais/b-cyber.php#faqCollapse23"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-800 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-amber-800 font-medium hover:underline"
                 >
                   <span>Verify Portal</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
-              <p className="text-xs sm:text-sm font-serif italic text-amber-950/90 leading-relaxed bg-white/70 p-3 rounded-lg border border-amber-200/60 shadow-xs">
+              <p className="text-xs sm:text-sm italic text-amber-950 leading-relaxed bg-white/70 p-3 rounded-lg border border-amber-200/60 shadow-xs">
                 &ldquo;Will the same admission process be followed for future admissions? <strong>JEE Mains will not be used.</strong> A separate entrance test will be announced, the details of which will be made available soon.&rdquo;
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-amber-900/80 pt-1 border-t border-amber-200/50">
+          <div className="flex items-center gap-2 text-xs text-amber-900/80 pt-1 border-t border-amber-200/50">
             <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0" />
             <span>
               <strong>Rumor Alert:</strong> The official test syllabus, dates, and paper pattern have <em>not yet been announced</em>. Do not purchase speculative coaching material claiming to have the leaked 2027 syllabus.
@@ -133,7 +133,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
                   <History className="w-4 h-4 text-slate-500" />
                   <h3 className="text-sm font-bold text-slate-800">2026 Inaugural Cycle (Observed Precedent)</h3>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200/70 text-slate-700 font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-medium">
                   Historical Archive
                 </span>
               </div>
@@ -141,7 +141,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
               <div className="space-y-3">
                 {PARADIGM_SHIFT_COMPARISON.map((item, idx) => (
                   <div key={idx} className="space-y-1 text-xs">
-                    <span className="font-semibold text-slate-500 text-[11px] uppercase tracking-wider block">
+                    <span className="font-semibold text-slate-500 text-xs block">
                       {item.parameter}
                     </span>
                     <p className="text-slate-800 font-medium leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200/70">
@@ -167,7 +167,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
                   <Sparkles className="w-4 h-4 text-emerald-600" />
                   <h3 className="text-sm font-bold text-emerald-950">2027 Admission Cycle (Confirmed Shift)</h3>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium border border-emerald-200">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium border border-emerald-200">
                   Confirmed by FAQ 23
                 </span>
               </div>
@@ -175,7 +175,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
               <div className="space-y-3">
                 {PARADIGM_SHIFT_COMPARISON.map((item, idx) => (
                   <div key={idx} className="space-y-1 text-xs">
-                    <span className="font-semibold text-emerald-900/80 text-[11px] uppercase tracking-wider block">
+                    <span className="font-semibold text-emerald-900/80 text-xs block">
                       {item.parameter}
                     </span>
                     <p

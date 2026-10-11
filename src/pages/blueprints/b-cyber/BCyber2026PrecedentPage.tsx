@@ -55,7 +55,7 @@ export function BCyber2026PrecedentPage() {
         {/* Header Block */}
         <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
           <div className="max-w-3xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-slate-600 font-mono text-[11px] font-medium">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-700 text-xs font-medium">
               <History className="w-3.5 h-3.5 text-slate-500" />
               <span>Layer 1 — Observed Historical Precedent • Inaugural 2026 Cycle</span>
             </div>
@@ -92,7 +92,7 @@ export function BCyber2026PrecedentPage() {
             <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200/80">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
                     STAGE 1 (2026)
                   </span>
                   <TrustBadge trustLevel="observed_precedent_2026" size="sm" />
@@ -116,7 +116,7 @@ export function BCyber2026PrecedentPage() {
                 </div>
               </div>
 
-              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+              <div className="pt-2 text-xs text-slate-400 font-medium border-t border-slate-100">
                 Source: IIT Kanpur Selection &amp; FAQ 23
               </div>
             </div>
@@ -125,7 +125,7 @@ export function BCyber2026PrecedentPage() {
             <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200/80">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
                     STAGE 2 (2026)
                   </span>
                   <TrustBadge trustLevel="observed_precedent_2026" size="sm" />
@@ -148,7 +148,7 @@ export function BCyber2026PrecedentPage() {
                 </div>
               </div>
 
-              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+              <div className="pt-2 text-xs text-slate-400 font-medium border-t border-slate-100">
                 Source: IIT Kanpur FAQ 22 Portfolio Standards
               </div>
             </div>
@@ -157,7 +157,7 @@ export function BCyber2026PrecedentPage() {
             <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between hover:border-slate-300 transition-colors">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200/80">
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80">
                     STAGE 3 (2026)
                   </span>
                   <TrustBadge trustLevel="observed_precedent_2026" size="sm" />
@@ -180,7 +180,7 @@ export function BCyber2026PrecedentPage() {
                 </div>
               </div>
 
-              <div className="pt-2 text-[10px] font-mono text-slate-400 border-t border-slate-100">
+              <div className="pt-2 text-xs text-slate-400 font-medium border-t border-slate-100">
                 Source: IIT Kanpur Admissions Timeline
               </div>
             </div>
@@ -252,7 +252,7 @@ export function BCyber2026PrecedentPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-200/80 text-slate-400 uppercase text-[10px] font-mono tracking-wider bg-slate-50/70">
+                <tr className="border-b border-slate-200/80 text-slate-500 uppercase text-[11px] font-semibold tracking-wider bg-slate-50/70">
                   <th className="py-2.5 px-3">Parameter</th>
                   <th className="py-2.5 px-3">2026 Observed Criterion</th>
                   <th className="py-2.5 px-3">Future Cycle Status</th>
@@ -264,37 +264,37 @@ export function BCyber2026PrecedentPage() {
                   <td className="py-3 px-3 font-semibold text-slate-900">Subject Stream</td>
                   <td className="py-3 px-3">Class 12 Physics, Chemistry & Mathematics (PCM) with 5 subjects</td>
                   <td className="py-3 px-3 text-sky-700 font-medium">Pending future notification</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-900">Board Eligibility</td>
                   <td className="py-3 px-3">Recognized Central/State boards; NIOS explicitly eligible</td>
                   <td className="py-3 px-3 text-sky-700 font-medium">Pending future notification</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-900">Nationality</td>
                   <td className="py-3 px-3">Indian Nationals only (PIO/OCI not eligible in 2026)</td>
                   <td className="py-3 px-3 text-sky-700 font-medium">Pending future notification</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-900">Attempt Limit</td>
                   <td className="py-3 px-3">Maximum two attempts in consecutive years</td>
                   <td className="py-3 px-3 text-sky-700 font-medium">Pending future notification</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-900">Age Cutoff</td>
                   <td className="py-3 px-3">Born on or after Oct 1, 2001 (Oct 1, 1996 for SC/ST/PwD)</td>
                   <td className="py-3 px-3 text-sky-700 font-medium">Pending future notification</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-900">Prior IIT Admission</td>
                   <td className="py-3 px-3">Candidates previously admitted to an IIT under JoSAA disqualified</td>
                   <td className="py-3 px-3 text-emerald-700 font-medium">Standard Senate Ordinance</td>
-                  <td className="py-3 px-3 font-mono text-[11px] text-slate-400">IITK Eligibility Pane</td>
+                  <td className="py-3 px-3 text-xs text-slate-400 font-medium">IITK Eligibility Pane</td>
                 </tr>
               </tbody>
             </table>

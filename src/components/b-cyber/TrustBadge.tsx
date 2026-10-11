@@ -61,7 +61,7 @@ export const TrustBadge: React.FC<TrustBadgeProps> = ({
     <span
       title={description}
       className={cn(
-        'inline-flex items-center rounded-md font-mono uppercase tracking-wider font-medium text-slate-700 bg-white border border-slate-200/90 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors select-none',
+        'inline-flex items-center rounded-full font-sans font-medium text-slate-700 bg-slate-50 border border-slate-200/90 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors select-none',
         sizeClasses,
         className
       )}

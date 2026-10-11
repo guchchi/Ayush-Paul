@@ -47,7 +47,7 @@ export function BCyberOfficialUpdatesPage() {
         {/* Header Block */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-4">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-mono">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium">
               <Bell className="w-3 h-3 text-slate-500" />
               <span>Layer 1 — Chronological Feed • {updates.length} Verified Entries</span>
             </div>
@@ -63,7 +63,7 @@ export function BCyberOfficialUpdatesPage() {
 
           {/* Filter Bar */}
           <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-slate-400 flex items-center gap-1 font-mono">
+            <span className="text-xs font-medium text-slate-400 flex items-center gap-1">
               <Filter className="w-3.5 h-3.5" /> Filter:
             </span>
             <button
@@ -118,14 +118,14 @@ export function BCyberOfficialUpdatesPage() {
               {/* Metadata Header */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-100">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-full">
                     <Calendar className="w-3 h-3 text-slate-500" />
                     {update.date}
                   </span>
-                  <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-slate-50 text-slate-600 border border-slate-200/70">
+                  <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-slate-50 text-slate-600 border border-slate-200/70">
                     {update.category.replace('_', ' ')}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-mono">
+                  <span className="text-xs text-slate-400 font-medium">
                     Cycle: {update.applicableYear}
                   </span>
                 </div>
@@ -155,7 +155,7 @@ export function BCyberOfficialUpdatesPage() {
 
               {/* Source Card */}
               <div className="space-y-1 pt-1">
-                <div className="text-[10px] uppercase font-mono tracking-wider font-semibold text-slate-400">
+                <div className="text-[11px] font-semibold text-slate-400">
                   Official Verification Source
                 </div>
                 <SourceCitationCard citation={update.officialSource} />

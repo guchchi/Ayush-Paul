@@ -35,7 +35,7 @@ export const BCyberNav: React.FC = () => {
             <span className="font-semibold text-slate-900">B.Cyber Compass</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-500 shrink-0">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>Updated Oct 2026</span>
           </div>
@@ -63,7 +63,7 @@ export const BCyberNav: React.FC = () => {
                 {item.badge && (
                   <span
                     className={cn(
-                      'text-[10px] font-mono px-1.5 py-0.2 rounded-md font-medium tracking-tight',
+                      'text-[10px] px-2 py-0.5 rounded-full font-medium tracking-normal',
                       isActive
                         ? 'bg-white/20 text-white'
                         : 'bg-slate-100 text-slate-600 border border-slate-200/80'

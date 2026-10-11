@@ -34,7 +34,7 @@ export const SourceCitationCard: React.FC<SourceCitationCardProps> = ({
           <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-slate-900 shrink-0" />
         </a>
 
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-500">
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
           <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
           <span>Verified {citation.verifiedDate}</span>
         </div>
@@ -42,11 +42,11 @@ export const SourceCitationCard: React.FC<SourceCitationCardProps> = ({
 
       <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-slate-100 text-[11px]">
         {citation.sectionAnchor ? (
-          <span className="text-slate-500 font-mono text-[10px] bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded">
+          <span className="text-slate-500 text-[11px] font-medium bg-slate-50 border border-slate-200/60 px-2.5 py-0.5 rounded-full">
             § {citation.sectionAnchor}
           </span>
         ) : (
-          <span className="text-slate-400 font-mono text-[10px]">Official Source</span>
+          <span className="text-slate-400 text-xs font-medium">Official Source</span>
         )}
 
         {citation.verbatimQuote && !compact && (

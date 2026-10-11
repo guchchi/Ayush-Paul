@@ -51,22 +51,23 @@ export function BCyberHomePage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-slate-100/80 via-transparent to-transparent pointer-events-none rounded-tr-2xl" />
 
           <div className="max-w-3xl space-y-5 relative z-10">
-            {/* Institution Badge Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 text-white text-[11px] font-mono font-medium shadow-xs">
-                <GraduationCap className="w-3.5 h-3.5 text-slate-300" />
+            {/* Unified Modern Institutional Status Badge */}
+            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs text-slate-700 shadow-2xs">
+              <div className="flex items-center gap-1.5 font-semibold text-slate-900">
+                <GraduationCap className="w-4 h-4 text-slate-700" />
                 <span>IIT Kanpur (WSAIS &amp; C3iHub) &bull; IIT Madras</span>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200/80 text-[11px] font-mono text-emerald-800 font-semibold">
+              <span className="text-slate-300 font-light">&bull;</span>
+              <div className="flex items-center gap-1.5 text-emerald-700 font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Senate Approved &bull; Updated Oct 2026</span>
+                <span>Senate Approved Program</span>
               </div>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
-              The Authoritative Ground Reality of{' '}
-              <span className="underline decoration-slate-300 underline-offset-8">
-                B.Cyber
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.14]">
+              Bachelor of Cybersecurity <span className="text-slate-500 font-semibold">(B.Cyber)</span>
+              <span className="block text-xl sm:text-3xl font-bold text-slate-800 mt-2">
+                Official Ground Reality &amp; Admission Intelligence
               </span>
             </h1>
 
@@ -98,24 +99,24 @@ export function BCyberHomePage() {
           {/* Telemetry Bar (4 Verified Institutional Metrics) */}
           <div className="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
             <div className="space-y-1">
-              <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Degree Model</p>
-              <p className="text-sm font-bold text-slate-900">4-Year B.Cyber Degree</p>
-              <p className="text-[11px] text-slate-500">Full IIT alumni status granted</p>
+              <p className="text-xs font-semibold text-slate-500">Degree Model</p>
+              <p className="text-sm sm:text-base font-bold text-slate-900">4-Year B.Cyber Degree</p>
+              <p className="text-xs text-slate-500">Full IIT alumni status granted</p>
             </div>
             <div className="space-y-1">
-              <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Structure</p>
-              <p className="text-sm font-bold text-slate-900">2 Yrs Campus + 2 Yrs Field</p>
-              <p className="text-[11px] text-slate-500">Government agency deployment</p>
+              <p className="text-xs font-semibold text-slate-500">Curriculum Structure</p>
+              <p className="text-sm sm:text-base font-bold text-slate-900">2 Yrs Campus + 2 Yrs Field</p>
+              <p className="text-xs text-slate-500">Government agency deployment</p>
             </div>
             <div className="space-y-1">
-              <p className="text-[11px] font-mono text-amber-700 uppercase tracking-wider font-semibold">2027 Mandate</p>
-              <p className="text-sm font-bold text-amber-900">JEE Main Discontinued</p>
-              <p className="text-[11px] text-amber-800/80">FAQ 23: Separate test announced</p>
+              <p className="text-xs font-semibold text-amber-700">2027 Strategic Shift</p>
+              <p className="text-sm sm:text-base font-bold text-amber-900">JEE Main Discontinued</p>
+              <p className="text-xs text-amber-800/80">FAQ 23: Separate test announced</p>
             </div>
             <div className="space-y-1">
-              <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider font-semibold">Practical Filter</p>
-              <p className="text-sm font-bold text-slate-900">6-Hour Hackathon</p>
-              <p className="text-[11px] text-slate-500">New Core Lab, IIT Kanpur</p>
+              <p className="text-xs font-semibold text-slate-500">Practical Evaluation</p>
+              <p className="text-sm sm:text-base font-bold text-slate-900">6-Hour Hackathon</p>
+              <p className="text-xs text-slate-500">New Core Lab, IIT Kanpur</p>
             </div>
           </div>
         </section>
@@ -228,7 +229,7 @@ export function BCyberHomePage() {
         {/* Section 7: Pillar 2 Bridge - Personalised Preparation Studio */}
         <section className="rounded-2xl border border-slate-900 bg-slate-900 text-white p-6 sm:p-8 shadow-sm space-y-4">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/10 text-white font-mono text-[11px] font-medium border border-white/20">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-medium border border-white/20">
               <CalendarCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>Pillar 2 &bull; Interactive Studio Engine</span>
             </div>
@@ -250,7 +251,7 @@ export function BCyberHomePage() {
               <span>Launch Preparation Studio</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
-            <span className="text-xs font-mono text-slate-400">
+            <span className="text-xs text-slate-400 font-medium">
               Interactive Roadmap &bull; In-Browser State &bull; Zero Fluff
             </span>
           </div>

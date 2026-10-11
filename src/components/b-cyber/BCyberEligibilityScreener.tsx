@@ -71,7 +71,7 @@ export const BCyberEligibilityScreener: React.FC = () => {
       {/* Header */}
       <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/80 text-[11px] font-mono text-emerald-800 font-semibold mb-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-sans text-emerald-800 font-semibold mb-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Interactive 30-Second Screener</span>
           </div>
@@ -144,7 +144,7 @@ export const BCyberEligibilityScreener: React.FC = () => {
           <div className="space-y-2.5">
             <label className="text-xs font-bold text-slate-900 flex items-center justify-between">
               <span>2. Category &amp; Birth Year</span>
-              <span className="text-[10px] font-mono text-slate-500">Cutoff: {cutoffYear}</span>
+              <span className="text-xs text-slate-500 font-medium">Cutoff: {cutoffYear}</span>
             </label>
             <div className="grid grid-cols-3 gap-1.5">
               {(
@@ -357,11 +357,11 @@ export const BCyberEligibilityScreener: React.FC = () => {
             {isComplete && isEligible && (
               <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto pt-2 sm:pt-0">
                 <div className="text-right">
-                  <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Applicable Fee</p>
-                  <p className="text-base font-extrabold font-mono text-slate-900">{applicationFee}</p>
+                  <p className="text-xs text-slate-500 font-medium">Applicable Fee</p>
+                  <p className="text-base font-extrabold text-slate-900">{applicationFee}</p>
                 </div>
                 <div className="text-right pl-3 border-l border-emerald-200">
-                  <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Max Attempts</p>
+                  <p className="text-xs text-slate-500 font-medium">Max Attempts</p>
                   <p className="text-xs font-bold text-slate-900">2 Consecutive</p>
                 </div>
               </div>

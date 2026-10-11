@@ -41,11 +41,11 @@ export const BCyberHackathonMatrix: React.FC = () => {
       {/* Header */}
       <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-purple-50 border border-purple-200/80 text-[11px] font-mono text-purple-800 font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-200/80 text-xs text-purple-800 font-medium">
             <Terminal className="w-3.5 h-3.5 text-purple-600" />
             <span>On-Campus Practical Evaluation</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-xs text-slate-500 font-medium">
             6 Hours Duration • New Core Lab, IIT Kanpur
           </span>
         </div>
@@ -104,7 +104,7 @@ export const BCyberHackathonMatrix: React.FC = () => {
             <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
               <span>Select Evaluated Domain (8 Pillars Tested)</span>
             </h3>
-            <span className="text-[11px] font-mono text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               Interactive Domain Blueprint
             </span>
           </div>
@@ -157,12 +157,12 @@ export const BCyberHackathonMatrix: React.FC = () => {
               <div>
                 <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <span>{selectedDomain.title}</span>
-                  <span className="text-xs font-normal text-slate-500 font-mono">
+                  <span className="text-xs font-normal text-slate-500">
                     ({selectedDomain.tagline})
                   </span>
                 </h4>
               </div>
-              <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded bg-white border border-slate-200 text-slate-800 self-start sm:self-auto">
+              <span className="text-xs font-medium px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 self-start sm:self-auto">
                 Practical Evaluator
               </span>
             </div>
@@ -189,7 +189,7 @@ export const BCyberHackathonMatrix: React.FC = () => {
                     <Terminal className="w-3.5 h-3.5 text-purple-600" />
                     <span>Sample Challenge Archetype</span>
                   </span>
-                  <p className="text-xs font-mono text-slate-700 leading-relaxed bg-slate-50 p-2.5 rounded border border-slate-100">
+                  <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100">
                     {selectedDomain.sampleChallenge}
                   </p>
                 </div>
@@ -205,7 +205,7 @@ export const BCyberHackathonMatrix: React.FC = () => {
                     {selectedDomain.recommendedTools.map((tool, idx) => (
                       <span
                         key={idx}
-                        className="text-xs font-mono px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-800 font-medium"
+                        className="text-xs px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 font-medium"
                       >
                         {tool}
                       </span>

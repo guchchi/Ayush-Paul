@@ -51,11 +51,11 @@ Terminal output:
       {/* Header */}
       <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/80 text-[11px] font-mono text-emerald-800 font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-800 font-medium">
             <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>WSAIS FAQ 22 Evidence Standards</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-xs text-slate-500 font-medium">
             Easily Verifiable Evidence Criterion
           </span>
         </div>
@@ -81,7 +81,7 @@ Terminal output:
                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                   {item.category}
                 </span>
-                <span className="text-[10px] font-mono text-slate-500">FAQ 22 Criterion</span>
+                <span className="text-xs text-slate-500 font-medium">FAQ 22 Criterion</span>
               </div>
 
               {/* Side-by-Side: Pass vs Fail */}

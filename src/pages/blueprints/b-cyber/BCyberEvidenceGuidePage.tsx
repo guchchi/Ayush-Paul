@@ -51,7 +51,7 @@ export function BCyberEvidenceGuidePage() {
         {/* Header Block */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-mono">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium">
               <FileCheck className="w-3 h-3 text-slate-500" />
               <span>Layer 1 — Official FAQ 22 Portfolio Standards</span>
             </div>
@@ -156,7 +156,7 @@ export function BCyberEvidenceGuidePage() {
                       <h2 className="text-sm sm:text-base font-semibold tracking-tight text-slate-900">
                         {std.title}
                       </h2>
-                      <span className="text-[10px] font-mono text-slate-400 uppercase">
+                      <span className="text-[11px] text-slate-500 font-medium">
                         Category: {std.type.replace('_', ' ')}
                       </span>
                     </div>
@@ -215,7 +215,7 @@ export function BCyberEvidenceGuidePage() {
 
                 {/* Official Reference */}
                 <div className="space-y-1 pt-1">
-                  <div className="text-[10px] uppercase font-mono tracking-wider font-semibold text-slate-400">
+                  <div className="text-[11px] font-semibold text-slate-400">
                     Official Reference Citation
                   </div>
                   <SourceCitationCard citation={std.officialReference} />

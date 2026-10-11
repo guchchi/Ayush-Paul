@@ -72,11 +72,11 @@ export const BCyberFAQVault: React.FC = () => {
       {/* Header */}
       <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-200/70 text-slate-800 text-[11px] font-mono font-semibold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-800 text-xs font-medium">
             <HelpCircle className="w-3.5 h-3.5 text-slate-600" />
             <span>Verbatim Senate &amp; Institute Records</span>
           </div>
-          <span className="text-[11px] font-mono text-slate-500">
+          <span className="text-xs text-slate-500 font-medium">
             All 26 Official FAQs Indexed
           </span>
         </div>
@@ -154,7 +154,7 @@ export const BCyberFAQVault: React.FC = () => {
                   <div className="flex items-start gap-2.5">
                     <span
                       className={cn(
-                        'text-[10px] font-mono font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5',
+                        'text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 mt-0.5',
                         faq.id === 23
                           ? 'bg-amber-100 text-amber-900 border border-amber-300'
                           : faq.id === 12
@@ -190,7 +190,7 @@ export const BCyberFAQVault: React.FC = () => {
                           {faq.highlights.map((h, idx) => (
                             <span
                               key={idx}
-                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 font-semibold"
+                              className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 font-medium"
                             >
                               {h}
                             </span>
@@ -198,7 +198,7 @@ export const BCyberFAQVault: React.FC = () => {
                         </div>
                       )}
 
-                      <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                      <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500 font-medium">
                         <span>WSAIS Section: #{faq.anchor}</span>
                         <a
                           href={`${faq.sourceUrl}#${faq.anchor}`}

@@ -64,7 +64,7 @@ export const DisclaimerBanner: React.FC<DisclaimerBannerProps> = ({
             <span className="font-semibold text-slate-900 tracking-tight">
               Independent Student Research & Institutional Disclosure
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+            <span className="text-[11px] font-medium text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
               Unofficial Guide
             </span>
           </div>
