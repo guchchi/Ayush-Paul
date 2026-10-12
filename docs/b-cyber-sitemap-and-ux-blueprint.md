@@ -23,7 +23,7 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Pillar 1** | **Understand** | `/blueprints/b-cyber` | **B.Cyber Overview** | Understand the 4-year degree, 2+2 model, curriculum & realistic expectations | `Check Admission →` | `Explore Roadmap` |
 | **Pillar 2** | **Check** | `/blueprints/b-cyber/admission` | **Admission & Eligibility** | Interactive eligibility screener, 2026 vs 2027 shift, 6h Hackathon domains | `View Preparation Roadmap →` | `Review Official Rules` |
-| **Pillar 3** | **Prepare** | `/blueprints/b-cyber/roadmap`<br>*(alias: `/prepare`)* | **Preparation Roadmap** | Free 4-stage visual tech pipeline + Paid personalized execution engine | `Start Free Roadmap →` | `Personalize My Plan` |
+| **Pillar 3** | **Prepare** | `/blueprints/b-cyber/roadmap`<br>*(alias: `/prepare`)* | **Preparation Roadmap** | Free 5-stage actionable pipeline + Paid personalized execution system (₹199–299) | `Check My Starting Point →` | `Explore Free Roadmap` |
 
 ---
 
@@ -37,20 +37,20 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 │    `/blueprints/b-cyber`   │ `/blueprints/b-cyber/      │ `/blueprints/b-cyber/        │
 │                            │   admission`               │   roadmap`                   │
 ├────────────────────────────┼────────────────────────────┼──────────────────────────────┤
-│ • Sec 0: Hero & Jump Chips │ • Sec 0: Hero (#admission) │ • Sec 0: Hero & Roadmap Modes│
-│ • Sec 1: 30-Sec Summary    │ • Sec 1: 30-Sec Summary    │ • Sec 1: Free Visual Pipeline│
-│ • Sec 2: Key Facts Grid    │ • Sec 2: Cycle Status Board│ • Sec 2: Stage 1 (Linux/CLI) │
-│ • Sec 3: 2+2 Visual Model  │ • Sec 3: Cycle Screener    │ • Sec 3: Stage 2 (Network)   │
-│ • Sec 4: 4-Sem Curriculum  │ • Sec 4: Rules Explained   │ • Sec 4: Stage 3 (Web/CTF)   │
-│ • Sec 5: Beyond Hacking    │ • Sec 5: Selection Process │ • Sec 5: Stage 4 (Artifacts) │
-│ • Sec 6: Degree Comparison │ • Sec 6: Hackathon Format  │ • Sec 6: Curated Free Tools  │
-│ • Sec 7: Who Should Join   │ • Sec 7: Prior Work & FAQ22│ • Sec 7: Paid Engine Intake  │
-│ • Sec 8: Degree & Alumni   │ • Sec 8: Application Rules │ • Sec 8: Dynamic Personal Path│
-│ • Sec 9: Internship Truth  │ • Sec 9: Admission FAQ Ctr │ • Sec 9: Proof-of-Work Board │
+│ • Sec 0: Hero & Jump Chips │ • Sec 0: Hero (#admission) │ • Sec 00: Hero & Cycle Status│
+│ • Sec 1: 30-Sec Summary    │ • Sec 1: 30-Sec Summary    │ • Sec 01: Known vs Unknown   │
+│ • Sec 2: Key Facts Grid    │ • Sec 2: Cycle Status Board│ • Sec 02: 60-Sec Visual Path │
+│ • Sec 3: 2+2 Visual Model  │ • Sec 3: Cycle Screener    │ • Sec 03: Free Diagnostic    │
+│ • Sec 4: 4-Sem Curriculum  │ • Sec 4: Rules Explained   │ • Sec 04: 5 Learning Stages  │
+│ • Sec 5: Beyond Hacking    │ • Sec 5: Selection Process │ • Sec 05: Resource Library   │
+│ • Sec 6: Degree Comparison │ • Sec 6: Hackathon Format  │ • Sec 06: Weekly Pace Engine │
+│ • Sec 7: Who Should Join   │ • Sec 7: Prior Work & FAQ22│ • Sec 07: Proof-of-Work Board│
+│ • Sec 8: Degree & Alumni   │ • Sec 8: Application Rules │ • Sec 08: Practice & Checks  │
+│ • Sec 9: Internship Truth  │ • Sec 9: Admission FAQ Ctr │ • Sec 09: Paid Plan Preview  │
 │ • Sec 10: Common Myths     │ • Sec 10: Official Sources │ • Sec 10: Recovery Protocol  │
-│ • Sec 11: Common FAQs      │ • Sec 11: Contextual Next  │ • Sec 11: Progress Tracker   │
-│ • Sec 12: Source Citations │                            │                              │
-│ • Sec 13: Next Step CTA    │                            │                              │
+│ • Sec 11: Common FAQs      │ • Sec 11: Contextual Next  │ • Sec 11: Prep FAQ Centre    │
+│ • Sec 12: Source Citations │                            │ • Sec 12: Sources & Updates  │
+│ • Sec 13: Next Step CTA    │                            │ • Sec 13: Next-Step Gateway  │
 └────────────────────────────┴────────────────────────────┴──────────────────────────────┘
 ```
 
@@ -258,33 +258,255 @@ Supports five distinct user situations in a single coherent page without forced 
 ---
 
 ### PILLAR 3: Preparation Roadmap (Prepare)
-*Route: `/blueprints/b-cyber/roadmap` (Alias/Redirect: `/blueprints/b-cyber/prepare`)*
+*Page:* Preparation Roadmap  
+*Canonical route:* `/blueprints/b-cyber/roadmap` *(Strict 301 alias: `/blueprints/b-cyber/prepare`)*  
+*Sub-routes (Phase 2):* `/blueprints/b-cyber/roadmap/check` (Diagnostic), `/blueprints/b-cyber/roadmap/my-plan` (Personalized Workspace)  
+*Status:* Finalized Master Sitemap & Information Architecture — Ready for Implementation  
 
-* **Section 0 — Hero: Tactical Execution Cockpit**
-  * Headline: *"B.Cyber Preparation Roadmap: Free Foundational Pipeline & Personalised Execution Engine."*
-* **Section 1 — Free Tier: The Universal 4-Stage Visual Tech Pipeline**
-  * Node-based graphical roadmap (visually rich skill tree):
-    * **Stage 1: Linux CLI & Terminal Foundations** (OverTheWire Bandit levels 1–15, basic bash scripts).
-    * **Stage 2: Networking & Packet Analysis** (Wireshark PCAP inspection, TCP/IP handshakes, port scanning).
-    * **Stage 3: Web Vulnerabilities & CTF Primers** (PortSwigger SQLi/XSS, PicoCTF beginner general skills & crypto).
-    * **Stage 4: Evidence of Prior Work Dossier** (Creating the personal GitHub repo, 1 mini writeup, 2-min demo recording).
-* **Section 2 — Pinpointed Free Resource Directory**
-  * Zero-fluff cards with exact URLs, completion benchmarks (*"Stop at level 15"*), and trap warnings (*"Do not read entire documentation"*).
-* **Section 3 — Paid Tier: The Personalised Execution Engine (The Software Core)**
-  * **Intake Parameters Engine**:
-    * Academic Profile (Class 12th JEE / College Year 1 / College Year 2–3)
-    * Technical Baseline (Total Zero / C & Math / Python Scripter / Web Dabbler)
-    * Weekly Time Budget (3–5 hrs / 8–10 hrs / 15+ hrs sprint)
-    * Milestone Goal (2027 Admission / C3iHub Research Internship / Cyber Placements)
-  * **Dynamic Output**:
-    * Gap Analysis reality check (Identified risks & strategic imperatives)
-    * Deterministic tailored roadmap adjusting to weekly hours
-    * Dynamic Proof-of-Work submission tracker
-    * Recovery Protocol (*"Pause without guilt when exam hits / 60-min emergency routine"*)
-    * Recalibration Engine (Re-adjusts schedule without losing past progress)
-* **Section 4 — Return Navigation**
-  * Primary Action: `Start Active Milestone`
-  * Secondary Action: `Check Admission Criteria` (leads to Pillar 2)
+---
+
+#### 1. Product Definition & Core Philosophy
+
+##### Core User Questions Solved
+1. **"Mujhe kya seekhna hai?"** ➔ Clear, trustworthy, cycle-aware preparation roadmap.
+2. **"Mujhe abhi kya karna chahiye?"** ➔ Free diagnostic starting point and immediate actionable practice task.
+3. **"Main consistently prepare kaise karun?"** ➔ Personalized schedule, assigned resources, structured checkpoints, and missed-week recovery plan.
+
+##### Core Product Separation: Free vs. Paid
+* **Free Core Roadmap**: Genuinely prepares the student. Solves problems 1 & 2 completely without paywalls. Gives universal 5-stage roadmap, verified announcements, curated resources with access tags, free diagnostic test, manual sample pace schedules, starter practice sets, and public evidence guidelines.
+* **Paid Execution System (₹199–299)**: Makes preparation executable for the individual's specific constraints. Solves problem 3. Converts general knowledge into a personalized weekly task queue, gap-prioritized task assignments, structured progress checkpoints, and an adaptive rescheduling engine for missed weeks.
+* **Epistemic Integrity & Admission Boundary**: Grounded in official IIT Kanpur statements. The official WSAIS B.Cyber page announces a separate entrance test for future admissions and explicitly specifies that JEE Main will not be used. However, upcoming cycle detailed rules/syllabus are not yet confirmed by the IIT Kanpur Senate. Therefore, the roadmap explicitly presents past 2026 test topics as historical reference, **not** as a guaranteed future syllabus.
+
+---
+
+#### 2. Master Section-by-Section Information Architecture (Sec 00 – Sec 13)
+
+* **Section 00 — Hero: Start Your Preparation** (`#prep-start`)
+  * **Core Intent**: Clarify page purpose, establish target audience (beginners to advanced applicants), provide instant fast-track entry.
+  * **Trust & Status Badge**: Compact admission-cycle status panel clearly displaying what is officially confirmed vs. what is pending for upcoming entrance tests. Explicit disclaimer: *Zero selection guarantee; independent technical prep guide.*
+  * **Primary CTA**: `Check My Starting Point ↓` (Smooth-scrolls to `#readiness-check`).
+  * **Secondary CTA**: `Explore Free Roadmap ↓` (Smooth-scrolls to `#roadmap-summary`).
+  * **Cycle Context**: Fast toggle/indicator acknowledging 2026 hackathon precedents vs. future separate entrance test status.
+
+* **Section 01 — What We Know vs. What Is Still Unknown** (`#roadmap-certainty`)
+  * **Core Intent**: Transparent epistemic clarity preventing student misdirection.
+  * **3-Column Certainty Matrix**:
+    1. *Officially Confirmed*: Separate entrance test announced on WSAIS portal; JEE Main will not be used for future admissions.
+    2. *Historical Precedent (2026 Cycle)*: On-campus 6-hour hackathon across 8 security domains, prior-work evaluation, presentation round.
+    3. *Not Yet Announced / Unknown*: Exact syllabus, question format, marking weights, exam dates, eligibility age cuts for future cycles.
+  * **Cross-Pillar Bridge**: Direct contextual banner to Pillar 2: `[Review Complete Eligibility & Selection Rules in Pillar 2 →]`.
+  * **Maintenance Protocol**: Modular design allowing instantaneous text updates whenever IIT Kanpur releases fresh circulars.
+
+* **Section 02 — Roadmap in 60 Seconds** (`#roadmap-summary`)
+  * **Core Intent**: Immediate high-level mental model before deep dives.
+  * **Visual 5-Stage Path**:
+    `Stage 0: Baseline` ➔ `Stage 1: Foundations` ➔ `Stage 2: Security Fundamentals` ➔ `Stage 3: Investigation` ➔ `Stage 4: Application & Evidence`
+  * **Stage Preview Cards**: Each node displays:
+    * Objective in 1 sentence.
+    * Prerequisites needed before entry.
+    * Tangible capability unlocked upon completion.
+  * **Disclaimer Label**: Explicitly badged as *Technical Learning Architecture*, not an official IIT Kanpur syllabus.
+
+* **Section 03 — Free Readiness Diagnostic** (`#readiness-check`)
+  * **Core Intent**: Diagnose current competence and eliminate the "where do I start?" friction.
+  * **6-Parameter Assessment Inputs**:
+    1. *Operating System & Terminal*: Total beginner / Basic commands / Fluent in Linux bash & permissions.
+    2. *Networking Fundamentals*: No idea / Basic IP & DNS / TCP/IP packet capture & Wireshark fluent.
+    3. *Programming / Scripting*: None / Basic Python or C / Write automation scripts & parsers.
+    4. *Prior Security Practice*: Zero / Read blogs & videos / Active in CTFs or Bandit labs.
+    5. *Weekly Time Commitment*: 2–4 hours / 5–8 hours / 10+ hours.
+    6. *Hardware & Platform Constraints*: Windows only / Dual boot or VM ready / Low hardware or limited internet.
+  * **Diagnostic Output**:
+    * Current Preparation Tier (Baseline, Foundation, Intermediate, Advanced).
+    * Top 2–3 Priority Knowledge Gaps to address first.
+    * Direct Anchor Link to Recommended Starting Stage in Section 04.
+  * **Boundary Rule**: Strict guardrail: *This diagnostic evaluates technical readiness; it is not an admission selection predictor.*
+
+* **Section 04 — The Learning Roadmap: Stage Details** (`#roadmap-stages`)
+  * **Core Intent**: Deep, authoritative, step-by-step syllabus with clear milestones.
+  * **Detailed Stage Breakdown**:
+    * **STAGE 0 · BASELINE — Setup & Safe Practice**:
+      * Focus: Command-line literacy, safe virtualized lab setup, ethical boundaries, Indian legal context (IT Act 2000).
+      * Anti-Trap: Prevents beginners from getting stuck in configuration hell or risky unauthorized testing.
+      * Deliverable: Working local Linux environment (WSL2 or VirtualBox) and configured terminal.
+    * **STAGE 1 · FOUNDATIONS — Linux, Operating Systems & Networking**:
+      * Focus: Terminal fluency, filesystem navigation, permissions (chmod/chown), process lifecycle, socket basics, TCP/IP 3-way handshake, DNS resolution, HTTP request/response inspection.
+      * Deliverable: Complete OverTheWire Bandit L0–15; capture and annotate a raw HTTP/DNS PCAP in Wireshark.
+    * **STAGE 2 · SECURITY FUNDAMENTALS — Web/API Security & Cryptography**:
+      * Focus: Authentication mechanisms, session tokens, OWASP Top 10 web vulnerabilities (SQLi, XSS, IDOR), basic symmetric vs. asymmetric cryptography, hashing vs. encryption.
+      * Deliverable: Solve PortSwigger Web Security Academy beginner labs; write a basic Caesar/Vigenère/AES cipher script in Python.
+    * **STAGE 3 · INVESTIGATION — OSINT, Reverse Engineering & Threat Analysis**:
+      * Focus: Structured open-source intelligence methodologies, executable anatomy (ELF/PE headers), introductory static disassembly in Ghidra/Cutter, threat modeling concepts.
+      * Deliverable: Write a reproducible walkthrough of 1 beginner PicoCTF forensics and 1 reverse engineering challenge.
+    * **STAGE 4 · APPLICATION — Integrated Challenges & Evidence**:
+      * Focus: Multi-domain challenges, defensive reasoning, documenting vulnerabilities, explaining exploit flow clearly, code review.
+      * Deliverable: Comprehensive technical writeup of an end-to-end laboratory challenge with reproduction steps and remediation advice.
+  * **Epistemic Note**: Formatted as independent technical recommendations informed by past hackathon benchmarks; ready for adaptive realignment when new official syllabi are released.
+
+* **Section 05 — Curated Resource Library** (`#resource-library`)
+  * **Core Intent**: Highly curated, zero-bloat learning tools with unambiguous access labels.
+  * **Interactive Filters**: By Stage (0–4), Skill Domain, Difficulty (Beginner / Intermediate), Setup Requirements, and Cost.
+  * **Curated Tool Directory**:
+    * *OverTheWire (Bandit)* ➔ `[Free · No Account Needed · Browser/SSH]`
+    * *PortSwigger Web Security Academy* ➔ `[Free · Free Account Required · Browser/Burp Suite]`
+    * *Wireshark Sample Captures (Wireshark.org)* ➔ `[Free · Local Install · Sample PCAPs]`
+    * *PicoCTF (Carnegie Mellon)* ➔ `[Free · Free Account Required · Browser]`
+    * *TryHackMe (Introductory Rooms)* ➔ `[Freemium · Free Tier Available · Account Required]`
+  * **Resource Annotation Schema**:
+    * *What you will learn from this:* 1 clear sentence.
+    * *When to use it:* Stage timing and specific prerequisites.
+    * *Trap warning:* "Stop at Level 15; do not get stuck trying to finish advanced levels without Stage 2 foundations."
+
+* **Section 06 — Weekly Pace & Sample Schedules** (`#weekly-pace`)
+  * **Core Intent**: Actionable study structuring for free users without forcing paid purchases.
+  * **Interactive Pace Selector**:
+    * *Pace A: Casual Explorer (2 hours / week)* ➔ Focus on steady weekend labs; ~20 weeks for Foundations.
+    * *Pace B: Focused Student (4 hours / week)* ➔ Balanced 2 hours concept + 2 hours lab; ideal alongside Class 12th/College.
+    * *Pace C: Intensive Sprint (8 hours / week)* ➔ Deep daily hands-on practice, fast-track through stages.
+  * **Weekly Balance Triangle**: Fixed 40% Concept Study, 40% Hands-on Labs, 20% Documentation & Review.
+  * **Boundary Rule**: Presented as illustrative pacing benchmarks; zero assumptions about remaining months before exams.
+
+* **Section 07 — Proof-of-Work & Evidence Dossier** (`#proof-of-work`)
+  * **Core Intent**: Demystify portfolio preparation and establish high-signal evidence habits.
+  * **What Constitutes Real Evidence**:
+    * Reproducible lab notes with commands and output snippets.
+    * Original CTF challenge writeups detailing thought process, failure attempts, and final exploit logic.
+    * Documented code repositories (e.g., custom network packet parser, crypto analysis tool).
+    * Network traffic analysis reports with annotated screenshots.
+  * **Anti-Patterns & Red Flags**:
+    * Generic completion certificates from video courses (Coursera/Udemy).
+    * Cloned GitHub repositories with only cosmetic changes.
+    * Automated vulnerability scanner dumps passed off as personal work.
+  * **Free Deliverable**: Downloadable Markdown template checklist for project writeups.
+  * **Paid Linkage**: Highlights how the paid engine assigns tailored evidence tasks based on diagnosed gaps.
+  * **Crucial Caveat**: Past-cycle prior work evaluation is labeled as historical precedent; not guaranteed to be mandatory in future cycles.
+
+* **Section 08 — Practice Exercises & Self-Checks** (`#practice-tasks`)
+  * **Core Intent**: Immediate active recall and hands-on skill verification.
+  * **Starter Challenge Set**:
+    * Task 1: "Find the hidden file with specific permissions using Linux `find`" (Stage 1).
+    * Task 2: "Extract the plain-text HTTP credentials from a provided PCAP sample" (Stage 1).
+    * Task 3: "Bypass a client-side form validation using browser devtools" (Stage 2).
+    * Task 4: "Identify SQL injection vulnerability in a mock query string" (Stage 2).
+  * **Self-Check Accordions**: Progressive hints (Hint 1, Hint 2, Solution) + "I Can Explain This" conceptual verification checklist.
+  * **Exam Simulation Policy**: Timed mock exams are explicitly withheld until IIT Kanpur releases the verified format of the future separate entrance test.
+
+* **Section 09 — Personalized Execution System (Paid Engine)** (`#personal-plan`)
+  * **Core Intent**: Present the core premium product as an individualized execution workflow rather than static content.
+  * **Product Offer Matrix**:
+    * Intake: Gathers current skill, hardware constraints, time budget, and target cycle.
+    * Output: Custom weekly task queue, gap-prioritized task assignments, tailored resource links, and dynamic rescheduling.
+  * **Pricing & Transparency**:
+    * Fixed pricing: ₹199 – ₹299 (one-time payment; zero hidden recurring subscriptions).
+    * Clear terms: 12-month access duration, unlimited adaptive rescheduling, future cycle update guarantee, clear refund policy.
+  * **Primary Action**: `[ Preview My Personalized Execution Plan → ]`
+  * **Free Core Guarantee**: Transparent declaration that the entire 5-stage roadmap, diagnostic, and resource library remain 100% free forever.
+
+* **Section 10 — Progress Tracking, Missed Weeks & Recovery** (`#recovery-plan`)
+  * **Core Intent**: Overcome guilt and dropouts when academic exams or life events interrupt preparation.
+  * **Public Recovery Protocol**:
+    * The 60-Minute Emergency Routine: How to keep mental models warm during high-stress exam periods.
+    * Resumption Protocol: Do not start from scratch; review the last completed checkpoint and continue.
+  * **Paid System Preview**: Interactive preview of the one-click "Recalibrate Schedule" button that dynamically stretches deadlines without shame or lost progress.
+
+* **Section 11 — Preparation FAQ Centre** (`#prep-faqs`)
+  * **Core Intent**: Resolve immediate candidate doubts with direct, cited answers.
+  * **Key FAQs**:
+    1. *Kitni programming aani chahiye shuru karne se pehle?* (Zero needed for Stage 0; basic Python/C recommended by Stage 2).
+    2. *Kya expensive laptop zaroori hai?* (No; any basic 4GB–8GB RAM PC capable of running Linux/WSL2 is sufficient; high-end GPUs not required).
+    3. *Kya free resources B.Cyber preparation ke liye enough hain?* (Yes; 100% of core concepts and labs are covered by world-class free platforms).
+    4. *Kya zero computer background se shuru karna possible hai?* (Yes; Stage 0 is specifically built for baseline readiness).
+    5. *Jab IIT Kanpur future exam ka format release karega, toh roadmap kaise update hoga?* (The roadmap dynamically updates free of charge, with cycle difference notices).
+  * **Navigation Rule**: Admission-specific eligibility or date questions route to Pillar 2 (`#admission-faqs`).
+
+* **Section 12 — Sources, Methodology & Update History** (`#prep-sources`)
+  * **Core Intent**: Institutional trust, transparent attribution, and audit trail.
+  * **Source Registry**:
+    * Official IIT Kanpur WSAIS B.Cyber Portal (`https://iitk.ac.in/wsais/b-cyber.php`).
+    * 2026 Admission FAQ Circulars & Senate Ordinances.
+    * Open-source curriculum benchmarks (OverTheWire, PortSwigger, NIST NICE Cybersecurity Workforce Framework).
+  * **Update Audit Log**: Tracks changes, newly published dates, and impacted stages.
+  * **Editorial Corrections**: Direct mail/feedback submission link for community reporting.
+
+* **Section 13 — Contextual Next-Step Gateway** (`#prep-next`)
+  * **Core Intent**: Guide the user to the logical next step based on where they stand.
+  * **Action Options**:
+    * 🟢 *New applicant?* ➔ `[ Start the Free Diagnostic Check (#readiness-check) ]`
+    * 🟡 *Need admission clarity?* ➔ `[ Explore Pillar 2: Admission & Eligibility (/blueprints/b-cyber/admission) ]`
+    * 🔵 *Want an automated schedule?* ➔ `[ Unlock Personalized Execution Engine (#personal-plan) ]`
+    * ⚪ *Want full degree overview?* ➔ `[ Revisit Pillar 1: Overview (/blueprints/b-cyber) ]`
+  * **Layout Rule**: In-flow responsive grid; strictly NO persistent floating/sticky mobile overlays.
+
+---
+
+#### 3. Free vs. Paid Feature Boundary Matrix
+
+| Feature / Capability | Free Tier | Paid Execution System (₹199–299) |
+| :--- | :--- | :--- |
+| **Full 5-Stage Learning Roadmap** | ✅ Included in full detail | ✅ Included in full detail |
+| **Official Announcements & Epistemic Board** | ✅ Included in full | ✅ Included; never a paid exclusive |
+| **Curated Resource Directory & Access Badges** | ✅ Included with all links & filters | ✅ Included with recommended alternatives |
+| **Readiness Diagnostic Assessment** | ✅ Basic result + starting stage + gaps | ✅ Deep intake + individualized gap prioritization |
+| **Weekly Study Schedule** | ✅ Generic sample paces (2 / 4 / 8 hrs/wk) | ✅ Personalized calendar with custom hours |
+| **Hands-On Practice Tasks** | ✅ Starter challenge set + hints + solutions | ✅ Assigned task sequence matching user gaps |
+| **Resource Selection** | ✅ Student chooses from curated directory | ✅ Explicitly assigned tool & backup options |
+| **Proof-of-Work Portfolio Guidance** | ✅ Public criteria, examples & MD template | ✅ Tailored milestone evidence assignments |
+| **Progress Tracking** | ✅ Simple local checklist (browser storage) | ✅ Persistent cloud progress & checkpoints |
+| **Missed-Week Recovery Protocol** | ✅ General 60-min emergency routine advice | ✅ Automated dynamic schedule recalibration |
+| **Future Cycle Syllabus Updates** | ✅ Automatically updated for free | ✅ Automatically included for free |
+
+---
+
+#### 4. Personalization Engine Architecture (Paid Core)
+
+##### Intake Parameters (Deterministic Model)
+1. **Current Skill Level**: Absolute beginner / Basic computing / Prior security dabbler / Active CTF player.
+2. **Technical Strengths & Deficits**: Linux CLI, Networking, Python/C Scripting, Web Security, Cryptography, OSINT.
+3. **Weekly Time Availability**: 2 hrs / 4 hrs / 8 hrs / 15+ hrs sprint.
+4. **Device & Environment**: Windows only (needs WSL guidance), Linux/VM ready, low hardware specs (cloud shell recommended).
+5. **Resource Constraints**: Free-only preferences, account creation tolerance, local CLI tooling restrictions.
+6. **Milestone Goal**: 2027 Admission Cycle / C3iHub Internship Preparation / General Cybersecurity Foundations.
+
+##### Engine Deliverables
+1. **Individual Starting Stage**: Specific stage placement with prerequisites checklist.
+2. **Weekly Task Queue**: Exact sequenced tasks, effort estimates, and verifiable completion criteria.
+3. **Tailored Resource Pairings**: Pinpointed modules (e.g., Bandit L1–L14) with free backups.
+4. **Milestone Checkpoints**: Verifiable conceptual checks to complete before advancing.
+5. **Structured Evidence Tasks**: Concrete output to document in the student's personal GitHub portfolio.
+6. **Adaptive Rescheduling**: Algorithmic timeline re-computation after missed weeks.
+
+---
+
+#### 5. Epistemic Trust System & Badge Taxonomy
+
+Every claim, learning recommendation, and external resource is tagged with one of five standardized badges:
+1. `[Officially Confirmed]`: Directly verified from IIT Kanpur Senate records or official WSAIS admissions portal.
+2. `[Announced — Details Pending]`: Official future-cycle announcement made (e.g., separate test, no JEE Main), but exact format/syllabus unconfirmed.
+3. `[Previous Cycle Precedent]`: Documented 2026 admissions procedure; not guaranteed to repeat in future cycles.
+4. `[Guide Recommendation]`: Practical educational guidance designed by practitioners; not an official institutional requirement.
+5. `[External Resource]`: Third-party tool tagged with access conditions (`Free`, `Free Tier`, `Paid`, `Account Required`, `Local Setup`).
+
+---
+
+#### 6. Phased Rollout Plan
+
+* **MVP (First Release)**:
+  * Public Roadmap Hub (`/blueprints/b-cyber/roadmap`).
+  * 5-Stage Visual Tech Pipeline (Stages 0–4).
+  * Free Readiness Diagnostic (interactive calculator).
+  * Curated Resource Library with filtering & badges.
+  * Sample Weekly Paces (2, 4, 8 hours).
+  * Proof-of-Work documentation checklist.
+  * Starter Practice Tasks with hints.
+  * Paid Execution System preview & feature comparison.
+  * Source citations, update history & feedback gateway.
+  * *Zero signup barriers for viewing or using the free roadmap.*
+* **Phase 2 (Sub-routes & Accounts)**:
+  * Persistent User Accounts & Cloud Progress Sync.
+  * Dedicated Sub-routes: `/blueprints/b-cyber/roadmap/check` and `/blueprints/b-cyber/roadmap/my-plan`.
+  * Automated payment gateway integration (Razorpay/Stripe for ₹199–299).
+  * Interactive Adaptive Rescheduling Engine.
+  * Cycle-specific mock simulations once official test format is published by IIT Kanpur.
 
 ---
 
@@ -320,10 +542,10 @@ Present across all 3 pages, fixed below the global Ayush-Paul site header:
 ## 5. Technical Implementation & Phased Execution Plan
 
 ```
-PHASE 1 (Now)     ──► Complete Website Sitemap & UX Blueprint locked in docs (Done)
-PHASE 2           ──► Shared Sub-Nav & Layout Shell (`BCyberNav`, Breadcrumbs, Trust Bar)
-PHASE 3           ──► Build Pillar 1 Overview (`/blueprints/b-cyber`) with 13 Visual Sections
-PHASE 4           ──► Build Pillar 2 Admission (`/blueprints/b-cyber/admission`)
-PHASE 5           ──► Build Pillar 3 Roadmap (`/blueprints/b-cyber/roadmap`)
+PHASE 1 (Now)     ──► Complete 3-Pillar Master Sitemap & UX Blueprint locked in docs (Done)
+PHASE 2           ──► Shared Sub-Nav & Layout Shell (`BCyberNav`, Breadcrumbs, Trust Bar) (Done)
+PHASE 3           ──► Build Pillar 1 Overview (`/blueprints/b-cyber`) with 14 Visual Sections (Done)
+PHASE 4           ──► Build Pillar 2 Admission (`/blueprints/b-cyber/admission`) with 12 Sections (Done)
+PHASE 5           ──► Build Pillar 3 Roadmap (`/blueprints/b-cyber/roadmap`) with 14 Sections
 PHASE 6           ──► End-to-End QA: Verification, Routing, SEO Meta & Links Validation
 ```
