@@ -312,10 +312,10 @@ export function BCyber2026PrecedentPage() {
             </p>
           </div>
           <Link
-            to="/blueprints/b-cyber/prepare"
+            to="/blueprints/b-cyber/roadmap"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition-colors shrink-0 shadow-xs group"
           >
-            <span>Open Preparation Planner</span>
+            <span>Open Preparation Roadmap</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>

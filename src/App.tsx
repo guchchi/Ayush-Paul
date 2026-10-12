@@ -164,10 +164,11 @@ export default function App() {
               {/* B.Cyber Compass Routes (Declared before :slug) */}
               <Route path="/blueprints/b-cyber" element={wrapInLayout(<BCyberHomePage />)} />
               <Route path="/blueprints/b-cyber/admission" element={wrapInLayout(<BCyberAdmissionGuidePage />)} />
+              <Route path="/blueprints/b-cyber/roadmap" element={wrapInLayout(<BCyberPreparationPlannerPage />)} />
+              <Route path="/blueprints/b-cyber/prepare" element={<Navigate to="/blueprints/b-cyber/roadmap" replace />} />
               <Route path="/blueprints/b-cyber/2026-process" element={wrapInLayout(<BCyber2026PrecedentPage />)} />
               <Route path="/blueprints/b-cyber/updates" element={wrapInLayout(<BCyberOfficialUpdatesPage />)} />
               <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
-              <Route path="/blueprints/b-cyber/prepare" element={wrapInLayout(<BCyberPreparationPlannerPage />)} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
               <Route path="/blueprints/:slug/engine" element={<BlueprintEnginePage />} />
               <Route path="/academy" element={<Navigate to="/mastery" replace />} />

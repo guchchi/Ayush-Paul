@@ -174,6 +174,15 @@ export async function getRoutesConfig() {
   });
 
   routes.push({ 
+    url: '/blueprints/b-cyber/roadmap', 
+    seoData: { 
+      title: "Preparation Roadmap | B.Cyber Compass", 
+      description: "Interactive foundational pipeline and personalised preparation engine for IIT Kanpur B.Cyber aspirants.",
+      schema: new SchemaFactory().addWebPage({ name: "Preparation Roadmap | B.Cyber Compass", description: "Interactive preparation roadmap for B.Cyber aspirants.", url: "/blueprints/b-cyber/roadmap" }).build()
+    }
+  });
+
+  routes.push({ 
     url: '/blueprints/b-cyber/prepare', 
     seoData: { 
       title: "Personalised Preparation Planner | B.Cyber Compass", 

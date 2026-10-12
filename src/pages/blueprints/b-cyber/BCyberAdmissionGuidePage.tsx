@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ShieldCheck,
   Filter,
@@ -12,6 +13,7 @@ import {
   LogOut,
   AlertTriangle,
   Search,
+  ArrowRight,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
 import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
@@ -328,6 +330,36 @@ export function BCyberAdmissionGuidePage() {
             </div>
           )}
         </div>
+
+        {/* Next Step Transition Section */}
+        <section className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary block">
+              Next Step: Pillar 3
+            </span>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900">
+              Ready to begin preparation?
+            </h3>
+            <p className="text-xs text-slate-500 max-w-xl">
+              Start with the free 4-stage foundational tech roadmap or explore personalized execution planning.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <Link
+              to="/blueprints/b-cyber/roadmap"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors shadow-xs group"
+            >
+              <span>View Preparation Roadmap</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <Link
+              to="/blueprints/b-cyber"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors text-center"
+            >
+              <span>Revisit Overview</span>
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   );

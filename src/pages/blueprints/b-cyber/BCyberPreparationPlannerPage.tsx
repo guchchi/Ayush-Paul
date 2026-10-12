@@ -169,7 +169,7 @@ const PROOF_OF_WORK_ARTIFACTS = [
 ];
 
 export function BCyberPreparationPlannerPage() {
-  const canonical = getCanonicalUrl('/blueprints/b-cyber/prepare');
+  const canonical = getCanonicalUrl('/blueprints/b-cyber/roadmap');
 
   useSEO({
     title: 'Personalised Preparation Studio | B.Cyber Compass',
