@@ -9,6 +9,9 @@ import {
   ShieldCheck,
   HelpCircle,
   FileText,
+  XCircle,
+  Clock,
+  BookOpen,
 } from 'lucide-react';
 import { PARADIGM_SHIFT_COMPARISON } from '../../content/b-cyber/knowledge-base';
 import { cn } from '../../lib/utils';
@@ -117,7 +120,112 @@ export const BCyberParadigmShiftCard: React.FC = () => {
           </div>
         </div>
 
-        {/* Detailed Comparative Matrix */}
+        {/* DUAL DISPLAY: Officially Announced vs. Not Yet Announced / Confirmed */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-brand-primary" />
+              <span>2027 Status: Officially Announced vs. Not Yet Confirmed</span>
+            </h3>
+            <span className="text-[11px] text-slate-500 font-medium">Epistemic Truth Filter</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Box A: Officially Announced */}
+            <div className="rounded-xl border border-emerald-300 bg-emerald-50/40 p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-emerald-200 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <h4 className="text-xs font-bold text-emerald-950">Officially Announced</h4>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  Confirmed by WSAIS
+                </span>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-emerald-950">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <div>
+                    <strong>JEE Main Discontinued:</strong> IIT Kanpur has officially stated that JEE Main scores will not be used for future selection rounds (FAQ 23).
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <div>
+                    <strong>Separate Entrance Test Mandated:</strong> An independent dedicated entrance examination will be announced specifically for B.Cyber admissions.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <div>
+                    <strong>Academic Baseline:</strong> Class 12 (or NIOS equivalent) with Physics, Chemistry, and Mathematics across minimum 5 subjects remains the statutory Senate prerequisite.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <div>
+                    <strong>Nationality Restriction:</strong> Open exclusively to Indian nationals under Senate ordinances.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+                  <div>
+                    <strong>Participating Institutes:</strong> Joint undergraduate program across IIT Kanpur (WSAIS/C3iHub) and IIT Madras (CSE Dept).
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Box B: Not Yet Announced / Pending Notice */}
+            <div className="rounded-xl border border-amber-300 bg-amber-50/40 p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between border-b border-amber-200 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-700 shrink-0" />
+                  <h4 className="text-xs font-bold text-amber-950">Not Yet Announced / Confirmed</h4>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                  Pending Official Notice
+                </span>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-amber-950">
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">⏳</span>
+                  <div>
+                    <strong>Test Format &amp; Duration:</strong> Whether computer-based test (CBT) or written, single or multi-stage, question counts, and duration are <em>not yet confirmed</em>.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">⏳</span>
+                  <div>
+                    <strong>Official Syllabus &amp; Topics:</strong> The topic-wise syllabus and weightage (Math vs. CS vs. Logic) have <em>not yet been published</em>. Claims of "leaked syllabus" are baseless.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">⏳</span>
+                  <div>
+                    <strong>Exam Dates &amp; Registration Window:</strong> Application launch dates, testing dates, and admit card timelines have <em>not yet been announced</em>.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">⏳</span>
+                  <div>
+                    <strong>Selection Weights:</strong> Relative weightage between the entrance test score, FAQ 22 evidence, and on-campus hackathon is <em>not yet announced</em>.
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold mt-0.5">⏳</span>
+                  <div>
+                    <strong>Application Fees &amp; Quotas:</strong> 2027 fee schedule (2026 precedent was ₹1,600 / ₹3,200) and exact seat matrix by reservation category are <em>pending notice</em>.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Comparative Matrix (2026 Precedent vs. 2027 Shift) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* 2026 Column */}
           {(activeCycle === 'both' || activeCycle === '2026_only') && (
@@ -203,7 +311,7 @@ export const BCyberParadigmShiftCard: React.FC = () => {
               <span>What Should 2027 Aspirants Do Right Now?</span>
             </h4>
             <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-              1. Maintain Class 12 PCM passing readiness (mandatory baseline).<br />
+              1. Maintain Class 12 PCM passing readiness (mandatory baseline under Senate ordinances).<br />
               2. Develop foundational Discrete Math, logic, and systems thinking.<br />
               3. Build verifiable evidence of prior work (FAQ 22) through reproducible code and CTF problem-solving.
             </p>

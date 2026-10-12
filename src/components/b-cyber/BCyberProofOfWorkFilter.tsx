@@ -11,6 +11,7 @@ import {
   FileCode,
   Copy,
   Check,
+  Info,
 } from 'lucide-react';
 import { PROOF_OF_WORK_STANDARDS } from '../../content/b-cyber/knowledge-base';
 import { cn } from '../../lib/utils';
@@ -49,11 +50,11 @@ Terminal output:
   return (
     <div className="w-full rounded-2xl border border-slate-200/90 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden">
       {/* Header */}
-      <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-2">
+      <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-800 font-medium">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-800 font-semibold">
             <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>WSAIS FAQ 22 Evidence Standards</span>
+            <span>Official requirement (WSAIS FAQ 22)</span>
           </div>
           <span className="text-xs text-slate-500 font-medium">
             Easily Verifiable Evidence Criterion
@@ -61,11 +62,22 @@ Terminal output:
         </div>
 
         <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
-          The Admissions Committee&apos;s Portfolio Filter: High-Signal vs. Rejections
+          Portfolio &amp; Evidence Standards: High-Signal vs. Rejections
         </h2>
         <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-          Under WSAIS FAQ 22, shortlisting evaluates <em>criticality, technical depth, and reproducibility</em>. Generic video course certificates and automated vulnerability scanner exports are systematically filtered out.
+          Under WSAIS FAQ 22, candidates must submit <em>easily verifiable evidence of prior work in cybersecurity, computing, or related fields</em>. To help candidates submit credible evidence, the comparisons below distinguish between verified requirements and recommended documentation formats.
         </p>
+
+        {/* Epistemic Labeling Callout */}
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 text-xs text-slate-700 flex items-start gap-2.5 shadow-2xs">
+          <Info className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-bold text-slate-900">Epistemic Clarity &amp; Labeling</span>
+            <p className="text-[11px] text-slate-600 leading-relaxed">
+              Submitting verifiable prior work is an <strong className="text-slate-900">Official requirement</strong> under WSAIS FAQ 22. The specific documentation structures, multi-month commit cadence, and README templates shown below are <strong className="text-blue-700">Our preparation recommendation</strong> to ensure your portfolio survives manual committee scrutiny and avoids being dismissed as automated spam.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="p-5 sm:p-8 space-y-8">
@@ -77,22 +89,32 @@ Terminal output:
               className="rounded-xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs space-y-0"
             >
               {/* Category Header */}
-              <div className="bg-slate-100/70 px-4 py-2.5 border-b border-slate-200 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  {item.category}
-                </span>
-                <span className="text-xs text-slate-500 font-medium">FAQ 22 Criterion</span>
+              <div className="bg-slate-100/70 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    {item.category}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    Official requirement
+                  </span>
+                </div>
+                <span className="text-xs text-slate-500 font-medium">WSAIS FAQ 22 Criterion</span>
               </div>
 
               {/* Side-by-Side: Pass vs Fail */}
               <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
                 {/* Approved (Green) */}
                 <div className="p-4 sm:p-5 bg-emerald-50/20 space-y-2.5">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <h3 className="text-xs font-bold text-emerald-950">
-                      {item.approvedPattern.title}
-                    </h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <h3 className="text-xs font-bold text-emerald-950">
+                        {item.approvedPattern.title}
+                      </h3>
+                    </div>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                      Our preparation recommendation
+                    </span>
                   </div>
                   <p className="text-[11px] text-slate-600 leading-relaxed">
                     {item.approvedPattern.description}
@@ -109,11 +131,16 @@ Terminal output:
 
                 {/* Rejected (Red) */}
                 <div className="p-4 sm:p-5 bg-red-50/20 space-y-2.5">
-                  <div className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500 shrink-0" />
-                    <h3 className="text-xs font-bold text-red-950">
-                      {item.rejectionPattern.title}
-                    </h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <XCircle className="w-4 h-4 text-red-500 shrink-0" />
+                      <h3 className="text-xs font-bold text-red-950">
+                        {item.rejectionPattern.title}
+                      </h3>
+                    </div>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">
+                      Observed rejection pattern
+                    </span>
                   </div>
                   <p className="text-[11px] text-slate-600 leading-relaxed">
                     {item.rejectionPattern.description}
@@ -136,15 +163,23 @@ Terminal output:
         <div className="rounded-xl border border-slate-200 bg-slate-900 text-white p-5 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
-              <FileCode className="w-4 h-4 text-emerald-400" />
-              <h3 className="text-xs sm:text-sm font-bold text-white">
-                Verifiable Project README Template (1-Click Copy)
-              </h3>
+              <FileCode className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xs sm:text-sm font-bold text-white">
+                    Verifiable Project README Template
+                  </h3>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-900 text-blue-200 border border-blue-700">
+                    Our preparation recommendation
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">Recommended markdown format for your personal repository to show reproducibility.</p>
+              </div>
             </div>
             <button
               type="button"
               onClick={() => copyTemplate(sampleReadmeTemplate, 'readme')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors cursor-pointer self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors cursor-pointer self-start sm:self-auto shrink-0"
             >
               {copiedTemplate === 'readme' ? (
                 <>
@@ -160,11 +195,7 @@ Terminal output:
             </button>
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Use this format in your GitHub repository so the IIT Kanpur admissions committee can immediately clone, verify, and execute your code in under 60 seconds.
-          </p>
-
-          <pre className="p-3 bg-black/40 rounded-lg text-[11px] font-mono text-slate-300 overflow-x-auto custom-scrollbar border border-white/10 leading-relaxed">
+          <pre className="text-xs font-mono bg-slate-950 p-4 rounded-lg overflow-x-auto text-slate-300 leading-relaxed border border-slate-800">
             {sampleReadmeTemplate}
           </pre>
         </div>

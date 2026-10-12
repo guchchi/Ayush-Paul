@@ -37,18 +37,18 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 │    `/blueprints/b-cyber`   │ `/blueprints/b-cyber/      │ `/blueprints/b-cyber/        │
 │                            │   admission`               │   roadmap`                   │
 ├────────────────────────────┼────────────────────────────┼──────────────────────────────┤
-│ • Sec 0: Hero & Jump Chips │ • Sec 0: Hero & Status Bar │ • Sec 0: Hero & Roadmap Modes│
-│ • Sec 1: 30-Sec Summary    │ • Sec 1: 30-Sec Eligibility│ • Sec 1: Free Visual Pipeline│
-│ • Sec 2: Key Facts Grid    │ • Sec 2: Interactive Screen│ • Sec 2: Stage 1 (Linux/CLI) │
-│ • Sec 3: 2+2 Visual Model  │ • Sec 3: 2026 vs 2027 Shift│ • Sec 3: Stage 2 (Network)   │
-│ • Sec 4: 4-Sem Curriculum  │ • Sec 4: FAQ 23 Exam Pivot │ • Sec 4: Stage 3 (Web/CTF)   │
-│ • Sec 5: Beyond Hacking    │ • Sec 5: 6h Hackathon 8-Dom│ • Sec 5: Stage 4 (Artifacts) │
-│ • Sec 6: Degree Comparison │ • Sec 6: FAQ 22 Portfolio  │ • Sec 6: Curated Free Tools  │
-│ • Sec 7: Who Should Join   │ • Sec 7: Rejection Traps   │ • Sec 7: Paid Engine Intake  │
-│ • Sec 8: Degree & Alumni   │ • Sec 8: Fees & Quota Rules│ • Sec 8: Dynamic Personal Path│
-│ • Sec 9: Internship Truth  │ • Sec 9: Official FAQ Vault│ • Sec 9: Proof-of-Work Board │
-│ • Sec 10: Common Myths     │ • Sec 10: Source Citations │ • Sec 10: Recovery Protocol  │
-│ • Sec 11: Common FAQs      │ • Sec 11: Next Step CTA    │ • Sec 11: Progress Tracker   │
+│ • Sec 0: Hero & Jump Chips │ • Sec 0: Hero (#admission) │ • Sec 0: Hero & Roadmap Modes│
+│ • Sec 1: 30-Sec Summary    │ • Sec 1: 30-Sec Summary    │ • Sec 1: Free Visual Pipeline│
+│ • Sec 2: Key Facts Grid    │ • Sec 2: Cycle Status Board│ • Sec 2: Stage 1 (Linux/CLI) │
+│ • Sec 3: 2+2 Visual Model  │ • Sec 3: Cycle Screener    │ • Sec 3: Stage 2 (Network)   │
+│ • Sec 4: 4-Sem Curriculum  │ • Sec 4: Rules Explained   │ • Sec 4: Stage 3 (Web/CTF)   │
+│ • Sec 5: Beyond Hacking    │ • Sec 5: Selection Process │ • Sec 5: Stage 4 (Artifacts) │
+│ • Sec 6: Degree Comparison │ • Sec 6: Hackathon Format  │ • Sec 6: Curated Free Tools  │
+│ • Sec 7: Who Should Join   │ • Sec 7: Prior Work & FAQ22│ • Sec 7: Paid Engine Intake  │
+│ • Sec 8: Degree & Alumni   │ • Sec 8: Application Rules │ • Sec 8: Dynamic Personal Path│
+│ • Sec 9: Internship Truth  │ • Sec 9: Admission FAQ Ctr │ • Sec 9: Proof-of-Work Board │
+│ • Sec 10: Common Myths     │ • Sec 10: Official Sources │ • Sec 10: Recovery Protocol  │
+│ • Sec 11: Common FAQs      │ • Sec 11: Contextual Next  │ • Sec 11: Progress Tracker   │
 │ • Sec 12: Source Citations │                            │                              │
 │ • Sec 13: Next Step CTA    │                            │                              │
 └────────────────────────────┴────────────────────────────┴──────────────────────────────┘
@@ -110,43 +110,150 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 ---
 
 ### PILLAR 2: Admission & Eligibility (Check)
-*Route: `/blueprints/b-cyber/admission`*
+*Canonical Route: `/blueprints/b-cyber/admission`*
+*Status: Finalized Master Architecture (Locked Source of Truth)*
 
-* **Section 0 — Hero: Admission Reality Check & Cycle Clarifier**
-  * Headline: *"How Admission to IIT Kanpur B.Cyber Works: Eligibility, 2026 Precedent & The 2027 Shift."*
-* **Section 1 — The 30-Second Admission Summary**
-  * High-signal overview of eligibility and selection funnel stages.
-* **Section 2 — Interactive 30-Second Eligibility Screener**
-  * Lightweight multi-step micro-triage:
-    * Q1: Class 12th PCM with 5 subjects (Yes / No)
-    * Q2: Date of Birth & Category (Validates against Oct 1, 2001 or Oct 1, 1996 for SC/ST/PwD)
-    * Q3: JoSAA 2025 History (Admitted to IIT vs Withdrew vs Never admitted)
-    * Q4: Nationality (Indian National only)
-  * Instant Verdict: *Potentially Eligible*, *Potentially Ineligible*, or *Information Insufficient* with direct citation to Senate ordinance.
-* **Section 3 — The Paradigm Shift: 2026 Precedent vs. 2027 Big Shift (Interactive Split-View)**
-  * *2026 Precedent*: JEE Main percentile used for initial screening + Prior Work evidence ➔ 6-Hour On-Campus Hackathon.
-  * *2027 Confirmed Shift (FAQ 23)*: **JEE Main DISCONTINUED**. A dedicated separate entrance test will be conducted by IIT Kanpur + Prior Work + Hackathon.
-* **Section 4 — The 6-Hour On-Campus Hackathon Blueprint (New Core Lab)**
-  * 8 Technical Domain Cards:
-    1. Cryptography
-    2. Web Security
-    3. API Security
-    4. Network Security (Wireshark/PCAP)
-    5. Reverse Engineering (GDB/Ghidra/ELF)
-    6. OSINT
-    7. Operating Systems (Linux & Windows)
-    8. Malware & Threat Analysis
-* **Section 5 — FAQ 22: Evidence of Prior Work (The Portfolio Filter)**
-  * Side-by-side comparison:
-    * *What Gets Shortlisted*: Real GitHub tools with commit history, responsible vulnerability disclosures (NCIIPC, Bugcrowd, HackerOne), detailed CTF writeups, 2-minute unlisted screen walkthrough.
-    * *What Gets Rejected*: Generic Coursera/Udemy certificates, automated scanner reports (missing headers), cloned GitHub repos with cosmetic edits.
-* **Section 6 — Application Logistics, Fees & Quotas**
-  * Non-refundable application fee (₹1,600 / ₹3,200), max 2 consecutive attempts, reservation policies.
-* **Section 7 — Official Admission FAQ Vault**
-  * Searchable accordion focusing purely on admission doubts.
-* **Section 8 — Next Step Decision Gateway**
-  * Primary CTA: `View Preparation Roadmap →` (leads to Pillar 3)
-  * Secondary CTA: `Revisit Program Overview` (leads back to Pillar 1)
+#### 1. Product Definition & Core Boundaries
+* **Core User Question**: “Main IIT Kanpur B.Cyber admission ke liye apni situation kaise assess karun, selection process kaise samjhun, aur abhi mujhe kya karna chahiye?”
+* **Primary Outcome**: The student leaves with:
+  1. A clear understanding of the multi-stage admission process.
+  2. A cycle-specific view of what is officially known and what remains unconfirmed.
+  3. Evidence-aware eligibility guidance with transparent limitations (no overconfident verdicts).
+  4. A practical understanding of the selection process, hackathon format, and FAQ 22 prior-work expectations.
+  5. A clear next action and direct access to authoritative sources.
+* **What This Page Is**: An admission decision-support interface combining policy navigation, a cycle-aware eligibility screener, a selection-process explainer, practical preparation guidance, and an official-source directory.
+* **What This Page Is NOT**:
+  * An unofficial substitute for IIT Kanpur's admission portal.
+  * A guarantee of eligibility, selection, or admission.
+  * A prediction of future entrance-test questions or selection cutoffs.
+  * A replacement for the Preparation Roadmap (Pillar 3).
+  * A duplicate of the B.Cyber program overview (Pillar 1).
+
+#### 2. Target Users & Non-Linear Entry Paths
+Supports five distinct user situations in a single coherent page without forced linear sequencing:
+1. **First-Time Explorer**: Needs a concise explanation and recommended reading path.
+2. **Eligibility-First Student**: Jumps directly to `#eligibility-check` to assess age, academic background, and relevant conditions.
+3. **Next-Cycle (2027) Aspirant**: Uses `#cycle-status` and `#selection-process` to distinguish confirmed rules from pending announcements and avoid outdated criteria.
+4. **Student With Prior Technical Work**: Jumps to `#prior-work` to understand how projects, practical work, and documented evidence evaluate under FAQ 22.
+5. **Returning Student**: Accesses specific rules in `#eligibility-rules` or official citations in `#official-sources` without completing the screener again.
+
+#### 3. Navigation & Interaction Standards
+* **On-This-Page Navigation (Refinement A)**:
+  * *Desktop*: Compact horizontal anchor strip below the header compatible with the existing site layout, preserving content readability without squeezing the page into a narrow sidebar.
+  * *Mobile*: Collapsible, non-sticky section index (`Jump to Section ▾`) that closes immediately after an anchor destination is selected. Strictly no additional persistent sticky layer or viewport obstruction.
+  * Stable, unique anchor IDs across all 12 sections (`#admission-start` through `#next-step`).
+* **Screener-to-Rule Deep Links (Refinement B)**:
+  * Each relevant screener result links directly to the exact explanatory rule or source section using descriptive link text such as *"View the supporting official rule."*
+  * Focuses destination accessibly and applies a subtle, temporary visual highlight (`ring-2 ring-brand-primary/40`).
+  * Respects `prefers-reduced-motion` (strictly zero continuous pulse animations).
+  * Links directly to the actual supporting official notice, FAQ, or regulation (no false assumption that every requirement originates from a Senate rule).
+* **Consistent Status Taxonomy (Refinement C)**:
+  Applied consistently across the cycle-status board, screener results, eligibility rules, selection process, practical assessment, prior-work guidance, and application-readiness section:
+  1. `Officially confirmed for the selected cycle`
+  2. `Officially announced for a future cycle`
+  3. `Previously published or observed in an earlier cycle`
+  4. `Not yet officially confirmed`
+  5. `Guide recommendation, not an official requirement`
+
+#### 4. Exact 12-Section Hierarchy (Sec 0–11)
+
+* **Section 0 — Hero: Admission & Eligibility** (`#admission-start`)
+  * **H1**: *How Admission to IIT Kanpur B.Cyber Works: Eligibility, 2026 Precedent & The 2027 Shift*
+  * Concise explanation of what this page helps the student determine.
+  * Visible admission-cycle context indicator with an honest status summary for the selected cycle.
+  * Primary CTA: `Check My Admission Readiness` (scrolls to `#eligibility-check`).
+  * Secondary Text Link: `Understand the Selection Process` (scrolls to `#selection-process`).
+  * Boundary: Strictly no unverified eligibility cutoffs, exam dates, or selection probabilities in the hero.
+
+* **Section 1 — Admission in 30 Seconds** (`#admission-summary`)
+  * Direct-answer crawlable HTML summary answering the core search query immediately (academic qualification ➔ entrance screening ➔ practical hackathon).
+  * Compact high-level visual pathway clearly distinguishing 2026 precedent from the upcoming-cycle process.
+  * Visible pointer to the official WSAIS admission portal.
+
+* **Section 2 — Admission Cycle Status Board** (`#cycle-status`)
+  * Cycle selector toggle: `Upcoming Cycle (2027 Planning)` [Default] vs. `Previous Cycle (2026 Historical Reference)`.
+  * Classifies all cycle-dependent claims using the 5-part Status Taxonomy.
+  * Unannounced upcoming items displayed as explicit pending states (no invented dates or blank gaps).
+  * Switching cycles updates status labels, screener criteria, and application logistics.
+  * Boundary: Status overview only; detailed rules belong to Section 4 and full selection flow to Section 5.
+
+* **Section 3 — Interactive Cycle-Aware Eligibility Screener** (`#eligibility-check`)
+  * Multi-step compact form with visible progress indicator, back/edit controls, and zero account/email collection.
+  * Evaluates conditions applicable to the selected cycle: academic qualification (PCM 5 subjects), age/DOB, nationality, and prior IIT admission/attempt history.
+  * **Five Defined Result States**:
+    * *Result A (Meets Published Baseline)*: Shows met conditions, outstanding items, and next verification steps.
+    * *Result B (Published Condition Unmet)*: Identifies the specific documented rule, cycle, and limitation.
+    * *Result C (Future-Cycle Rules Unconfirmed)*: Explicitly states *"2027 eligibility rules not yet confirmed by IIT Kanpur Senate"*; provides provisional statutory baseline (PCM & Indian nationality) without an overconfident verdict.
+    * *Result D (Insufficient Information)*: Highlights missing answers with 1-click edit prompt.
+    * *Result E (Rules Require Review)*: Shows that check is unavailable pending verification rather than manufacturing an answer.
+  * Screener-to-rule deep links: each result contains a descriptive link (`View the supporting official rule`) pointing to Section 4 with accessible focus.
+  * Strict boundary: Zero admission probabilities, scores, or fake "chance of getting into IIT Kanpur."
+
+* **Section 4 — Eligibility Rules Explained** (`#eligibility-rules`)
+  * Transparent rule cards grouped by category:
+    1. Academic qualifications and subject requirements (Class 12 PCM 5 subjects).
+    2. Age and date-of-birth conditions (2026 cutoff: Oct 1, 2001 / Oct 1, 1996 for SC/ST/PwD; 2027 unannounced).
+    3. Nationality and statutory reservation categories.
+    4. Previous IIT admission, attempts, or other restrictions.
+    5. Additional conditions specific to the selected cycle.
+  * Consistent card structure: rule explained, applicable cycle, published condition, student impact, source/FAQ reference, and unconfirmed status if applicable.
+  * Highlightable card state when navigated from screener results.
+  * Boundary: Explains admission eligibility only; general degree regulations belong on the program overview.
+
+* **Section 5 — Selection Process: Previous Cycle vs Upcoming Cycle** (`#selection-process`)
+  * Dual-lane comparison with two clearly labelled tracks:
+    * *Lane A (Previous-Cycle 2026 Reference)*: JEE Main score shortlisting + FAQ 22 evidence ➔ 6-Hour New Core Lab Hackathon.
+    * *Lane B (Upcoming-Cycle 2027 Status)*:
+      * Officially Announced (FAQ 23): JEE Main permanently discontinued; separate entrance test announced.
+      * Pending Official Notice: Examination format (CBT vs. written), schedule, syllabus topics, question counts, and selection weights. Explicit warning against unverified coaching rumors.
+  * Compact visual sequence displaying pending states for uncertain stages without assumption-filling.
+
+* **Section 6 — Practical Assessment & Hackathon** (`#practical-assessment`)
+  * **Documented Format**: 6-hour practical test at New Core Lab, IIT Kanpur, on sanitized offline workstations.
+    * Label: `[Previously published or observed in an earlier cycle]`
+  * **Preparation Focus Areas**: 8 practical security domains (Cryptography, Web, Networks, Reversing, OSINT, OS, Malware, API) to build transferable foundational competence.
+    * Label: `[Guide recommendation, not an official requirement]`
+  * Direct pointer to Preparation Roadmap (Pillar 3) for structured skill development.
+
+* **Section 7 — Prior Work & Evidence Portfolio** (`#prior-work`)
+  * **Official Requirement**: WSAIS FAQ 22 requirement for *easily verifiable evidence of prior work in cybersecurity, computing, or related fields*.
+    * Label: `[Officially confirmed for the selected cycle]`
+  * **Evidence-Quality Matrix**:
+    * *Recommended High-Signal Formats*: Documented repositories, reproducible test commands, detailed CTF writeups, responsible disclosure acknowledgments. Labeled `[Guide recommendation, not an official requirement]`.
+    * *Weak Evidence Anti-Patterns*: Generic video course certificates (Coursera/Udemy), automated vulnerability scanner dumps, cloned repos with cosmetic edits. Labeled `[Weak evidence practice to avoid]`.
+  * Compact self-review checklist (originality, reproducibility, documentation, external source acknowledgment). Zero fake scoring or arbitrary acceptance thresholds.
+
+* **Section 8 — Application Logistics & Readiness Checklist** (`#application-readiness`)
+  * Administrative details with explicit cycle attribution and taxonomy labels:
+    * Application Fees: ₹1,600 (Female/SC/ST/PwD) / ₹3,200 (Others) for 2026 (FAQ 25); 2027 fees labeled `Not yet officially confirmed`.
+    * Attempt Limits: Maximum 2 consecutive attempts for 2026 (FAQ 21); 2027 limit labeled `Not yet officially confirmed`.
+    * Reservation Matrix: Statutory GoI categories under Senate ordinances.
+    * Refund Status: Non-refundable application fee.
+  * Local readiness checklist (browser storage only, no account requirement).
+  * Missing announcements display explicit `Not yet officially announced` status with official notification portal links.
+
+* **Section 9 — Admission FAQ Centre** (`#admission-faqs`)
+  * Categorized accordion covering 6 distinct admission clusters:
+    1. Eligibility and academic requirements.
+    2. Age, nationality, and previous admission rules.
+    3. 2026 vs 2027 admission changes.
+    4. Entrance test and practical assessment format.
+    5. Prior work and project evidence expectations.
+    6. Application fees, documents, and administrative rules.
+  * Direct, plain-text answers with cycle attribution and visible source links.
+
+* **Section 10 — Official Sources & Update History** (`#official-sources`)
+  * Primary official source directory (IIT Kanpur WSAIS portal, Senate records, IIT Madras joint launch documentation).
+  * Claim-to-source mapping linking specific regulations to exact FAQ numbers.
+  * Verification metadata (source title, applicable cycle, check date, exact citation reference).
+  * Update history log recording substantive policy shifts with dates and concise descriptions.
+  * Working editorial correction submission route.
+
+* **Section 11 — Contextual Next-Step Gateway** (`#next-step`)
+  * Primary In-Flow CTA: `Explore the Preparation Roadmap →` (links to `/blueprints/b-cyber/roadmap`).
+  * Secondary In-Flow Links: `Revisit B.Cyber Overview` (`/blueprints/b-cyber`) and `Open Official Admission Source`.
+  * Contextual screener next-step integration without repeated oversized banner blocks.
+  * Strictly no persistent mobile bottom CTA bar.
 
 ---
 
@@ -199,8 +306,9 @@ Present across all 3 pages, fixed below the global Ayush-Paul site header:
 
 ### 4.3 Mobile Navigation Standard
 * Single clean column layout on screens < 768px.
-* Sticky bottom bar with single primary CTA and contextual progression step.
-* Zero competing button clutter.
+* Contextual in-flow CTA at section conclusion; strictly NO persistent mobile bottom CTA overlay to preserve viewport space, prevent safe-area keyboard overlap, and avoid obscuring mobile sub-navigation.
+* Collapsible, non-sticky page section index that closes immediately after an anchor destination is selected.
+* Zero competing button clutter; minimum 44px touch targets.
 
 ### 4.4 Trust & Editorial Transparency Bar
 * Placed at the top of every page:

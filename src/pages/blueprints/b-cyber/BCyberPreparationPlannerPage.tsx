@@ -75,8 +75,8 @@ const CATEGORY_STYLES: Record<
 };
 
 const STAGE_LABELS: Record<AcademicStage, string> = {
-  class_11_12: 'Class 11 / 12 (JEE Aspirant)',
-  dropper: 'Dropper / Gap Year',
+  class_11_12: 'Class 11 / 12 (Secondary / Senior School)',
+  dropper: 'Dropper / Independent Prep Year',
   college_year_1: 'College Year 1',
   college_year_2_plus: 'College Year 2+',
 };
@@ -99,14 +99,14 @@ function getGapAnalysis(stage: AcademicStage, baseline: TechnicalBaseline) {
     return {
       ruleType: 'Protection Rule',
       strategicRule:
-        '85% time to JEE Main / Boards (PCM core), 15% weekend hands-on cybersecurity lab.',
+        '80% time to Academic & PCM Core (Boards / Math baseline), 20% hands-on terminal & systems lab.',
       criticalGap:
-        'Severe risk of blowing JEE Main cutoff ranks if overcomplicating cyber or drowning in rabbit holes.',
-      timeSplit: 'Mon–Fri JEE focus + strictly 2–3 hours on weekends for Linux & Bandit labs.',
+        'Neglecting the mandatory Class 12 PCM baseline (Senate statutory prerequisite) or drowning in passive tutorial hell.',
+      timeSplit: 'Mon–Fri Academic & Math rigor + strictly 2–3 hours on weekends for Linux & Bandit labs.',
       rejectionTrap:
-        'Dropping 20 hours a week on exploit tutorials while mock test PCM ranks crash.',
+        'Abandoning fundamental math and systems concepts for superficial tools that get rejected under FAQ 22.',
       standoutAdvantage:
-        'High JEE cutoff clearance + clean 1-repo Proof-of-Work showing genuine terminal curiosity.',
+        'Strong PCM academic standing + clean 1-repo Proof-of-Work showing genuine terminal curiosity.',
     };
   }
   if (stage === 'college_year_1') {
