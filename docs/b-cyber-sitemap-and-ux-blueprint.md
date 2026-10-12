@@ -1,6 +1,7 @@
 # B.Cyber Compass — Complete Website Sitemap & UX Blueprint
-*Version: 2.0 | Last Verified & Locked: 12 October 2026*
+*Version: 3.0 | Status: FROZEN & LOCKED (12 October 2026)*
 *Platform: Ayush-Paul Blueprints Ecosystem*
+*Architectural Governance: Strict Sitemap Freeze Active — All 3 pillars (Pillar 1: 14 sections, Pillar 2: 12 sections, Pillar 3: 14 sections) are permanently locked. Zero sections may be added, removed, or renumbered without an approved architectural RFC.*
 
 ---
 
@@ -57,20 +58,21 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 ---
 
 ### PILLAR 1: B.Cyber Overview (Understand)
-*Route: `/blueprints/b-cyber`*
+*Canonical Route:* `/blueprints/b-cyber`  
+*Status: Finalized Master Architecture (Locked Source of Truth)*  
 
-* **Section 0 — Hero: First Impression & Fast-Track Route Jump**
+* **Section 0 — Hero: First Impression & Fast-Track Route Jump** (`#overview-start`)
   * Trust Label: *"Independent guide, based on official sources — not the official IIT Kanpur website."*
   * Headline: *"What Is IIT Kanpur B.Cyber? Degree Structure, Curriculum & Ground Truth."*
   * Fast-Track Entry Chips:
     * 🟢 *First-time visitor?* ➔ "Start with the basics (Scroll down)"
-    * 🟡 *Already know the program?* ➔ `[ Check Admission & Eligibility → ]`
-    * 🔵 *Ready to prepare?* ➔ `[ Explore Preparation Roadmap → ]`
-* **Section 1 — B.Cyber in 30 Seconds (Direct-Answer First)**
+    * 🟡 *Already know the program?* ➔ `[ Check Admission & Eligibility → ]` (`/blueprints/b-cyber/admission#admission-start`)
+    * 🔵 *Ready to prepare?* ➔ `[ Explore Preparation Roadmap → ]` (`/blueprints/b-cyber/roadmap#prep-start`)
+* **Section 1 — B.Cyber in 30 Seconds (Direct-Answer First)** (`#quick-answer`)
   * 40–60 word plain text summary formatted for AEO/GEO/Google direct answer:
     *"IIT Kanpur’s Bachelor of Cybersecurity (B.Cyber.) is a four-year undergraduate program run by the Wadhwani School of AI and Intelligent Systems (WSAIS). It features two years of coursework at IIT Kanpur followed by a two-year internship component. Successful graduates receive the B.Cyber degree and official IIT Kanpur alumni status."*
   * Official source anchor: `https://iitk.ac.in/wsais/b-cyber.php`
-* **Section 2 — Program at a Glance (Key Facts Matrix)**
+* **Section 2 — Program at a Glance (Key Facts Matrix)** (`#key-facts`)
   * Clean 2-column accessible key-value table:
     * Program Title: *Bachelor of Cybersecurity (B.Cyber.)*
     * Academic Unit: *WSAIS & C3iHub, IIT Kanpur (in partnership with IIT Madras)*
@@ -78,34 +80,34 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
     * Structure: *2 Years On-Campus Coursework + 2 Years Field Deployment*
     * Credential Conferred: *B.Cyber. Degree & IIT Alumni Status*
     * Placement: *Specialized placement channel provided; zero historical cohort data as program began July 2026*
-* **Section 3 — The 4-Year, 2+2 Model (Visual Stepper & Timeline)**
+* **Section 3 — The 4-Year, 2+2 Model (Visual Stepper & Timeline)** (`#model-2plus2`)
   * Custom visual timeline:
     * *Years 01–02*: On-Campus Academic & Laboratory Rigor at IIT Kanpur.
     * *Years 03–04*: Field Deployment / Practical Internship in selected government intelligence, CERT-In, NCIIPC, and critical infrastructure.
   * Explicit conceptual breakdown: Difference between *Internship Component*, *Employment*, and *Placement*.
-* **Section 4 — Curriculum and Subjects (Semesters 1 to 4)**
+* **Section 4 — Curriculum and Subjects (Semesters 1 to 4)** (`#curriculum`)
   * Accessible interactive semester tabs (Sem 1: 51 Cr, Sem 2: 50–54 Cr, Sem 3: 50 Cr, Sem 4: 48 Cr) with core labs highlighted: Malware Analysis Lab, Digital Forensics Lab, Cloud Security Lab, VAPT Lab, Network & Web Security Lab.
-* **Section 5 — Beyond Hacking: What Cybersecurity Actually Covers**
+* **Section 5 — Beyond Hacking: What Cybersecurity Actually Covers** (`#beyond-hacking`)
   * 5 Domain Cards: Foundations & OS, Networking & Protocols, Cryptography, Defensive Forensics & VAPT, Human Factors & Security Psychology.
-* **Section 6 — Balanced Degree Comparison**
+* **Section 6 — Balanced Degree Comparison** (`#degree-comparison`)
   * Objective comparative matrix: B.Cyber vs. Conventional B.Tech Computer Science (focus, structure, labs, practical deployment, higher-study parity). Acknowledges what cannot yet be compared (future salaries).
-* **Section 7 — Is B.Cyber Right for You? (Fit & Self-Reflection)**
+* **Section 7 — Is B.Cyber Right for You? (Fit & Self-Reflection)** (`#fit-check`)
   * *Strong fit if...* (passionate about systems, patient problem solver, curious about defensive security).
   * *Think carefully if...* (only chasing IIT tag, expecting generic software dev, assuming instant job guarantee).
   * Interactive 3-checkbox reflection prompt.
-* **Section 8 — Degree Award, Recognition & Higher Studies**
+* **Section 8 — Degree Award, Recognition & Higher Studies** (`#degree-recognition`)
   * Official degree title, Senate parity, full eligibility for MS/Ph.D. globally (IITs, Stanford, CMU, MIT), and strict branch change restrictions.
-* **Section 9 — Internship, Stipend & Placement Reality**
+* **Section 9 — Internship, Stipend & Placement Reality** (`#internship-reality`)
   * Ground truth: Host organizations provide stipends; student retains IIT student status; historical cohort data does not exist yet because the program began in July 2026.
-* **Section 10 — Common Misconceptions (Myth vs. Fact)**
+* **Section 10 — Common Misconceptions (Myth vs. Fact)** (`#myths-vs-facts`)
   * 5 high-contrast rows dispelling common myths (ethical hacking only, guaranteed paid employment, placement support = fixed salary, 2026 rules apply to 2027, interchangeable with generic CSE).
-* **Section 11 — Frequently Asked Questions (Concise Accordion)**
+* **Section 11 — Frequently Asked Questions (Concise Accordion)** (`#common-faqs`)
   * 8 core student questions with direct, plain-text answers.
-* **Section 12 — Editorial Transparency & Verified Sources**
+* **Section 12 — Editorial Transparency & Verified Sources** (`#official-sources`)
   * Citations to official WSAIS portal, Senate records, last-verified date (12 October 2026), and correction submission link.
-* **Section 13 — Next Step Decision Gateway**
-  * Primary CTA: `Check Admission & Eligibility →` (leads to Pillar 2)
-  * Secondary CTA: `Explore Preparation Roadmap →` (leads to Pillar 3)
+* **Section 13 — Next Step Decision Gateway** (`#next-steps`)
+  * Primary CTA: `Check Admission & Eligibility →` (leads to `/blueprints/b-cyber/admission#admission-start`)
+  * Secondary CTA: `Explore Preparation Roadmap →` (leads to `/blueprints/b-cyber/roadmap#prep-start`)
 
 ---
 
@@ -537,6 +539,30 @@ Present across all 3 pages, fixed below the global Ayush-Paul site header:
   `[INDEPENDENT GUIDE · NOT AN OFFICIAL IIT KANPUR SITE · LAST CHECKED: 12 OCT 2026]`
 * Source verification drawer accessible via small emerald citation tags.
 
+### 4.5 Cross-Pillar Navigation & Deep-Linking Matrix
+
+| Origin Pillar & Section | Link Destination | Target Anchor ID | Context & User Purpose |
+| :--- | :--- | :--- | :--- |
+| **Pillar 1: Sec 0 (Hero Chips)** | `/blueprints/b-cyber/admission` | `#admission-start` | Fast-track jump for students who already understand degree structure |
+| **Pillar 1: Sec 0 (Hero Chips)** | `/blueprints/b-cyber/roadmap` | `#prep-start` | Fast-track jump for applicants looking for preparation resources |
+| **Pillar 1: Sec 13 (Decision Gateway)** | `/blueprints/b-cyber/admission` | `#admission-start` | Primary funnel progression after understanding degree overview |
+| **Pillar 1: Sec 13 (Decision Gateway)** | `/blueprints/b-cyber/roadmap` | `#prep-start` | Alternative funnel progression directly to preparation roadmap |
+| **Pillar 2: Sec 1 (Summary Card)** | `/blueprints/b-cyber` | `#quick-answer` | Direct-answer pointer for students needing foundational program context |
+| **Pillar 2: Sec 6 (Hackathon)** | `/blueprints/b-cyber/roadmap` | `#roadmap-stages` | Technical preparation routing to Stage 0–4 learning stages |
+| **Pillar 2: Sec 7 (Prior Work FAQ 22)** | `/blueprints/b-cyber/roadmap` | `#proof-of-work` | Actionable documentation & dossier guidance for verifiable technical artifacts |
+| **Pillar 2: Sec 11 (Next-Step Gateway)** | `/blueprints/b-cyber/roadmap` | `#prep-start` | Primary funnel progression: move from eligibility assessment to preparation |
+| **Pillar 2: Sec 11 (Next-Step Gateway)** | `/blueprints/b-cyber` | `#quick-answer` | Revisit degree structure, curriculum, and 2+2 model |
+| **Pillar 3: Sec 01 (Certainty Board)** | `/blueprints/b-cyber/admission` | `#selection-process` | Direct bridge to official selection rules and 2026 vs 2027 distinction |
+| **Pillar 3: Sec 07 (Proof-of-Work)** | `/blueprints/b-cyber/admission` | `#prior-work` | Cross-reference with official FAQ 22 prior work evaluation criteria |
+| **Pillar 3: Sec 11 (Prep FAQ Centre)** | `/blueprints/b-cyber/admission` | `#admission-faqs` | Route statutory eligibility, age cutoff, and reservation questions |
+| **Pillar 3: Sec 13 (Next-Step Gateway)** | `/blueprints/b-cyber/admission` | `#admission-start` | Re-evaluate admission criteria and eligibility before continuing preparation |
+| **Pillar 3: Sec 13 (Next-Step Gateway)** | `/blueprints/b-cyber` | `#quick-answer` | Revisit full 4-year degree overview |
+
+### 4.6 Strict Sitemap Freeze & Governance Policy
+* **Lock Status**: **PERMANENTLY FROZEN**.
+* **Zero Arbitrary Mutations**: Sitemap lock hone ke baad bina valid reason ya approved architectural RFC ke koi bhi section add, remove, split, rename ya renumber nahi kiya jayega.
+* **1:1 Implementation Symmetry**: Har code component (`BCyberHomePage.tsx`, `BCyberAdmissionGuidePage.tsx`, `BCyberPreparationPlannerPage.tsx`) ko exactly inhin agreed section IDs aur sequences ke mutabik render karna mandatory hai.
+
 ---
 
 ## 5. Technical Implementation & Phased Execution Plan
@@ -546,6 +572,6 @@ PHASE 1 (Now)     ──► Complete 3-Pillar Master Sitemap & UX Blueprint lock
 PHASE 2           ──► Shared Sub-Nav & Layout Shell (`BCyberNav`, Breadcrumbs, Trust Bar) (Done)
 PHASE 3           ──► Build Pillar 1 Overview (`/blueprints/b-cyber`) with 14 Visual Sections (Done)
 PHASE 4           ──► Build Pillar 2 Admission (`/blueprints/b-cyber/admission`) with 12 Sections (Done)
-PHASE 5           ──► Build Pillar 3 Roadmap (`/blueprints/b-cyber/roadmap`) with 14 Sections
+PHASE 5           ──► Build Pillar 3 Roadmap (`/blueprints/b-cyber/roadmap`) with 14 Sections (Ready to build)
 PHASE 6           ──► End-to-End QA: Verification, Routing, SEO Meta & Links Validation
 ```
