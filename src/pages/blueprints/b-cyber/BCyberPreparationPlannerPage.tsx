@@ -1,1320 +1,949 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  Compass,
+  ShieldCheck,
+  MapPin,
   CalendarCheck,
   RotateCcw,
   Clock,
   CheckCircle2,
-  Sliders,
+  AlertCircle,
+  AlertTriangle,
+  ExternalLink,
   ChevronDown,
   ChevronUp,
-  ExternalLink,
-  Layers,
   ArrowRight,
-  Info,
-  Calendar,
-  Check,
-  Filter,
-  ShieldCheck,
-  AlertTriangle,
-  FileCheck,
-  HeartPulse,
-  Link2,
   Sparkles,
-  Award,
-  ListChecks,
+  HeartPulse,
   FolderGit2,
-  Compass,
-  X,
-  Settings2,
-  CheckSquare,
-  Square,
+  FileCheck,
+  Copy,
+  Check,
+  HelpCircle,
+  BookOpen,
+  Terminal,
+  Network,
+  Shield,
+  Search,
+  Code2,
+  Sliders,
+  Layers,
   Zap,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
-import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
 import { TrustBadge } from '../../../components/b-cyber/TrustBadge';
-import { useBCyberPlannerStore, PlannerTab } from '../../../lib/b-cyber-compass/store';
-import { resourcesCatalog } from '../../../content/b-cyber';
+import { BCyberReadinessDiagnostic } from '../../../components/b-cyber/BCyberReadinessDiagnostic';
+import { BCyberRoadmapStageList } from '../../../components/b-cyber/BCyberRoadmapStageList';
+import { BCyberResourceDirectory } from '../../../components/b-cyber/BCyberResourceDirectory';
+import { BCyberPracticeExercises } from '../../../components/b-cyber/BCyberPracticeExercises';
+import { BCyberPersonalPlanPreview } from '../../../components/b-cyber/BCyberPersonalPlanPreview';
+import { useBCyberPlannerStore } from '../../../lib/b-cyber-compass/store';
 import { useSEO } from '../../../hooks/useSEO';
 import { getCanonicalUrl } from '../../../lib/domain';
 import { cn } from '../../../lib/utils';
-import type {
-  PrepPathway,
-  AcademicStage,
-  TechnicalBaseline,
-  PrimaryGoal,
-  TargetTimeline,
-  PlanItemCategory,
-  PlanTaskItem,
-} from '../../../types/b-cyber-compass';
 
-const CATEGORY_STYLES: Record<
-  PlanItemCategory,
-  { label: string; badgeClass: string; borderClass: string }
-> = {
-  confirmed_admission_requirement: {
-    label: 'Category A: Official Admission Rule',
-    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
-    borderClass: 'border-l-2 border-l-emerald-500',
-  },
-  independent_provisional_prep: {
-    label: 'Category B: Foundational Logic / Math',
-    badgeClass: 'bg-indigo-50 text-indigo-800 border-indigo-200/80',
-    borderClass: 'border-l-2 border-l-indigo-500',
-  },
-  published_evidence_alignment: {
-    label: 'Category C: FAQ 22 Evidence of Work',
-    badgeClass: 'bg-amber-50 text-amber-800 border-amber-200/80',
-    borderClass: 'border-l-2 border-l-amber-500',
-  },
-  technical_skill_development: {
-    label: 'Independent Technical Lab',
-    badgeClass: 'bg-slate-100 text-slate-800 border-slate-200/80',
-    borderClass: 'border-l-2 border-l-slate-400',
-  },
-};
-
-const STAGE_LABELS: Record<AcademicStage, string> = {
-  class_11_12: 'Class 11 / 12 (Secondary / Senior School)',
-  dropper: 'Dropper / Independent Prep Year',
-  college_year_1: 'College Year 1',
-  college_year_2_plus: 'College Year 2+',
-};
-
-const BASELINE_LABELS: Record<TechnicalBaseline, string> = {
-  zero_terminal: 'Zero Terminal / Beginner',
-  basic_programming: 'Basic Programming / Math (C, Python)',
-  intermediate_scripting_networking: 'Intermediate Scripting & Networking',
-};
-
-const GOAL_LABELS: Record<PrimaryGoal, string> = {
-  bcyber_admission: 'B.Cyber Admission Shortlist',
-  cyber_foundations: 'Foundational Cybersecurity Skills',
-  practical_portfolio: 'FAQ 22 Portfolio Dossier',
-  career_shift: 'Career & Skills Shift',
-};
-
-function getGapAnalysis(stage: AcademicStage, baseline: TechnicalBaseline) {
-  if (stage === 'class_11_12' || stage === 'dropper') {
-    return {
-      ruleType: 'Protection Rule',
-      strategicRule:
-        '80% time to Academic & PCM Core (Boards / Math baseline), 20% hands-on terminal & systems lab.',
-      criticalGap:
-        'Neglecting the mandatory Class 12 PCM baseline (Senate statutory prerequisite) or drowning in passive tutorial hell.',
-      timeSplit: 'Mon–Fri Academic & Math rigor + strictly 2–3 hours on weekends for Linux & Bandit labs.',
-      rejectionTrap:
-        'Abandoning fundamental math and systems concepts for superficial tools that get rejected under FAQ 22.',
-      standoutAdvantage:
-        'Strong PCM academic standing + clean 1-repo Proof-of-Work showing genuine terminal curiosity.',
-    };
-  }
-  if (stage === 'college_year_1') {
-    return {
-      ruleType: 'Leverage Rule',
-      strategicRule:
-        'Connect C programming & Discrete Maths to basic Cryptography & Networking; ship first public repo in 21 days.',
-      criticalGap:
-        'Strong algorithmic head, zero public proof-of-work, no CTF vocabulary, and zero verifiable artifacts.',
-      timeSplit: '50% Semester coursework + 50% technical proof-of-work buildout.',
-      rejectionTrap:
-        'Collecting 15 Coursera/Udemy certificates of completion that admission committees disregard.',
-      standoutAdvantage:
-        'A public GitHub repo with clean commit history demonstrating socket programming and Bandit notes.',
-    };
-  }
-  return {
-    ruleType: 'Fast-Track Rule',
-    strategicRule:
-      'Build 1 network protocol analyzer or security tool + prepare direct dossier to C3iHub principal investigators.',
-    criticalGap:
-      'Missing faculty-grade research-oriented project depth and live vulnerability disclosures.',
-    timeSplit: '40% Academic maintenance + 60% high-signal security tool development.',
-    rejectionTrap:
-      'Generic web scraping scripts or boilerplate CRUD applications masquerading as security projects.',
-    standoutAdvantage:
-      'Demonstrated vulnerability research, original tooling, or meaningful open-source commits.',
-  };
+interface NavSection {
+  id: string;
+  label: string;
+  secNum: string;
 }
 
-const PROOF_OF_WORK_ARTIFACTS = [
-  {
-    id: 'github_repo',
-    title: 'Artifact 1: Personal GitHub Repository',
-    subtitle: 'Public repo with clean README documenting learning notes, bash scripts, and exercises.',
-    placeholder: 'https://github.com/username/bcyber-foundations',
-    benchmark: 'At least 15 commits over 4+ weeks with meaningful commit messages.',
-  },
-  {
-    id: 'bandit_milestone',
-    title: 'Artifact 2: OverTheWire Bandit Milestone',
-    subtitle: 'Levels 1–10 (or 1–15) completed with concise local command notes (without leaking passwords).',
-    placeholder: 'https://github.com/username/bcyber-foundations/blob/main/bandit-notes.md',
-    benchmark: 'Stop at Level 15; do not get stuck on Level 16+ rabbit holes.',
-  },
-  {
-    id: 'practical_writeup',
-    title: 'Artifact 3: Practical Mini-Writeup / Packet Analysis',
-    subtitle: '1-page structured markdown analysis of a sample PCAP file (Wireshark) or PicoCTF web challenge.',
-    placeholder: 'https://github.com/username/bcyber-foundations/blob/main/packet-analysis.md',
-    benchmark: 'Explain root-cause, evidence, and remediation clearly in plain English.',
-  },
-  {
-    id: 'video_walkthrough',
-    title: 'Artifact 4 (Optional Video Edge): 2-Minute Screen Recording',
-    subtitle: 'Unlisted YouTube demo walking through your terminal commands, code, and thought process.',
-    placeholder: 'https://youtu.be/your-unlisted-walkthrough',
-    benchmark: 'Authentic 120-second screen share showing terminal and Git repo. No fancy editing needed.',
-  },
+const SECTIONS: NavSection[] = [
+  { id: 'prep-start', label: 'Start Preparation', secNum: '00' },
+  { id: 'roadmap-certainty', label: 'Known vs Unknown', secNum: '01' },
+  { id: 'roadmap-summary', label: '60-Sec Summary', secNum: '02' },
+  { id: 'readiness-check', label: 'Readiness Diagnostic', secNum: '03' },
+  { id: 'roadmap-stages', label: '5-Stage Syllabus', secNum: '04' },
+  { id: 'resource-library', label: 'Curated Resources', secNum: '05' },
+  { id: 'weekly-pace', label: 'Weekly Pace Plan', secNum: '06' },
+  { id: 'proof-of-work', label: 'Proof-of-Work Dossier', secNum: '07' },
+  { id: 'practice-tasks', label: 'Practice Exercises', secNum: '08' },
+  { id: 'personal-plan', label: 'Paid Execution System', secNum: '09' },
+  { id: 'recovery-plan', label: 'Recovery & Missed Weeks', secNum: '10' },
+  { id: 'prep-faqs', label: 'Preparation FAQs', secNum: '11' },
+  { id: 'prep-sources', label: 'Sources & Methodology', secNum: '12' },
+  { id: 'prep-next', label: 'Next Steps Gateway', secNum: '13' },
 ];
 
 export function BCyberPreparationPlannerPage() {
-  const canonical = getCanonicalUrl('/blueprints/b-cyber/roadmap');
+  const { isEmergencyRecoveryMode, toggleRecoveryMode } = useBCyberPlannerStore();
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedPace, setSelectedPace] = useState<'casual' | 'balanced' | 'sprint'>('balanced');
+  const [copiedTemplate, setCopiedTemplate] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   useSEO({
-    title: 'Personalised Preparation Studio | B.Cyber Compass',
+    title: 'B.Cyber Preparation Roadmap: Free 5-Stage Pipeline & Execution System | Ayush-Paul Blueprints',
     description:
-      'Interactive, trust-first preparation planner for B.Cyber aspirants. Generates customized weekly schedules respecting your available hours and baseline skills.',
-    keywords:
-      'B.Cyber preparation planner, cybersecurity study schedule, FAQ 22 portfolio roadmap, independent logic prep, dynamic capacity planning',
-    url: canonical,
+      'Structured technical preparation roadmap for IIT Kanpur B.Cyber. 5 free foundational stages, Linux/Networking labs, PortSwigger exercises, and personalized execution engine.',
+    url: getCanonicalUrl('/blueprints/b-cyber/roadmap'),
   });
 
-  const {
-    inputs,
-    generatedPlan,
-    completedTaskIds,
-    activeTab,
-    isEmergencyRecoveryMode,
-    proofOfWorkArtifacts,
-    updateInputs,
-    generatePlan,
-    toggleTaskCompletion,
-    setActiveTab,
-    toggleRecoveryMode,
-    setProofOfWorkArtifact,
-    reset,
-  } = useBCyberPlannerStore();
+  const markdownTemplate = `# Technical Artifact: [Project / Challenge Name]
 
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
-  const [expandedTaskIds, setExpandedTaskIds] = useState<Record<string, boolean>>({});
-  const [collapsedPhaseIds, setCollapsedPhaseIds] = useState<Record<string, boolean>>({});
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+## 1. Executive Summary
+- **Domain:** [Linux / Networking / Web / Cryptography / Reverse Engineering]
+- **Time Invested:** [e.g. 12 Hours]
+- **Core Security Concept:** [e.g. Broken Object Level Authorization / TCP Stream Framing]
 
-  // Auto-generate plan if none exists
-  React.useEffect(() => {
-    if (!generatedPlan) {
-      generatePlan();
-    }
-  }, [generatedPlan, generatePlan]);
+## 2. Technical Environment & Prerequisites
+- OS: Ubuntu 24.04 LTS (WSL2)
+- Tools Used: [e.g. Wireshark v4.2, Python 3.12, Burp Suite Community]
 
-  const handleReset = () => {
-    reset();
-    setConfirmReset(false);
+## 3. Reproduction & Execution Steps
+\`\`\`bash
+# 1. Clone repository
+git clone https://github.com/username/project-name.git
+cd project-name
+
+# 2. Run test verification
+python3 verify_exploit.py --target localhost:8080
+\`\`\`
+
+## 4. Key Findings & Vulnerability Analysis
+- What was the core vulnerability or technical challenge?
+- How was the solution derived logically without guessing?
+
+## 5. Security Remediation & Defense Recommendations
+- How should the developer patch this flaw in production?
+- Verified patch snippet or defensive configuration.`;
+
+  const handleCopyTemplate = () => {
+    navigator.clipboard.writeText(markdownTemplate);
+    setCopiedTemplate(true);
+    setTimeout(() => setCopiedTemplate(false), 2500);
   };
 
-  const toggleTaskDrawer = (taskId: string) => {
-    setExpandedTaskIds((prev) => ({
-      ...prev,
-      [taskId]: !prev[taskId],
-    }));
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
-
-  const togglePhaseCollapse = (phaseId: string) => {
-    setCollapsedPhaseIds((prev) => ({
-      ...prev,
-      [phaseId]: !prev[phaseId],
-    }));
-  };
-
-  const gapAnalysis = getGapAnalysis(inputs.academicStage, inputs.technicalBaseline);
-
-  const totalTasks =
-    generatedPlan?.phases.reduce((acc, phase) => acc + phase.tasks.length, 0) || 0;
-  const completedCount = completedTaskIds.length;
-  const progressPercent = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-
-  const artifactsLinked = Object.values(proofOfWorkArtifacts).filter(
-    (url) => url && url.trim().length > 0
-  ).length;
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 text-slate-900 pt-28 sm:pt-32 pb-24">
+    <div className="w-full min-h-screen bg-[#fafbfc] text-[#0f172a]">
+      {/* Global Top Spacing for Fixed Main Navigation */}
+      <div className="pt-20 sm:pt-24" />
+
+      {/* Shared Contextual Navigation Header */}
       <BCyberNav />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Studio Top Bar */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-slate-200">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded uppercase tracking-wider">
-                Execution System v1.0
-              </span>
-              <span className="text-slate-300">•</span>
-              <span className="text-xs text-slate-500 font-mono">Deterministic Capacity Engine</span>
+      {/* On-This-Page Navigation Strip */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        {/* Desktop Anchor Strip */}
+        <div className="hidden lg:flex items-center gap-2 overflow-x-auto custom-scrollbar p-2 rounded-xl bg-white border border-slate-200/90 shadow-xs text-xs whitespace-nowrap">
+          <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px] pl-2 mr-1">
+            Sections:
+          </span>
+          {SECTIONS.map((sec) => (
+            <a
+              key={sec.id}
+              href={`#${sec.id}`}
+              className="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            >
+              <span className="font-mono text-slate-400 text-[10px] mr-1">{sec.secNum}</span>
+              <span>{sec.label}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Mobile Collapsible Section Drawer */}
+        <div className="lg:hidden">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="w-full py-2.5 px-4 rounded-xl bg-white border border-slate-200/90 text-xs font-semibold text-slate-700 flex items-center justify-between shadow-xs cursor-pointer"
+          >
+            <span className="flex items-center gap-1.5">
+              <Compass className="w-4 h-4 text-brand-primary" />
+              <span>Jump to Section (14 Sections Available)</span>
+            </span>
+            {isMobileMenuOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+
+          {isMobileMenuOpen && (
+            <div className="mt-2 p-3 rounded-xl bg-white border border-slate-200 shadow-md grid grid-cols-2 gap-1.5 text-xs">
+              {SECTIONS.map((sec) => (
+                <a
+                  key={sec.id}
+                  href={`#${sec.id}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5"
+                >
+                  <span className="font-mono text-[10px] text-brand-primary font-bold">{sec.secNum}</span>
+                  <span className="truncate">{sec.label}</span>
+                </a>
+              ))}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-1">
-              Personalised Preparation Studio
+          )}
+        </div>
+      </div>
+
+      {/* Main Content Area: 14 Locked Sections */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24 pb-24">
+        
+        {/* =========================================================================
+            SECTION 00: HERO (Start Your Preparation)
+        ========================================================================= */}
+        <section id="prep-start" aria-labelledby="prep-hero-heading" className="scroll-mt-28 space-y-6 pt-2">
+          {/* Trust Stamp Pill */}
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200/90 text-[11px] font-semibold text-slate-700 tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Pillar 3 · Preparation Roadmap &amp; Execution System</span>
+          </div>
+
+          {/* H1 Heading */}
+          <div className="space-y-3 max-w-4xl">
+            <h1 id="prep-hero-heading" className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+              B.Cyber Preparation Roadmap: <br />
+              <span className="text-brand-primary text-2xl sm:text-4xl block mt-2 font-bold">
+                Free Universal Pipeline &amp; Personalized Execution Engine
+              </span>
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Grounded, adaptive execution roadmap tailored to your baseline, academic constraints, and weekly hours.
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-3xl">
+              A cycle-aware, practice-oriented technical syllabus for aspiring cybersecurity undergraduates. Master Linux CLI, networking protocols, web security labs, and verifiable GitHub portfolios without generic fluff.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Emergency Freeze Button */}
-            <button
-              type="button"
-              onClick={toggleRecoveryMode}
-              className={cn(
-                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer',
-                isEmergencyRecoveryMode
-                  ? 'bg-rose-50 border-rose-300 text-rose-800 shadow-xs ring-1 ring-rose-400'
-                  : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
-              )}
-            >
-              <HeartPulse
-                className={cn(
-                  'w-3.5 h-3.5',
-                  isEmergencyRecoveryMode ? 'text-rose-600 animate-pulse' : 'text-slate-500'
-                )}
-              />
-              <span>
-                {isEmergencyRecoveryMode ? 'Exam Freeze Active (60m/wk)' : 'Exam Freeze / 60m Mode'}
+          {/* Admission-Cycle Status Panel */}
+          <div className="rounded-2xl border border-indigo-200/90 bg-indigo-50/40 p-5 sm:p-6 text-xs text-indigo-950 space-y-3 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-3">
+              <span className="font-bold text-indigo-900 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <span>Admission Cycle Status &amp; Epistemic Grounding</span>
               </span>
-            </button>
+              <span className="text-[10px] font-semibold bg-white border border-indigo-200 text-indigo-800 px-2 py-0.5 rounded">
+                Verified 12 Oct 2026
+              </span>
+            </div>
 
-            {/* Profile Configuration Button */}
-            <button
-              type="button"
-              onClick={() => setIsProfileModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors cursor-pointer"
-            >
-              <Settings2 className="w-3.5 h-3.5 text-slate-500" />
-              <span>Tune Profile</span>
-            </button>
-
-            {/* Reset Plan */}
-            {confirmReset ? (
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="px-2.5 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 cursor-pointer shadow-xs"
-                >
-                  Confirm Reset
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setConfirmReset(false)}
-                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs hover:text-slate-900 cursor-pointer"
-                >
-                  Cancel
-                </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <strong className="text-indigo-950 font-bold block">Officially Confirmed Announcement:</strong>
+                <p className="text-indigo-900/80 leading-relaxed">
+                  IIT Kanpur&apos;s official WSAIS B.Cyber page states that future admissions will feature a <strong>separate entrance test</strong> and that <strong>JEE Main will not be used</strong>.
+                </p>
               </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setConfirmReset(true)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-rose-600 hover:border-rose-200 text-xs transition-colors cursor-pointer"
-                title="Reset stored progress"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-            )}
+
+              <div className="space-y-1">
+                <strong className="text-indigo-950 font-bold block">Status for Upcoming Cycle:</strong>
+                <p className="text-indigo-900/80 leading-relaxed">
+                  Detailed examination format, syllabus topics, and marking weights are <strong>not yet confirmed by the Senate</strong>. Our roadmap teaches fundamental transferable security competencies, not an assumed future paper pattern.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Emergency Freeze Active Banner */}
-        {isEmergencyRecoveryMode && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-4 text-xs text-rose-950 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-            <div className="flex items-start gap-2.5">
-              <HeartPulse className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-              <div className="space-y-0.5">
-                <div className="font-semibold text-rose-900">
-                  Guilt-Free Exam Freeze Active (60 Minutes / Week)
-                </div>
-                <p className="text-rose-900/80 leading-relaxed text-[11px]">
-                  All complex wargames and deep protocol labs are paused. Spend just 1 hour each weekend making 1 commit to your GitHub repository and reviewing your markdown cheatsheets. Full recovery when exams conclude.
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={toggleRecoveryMode}
-              className="px-3 py-1 rounded-md bg-white border border-rose-300 text-rose-900 text-xs font-semibold hover:bg-rose-100/50 shrink-0 cursor-pointer"
+          {/* Fast-Track CTA Chips */}
+          <div className="pt-2 flex flex-wrap items-center gap-3">
+            <a
+              href="#readiness-check"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-brand-primary/90 transition-all shadow-xs cursor-pointer"
             >
-              Resume Standard Pace
-            </button>
+              <span>Check My Starting Point ↓</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+
+            <a
+              href="#roadmap-summary"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
+            >
+              <span>Explore Free 5-Stage Roadmap ↓</span>
+            </a>
+
+            <Link
+              to="/blueprints/b-cyber/admission#selection-process"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-all ml-auto"
+            >
+              <span>Review Admission Process in Pillar 2 →</span>
+            </Link>
           </div>
-        )}
+        </section>
 
-        {/* 2-Column Studio Cockpit Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-          {/* ======================================================== */}
-          {/* LEFT COLUMN: THE CONTROLLER & STRATEGIC COCKPIT (4 cols) */}
-          {/* ======================================================== */}
-          <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-28">
-            {/* Card 1: Live Profile & Capacity Engine */}
-            <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-900">
-                  <Sliders className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Profile & Capacity Engine</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsProfileModalOpen(true)}
-                  className="text-[11px] font-medium text-slate-600 hover:text-slate-900 hover:underline cursor-pointer"
-                >
-                  Edit Profile
-                </button>
-              </div>
+        {/* =========================================================================
+            SECTION 01: WHAT WE KNOW VS WHAT IS STILL UNKNOWN
+        ========================================================================= */}
+        <section id="roadmap-certainty" aria-labelledby="certainty-heading" className="scroll-mt-28 space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 01 · Institutional Epistemic Board
+            </span>
+            <h2 id="certainty-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              What We Know vs. What Is Still Unknown
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Transparent separation between official circulars, past observations, and independent preparation advice.
+            </p>
+          </div>
 
-              {/* Active Profile Snapshot */}
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between text-slate-600">
-                  <span className="text-slate-400">Academic Stage:</span>
-                  <span className="font-medium text-slate-900 truncate max-w-[180px]">
-                    {STAGE_LABELS[inputs.academicStage]}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-slate-600">
-                  <span className="text-slate-400">Baseline Skill:</span>
-                  <span className="font-medium text-slate-900 truncate max-w-[180px]">
-                    {BASELINE_LABELS[inputs.technicalBaseline]}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-slate-600">
-                  <span className="text-slate-400">Primary Goal:</span>
-                  <span className="font-medium text-slate-900 truncate max-w-[180px]">
-                    {GOAL_LABELS[inputs.primaryGoal]}
-                  </span>
-                </div>
-              </div>
-
-              {/* Interactive Weekly Hours Slider */}
-              <div className="pt-3 border-t border-slate-100 space-y-2">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="weekly-study-hours-input" className="text-xs font-semibold text-slate-900">
-                    Weekly Study Budget
-                  </label>
-                  <span className="font-mono text-xs font-bold text-slate-900 px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
-                    {inputs.availableWeeklyHours} hrs / week
-                  </span>
-                </div>
-
-                <input
-                  id="weekly-study-hours-input"
-                  type="range"
-                  min="3"
-                  max="25"
-                  step="1"
-                  value={inputs.availableWeeklyHours}
-                  onChange={(e) =>
-                    updateInputs({ availableWeeklyHours: parseInt(e.target.value, 10) })
-                  }
-                  className="w-full accent-slate-900 cursor-pointer h-1.5 bg-slate-100 rounded-lg"
-                  aria-label="Weekly Study Budget in hours per week"
-                />
-
-                <div className="flex justify-between text-[10px] font-mono text-slate-400">
-                  <span>3h (Constrained)</span>
-                  <span>10h (Balanced)</span>
-                  <span>25h (Sprint)</span>
-                </div>
-                <p className="text-[11px] text-slate-500 leading-snug">
-                  Moving this slider recalibrates weekly timeline pacing in real time without cutting foundational tasks.
-                </p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            {/* Box 1: Confirmed */}
+            <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/40 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                <span>Officially Confirmed</span>
+              </span>
+              <h3 className="font-bold text-sm text-emerald-950">Separate Entrance Test</h3>
+              <p className="text-emerald-900/80 leading-relaxed text-[11px]">
+                WSAIS announcements confirm future admissions will conduct an independent entrance test. JEE Main percentile ranking will no longer be used as the shortlist filter.
+              </p>
             </div>
 
-            {/* Card 2: Strategic Diagnosis (Gap Engine) */}
-            <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-900">
-                  <Zap className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Strategic Imperative</span>
-                </div>
-                <span className="font-mono text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                  {gapAnalysis.ruleType.toUpperCase()}
-                </span>
-              </div>
-
-              <div className="rounded-lg bg-slate-50 border border-slate-200/80 p-3 text-xs space-y-1">
-                <div className="font-semibold text-slate-900 text-xs">Core Directive:</div>
-                <p className="text-slate-600 leading-relaxed text-[11px]">
-                  {gapAnalysis.strategicRule}
-                </p>
-              </div>
-
-              <div className="space-y-1.5 text-xs">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                  Critical Identified Gap:
-                </span>
-                <p className="text-slate-600 text-[11px] leading-relaxed">
-                  {gapAnalysis.criticalGap}
-                </p>
-              </div>
-
-              <div className="pt-2 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('gap_analysis')}
-                  className="w-full py-1.5 text-center text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors cursor-pointer"
-                >
-                  View Committee Reality Check →
-                </button>
-              </div>
+            {/* Box 2: Past Observation */}
+            <div className="p-5 rounded-2xl border border-amber-200 bg-amber-50/40 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                <Clock className="w-3 h-3 text-amber-600" />
+                <span>Previous Cycle Precedent</span>
+              </span>
+              <h3 className="font-bold text-sm text-amber-950">6-Hour On-Campus Hackathon</h3>
+              <p className="text-amber-900/80 leading-relaxed text-[11px]">
+                In 2026, shortlisted applicants took a 6-hour practical test at IIT Kanpur across 8 domains and submitted documented prior work under FAQ 22.
+              </p>
             </div>
 
-            {/* Card 3: Execution Progress & Readiness */}
-            <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-3.5">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <span className="font-semibold text-xs text-slate-900">Roadmap Completion</span>
-                <span className="font-mono text-xs font-bold text-slate-900">
-                  {progressPercent}%
-                </span>
-              </div>
-
-              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-slate-900 h-full rounded-full transition-all duration-300"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/70">
-                  <div className="text-[10px] font-mono text-slate-400">TASKS DONE</div>
-                  <div className="font-semibold text-slate-900 mt-0.5">
-                    {completedCount} / {totalTasks}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/70">
-                  <div className="text-[10px] font-mono text-slate-400">ARTIFACTS</div>
-                  <div className="font-semibold text-slate-900 mt-0.5">
-                    {artifactsLinked} / 4 Ready
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-[10px] font-mono text-slate-400 pt-1 text-center">
-                Progress automatically saved in local browser storage
-              </div>
+            {/* Box 3: Pending */}
+            <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 bg-slate-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                <AlertCircle className="w-3 h-3 text-slate-500" />
+                <span>Not Yet Confirmed</span>
+              </span>
+              <h3 className="font-bold text-sm text-slate-900">Upcoming Test Syllabus &amp; Dates</h3>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                The exact syllabus, question pattern (CBT or written), dates, and weightages for the upcoming separate entrance test are strictly pending formal Senate notification.
+              </p>
             </div>
-          </aside>
+          </div>
 
-          {/* ======================================================== */}
-          {/* RIGHT COLUMN: ACTIVE WORKSPACE & VIEWS (8 cols)          */}
-          {/* ======================================================== */}
-          <section className="lg:col-span-8 space-y-5">
-            {/* Studio Navigation Bar */}
-            <div className="rounded-xl border border-slate-200/90 bg-white p-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setActiveTab('phases')}
-                className={cn(
-                  'flex-1 min-w-[130px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-all cursor-pointer font-medium',
-                  activeTab === 'phases'
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                )}
+          {/* Cross-Link Banner to Pillar 2 */}
+          <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+            <span className="text-slate-600">
+              Need to check whether your age, PCM marks, or 12th board satisfy statutory eligibility?
+            </span>
+            <Link
+              to="/blueprints/b-cyber/admission#eligibility-check"
+              className="text-brand-primary font-bold hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>Run Interactive Screener in Pillar 2</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 02: ROADMAP IN 60 SECONDS
+        ========================================================================= */}
+        <section id="roadmap-summary" aria-labelledby="summary-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 02 · 60-Second Overview
+            </span>
+            <h2 id="summary-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Roadmap in 60 Seconds: Visual 5-Stage Path
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              A progressive skill tree designed to take you from complete beginner to building demonstrable cybersecurity proof-of-work.
+            </p>
+          </div>
+
+          {/* 5-Node Visual Stepper */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+            {[
+              {
+                num: 'Stage 0',
+                title: 'Baseline',
+                desc: 'WSL2 / VM setup, terminal literacy & legal ethics',
+                deliverable: 'Working local Linux terminal',
+              },
+              {
+                num: 'Stage 1',
+                title: 'Foundations',
+                desc: 'Linux files/permissions, TCP/IP & Wireshark PCAPs',
+                deliverable: 'Bandit L0–15 + PCAP capture',
+              },
+              {
+                num: 'Stage 2',
+                title: 'Security Core',
+                desc: 'OWASP web flaws, Burp Suite & crypto primitives',
+                deliverable: 'PortSwigger Apprentice labs',
+              },
+              {
+                num: 'Stage 3',
+                title: 'Investigation',
+                desc: 'Recon OSINT, ELF/PE disassembly & PicoCTF gym',
+                deliverable: '2 technical CTF writeups',
+              },
+              {
+                num: 'Stage 4',
+                title: 'Evidence',
+                desc: 'Multi-topic challenges & public GitHub portfolio',
+                deliverable: 'Documented evidence dossier',
+              },
+            ].map((node, i) => (
+              <div
+                key={i}
+                className="p-4 rounded-xl border border-slate-200/90 bg-white space-y-2 relative shadow-xs flex flex-col justify-between"
               >
-                <ListChecks className="w-3.5 h-3.5" />
-                <span>Execution Roadmap</span>
-                <span
-                  className={cn(
-                    'font-mono text-[10px] px-1.5 py-0.2 rounded',
-                    activeTab === 'phases'
-                      ? 'bg-slate-800 text-slate-200'
-                      : 'bg-slate-100 text-slate-600'
-                  )}
-                >
-                  {completedCount}/{totalTasks}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('proof_of_work')}
-                className={cn(
-                  'flex-1 min-w-[130px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-all cursor-pointer font-medium',
-                  activeTab === 'proof_of_work'
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                )}
-              >
-                <FolderGit2 className="w-3.5 h-3.5" />
-                <span>Proof-of-Work Dossier</span>
-                <span
-                  className={cn(
-                    'font-mono text-[10px] px-1.5 py-0.2 rounded',
-                    activeTab === 'proof_of_work'
-                      ? 'bg-slate-800 text-slate-200'
-                      : 'bg-slate-100 text-slate-600'
-                  )}
-                >
-                  {artifactsLinked}/4
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('weekly_calendar')}
-                className={cn(
-                  'flex-1 min-w-[110px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-all cursor-pointer font-medium',
-                  activeTab === 'weekly_calendar'
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                )}
-              >
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Weekly Cadence</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('gap_analysis')}
-                className={cn(
-                  'flex-1 min-w-[110px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs transition-all cursor-pointer font-medium',
-                  activeTab === 'gap_analysis'
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                )}
-              >
-                <Compass className="w-3.5 h-3.5" />
-                <span>Strategic Analysis</span>
-              </button>
-            </div>
-
-            {/* VIEW 1: ROADMAP & ACTION TASKS */}
-            {activeTab === 'phases' && generatedPlan && (
-              <div className="space-y-4">
-                {/* Category Filter Chips */}
-                <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-mono text-slate-400 mr-1 flex items-center gap-1">
-                      <Filter className="w-3 h-3" /> Filter:
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCategoryFilter('all')}
-                      className={cn(
-                        'px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer',
-                        selectedCategoryFilter === 'all'
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
-                      )}
-                    >
-                      All Tasks ({totalTasks})
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSelectedCategoryFilter('confirmed_admission_requirement')
-                      }
-                      className={cn(
-                        'px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer',
-                        selectedCategoryFilter === 'confirmed_admission_requirement'
-                          ? 'bg-emerald-800 text-white'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-emerald-50'
-                      )}
-                    >
-                      Category A (Admission Rules)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSelectedCategoryFilter('independent_provisional_prep')
-                      }
-                      className={cn(
-                        'px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer',
-                        selectedCategoryFilter === 'independent_provisional_prep'
-                          ? 'bg-indigo-800 text-white'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50'
-                      )}
-                    >
-                      Category B (Logic & Math)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSelectedCategoryFilter('published_evidence_alignment')
-                      }
-                      className={cn(
-                        'px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer',
-                        selectedCategoryFilter === 'published_evidence_alignment'
-                          ? 'bg-amber-800 text-white'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-amber-50'
-                      )}
-                    >
-                      Category C (FAQ 22 Evidence)
-                    </button>
-                  </div>
-
-                  <span className="text-[11px] font-mono text-slate-400">
-                    {generatedPlan.phases.length} Phases Total
+                <div className="space-y-1.5">
+                  <span className="font-mono text-[10px] font-bold text-brand-primary uppercase tracking-wider block">
+                    {node.num}
                   </span>
+                  <h3 className="font-bold text-sm text-slate-900">{node.title}</h3>
+                  <p className="text-[11px] text-slate-500 leading-snug">{node.desc}</p>
                 </div>
-
-                {/* Phase Containers */}
-                <div className="space-y-4">
-                  {generatedPlan.phases.map((phase) => {
-                    const isCollapsed = collapsedPhaseIds[phase.id];
-                    const phaseTasks = phase.tasks.filter((t) => {
-                      if (selectedCategoryFilter === 'all') return true;
-                      return t.category === selectedCategoryFilter;
-                    });
-
-                    if (phaseTasks.length === 0 && selectedCategoryFilter !== 'all') {
-                      return null;
-                    }
-
-                    const phaseDoneCount = phase.tasks.filter((t) =>
-                      completedTaskIds.includes(t.id)
-                    ).length;
-
-                    return (
-                      <div
-                        key={phase.id}
-                        className="rounded-xl border border-slate-200/90 bg-white overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
-                      >
-                        {/* Phase Header */}
-                        <div
-                          onClick={() => togglePhaseCollapse(phase.id)}
-                          className="p-4 sm:p-5 flex items-center justify-between gap-3 bg-white hover:bg-slate-50/60 cursor-pointer transition-colors border-b border-slate-100"
-                        >
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200/80">
-                                PHASE {phase.phaseNumber}
-                              </span>
-                              <span className="font-mono text-[11px] text-slate-500">
-                                Weeks {phase.weekRange[0]}–{phase.weekRange[1]}
-                              </span>
-                              <span className="text-[11px] text-slate-400 font-mono">
-                                ({phaseDoneCount}/{phase.tasks.length} done)
-                              </span>
-                            </div>
-                            <h2 className="text-sm sm:text-base font-semibold text-slate-900">
-                              {phase.title}
-                            </h2>
-                            <p className="text-xs text-slate-500 leading-relaxed">
-                              {phase.focusArea}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-slate-400">
-                            {isCollapsed ? (
-                              <ChevronDown className="w-4 h-4" />
-                            ) : (
-                              <ChevronUp className="w-4 h-4" />
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Phase Tasks (when expanded) */}
-                        {!isCollapsed && (
-                          <div className="p-4 sm:p-5 space-y-3 bg-slate-50/30">
-                            <div className="space-y-2">
-                              {phaseTasks.map((task) => {
-                                const isDone = completedTaskIds.includes(task.id);
-                                const isExpanded = expandedTaskIds[task.id];
-                                const style =
-                                  CATEGORY_STYLES[task.category] ||
-                                  CATEGORY_STYLES.technical_skill_development;
-
-                                return (
-                                  <div
-                                    key={task.id}
-                                    className={cn(
-                                      'rounded-lg border bg-white transition-all',
-                                      isDone
-                                        ? 'border-emerald-200/70 bg-emerald-50/20'
-                                        : 'border-slate-200/80 hover:border-slate-300'
-                                    )}
-                                  >
-                                    <div className="p-3.5 flex items-start gap-3">
-                                      {/* Checkbox */}
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          toggleTaskCompletion(task.id);
-                                        }}
-                                        className="mt-0.5 text-slate-400 hover:text-emerald-600 transition-colors cursor-pointer shrink-0"
-                                      >
-                                        {isDone ? (
-                                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                        ) : (
-                                          <div className="w-4 h-4 rounded-full border border-slate-300 hover:border-slate-500" />
-                                        )}
-                                      </button>
-
-                                      {/* Task Title & Meta */}
-                                      <div
-                                        onClick={() => toggleTaskDrawer(task.id)}
-                                        className="flex-1 cursor-pointer space-y-1.5"
-                                      >
-                                        <div className="flex flex-wrap items-center justify-between gap-2">
-                                          <span
-                                            className={cn(
-                                              'text-xs font-semibold',
-                                              isDone
-                                                ? 'line-through text-slate-400'
-                                                : 'text-slate-900'
-                                            )}
-                                          >
-                                            {task.title}
-                                          </span>
-                                          <div className="flex items-center gap-1.5 shrink-0">
-                                            <span className="font-mono text-[10px] text-slate-400 flex items-center gap-1">
-                                              <Clock className="w-3 h-3" />
-                                              {task.estimatedHours}h
-                                            </span>
-                                            <span className="text-slate-300">
-                                              {isExpanded ? (
-                                                <ChevronUp className="w-3.5 h-3.5" />
-                                              ) : (
-                                                <ChevronDown className="w-3.5 h-3.5" />
-                                              )}
-                                            </span>
-                                          </div>
-                                        </div>
-
-                                        <div className="flex flex-wrap items-center gap-2">
-                                          <span
-                                            className={cn(
-                                              'text-[10px] font-mono px-2 py-0.5 rounded border',
-                                              style.badgeClass
-                                            )}
-                                          >
-                                            {style.label}
-                                          </span>
-                                          <TrustBadge trustLevel={task.trustLevel} size="sm" />
-                                        </div>
-
-                                        {/* Task Description Preview */}
-                                        <p className="text-xs text-slate-500 leading-relaxed pt-0.5">
-                                          {task.description}
-                                        </p>
-
-                                        {/* Expanded Drawer: Actionable Guide & Resource Links */}
-                                        {isExpanded && (
-                                          <div className="pt-3 mt-2 border-t border-slate-100 space-y-2.5">
-                                            {task.whyRecommended && (
-                                              <div className="rounded-md bg-slate-50 border border-slate-200/70 p-2.5 text-xs text-slate-700 space-y-1">
-                                                <div className="font-semibold text-slate-900 text-[11px]">
-                                                  Execution Context & Guidance:
-                                                </div>
-                                                <p className="text-[11px] leading-relaxed text-slate-600">
-                                                  {task.whyRecommended}
-                                                </p>
-                                              </div>
-                                            )}
-
-                                            {task.resourceIds && task.resourceIds.length > 0 && (
-                                              <div className="pt-1 flex flex-wrap items-center gap-1.5">
-                                                <span className="text-[10px] font-mono text-slate-400">
-                                                  PRACTICE LINKS:
-                                                </span>
-                                                {task.resourceIds.map((rId) => {
-                                                  const res = resourcesCatalog.resources.find(
-                                                    (r) => r.id === rId
-                                                  );
-                                                  if (!res) return null;
-                                                  return (
-                                                    <a
-                                                      key={res.id}
-                                                      href={res.url}
-                                                      target="_blank"
-                                                      rel="noopener noreferrer"
-                                                      className="inline-flex items-center gap-1 text-[11px] text-slate-900 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded hover:bg-slate-200 transition-colors"
-                                                    >
-                                                      <span>{res.name}</span>
-                                                      <ExternalLink className="w-2.5 h-2.5 text-slate-400" />
-                                                    </a>
-                                                  );
-                                                })}
-                                              </div>
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-
-                            {/* Phase Definition of Done */}
-                            <div className="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200/60 text-xs text-emerald-950 flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                              <div className="space-y-0.5">
-                                <span className="font-semibold text-emerald-900 text-xs">
-                                  Phase Definition of Done:
-                                </span>
-                                <p className="text-[11px] text-emerald-900/85">
-                                  {phase.milestoneDefinitionOfDone}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-600 font-semibold">
+                  <span className="text-slate-400 font-normal">Build: </span>
+                  {node.deliverable}
                 </div>
               </div>
-            )}
+            ))}
+          </div>
+        </section>
 
-            {/* VIEW 2: PROOF-OF-WORK DOSSIER (FAQ 22 ARTIFACTS) */}
-            {activeTab === 'proof_of_work' && (
-              <div className="space-y-4">
-                <div className="rounded-xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-4">
-                  <div>
-                    <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
-                      Technical Proof-of-Work Checklist (FAQ 22)
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Enter the live public URLs for your technical artifacts. These links are stored in your local browser and allow you to verify your application submission readiness.
-                    </p>
+        {/* =========================================================================
+            SECTION 03: FREE READINESS DIAGNOSTIC
+        ========================================================================= */}
+        <section id="readiness-check" aria-labelledby="readiness-heading" className="scroll-mt-28 space-y-4">
+          <BCyberReadinessDiagnostic />
+        </section>
+
+        {/* =========================================================================
+            SECTION 04: THE LEARNING ROADMAP — STAGE DETAILS
+        ========================================================================= */}
+        <section id="roadmap-stages" aria-labelledby="stages-heading" className="scroll-mt-28 space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 04 · Complete Syllabus
+            </span>
+            <h2 id="stages-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              The Learning Roadmap: 5 Comprehensive Stages
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Expandable curriculum with actionable checkpoints, anti-trap guidance, and tangible deliverables.
+            </p>
+          </div>
+
+          <BCyberRoadmapStageList />
+        </section>
+
+        {/* =========================================================================
+            SECTION 05: CURATED RESOURCE LIBRARY
+        ========================================================================= */}
+        <section id="resource-library" aria-labelledby="resources-heading" className="scroll-mt-28 space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 05 · Tool &amp; Academy Directory
+            </span>
+            <h2 id="resources-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Curated Resource Library
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Vetted third-party platforms with unambiguous access conditions. Zero paywalls on foundational skills.
+            </p>
+          </div>
+
+          <BCyberResourceDirectory />
+        </section>
+
+        {/* =========================================================================
+            SECTION 06: WEEKLY PACE & SAMPLE PLAN
+        ========================================================================= */}
+        <section id="weekly-pace" aria-labelledby="pace-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 06 · Study Planning
+            </span>
+            <h2 id="pace-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Weekly Pace &amp; Sample Schedules
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Choose a realistic study pace that fits around your regular school or college exams.
+            </p>
+          </div>
+
+          {/* Interactive Pace Selector */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                id: 'casual',
+                hours: '2 Hours / Week',
+                label: 'Casual Explorer',
+                desc: 'Ideal during high-pressure school semesters or JEE prep. Steady weekend laboratory sessions.',
+                timeline: '~22 Weeks for Stages 0–2',
+              },
+              {
+                id: 'balanced',
+                hours: '4–6 Hours / Week',
+                label: 'Focused Candidate (Recommended)',
+                desc: 'Balanced study: 2 hours concept review + 3 hours wargame labs. High retention pace.',
+                timeline: '~14 Weeks for Stages 0–3',
+              },
+              {
+                id: 'sprint',
+                hours: '8–12 Hours / Week',
+                label: 'Intensive Sprint',
+                desc: 'Dedicated preparation sprint during semester breaks or gap year. Deep daily hands-on practice.',
+                timeline: '~8 Weeks for Stages 0–4',
+              },
+            ].map((pace) => (
+              <div
+                key={pace.id}
+                onClick={() => setSelectedPace(pace.id as any)}
+                className={cn(
+                  'p-5 rounded-2xl border transition-all cursor-pointer space-y-3 flex flex-col justify-between',
+                  selectedPace === pace.id
+                    ? 'border-brand-primary bg-brand-primary/5 ring-1 ring-brand-primary/30 shadow-xs'
+                    : 'border-slate-200/90 bg-white hover:border-slate-300'
+                )}
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold text-brand-primary">{pace.hours}</span>
+                    {selectedPace === pace.id && (
+                      <span className="w-2 h-2 rounded-full bg-brand-primary" />
+                    )}
                   </div>
+                  <h3 className="font-bold text-sm text-slate-900">{pace.label}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed font-normal">{pace.desc}</p>
+                </div>
 
-                  <div className="space-y-3.5">
-                    {PROOF_OF_WORK_ARTIFACTS.map((artifact) => {
-                      const currentUrl = proofOfWorkArtifacts[artifact.id] || '';
-                      const isFilled = currentUrl.trim().length > 0;
-
-                      return (
-                        <div
-                          key={artifact.id}
-                          className={cn(
-                            'rounded-xl border p-4 space-y-3 transition-all',
-                            isFilled
-                              ? 'border-emerald-200 bg-emerald-50/20'
-                              : 'border-slate-200/80 bg-white'
-                          )}
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
-                                  {artifact.title}
-                                </h3>
-                                {isFilled ? (
-                                  <span className="font-mono text-[10px] text-emerald-700 bg-emerald-100 border border-emerald-200 px-2 py-0.2 rounded font-semibold">
-                                    LINKED
-                                  </span>
-                                ) : (
-                                  <span className="font-mono text-[10px] text-slate-400 bg-slate-100 px-2 py-0.2 rounded">
-                                    PENDING
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-xs text-slate-500 mt-0.5">
-                                {artifact.subtitle}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="rounded-lg bg-slate-50 border border-slate-200/60 p-2.5 text-[11px] text-slate-600">
-                            <strong className="text-slate-800">Faculty Verification Standard:</strong>{' '}
-                            {artifact.benchmark}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <div className="relative flex-1">
-                              <Link2 className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                              <input
-                                type="url"
-                                value={currentUrl}
-                                onChange={(e) =>
-                                  setProofOfWorkArtifact(artifact.id, e.target.value)
-                                }
-                                placeholder={artifact.placeholder}
-                                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-slate-900"
-                              />
-                            </div>
-                            {isFilled && (
-                              <a
-                                href={currentUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-medium inline-flex items-center gap-1 shrink-0"
-                              >
-                                <span>Test Link</span>
-                                <ExternalLink className="w-3 h-3 text-slate-400" />
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Submission Guidance Box */}
-                  <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/80 text-xs text-slate-600 flex items-start gap-3">
-                    <FileCheck className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
-                    <div className="space-y-1">
-                      <span className="font-semibold text-slate-900">FAQ 22 Submission Tip</span>
-                      <p className="leading-relaxed">
-                        IIT Kanpur WSAIS application forms look for proof of original problem-solving. A single live GitHub repository with real weekly commit logs is worth 100x more than generic course completion certificates.
-                      </p>
-                    </div>
-                  </div>
+                <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-slate-500">
+                  Estimated Horizon: <strong className="text-slate-800">{pace.timeline}</strong>
                 </div>
               </div>
-            )}
+            ))}
+          </div>
 
-            {/* VIEW 3: WEEKLY CADENCE (SMART SPRINT VIEW) */}
-            {activeTab === 'weekly_calendar' && generatedPlan && (
-              <div className="space-y-4">
-                <div className="rounded-xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-100">
-                    <div>
-                      <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
-                        Weekly Sprint Cadence
-                      </h2>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        High-yield weekly time distribution configured for your budget of{' '}
-                        <strong>{inputs.availableWeeklyHours} hrs/week</strong>.
-                      </p>
-                    </div>
-                    <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-                      Total: {generatedPlan.weeklySchedule.length} Weeks
-                    </span>
-                  </div>
-
-                  {/* Weekly Time Split Recommendation */}
-                  <div className="rounded-xl bg-slate-50 border border-slate-200/70 p-4 text-xs space-y-2">
-                    <div className="font-semibold text-slate-900 flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-slate-600" />
-                      <span>Recommended Weekly Time Partition</span>
-                    </div>
-                    <p className="text-slate-600 leading-relaxed text-[11px]">
-                      {gapAnalysis.timeSplit}
-                    </p>
-                  </div>
-
-                  {/* High-Impact Sprints Grid (Filtering out repetitive dummy buffer boxes) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
-                    {generatedPlan.weeklySchedule
-                      .filter((slot) => slot.tasks.length > 0)
-                      .slice(0, 12)
-                      .map((slot) => (
-                        <div
-                          key={slot.week}
-                          className="rounded-xl border border-slate-200/80 bg-white p-4 space-y-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col justify-between"
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-                              <span className="font-mono text-xs font-bold text-slate-900">
-                                WEEK {slot.week}
-                              </span>
-                              <span className="text-[11px] font-mono text-slate-500">
-                                {slot.totalAllocatedHours} / {inputs.availableWeeklyHours}h
-                              </span>
-                            </div>
-
-                            <div className="space-y-1.5">
-                              {slot.tasks.map((task, idx) => (
-                                <div
-                                  key={idx}
-                                  className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/60 text-xs space-y-0.5"
-                                >
-                                  <div className="font-medium text-slate-900 flex items-center justify-between gap-1">
-                                    <span className="truncate">{task.title}</span>
-                                    <span className="font-mono text-[10px] text-slate-400 shrink-0">
-                                      {task.allocatedHours}h
-                                    </span>
-                                  </div>
-                                  <div className="text-[10px] font-mono text-slate-400 truncate">
-                                    {task.category.replace(/_/g, ' ')}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {slot.capacityExplanation && (
-                            <div className="text-[10px] text-slate-500 italic bg-slate-50/60 p-2 rounded border border-slate-100">
-                              {slot.capacityExplanation}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                </div>
+          {/* Weekly Balance Triangle */}
+          <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs space-y-3">
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
+              The Recommended Weekly Balance (40 / 40 / 20 Rule)
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 rounded-lg bg-indigo-50/50 border border-indigo-100 space-y-1">
+                <span className="font-bold text-indigo-900 block">40% Concept Study</span>
+                <p className="text-indigo-800/80 text-[11px]">RFC protocols, OWASP guides, socket models.</p>
               </div>
-            )}
-
-            {/* VIEW 4: STRATEGIC DEEP-DIVE */}
-            {activeTab === 'gap_analysis' && (
-              <div className="space-y-4">
-                <div className="rounded-xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.02)] space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div>
-                      <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900">
-                        Strategic Gap Analysis & Committee Reality
-                      </h2>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Deterministic diagnosis based on your profile ({STAGE_LABELS[inputs.academicStage]}; {BASELINE_LABELS[inputs.technicalBaseline]}).
-                      </p>
-                    </div>
-                    <span className="font-mono text-xs font-bold text-slate-900 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-                      {gapAnalysis.ruleType}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    <div className="rounded-xl border border-rose-200/70 bg-rose-50/40 p-4 space-y-1.5 text-xs text-rose-950">
-                      <div className="font-semibold text-rose-900 flex items-center gap-1.5 uppercase font-mono text-[10px] tracking-wider">
-                        <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                        <span>Critical Identified Gap</span>
-                      </div>
-                      <p className="text-rose-900/90 leading-relaxed text-xs">
-                        {gapAnalysis.criticalGap}
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/40 p-4 space-y-1.5 text-xs text-emerald-950">
-                      <div className="font-semibold text-emerald-900 flex items-center gap-1.5 uppercase font-mono text-[10px] tracking-wider">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Strategic Imperative</span>
-                      </div>
-                      <p className="text-emerald-900/90 leading-relaxed text-xs">
-                        {gapAnalysis.strategicRule}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Rejections vs Standouts Table */}
-                  <div className="pt-2 space-y-2">
-                    <h3 className="text-xs font-semibold text-slate-900 uppercase font-mono tracking-wider">
-                      Committee Evaluation Ground Reality
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                      <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1.5">
-                        <div className="font-semibold text-slate-900 text-xs">
-                          What 90% Submit (Filtered Out)
-                        </div>
-                        <p className="text-slate-600 leading-relaxed text-xs">
-                          {gapAnalysis.rejectionTrap}
-                        </p>
-                      </div>
-
-                      <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/40 p-4 space-y-1.5">
-                        <div className="font-semibold text-emerald-900 text-xs">
-                          What Actually Stands Out
-                        </div>
-                        <p className="text-emerald-900/90 leading-relaxed text-xs">
-                          {gapAnalysis.standoutAdvantage}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('phases')}
-                      className="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <span>Return to Execution Roadmap</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
+              <div className="p-3 rounded-lg bg-emerald-50/50 border border-emerald-100 space-y-1">
+                <span className="font-bold text-emerald-900 block">40% Hands-On Labs</span>
+                <p className="text-emerald-800/80 text-[11px]">Bandit wargames, Wireshark packet dissection, Burp Suite.</p>
               </div>
-            )}
-          </section>
-        </div>
-      </main>
+              <div className="p-3 rounded-lg bg-amber-50/50 border border-amber-100 space-y-1">
+                <span className="font-bold text-amber-900 block">20% Documentation</span>
+                <p className="text-amber-800/80 text-[11px]">Writing markdown writeups and committing to GitHub.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      {/* ======================================================== */}
-      {/* PROFILE CONFIGURATION MODAL / DRAWER                     */}
-      {/* ======================================================== */}
-      {isProfileModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-xl w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        {/* =========================================================================
+            SECTION 07: PROOF-OF-WORK & EVIDENCE DOSSIER
+        ========================================================================= */}
+        <section id="proof-of-work" aria-labelledby="pow-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 07 · Portfolio Preparation
+            </span>
+            <h2 id="pow-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Proof-of-Work &amp; Evidence Dossier (FAQ 22 Alignment)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              How to document your technical work so evaluators can verify originality and reproducible reasoning.
+            </p>
+          </div>
+
+          {/* High-Signal vs Red Flags Table */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-sm text-emerald-950">High-Signal Evidence Formats</h3>
+              </div>
+              <ul className="space-y-2 text-[11px] text-emerald-900/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Documented GitHub repositories with clear setup instructions and commands.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Detailed CTF tournament writeups describing failed attempts, thought processes, and the final exploit.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Annotated packet capture reports explaining exact TCP flags and application payloads.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Working Python/C utility tools with unit tests.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-rose-200 bg-rose-50/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600" />
+                <h3 className="font-bold text-sm text-rose-950">Anti-Patterns &amp; Low-Signal Red Flags</h3>
+              </div>
+              <ul className="space-y-2 text-[11px] text-rose-900/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Generic completion certificates from video courses (Coursera/Udemy/YouTube playlists).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Forked or cloned repositories with only cosmetic changes in README text.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Automated vulnerability scanner export dumps passed off as personal findings.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Exaggerated claims without reproducible code or verification links.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Copyable Markdown Template Box */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900">
-                  Tune Diagnostic Profile
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Adjust parameters to instantly re-calibrate your roadmap.
-                </p>
+                <h3 className="font-bold text-sm text-slate-900">Standard Project Writeup Template</h3>
+                <p className="text-xs text-slate-500">Copy this markdown structure into your personal repository README.</p>
               </div>
               <button
                 type="button"
-                onClick={() => setIsProfileModalOpen(false)}
-                className="p-1 rounded-md text-slate-400 hover:text-slate-700 cursor-pointer"
+                onClick={handleCopyTemplate}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                {copiedTemplate ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedTemplate ? 'Copied to Clipboard!' : 'Copy Template'}</span>
               </button>
             </div>
 
-            {/* Field 1: Academic Stage */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-900">
-                Academic Stage
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { id: 'class_11_12', label: 'Class 11 / 12 (JEE)' },
-                  { id: 'dropper', label: 'Dropper / Gap Year' },
-                  { id: 'college_year_1', label: 'College Year 1' },
-                  { id: 'college_year_2_plus', label: 'College Year 2+' },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => updateInputs({ academicStage: opt.id as AcademicStage })}
-                    className={cn(
-                      'p-2.5 rounded-lg border text-xs text-left font-medium transition-all cursor-pointer',
-                      inputs.academicStage === opt.id
-                        ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+            <pre className="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto max-h-56">
+              {markdownTemplate}
+            </pre>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 08: PRACTICE EXERCISES & SELF-CHECKS
+        ========================================================================= */}
+        <section id="practice-tasks" aria-labelledby="practice-heading" className="scroll-mt-28 space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 08 · Hands-On Verification
+            </span>
+            <h2 id="practice-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Practice Exercises &amp; Self-Checks
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Solve these starter tasks without looking at solutions first. Test your active problem-solving reflexes.
+            </p>
+          </div>
+
+          <BCyberPracticeExercises />
+        </section>
+
+        {/* =========================================================================
+            SECTION 09: PERSONALIZED EXECUTION SYSTEM — PAID PREVIEW
+        ========================================================================= */}
+        <section id="personal-plan" aria-labelledby="paid-heading" className="scroll-mt-28 space-y-4">
+          <BCyberPersonalPlanPreview />
+        </section>
+
+        {/* =========================================================================
+            SECTION 10: PROGRESS, MISSED WEEKS & RECOVERY
+        ========================================================================= */}
+        <section id="recovery-plan" aria-labelledby="recovery-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 10 · Anti-Burnout Protocol
+            </span>
+            <h2 id="recovery-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Progress, Missed Weeks &amp; Recovery
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              How to handle school board exams, college tests, or illness without abandoning your preparation.
+            </p>
+          </div>
+
+          {/* Recovery Protocol Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            {/* The 60-Minute Emergency Routine */}
+            <div className="p-5 rounded-2xl border border-rose-200 bg-rose-50/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 bg-rose-100 px-2 py-0.5 rounded flex items-center gap-1">
+                  <HeartPulse className="w-3.5 h-3.5 text-rose-600" />
+                  <span>The 60-Minute Emergency Routine</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={toggleRecoveryMode}
+                  className={cn(
+                    'px-2.5 py-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer',
+                    isEmergencyRecoveryMode
+                      ? 'bg-rose-600 text-white border-rose-600'
+                      : 'bg-white border-rose-300 text-rose-800 hover:bg-rose-100/60'
+                  )}
+                >
+                  {isEmergencyRecoveryMode ? 'Freeze Mode Active' : 'Toggle 60m Freeze Mode'}
+                </button>
               </div>
+
+              <h3 className="font-bold text-sm text-rose-950">When Academic Exams Strike</h3>
+              <p className="text-rose-900/80 leading-relaxed text-[11px]">
+                Do not attempt to complete full wargame levels during unit tests or board exam sprints. Spend exactly 60 minutes each weekend:
+              </p>
+              <ul className="space-y-1.5 text-[11px] text-rose-900/90 list-disc list-inside">
+                <li>Read 1 technical writeup or RFC section.</li>
+                <li>Make 1 small commit to your notes repository to preserve the habit.</li>
+                <li>Keep mental models warm without feeling guilty.</li>
+              </ul>
             </div>
 
-            {/* Field 2: Technical Baseline */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-900">
-                Technical Baseline
-              </label>
-              <div className="grid grid-cols-1 gap-1.5">
-                {[
-                  {
-                    id: 'zero_terminal',
-                    title: 'Zero Terminal / Non-Programmer',
-                    desc: 'Never used CLI or Linux; starting from complete scratch.',
-                  },
-                  {
-                    id: 'basic_programming',
-                    title: 'Basic Programming / Math (C, Python)',
-                    desc: 'Familiar with loops, variables, and high school discrete math.',
-                  },
-                  {
-                    id: 'intermediate_scripting_networking',
-                    title: 'Intermediate Scripting & Networking',
-                    desc: 'Comfortable in Linux, TCP/IP basics, or introductory CTFs.',
-                  },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() =>
-                      updateInputs({ technicalBaseline: opt.id as TechnicalBaseline })
-                    }
-                    className={cn(
-                      'p-2.5 rounded-lg border text-left transition-all cursor-pointer',
-                      inputs.technicalBaseline === opt.id
-                        ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
-                        : 'border-slate-200 bg-white hover:bg-slate-50'
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'text-xs font-medium',
-                        inputs.technicalBaseline === opt.id ? 'text-white' : 'text-slate-900'
-                      )}
-                    >
-                      {opt.title}
-                    </div>
-                    <div
-                      className={cn(
-                        'text-[11px]',
-                        inputs.technicalBaseline === opt.id ? 'text-slate-200' : 'text-slate-500'
-                      )}
-                    >
-                      {opt.desc}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Field 3: Target Timeline */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-900">
-                Target Timeline
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: '3_months', label: '3 Months (12 Wks)' },
-                  { id: '6_months', label: '6 Months (24 Wks)' },
-                  { id: '12_months', label: '12 Months (48 Wks)' },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() =>
-                      updateInputs({ targetTimelineMonths: opt.id as TargetTimeline })
-                    }
-                    className={cn(
-                      'p-2 rounded-lg border text-xs text-center font-medium transition-all cursor-pointer',
-                      inputs.targetTimelineMonths === opt.id
-                        ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Field 4: Primary Goal */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-900">
-                Primary Goal
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { id: 'bcyber_admission', label: 'B.Cyber Admission' },
-                  { id: 'cyber_foundations', label: 'Foundations Mastery' },
-                  { id: 'practical_portfolio', label: 'Portfolio Dossier' },
-                  { id: 'career_shift', label: 'General Cyber Skills' },
-                ].map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => updateInputs({ primaryGoal: opt.id as PrimaryGoal })}
-                    className={cn(
-                      'p-2 rounded-lg border text-xs text-center font-medium transition-all cursor-pointer',
-                      inputs.primaryGoal === opt.id
-                        ? 'border-slate-900 bg-slate-900 text-white shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setIsProfileModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-medium hover:bg-slate-800 transition-colors cursor-pointer"
-              >
-                Apply & Close
-              </button>
+            {/* Resumption Protocol */}
+            <div className="p-5 rounded-2xl border border-indigo-200 bg-indigo-50/40 space-y-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                <RotateCcw className="w-3.5 h-3.5 text-indigo-600" />
+                <span>The Resumption Protocol</span>
+              </span>
+              <h3 className="font-bold text-sm text-indigo-950">Never Restart from Scratch</h3>
+              <p className="text-indigo-900/80 leading-relaxed text-[11px]">
+                The biggest psychological failure mode is feeling &ldquo;I missed 3 weeks so I have to start again from Day 1.&rdquo;
+              </p>
+              <ul className="space-y-1.5 text-[11px] text-indigo-900/90 list-disc list-inside">
+                <li>Review the last completed checkpoint in your Stage checklist.</li>
+                <li>Spend 20 minutes re-running the last completed command.</li>
+                <li>Advance immediately to the next task in the queue.</li>
+              </ul>
             </div>
           </div>
-        </div>
-      )}
+        </section>
+
+        {/* =========================================================================
+            SECTION 11: PREPARATION FAQ CENTRE
+        ========================================================================= */}
+        <section id="prep-faqs" aria-labelledby="faqs-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 11 · Direct Answers
+            </span>
+            <h2 id="faqs-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Preparation FAQ Centre
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Clear answers to the most common preparation and technical background queries.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              {
+                q: 'Kitni programming aani chahiye preparation shuru karne se pehle?',
+                a: 'Stage 0 aur Stage 1 start karne ke liye zero programming knowledge required hai. Basic terminal commands (cd, ls, grep) se shuru karo. Stage 2 ke end tak Python ke basic loops aur string manipulation kaafi hain.',
+              },
+              {
+                q: 'Kya expensive laptop ya high-end GPU zaroori hai?',
+                a: 'Nahi. Any standard 4GB–8GB RAM laptop capable of running Windows WSL2 or a lightweight Linux virtual machine is 100% sufficient. High-end GPUs are only needed for heavy AI training, not for foundational network/web security labs.',
+              },
+              {
+                q: 'Kya free resources B.Cyber preparation ke liye enough hain?',
+                a: 'Haan. OverTheWire Bandit, PortSwigger Academy, Wireshark sample captures, Beej\'s Guide aur PicoCTF duniya ke sabse premium aur authoritative free resources hain. Paid tier sirf personalized schedule aur adaptive task sequence provide karta hai.',
+              },
+              {
+                q: 'Kya zero computer background se shuru karna possible hai?',
+                a: 'Haan. Stage 0 (Baseline) isi purpose ke liye banaya gaya hai. Yeh aapko step-by-step Linux setup aur safe CLI navigation sikhata hai bina configuration traps mein phansaye.',
+              },
+              {
+                q: 'Jab IIT Kanpur future entrance test ka detailed format release karega, toh roadmap kaise update hoga?',
+                a: 'Hamara roadmap dynamically update hoga. Official notice aane par stage mapping aur practice tasks realign kiye jayenge bina kisi extra fee ke. Updates publically verified dates ke saath display honge.',
+              },
+            ].map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  className="rounded-xl border border-slate-200/90 bg-white overflow-hidden shadow-xs transition-colors"
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(idx)}
+                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
+                  >
+                    <span className="font-bold text-xs sm:text-sm text-slate-900">{faq.q}</span>
+                    <div className="w-6 h-6 rounded-md border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
+                      {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span>Admission age cutoffs, board eligibility, ya fees se related sawal hain?</span>
+            <Link
+              to="/blueprints/b-cyber/admission#admission-faqs"
+              className="text-brand-primary font-bold hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>View Admission FAQ Centre in Pillar 2 →</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 12: SOURCES, METHODOLOGY & UPDATE HISTORY
+        ========================================================================= */}
+        <section id="prep-sources" aria-labelledby="sources-heading" className="scroll-mt-28 space-y-4">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 12 · Transparency Record
+            </span>
+            <h2 id="sources-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Sources, Methodology &amp; Update History
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Full transparency regarding our reference documentation, curriculum benchmarks, and update logs.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <span className="font-bold text-slate-900 block">Primary Official Sources:</span>
+                <ul className="space-y-1 text-slate-600 text-[11px]">
+                  <li>• IIT Kanpur WSAIS B.Cyber Portal (<a href="https://iitk.ac.in/wsais/b-cyber.php" target="_blank" rel="noopener noreferrer" className="text-brand-primary underline">iitk.ac.in/wsais/b-cyber.php</a>)</li>
+                  <li>• IIT Kanpur Senate Ordinances &amp; 2026 Admission FAQ Records (FAQs 1–25)</li>
+                  <li>• C3iHub National Cybersecurity Hub Documentation</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2">
+                <span className="font-bold text-slate-900 block">Curriculum Benchmarking:</span>
+                <ul className="space-y-1 text-slate-600 text-[11px]">
+                  <li>• NIST NICE Cybersecurity Workforce Framework (NICE SP 800-181)</li>
+                  <li>• Open-source education benchmarks (OverTheWire, PortSwigger Academy, CMU PicoCTF)</li>
+                  <li>• Standard Indian IT Act (2000) ethical compliance guidelines</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[11px] text-slate-400">
+              <span>Last substantive audit: 12 October 2026 · Independent Guide</span>
+              <a
+                href="mailto:corrections@ayushpaul.com?subject=B.Cyber%20Roadmap%20Correction"
+                className="text-slate-600 hover:text-brand-primary font-semibold underline"
+              >
+                Submit an editorial correction or update
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 13: CONTEXTUAL NEXT-STEP GATEWAY
+        ========================================================================= */}
+        <section id="prep-next" aria-labelledby="next-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Section 13 · Decision Gateway
+            </span>
+            <h2 id="next-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Where Would You Like to Go Next?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Choose the logical next step based on where you are in your B.Cyber evaluation journey.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            {/* Action 1 */}
+            <a
+              href="#readiness-check"
+              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all shadow-xs space-y-2 flex flex-col justify-between group cursor-pointer"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary block">
+                  Action 01
+                </span>
+                <h3 className="font-bold text-sm text-slate-900">Take Readiness Diagnostic</h3>
+                <p className="text-[11px] text-slate-500 leading-snug">
+                  Answer 6 questions to find your exact starting stage and priority knowledge gaps.
+                </p>
+              </div>
+              <span className="text-brand-primary font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
+                <span>Start Diagnostic ↓</span>
+              </span>
+            </a>
+
+            {/* Action 2 */}
+            <Link
+              to="/blueprints/b-cyber/admission"
+              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all shadow-xs space-y-2 flex flex-col justify-between group"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                  Action 02
+                </span>
+                <h3 className="font-bold text-sm text-slate-900">Check Admission Criteria</h3>
+                <p className="text-[11px] text-slate-500 leading-snug">
+                  Interactive screener for board marks, age cutoffs, and 2026 vs 2027 selection shifts.
+                </p>
+              </div>
+              <span className="text-brand-primary font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
+                <span>Explore Pillar 2 →</span>
+              </span>
+            </Link>
+
+            {/* Action 3 */}
+            <a
+              href="#personal-plan"
+              className="p-5 rounded-2xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-xs space-y-2 flex flex-col justify-between group cursor-pointer"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">
+                  Action 03
+                </span>
+                <h3 className="font-bold text-sm text-indigo-950">Unlock Personal Workspace</h3>
+                <p className="text-[11px] text-indigo-900/80 leading-snug">
+                  Get a personalized weekly task queue, gap remediation, and dynamic rescheduling for ₹249.
+                </p>
+              </div>
+              <span className="text-indigo-700 font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
+                <span>View Paid Engine ↓</span>
+              </span>
+            </a>
+
+            {/* Action 4 */}
+            <Link
+              to="/blueprints/b-cyber"
+              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-300 transition-all shadow-xs space-y-2 flex flex-col justify-between group"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Action 04
+                </span>
+                <h3 className="font-bold text-sm text-slate-900">Revisit Program Overview</h3>
+                <p className="text-[11px] text-slate-500 leading-snug">
+                  Review the 4-year degree architecture, 2+2 model, semester curriculum, and myths.
+                </p>
+              </div>
+              <span className="text-slate-700 font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
+                <span>Go to Pillar 1 →</span>
+              </span>
+            </Link>
+          </div>
+        </section>
+
+      </main>
     </div>
   );
 }
