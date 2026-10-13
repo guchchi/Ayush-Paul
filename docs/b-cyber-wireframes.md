@@ -411,11 +411,12 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 * **Anchor ID:** `#curriculum` *(Verified match with sitemap)*
 * **Section Purpose:** Present on-campus academic progression from Semester 1 to Semester 4 with verified course names, laboratory units, and credit distributions without hiding core curriculum content behind tabs or accordions.
 * **User's Key Question:** *“What exact subjects and practical labs will I study semester-by-semester, and how does the curriculum build up?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official B.Cyber Curriculum](https://iitk.ac.in/wsais/b-cyber.php) *(Department of Computer Science & Engineering / WSAIS, IIT Kanpur)*.
 * **Design Pattern (No-Tabs Grouped Progression):** **Grouped Academic Year Schedule (Side-by-Side Year Columns on Desktop, Sequential Linear Stack on Mobile)**.
   - *Research Reference:* Cambridge University Engineering Tripos Curriculum Structure (`https://www.undergraduate.study.cam.ac.uk/courses/engineering`) & MIT EECS Curriculum Roadmaps (`https://eecs.mit.edu/academics/undergraduate-programs/curriculum/`).
   - *Observation:* Foundational engineering curricula are most effectively evaluated when visitors can see the prerequisite progression across semesters simultaneously. Tab-based selectors hide 75% of courses at any given moment, impeding multi-semester scanning and comparison.
   - *Rationale:* Presenting Year 1 (Semesters 1 & 2) and Year 2 (Semesters 3 & 4) in side-by-side grouped columns on desktop displays 100% of course titles, credits, and laboratory allocations at a glance without interaction cost. On mobile, this reflows naturally into a single sequential stack (Year 1 → Sem 1 → Sem 2 → Year 2 → Sem 3 → Sem 4) without horizontal tabs or scrolling.
-* **Do Not:** Hide core courses inside individual click-to-expand accordions; do not force tab clicks to compare semesters; do not assert an unverified single credit figure for Semester 2; do not cite unlinked Senate circular drafts.
+* **Do Not:** Hide core courses inside individual click-to-expand accordions; do not force tab clicks to compare semesters; do not substitute inferred courses or alternative titles; do not cite unlinked internal Senate drafts.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
 *(No-Tabs Grouped Academic Year Layout — All 4 Semesters Visible Simultaneously)*
@@ -424,9 +425,10 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ [Academics & Structure]                                                      │
 │ CURRICULUM & SUBJECTS (SEMESTERS 1 TO 4)                                     │
 │ On-Campus Academic & Laboratory Foundations at IIT Kanpur                    │
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php                     │
 │                                                                              │
 │ ┌─ ⚠️ OFFICIAL SEMESTER 2 CREDIT RANGE NOTE ───────────────────────────────┐ │
-│ │ The published WSAIS curriculum lists one elective from a predefined list │ │
+│ │ The published WSAIS curriculum lists one course from a predefined list   │ │
 │ │ as 9–13 credits, yielding a Semester 2 total of 50–54 credits. Pending   │ │
 │ │ official institutional clarification, this total is stated as a range.   │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
@@ -435,39 +437,39 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │                                    │  │                                  │ │
 │ │ SEMESTER 1 (51 CREDITS TOTAL)      │  │ SEMESTER 3 (50 CREDITS TOTAL)    │ │
 │ │ ────────────────────────────────── │  │ ──────────────────────────────── │ │
-│ │ • Linear Algebra & Diff Equations  │  │ • Operating Systems              │ │
-│ │   11 Credits · Mathematics         │  │   12 Credits · Core Systems      │ │
-│ │ • Fundamentals of Computing        │  │ • Probability and Statistics     │ │
-│ │   12 Credits · Core Computing      │  │   11 Credits · Mathematics       │ │
-│ │ • Digital Electronics              │  │ • Threat Intelligence            │ │
-│ │   11 Credits · Hardware Systems    │  │   11 Credits · Security Systems  │ │
-│ │ • Practical Ethics                 │  │ • Lab: Cloud Computing & Sec     │ │
-│ │   9 Credits · Context & Ethics     │  │   8 Credits · Practical Lab      │ │
-│ │ • Lab: Malware Analysis            │  │ • Lab: Vulnerability Assessment  │ │
-│ │   8 Credits · Practical Lab        │  │   & Penetration Testing (VAPT)   │ │
-│ │                                    │  │   8 Credits · Practical Lab      │ │
+│ │ • Introduction to Electronics      │  │ • Fundamentals of Data           │ │
+│ │   14 Credits · Hardware Foundations│  │   Engineering (Ops) · 12 Credits │ │
+│ │ • Practical Ethics                 │  │ • Operating Systems              │ │
+│ │   3 Credits · Context & Ethics     │  │   13 Credits · Core Systems      │ │
+│ │ • Fundamentals of Computing        │  │ • Lab: Cloud Computing & Sec     │ │
+│ │   14 Credits · Core Computing      │  │   8 Credits · Practical Lab      │ │
+│ │ • Fundamentals of Data             │  │ • Lab: Vulnerability Assessment  │ │
+│ │   Engineering (Data) · 12 Credits  │  │   & Pen Testing · 8 Credits Lab  │ │
+│ │ • Lab: Malware Analysis            │  │ • Departmental Elective          │ │
+│ │   8 Credits · Practical Lab        │  │   9 Credits · Dept Elective      │ │
+│ │                                    │  │                                  │ │
 │ │ ────────────────────────────────── │  │ ──────────────────────────────── │ │
 │ │ SEMESTER 2 (50–54 CREDITS TOTAL*)  │  │ SEMESTER 4 (46 CREDITS TOTAL)    │ │
 │ │ ────────────────────────────────── │  │ ──────────────────────────────── │ │
-│ │ • Applied Cryptography             │  │ • Computer Networks              │ │
-│ │   9 Credits · Cryptographic Core   │  │   11 Credits · Core Systems      │ │
-│ │ • Data Structures & Algorithms     │  │ • Cryptographic Engineering      │ │
-│ │   12 Credits · Core Computing      │  │   9 Credits · Applied Security   │ │
-│ │ • Computer Organization            │  │ • Psychology / Humanities Elect. │ │
-│ │   12 Credits · Hardware Arch       │  │   9 Credits · Socio-Behavioral   │ │
-│ │ • Lab: Digital Forensics           │  │ • Predefined / Open Elective     │ │
-│ │   8 Credits · Practical Lab        │  │   9 Credits · Elective           │ │
-│ │ • Predefined Elective              │  │ • Lab: Network & Web App Sec     │ │
-│ │   9–13 Credits* · Elective List    │  │   8 Credits · Practical Lab      │ │
+│ │ • Applied Cryptography             │  │ • Introduction to Psychology     │ │
+│ │   9 Credits · Cryptographic Core   │  │   11 Credits · Behavioral Science│ │
+│ │ • Data Structures & Algorithms     │  │ • Computer Networks              │ │
+│ │   12 Credits · Core Computing      │  │   9 Credits · Core Systems       │ │
+│ │ • Computer Organization            │  │ • Course from Predefined List    │ │
+│ │   12 Credits · Hardware Arch       │  │   9 Credits · Predefined Elective│ │
+│ │ • Lab: Digital Forensics           │  │ • Course from Predefined List    │ │
+│ │   8 Credits · Practical Lab        │  │   9 Credits · Predefined Elective│ │
+│ │ • Course from Predefined List      │  │ • Lab: Network & Web App Sec     │ │
+│ │   9–13 Credits* · Predefined List  │  │   8 Credits · Practical Lab      │ │
 │ └────────────────────────────────────┘  └──────────────────────────────────┘ │
 │                                                                              │
 │ ───────────────────── 5 PRESCRIBED LABORATORY COURSES ────────────────────── │
 │ Grounded strictly in official curriculum titles and credit weights (8C each):│
-│ • Sem 1: Laboratory: Malware Analysis (8 Credits)                            │
-│ • Sem 2: Laboratory: Digital Forensics (8 Credits)                           │
-│ • Sem 3: Laboratory: Cloud Computing and Security (8 Credits)                │
-│ • Sem 3: Laboratory: Vulnerability Assessment and Penetration Testing (8 Cr) │
-│ • Sem 4: Laboratory: Network and Web Application Security (8 Credits)        │
+│ • Sem 1: Lab: Malware Analysis (8 Credits)                                   │
+│ • Sem 2: Lab: Digital Forensics (8 Credits)                                  │
+│ • Sem 3: Lab: Cloud Computing and Security (8 Credits)                       │
+│ • Sem 3: Lab: Vulnerability Assessment & Pen Testing (8 Credits)             │
+│ • Sem 4: Lab: Network & Web Application Security (8 Credits)                 │
 │ [Note: Describes course units only; does not imply dedicated physical bldgs] │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -478,6 +480,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ┌─────────────────────────────┐
 │ CURRICULUM & SUBJECTS       │
 │ Semesters 1 to 4            │
+│ [iitk.ac.in/wsais/b-cyber]  │
 │                             │
 │ ⚠️ Semester 2 Credit Note:  │
 │ WSAIS lists elective as     │
@@ -487,11 +490,16 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ ════ YEAR 1 FOUNDATIONS ═══ │
 │                             │
 │ ┌─ SEMESTER 1 (51 CREDITS)─┐│
-│ │ • Linear Algebra (11C)   ││
-│ │ • Fund. of Computing(12C)││
-│ │ • Digital Electronics(11C││
-│ │ • Practical Ethics (9C)  ││
-│ │ • Lab: Malware (8C)      ││
+│ │ • Intro to Electronics   ││
+│ │   14 Credits             ││
+│ │ • Practical Ethics       ││
+│ │   3 Credits              ││
+│ │ • Fund. of Computing     ││
+│ │   14 Credits             ││
+│ │ • Fund. of Data Eng      ││
+│ │   (Data) · 12 Credits    ││
+│ │ • Lab: Malware Analysis  ││
+│ │   8 Credits              ││
 │ └──────────────────────────┘│
 │                             │
 │ ┌─ SEMESTER 2 (50–54 CR*) ─┐│
@@ -499,24 +507,28 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ • DSA (12C)              ││
 │ │ • Computer Org (12C)     ││
 │ │ • Lab: Forensics (8C)    ││
-│ │ • Elective (9–13C*)      ││
+│ │ • Predefined Elective    ││
+│ │   (9–13C*)               ││
 │ └──────────────────────────┘│
 │                             │
 │ ════ YEAR 2 CORE SYSTEMS ══ │
 │                             │
 │ ┌─ SEMESTER 3 (50 CREDITS)─┐│
-│ │ • Operating Systems (12C)││
-│ │ • Probability & Stat(11C)││
-│ │ • Threat Intell. (11C)   ││
+│ │ • Fund. of Data Eng      ││
+│ │   (Ops) · 12 Credits     ││
+│ │ • Operating Systems (13C)││
 │ │ • Lab: Cloud Sec (8C)    ││
-│ │ • Lab: VAPT (8C)         ││
+│ │ • Lab: Vulnerability     ││
+│ │   Assess. & Pen Test (8C)││
+│ │ • Dept Elective (9C)     ││
 │ └──────────────────────────┘│
 │                             │
 │ ┌─ SEMESTER 4 (46 CREDITS)─┐│
-│ │ • Computer Networks (11C)││
-│ │ • Crypto Engineering (9C)││
-│ │ • Psychology Elect. (9C) ││
-│ │ • Open Elective (9C)     ││
+│ │ • Intro to Psychology    ││
+│ │   11 Credits             ││
+│ │ • Computer Networks (9C) ││
+│ │ • Predefined Elective(9C)││
+│ │ • Predefined Elective(9C)││
 │ │ • Lab: Net & Web Sec (8C)││
 │ └──────────────────────────┘│
 │                             │
@@ -531,9 +543,11 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ```
 
 * **Content Hierarchy & Layout Notes:**
-  - Desktop features two wide, side-by-side containers grouping Year 1 (Semesters 1 and 2) and Year 2 (Semesters 3 and 4). All courses and credits are visible without clicking.
-  - Semester 4 credit total is explicitly corrected to **46 credits** (11 + 9 + 9 + 9 + 8).
-  - Semester 2 range of **50–54 credits** is grounded directly in the WSAIS published elective range (9–13 credits). Omitted claims of unpublished Senate circular drafts since no verifiable link/date is available.
+  - Desktop features two wide, side-by-side containers grouping Year 1 (Semesters 1 and 2) and Year 2 (Semesters 3 and 4). All verified courses and credits are visible without clicking.
+  - Semester 1 verified: Introduction to Electronics (14C), Practical Ethics (3C), Fundamentals of Computing (14C), Fundamentals of Data Engineering (Data) (12C), Lab: Malware Analysis (8C) = **51 credits**.
+  - Semester 2 verified: Applied Cryptography (9C), Data Structures and Algorithms (12C), Computer Organization (12C), Lab: Digital Forensics (8C), Course from predefined list (9–13C) = **50–54 credits**.
+  - Semester 3 verified: Fundamentals of Data Engineering (Ops) (12C), Operating Systems (13C), Lab: Cloud Computing and Security (8C), Lab: Vulnerability Assessment & Pen Testing (8C), Departmental Elective (9C) = **50 credits**.
+  - Semester 4 verified: Introduction to Psychology (11C), Computer Networks (9C), Two courses from predefined list (9C + 9C), Lab: Network & Web Application Security (8C) = **46 credits**.
   - Mobile layout uses a clean sequential stack. Headings use prominent rules (`════`) to demarcate academic years clearly.
 * **Factual Guardrails & Laboratory Rigor:**
   - The 5 laboratory courses are cited verbatim from official course titles with their 8-credit allocations.
@@ -555,7 +569,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 * **Framing & Disclaimers:**
   - **Explanatory Grouping Notice:** The five domains represent this guide's explanatory grouping to help prospective applicants understand the scope of cybersecurity. They are not official IIT Kanpur curriculum categories or independent degree tracks.
   - **Workforce Framework Context:** References to the NIST NICE Cybersecurity Workforce Framework (NIST SP 800-181) describe an external industry framework illustrating the diversity of cybersecurity roles, not proof that IIT Kanpur's syllabus maps directly to these five categories.
-  - **No Unconfirmed Outcomes:** Avoids claiming that specific advanced technical outcomes (e.g. kernel memory exploits, TLS packet dissection, binary reverse engineering tools) are confirmed syllabus outcomes without detailed course-packet evidence.
+  - **Separation of Course Titles vs Illustrative Topics:** Verified courses are restricted strictly to official syllabus titles. Illustrative topics are explicitly marked as the guide's explanatory interpretation, not guaranteed course outcomes.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
 *(Rule-Separated Technical Specification Sheet)*
@@ -563,43 +577,52 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ [Engineering Scope & Domains]                                                │
 │ BEYOND HACKING: WHAT CYBERSECURITY ACTUALLY COVERS                           │
-│ Explanatory Synthesis: Systems Engineering, Cryptography & Defensive Ops     │
+│ Explanatory Synthesis: Systems Engineering, Data, Cryptography & Defense     │
 │                                                                              │
 │ [Notice: These 5 domains represent this guide's explanatory grouping to help │
 │  explain the discipline. They are not official IIT Kanpur degree tracks.     │
 │  NIST NICE SP 800-181 is cited as an external workforce reference model.]    │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
-│ 01 · SYSTEMS & COMPUTING FOUNDATIONS                                         │
-│ Verified Courses:      Fundamentals of Computing (Sem 1) · Computer          │
-│                        Organization (Sem 2) · Operating Systems (Sem 3)      │
-│ Illustrative Topics:   Memory models, process architectures, OS abstractions │
-│ Engineering Context:   Understanding low-level hardware-software interfaces  │
+│ 01 · COMPUTING & HARDWARE FOUNDATIONS                                        │
+│ Verified Courses:      Introduction to Electronics (Sem 1, 14C) ·            │
+│                        Fundamentals of Computing (Sem 1, 14C) ·              │
+│                        Computer Organization (Sem 2, 12C) ·                  │
+│                        Operating Systems (Sem 3, 13C)                        │
+│ Illustrative Topics:   Low-level hardware-software interfaces, machine       │
+│ (Guide's explanation)  execution models, process management, OS abstractions │
+│ Engineering Context:   Understanding system foundations to analyze defense   │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 02 · NETWORKS & PROTOCOL DEFENSE                                             │
-│ Verified Courses:      Computer Networks (Sem 4) · Laboratory: Network &     │
-│                        Web Application Security (Sem 4)                      │
-│ Illustrative Topics:   Protocol stacks, network architecture, web security   │
-│ Engineering Context:   Analyzing communication flows and distributed systems │
+│ 02 · DATA ENGINEERING & SYSTEMS OPERATIONS                                   │
+│ Verified Courses:      Fundamentals of Data Engineering (Data) (Sem 1, 12C) ·│
+│                        Fundamentals of Data Engineering (Ops) (Sem 3, 12C)   │
+│ Illustrative Topics:   Data storage architectures, pipeline resilience,      │
+│ (Guide's explanation)  system operations, infrastructure reliability         │
+│ Engineering Context:   Managing reliable data platforms and systems at scale │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 03 · APPLIED & ENGINEERING CRYPTOGRAPHY                                      │
-│ Verified Courses:      Applied Cryptography (Sem 2) ·                        │
-│                        Cryptographic Engineering (Sem 4)                     │
-│ Illustrative Topics:   Mathematical ciphers, key systems, algorithmic defense│
-│ Engineering Context:   Mathematical and computational security principles    │
+│ 03 · NETWORKS & APPLIED CRYPTOGRAPHY                                         │
+│ Verified Courses:      Applied Cryptography (Sem 2, 9C) ·                    │
+│                        Computer Networks (Sem 4, 9C)                         │
+│ Illustrative Topics:   Mathematical cipher principles, key exchange, network │
+│ (Guide's explanation)  protocol stacks, communication security flows         │
+│ Engineering Context:   Protecting data in transit and cryptographic defense  │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 04 · DIAGNOSTIC SECURITY & LABORATORY ANALYSIS                               │
-│ Verified Courses:      Lab: Malware Analysis (Sem 1) · Lab: Digital          │
-│                        Forensics (Sem 2) · Threat Intelligence (Sem 3) ·     │
-│                        Lab: Cloud Computing & Sec (Sem 3) · Lab: VAPT (Sem 3)│
-│ Illustrative Topics:   Artifact analysis, investigative triage, assessment   │
-│ Engineering Context:   Structured practical evaluation in prescribed labs    │
+│ 04 · PRESCRIBED DIAGNOSTIC & DEFENSE LABORATORIES                            │
+│ Verified Courses:      Lab: Malware Analysis (Sem 1, 8C) · Lab: Digital      │
+│                        Forensics (Sem 2, 8C) · Lab: Cloud Computing and      │
+│                        Security (Sem 3, 8C) · Lab: Vulnerability Assessment  │
+│                        & Pen Testing (Sem 3, 8C) · Lab: Network & Web        │
+│                        Application Security (Sem 4, 8C)                      │
+│ Illustrative Topics:   Structured diagnostic evaluation, artifact analysis,  │
+│ (Guide's explanation)  penetration testing frameworks, incident forensics    │
+│ Engineering Context:   Five intensive 8-credit practical laboratory courses  │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 05 · BEHAVIORAL, ETHICAL & INSTITUTIONAL CONTEXT                             │
-│ Verified Courses:      Practical Ethics (Sem 1) · Psychology / Humanities    │
-│                        Elective (Sem 4)                                      │
-│ Illustrative Topics:   Professional ethics, human factors, security policy   │
-│ Engineering Context:   Understanding organizational and human dimensions     │
+│ 05 · BEHAVIORAL, ETHICAL & SOCIAL FOUNDATIONS                                │
+│ Verified Courses:      Practical Ethics (Sem 1, 3C) ·                        │
+│                        Introduction to Psychology (Sem 4, 11C)               │
+│ Illustrative Topics:   Professional ethical obligations, cognitive factors,  │
+│ (Guide's explanation)  social engineering awareness, organizational policy   │
+│ Engineering Context:   Understanding human and institutional dimensions      │
 │ ──────────────────────────────────────────────────────────────────────────── │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -615,42 +638,44 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │  Curriculum synthesis, not  │
 │  official IITK tracks.]     │
 │ ─────────────────────────── │
-│ 01 · SYSTEMS FOUNDATIONS    │
+│ 01 · COMPUTING & HARDWARE   │
 │ Verified Courses:           │
+│ • Intro to Electronics (S1) │
 │ • Fund. of Computing (S1)   │
 │ • Computer Org (S2)         │
 │ • Operating Systems (S3)    │
 │ Illustrative Topics:        │
-│ Memory, hardware/OS models  │
+│ Hardware/OS abstractions    │
 │ ─────────────────────────── │
-│ 02 · NETWORKS & PROTOCOLS   │
+│ 02 · DATA ENGINEERING       │
 │ Verified Courses:           │
-│ • Computer Networks (S4)    │
-│ • Lab: Net & Web Sec (S4)   │
+│ • Fund. Data Eng (Data, S1) │
+│ • Fund. Data Eng (Ops, S3)  │
 │ Illustrative Topics:        │
-│ Protocol stacks, web flows  │
+│ Data storage, ops pipelines │
 │ ─────────────────────────── │
-│ 03 · APPLIED CRYPTOGRAPHY   │
+│ 03 · NETWORKS & CRYPTO      │
 │ Verified Courses:           │
 │ • Applied Crypto (S2)       │
-│ • Crypto Engineering (S4)   │
+│ • Computer Networks (S4)    │
 │ Illustrative Topics:        │
-│ Mathematical ciphers & keys │
+│ Ciphers, protocol stacks    │
 │ ─────────────────────────── │
 │ 04 · DIAGNOSTIC LABS        │
 │ Verified Courses:           │
 │ • 5 Prescribed Lab Units:   │
-│   Malware, Forensics, Cloud,│
-│   VAPT, Net & Web Sec       │
+│   Malware (S1), Forensics(S2│
+│   Cloud (S3), VAPT (S3),    │
+│   Net & Web Sec (S4) (8C ea)│
 │ Illustrative Topics:        │
-│ Artifact triage, testing    │
+│ Diagnostic triage & testing │
 │ ─────────────────────────── │
 │ 05 · BEHAVIORAL & ETHICAL   │
 │ Verified Courses:           │
 │ • Practical Ethics (S1)     │
-│ • Psychology Elective (S4)  │
+│ • Intro to Psychology (S4)  │
 │ Illustrative Topics:        │
-│ Ethics, human factors       │
+│ Ethics, cognitive factors   │
 └─────────────────────────────┘
 ```
 
@@ -659,7 +684,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Strict two-tier information architecture per domain: **Verified Courses** (official curriculum syllabus titles) and **Illustrative Topics** (plain-language real-world concepts).
   - Explicit disclaimer colocated at the top: explains that domains represent an explanatory framework and that NIST NICE is cited as an external workforce taxonomy.
 * **Factual Guardrails:**
-  - Eliminates unverified syllabus claims such as kernel exploitation, decompilation specifics, or forensic hardware toolkits.
+  - Audited and removed all unsupported titles: *Cryptographic Engineering*, *Threat Intelligence*, *Linear Algebra*, *Probability and Statistics*.
   - Confines verified listings strictly to published WSAIS course titles.
 
 ---
@@ -673,7 +698,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - *Observation:* Comparison tables with numerous columns fail on mobile viewports when squeezed or forced into horizontal scrolling. Reflowing each dimension into an isolated comparative card preserves clarity and reading ease on screens down to 320px.
   - *Rationale:* Eliminates arbitrary user-facing column percentage labels (such as `22% / 39% / 39%`). Streamlines comparative dimensions to structural and curricular factors, removing redundant placement and higher-study rows that duplicate Sections 8 and 9.
 * **Explicit Qualifications & Exclusions:**
-  - **General CSE Variance:** Explicitly notes that conventional B.Tech CSE learning formats, laboratory provisions, elective choices, branch-change rules, and career outcomes vary widely across different institutions.
+  - **General CSE Variance:** Explicitly notes that conventional B.Tech CSE learning formats, laboratory provisions, elective choices, branch-change rules, and career outcomes vary widely across different institutions. Avoids assuming an identical 4-year residential format for all CSE programs.
   - **Postgraduate Pathways:** Notes that postgraduate admission eligibility universally depends on receiving institution criteria; neither degree offers automatic admission. Detailed postgraduate pathways are reserved for Section 8 (`#degree-recognition`).
   - **Branch-Change Document Status:** The unlinked assertion that branch change is prohibited by Senate resolution is removed from the matrix. (WSAIS FAQ 12 notes that branch change to other B.Tech programs is not permitted, but formal Senate resolution documents are not publicly accessible).
   - **Duplication Avoidance:** Placement track records and career deployment specifics are addressed in Section 9 (`#career-internships`), not duplicated here.
@@ -686,23 +711,23 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ BALANCED DEGREE COMPARISON                                                   │
 │ Structural & Curricular Dimensions: B.Cyber vs Conventional B.Tech CSE        │
 │                                                                              │
-│ [Note: Conventional CSE structures, lab provisions, and outcomes vary across │
-│  institutions. Neither degree is universally superior; each serves distinct  │
-│  educational and career objectives.]                                         │
+│ [Note: Conventional CSE programme formats, curricula, and outcomes vary      │
+│  across institutions. Neither degree is universally superior; each serves    │
+│  distinct educational and career objectives.]                                │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │                                                                              │
 │ Dimension              │ IIT Kanpur B.Cyber          │ Conventional B.Tech   │
 │                        │                             │ CSE (General)         │
 │ ───────────────────────┼─────────────────────────────┼───────────────────────│
 │ Core Curricular        │ Specialized from Year 1 on  │ Broad foundational    │
-│ Focus                  │ low-level systems, cyber    │ computing: algorithms,│
-│                        │ defense, and applied crypto │ software engineering, │
-│                        │ alongside core CS.          │ systems, and electives│
+│ Focus                  │ low-level systems, data     │ computing: algorithms,│
+│                        │ engineering, cyber labs,    │ software engineering, │
+│                        │ and applied cryptography.   │ systems, and electives│
 │ ───────────────────────┼─────────────────────────────┼───────────────────────│
-│ Structural Learning    │ 2 Years On-Campus Study     │ 4 Years Residential   │
-│ Format                 │ (Sem 1–4) followed by       │ Campus Study          │
-│                        │ 2 Years Field Deployment    │ (standard format;     │
-│                        │ (Sem 5–8 at host orgs).     │ varies by college).   │
+│ Structural Learning    │ Prescribed 2 Years          │ Traditional campus    │
+│ Format                 │ On-Campus Study (Sem 1–4) + │ study model (format,  │
+│                        │ 2 Years Field Deployment    │ internships, and duration│
+│                        │ (Sem 5–8 at host orgs).     │ vary by institution). │
 │ ───────────────────────┼─────────────────────────────┼───────────────────────│
 │ Practical Laboratory   │ 5 Prescribed Cybersecurity  │ General computing     │
 │ Distribution           │ Laboratory Courses (8C each)│ labs and departmental │
@@ -728,9 +753,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │                             │
 │ ┌─ 01 · CURRICULAR FOCUS ─┐ │
 │ │ IIT Kanpur B.Cyber:     │ │
-│ │ Systems, defensive      │ │
-│ │ security, and crypto    │ │
-│ │ foundations from Year 1.│ │
+│ │ Systems, data eng, cyber│ │
+│ │ labs & applied crypto   │ │
+│ │ from Year 1.            │ │
 │ │ ─────────────────────── │ │
 │ │ Conventional B.Tech CSE:│ │
 │ │ Broad computing: soft-  │ │
@@ -739,17 +764,17 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ └─────────────────────────┘ │
 │ ┌─ 02 · LEARNING FORMAT ──┐ │
 │ │ IIT Kanpur B.Cyber:     │ │
-│ │ 2 Years on-campus study │ │
-│ │ + 2 Years field deploy. │ │
+│ │ Prescribed 2 Yrs campus │ │
+│ │ + 2 Yrs field deploy.   │ │
 │ │ ─────────────────────── │ │
 │ │ Conventional B.Tech CSE:│ │
-│ │ 4 Years residential     │ │
-│ │ campus study (varies).  │ │
+│ │ Traditional campus study│ │
+│ │ model (varies by inst). │ │
 │ └─────────────────────────┘ │
 │ ┌─ 03 · LABORATORY MODEL ─┐ │
 │ │ IIT Kanpur B.Cyber:     │ │
-│ │ 5 Prescribed cybersecurity│
-│ │ labs (8 credits each).  │ │
+│ │ 5 Prescribed cyber labs │ │
+│ │ (8 credits each, S1–S4).│ │
 │ │ ─────────────────────── │ │
 │ │ Conventional B.Tech CSE:│ │
 │ │ General CS labs and     │ │
@@ -781,15 +806,17 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 * **Section Purpose:** Help prospective applicants self-reflect on their personal academic interests, coursework readiness, and lifestyle fit using neutral, non-diagnostic prompts.
 * **User's Key Question:** *“Am I personally and academically suited for this degree, or should I consider a conventional path?”*
 * **Design Pattern (Non-Diagnostic Self-Reflection Checklist):** **Qualitative Considerations Guide + 3-Prompt Contextual Reflection Tool**.
-  - *Research Reference:* Open University Course Choice Self-Assessment Tools (*OU Choices Checklist*, `https://www.open.ac.uk/courses/do-it/choices`) & W3C WAI ARIA Checkbox Design Pattern (`https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/`).
+  - *Research Reference:* The Open University Course Choice Self-Assessment Tools (*OU Choices Checklist*, `https://www.open.ac.uk/courses/do-it/choices`) & W3C WAI ARIA Checkbox Design Pattern (`https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/`).
   - *Observation:* Educational self-assessment aids work best when they prompt qualitative reflection on workload and study mode, rather than attempting to compute an automated "aptitude score" or "admission probability."
-  - *Rationale:* Employs standard, labelled HTML checkboxes (`<input type="checkbox">` + `<label>`) with visible keyboard focus indicators. Does NOT produce a fit percentage, diagnostic score, automated pass/fail judgment, or unsupported recommendation.
+  - *Rationale:* Employs standard, labelled HTML checkboxes (`<input type="checkbox">` + `<label>`) with visible keyboard focus indicators. Explanatory context is visible by default directly beneath each prompt. Does NOT produce a fit percentage, diagnostic score, automated pass/fail judgment, or unsupported recommendation.
 * **Scope & Framing Rules:**
   - **No Admission Process Information:** Strictly omits admission process mechanics (e.g. hackathons, JEE Main percentiles, prior work evaluations). All admission information is reserved for Pillar 2 (`/admission`).
   - **Explicit Non-Diagnostic Tool Notice:** Prominently clarifies that the tool is an educational self-reflection aid. It measures neither admission eligibility nor the probability of academic success.
+  - **No Unverified Course Names:** Audited to ensure unverified course names (such as *Discrete Mathematics*, *Linear Algebra*, or *Probability*) are not referenced.
+  - **Visible Explanatory Context:** Contextual explanation for each prompt is visible by default to ensure transparency and complete accessibility.
   - **Neutral Prompt Framing:** Focuses strictly on:
-    1. Systems and low-level computing interest.
-    2. Mathematical and technical coursework rigor.
+    1. Systems and low-level computing orientation.
+    2. Technical and data engineering coursework rigor.
     3. The two-year off-campus field-deployment arrangement.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
@@ -803,11 +830,11 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ ┌───────────────────────────────┐   ┌──────────────────────────────────────┐ │
 │ │ CHARACTERISTICS OF STRONG FIT │   │ CONSIDERATIONS TO WEIGH CAREFULLY    │ │
 │ │                               │   │                                      │ │
-│ │ • Genuine interest in systems │   │ • Primary interest is exclusively in │ │
-│ │   programming, OS, protocols, │   │   high-level web or consumer app dev │ │
-│ │   and low-level computing     │   │                                      │ │
-│ │ • Readiness for intensive     │   │ • Strong preference for a four-year  │ │
-│ │   applied math & cryptography │   │   traditional residential campus     │ │
+│ │ • Genuine interest in low-    │   │ • Primary interest is exclusively in │ │
+│ │   level computing, electronics│   │   high-level web or consumer app dev │ │
+│ │   systems, and networks       │   │                                      │ │
+│ │ • Readiness for intensive data│   │ • Strong preference for a traditional│ │
+│ │   engineering & applied crypto│   │   four-year residential campus       │ │
 │ │ • Enthusiastic about full-time│   │ • Expecting conventional CSE elective│ │
 │ │   field deployment in Y3 & Y4 │   │   breadth across general software domains│
 │ └───────────────────────────────┘   └──────────────────────────────────────┘ │
@@ -815,25 +842,28 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ ┌─ 3-PROMPT SELF-REFLECTION CHECKLIST (NON-DIAGNOSTIC AID) ────────────────┐ │
 │ │ [Tool Notice: This tool is an informational self-reflection aid. It does │ │
 │ │  not calculate admission eligibility, predict success, or generate a     │ │
-│ │  score. Check prompts to view relevant context for your own planning.]   │ │
+│ │  score. Context explanations are visible below each prompt.]             │ │
 │ │                                                                          │ │
 │ │ [ ] <input type="checkbox" id="check-systems">                           │ │
 │ │     <label for="check-systems">                                          │ │
-│ │     1. Systems & Low-Level Computing Orientation                         │ │
-│ │     "I am interested in low-level computing, operating systems, hardware │ │
-│ │      interfaces, and protocols, rather than solely consumer software."   │ │
+│ │     1. Systems & Computing Orientation                                   │ │
+│ │     "I am interested in low-level computing, electronics, operating      │ │
+│ │      systems, and networks, rather than solely consumer software."       │ │
 │ │     </label>                                                             │ │
-│ │     ↳ Context: Semesters 1–4 focus heavily on operating systems, digital  │ │
-│ │       electronics, computer organization, and protocol security.         │ │
+│ │     ↳ Context: Semesters 1–4 include Introduction to Electronics (14C),  │ │
+│ │       Fundamentals of Computing (14C), Computer Organization (12C),       │ │
+│ │       Operating Systems (13C), and Computer Networks (9C).               │ │
 │ │                                                                          │ │
-│ │ [ ] <input type="checkbox" id="check-math">                              │ │
-│ │     <label for="check-math">                                             │ │
-│ │     2. Mathematical & Technical Coursework Rigor                         │ │
-│ │     "I am prepared for rigorous technical coursework in discrete         │ │
-│ │      mathematics, applied cryptography, and systems analysis."           │ │
+│ │ [ ] <input type="checkbox" id="check-rigor">                             │ │
+│ │     <label for="check-rigor">                                            │ │
+│ │     2. Technical & Systems Rigor                                         │ │
+│ │     "I am prepared for intensive technical study combining systems       │ │
+│ │      programming, data engineering, and applied cryptography with        │ │
+│ │      practical laboratory coursework."                                   │ │
 │ │     </label>                                                             │ │
-│ │     ↳ Context: The curriculum pairs theoretical mathematical foundations │ │
-│ │       (linear algebra, probability, cryptography) with practical labs.   │ │
+│ │     ↳ Context: The curriculum pairs core computing and data engineering  │ │
+│ │       (Data and Ops) with applied cryptography and five intensive        │ │
+│ │       8-credit practical laboratories across Semesters 1–4.              │ │
 │ │                                                                          │ │
 │ │ [ ] <input type="checkbox" id="check-deployment">                        │ │
 │ │     <label for="check-deployment">                                       │ │
@@ -856,7 +886,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │                             │
 │ ┌─ STRONG FIT TRAITS ─────┐ │
 │ │ • Low-level systems     │ │
-│ │ • Applied cryptography  │ │
+│ │ • Data eng & crypto     │ │
 │ │ • Off-campus deployment │ │
 │ └─────────────────────────┘ │
 │ ┌─ WEIGH CAREFULLY IF... ─┐ │
@@ -871,18 +901,21 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │                         │ │
 │ │ [ ] 1. Systems Focus    │ │
 │ │ Curious about low-level │ │
-│ │ computing, OS, hardware.│ │
-│ │ ↳ Sem 1–4 systems heavy.│ │
+│ │ computing, OS, networks.│ │
+│ │ ↳ Context: Core systems │ │
+│ │   across Semesters 1–4. │ │
 │ │ ─────────────────────── │ │
-│ │ [ ] 2. Math Rigor       │ │
-│ │ Prepared for theoretical│ │
-│ │ crypto and mathematics. │ │
-│ │ ↳ Core math + labs.     │ │
+│ │ [ ] 2. Technical Rigor  │ │
+│ │ Prepared for data eng,  │ │
+│ │ crypto, and 5 labs.     │ │
+│ │ ↳ Context: Data (Data & │ │
+│ │   Ops) + 5 cyber labs.  │ │
 │ │ ─────────────────────── │ │
 │ │ [ ] 3. Two-Year Deploy  │ │
 │ │ Comfortable spending    │ │
 │ │ Y3–Y4 off-campus at org.│ │
-│ │ ↳ 216 Cr off-campus.    │ │
+│ │ ↳ Context: 216 Credits  │ │
+│ │   off-campus deployment.│ │
 │ └─────────────────────────┘ │
 └─────────────────────────────┘
 ```
@@ -891,13 +924,14 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Two qualitative consideration cards at the top (Strong Fit Traits vs Considerations to Weigh Carefully).
   - 3-Prompt Reflection Module below with prominent informational disclaimer.
   - Native semantic HTML markup: `<input type="checkbox">` elements associated with descriptive `<label>` elements via matching `id`/`for` attributes.
-  - Inline contextual notes displayed below each prompt to explain curricular implications.
+  - Contextual explanations remain visible by default beneath each prompt.
 * **Interaction & Accessibility:**
   - Standard native checkboxes support keyboard toggling with `Space`.
   - Visible focus indicators (`:focus-visible` outline / ring).
   - Interactive state is purely reflective: toggling checkboxes does NOT trigger an automated score calculation, percentage meter, or diagnostic pass/fail label.
 * **Factual Guardrails:**
   - Eliminates all claims regarding admission mechanisms, hackathon evaluation, or JEE rank predictions (which belong strictly to Pillar 2).
+  - Removed all unverified course mentions (Discrete Mathematics, Linear Algebra, Probability).
   - Explicitly states that the tool does not measure admission eligibility or academic success probability.
 ---
 
