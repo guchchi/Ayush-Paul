@@ -698,8 +698,8 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - *Observation:* Comparison tables with numerous columns fail on mobile viewports when squeezed or forced into horizontal scrolling. Reflowing each dimension into an isolated comparative card preserves clarity and reading ease on screens down to 320px.
   - *Rationale:* Eliminates arbitrary user-facing column percentage labels (such as `22% / 39% / 39%`). Streamlines comparative dimensions to structural and curricular factors, removing redundant placement and higher-study rows that duplicate Sections 8 and 9.
 * **Explicit Qualifications & Exclusions:**
-  - **General CSE Variance:** Explicitly notes that conventional B.Tech CSE learning formats, laboratory provisions, elective choices, branch-change rules, and career outcomes vary widely across different institutions. Avoids assuming an identical 4-year residential format for all CSE programs.
-  - **Postgraduate Pathways:** Notes that postgraduate admission eligibility universally depends on receiving institution criteria; neither degree offers automatic admission. Detailed postgraduate pathways are reserved for Section 8 (`#degree-recognition`).
+  - **General CSE Variance:** Explicitly notes that conventional B.Tech CSE learning formats, laboratory provisions, elective choices, branch-change rules, and career outcomes vary widely across different institutions. Avoids assuming an identical structure for all CSE programs.
+  - **Higher Studies Reserved for Section 8:** Postgraduate degree recognition, statutory standing, and global higher study pathways are owned exclusively by Section 8 (`#degree-recognition`) and are omitted entirely from this comparison matrix to eliminate duplication.
   - **Branch-Change Document Status:** The unlinked assertion that branch change is prohibited by Senate resolution is removed from the matrix. (WSAIS FAQ 12 notes that branch change to other B.Tech programs is not permitted, but formal Senate resolution documents are not publicly accessible).
   - **Duplication Avoidance:** Placement track records and career deployment specifics are addressed in Section 9 (`#career-internships`), not duplicated here.
 
@@ -724,19 +724,17 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │                        │ engineering, cyber labs,    │ software engineering, │
 │                        │ and applied cryptography.   │ systems, and electives│
 │ ───────────────────────┼─────────────────────────────┼───────────────────────│
-│ Structural Learning    │ Prescribed 2 Years          │ Traditional campus    │
-│ Format                 │ On-Campus Study (Sem 1–4) + │ study model (format,  │
-│                        │ 2 Years Field Deployment    │ internships, and duration│
-│                        │ (Sem 5–8 at host orgs).     │ vary by institution). │
+│ Structural Learning    │ Prescribed 2 Years          │ Typically a four-year │
+│ Format                 │ On-Campus Study (Sem 1–4) + │ undergraduate degree; │
+│                        │ 2 Years Field Deployment    │ campus arrangements,  │
+│                        │ (Sem 5–8 at host orgs).     │ internships, lab      │
+│                        │                             │ provision and elective│
+│                        │                             │ structures vary by    │
+│                        │                             │ institution.          │
 │ ───────────────────────┼─────────────────────────────┼───────────────────────│
 │ Practical Laboratory   │ 5 Prescribed Cybersecurity  │ General computing     │
 │ Distribution           │ Laboratory Courses (8C each)│ labs and departmental │
 │                        │ across Semesters 1 to 4.    │ electives (varies).   │
-│ ───────────────────────┼─────────────────────────────┼───────────────────────│
-│ Postgraduate Pathway   │ Eligible to apply for higher│ Standard eligibility  │
-│ Note                   │ degrees; admission depends  │ across universities   │
-│                        │ on receiving institution    │ (admission depends on │
-│                        │ criteria (see Section 8).   │ receiving institute). │
 │ ──────────────────────────────────────────────────────────────────────────── │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -768,8 +766,10 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ + 2 Yrs field deploy.   │ │
 │ │ ─────────────────────── │ │
 │ │ Conventional B.Tech CSE:│ │
-│ │ Traditional campus study│ │
-│ │ model (varies by inst). │ │
+│ │ Typically a 4-year      │ │
+│ │ degree; campus setup,   │ │
+│ │ internships, lab &      │ │
+│ │ electives vary by inst. │ │
 │ └─────────────────────────┘ │
 │ ┌─ 03 · LABORATORY MODEL ─┐ │
 │ │ IIT Kanpur B.Cyber:     │ │
@@ -780,13 +780,6 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ General CS labs and     │ │
 │ │ electives (varies).     │ │
 │ └─────────────────────────┘ │
-│ ┌─ 04 · POSTGRADUATE NOTE ┐ │
-│ │ Both Degrees:           │ │
-│ │ Higher study admission  │ │
-│ │ universally depends on  │ │
-│ │ receiving institution   │ │
-│ │ criteria (see Sec 8).   │ │
-│ └─────────────────────────┘ │
 └─────────────────────────────┘
 ```
 
@@ -796,7 +789,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Clean boundary borders prevent visual ambiguity.
 * **Factual Guardrails:**
   - Avoids unverified salary comparisons, placement statistics, or claims of employer superiority.
-  - Eliminates redundant placement rows (detailed in Section 9) and reserves detailed postgraduate credential analysis for Section 8.
+  - Eliminates redundant placement rows (detailed in Section 9) and reserves all postgraduate credential analysis for Section 8.
   - Qualifies that conventional CSE offerings differ significantly by institution.
 
 ---
