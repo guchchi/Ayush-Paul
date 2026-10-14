@@ -181,36 +181,43 @@ export const Navbar = () => {
               </Link>
             </div>
 
-            {/* Center: The 3 Pillar Segmented Switcher (Desktop) */}
+            {/* Center: The 3 Pillar Homogeneous Switcher (Desktop) */}
             <nav 
               aria-label="B.Cyber Compass Pillars"
-              className="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200/70 text-xs font-semibold"
+              className="hidden lg:flex items-center gap-1 text-xs"
             >
               {/* Pillar 1: Overview */}
               <Link 
                 to="/blueprints/b-cyber"
                 className={cn(
-                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
                   location.pathname === '/blueprints/b-cyber'
-                    ? "bg-white text-slate-900 shadow-xs font-bold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-slate-100 text-slate-950 font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
-                <span>01 Overview</span>
+                <span className="text-[10px] font-mono text-slate-400">01</span>
+                <span>Overview</span>
               </Link>
 
               {/* Pillar 2: Admission */}
               <Link 
                 to="/blueprints/b-cyber/admission"
                 className={cn(
-                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
                   location.pathname.startsWith('/blueprints/b-cyber/admission')
-                    ? "bg-white text-slate-900 shadow-xs font-bold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-slate-100 text-slate-950 font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
-                <span>02 Admission</span>
-                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/80 font-bold">
+                <span className="text-[10px] font-mono text-slate-400">02</span>
+                <span>Admission</span>
+                <span className={cn(
+                  "text-[9px] font-mono px-1.5 py-0.5 rounded font-normal transition-colors",
+                  location.pathname.startsWith('/blueprints/b-cyber/admission')
+                    ? "bg-slate-200/80 text-slate-700"
+                    : "bg-slate-100 text-slate-500"
+                )}>
                   2027 Shift
                 </span>
               </Link>
@@ -219,26 +226,32 @@ export const Navbar = () => {
               <Link 
                 to="/blueprints/b-cyber/roadmap"
                 className={cn(
-                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
                   location.pathname.startsWith('/blueprints/b-cyber/roadmap')
-                    ? "bg-white text-slate-900 shadow-xs font-bold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-slate-100 text-slate-950 font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 )}
               >
-                <span>03 Roadmap</span>
-                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-bold">
+                <span className="text-[10px] font-mono text-slate-400">03</span>
+                <span>Roadmap</span>
+                <span className={cn(
+                  "text-[9px] font-mono px-1.5 py-0.5 rounded font-normal transition-colors",
+                  location.pathname.startsWith('/blueprints/b-cyber/roadmap')
+                    ? "bg-slate-200/80 text-slate-700"
+                    : "bg-slate-100 text-slate-500"
+                )}>
                   Free Labs
                 </span>
               </Link>
             </nav>
 
             {/* Right: Contextual Actions & Exit to Site */}
-            <div className="hidden sm:flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-5">
               <a
                 href="https://iitk.ac.in/wsais/b-cyber.php"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors px-2 py-1"
+                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
                 title="Official IIT Kanpur WSAIS portal"
               >
                 <span>Official Portal</span>
@@ -247,7 +260,7 @@ export const Navbar = () => {
 
               <Link
                 to="/blueprints"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs"
+                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
               >
                 <span>← All Blueprints</span>
               </Link>
