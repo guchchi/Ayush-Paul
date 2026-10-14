@@ -930,310 +930,331 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ### Section 8: Degree Award, Recognition & Higher Studies
 * **Anchor ID:** `#degree-recognition` *(Verified match with sitemap)*
-* **Section Purpose:** Establish legal credential validity, Senate statutory authority, alumni standing, and global postgraduate eligibility rules with legalistic precision, avoiding unverified institutional claims or marketing hype.
-* **User's Key Question:** *“What exact degree will I receive, what does IIT Kanpur alumni status mean, and what is officially stated about higher studies in India and abroad?”*
-* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQ 9, Institute Ordinances & Statutes)*.
-* **Design Pattern (Structured Statutory Authority Ledger):** **Two-Tier Credential Ledger (Top Statutory Conferral Baseline + 4-Attribute Verifiable Parameter Summary List)**.
+* **Section Purpose:** Present verified credential facts regarding degree conferral, alumni status, institutional standing, and higher-studies eligibility using official IIT Kanpur WSAIS statements, without unsupported regulatory claims or marketing hype.
+* **User's Key Question:** *“What exact degree will I receive, what does IIT Kanpur alumni status mean, and what is officially stated about further studies?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Overview, FAQ 9, and Departmental FAQ records)*.
+* **Design Pattern (Auditable Credential Facts Summary):** **Structured Key-Facts Summary List (Primary Credential Summary Card + 4 Attribute-and-Evidence Parameter Rows)**.
   - *Research Reference 1:* GOV.UK Design System — *Summary List Pattern* (`https://design-system.service.gov.uk/components/summary-list/`).
-    - *Observation:* Authoritative institutional records require distinct key/value/evidence rows with clear typographic separation. A structured summary list treats legal standing with solemnity, preventing ambiguity between the formal credential and downstream rights.
-  - *Research Reference 2:* European Qualifications Framework (EQF) & ENIC-NARIC Degree Verification Sheet (`https://www.enic-naric.net/`).
-    - *Observation:* Standard qualification registries isolate degree title, awarding body, rights of status, and further-study access into distinct, auditable parameters rather than burying them in running prose.
-  - *Rationale:* Prospective students and families require verifiable legal precision. A two-tier ledger presents: (1) The statutory baseline conferral by the Senate of IIT Kanpur, followed by (2) Four distinct, auditable credential parameters with direct source references. This avoids repeating Section 6's curriculum comparison.
-* **Do Not:** Hide statutory credentials inside accordions; do not claim guaranteed or automatic admission at specific private foreign universities (e.g. Stanford, MIT, CMU); do not claim universal degree equivalence without institutional qualification; do not use decorative diploma graphics.
+    - *Observation:* Authoritative public records present key-value-evidence rows with distinct typographic separation, ensuring each attribute stands on its own verifiable source rather than running marketing prose.
+  - *Research Reference 2:* The Open University — *Qualifications Explained & Credential Summaries* (`https://www.open.ac.uk/courses/do-it/qualifications-explained`).
+    - *Observation:* Higher education qualification guides present award titles, awarding bodies, alumni affiliation, and progression routes in neutral, scannable parameter blocks with clear caveats.
+  - *Rationale:* Prospective applicants and parents require clear, neutral institutional facts. A key-facts summary list provides auditable clarity by pairing every formal parameter directly with official WSAIS statements, completely separating verified institute facts from downstream admissions conditions.
+* **Do Not:** Use over-legalistic jargon or claim unverified verbatim Senate quotations; do not claim identical alumni email, voting, or facility privileges without an authoritative source; do not assert blanket UGC/AICTE or UPSC equivalence without specific regulatory citations; do not claim guaranteed postgraduate admission or cite unverified foreign university partnerships; do not repeat Section 6's curriculum comparison.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
-*(Structured Statutory Authority Ledger — 4 Distinct Parameter Rows)*
+*(Auditable Credential Facts Summary — 4 Verifiable Parameter Rows)*
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ [Institutional Standing & Credential Validity]                               │
+│ [Institutional Standing & Credential Summary]                                │
 │ DEGREE AWARD, RECOGNITION & HIGHER STUDIES                                   │
-│ Statutory Authority, Alumni Standing & Postgraduate Progression              │
-│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (FAQ 9 & Statutes)  │
+│ Official Credential Overview, Alumni Standing & Postgraduate Eligibility     │
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (WSAIS Overview & 9)│
 │                                                                              │
-│ ┌─ 🏛️ PRIMARY STATUTORY CONFERRAL BASELINE ────────────────────────────────┐ │
-│ │ "Students who successfully complete all academic coursework (Sem 1–4)    │ │
-│ │  and prescribed field deployment requirements (Sem 5–8) are awarded the  │ │
-│ │  Bachelor of Cybersecurity (B.Cyber.) degree by the Senate of IIT Kanpur.│ │
-│ │  Graduates are conferred regular IIT Kanpur alumni status upon completion│ │
-│ │  of all graduation criteria."                                            │ │
+│ ┌─ 🎓 OFFICIAL CREDENTIAL SUMMARY STATEMENT ───────────────────────────────┐ │
+│ │ Official WSAIS statements confirm that students who fulfill all academic │ │
+│ │ coursework (Semesters 1–4) and prescribed field deployment requirements  │ │
+│ │ (Semesters 5–8) are awarded the Bachelor of Cybersecurity (B.Cyber.)     │ │
+│ │ degree by IIT Kanpur. Graduates of B.Cyber will be regular alumni of     │ │
+│ │ IIT Kanpur.                                                              │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
-│ ┌─ FOUR DISTINCT VERIFIABLE CREDENTIAL PARAMETERS ─────────────────────────┐ │
+│ ┌─ FOUR AUDITABLE CREDENTIAL PARAMETERS ───────────────────────────────────┐ │
 │ │                                                                          │ │
-│ │ 01 · FORMAL DEGREE TITLE & QUALIFICATION TYPE                            │ │
-│ │ Status:       Officially Confirmed Under Senate Statutes                 │ │
+│ │ 01 · FORMAL DEGREE TITLE                                                 │ │
+│ │ Parameter:     Degree Awarded Upon Graduation                            │ │
 │ │ Official Name: Bachelor of Cybersecurity (B.Cyber.)                      │ │
-│ │ Classification: 4-Year Full-Time Undergraduate Engineering Degree        │ │
-│ │ Legal Context: Conferred by IIT Kanpur as an autonomous Institute of     │ │
-│ │               National Importance (INI) under the Institutes of          │ │
-│ │               Technology Act. Not a B.Tech, diploma, or certificate.     │ │
+│ │ Level:         Four-Year Undergraduate Degree Programme                  │ │
+│ │ Source Status: Officially Confirmed on WSAIS Portal                      │ │
+│ │ Context:       Offered by the Department of Computer Science &           │ │
+│ │                Engineering and WSAIS, Indian Institute of Technology     │ │
+│ │                Kanpur. (Distinct degree nomenclature; not titled B.Tech).│ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
-│ │ 02 · ALUMNI STANDING & INSTITUTIONAL PRIVILEGES                          │ │
-│ │ Status:       Officially Confirmed (WSAIS Official Statement)            │ │
-│ │ Entitlement:  Full Regular IIT Kanpur Alumni Status upon Graduation      │ │
-│ │ Rights:       Identical alumni association membership, institutional     │ │
-│ │               access, institute email privilege, and network standing    │ │
-│ │               as graduates of conventional B.Tech programmes.            │ │
+│ │ 02 · ALUMNI STATUS                                                       │ │
+│ │ Parameter:     Institutional Alumni Standing                             │ │
+│ │ Official Text: "Graduates of B.Cyber will be regular alumni of           │ │
+│ │                IIT Kanpur."                                              │ │
+│ │ Source Status: Officially Confirmed on WSAIS Portal                      │ │
+│ │ Context Note:  IIT Kanpur officially confirms regular alumni status.     │ │
+│ │ (Guide Interp) Specific administrative privileges (such as local alumni  │ │
+│ │                chapters, library access, or email services) follow       │ │
+│ │                standard institute alumni procedures upon graduation.     │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
-│ │ 03 · STATUTORY RECOGNITION & PUBLIC-SECTOR STANDING                      │ │
-│ │ Status:       Established Under Parliamentary Statute                    │ │
-│ │ Authority:    Statutory Degree of IIT Kanpur (Parliamentary INI Standing)│ │
-│ │ Verification: Degrees awarded by IIT Kanpur are recognized by the Ministry│ │
-│ │               of Education (MoE), UGC, AICTE equivalence frameworks, and │ │
-│ │               Union Public Service Commission (UPSC) eligibility rules.  │ │
+│ │ 03 · INSTITUTIONAL STANDING                                              │ │
+│ │ Parameter:     Degree-Granting Authority                                 │ │
+│ │ Awarding Body: Indian Institute of Technology Kanpur                     │ │
+│ │ Status:        Institute of National Importance (INI), established       │ │
+│ │                under the Institutes of Technology Act (Parliament).      │ │
+│ │ Caveat Note:   National public-sector or competitive exam eligibility    │ │
+│ │                depends on the specific recruitment criteria of each      │ │
+│ │                examining body or notification.                           │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
-│ │ 04 · HIGHER STUDIES & POSTGRADUATE PROGRESSION (INDIA & ABROAD)          │ │
-│ │ Status:       Officially Confirmed (WSAIS FAQ 9 Verbatim Provision)      │ │
-│ │ Official Text: "Eligible to apply for postgraduate programs (such as MS,  │ │
-│ │               MTech, PhD) in India and abroad, subject to the admission  │ │
-│ │               criteria of the respective institutions."                  │ │
-│ │ Crucial Caveat: Admission eligibility conveys the legal right to apply; │ │
-│ │               no institution globally provides automatic blanket entry.  │ │
-│ │               Individual foreign universities evaluate prerequisite credits│
-│ │               and departmental syllabi according to their own standards. │ │
+│ │ 04 · HIGHER STUDIES & POSTGRADUATE PROGRESSION                           │ │
+│ │ Parameter:     Eligibility to Apply for Master's and Doctoral Programmes │ │
+│ │ Official Text: Under official WSAIS FAQ 9, the degree is described as    │ │
+│ │                equivalent to a regular four-year IIT Kanpur degree, and  │ │
+│ │                graduates are eligible to apply for postgraduate programs │ │
+│ │                (such as MS, MTech, PhD) in India and abroad.             │ │
+│ │ Essential      Eligibility grants the formal right to apply; admission is│ │
+│ │ Qualification: never automatic and remains subject to the admission      │ │
+│ │                criteria, prerequisite requirements, and evaluation of    │ │
+│ │                each respective receiving institution.                   │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 #### Low-Fidelity Mobile Wireframe (< 768 px)
-*(Vertical Credential Parameter Stack — Zero Horizontal Scroll)*
+*(Vertical Parameter Stack — Zero Horizontal Scroll)*
 ```
 ┌─────────────────────────────┐
 │ DEGREE AWARD & RECOGNITION  │
-│ Statutory Credential Ledger │
+│ Credential Facts Summary    │
 │ [iitk.ac.in/wsais/b-cyber]  │
 │                             │
-│ ┌─ STATUTORY BASELINE ────┐ │
-│ │ Awarded by Senate of    │ │
-│ │ IIT Kanpur upon full    │ │
-│ │ coursework & field completion│
+│ ┌─ OFFICIAL SUMMARY ──────┐ │
+│ │ Awarded by IIT Kanpur   │ │
+│ │ upon completing academic│ │
+│ │ coursework & field reqs.│ │
 │ │ Regular alumni standing.│ │
 │ └─────────────────────────┘ │
 │                             │
 │ ┌─ 01 · DEGREE TITLE ─────┐ │
 │ │ Bachelor of             │ │
 │ │ Cybersecurity (B.Cyber.)│ │
-│ │ • 4-Yr Undergraduate    │ │
-│ │ • INI Statutory Award   │ │
-│ │ (Not B.Tech or diploma) │ │
+│ │ • 4-Year Undergrad      │ │
+│ │ • IIT Kanpur Department │ │
+│ │   of CSE & WSAIS        │ │
+│ │ • Distinct nomenclature │ │
 │ └─────────────────────────┘ │
 │                             │
 │ ┌─ 02 · ALUMNI STATUS ────┐ │
 │ │ Regular Alumni Standing │ │
-│ │ • Full membership in    │ │
-│ │   IITK Alumni Assoc.    │ │
-│ │ • Standard privileges.  │ │
+│ │ • Official WSAIS text:  │ │
+│ │   Graduates will be     │ │
+│ │   regular alumni of     │ │
+│ │   IIT Kanpur.           │ │
 │ └─────────────────────────┘ │
 │                             │
-│ ┌─ 03 · RECOGNITION ──────┐ │
-│ │ Statutory INI Standing  │ │
+│ ┌─ 03 · INSTITUTION ──────┐ │
+│ │ IIT Kanpur (INI)        │ │
 │ │ • Institutes of Tech Act│ │
-│ │ • MoE / UPSC Eligibility│ │
+│ │ • Public exam / job     │ │
+│ │   rules set by notifying│ │
+│ │   bodies individually.  │ │
 │ └─────────────────────────┘ │
 │                             │
 │ ┌─ 04 · HIGHER STUDIES ───┐ │
-│ │ WSAIS FAQ 9 Provision:  │ │
-│ │ Eligible to apply for   │ │
-│ │ MS / MTech / PhD in     │ │
-│ │ India & abroad.         │ │
+│ │ WSAIS FAQ 9:            │ │
+│ │ Equivalent to regular   │ │
+│ │ 4-year IITK degree for  │ │
+│ │ applying to MS/MTech/PhD│ │
+│ │ in India and abroad.    │ │
 │ │ ⚠️ Caveat: Admission     │ │
 │ │ depends on receiving    │ │
 │ │ institution criteria;   │ │
-│ │ no automatic admission. │ │
+│ │ not guaranteed.         │ │
 │ └─────────────────────────┘ │
 └─────────────────────────────┘
 ```
 
 * **Content Hierarchy & Layout Notes:**
-  - Desktop layout begins with an authoritative primary statutory conferral statement card, followed by a high-contrast 4-row parameter ledger.
-  - Mobile layout uses a vertical sequence of 4 self-contained credential blocks with clear numerical identifiers.
-  - Explicit distinction between: (1) Degree Title, (2) Alumni Standing, (3) Statutory Recognition, and (4) Higher Studies Eligibility.
+  - Begins with an authoritative summary card highlighting official WSAIS text.
+  - Followed by 4 structured, auditable parameter rows: (1) Formal Degree Title, (2) Alumni Status, (3) Institutional Standing, and (4) Higher Studies.
+  - Clear visual demarcation between official text, verified institutional parameters, and explanatory qualification caveats.
 * **Factual Guardrails & Epistemic Boundaries:**
-  - Does NOT claim guaranteed admission or automatic credit transfer at specific private foreign universities (e.g., Stanford, MIT, CMU).
-  - Explicitly states that foreign university equivalence depends on the receiving institution's credential evaluation.
-  - Strictly preserves verbatim WSAIS FAQ 9 language.
+  - Removed unsupported claims of identical alumni email, library access, or specific alumni-association privileges.
+  - Removed blanket claims of UGC/AICTE or UPSC equivalence; notes that specific public-sector eligibility depends on individual notification criteria.
+  - Grounded higher-studies access strictly in WSAIS FAQ 9, explicitly noting that eligibility allows application, not guaranteed admission.
 * **Accessibility & Interaction:**
-  - Static ledger: 100% of information is immediately readable and discoverable without requiring accordion clicks or modal interactions.
-  - Semantic markup: Structured using definition list semantics (`<dl>`, `<dt>`, `<dd>`) or clean section headings (`<h3>`, `<h4>`).
-  - Source links feature visible focus rings (`ring-2 ring-brand-primary`) and clear descriptive labels.
+  - 100% static, crawlable text with no accordion or tab interaction required.
+  - Semantic structure using definition list (`<dl>`, `<dt>`, `<dd>`) or structured section headings (`H3`, `H4`).
+  - High-contrast text labels and visible focus rings on official source links.
 
 ---
 
 ### Section 9: Internship, Stipend & Placement Reality
 * **Anchor ID:** `#internship-reality` *(Verified match with sitemap)*
-* **Section Purpose:** Define the operational boundaries between IIT Kanpur's academic requirements, host-organization internship governance, and post-graduation career placement without manufactured statistics or false employment promises.
-* **User's Key Question:** *“What exactly happens in Years 3–4, who sets and pays the stipend, and what placement outcomes are actually known?”*
-* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQ 16 & Programme Overview)*.
-* **Design Pattern (Three-Pillar Operational Responsibility Ledger):** **Tripartite Boundary Architecture (Academic Degree Internship vs Host Organization Governance vs Career Placement & Market Reality)**.
-  - *Research Reference 1:* Monzo Bank Operational Transparency & Terms Disclosures (`https://monzo.com/transparency/`).
-    - *Observation:* Institutional services succeed in preventing user disputes when they explicitly map "What is covered", "Who decides what", and "What is explicitly not guaranteed" across distinct operational boundaries.
-  - *Research Reference 2:* NHS Service Responsibility Boundaries & Clinical Placement Charters (`https://www.nhs.uk/our-policies/`).
-    - *Observation:* Distinguishing between the degree-granting sponsor, the site host provider, and post-qualification employment through an explicit tripartite matrix stops applicants from conflating field training with guaranteed permanent jobs.
-  - *Rationale:* Students and parents routinely confuse (1) degree credit requirements, (2) internship stipends, and (3) permanent post-graduation placement. A three-pillar responsibility ledger provides complete structural clarity by isolating each entity's role, financial terms, and legal boundaries.
-* **Do Not:** Promise a permanent government job or civil service appointment; do not promise a fixed stipend amount or salary figure; do not name unauthorized corporate recruiters; do not manufacture historical placement averages or median package numbers.
+* **Section Purpose:** Present the verified operational facts regarding the two-year academic internship, host organisation stipend terms, and dedicated placement support without manufactured statistics, false salary promises, or misleading career progression arrows.
+* **User's Key Question:** *“What happens in Years 3–4, who determines stipend, and what placement outcomes are actually known?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Programme Overview, FAQ 13, and FAQ 16)*.
+* **Design Pattern (Three-Area Operational Responsibility Ledger):** **Tripartite Boundary Architecture (Academic Internship Requirement vs Organisation & Stipend Terms vs Placement Support & Evidence Status)**.
+  - *Research Reference 1:* Monzo Bank Operational Transparency Disclosures (`https://monzo.com/transparency/`).
+    - *Observation:* Financial and institutional products prevent misunderstandings by explicitly mapping responsibilities across distinct operational pillars without connecting arrows that imply automatic entitlement.
+  - *Research Reference 2:* GOV.UK Service Manual — *Service Boundaries & Provider Responsibilities* (`https://www.gov.uk/service-manual/service-assessments/check-service-standard`).
+    - *Observation:* Multi-party service models require clear boundary demarcations between core qualification requirements, host terms, and post-service outcomes.
+  - *Rationale:* Clearly separates: (1) What the academic degree requires from IIT Kanpur, (2) What host organisations govern regarding stipends and daily work, and (3) What placement assistance is actually provided and what outcome data is known. Crucially, the layout uses separate boundary columns without transitional arrows, avoiding any implication of an automatic pipeline to permanent employment.
+* **Do Not:** Claim that B.Cyber students participate alongside students from other IITK departments in general placement drives; do not state or imply guaranteed placement; do not state uniform or guaranteed stipends; do not name unverified partner organisations (e.g. CERT-In, NCIIPC, defense); do not manufacture salary packages or placement rates.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
-*(Tripartite Operational Responsibility Ledger — 3 Distinct Boundary Pillars)*
+*(Three-Area Operational Responsibility Ledger — Zero Transitional Progression Arrows)*
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ [Operational Reality & Career Boundaries]                                    │
 │ INTERNSHIP, STIPEND & PLACEMENT REALITY                                      │
-│ Clear Demarcation of Academic Requirements, Host Policies & Career Support   │
-│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (FAQ 16 & Overview) │
+│ Clear Separation of Academic Requirements, Organisation Terms & Career Support│
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (Overview, FAQ 13, 16)│
 │                                                                              │
-│ ┌─ ⚠️ INAUGURAL COHORT PLACEMENT DATA NOTICE ───────────────────────────────┐ │
-│ │ The inaugural B.Cyber cohort commenced in July 2026 and will graduate in │ │
-│ │ 2030. Zero historical placement statistics, median packages, or salary    │ │
-│ │ records exist. Any online claims of average packages are speculative.    │ │
+│ ┌─ ⚠️ OFFICIAL WSAIS PLACEMENT & TIMELINE NOTICE ──────────────────────────┐ │
+│ │ The official WSAIS portal explicitly states that placement comparisons   │ │
+│ │ with other programmes are premature. The inaugural B.Cyber cohort        │ │
+│ │ commenced in July 2026 and will graduate in 2030. Published historical   │ │
+│ │ placement outcomes, salary figures, and employer lists are not yet       │ │
+│ │ established. No permanent employment is guaranteed.                      │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
-│ ┌─ PILLAR 1: ACADEMIC COMPONENT ─┐ ┌─ PILLAR 2: HOST ORG TERMS ──┐ ┌─ PILLAR 3: CAREER & PLACEMENT ─┐ │
-│ │ Years 3 & 4 (Semesters 5 to 8) │ │ Field Deployment Governance │ │ Post-Graduation Career Support  │ │
-│ │ ────────────────────────────── │ │ ─────────────────────────── │ │ ─────────────────────────────── │ │
-│ │ • 216 Total Academic Credits   │ │ • Host Organization Policy: │ │ • IIT Kanpur Placement Channel: │ │
-│ │   Four 54-credit semesters     │ │   Day-to-day operational    │ │   Graduates participate in IITK │ │
-│ │   conducted off-campus at      │ │   supervision and security  │ │   Students' Placement Office    │ │
-│ │   approved host organizations. │ │   protocols are set by host.│ │   (SPO) / WSAIS career drives.  │ │
-│ │ • Mandatory Graduation Unit:   │ │ • Discretionary Stipends:   │ │ • No Automatic Permanent Job:   │ │
-│ │   The 2-year field deployment  │ │   Stipends (if provided) are│ │   Host deployment does NOT      │ │
-│ │   is an integral degree req,   │ │   determined, approved, and │ │   convert automatically into    │ │
-│ │   not an optional elective.    │ │   disbursed entirely by host│ │   permanent government or civil │ │
-│ │ • Continuous Student Status:   │ │   organizations per norms.  │ │   service employment.           │ │
-│ │   Students retain formal       │ │ • No Uniform IITK Amount:   │ │ • Separate Hiring Processes:    │ │
-│ │   enrolled student status at   │ │   IIT Kanpur does NOT set,  │ │   Permanent recruitment by host │ │
-│ │   IIT Kanpur during field work.│ │   mandate, or guarantee a   │ │   orgs requires independent     │ │
-│ │ • Faculty Evaluation:          │ │   uniform stipend figure.   │ │   applications and assessments. │ │
-│ │   Academic progress monitored  │ │ • Participating Sectors:    │ │ • Zero Historical Salary Data:  │ │
-│ │   and graded periodically by   │ │   Government agencies, def- │ │   No past CTC records exist;    │ │
-│ │   IIT Kanpur faculty mentors.  │ │   ense, critical infra, and │ │   inaugural batch currently in  │ │
-│ │                                │ │   industry security units.  │ │   progress (2026–2030).         │ │
-│ └────────────────────────────────┘ └─────────────────────────────┘ └─────────────────────────────────┘ │
+│ ┌─ AREA 1: ACADEMIC INTERNSHIP ──┐ ┌─ AREA 2: STIPEND & ORG TERMS ─┐ ┌─ AREA 3: PLACEMENT & EVIDENCE ─┐ │
+│ │ Mandatory Degree Requirement   │ │ Host Organisation Terms       │ │ Career Support & Market Status │ │
+│ │ ────────────────────────────── │ │ ───────────────────────────── │ │ ────────────────────────────── │ │
+│ │ • Semesters 5 to 8 (Years 3–4):│ │ • Host Organisation Work:     │ │ • Dedicated Placement Channel: │ │
+│ │   Consists of four semesters   │ │   Students are deployed at    │ │   Official FAQ 13 confirms that│ │
+│ │   carrying 54 credits each,    │ │   participating cybersecurity │ │   placement support is provided│ │
+│ │   totaling 216 academic credits│ │   organisations for practical │ │   by inviting relevant cyber-  │ │
+│ │   off-campus.                  │ │   field experience.           │ │   security organisations.      │ │
+│ │ • Integral Part of Degree:     │ │ • Stipend Provision Reality:  │ │ • Separate Placement Drives:   │ │
+│ │   The 2-year field internship  │ │   Official WSAIS statements   │ │   Official FAQ 13 states that  │ │
+│ │   is a mandatory component     │ │   clarify that most students  │ │   B.Cyber students do NOT      │ │
+│ │   required for degree award.   │ │   are expected to receive     │ │   participate in placements    │ │
+│ │ • Continuous Student Status:   │ │   stipends, but amounts vary  │ │   alongside students from      │ │
+│ │   Students retain official     │ │   by organisation.            │ │   other IITK departments.      │ │
+│ │   enrolled IIT Kanpur student  │ │ • Zero-Stipend Possibility:   │ │ • No Automatic Conversion:     │ │
+│ │   status throughout the entire │ │   Official text notes some    │ │   Field deployment does NOT    │ │
+│ │   four years of the programme. │ │   organisations may provide   │ │   convert automatically into a │ │
+│ │ • Academic Monitoring:         │ │   no stipend; IIT Kanpur      │ │   permanent job at the host org│ │
+│ │   Internship performance and   │ │   states it will try to send  │ │ • Zero Historical Salary Data: │ │
+│ │   progress are evaluated for   │ │   students to organisations   │ │   WSAIS confirms placement     │ │
+│ │   academic credit conferral.   │ │   that offer some support.    │ │   comparisons are premature.   │ │
+│ └────────────────────────────────┘ └─────────────────────────────┘ └──────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 #### Low-Fidelity Mobile Wireframe (< 768 px)
-*(Sequential Pillar Cards — Zero Horizontal Scroll)*
+*(Sequential Three-Area Stack — Zero Connecting Arrows)*
 ```
 ┌─────────────────────────────┐
 │ INTERNSHIP & PLACEMENT      │
 │ Operational Reality Ledger  │
 │ [iitk.ac.in/wsais/b-cyber]  │
 │                             │
-│ ⚠️ Epistemic Notice:        │
-│ Cohort commenced July 2026. │
-│ Zero historical salary data │
-│ exists until 2030 grad.     │
+│ ⚠️ Official WSAIS Notice:   │
+│ Placement comparisons are   │
+│ premature. Cohort graduates │
+│ 2030; zero historical data. │
 │                             │
 │ ┌─ 01 · ACADEMIC INTERN ──┐ │
-│ │ Years 3 & 4 (Sem 5–8)   │ │
-│ │ • 216 Academic Credits  │ │
-│ │ • Mandatory degree req. │ │
-│ │ • Enrolled IITK status  │ │
-│ │ • Faculty-guided grading│ │
+│ │ Mandatory Degree Unit   │ │
+│ │ • Semesters 5–8 (Y3–Y4) │ │
+│ │ • 54 Credits per semester│ │
+│ │   (216 credits total)   │ │
+│ │ • Integral part of degree│ │
+│ │ • Continuous IITK student│ │
+│ │   status throughout     │ │
 │ └─────────────────────────┘ │
 │                             │
-│ ┌─ 02 · HOST ORG TERMS ───┐ │
-│ │ Deployment Governance   │ │
-│ │ • Host sets workplace   │ │
-│ │   supervision & tasks.  │ │
-│ │ • Discretionary Stipend:│ │
-│ │   Decided by host org.  │ │
-│ │ • No uniform IITK rate. │ │
-│ │ • Govt, defense, infra. │ │
+│ ┌─ 02 · STIPEND & ORG ────┐ │
+│ │ Host Terms & Allowance  │ │
+│ │ • Deployed at host orgs │ │
+│ │ • Most expected to get  │ │
+│ │   stipends; amount vary │ │
+│ │ • Some orgs may offer   │ │
+│ │   no stipend            │ │
+│ │ • IITK tries to place at│ │
+│ │   orgs offering support │ │
 │ └─────────────────────────┘ │
 │                             │
-│ ┌─ 03 · CAREER REALITY ───┐ │
-│ │ Placement & Employment  │ │
-│ │ • IITK SPO placement    │ │
-│ │   support channels.     │ │
-│ │ • NO automatic permanent│ │
-│ │   government employment.│ │
-│ │ • Independent hiring.   │ │
-│ │ • Zero past CTC figures.│ │
+│ ┌─ 03 · PLACEMENT REALITY ┐ │
+│ │ Career Support Status   │ │
+│ │ • Relevant cyber orgs   │ │
+│ │   invited (FAQ 13)      │ │
+│ │ • Does NOT participate  │ │
+│ │   alongside other IITK  │ │
+│ │   departments           │ │
+│ │ • NO guaranteed job or  │ │
+│ │   permanent hiring      │ │
+│ │ • Zero past salary stats│ │
 │ └─────────────────────────┘ │
 └─────────────────────────────┘
 ```
 
 * **Content Hierarchy & Layout Notes:**
-  - Desktop features a 3-column boundary ledger with an explicit informational notice banner at the top regarding inaugural cohort data status.
-  - Mobile stacks into 3 distinct, sequentially ordered cards with high visual contrast and structural clarity.
-  - Explicit distinction between: (1) Academic Graduation Requirements, (2) Host Organization Governance & Stipend Terms, and (3) Long-Term Employment Reality.
-* **Factual Guardrails & Boundaries:**
-  - Conspicuously clarifies that the 2-year field deployment does NOT guarantee permanent civil service or government employment.
-  - Accurately states that stipends are determined and disbursed by host organizations per their internal norms; IIT Kanpur guarantees no uniform stipend amount.
-  - Rejects all speculative salary statistics (e.g. average packages or placement percentages) because the inaugural batch is currently in progress (2026–2030).
+  - Explicit warning banner at the top directly quotes official guidance: placement comparisons are premature.
+  - Three distinct, standalone columns/cards: (1) Academic Internship Requirement, (2) Organisation & Stipend Terms, and (3) Placement Support & Evidence Status.
+  - No graphical arrows, pipelines, or connecting vectors between columns, ensuring no user infers an automatic conveyor belt to employment.
+* **Factual Guardrails & Corrections Applied:**
+  - **Major Correction:** Corrected placement description to reflect official WSAIS FAQ 13: placement support is provided by inviting relevant cybersecurity organisations, and students do *not* participate alongside students from other departments.
+  - **Stipend Accuracy:** Accurately reflects official text: most students expected to receive stipends, amounts vary, some may provide no stipend, and IITK tries to place students at organisations offering support.
+  - **Removed Unsupported Partner Names:** Removed specific named government agencies (CERT-In, NCIIPC, defense) and speculative faculty grading routines that lack direct official citations.
+  - **Epistemic Truth:** Affirms that published historical placement outcomes are not yet established.
 * **Accessibility & Interaction:**
-  - Static reference layout with all operational terms visible by default.
-  - Semantic section headings (`H3` for Section, `H4` for Pillars) with clean bulleted lists.
-  - High-contrast text labels ensure complete readability under all lighting conditions.
+  - High-contrast visual cards with clean border separators.
+  - Semantic heading hierarchy: `H3` for Section, `H4` for Areas.
+  - Visible by default without interactive toggles or accordions.
 
 ---
 
 ### Section 10: Common Misconceptions (Myth vs. Fact Rows)
 * **Anchor ID:** `#myths-vs-facts` *(Verified match with sitemap)*
-* **Section Purpose:** Systematically debunk 5 documented, high-impact applicant assumptions and internet rumors using verified official sources, presenting truth and correction without relying on color alone.
-* **User's Key Question:** *“What common assumptions or coaching claims about B.Cyber are incorrect, and what is the ground truth?”*
-* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQs 12, 16, 23 & Academic Curriculum)*.
-* **Design Pattern (Accessible Paired-Assertion Correction Ledger):** **Paired Statement Correction Pattern (Dual-State Rows with Explicit Textual Tags `[MYTH]` and `[GROUND TRUTH]`, Rule Dividers, and Verifiable Proof Links)**.
-  - *Research Reference 1:* WHO Mythbusters & Fact-Checking Design System (`https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters`).
-    - *Observation:* Misconceptions are most effectively neutralized when the erroneous belief is stated clearly, followed immediately by the ground-truth correction and direct contextual evidence, rather than leaving the reader to deduce the error.
+* **Section Purpose:** Systematically address common applicant assumptions, coaching rumors, and claims needing verification using official WSAIS statements, with clear textual labels independent of color.
+* **User's Key Question:** *“What common assumptions about the degree should I not rely on?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Overview, FAQs 12, 13, 16, 23)*.
+* **Design Pattern (Accessible Paired-Assertion Correction Ledger):** **Paired Statement Correction Pattern (Dual-State Rows with Explicit Textual Tags `[CLAIM TO VERIFY / MYTH]` and `[OFFICIAL FACT / REALITY]`, Rule Dividers, and Verifiable Source Pointers)**.
+  - *Research Reference 1:* WHO Mythbusters & Fact-Checking Guidelines (`https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters`).
+    - *Observation:* Effective misconception correction clearly frames the assumption, immediately presents the factual reality, and cites verifiable evidence.
   - *Research Reference 2:* W3C Web Accessibility Initiative (WAI) — Understanding Success Criterion 1.4.1: *Use of Color* (`https://www.w3.org/WAI/WCAG21/Understanding/use-of-color.html`).
-    - *Observation:* Differentiating truth from myth using color alone (e.g. red background vs green background) excludes colorblind and low-vision visitors. Explicit semantic prefixes (`[MYTH: ...]` and `[GROUND TRUTH: ...]`), high-contrast icons, and clear typography ensure 100% universal accessibility.
-  - *Rationale:* Avoids repetitive marketing cards and gimmicky interactive flip-cards that hide facts behind clicks. A structured, rule-separated paired-assertion ledger provides high reading velocity, instant scannability, and unambiguous source attribution.
-* **Do Not:** Rely on red/green color cues alone to signal truth vs myth; do not invent trivial misconceptions to fill arbitrary row quotas; do not hide corrections inside click-to-expand flip cards; do not cite unverified Senate circular draft numbers.
+    - *Observation:* Colorblind and low-vision users require explicit text prefixes (`[MYTH]` and `[GROUND TRUTH]`) and typographic styling rather than color-coded containers alone.
+  - *Rationale:* Structured, rule-separated paired statements provide high reading speed and scannability, clearly distinguishing official institute facts from explanatory guide interpretations.
+* **Do Not:** Rely on color alone to communicate correctness; do not claim a specific Senate resolution for branch change without a public source; do not invent future exam dates, syllabi, or formats; do not present guide interpretations as direct official quotations; do not use gimmicky flip cards.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
-*(Accessible Paired-Assertion Correction Ledger — 5 Real Documented Misconceptions)*
+*(Accessible Paired Statement Ledger — Text Labels Independent of Color)*
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ [Evidence-Based Fact Checking]                                               │
 │ COMMON MISCONCEPTIONS (MYTH VS. FACT)                                        │
-│ Direct Evidence Corrections to Frequent Applicant Assumptions & Rumors      │
-│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (FAQs 12, 16, 23)   │
+│ Direct Corrections to Frequent Applicant Assumptions & Coaching Claims      │
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (FAQs 12, 13, 16, 23)│
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 01 · SCOPE OF CURRICULUM                                                     │
-│ [❌ MYTH: "B.Cyber is just an ethical hacking and bug bounty training course."]│
-│ [✅ GROUND TRUTH: Full-Spectrum Computer Systems & Security Engineering]      │
-│ Context & Evidence: The official syllabus encompasses core computer systems  │
+│ 01 · CURRICULUM BREADTH                                                      │
+│ [❌ ASSUMPTION / MYTH]: "B.Cyber is only ethical hacking and bug bounties."   │
+│ [✅ OFFICIAL FACT]: Comprehensive Systems & Computer Science Engineering     │
+│ Factual Details: The official curriculum covers computer systems             │
 │ (Electronics, Operating Systems, Computer Organization, Networks), data       │
 │ engineering (Data & Ops), applied cryptography, and 5 prescribed 8-credit    │
-│ practical laboratory units across Semesters 1 to 4.                          │
-│ Source Verification: WSAIS Official Published Curriculum (Semesters 1–4)     │
+│ practical labs across Semesters 1 to 4.                                      │
+│ Evidence Pointer: WSAIS Official Curriculum Table (Semesters 1–4)            │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 02 · EMPLOYMENT OUTCOMES OF FIELD DEPLOYMENT                                 │
-│ [❌ MYTH: "The 2-year field deployment guarantees a permanent government job."]│
-│ [✅ GROUND TRUTH: Academic Graduation Requirement; Permanent Hiring Separate] │
-│ Context & Evidence: The 216-credit field deployment is an integral academic  │
-│ requirement to complete the degree. While providing deep operational         │
-│ exposure at host orgs, permanent recruitment is governed by each host's      │
-│ independent post-graduation recruitment policies, vacancies, and exams.      │
-│ Source Verification: WSAIS Programme Overview & FAQ 16                       │
+│ 02 · PERMANENT EMPLOYMENT FROM INTERNSHIP                                    │
+│ [❌ ASSUMPTION / MYTH]: "Field deployment automatically guarantees a job."   │
+│ [✅ FACTUAL REALITY]: Academic Degree Unit; Employment Is a Separate Process  │
+│ Factual Details: Semesters 5–8 are an academic degree requirement (216       │
+│ credits). Guide Interpretation: While providing practical industry exposure, │
+│ permanent hiring is not guaranteed and depends entirely on the respective    │
+│ host organisation's independent recruitment policies, vacancies, and norms.  │
+│ Evidence Pointer: WSAIS Programme Overview & FAQ 16                          │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 03 · BRANCH CHANGE AND TRANSFER PERMISSIBILITY                               │
-│ [❌ MYTH: "Students with high first-year CGPA can branch-change to B.Tech CSE."]│
-│ [✅ GROUND TRUTH: Branch Change to Other B.Tech Programmes Is Not Permitted]  │
-│ Context & Evidence: Branch change from B.Cyber to other B.Tech programmes is  │
-│ strictly prohibited under academic regulations. B.Cyber is a distinct        │
-│ four-year professional degree with specialized foundational prerequisites.   │
-│ Source Verification: WSAIS Official FAQ 12                                   │
+│ 03 · BRANCH TRANSFER ELIGIBILITY                                             │
+│ [❌ ASSUMPTION / MYTH]: "High first-year CGPA allows branch change to CSE."  │
+│ [✅ OFFICIAL FACT]: Branch Change to Other B.Tech Programmes Is Not Permitted │
+│ Factual Details: Official WSAIS FAQ 12 explicitly confirms that students in  │
+│ the B.Cyber programme are not permitted to branch-change to other B.Tech     │
+│ programmes. B.Cyber is a distinct professional degree with its own track.    │
+│ Evidence Pointer: WSAIS Official FAQ 12                                      │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 04 · FUTURE ADMISSION CYCLES AND TESTING MECHANISM                           │
-│ [❌ MYTH: "The 2026 JEE Main + Hackathon model applies to all future cycles."] │
-│ [✅ GROUND TRUTH: 2026 Was an Inaugural Process; Future Admissions Transition]│
-│ Context & Evidence: The 2026 admission procedure was an inaugural mechanism. │
-│ WSAIS has officially announced that future admission cycles will not use JEE │
-│ Main and will introduce a dedicated entrance examination/selection mechanism.│
-│ Source Verification: WSAIS Official FAQ 23 & Admission Portal Notices        │
+│ 04 · FUTURE ADMISSION RULES & TESTING                                        │
+│ [❌ ASSUMPTION / MYTH]: "The 2026 JEE Main shortlisting applies to all years."│
+│ [✅ OFFICIAL FACT]: JEE Main Discontinued; Separate Entrance Test Announced   │
+│ Factual Details: Official WSAIS FAQ 23 confirms that JEE Main will not be    │
+│ used for upcoming cycles and a separate entrance test will be announced.     │
+│ Note: The examination syllabus, format, and dates remain unannounced.        │
+│ Evidence Pointer: WSAIS Official FAQ 23                                      │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ 05 · SALARY PACKAGES AND PLACEMENT ASSURANCE                                 │
-│ [❌ MYTH: "IIT Kanpur guarantees a fixed high-paying placement CTC package."]  │
-│ [✅ GROUND TRUTH: Dedicated Career Support Exists; Zero Historical Data Yet] │
-│ Context & Evidence: Graduates participate in IIT Kanpur placement channels,  │
-│ but zero historical placement statistics, median packages, or salary records │
-│ exist because the inaugural cohort only commenced in July 2026. Online CTC   │
-│ package claims are completely unverified and speculative.                    │
-│ Source Verification: Programme Launch Records (July 2026 Inaugural Batch)    │
+│ 05 · PLACEMENT PARTICIPATION & SALARY GUARANTEES                             │
+│ [❌ ASSUMPTION / MYTH]: "B.Cyber joins common SPO drives with fixed CTC."    │
+│ [✅ OFFICIAL FACT]: Separate Cyber Drives; Placement Comparisons Premature   │
+│ Factual Details: Official WSAIS FAQ 13 states that placement support is      │
+│ provided by inviting relevant cybersecurity organisations, and students do   │
+│ not participate alongside other departments. The portal notes placement      │
+│ comparisons are premature; no historical B.Cyber salary records exist.       │
+│ Evidence Pointer: WSAIS Official FAQ 13 & Placement Statement                │
 │ ──────────────────────────────────────────────────────────────────────────── │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1243,63 +1264,64 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ```
 ┌─────────────────────────────┐
 │ COMMON MISCONCEPTIONS       │
-│ Myth vs. Fact Ledger        │
+│ Assumptions vs. Facts       │
 │ [iitk.ac.in/wsais/b-cyber]  │
 │ ─────────────────────────── │
-│ 01 · CURRICULUM SCOPE       │
+│ 01 · CURRICULUM BREADTH     │
 │ [❌ MYTH] Just ethical      │
-│ hacking & bug bounties?     │
-│ [✅ TRUTH] Full systems engg│
-│ with OS, Networks, Crypto,  │
-│ Data Eng, and 5 labs.       │
+│ hacking and bug bounties?   │
+│ [✅ FACT] Comprehensive     │
+│ systems engg with OS, Net-  │
+│ works, Crypto, Data & 5 labs│
 │ ↳ Source: WSAIS Curriculum  │
 │ ─────────────────────────── │
-│ 02 · FIELD DEPLOYMENT       │
-│ [❌ MYTH] Guarantees a      │
-│ permanent government job?   │
-│ [✅ TRUTH] Academic degree  │
+│ 02 · PERMANENT EMPLOYMENT   │
+│ [❌ MYTH] Field deployment  │
+│ guarantees a permanent job? │
+│ [✅ REALITY] Academic degree│
 │ requirement (216 credits).  │
-│ Permanent hiring is separate│
+│ Hiring is a separate process│
 │ ↳ Source: WSAIS FAQ 16      │
 │ ─────────────────────────── │
-│ 03 · BRANCH CHANGE          │
+│ 03 · BRANCH TRANSFER        │
 │ [❌ MYTH] Top CGPA allows   │
-│ branch change to B.Tech CSE?│
-│ [✅ TRUTH] Branch change is │
-│ strictly not permitted.     │
+│ transfer to B.Tech CSE?     │
+│ [✅ FACT] Branch change to  │
+│ other B.Tech is not allowed.│
 │ ↳ Source: WSAIS FAQ 12      │
 │ ─────────────────────────── │
-│ 04 · ADMISSION RULES        │
+│ 04 · FUTURE ADMISSIONS      │
 │ [❌ MYTH] 2026 JEE Main rule│
-│ applies to all cycles?      │
-│ [✅ TRUTH] 2026 was inaugu- │
-│ ral; future cycles shift to │
-│ dedicated entrance test.    │
+│ applies to future cycles?   │
+│ [✅ FACT] JEE Main discont- │
+│ inued; separate test to be  │
+│ announced (FAQ 23).         │
 │ ↳ Source: WSAIS FAQ 23      │
 │ ─────────────────────────── │
-│ 05 · PLACEMENT DATA         │
-│ [❌ MYTH] Guaranteed fixed  │
-│ high salary package?        │
-│ [✅ TRUTH] Support provided;│
-│ zero historical CTC records │
-│ exist (cohort began 2026).  │
-│ ↳ Source: 2026 Launch Date  │
+│ 05 · PLACEMENT PARTICIPATION│
+│ [❌ MYTH] Joins general SPO │
+│ with guaranteed fixed CTC?  │
+│ [✅ FACT] Separate cyber    │
+│ drives (FAQ 13); placement  │
+│ comparisons are premature.  │
+│ ↳ Source: WSAIS FAQ 13      │
 └─────────────────────────────┘
 ```
 
 * **Content Hierarchy & Layout Notes:**
-  - Editorial paired-assertion rows with clear dividing lines (`border-t border-slate-200`).
-  - Textual tags: `[❌ MYTH: ...]` and `[✅ GROUND TRUTH: ...]` ensure immediate scannability.
-  - Each item provides explicit context and a named official source citation link.
-* **Accessibility & Universal Design:**
-  - Color independence: Complete clarity for colorblind users via semantic icons and text prefixes (`[MYTH]` / `[GROUND TRUTH]`).
-  - Zero hidden content: No accordions, tooltips, or flip cards required to read the corrections.
-  - Screen reader semantic heading structure with explicit text descriptions.
-* **Rejected Alternatives:**
-  - *Interactive 3D Flip Cards:* Rejected because hiding facts behind clicks impairs accessibility, hinders text searchability, and introduces unnecessary interaction overhead.
-  - *Generic Red vs. Green Card Grid:* Rejected because repeated color cards cause visual fatigue and violate WCAG 1.4.1 (use of color alone to convey meaning).
-* **Unsupported Claims & Evidence Gaps:**
-  - Future entrance test format and detailed syllabus for post-2026 cycles are not yet published and are explicitly noted as pending official notification.
+  - 5 high-impact pairs with prominent horizontal boundary dividers (`border-t border-slate-200`).
+  - Textual tags: `[❌ ASSUMPTION / MYTH]` and `[✅ OFFICIAL FACT / REALITY]` ensure clarity even in grayscale or high-contrast modes.
+  - Distinguishes direct official facts from the guide's explanatory interpretation.
+* **Factual Guardrails & Corrections Applied:**
+  - Grounded branch change strictly in WSAIS FAQ 12 without citing unlinked Senate resolution numbers.
+  - Future admission claims confined strictly to official FAQ 23: JEE Main will not be used, and a separate test will be announced (no speculative formats or dates).
+  - Explicitly states that placement support is conducted through dedicated cybersecurity invitations, not alongside other departments (FAQ 13).
+  - Notes official portal guidance that placement comparisons are premature.
+* **Accessibility & Usability:**
+  - Fully accessible without color cues: text prefixes and semantic typography ensure zero ambiguity for colorblind or screen-reader users.
+  - Static display: no hidden content or accordion toggles.
+  - Clear keyboard focus indicators on all source links.
+
 ---
 
 ### Section 11: Frequently Asked Questions (Concise Accordion)
