@@ -26,24 +26,21 @@ All interactive components across Pillar 1 adhere to the following tokenized sta
 
 | Component Type | Default State | Hover State (`:hover`) | Focus-Visible (`:focus-visible`) | Active State (`:active`) | Disabled State (`:disabled`) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Fast-Track Jump Chips** | Subtle border (`border-slate-200`), text `slate-700` | `bg-slate-100`, `border-slate-300`, text `slate-900` | `ring-2 ring-brand-primary ring-offset-2 outline-none` | `bg-slate-200 scale-[0.98]` | `opacity-50 pointer-events-none` |
-| **Curriculum Tabs** | Text `slate-500`, border transparent | `text-slate-900`, `bg-slate-50` | `ring-2 ring-brand-primary outline-none` | `bg-slate-900 text-white` (Selected) | N/A |
+| **Fast-Track & Topic Jump Chips** | Subtle border (`border-slate-200`), text `slate-700` | `bg-slate-100`, `border-slate-300`, text `slate-900` | `ring-2 ring-brand-primary ring-offset-2 outline-none` | `bg-slate-200 scale-[0.98]` | `opacity-50 pointer-events-none` |
 | **Reflection Checkboxes** | Unchecked box (`border-slate-300 bg-white`) | `border-brand-primary/60` | `ring-2 ring-brand-primary ring-offset-1` | Scale `[0.95]` momentary | `opacity-50 cursor-not-allowed` |
-| **FAQ Accordion Triggers**| Chevron pointing down (`0deg`), border bottom | `bg-slate-50/75` | `ring-2 ring-brand-primary outline-none` | Chevron rotates to `180deg` (Expanded) | N/A |
 | **Primary Action Buttons**| High-contrast brand green (`bg-[#d1f34d] text-slate-950`) | Subtle brightness lift (`bg-[#c5ea3e]`) | `ring-2 ring-brand-primary ring-offset-2 outline-none` | `scale-[0.98]` | `bg-slate-200 text-slate-400 cursor-not-allowed` |
-| **Secondary Buttons** | Dark border (`border-slate-700 text-white`) | `bg-white/10 text-white` | `ring-2 ring-white ring-offset-2 outline-none` | `bg-white/20` | `opacity-40 cursor-not-allowed` |
+| **Secondary Buttons & Action Links** | Dark border (`border-slate-700 text-white`) | `bg-white/10 text-white` | `ring-2 ring-white ring-offset-2 outline-none` | `bg-white/20` | `opacity-40 cursor-not-allowed` |
 
 ### 2.2 Keyboard Navigation & Focus Flow
-- **Sequential Tab Order**: Follows natural DOM hierarchy: Global Nav -> Fast-Track Chips -> Semester Tabs -> Reflection Checkboxes -> Accordion Triggers -> Next-Step CTAs -> Footer.
-- **Tab Panel Navigation**: Semester tabs implement `role="tablist"`, `role="tab"`, and `role="tabpanel"`. Left/Right arrow keys traverse tabs; Enter or Space activates the selected tab.
-- **Accordion Keyboard Operability**: Each accordion trigger utilizes standard HTML `<button>` or `<summary>` with `aria-expanded` and `aria-controls`. Space or Enter expands/collapses the panel.
+- **Sequential Tab Order**: Follows natural DOM hierarchy and approved controls: Global Nav -> Fast-Track Route Jump Chips -> Fit Check Reflection Checkboxes -> In-Page FAQ Topic Jump Chips -> Next-Step Action Buttons / Gateway Links -> External Verification Links -> Footer.
+- **In-Page Anchor Jump Operability**: Fast-track and FAQ topic jump chips implement standard in-page anchor links (`<a>` with `href="#..."`); keyboard Enter or Space activates an immediate or smooth jump to the target landmark heading, transferring focus accessibly.
 - **Reflection Checklist Operability**: Custom checkbox cards implement native `<input type="checkbox">` or `role="checkbox"` with `tabindex="0"`, toggleable via Spacebar.
 
 ### 2.3 Motion & `prefers-reduced-motion` Compliance
 When `@media (prefers-reduced-motion: reduce)` is active:
 - All CSS transitions and keyframe animations are disabled (`transition-duration: 0.001ms !important; animation-duration: 0.001ms !important;`).
 - In-page smooth scrolling (`scroll-behavior: smooth`) drops to instant snap navigation (`scroll-behavior: auto`).
-- Accordion height transitions and tab cross-fades switch immediately between states without sliding or fading.
+- Dynamic height or opacity transitions switch immediately between states without sliding or fading.
 - Pulsing badges or radar indicator rings remain strictly static.
 
 ---
@@ -129,7 +126,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - The disclosure sits above the H1 as plain text in a restrained pill/label (`[Independent guide · Not official IITK]`). Avoid tiny text or hidden tooltip icons.
   - Subtitle is visually subordinate and more muted.
   - Single shared route-selector panel under the subtitle (not three isolated promotional cards). Divided with light borders.
-  - Only Option 01 is an in-page smooth-scroll anchor (`#quick-answer`). Options 02 and 03 navigate cross-pillar to `/admission#admission-start` and `/roadmap#prep-start`.
+  - Only Option 01 is an in-page smooth-scroll anchor (`#quick-answer`). Options 02 and 03 navigate cross-pillar to `/blueprints/b-cyber/admission#admission-start` and `/blueprints/b-cyber/roadmap#prep-start`.
 * **Mobile Behavior:**
   - Stack routes vertically in order (no horizontal carousels).
   - Full-width rows with minimum 48 × 48 px interactive tap area.
@@ -428,9 +425,8 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ Official Reference: https://iitk.ac.in/wsais/b-cyber.php                     │
 │                                                                              │
 │ ┌─ ⚠️ OFFICIAL SEMESTER 2 CREDIT RANGE NOTE ───────────────────────────────┐ │
-│ │ The published WSAIS curriculum lists one course from a predefined list   │ │
-│ │ as 9–13 credits, yielding a Semester 2 total of 50–54 credits. Pending   │ │
-│ │ official institutional clarification, this total is stated as a range.   │ │
+│ │ The published predefined-list course carries 9–13 credits, giving a       │ │
+│ │ Semester 2 total of 50–54 credits.                                       │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
 │ ┌─ YEAR 1: ACADEMIC FOUNDATIONS ─────┐  ┌─ YEAR 2: CORE SYSTEMS & DEFENSE ─┐ │
@@ -483,9 +479,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ [iitk.ac.in/wsais/b-cyber]  │
 │                             │
 │ ⚠️ Semester 2 Credit Note:  │
-│ WSAIS lists elective as     │
-│ 9–13C; total 50–54C pending │
-│ official clarification.     │
+│ Published elective carries  │
+│ 9–13C; Semester 2 total is  │
+│ 50–54 credits.              │
 │                             │
 │ ════ YEAR 1 FOUNDATIONS ═══ │
 │                             │
@@ -701,7 +697,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - **General CSE Variance:** Explicitly notes that conventional B.Tech CSE learning formats, laboratory provisions, elective choices, branch-change rules, and career outcomes vary widely across different institutions. Avoids assuming an identical structure for all CSE programs.
   - **Higher Studies Reserved for Section 8:** Postgraduate degree recognition, statutory standing, and global higher study pathways are owned exclusively by Section 8 (`#degree-recognition`) and are omitted entirely from this comparison matrix to eliminate duplication.
   - **Branch-Change Document Status:** The unlinked assertion that branch change is prohibited by Senate resolution is removed from the matrix. (WSAIS FAQ 12 notes that branch change to other B.Tech programs is not permitted, but formal Senate resolution documents are not publicly accessible).
-  - **Duplication Avoidance:** Placement track records and career deployment specifics are addressed in Section 9 (`#career-internships`), not duplicated here.
+  - **Duplication Avoidance:** Placement track records and career deployment specifics are addressed in Section 9 (`#internship-reality`), not duplicated here.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
 *(3-Column Structural Comparison Matrix — No User-Facing Percentage Labels)*

@@ -60,6 +60,7 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 ### PILLAR 1: B.Cyber Overview (Understand)
 *Canonical Route:* `/blueprints/b-cyber`  
 *Status: Finalized Master Architecture (Locked Source of Truth)*  
+*Governance Note: The master sitemap governs global information architecture, section hierarchy, and canonical anchor IDs. The approved, locked wireframes (`docs/b-cyber-wireframes.md`) govern the corrected, source-audited layout and content specifications.*  
 
 * **Section 0 — Hero: First Impression & Fast-Track Route Jump** (`#overview-start`)
   * Trust Label: *"Independent guide, based on official sources — not the official IIT Kanpur website."*
@@ -75,18 +76,18 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
 * **Section 2 — Program at a Glance (Key Facts Matrix)** (`#key-facts`)
   * Clean 2-column accessible key-value table:
     * Program Title: *Bachelor of Cybersecurity (B.Cyber.)*
-    * Academic Unit: *WSAIS & C3iHub, IIT Kanpur (in partnership with IIT Madras)*
-    * Duration: *4 Years (Maximum 6 Years under Senate Ordinances)*
+    * Academic Unit: *WSAIS, IIT Kanpur (institutional note on separate IIT Madras SIDiS option)*
+    * Duration: *4 Years (Maximum 6 Years under published programme rules)*
     * Structure: *2 Years On-Campus Coursework + 2 Years Field Deployment*
-    * Credential Conferred: *B.Cyber. Degree & IIT Alumni Status*
+    * Credential Conferred: *B.Cyber. Degree & IIT Alumni Status after successful completion*
     * Placement: *Specialized placement channel provided; zero historical cohort data as program began July 2026*
 * **Section 3 — The 4-Year, 2+2 Model (Visual Stepper & Timeline)** (`#model-2plus2`)
   * Custom visual timeline:
     * *Years 01–02*: On-Campus Academic & Laboratory Rigor at IIT Kanpur.
-    * *Years 03–04*: Field Deployment / Practical Internship in selected government intelligence, CERT-In, NCIIPC, and critical infrastructure.
+    * *Years 03–04*: Field Deployment / Practical Internship primarily at selected government organisations.
   * Explicit conceptual breakdown: Difference between *Internship Component*, *Employment*, and *Placement*.
 * **Section 4 — Curriculum and Subjects (Semesters 1 to 4)** (`#curriculum`)
-  * Accessible interactive semester tabs (Sem 1: 51 Cr, Sem 2: 50–54 Cr, Sem 3: 50 Cr, Sem 4: 48 Cr) with core labs highlighted: Malware Analysis Lab, Digital Forensics Lab, Cloud Security Lab, VAPT Lab, Network & Web Security Lab.
+  * Grouped academic-year curriculum lists (Sem 1: 51 Cr, Sem 2: 50–54 Cr, Sem 3: 50 Cr, Sem 4: 46 Cr; coursework total range: 197–201 Cr across Sem 1–4) with 5 prescribed 8-credit practical labs highlighted: Malware Analysis Lab, Digital Forensics Lab, Cloud Security Lab, VAPT Lab, Network & Web Security Lab.
 * **Section 5 — Beyond Hacking: What Cybersecurity Actually Covers** (`#beyond-hacking`)
   * 5 Domain Cards: Foundations & OS, Networking & Protocols, Cryptography, Defensive Forensics & VAPT, Human Factors & Security Psychology.
 * **Section 6 — Balanced Degree Comparison** (`#degree-comparison`)
@@ -96,13 +97,13 @@ A Blueprint in the Ayush-Paul ecosystem is a **software-grade interface that gui
   * *Think carefully if...* (only chasing IIT tag, expecting generic software dev, assuming instant job guarantee).
   * Interactive 3-checkbox reflection prompt.
 * **Section 8 — Degree Award, Recognition & Higher Studies** (`#degree-recognition`)
-  * Official degree title, Senate parity, full eligibility for MS/Ph.D. globally (IITs, Stanford, CMU, MIT), and strict branch change restrictions.
+  * Official degree title (B.Cyber), alumni status upon graduation (FAQ 17), eligibility to apply for postgraduate programmes (MS/MTech/PhD) in India and abroad subject to receiving institutions' admission criteria (FAQ 9), and strict branch change restrictions (FAQ 12).
 * **Section 9 — Internship, Stipend & Placement Reality** (`#internship-reality`)
-  * Ground truth: Host organizations provide stipends; student retains IIT student status; historical cohort data does not exist yet because the program began in July 2026.
+  * Ground truth: Two-year academic internship primarily at selected government organisations; stipends vary according to host-organisation policy and are not guaranteed (FAQ 14); student retains continuous IIT Kanpur student status; zero historical cohort or placement statistics exist because the inaugural cohort commenced in July 2026.
 * **Section 10 — Common Misconceptions (Myth vs. Fact)** (`#myths-vs-facts`)
   * 5 high-contrast rows dispelling common myths (ethical hacking only, guaranteed paid employment, placement support = fixed salary, 2026 rules apply to 2027, interchangeable with generic CSE).
-* **Section 11 — Frequently Asked Questions (Concise Accordion)** (`#common-faqs`)
-  * 8 core student questions with direct, plain-text answers.
+* **Section 11 — Frequently Asked Questions (Visible Three-Topic FAQ Matrix)** (`#common-faqs`)
+  * 8 core student questions with direct, visible plain-text answers organized by topic (Admissions & Entry, Degree & Campus, Internship & Placement).
 * **Section 12 — Editorial Transparency & Verified Sources** (`#official-sources`)
   * Citations to official WSAIS portal, Senate records, last-verified date (12 October 2026), and correction submission link.
 * **Section 13 — Next Step Decision Gateway** (`#next-steps`)
