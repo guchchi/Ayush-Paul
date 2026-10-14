@@ -303,55 +303,56 @@ export function BCyberHomePage() {
           {/* Executive Key Facts Strip */}
           <div className="w-full max-w-4xl pt-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
-              {/* Metric 1 */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  DEGREE
-                </span>
-                <span className="text-sm font-bold text-slate-900 block leading-tight">
-                  4-Year Undergrad
-                </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
-                  Official IITK Alumni Status
-                </span>
-              </div>
-
-              {/* Metric 2 */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  STRUCTURE
-                </span>
-                <span className="text-sm font-bold text-slate-900 block leading-tight">
-                  2+2 Model
-                </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
-                  2 Yrs Campus + 2 Yrs Industry
-                </span>
-              </div>
-
-              {/* Metric 3 */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  DEPARTMENT
-                </span>
-                <span className="text-sm font-bold text-slate-900 block leading-tight">
-                  IITK WSAIS
-                </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
-                  AI &amp; Intelligent Systems
-                </span>
-              </div>
-
-              {/* Metric 4 */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
+              {/* Metric 1: Entrance Hook */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
                   ENTRANCE
                 </span>
-                <span className="text-sm font-bold text-slate-900 block leading-tight">
-                  Separate Test
+                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight flex items-center gap-1.5">
+                  <span>NO JEE ADV REQ</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 </span>
-                <span className="text-[11px] text-amber-700 font-medium mt-0.5 block">
-                  Discontinued from JEE Main
+                <span className="text-[11px] text-emerald-700 font-medium mt-0.5 block">
+                  Separate Test · 12th PCM
+                </span>
+              </div>
+
+              {/* Metric 2: Prestige Hook */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  CREDENTIAL
+                </span>
+                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
+                  IIT Alumni Status
+                </span>
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
+                  Official 4-Year B.Cyber Degree
+                </span>
+              </div>
+
+              {/* Metric 3: Structure & Practicum Hook */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  2+2 ARCHITECTURE
+                </span>
+                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
+                  2-Yr Paid Practicum
+                </span>
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
+                  Work in Top Cyber Units
+                </span>
+              </div>
+
+              {/* Metric 4: Hands-on Cyber Labs */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                  PRACTICAL FOCUS
+                </span>
+                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
+                  5 Live Cyber Labs
+                </span>
+                <span className="text-[11px] text-brand-primary font-medium mt-0.5 block">
+                  Sem 1 Malware &amp; Exploit Dev
                 </span>
               </div>
             </div>
