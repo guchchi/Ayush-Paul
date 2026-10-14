@@ -1365,7 +1365,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 * **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
 * **Section Purpose:** Deliver fast, authoritative resolution to unresolved candidate and parental inquiries across three distinct thematic clusters, keeping all questions and verified answers visible by default to eliminate forced interaction, scanning friction, and hidden admission caveats.
 * **User's Key Question:** *“Where can I quickly find authoritative answers regarding hostel accommodation, coding prerequisites, branch transfer rules, and post-2026 admissions without digging through scattered documents?”*
-* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQs 9, 12, 13, 14, 15, 17, 23 & Curriculum Table)*.
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQs 9, 12, 13, 14, 17, 20, 23 & Curriculum Table)*.
 * **Design Pattern (Visible Topical FAQ Matrix with Category Anchor Chips):** **Three Thematic Content Groups with In-Page Anchor Jump Chips and Fully Visible Answers by Default**.
   - *Research Reference 1:* GOV.UK Design System — *Guidance on Content and Accordions* (`https://design-system.service.gov.uk/components/accordion/`).
     - *Actual Observed Pattern & Principle:* The GOV.UK Design System explicitly advises against using accordions to split up a series of questions. Hiding answers behind toggle headers forces repeated manual interactions, suppresses in-browser text search (`Ctrl+F`), obscures critical caveats from users scanning quickly, and increases cognitive overhead. The recommended pattern for concise, high-priority informational sets is well-structured visible text organized under clear headings.
@@ -1421,11 +1421,11 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │                                                                          │ │
 │ │ Q4: What are the accommodation arrangements on the IIT Kanpur campus?    │ │
 │ │ Official Fact:                                                           │ │
-│ │ Official WSAIS FAQ 15 states that hostel accommodation will be available │ │
+│ │ Official WSAIS FAQ 20 states that hostel accommodation will be available │ │
 │ │ on the IIT Kanpur campus and B.Cyber students will be treated like other │ │
 │ │ IIT Kanpur students. (Official guidance does not state that on-campus    │ │
 │ │ residence is a mandatory institutional rule).                            │ │
-│ │ Source: WSAIS Portal FAQ 15                                              │ │
+│ │ Source: WSAIS Portal FAQ 20                                              │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
 │ │ Q5: What exact degree certificate is awarded upon graduation?            │ │
 │ │ Official Fact:                                                           │ │
@@ -1508,9 +1508,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ Hostel accommodation will │ │
 │ │ be available; students are│ │
 │ │ treated like other IITK   │ │
-│ │ students (FAQ 15). Not    │ │
+│ │ students (FAQ 20). Not    │ │
 │ │ stated as mandatory rule. │ │
-│ │ [Source: WSAIS FAQ 15]    │ │
+│ │ [Source: WSAIS FAQ 20]    │ │
 │ │ ───────────────────────── │ │
 │ │ Q: Degree title awarded?  │ │
 │ │ Bachelor of Cybersecurity │ │
@@ -1558,7 +1558,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Screen readers read content sequentially with no aria-expanded state confusion.
 * **Factual Guardrails:**
   - Prior coding question clarifies the 2026 shortlisting practice (JEE Main + prior work) and highlights that future entrance test details are awaited under FAQ 23, while Semester 1 courses introduce computing from base.
-  - Hostel question cites official FAQ 15 (accommodation available; treated like other IITK students) without asserting an unsupported mandatory residency rule.
+  - Hostel question cites official FAQ 20 (accommodation available; treated like other IITK students) without asserting an unsupported mandatory residency rule.
   - Branch change is strictly prohibited under official FAQ 12.
   - Stipends vary and are not uniform under FAQ 14.
 * **Rejected Alternatives:**
@@ -1605,14 +1605,14 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ • Degree Award & Unit: Bachelor of Cybersecurity (B.Cyber) by IIT Kanpur;│ │
 │ │   conducted by WSAIS. [WSAIS Programme Specification]                    │ │
 │ │ • Coursework Curriculum: Sem 1 (51 Cr), Sem 2 (50–54 Cr: predefined-list │ │
-│ │   course carries 9–13 Cr), Sem 3 (49 Cr), Sem 4 (46 Cr). Coursework total│ │
-│ │   range: 198–202 Cr across Sem 1–4. [WSAIS Curriculum Table]             │ │
+│ │   course carries 9–13 Cr), Sem 3 (50 Cr), Sem 4 (46 Cr). Coursework total│ │
+│ │   range: 197–201 Cr across Sem 1–4. [WSAIS Curriculum Table]             │ │
 │ │ • 2+2 Model & Field Internship: 2 years campus + 2 years field deployment│ │
 │ │   carrying 216 credits in Sem 5–8. [WSAIS Academic Model]                │ │
 │ │ • Alumni Status: Awarded upon graduation. [WSAIS FAQ 17]                 │ │
 │ │ • Branch Transfer: Transfer to other B.Tech barred. [WSAIS FAQ 12]       │ │
 │ │ • Hostel Accommodation: Available on campus; treated as IITK students    │ │
-│ │   (not described as mandatory residential rule). [WSAIS FAQ 15]          │ │
+│ │   (not described as mandatory residential rule). [WSAIS FAQ 20]          │ │
 │ │ • Higher Studies: Can pursue higher studies / apply for MS/PhD. [FAQ 9]  │ │
 │ │ • Placement Assistance: Dedicated cyber org invitations. [WSAIS FAQ 13]  │ │
 │ │ • Field Stipends: Vary by host organisation; some may offer none. [FAQ 14]│ │
@@ -1620,10 +1620,14 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ Status: Verified against published portal.                               │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
 │ │ TIER 2 · HISTORICAL ADMISSIONS RECORD (Archived 2026 Intake)             │ │
-│ │ • 2026 Timeline & Criteria: Application window May 2026; shortlisting via│ │
-│ │   JEE Main scores and prior project/work evidence.                       │ │
+│ │ • Published 2026 Timeline: Application opening: 15 June 2026;            │ │
+│ │   Application deadline: 25 June 2026; Admission test: 5 July 2026;       │ │
+│ │   Results: 8 July 2026; Campus reporting: 21 July 2026.                  │ │
+│ │ • 2026 Evaluation: Shortlisting based on JEE Main scores and prior       │ │
+│ │   technical work / project evidence.                                     │ │
 │ │ • Institutional Status: Concluded July 2026. Official portal currently   │ │
-│ │   retains 2026 dates, but these do not govern future cycles.             │ │
+│ │   displays these past dates; they serve as historical record, not        │ │
+│ │   future-cycle rules.                                                    │ │
 │ │ Status: Archived Historical Precedent · Not Active for Future Cycles     │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
 │ │ TIER 3 · EDITORIAL GUIDE INTERPRETATION (Independent Analytical Models)  │ │
@@ -1666,16 +1670,23 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ • Verifies: Curriculum  │ │
 │ │   (Sem 1: 51, Sem 2:    │ │
 │ │   50–54 with 9–13 Cr    │ │
-│ │   elective, Sem 3: 49,  │ │
-│ │   Sem 4: 46; Y3–Y4: 216)│ │
-│ │ • FAQs 9, 12–15, 17, 23 │ │
+│ │   elective, Sem 3: 50,  │ │
+│ │   Sem 4: 46; Coursework:│ │
+│ │   197–201; Y3–Y4: 216)  │ │
+│ │ • FAQs 9, 12–14, 17,    │ │
+│ │   20, 23                │ │
 │ │ • Status: Published Fact│ │
 │ └─────────────────────────┘ │
 │                             │
 │ ┌─ TIER 2 · 2026 ARCHIVE ─┐ │
-│ │ • 2026 Intake Process:  │ │
-│ │   JEE Main + projects.  │ │
-│ │ • Concluded July 2026.  │ │
+│ │ • 2026 Timeline (Past): │ │
+│ │   Open: 15 Jun 2026     │ │
+│ │   Close: 25 Jun 2026    │ │
+│ │   Test: 5 Jul 2026      │ │
+│ │   Results: 8 Jul 2026   │ │
+│ │   Report: 21 Jul 2026   │ │
+│ │ • Evaluated: JEE Main   │ │
+│ │   + project evidence.   │ │
 │ │ • Status: Historical    │ │
 │ │   precedent only.       │ │
 │ └─────────────────────────┘ │
@@ -1833,7 +1844,7 @@ The following items are officially cataloged as factual dependencies and epistem
 
 | Item # | Section Affected | Factual Issue / Discrepancy | Current Status | Policy / Action Rule |
 | :---: | :--- | :--- | :--- | :--- |
-| **DEP-01** | Section 4 (`#curriculum`) | **Semester 2 Credit Range (50–54 Cr)**: Predefined-list course carries 9–13 credits, yielding an officially published Semester 2 total of 50–54 credits and coursework total range of 198–202 credits across Sem 1–4. | **PUBLISHED RANGE** | Preserved published 50–54 Cr range and 198–202 Cr total coursework range without speculating on unpublished draft circulars. |
+| **DEP-01** | Section 4 (`#curriculum`) | **Semester 2 Credit Range (50–54 Cr)**: Predefined-list course carries 9–13 credits, yielding an officially published Semester 2 total of 50–54 credits and coursework total range of 197–201 credits across Sem 1–4 (51 + 50–54 + 50 + 46). | **PUBLISHED RANGE** | Preserved published 50–54 Cr range and 197–201 Cr total coursework range without speculating on unpublished draft circulars. |
 | **DEP-02** | Section 8 (`#degree-recognition`) | **Global Higher Studies Scope**: Overstatement of guaranteed admission into specific private US universities. | **CORRECTED** | Restricted strictly to WSAIS FAQ 9: Degree is eligible for application to MS/PhD programs in India and abroad, subject to the admission criteria of the receiving institution. |
 | **DEP-03** | Section 3 & 9 (`#model-2plus2`, `#internship-reality`) | **Field Deployment vs. Permanent Employment**: Risk of candidates assuming government tenure or uniform stipend. | **CORRECTED** | Clarified that Y3-Y4 is an academic internship component under host org policies; stipends vary by host; no permanent job guarantee. |
 | **DEP-04** | Section 2 & 9 (`#key-facts`, `#internship-reality`) | **Placement Outcomes & Salary Figures**: Risk of marketing hype regarding median packages. | **CORRECTED** | Confirmed that zero historical cohort statistics or median salary data exist because the inaugural batch only commenced in July 2026. Support is stated; outcomes are not promised. |
@@ -1848,5 +1859,5 @@ The following items are officially cataloged as factual dependencies and epistem
 ## 6. Open Design Decisions for User Review
 
 The following design decisions are documented for alignment before proceeding to future implementation:
-1. **Semester 2 Credit Range Display**: Display the officially published Semester 2 range as `50–54 Cr` (reflecting the 9–13 credit elective) in the Year 1 curriculum list, with total coursework indicated as `198–202 Cr`.
+1. **Semester 2 Credit Range Display**: Display the officially published Semester 2 range as `50–54 Cr` (reflecting the 9–13 credit elective) in the Year 1 curriculum list, with total coursework indicated as `197–201 Cr`.
 2. **On-This-Page Bar Sticky Behavior on Desktop**: Should the desktop horizontal anchor strip stick beneath the top navigation on scroll, or remain in flow above Section 0? (Recommendation: sticky below navbar on desktop only, non-sticky on mobile).
