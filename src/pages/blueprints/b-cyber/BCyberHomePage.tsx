@@ -359,21 +359,30 @@ export function BCyberHomePage() {
 
             {/* Quick Action Buttons */}
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/blueprints/b-cyber/roadmap"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs group"
+              >
+                <span>Free Preparation Roadmap</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#d1f34d]" />
+              </Link>
+
               <a
                 href="#quick-answer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-700 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs"
               >
-                <span>Read 30-Sec Direct Answer</span>
-                <ChevronDown className="w-3.5 h-3.5" />
+                <span>30-Sec Summary</span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               </a>
 
               <a
                 href="https://iitk.ac.in/wsais/b-cyber.php"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-700 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors"
+                title="Official IIT Kanpur WSAIS portal"
               >
-                <span>Official IITK WSAIS Portal</span>
+                <span>Official Portal</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </a>
             </div>
