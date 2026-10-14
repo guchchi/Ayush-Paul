@@ -1213,16 +1213,17 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ---
 
-### Section 10: Common Misconceptions (Myth vs. Fact Rows)
+### Section 10: Common Misconceptions (Claims to Check Before Deciding)
 * **Anchor ID:** `#myths-vs-facts` *(Verified match with sitemap)*
-* **Section Purpose:** Systematically address common applicant assumptions, coaching rumors, and claims needing verification using official WSAIS statements, with clear textual labels independent of color.
-* **User's Key Question:** *“What common assumptions about the degree should I not rely on?”*
+* **Batch Status:** Batch 3 — Approved & Locked
+* **Section Purpose:** Systematically address applicant assumptions, coaching rumors, and claims needing verification using official WSAIS statements, with clear textual labels independent of color.
+* **User's Key Question:** *“What claims about the degree should I verify before deciding?”*
 * **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Overview, FAQs 12, 13, 16, 23)*.
-* **Design Pattern (Accessible Paired-Assertion Correction Ledger):** **Paired Statement Correction Pattern (Dual-State Rows with Explicit Textual Tags `[CLAIM TO VERIFY / MYTH]` and `[WHAT THE PUBLISHED CURRICULUM SHOWS]` / `[OFFICIAL FACT / REALITY]`, Rule Dividers, and Verifiable Source Pointers)**.
+* **Design Pattern (Accessible Paired-Assertion Correction Ledger):** **Paired Statement Correction Pattern (Dual-State Rows with Explicit Textual Tags `[CLAIM TO CHECK]` and `[WHAT THE PUBLISHED CURRICULUM SHOWS]` / `[OFFICIAL FACT / REALITY]`, Rule Dividers, and Verifiable Source Pointers)**.
   - *Research Reference 1:* WHO Mythbusters & Fact-Checking Guidelines (`https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters`).
     - *Observation:* Effective misconception correction clearly frames the assumption, immediately presents the factual reality, and cites verifiable evidence.
   - *Research Reference 2:* W3C Web Accessibility Initiative (WAI) — Understanding Success Criterion 1.4.1: *Use of Color* (`https://www.w3.org/WAI/WCAG21/Understanding/use-of-color.html`).
-    - *Observation:* Colorblind and low-vision users require explicit text prefixes (`[MYTH]` and `[GROUND TRUTH]`) and typographic styling rather than color-coded containers alone.
+    - *Observation:* Colorblind and low-vision users require explicit text prefixes (`[CLAIM TO CHECK]` and `[GROUND TRUTH]`) and typographic styling rather than color-coded containers alone.
   - *Rationale:* Structured, rule-separated paired statements provide high reading speed and scannability, clearly distinguishing official institute facts from explanatory guide interpretations.
 * **Do Not:** Rely on color alone to communicate correctness; do not claim a specific Senate resolution for branch change without a public source; do not invent future exam dates, syllabi, or formats; do not present guide interpretations as direct official quotations; do not use gimmicky flip cards.
 
@@ -1231,13 +1232,13 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ [Evidence-Based Fact Checking]                                               │
-│ COMMON MISCONCEPTIONS (MYTH VS. FACT)                                        │
-│ Direct Corrections to Frequent Applicant Assumptions & Coaching Claims      │
+│ COMMON MISCONCEPTIONS (CLAIMS TO CHECK)                                      │
+│ Claims to Check Before Deciding                                              │
 │ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (FAQs 12, 13, 16, 23)│
 │                                                                              │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ 01 · CURRICULUM BREADTH                                                      │
-│ [❌ ASSUMPTION / CLAIM TO VERIFY]: "B.Cyber is only ethical hacking/bounties."│
+│ [❌ CLAIM TO CHECK]: "B.Cyber is only ethical hacking/bounties."              │
 │ [✅ WHAT THE PUBLISHED CURRICULUM SHOWS]: Systems & Computing Coursework     │
 │ Official Curriculum Record: The official WSAIS curriculum table prescribes   │
 │ foundational computer systems (Electronics, Operating Systems, Computer      │
@@ -1249,7 +1250,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ Evidence Pointer: WSAIS Official Curriculum Table (Semesters 1–4)            │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ 02 · PERMANENT EMPLOYMENT FROM INTERNSHIP                                    │
-│ [❌ ASSUMPTION / MYTH]: "Field deployment automatically guarantees a job."   │
+│ [❌ CLAIM TO CHECK]: "Field deployment automatically guarantees a job."      │
 │ [✅ FACTUAL REALITY]: Academic Degree Unit; Employment Is a Separate Process  │
 │ Factual Details: Semesters 5–8 are an academic degree requirement (216       │
 │ credits). Guide Interpretation: While providing practical industry exposure, │
@@ -1258,7 +1259,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ Evidence Pointer: WSAIS Programme Overview & FAQ 16                          │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ 03 · BRANCH TRANSFER ELIGIBILITY                                             │
-│ [❌ ASSUMPTION / MYTH]: "High first-year CGPA allows branch change to CSE."  │
+│ [❌ CLAIM TO CHECK]: "High first-year CGPA allows branch change to CSE."     │
 │ [✅ OFFICIAL FACT]: Branch Change to Other B.Tech Programmes Is Not Permitted │
 │ Factual Details: Official WSAIS FAQ 12 explicitly confirms that students in  │
 │ the B.Cyber programme are not permitted to branch-change to other B.Tech     │
@@ -1266,7 +1267,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ Evidence Pointer: WSAIS Official FAQ 12                                      │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ 04 · FUTURE ADMISSION RULES & TESTING                                        │
-│ [❌ ASSUMPTION / MYTH]: "The 2026 JEE Main shortlisting applies to all years."│
+│ [❌ CLAIM TO CHECK]: "The 2026 JEE Main shortlisting applies to all years."  │
 │ [✅ OFFICIAL FACT]: JEE Main Discontinued; Separate Entrance Test Announced   │
 │ Factual Details: Official WSAIS FAQ 23 confirms that JEE Main will not be    │
 │ used for upcoming cycles and a separate entrance test will be announced.     │
@@ -1274,7 +1275,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ Evidence Pointer: WSAIS Official FAQ 23                                      │
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ 05 · PLACEMENT PARTICIPATION & SALARY GUARANTEES                             │
-│ [❌ ASSUMPTION / MYTH]: "B.Cyber joins common SPO drives with fixed CTC."    │
+│ [❌ CLAIM TO CHECK]: "B.Cyber joins common SPO drives with fixed CTC."       │
 │ [✅ OFFICIAL FACT]: Separate Cyber Drives; Placement Comparisons Premature   │
 │ Factual Details: Official WSAIS FAQ 13 states that placement support is      │
 │ provided by inviting relevant cybersecurity organisations, and students do   │
@@ -1291,12 +1292,13 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 ```
 ┌─────────────────────────────┐
 │ COMMON MISCONCEPTIONS       │
-│ Assumptions vs. Facts       │
+│ Claims to Check Before      │
+│ Deciding                    │
 │ [iitk.ac.in/wsais/b-cyber]  │
 │ ─────────────────────────── │
 │ 01 · CURRICULUM BREADTH     │
-│ [❌ ASSUMPTION] Just ethical│
-│ hacking and bug bounties?   │
+│ [❌ CLAIM TO CHECK] Just    │
+│ ethical hacking/bounties?   │
 │ [✅ CURRICULUM EVIDENCE]    │
 │ Published syllabus covers   │
 │ OS, Networks, Crypto, Data, │
@@ -1306,31 +1308,31 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ ↳ Source: WSAIS Curriculum  │
 │ ─────────────────────────── │
 │ 02 · PERMANENT EMPLOYMENT   │
-│ [❌ MYTH] Field deployment  │
-│ guarantees a permanent job? │
+│ [❌ CLAIM TO CHECK] Field   │
+│ deployment guarantees job?  │
 │ [✅ REALITY] Academic degree│
 │ requirement (216 credits).  │
 │ Hiring is a separate process│
 │ ↳ Source: WSAIS FAQ 16      │
 │ ─────────────────────────── │
 │ 03 · BRANCH TRANSFER        │
-│ [❌ MYTH] Top CGPA allows   │
-│ transfer to B.Tech CSE?     │
+│ [❌ CLAIM TO CHECK] Top CGPA│
+│ allows transfer to B.Tech?  │
 │ [✅ FACT] Branch change to  │
 │ other B.Tech is not allowed.│
 │ ↳ Source: WSAIS FAQ 12      │
 │ ─────────────────────────── │
 │ 04 · FUTURE ADMISSIONS      │
-│ [❌ MYTH] 2026 JEE Main rule│
-│ applies to future cycles?   │
+│ [❌ CLAIM TO CHECK] 2026 JEE│
+│ Main rule applies later?    │
 │ [✅ FACT] JEE Main discont- │
 │ inued; separate test to be  │
 │ announced (FAQ 23).         │
 │ ↳ Source: WSAIS FAQ 23      │
 │ ─────────────────────────── │
 │ 05 · PLACEMENT PARTICIPATION│
-│ [❌ MYTH] Joins general SPO │
-│ with guaranteed fixed CTC?  │
+│ [❌ CLAIM TO CHECK] Joins   │
+│ general SPO with fixed CTC? │
 │ [✅ FACT] Separate cyber    │
 │ drives (FAQ 13); placement  │
 │ comparisons premature;      │
@@ -1341,10 +1343,12 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 * **Content Hierarchy & Layout Notes:**
   - 5 high-impact pairs with prominent horizontal boundary dividers (`border-t border-slate-200`).
-  - Textual tags: `[❌ ASSUMPTION / CLAIM TO VERIFY]` and `[✅ WHAT THE PUBLISHED CURRICULUM SHOWS]` / `[✅ OFFICIAL FACT / REALITY]` ensure clarity even in grayscale or high-contrast modes.
+  - Textual tags: `[❌ CLAIM TO CHECK]` and `[✅ WHAT THE PUBLISHED CURRICULUM SHOWS]` / `[✅ OFFICIAL FACT / REALITY]` ensure clarity even in grayscale or high-contrast modes without assuming widespread prevalence.
   - Distinguishes direct official facts from the guide's explanatory interpretation.
 * **Factual Guardrails & Corrections Applied:**
   - Replaced categorical degree characterisations with `[WHAT THE PUBLISHED CURRICULUM SHOWS]`, distinguishing syllabus records from guide interpretation.
+  - Standardised unverified assertions to neutral `[CLAIM TO CHECK]` tags, eliminating unsupported prevalence claims.
+  - Subtitle updated to "Claims to Check Before Deciding".
   - Grounded branch change strictly in WSAIS FAQ 12 without citing unlinked Senate resolution numbers.
   - Future admission claims confined strictly to official FAQ 23: JEE Main will not be used, and a separate test will be announced (no speculative formats or dates).
   - Explicitly states that placement support is conducted through dedicated cybersecurity invitations, not alongside other departments (FAQ 13).
