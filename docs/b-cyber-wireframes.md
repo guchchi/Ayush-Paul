@@ -1,5 +1,5 @@
 # B.Cyber Compass — Wireframe Specifications
-*Version: 2.0 | Status: Reviewed & Corrected (13 October 2026)*  
+*Version: 2.1 | Status: All Batches (1–4, Sections 0–13) Approved & Locked (14 October 2026)*  
 *Platform: Ayush-Paul Blueprints Ecosystem*  
 *Scope: Pillar 1 — B.Cyber Overview (`/blueprints/b-cyber`)*  
 *Architectural Alignment: Fully synced with `docs/b-cyber-sitemap-and-ux-blueprint.md` (Pillar 1: 14 Locked Sections)*
@@ -1362,7 +1362,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ### Section 11: Frequently Asked Questions (Three-Topic In-Page FAQ Matrix)
 * **Anchor ID:** `#common-faqs` *(Verified match with sitemap)*
-* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Batch Status:** Batch 4 — Approved & Locked
 * **Section Purpose:** Deliver fast, authoritative resolution to unresolved candidate and parental inquiries across three distinct thematic clusters, keeping all questions and verified answers visible by default to eliminate forced interaction, scanning friction, and hidden admission caveats.
 * **User's Key Question:** *“Where can I quickly find authoritative answers regarding hostel accommodation, coding prerequisites, branch transfer rules, and post-2026 admissions without digging through scattered documents?”*
 * **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQs 9, 12, 13, 14, 17, 20, 23 & Curriculum Table)*.
@@ -1570,7 +1570,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ### Section 12: Source Citations & Editorial Transparency
 * **Anchor ID:** `#official-sources` *(Verified match with sitemap)*
-* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Batch Status:** Batch 4 — Approved & Locked
 * **Section Purpose:** Establish factual provenance, distinguish historical precedent from future status, eliminate speculative draft discrepancies, and cite specific official URLs and FAQ numbers with transparent source review metadata.
 * **User's Key Question:** *“Where did this information originate, which statements are official facts versus editorial interpretations, and when was this review conducted?”*
 * **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Official Portal Root, FAQs 1–25, and Official Curriculum Table)*.
@@ -1723,7 +1723,7 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ### Section 13: Next-Step Decision Gateway (P2 / P3 Dual Pathway)
 * **Anchor ID:** `#next-steps` *(Verified match with sitemap)*
-* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Batch Status:** Batch 4 — Approved & Locked
 * **Section Purpose:** Guide visitors from foundational degree orientation (Pillar 1) into their next practical destination, presenting balanced, intent-led routing between admission criteria analysis (Pillar 2) and technical preparation planning (Pillar 3) without bias, false promises, or fabricated time estimates.
 * **User's Key Question:** *“Now that I understand the degree structure, what should I do next based on my current timeline and preparation stage?”*
 * **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php).
@@ -1731,9 +1731,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Admission & Eligibility: `/blueprints/b-cyber/admission#admission-start`
   - Preparation Roadmap: `/blueprints/b-cyber/roadmap#prep-start`
 * **Design Pattern (Balanced Intent-Driven Pathway Cards):** **Dual Balanced Navigation Gateway (Two Equal-Weight Cards with Intent Descriptions and High-Contrast Action Links; Zero Sticky Mobile Overlays)**.
-  - *Research Reference 1:* GOV.UK Service Manual — *Navigation Principles: Directing users to the right service / Forking Paths* (`https://www.gov.uk/service-manual/design/navigation-principles`).
-    - *Actual Observed Pattern:* Provides balanced, neutral user routing when a service or guide branches into distinct user journeys. Explicitly presents options based on candidate intent rather than directing or biasing users toward a single preferred conversion path.
-    - *Why it fits:* Respects user autonomy. Applicants needing entrance clarity navigate directly to Pillar 2, while students ready for self-study preparation proceed directly to Pillar 3 without artificial barriers.
+  - *Design Recommendation (Ayush-Paul Blueprints Information Architecture):* **Neutral Two-Route Intent Gateway**.
+    - *Observed Pattern & Principle:* Provides balanced, neutral user routing when a guide branches into distinct user journeys. Explicitly presents options based on candidate intent (evaluating admission eligibility vs. beginning technical self-study) rather than directing or biasing users toward a single preferred conversion path.
+    - *Why it fits:* Respects user autonomy. Applicants seeking admissions and entrance examination clarity navigate directly to Pillar 2, while students ready for structured technical self-study proceed directly to Pillar 3 without artificial barriers, forced prerequisites, or diagnostic gatekeeping.
   - *Research Reference 2:* W3C WAI Web Content Accessibility Guidelines (WCAG) 2.4.4 & 2.4.9 — *Link Purpose (In Context and Link Only)* (`https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html`).
     - *Actual Observed Pattern:* Action links explicitly articulate their destination and task in the link text itself (e.g. "Review admission and eligibility information" and "Explore the cybersecurity preparation roadmap"), ensuring screen-reader users and keyboard navigators understand exactly where the navigation leads without ambiguity.
     - *(Note on Dropped Attribution: NHS Action Link citation was dropped per user instruction, as NHS guidance states Action Links are not intended simply for links to another page or site).*
