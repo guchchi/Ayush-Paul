@@ -288,17 +288,17 @@ export function BCyberHomePage() {
             <span>Independent Guide · Based on Official IIT Kanpur Senate &amp; WSAIS Records</span>
           </div>
 
-          {/* H1 Heading */}
-          <h1 id="hero-heading" className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#0b1c30] tracking-tight max-w-4xl leading-[1.12]">
-            What Is IIT Kanpur B.Cyber? <br />
-            <span className="text-brand-primary text-2xl sm:text-4xl lg:text-5xl block mt-2 font-bold">
+          {/* H1 Heading - Crisp 2-Line Architecture */}
+          <h1 id="hero-heading" className="text-3xl sm:text-5xl lg:text-[52px] font-extrabold text-[#0b1c30] tracking-tight max-w-4xl leading-[1.12]">
+            What Is IIT Kanpur B.Cyber?
+            <span className="text-brand-primary text-xl sm:text-3xl lg:text-[32px] block mt-2 font-bold tracking-tight">
               Degree Structure, Curriculum &amp; Ground Truth
             </span>
           </h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - Concise & High-Signal */}
           <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed font-normal">
-            Understand India&apos;s premier practice-oriented undergraduate cybersecurity degree. Verified Senate ordinances, the distinctive 2+2 academic architecture, transparent expectations, and official source links.
+            India&apos;s premier practice-oriented undergraduate degree. Verified Senate ordinances, the distinctive 2+2 model, and official IITK WSAIS data.
           </p>
           {/* Executive Key Facts Strip */}
           <div className="w-full max-w-4xl pt-4">
