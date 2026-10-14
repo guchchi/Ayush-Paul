@@ -181,77 +181,85 @@ export const Navbar = () => {
               </Link>
             </div>
 
-            {/* Center: The 3 Pillar Homogeneous Switcher (Desktop) */}
+            {/* Center: The Cyber-Dock Segmented Switcher (Desktop) */}
             <nav 
               aria-label="B.Cyber Compass Pillars"
-              className="hidden lg:flex items-center gap-1 text-xs"
+              className="hidden lg:flex items-center p-1 rounded-full bg-slate-900/[0.04] backdrop-blur-md border border-slate-900/[0.08] shadow-2xs text-xs relative"
             >
-              {/* Pillar 1: Overview */}
-              <Link 
-                to="/blueprints/b-cyber"
-                className={cn(
-                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
-                  location.pathname === '/blueprints/b-cyber'
-                    ? "bg-slate-100 text-slate-950 font-semibold"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                )}
-              >
-                <span className="text-[10px] font-mono text-slate-400">01</span>
-                <span>Overview</span>
-              </Link>
-
-              {/* Pillar 2: Admission */}
-              <Link 
-                to="/blueprints/b-cyber/admission"
-                className={cn(
-                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
-                  location.pathname.startsWith('/blueprints/b-cyber/admission')
-                    ? "bg-slate-100 text-slate-950 font-semibold"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                )}
-              >
-                <span className="text-[10px] font-mono text-slate-400">02</span>
-                <span>Admission</span>
-                <span className={cn(
-                  "text-[9px] font-mono px-1.5 py-0.5 rounded font-normal transition-colors",
-                  location.pathname.startsWith('/blueprints/b-cyber/admission')
-                    ? "bg-slate-200/80 text-slate-700"
-                    : "bg-slate-100 text-slate-500"
-                )}>
-                  2027 Shift
-                </span>
-              </Link>
-
-              {/* Pillar 3: Roadmap */}
-              <Link 
-                to="/blueprints/b-cyber/roadmap"
-                className={cn(
-                  "px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium",
-                  location.pathname.startsWith('/blueprints/b-cyber/roadmap')
-                    ? "bg-slate-100 text-slate-950 font-semibold"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                )}
-              >
-                <span className="text-[10px] font-mono text-slate-400">03</span>
-                <span>Roadmap</span>
-                <span className={cn(
-                  "text-[9px] font-mono px-1.5 py-0.5 rounded font-normal transition-colors",
-                  location.pathname.startsWith('/blueprints/b-cyber/roadmap')
-                    ? "bg-slate-200/80 text-slate-700"
-                    : "bg-slate-100 text-slate-500"
-                )}>
-                  Free Labs
-                </span>
-              </Link>
+              {[
+                {
+                  id: 'overview',
+                  step: '01',
+                  label: 'Overview',
+                  href: '/blueprints/b-cyber',
+                  exact: true,
+                  badge: null
+                },
+                {
+                  id: 'admission',
+                  step: '02',
+                  label: 'Admission',
+                  href: '/blueprints/b-cyber/admission',
+                  exact: false,
+                  badge: '2027 Shift'
+                },
+                {
+                  id: 'roadmap',
+                  step: '03',
+                  label: 'Roadmap',
+                  href: '/blueprints/b-cyber/roadmap',
+                  exact: false,
+                  badge: 'Free Labs'
+                }
+              ].map((pillar) => {
+                const isActive = pillar.exact 
+                  ? location.pathname === pillar.href
+                  : location.pathname.startsWith(pillar.href);
+                return (
+                  <Link
+                    key={pillar.id}
+                    to={pillar.href}
+                    className={cn(
+                      "relative px-4 py-1.5 rounded-full transition-colors flex items-center gap-2 font-medium z-10 select-none text-xs",
+                      isActive ? "text-white font-bold" : "text-slate-600 hover:text-slate-950 hover:bg-slate-900/[0.03]"
+                    )}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="bcyber-active-capsule"
+                        className="absolute inset-0 bg-[#0b1c30] rounded-full shadow-[0_2px_8px_rgba(11,28,48,0.22)] -z-10"
+                        transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                      />
+                    )}
+                    <span className={cn(
+                      "text-[10px] font-mono font-bold tracking-tight transition-colors",
+                      isActive ? "text-[#d1f34d]" : "text-slate-400"
+                    )}>
+                      {pillar.step}
+                    </span>
+                    <span>{pillar.label}</span>
+                    {pillar.badge && (
+                      <span className={cn(
+                        "text-[9px] font-mono px-2 py-0.5 rounded-full border font-semibold transition-colors leading-none",
+                        isActive 
+                          ? "bg-white/15 text-white/95 border-white/20" 
+                          : "bg-slate-200/70 text-slate-600 border-slate-300/40"
+                      )}>
+                        {pillar.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Right: Contextual Actions & Exit to Site */}
-            <div className="hidden sm:flex items-center gap-5">
+            <div className="hidden sm:flex items-center gap-3">
               <a
                 href="https://iitk.ac.in/wsais/b-cyber.php"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors px-2 py-1"
                 title="Official IIT Kanpur WSAIS portal"
               >
                 <span>Official Portal</span>
@@ -260,7 +268,7 @@ export const Navbar = () => {
 
               <Link
                 to="/blueprints"
-                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700 bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/90 transition-all shadow-2xs"
               >
                 <span>← All Blueprints</span>
               </Link>
