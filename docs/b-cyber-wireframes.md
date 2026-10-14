@@ -965,9 +965,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ Official Name: Bachelor of Cybersecurity (B.Cyber.)                      │ │
 │ │ Level:         Four-Year Undergraduate Degree Programme                  │ │
 │ │ Source Status: Officially Confirmed on WSAIS Portal                      │ │
-│ │ Context:       Offered by the Department of Computer Science &           │ │
-│ │                Engineering and WSAIS, Indian Institute of Technology     │ │
-│ │                Kanpur. (Distinct degree nomenclature; not titled B.Tech).│ │
+│ │ Context:       Programme run by the Wadhwani School of AI and            │ │
+│ │                Intelligent Systems (WSAIS), IIT Kanpur.                  │ │
+│ │                (Distinct degree nomenclature; not titled B.Tech).        │ │
 │ │ ──────────────────────────────────────────────────────────────────────── │ │
 │ │ 02 · ALUMNI STATUS                                                       │ │
 │ │ Parameter:     Institutional Alumni Standing                             │ │
@@ -994,10 +994,10 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │                equivalent to a regular four-year IIT Kanpur degree, and  │ │
 │ │                graduates are eligible to apply for postgraduate programs │ │
 │ │                (such as MS, MTech, PhD) in India and abroad.             │ │
-│ │ Essential      Eligibility grants the formal right to apply; admission is│ │
-│ │ Qualification: never automatic and remains subject to the admission      │ │
-│ │                criteria, prerequisite requirements, and evaluation of    │ │
-│ │                each respective receiving institution.                   │ │
+│ │ Essential      Per official WSAIS FAQ 9, graduates can pursue higher     │ │
+│ │ Qualification: studies, including applying to postgraduate programmes;   │ │
+│ │                admission remains subject to each receiving               │ │
+│ │                institution's requirements and selection process.         │ │
 │ │ └──────────────────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1022,8 +1022,8 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ Bachelor of             │ │
 │ │ Cybersecurity (B.Cyber.)│ │
 │ │ • 4-Year Undergrad      │ │
-│ │ • IIT Kanpur Department │ │
-│ │   of CSE & WSAIS        │ │
+│ │ • Programme run by      │ │
+│ │   WSAIS, IIT Kanpur     │ │
 │ │ • Distinct nomenclature │ │
 │ └─────────────────────────┘ │
 │                             │
@@ -1053,9 +1053,9 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ applying to MS/MTech/PhD│ │
 │ │ in India and abroad.    │ │
 │ │ ⚠️ Caveat: Admission     │ │
-│ │ depends on receiving    │ │
-│ │ institution criteria;   │ │
-│ │ not guaranteed.         │ │
+│ │ subject to receiving    │ │
+│ │ institution selection   │ │
+│ │ process & requirements. │ │
 │ └─────────────────────────┘ │
 └─────────────────────────────┘
 ```
@@ -1065,9 +1065,10 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Followed by 4 structured, auditable parameter rows: (1) Formal Degree Title, (2) Alumni Status, (3) Institutional Standing, and (4) Higher Studies.
   - Clear visual demarcation between official text, verified institutional parameters, and explanatory qualification caveats.
 * **Factual Guardrails & Epistemic Boundaries:**
+  - Standardised academic unit description: Programme run by the Wadhwani School of AI and Intelligent Systems (WSAIS), IIT Kanpur.
   - Standardised alumni wording strictly to official WSAIS FAQ 17: *"Students who successfully complete the program will receive IIT Kanpur alumni status."* Removed unsupported claims of identical alumni email, library access, or specific alumni-association privileges.
   - Removed blanket claims of UGC/AICTE or UPSC equivalence; notes that specific public-sector eligibility depends on individual notification criteria.
-  - Grounded higher-studies access strictly in WSAIS FAQ 9, explicitly noting that eligibility allows application, not guaranteed admission.
+  - Grounded higher-studies access strictly in WSAIS FAQ 9: graduates can pursue higher studies, including applying to postgraduate programmes; admission remains subject to the receiving institution's requirements and selection process.
 * **Accessibility & Interaction:**
   - 100% static, crawlable text with no accordion or tab interaction required.
   - Semantic structure using definition list (`<dl>`, `<dt>`, `<dd>`) or structured section headings (`H3`, `H4`).
@@ -1080,13 +1081,13 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 * **Section Purpose:** Present the verified operational facts regarding the two-year academic internship, host organisation stipend terms, and dedicated placement support without manufactured statistics, false salary promises, or misleading career progression arrows.
 * **User's Key Question:** *“What happens in Years 3–4, who determines stipend, and what placement outcomes are actually known?”*
 * **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS Programme Overview, FAQ 13, FAQ 14, and FAQ 16)*.
-* **Design Pattern (Three-Area Operational Responsibility Ledger):** **Tripartite Boundary Architecture (Academic Internship Requirement vs Organisation & Stipend Terms vs Placement Support & Evidence Status)**.
-  - *Layout Origin:* **Design recommendation synthesized for this guide**. Neither Monzo nor GOV.UK publishes an identical three-column student placement layout; the three disconnected boundary containers with zero directional progression arrows are our deliberate architectural recommendation to stop applicants conflating academic requirements with third-party employment.
-  - *Research Reference 1:* Monzo Bank Operational Transparency Disclosures (`https://monzo.com/transparency/`).
-    - *Actual Source Contribution:* Contributes the design principle of operational boundary transparency—presenting multi-stakeholder commitments across isolated cards so users do not assume unstated reciprocal obligations or automatic entitlement.
-  - *Research Reference 2:* GOV.UK Service Manual — *Service Boundaries & Provider Responsibilities* (`https://www.gov.uk/service-manual/service-assessments/check-service-standard`).
-    - *Actual Source Contribution:* Contributes the information architecture principle of boundary demarcation between primary qualification authorities, external delivery hosts, and downstream career services.
-  - *Rationale:* Clearly isolates: (1) What IIT Kanpur requires academically for degree conferral, (2) What external host organisations govern regarding stipends and daily work, and (3) What separate placement channels exist alongside current evidence limitations. Crucially, the layout uses separate boundary columns without transitional progression arrows, avoiding any implication of an automatic pipeline to permanent employment.
+* **Design Pattern (Three-Area Operational Responsibility Ledger):** **Tripartite Boundary Architecture (Academic Internship Requirement vs Host Organisation & Stipend Terms vs Placement Support & Evidence Status)**.
+  - *Layout Classification:* **Editorial & UX design recommendation developed specifically for this guide** (not an imported third-party implementation precedent).
+  - *Design Problem Solved:* Standard academic portals often run degree details, stipend notes, and placement expectations into a single continuous narrative, leading applicants to falsely assume that field deployment converts automatically into permanent employment or carries a guaranteed stipend.
+  - *Applied Information Architecture Principles:*
+    1. *Multi-Stakeholder Boundary Separation:* Isolating the 3 distinct operational domains (IIT Kanpur academic requirements vs. external host organisation conditions vs. separate placement support channels) into visually disconnected containers without shared background wrappers.
+    2. *Vector Elimination:* Deliberately omitting connecting lines, arrows, or pipeline chevrons between containers to eliminate any visual implication of an automatic conveyor belt from internship to permanent job.
+  - *Rationale:* Presenting three independent boundary cards side-by-side on desktop (and sequentially on mobile) forces cognitive separation between what IIT Kanpur formally awards, what third-party host organisations independently administer, and what placement outcomes are actually known.
 * **Do Not:** Claim that B.Cyber students participate alongside students from other IITK departments in general placement drives; do not state or imply guaranteed placement; do not state uniform or guaranteed stipends; do not name unverified partner organisations (e.g. CERT-In, NCIIPC, defense); do not manufacture salary packages or placement rates.
 
 #### Low-Fidelity Desktop Wireframe (≥ 1024 px)
@@ -1107,29 +1108,33 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │ employment is guaranteed.                                                │ │
 │ └──────────────────────────────────────────────────────────────────────────┘ │
 │                                                                              │
-│ ┌─ AREA 1: ACADEMIC INTERNSHIP ──┐ ┌─ AREA 2: STIPEND & ORG TERMS ─┐ ┌─ AREA 3: PLACEMENT & EVIDENCE ─┐ │
+│ ┌─ AREA 1: ACADEMIC INTERNSHIP ──┐ ┌─ AREA 2: STIPEND & HOST TERMS ┐ ┌─ AREA 3: PLACEMENT & EVIDENCE ─┐ │
 │ │ Mandatory Degree Requirement   │ │ Host Organisation Terms       │ │ Career Support & Market Status │ │
 │ │ ────────────────────────────── │ │ ───────────────────────────── │ │ ────────────────────────────── │ │
-│ │ • Semesters 5 to 8 (Years 3–4):│ │ • Host Organisation Work:     │ │ • Dedicated Placement Channel: │ │
-│ │   Consists of four semesters   │ │   Students are deployed at    │ │   Official FAQ 13 confirms that│ │
-│ │   carrying 54 credits each,    │ │   participating cybersecurity │ │   placement support is provided│ │
-│ │   totaling 216 academic credits│ │   organisations for practical │ │   by inviting relevant cyber-  │ │
-│ │   off-campus.                  │ │   field experience.           │ │   security organisations.      │ │
-│ │ • Integral Part of Degree:     │ │ • Stipend Provision (FAQ 14): │ │ • Distinct Drives (FAQ 13):    │ │
-│ │   The 2-year field internship  │ │   Official WSAIS FAQ 14       │ │   Official FAQ 13 states that  │ │
-│ │   is a mandatory component     │ │   clarifies that most students│ │   B.Cyber students do NOT      │ │
-│ │   required for degree award.   │ │   are expected to receive     │ │   participate in placements    │ │
-│ │ • Continuous Student Status:   │ │   stipends, but amounts vary  │ │   alongside students from      │ │
-│ │   Students retain official     │ │   by organisation.            │ │   other IITK departments.      │ │
-│ │   enrolled IIT Kanpur student  │ │ • Zero-Stipend Possibility:   │ │ • No Automatic Conversion:     │ │
-│ │   status throughout the entire │ │   Official FAQ 14 notes some  │ │   Field deployment does NOT    │ │
-│ │   four years of the programme. │ │   organisations may provide   │ │   convert automatically into a │ │
-│ │ • Academic Monitoring:         │ │   no stipend; IIT Kanpur      │ │   permanent job at the host org│ │
-│ │   Internship performance and   │ │   states it will try to send  │ │ • Evidence Status:             │ │
-│ │   progress are evaluated for   │ │   students to organisations   │ │   WSAIS confirms placement     │ │
-│ │   academic credit conferral.   │ │   that offer some support.    │ │   comparisons are premature;   │ │
-│ │                                │ │                               │ │   published graduate placement │ │
-│ │                                │ │                               │ │   outcomes not yet established.│ │
+│ │ • Semesters 5 to 8 (Years 3–4):│ │ • Field Host Sector:          │ │ • Dedicated Placement Channel: │ │
+│ │   Consists of four semesters   │ │   The official WSAIS programme│ │   Official FAQ 13 confirms that│ │
+│ │   carrying 54 credits each,    │ │   page states that the 2-year │ │   placement support is provided│ │
+│ │   totaling 216 academic credits│ │   internship is primarily at  │ │   by inviting relevant cyber-  │ │
+│ │   off-campus.                  │ │   selected government         │ │   security organisations.      │ │
+│ │ • Integral Part of Degree:     │ │   organisations.              │ │ • Distinct Drives (FAQ 13):    │ │
+│ │   The 2-year field internship  │ │ • Host Roster Availability:   │ │   Official FAQ 13 states that  │ │
+│ │   is a mandatory component     │ │   The public WSAIS portal does│ │   B.Cyber students do NOT      │ │
+│ │   required for degree award.   │ │   not provide a complete named│ │   participate in placements    │ │
+│ │ • Continuous Student Status:   │ │   list of participating host  │ │   alongside students from      │ │
+│ │   Students retain official     │ │   organisations.              │ │   other IITK departments.      │ │
+│ │   enrolled IIT Kanpur student  │ │ • Stipend Provision (FAQ 14): │ │ • No Automatic Conversion:     │ │
+│ │   status throughout the entire │ │   Official WSAIS FAQ 14       │ │   Field deployment does NOT    │ │
+│ │   four years of the programme. │ │   clarifies that most students│ │   convert automatically into a │ │
+│ │                                │ │   are expected to receive     │ │   permanent job at host org.   │ │
+│ │                                │ │   stipends, but amounts vary  │ │ • Evidence Status:             │ │
+│ │                                │ │   by organisation.            │ │   WSAIS confirms placement     │ │
+│ │                                │ │ • Zero-Stipend Possibility:   │ │   comparisons are premature;   │ │
+│ │                                │ │   Official FAQ 14 notes some  │ │   published graduate placement │ │
+│ │                                │ │   organisations may provide   │ │   outcomes not yet established.│ │
+│ │                                │ │   no stipend; IIT Kanpur      │ │                                │ │
+│ │                                │ │   states it will try to send  │ │                                │ │
+│ │                                │ │   students to organisations   │ │                                │ │
+│ │                                │ │   that offer some support.    │ │                                │ │
 │ └────────────────────────────────┘ └─────────────────────────────┘ └──────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1159,9 +1164,13 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 │ │   status throughout     │ │
 │ └─────────────────────────┘ │
 │                             │
-│ ┌─ 02 · STIPEND (FAQ 14) ─┐ │
+│ ┌─ 02 · STIPEND & HOST ───┐ │
 │ │ Host Terms & Allowance  │ │
-│ │ • Deployed at host orgs │ │
+│ │ • Primarily at selected │ │
+│ │   govt organisations    │ │
+│ │   (per programme page)  │ │
+│ │ • No complete named host│ │
+│ │   list is published     │ │
 │ │ • Most expected to get  │ │
 │ │   stipends; amount vary │ │
 │ │ • Some orgs may offer   │ │
@@ -1190,10 +1199,12 @@ When `@media (prefers-reduced-motion: reduce)` is active:
   - Three distinct, standalone columns/cards: (1) Academic Internship Requirement, (2) Organisation & Stipend Terms, and (3) Placement Support & Evidence Status.
   - No graphical arrows, pipelines, or connecting vectors between columns, ensuring no user infers an automatic conveyor belt to employment.
 * **Factual Guardrails & Corrections Applied:**
+  - **Host Sector Accuracy:** Preserves the official programme page statement that the two-year internship is primarily at selected government organisations, noting that the public portal does not publish a complete named host roster.
+  - **Removed Assessment Claim:** Removed speculative claims regarding faculty grading schedules or evaluation mechanics, retaining the published 54-credit semester allocations (216 credits total).
   - **Major Correction:** Corrected placement description to reflect official WSAIS FAQ 13: placement support is provided by inviting relevant cybersecurity organisations, and students do *not* participate alongside students from other departments.
   - **Stipend Accuracy (FAQ 14):** Accurately reflects official text: most students expected to receive stipends, amounts vary, some may provide no stipend, and IITK tries to place students at organisations offering support.
   - **Timeline Accuracy:** Clarifies that the first cohort began in July 2026; completion in 2030 corresponds to the standard four-year programme duration, with individual timelines varying.
-  - **Removed Unsupported Partner Names:** Removed specific named government agencies (CERT-In, NCIIPC, defense) and speculative faculty grading routines that lack direct official citations.
+  - **Removed Unsupported Partner Names:** Removed specific named government agencies (CERT-In, NCIIPC, defense) that lack direct official citations.
   - **Epistemic Truth:** Affirms that published B.Cyber graduate placement outcomes are not yet established.
 * **Accessibility & Interaction:**
   - High-contrast visual cards with clean border separators.
