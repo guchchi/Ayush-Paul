@@ -1360,183 +1360,367 @@ When `@media (prefers-reduced-motion: reduce)` is active:
 
 ---
 
-### Section 11: Frequently Asked Questions (Concise Accordion)
+### Section 11: Frequently Asked Questions (Topic-Grouped Accordion)
 * **Anchor ID:** `#common-faqs` *(Verified match with sitemap)*
-* **Section Purpose:** Answer remaining candidate and parental questions quickly without requiring them to sift through unstructured forum posts.
-* **User's Key Question:** *"Where can I find quick answers to residency, transfer, and degree equivalence?"*
+* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Section Purpose:** Deliver fast, authoritative resolution to unresolved candidate and parental inquiries by categorising verified WSAIS records into three distinct thematic clusters, avoiding duplicate prose, cognitive fatigue, and concealed admission caveats.
+* **User's Key Question:** *“Where can I quickly find authoritative answers regarding hostel residency, coding prerequisites, branch transfer rules, and post-2026 admissions without digging through scattered documents?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(WSAIS FAQs 1–25, including FAQs 9, 12, 13, 14, 16, 17, 23)*.
+* **Design Pattern (Topic-Segmented Accordion Matrix):** **Thematic Grouped Accordion Cluster (3 Topic Sub-Groups with Category Jump Headers, Semantic Expandable Rows, and a Universal 'Expand All / Collapse All' Control)**.
+  - *Research Reference 1:* GOV.UK Design System — *Accordion Component Pattern* (`https://design-system.service.gov.uk/components/accordion/`).
+    - *Actual Observed Pattern:* Uses semantic `<button>` trigger elements embedded within heading tags (`<h3>`), native `aria-expanded` and `aria-controls` bindings, high-contrast chevron rotation, distinct `:focus-visible` blue outline halos, and a global "Show all / Hide all sections" utility action.
+    - *Why it fits:* Provides an accessible, battle-tested standard for scannable public records. Reduces page length while ensuring screen-reader users hear question context and expansion states clearly.
+  - *Research Reference 2:* Stripe Documentation & Support Architecture (`https://docs.stripe.com/`).
+    - *Actual Observed Pattern:* Categorises long FAQ catalogues into 3–4 thematic card sections with clear group titles and item counts, preventing users from having to visually parse 15+ disconnected questions.
+    - *Why it fits:* Applicants and parents have fundamentally different concerns (e.g. academic eligibility vs. campus residential logistics vs. financial stipends). Categorical clustering allows visitors to jump straight to their domain of interest.
+* **Do Not:** Use a single unorganised flat list of 10+ questions; do not hide critical admission barriers (like no branch change) behind deep multi-click sub-accordions; do not invent answers to unannounced post-2026 exam specifics; do not repeat Section 6 curriculum tables verbatim.
 
-#### Low-Fidelity Desktop Wireframe
+#### Low-Fidelity Desktop Wireframe (≥ 1024 px)
+*(Topic-Segmented Accordion Matrix — 3 Thematic Clusters, 8 Primary FAQs)*
 ```
-+---------------------------------------------------------------------------------------------------+
-| [Category: Direct Inquiries]                                                                      |
-| [H2: Frequently Asked Questions]                                                                  |
-| [Subtitle: Clear, concise answers to core candidate and family questions]                         |
-|                                                                                                   |
-| +-- [Accordion Container (Border border-slate-200 rounded-lg)] ---------------------------------+ |
-| | [>] Q1: Is B.Cyber considered equivalent to a regular 4-year degree for MS/PhD?               | |
-| |     [Expanded Answer: Yes. Under WSAIS FAQ 9, it is an official 4-year degree from IIT Kanpur  | |
-| |      eligible for postgrad applications globally, subject to host institution criteria.]      | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q2: Where do students reside during the first two years?                                  | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q3: Can a student transfer to regular B.Tech Computer Science?                            | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q4: How does admission work for upcoming cycles?                                          | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q5: Do host organizations pay stipends during the 2-year field deployment?                | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q6: What degree certificate is awarded upon graduation?                                   | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q7: What are the attendance and academic passing standards?                               | |
-| |-----------------------------------------------------------------------------------------------| |
-| | [v] Q8: Is prior coding experience mandatory before joining?                                  | |
-| +-----------------------------------------------------------------------------------------------+ |
-+---------------------------------------------------------------------------------------------------+
-```
-
-#### Low-Fidelity Mobile Wireframe
-```
-+---------------------------------------------------+
-| [Category: Direct Inquiries]                      |
-| [H2: Frequently Asked Questions]                  |
-|                                                   |
-| +-- [Accordion Item 1] -------------------------+ |
-| | [>] Q1: Equivalent for MS/PhD abroad?         | |
-| |     [Expanded Answer: Yes, 4-year degree from | |
-| |      IITK; subject to host univ criteria]     | |
-| +-----------------------------------------------+ |
-| +-- [Accordion Item 2] -------------------------+ |
-| | [v] Q2: Where do students reside in Y1-Y2?    | |
-| +-----------------------------------------------+ |
-| +-- [Accordion Item 3] -------------------------+ |
-| | [v] Q3: Can I transfer to standard B.Tech?    | |
-| +-----------------------------------------------+ |
-| +-- [Accordion Item 4] -------------------------+ |
-| | [v] Q4: Admission for future cycles?          | |
-| +-----------------------------------------------+ |
-| +-- [Accordion Item 5 to 8 (Stacked)] ----------+ |
-| | [v] Q5: Field deployment stipends?            | |
-| | [v] Q6: Degree award upon graduation?         | |
-| | [v] Q7: Academic passing standards?           | |
-| | [v] Q8: Prior coding requirement?             | |
-| +-----------------------------------------------+ |
-+---------------------------------------------------+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ [Direct Inquiry Resolution & Category Index]                                 │
+│ FREQUENTLY ASKED QUESTIONS                                                   │
+│ Verified Answers to Candidate & Parental Queries Grouped by Theme            │
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php (WSAIS FAQs 1–25)   │
+│                                                                              │
+│ [Topic Jump Chips]: [ Admissions & Entry (3) ] [ Academic Life (3) ] [ Field & Finance (2) ] │
+│ [Global Control]:   [ Expand All Sections ▾ ]                                │
+│                                                                              │
+│ ┌─ CLUSTER A: ADMISSIONS, SHORTLISTING & TRANSFERS (3 Items) ──────────────┐ │
+│ │                                                                          │ │
+│ │ [▸] Q1: Is prior coding or computer science experience mandatory?        │ │
+│ │     [Expanded State Panel: aria-expanded="true"]                         │ │
+│ │     Official Fact: No. Formal prior coding experience is not a mandatory │ │
+│ │     admission prerequisite. The Semester 1 curriculum begins with        │ │
+│ │     foundational coursework: Fundamentals of Computing (14 credits) and  │ │
+│ │     Introduction to Electronics (14 credits).                            │ │
+│ │     Evidence: WSAIS Official Curriculum Table (Semester 1)               │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ [▾] Q2: How will admissions be conducted for cycles after 2026?          │ │
+│ │     (Collapsed State: Click to reveal WSAIS FAQ 23 status)               │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ [▾] Q3: Can B.Cyber students branch-change to B.Tech Computer Science?   │ │
+│ │     (Collapsed State: Click to reveal WSAIS FAQ 12 branch-change rule)   │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌─ CLUSTER B: ACADEMIC DEGREE, CAMPUS RESIDENCY & HIGHER STUDIES (3 Items) ┐ │
+│ │                                                                          │ │
+│ │ [▾] Q4: Where do students reside during the first two years?             │ │
+│ │     (Collapsed State: Click to reveal campus residential mandate)        │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ [▾] Q5: What exact degree certificate is awarded upon graduation?        │ │
+│ │     (Collapsed State: Click to reveal B.Cyber degree nomenclature)       │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ [▾] Q6: Can graduates apply for MS, MTech, or PhD programmes abroad?     │ │
+│ │     (Collapsed State: Click to reveal WSAIS FAQ 9 higher-studies terms)  │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌─ CLUSTER C: FIELD INTERNSHIP, STIPENDS & PLACEMENT (2 Items) ────────────┐ │
+│ │                                                                          │ │
+│ │ [▾] Q7: Are stipends guaranteed during the 2-year field deployment?      │ │
+│ │     (Collapsed State: Click to reveal WSAIS FAQ 14 stipend variations)   │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ [▾] Q8: Do B.Cyber students join general IIT Kanpur placement drives?    │ │
+│ │     (Collapsed State: Click to reveal WSAIS FAQ 13 dedicated cyber pool) │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-* **Content Hierarchy & Density:** Space-efficient collapsible accordion container.
-* **Interaction States:**
-  - Header click toggles open/close state.
-  - Chevron rotates `180deg` on expansion.
-  - Accessible via Tab and Space/Enter with `aria-expanded` and `aria-controls`.
-* **Factual Rigor & Verification:** Direct citations to WSAIS FAQs 1–25.
+#### Low-Fidelity Mobile Wireframe (< 768 px)
+*(Vertical Grouped Stack — Touch-Optimised 48px Tap Targets)*
+```
+┌─────────────────────────────┐
+│ FREQUENTLY ASKED QUESTIONS  │
+│ Categorised Direct Inquiries│
+│ [iitk.ac.in/wsais/b-cyber]  │
+│                             │
+│ [ Expand All ] [ Collapse ] │
+│                             │
+│ ┌─ A · ADMISSIONS (3) ────┐ │
+│ │ [▸] Prior coding needed?│ │
+│ │ ┌─────────────────────┐ │ │
+│ │ │ Official Fact: No.  │ │ │
+│ │ │ Sem 1 teaches       │ │ │
+│ │ │ Fundamentals of     │ │ │
+│ │ │ Computing from base.│ │ │
+│ │ └─────────────────────┘ │ │
+│ │ ─────────────────────── │ │
+│ │ [▾] Post-2026 entrance? │ │
+│ │ ─────────────────────── │ │
+│ │ [▾] Branch change to CS?│ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ B · DEGREE & CAMPUS (3)┐ │
+│ │ [▾] Where do students   │ │
+│ │     stay in Y1–Y2?      │ │
+│ │ ─────────────────────── │ │
+│ │ [▾] Degree nomenclature?│ │
+│ │ ─────────────────────── │ │
+│ │ [▾] Apply for MS/PhD?   │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ C · INTERN & CAREER (2)┐ │
+│ │ [▾] Field stipends?     │ │
+│ │ ─────────────────────── │ │
+│ │ [▾] General SPO drives? │ │
+│ └─────────────────────────┘ │
+└─────────────────────────────┘
+```
+
+* **Content Hierarchy & Layout Notes:**
+  - Categorised into 3 thematic boxes to prevent visual sprawl:
+    1. *Cluster A: Admissions, Shortlisting & Transfers* (3 items: Prior coding, Post-2026 exam rule, Branch-change prohibition).
+    2. *Cluster B: Academic Degree, Campus Residency & Higher Studies* (3 items: Residential hostel requirement, B.Cyber title, Higher studies application rights).
+    3. *Cluster C: Field Internship, Stipends & Placement* (2 items: Stipend variation under FAQ 14, Dedicated placement support under FAQ 13).
+  - Each item features a bold question header, an explicit expand/collapse icon indicator (`[▸]` vs `[▾]`), and a structured response block citing the exact official WSAIS FAQ source.
+* **Interaction States & Keyboard Semantics:**
+  - **Default State:** All items collapsed by default (or first question in Cluster A open as a progressive discovery cue).
+  - **Hover (`:hover`):** Trigger bar shifts to subtle tint (`bg-slate-50`), chevron rotates `45deg`.
+  - **Focus-Visible (`:focus-visible`):** High-contrast `ring-2 ring-brand-primary ring-offset-2 outline-none` conforming to WCAG 2.4.7.
+  - **Keyboard Navigation:** Native `<button>` triggers allow `Tab` navigation between questions. Pressing `Enter` or `Space` toggles the panel. Arrow keys (`Up`/`Down`) traverse adjacent question triggers.
+  - **Screen-Reader Semantics:** Trigger wrapped in `<h3><button aria-expanded="false" aria-controls="faq-panel-id">...</button></h3>`. Expanded panel contains `id="faq-panel-id" role="region" aria-labelledby="faq-btn-id"`.
+* **Factual Guardrails:**
+  - Preserved exact official rules: No branch change permitted (FAQ 12); Separate entrance test announced for post-2026 without inventing format/syllabus (FAQ 23); No guaranteed permanent employment from field deployment (FAQ 16); Stipends vary and are not uniform (FAQ 14).
+* **Rejected Alternatives:**
+  - *Single Monolithic 12-Item List:* Rejected because forced vertical scrolling creates cognitive overload; users looking for residency rules must scroll through unrelated entrance criteria.
+  - *Interactive Search/Filter Input:* Rejected as over-engineered for an 8-item curated set; introduces client-side script weight without measurable navigational value.
 
 ---
 
 ### Section 12: Source Citations & Editorial Transparency
 * **Anchor ID:** `#official-sources` *(Verified match with sitemap)*
-* **Section Purpose:** Disclose independent editorial methodology, audit dates, and primary official source anchors for complete institutional transparency.
-* **User's Key Question:** *"Where did this information come from, and when was it verified?"*
+* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Section Purpose:** Establish uncompromising factual provenance, editorial accountability, and audit transparency by presenting an auditable evidence ledger that maps core guide claims to primary official sources and explicitly discloses epistemic boundaries.
+* **User's Key Question:** *“Where did this information originate, which statements are official facts versus editorial interpretations, and when was this audit last conducted?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(Official Portal Root, Departmental Circulars, and Admissions Notifications)*.
+* **Design Pattern (Auditable Evidence Ledger & Epistemic Matrix):** **Four-Tier Claim-to-Source Mapping Table with Timestamped Audit Certificate and Statutory Independence Disclaimer**.
+  - *Research Reference 1:* BBC News — *How BBC News sources and verifies stories* (`https://www.bbc.com/news/help-41670342`).
+    - *Actual Observed Pattern:* Uses explicit epistemic labels distinguishing primary verified records from secondary reports and analytical commentary, providing audit provenance rather than anonymous assertions.
+    - *Why it fits:* Instills user confidence by providing a transparent methodology for how information is audited and maintained.
+  - *Research Reference 2:* Wikimedia Foundation — *Wikipedia Verifiability & Reliable Sources Guidelines* (`https://en.wikipedia.org/wiki/Wikipedia:Verifiability`).
+    - *Actual Observed Pattern:* Direct mapping from specific claims to primary authoritative sources, complete with retrieval dates, access URLs, and explicit notice of unverified/pending information.
+    - *Why it fits:* Gives prospective students and families an auditable verification trail so they can check claims independently on `iitk.ac.in`.
+* **Do Not:** Present a bare list of uncontextualized URLs; do not conceal the guide's independent non-official status; do not present guide recommendations as official institute mandates; do not cite broken or redirecting links.
 
-#### Low-Fidelity Desktop Wireframe
+#### Low-Fidelity Desktop Wireframe (≥ 1024 px)
+*(Auditable Evidence Ledger — 4 Epistemic Tiers, Audit Metadata & Independence Notice)*
 ```
-+---------------------------------------------------------------------------------------------------+
-| [Category: Institutional Transparency]                                                            |
-| [H2: Sources, Verification & Editorial Standards]                                                 |
-| [Subtitle: All content is cross-referenced with primary IIT Kanpur records and WSAIS documents]   |
-|                                                                                                   |
-| +-- [Source Attribution Card (bg-white border border-slate-200 p-6)] ---------------------------+ |
-| | Primary Verified Source Anchors:                                                              | |
-| | • [Link: IIT Kanpur WSAIS B.Cyber Official Portal ^] (https://iitk.ac.in/wsais/b-cyber.php)    | |
-| | • [Link: C3iHub Cybersecurity Research Center ^] (https://c3ihub.iitk.ac.in)                  | |
-| | • [Link: IIT Kanpur Senate Curricular Structure Circulars ^]                                  | |
-| |                                                                                               | |
-| | --------------------------------------------------------------------------------------------- | |
-| | Last Verified against Primary Records: 12 October 2026                                        | |
-| | Editorial Entity: B.Cyber Compass Independent Research                                        | |
-| |                                                                                               | |
-| | +-- [Disclaimer Callout (bg-slate-50 border border-slate-200 p-4)] -------------------------+ | |
-| | | ℹ️ Notice: B.Cyber Compass is an independent research guide and is NOT affiliated with,    | | |
-| | |   endorsed by, or an official portal of IIT Kanpur. For formal application submissions,    | | |
-| | |   always refer exclusively to iitk.ac.in.                                                  | | |
-| | +-------------------------------------------------------------------------------------------+ | |
-| +-----------------------------------------------------------------------------------------------+ |
-+---------------------------------------------------------------------------------------------------+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ [Factual Provenance & Institutional Accountability]                          │
+│ SOURCES, VERIFICATION & EDITORIAL TRANSPARENCY                               │
+│ Comprehensive Evidence Register, Epistemic Boundaries & Audit Verification   │
+│ Official Reference: https://iitk.ac.in/wsais/b-cyber.php                     │
+│                                                                              │
+│ ┌─ 🛡️ INDEPENDENT EDITORIAL NOTICE ────────────────────────────────────────┐ │
+│ │ B.Cyber Compass is an independent educational research guide published by│ │
+│ │ Ayush-Paul Blueprints. It is NOT affiliated with, sponsored by, or an    │ │
+│ │ official representative of IIT Kanpur or WSAIS. All formal admissions   │ │
+│ │ decisions and statutory regulations are governed exclusively by IITK.   │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ ┌─ FOUR-TIER CLAIM-TO-SOURCE EVIDENCE REGISTER ────────────────────────────┐ │
+│ │                                                                          │ │
+│ │ TIER 1 · PRIMARY OFFICIAL SOURCES (Direct Primary Verification)          │ │
+│ │ Claim / Topic:       Curriculum (Sem 1–4), 2+2 Model, Alumni (FAQ 17),   │ │
+│ │                      Branch Change (FAQ 12), Post-2026 Test (FAQ 23).    │ │
+│ │ Primary Authority:   Wadhwani School of AI & Intelligent Systems (WSAIS) │ │
+│ │ Official Source URL: [https://iitk.ac.in/wsais/b-cyber.php ^]           │ │
+│ │ Last Audited Date:   14 October 2026 · Status: Confirmed Active          │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ TIER 2 · CONFIRMED PROGRAMME PARAMETERS (Institutional Facts)            │ │
+│ │ Claim / Topic:       4-Year Duration, 216 Credits in Sem 5–8, Regular    │ │
+│ │                      IIT Kanpur Enrolled Student Status Throughout.      │ │
+│ │ Primary Authority:   IIT Kanpur Undergraduate Programme Specifications   │ │
+│ │ Source Reference:    WSAIS B.Cyber Academic Blueprint Documentation      │ │
+│ │ Last Audited Date:   14 October 2026 · Status: Confirmed Active          │ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ TIER 3 · EDITORIAL GUIDE INTERPRETATION (Analytical Commentary)          │ │
+│ │ Claim / Topic:       "Beyond Hacking" 5-domain model, Fit Reflection     │ │
+│ │                      Criteria, Conventional CSE vs B.Cyber trade-offs.   │ │
+│ │ Analytical Origin:   B.Cyber Compass Independent Pedagogical Analysis   │ │
+│ │ Epistemic Status:    Guide Recommendation; not a verbatim official quote.│ │
+│ │ ──────────────────────────────────────────────────────────────────────── │ │
+│ │ TIER 4 · PENDING ANNOUNCEMENT & EVIDENCE GAPS (Unresolved Boundaries)    │ │
+│ │ Item A: Post-2026 separate entrance exam syllabus, format & dates (FAQ23)│ │
+│ │ Item B: Semester 2 exact credit total draft variance (50 vs. 54 credits).│ │
+│ │ Item C: Complete named roster of approved government host organisations. │ │
+│ │ Public Status:       Officially Pending Notification · Do Not Rely       │ │
+│ └──────────────────────────────────────────────────────────────────────────┘ │
+│                                                                              │
+│ Audit Metadata: Audited by B.Cyber Editorial Desk · Verification: 14 Oct 2026 │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### Low-Fidelity Mobile Wireframe
+#### Low-Fidelity Mobile Wireframe (< 768 px)
+*(Vertical Evidence Stack — Clear Epistemic Demarcation)*
 ```
-+---------------------------------------------------+
-| [Category: Transparency]                          |
-| [H2: Sources & Verification]                      |
-|                                                   |
-| +-- [Verified Sources List] --------------------+ |
-| | • [Link: WSAIS B.Cyber Portal ^]              | |
-| | • [Link: C3iHub Research Center ^]            | |
-| | • [Link: Senate Curricular Records ^]         | |
-| |-----------------------------------------------| |
-| | Last Verified: 12 October 2026                | |
-| |                                               | |
-| | [Disclaimer Box: Independent guide, not an    | |
-| |  official IIT Kanpur website. Check iitk.ac.in| |
-| |  for official admissions.]                    | |
-| +-----------------------------------------------+ |
-+---------------------------------------------------+
+┌─────────────────────────────┐
+│ SOURCES & TRANSPARENCY      │
+│ Auditable Evidence Register │
+│ [iitk.ac.in/wsais/b-cyber]  │
+│                             │
+│ ┌─ INDEPENDENT NOTICE ────┐ │
+│ │ Independent guide. Not  │ │
+│ │ affiliated with or an   │ │
+│ │ official site of IITK.  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ TIER 1 · PRIMARY SOURCE┐ │
+│ │ • WSAIS Official Portal │ │
+│ │   [iitk.ac.in/wsais/...]│ │
+│ │ • Verifies: Curriculum, │ │
+│ │   FAQs 9,12,13,14,16,17 │ │
+│ │ • Audited: 14 Oct 2026  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ TIER 2 · PROGRAMME FACT┐ │
+│ │ • 4 Years, 2+2 Structure│ │
+│ │ • 216 credits in Y3–Y4  │ │
+│ │ • Enrolled IITK student │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ TIER 3 · GUIDE INTERP ─┐ │
+│ │ • 5 Technical Domains   │ │
+│ │ • Fit check & trade-offs│ │
+│ │ • Analytical commentary │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ TIER 4 · UNRESOLVED ───┐ │
+│ │ ⏳ Post-2026 test format │ │
+│ │ ⏳ Sem 2 credit total    │ │
+│ │ ⏳ Named host list       │ │
+│ └─────────────────────────┘ │
+└─────────────────────────────┘
 ```
 
-* **Content Hierarchy & Density:** Low-to-medium density verification footer.
-* **Interaction States:** External links feature secure `target="_blank"` and `rel="noopener noreferrer"` attributes.
-* **Factual Rigor & Verification:** Transparent institutional disclaimer and explicit timestamp audit.
+* **Content Hierarchy & Layout Notes:**
+  - Header establishes audit rigor and transparent accountability.
+  - Prominent Independence Disclaimer container explicitly states that B.Cyber Compass is an independent guide not affiliated with IIT Kanpur.
+  - Evidence matrix separates information into 4 auditable tiers:
+    1. *Tier 1: Primary Official Sources* (direct link to `https://iitk.ac.in/wsais/b-cyber.php` with audit timestamp).
+    2. *Tier 2: Confirmed Programme Parameters* (statutory 4-year duration, 216 credits, continuous student enrollment).
+    3. *Tier 3: Editorial Guide Interpretation* (clearly labeled pedagogical commentary, fit reflection, and comparative analysis).
+    4. *Tier 4: Pending Announcement & Evidence Gaps* (explicit register of what is unconfirmed: post-2026 exam specifics, Sem 2 credit variance, named host lists).
+* **Interaction States & External Link Security:**
+  - Primary source anchor includes visual external link indicator (`^` or external icon).
+  - Implements secure attributes: `target="_blank" rel="noopener noreferrer"`.
+  - Accessible focus states: `ring-2 ring-brand-primary ring-offset-2`.
+* **Factual Guardrails & Epistemic Boundaries:**
+  - Prevents candidate confusion by strictly labeling analytical content as "Guide Interpretation".
+  - Refuses to fabricate audit verification dates: displays verified audit date (14 October 2026).
+* **Rejected Alternatives:**
+  - *Simple List of Unannotated Hyperlinks:* Rejected because it fails to communicate which source supports which assertion.
+  - *Inline Footnote Popovers:* Rejected for mobile viewports because modal tooltips cause viewport obstruction and keyboard focus traps.
 
 ---
 
 ### Section 13: Next-Step Decision Gateway (P2 / P3 Dual CTA)
 * **Anchor ID:** `#next-steps` *(Verified match with sitemap)*
-* **Section Purpose:** Prevent user drop-off and funnel the student into the next appropriate stage of their decision journey (Checking admission eligibility OR starting preparation).
-* **User's Key Question:** *"Now that I understand the degree, what should I do next?"*
+* **Batch Status:** Batch 4 — Proposed Wireframe (Unlocked for Review)
+* **Section Purpose:** Guide visitors from understanding the degree (Pillar 1) into their next practical decision pathway, offering an informed choice between formal entrance eligibility (Pillar 2) and self-study technical preparation (Pillar 3).
+* **User's Key Question:** *“Now that I understand the degree structure, what should I do next based on my current timeline and preparation stage?”*
+* **Official Source Reference:** [IIT Kanpur WSAIS Official Portal & FAQs](https://iitk.ac.in/wsais/b-cyber.php) *(Admissions Announcements & Curriculum Outlines)*.
+* **Design Pattern (Fork-in-the-Road Decision Wayfinding):** **Bifurcated Diagnostic Decision Gateway (Dual Route Cards with Target Audience Criteria, Estimated Time-to-Complete, High-Contrast Action Drivers, and Zero Persistent Mobile Floating Overlays)**.
+  - *Research Reference 1:* GOV.UK Service Manual — *Navigation Principles: Directing users to the right service* (`https://www.gov.uk/service-manual/design/navigation-principles`).
+    - *Actual Observed Pattern:* Provides explicit diagnostic qualification bullets ("Choose this route if...") prior to the primary button, helping users self-select the appropriate transaction without trial-and-error clicks.
+    - *Why it fits:* Prevents navigational misdirection. Candidates with immediate admissions questions route to Pillar 2, while younger students or self-learners route to Pillar 3.
+  - *Research Reference 2:* NHS Digital Service Manual — *Action Links & Next Step Routing* (`https://service-manual.nhs.uk/design-system/components/action-link`).
+    - *Actual Observed Pattern:* Uses contextual card blocks with embedded directional action arrows, clear secondary descriptions, and distinct background contrast rather than generic floating banners.
+    - *Why it fits:* Replaces generic promotional buttons with meaningful, contextual forward momentum that sets expectations for what lies on the destination page.
+* **Do Not:** Use a single generic "Apply Now" button (applications are handled exclusively by IIT Kanpur); do not use persistent sticky floating CTA overlays on mobile viewports; do not use identical visual styling for both options; do not invent application deadlines.
 
-#### Low-Fidelity Desktop Wireframe
+#### Low-Fidelity Desktop Wireframe (≥ 1024 px)
+*(Bifurcated Decision Gateway — 2 Contextual Route Cards, Side-by-Side)*
 ```
-+---------------------------------------------------------------------------------------------------+
-| +-- [Dark High-Contrast Gateway Container (bg-slate-900 text-white rounded-xl p-10)] -----------+ |
-| | [Badge Label: NEXT DECISION (Neon Green text-emerald-400 font-mono text-xs uppercase)]        | |
-| |                                                                                               | |
-| | [H2: Now That You Understand B.Cyber, What's Next?]                                           | |
-| | [Subtitle: Determine whether you meet admission eligibility rules, or begin technical prep.]  | |
-| |                                                                                               | |
-| | +-- [Dual CTA Button Row] ------------------------------------------------------------------+ | |
-| | | [Primary CTA (Brand Green #d1f34d): Check Admission & Eligibility ->]                      | | |
-| | |  -> Links to /blueprints/b-cyber/admission#admission-start                                 | | |
-| | |                                                                                           | | |
-| | | [Secondary CTA (Ghost/White Outline): Explore Preparation Roadmap ->]                      | | |
-| | |  -> Links to /blueprints/b-cyber/roadmap#prep-start                                        | | |
-| | +-------------------------------------------------------------------------------------------+ | |
-| +-----------------------------------------------------------------------------------------------+ |
-+---------------------------------------------------------------------------------------------------+
-```
-
-#### Low-Fidelity Mobile Wireframe
-```
-+---------------------------------------------------+
-| +-- [Dark High-Contrast Card (bg-slate-900)] ---+ |
-| | NEXT DECISION                                 | |
-| | [H2: What's Next?]                            | |
-| | [Subtitle: Check eligibility or start prep]   | |
-| |                                               | |
-| | [Full-Width Button: Check Admission ->]       | |
-| |  -> /blueprints/b-cyber/admission             | |
-| |                                               | |
-| | [Full-Width Button: Explore Prep Roadmap ->]  | |
-| |  -> /blueprints/b-cyber/roadmap               | |
-| +-----------------------------------------------+ |
-|                                                   |
-| [STRICT RULE: NO PERSISTENT FLOATING BOTTOM CTA   |
-|  BAR PERMITTED ON MOBILE VIEWPORTS]               |
-+---------------------------------------------------+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ [Next Strategic Move · Choose Your Direction]                                │
+│ NOW THAT YOU UNDERSTAND B.CYBER, WHAT IS YOUR NEXT STEP?                     │
+│ Select the route tailored to your immediate timeline and decision priority   │
+│                                                                              │
+│ ┌─ ROUTE A · ELIGIBILITY & ADMISSION ─────┐ ┌─ ROUTE B · SKILL ROADMAP ────┐ │
+│ │ [ROUTE BADGE: PILLAR 2 · AUDIT]         │ │ [ROUTE BADGE: PILLAR 3 · LEARN]│ │
+│ │ Check Formal Eligibility & Process      │ │ Explore Preparation Roadmap    │ │
+│ │ ─────────────────────────────────────── │ │ ────────────────────────────── │ │
+│ │ Best for: Candidates evaluating whether │ │ Best for: Aspirants seeking a  │ │
+│ │ they meet formal entry criteria, age    │ │ structured self-study syllabus │ │
+│ │ limits, qualifying scores, and future   │ │ in Linux, Python, networking,  │ │
+│ │ testing announcements.                  │ │ and fundamental systems.       │ │
+│ │                                         │ │                                │ │
+│ │ Key Features:                           │ │ Key Features:                  │ │
+│ │ • Interactive Eligibility Screener      │ │ • Four-stage diagnostic path   │ │
+│ │ • 2026 precedent shortlisting archive   │ │ • Free, verified resources     │ │
+│ │ • Post-2026 entrance exam tracker       │ │ • Practical hands-on exercises │ │
+│ │                                         │ │                                │ │
+│ │ Estimated Time: 3–5 Minutes             │ │ Estimated Time: 8–10 Minutes   │ │
+│ │                                         │ │                                │ │
+│ │ [Button: Check Eligibility & Rules →]   │ │ [Button: Explore Prep Path →]  │ │
+│ │ (Brand Lime Green: bg-[#d1f34d])        │ │ (Slate Neutral: border-white)  │ │
+│ │ Links to:                               │ │ Links to:                      │ │
+│ │ /blueprints/b-cyber/admission           │ │ /blueprints/b-cyber/roadmap    │ │
+│ └─────────────────────────────────────────┘ └────────────────────────────────┘ │
+│                                                                              │
+│ [Contextual Helper Note]: Not sure where to begin? We recommend checking      │
+│ eligibility first before investing time in comprehensive exam preparation.    │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-* **Content Hierarchy & Density:** Maximum contrast, bold action drivers. Dark card (`bg-slate-900`) with lime green primary CTA button (`#d1f34d`).
-* **Interaction States:** Primary button lifts slightly on hover; secondary outline button gains light tint.
-* **Strict Mobile Policy:** Explicitly mandates **zero persistent floating bottom CTA overlays** on mobile screens.
+#### Low-Fidelity Mobile Wireframe (< 768 px)
+*(Vertical Stacked Gateway — Zero Persistent Floating Overlays)*
+```
+┌─────────────────────────────┐
+│ WHAT IS YOUR NEXT STEP?     │
+│ Choose Your Decision Path   │
+│                             │
+│ ┌─ ROUTE A · ADMISSION ───┐ │
+│ │ [P2 · ELIGIBILITY AUDIT]│ │
+│ │ Check Formal Criteria   │ │
+│ │ • Best if evaluating    │ │
+│ │   entry requirements,   │ │
+│ │   qualifying scores &   │ │
+│ │   future exam rules.    │ │
+│ │ • 3–5 min audit         │ │
+│ │                         │ │
+│ │ [ Check Eligibility → ] │ │
+│ │  -> /b-cyber/admission  │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ┌─ ROUTE B · ROADMAP ─────┐ │
+│ │ [P3 · SKILLS & PREP]    │ │
+│ │ Preparation Roadmap     │ │
+│ │ • Best if building      │ │
+│ │   Linux, Python &       │ │
+│ │   networking skills     │ │
+│ │   for cybersecurity.    │ │
+│ │ • 8–10 min exploration  │ │
+│ │                         │ │
+│ │ [ Explore Roadmap → ]   │ │
+│ │  -> /b-cyber/roadmap    │ │
+│ └─────────────────────────┘ │
+│                             │
+│ ⚠️ STRICT ARCHITECTURAL RULE:│
+│ No persistent sticky bottom │
+│ CTA bar on mobile screens.  │
+└─────────────────────────────┘
+```
+
+* **Content Hierarchy & Layout Notes:**
+  - High-contrast decision header framing the dual choice cleanly.
+  - Side-by-side cards on desktop (stacked vertically on mobile) featuring clear categorical badges (`[PILLAR 2 · AUDIT]` vs `[PILLAR 3 · LEARN]`).
+  - Diagnostic "Best for..." criteria clearly explain the user scenario for each route before the user taps.
+  - Primary button for Route A (`bg-[#d1f34d] text-slate-950 font-semibold`) provides visual priority for immediate applicants.
+  - Secondary button for Route B (`border border-slate-700 hover:bg-slate-800 text-white`) accommodates self-directed learners.
+* **Mobile Behaviour & Viewport Protection:**
+  - Tap targets exceed the minimum 48px height requirement with comfortable margins.
+  - **Zero Persistent Sticky Overlays**: Completely honors the architectural constraint prohibiting floating bottom CTA bars on mobile.
+* **Interaction States:**
+  - Route A Button: `:hover` lifts brightness (`bg-[#c5ea3e]`), `:active` scales down slightly (`scale-[0.98]`), `:focus-visible` triggers `ring-2 ring-brand-primary ring-offset-2`.
+  - Route B Button: `:hover` fills with subtle tint (`bg-white/10`), `:focus-visible` triggers `ring-2 ring-white ring-offset-2`.
+* **Factual Guardrails & Epistemic Boundaries:**
+  - Avoids promising direct application submission; clarifies that the links lead to the internal guide's eligibility screener (`/blueprints/b-cyber/admission`) and prep planner (`/blueprints/b-cyber/roadmap`).
+* **Rejected Alternatives:**
+  - *Single "Get Started" CTA:* Rejected because it hides the critical difference between checking formal entrance requirements and starting self-study preparation.
+  - *Sticky Floating Bottom Bar on Mobile:* Formally rejected under Core Architectural Rule 3 to preserve mobile viewport hygiene and prevent UI collisions.
 
 ---
 
@@ -1563,6 +1747,7 @@ The following items are officially cataloged as unresolved factual dependencies:
 | **DEP-06** | Section 2 (`#key-facts`) | **Institutional Distinction (IITK vs. IITM)**: Risk of conflating IIT Kanpur (WSAIS) and IIT Madras (SIDiS) as a joint unit. | **VERIFIED** | Page strictly covers IIT Kanpur option. A separate note points to the official IITK-hosted IIT Madras PDF. Do not name C3iHub as the academic unit without primary proof. |
 | **DEP-07** | Section 3 (`#model-2plus2`) | **Named Deployment Host Organizations**: Speculation regarding named defense/intelligence agencies. | **CORRECTED** | Restricted strictly to verified official text: "primarily at selected government organisations". Specific entity names avoided without direct primary citation. |
 | **DEP-08** | Section 3 & 9 (`#model-2plus2`, `#internship-reality`) | **Internship Stipend Guarantee**: Risk of presenting a uniform or mandatory stipend amount. | **CORRECTED** | Stated cautiously: stipend amount and availability depend on host organization policy; some organizations may not provide a stipend. |
+| **DEP-09** | Section 10, 11, 12 (`#myths-vs-facts`, `#common-faqs`, `#official-sources`) | **Post-2026 Separate Entrance Test Details**: Exact syllabus, format, testing agency, and dates remain unannounced under FAQ 23. | **BLOCKED** | Do not invent or assume exam structure; state clearly that a separate test will be announced and keep details blocked pending official notification. |
 
 ---
 
