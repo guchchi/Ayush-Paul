@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -19,6 +19,7 @@ export const Navbar = () => {
   const location = useLocation();
 
   const isHomePage = location.pathname === '/';
+  const isBCyber = location.pathname.startsWith('/blueprints/b-cyber');
   const isNavLightText = !isHomePage;
   const isDrawerLight = false;
 
@@ -146,9 +147,11 @@ export const Navbar = () => {
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-transparent py-6"
           : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out",
         !isHomePage && (isVisible ? "translate-y-0" : "-translate-y-full"),
-        !isHomePage && (isScrolled 
-          ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
-          : "bg-transparent border-transparent py-6"),
+        isBCyber
+          ? "bg-white/95 border-b border-slate-200/90 backdrop-blur-md py-3 shadow-2xs"
+          : (!isHomePage && (isScrolled 
+              ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
+              : "bg-transparent border-transparent py-6")),
         !isNavLightText && "nav-force-white"
       )}>
         {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
@@ -157,101 +160,218 @@ export const Navbar = () => {
           style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
         />
 
-        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-16 flex justify-between items-center relative z-20">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className={cn(
-              "flex items-center gap-2 font-bold text-2xl tracking-tight transition-all duration-300 hover:scale-[1.02]",
-              isNavLightText ? "text-[#0b1c30]" : "text-white"
-            )}
-          >
-            Ayush Paul
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex gap-12 items-center text-sm font-semibold tracking-widest uppercase">
-            {navLinks.map((link) => {
-              const isActive = location.pathname.startsWith(link.href);
-              return (
-                <Link 
-                  key={link.name} 
-                  className={cn(
-                    "transition-colors duration-300",
-                    isActive
-                      ? isNavLightText ? "text-[#0b1c30]" : "text-white"
-                      : isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
-                  )} 
-                  to={link.href}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Desktop Action Right Side */}
-          <div className="hidden md:flex items-center gap-8">
-            {user ? (
+        {isBCyber ? (
+          /* Model 1: Contextual Header Swap for B.Cyber Compass */
+          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex justify-between items-center relative z-20">
+            {/* Left: Brand Identity + Compass Context */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link 
-                to="/vault"
-                className={cn(
-                  "flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105",
-                  isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
-                )}
+                to="/" 
+                className="font-bold text-lg sm:text-xl tracking-tight text-[#0b1c30] hover:opacity-80 transition-opacity"
               >
-                <img 
-                  src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email || 'user'}&background=0D8ABC&color=fff`} 
-                  alt="Avatar" 
-                  className="w-5 h-5 rounded-full shrink-0 border border-white/10"
-                />
-                <span className="whitespace-nowrap">Vault</span>
+                Ayush Paul
               </Link>
-            ) : (
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
+              <span className="text-slate-300 font-light select-none">/</span>
+              <Link 
+                to="/blueprints/b-cyber"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-800 hover:text-brand-primary transition-colors"
+              >
+                <Compass className="w-4 h-4 text-brand-primary shrink-0" />
+                <span className="whitespace-nowrap">B.Cyber Compass</span>
+              </Link>
+            </div>
+
+            {/* Center: The 3 Pillar Segmented Switcher (Desktop) */}
+            <nav 
+              aria-label="B.Cyber Compass Pillars"
+              className="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200/70 text-xs font-semibold"
+            >
+              {/* Pillar 1: Overview */}
+              <Link 
+                to="/blueprints/b-cyber"
                 className={cn(
-                  "text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 cursor-pointer bg-transparent border-none outline-none p-0",
-                  isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  location.pathname === '/blueprints/b-cyber'
+                    ? "bg-white text-slate-900 shadow-xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 )}
               >
-                Sign In
-              </button>
-            )}
+                <span>01 Overview</span>
+              </Link>
 
-            <Link 
-              className="brand-lime px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:scale-105 shadow-sm inline-flex items-center" 
-              to="/collaborate"
-            >
-              Start Building
-            </Link>
-          </div>
-
-          {/* Mobile Menu Toggle Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              className={cn(
-                "w-10 h-10 flex items-center justify-center rounded-full border transition-all active:scale-90",
-                isNavLightText 
-                  ? "text-black bg-black/5 border-black/10 hover:bg-black/10"
-                  : "text-white bg-white/5 border-white/10 hover:bg-white/10"
-              )}
-              onClick={() => setIsMobileMenuOpen(prev => !prev)}
-            >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                    <X size={18} />
-                  </motion.div>
-                ) : (
-                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                    <Menu size={18} />
-                  </motion.div>
+              {/* Pillar 2: Admission */}
+              <Link 
+                to="/blueprints/b-cyber/admission"
+                className={cn(
+                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  location.pathname.startsWith('/blueprints/b-cyber/admission')
+                    ? "bg-white text-slate-900 shadow-xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 )}
-              </AnimatePresence>
-            </button>
+              >
+                <span>02 Admission</span>
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/80 font-bold">
+                  2027 Shift
+                </span>
+              </Link>
+
+              {/* Pillar 3: Roadmap */}
+              <Link 
+                to="/blueprints/b-cyber/roadmap"
+                className={cn(
+                  "px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5",
+                  location.pathname.startsWith('/blueprints/b-cyber/roadmap')
+                    ? "bg-white text-slate-900 shadow-xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                <span>03 Roadmap</span>
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-bold">
+                  Free Labs
+                </span>
+              </Link>
+            </nav>
+
+            {/* Right: Contextual Actions & Exit to Site */}
+            <div className="hidden sm:flex items-center gap-3">
+              <a
+                href="https://iitk.ac.in/wsais/b-cyber.php"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors px-2 py-1"
+                title="Official IIT Kanpur WSAIS portal"
+              >
+                <span>Official Portal</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              </a>
+
+              <Link
+                to="/blueprints"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs"
+              >
+                <span>← All Blueprints</span>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Toggle Button */}
+            <div className="lg:hidden flex items-center">
+              <button
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 transition-all active:scale-90"
+                onClick={() => setIsMobileMenuOpen(prev => !prev)}
+                aria-label="Toggle navigation menu"
+              >
+                <AnimatePresence mode="wait">
+                  {isMobileMenuOpen ? (
+                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                      <X size={16} />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                      <Menu size={16} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          /* Standard Navbar for other pages */
+          <div className="max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-16 flex justify-between items-center relative z-20">
+            {/* Logo */}
+            <Link 
+              to="/" 
+              className={cn(
+                "flex items-center gap-2 font-bold text-2xl tracking-tight transition-all duration-300 hover:scale-[1.02]",
+                isNavLightText ? "text-[#0b1c30]" : "text-white"
+              )}
+            >
+              Ayush Paul
+            </Link>
+
+            {/* Desktop Navigation Links */}
+            <nav className="hidden md:flex gap-12 items-center text-sm font-semibold tracking-widest uppercase">
+              {navLinks.map((link) => {
+                const isActive = location.pathname.startsWith(link.href);
+                return (
+                  <Link 
+                    key={link.name} 
+                    className={cn(
+                      "transition-colors duration-300",
+                      isActive
+                        ? isNavLightText ? "text-[#0b1c30]" : "text-white"
+                        : isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                    )} 
+                    to={link.href}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Desktop Action Right Side */}
+            <div className="hidden md:flex items-center gap-8">
+              {user ? (
+                <Link 
+                  to="/vault"
+                  className={cn(
+                    "flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105",
+                    isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                  )}
+                >
+                  <img 
+                    src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email || 'user'}&background=0D8ABC&color=fff`} 
+                    alt="Avatar" 
+                    className="w-5 h-5 rounded-full shrink-0 border border-white/10"
+                  />
+                  <span className="whitespace-nowrap">Vault</span>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className={cn(
+                    "text-[10px] font-bold uppercase tracking-widest transition-all duration-300 hover:scale-105 cursor-pointer bg-transparent border-none outline-none p-0",
+                    isNavLightText ? "text-[#0b1c30]/60 hover:text-[#0b1c30]" : "text-white/60 hover:text-white"
+                  )}
+                >
+                  Sign In
+                </button>
+              )}
+
+              <Link 
+                className="brand-lime px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition-transform hover:scale-105 shadow-sm inline-flex items-center" 
+                to="/collaborate"
+              >
+                Start Building
+              </Link>
+            </div>
+
+            {/* Mobile Menu Toggle Button */}
+            <div className="md:hidden flex items-center">
+              <button
+                className={cn(
+                  "w-10 h-10 flex items-center justify-center rounded-full border transition-all active:scale-90",
+                  isNavLightText 
+                    ? "text-black bg-black/5 border-black/10 hover:bg-black/10"
+                    : "text-white bg-white/5 border-white/10 hover:bg-white/10"
+                )}
+                onClick={() => setIsMobileMenuOpen(prev => !prev)}
+              >
+                <AnimatePresence mode="wait">
+                  {isMobileMenuOpen ? (
+                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                      <X size={18} />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                      <Menu size={18} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Mobile Menu Drawer Portal */}
@@ -306,6 +426,41 @@ export const Navbar = () => {
  
                   {/* Navigation Links */}
                   <div className="flex-1 overflow-y-auto py-6 px-6 space-y-2 custom-scrollbar">
+                    {/* If in B.Cyber Compass, show pillars first */}
+                    {isBCyber && (
+                      <div className="space-y-2 mb-4 pb-4 border-b border-white/10">
+                        <div className="text-[10px] font-mono uppercase tracking-widest text-[#d1f34d] font-bold px-1 mb-2">
+                          🧭 B.Cyber Compass Pillars
+                        </div>
+                        {[
+                          { name: "01 Overview", href: "/blueprints/b-cyber", badge: null },
+                          { name: "02 Admission Guide", href: "/blueprints/b-cyber/admission", badge: "2027 Shift" },
+                          { name: "03 Preparation Roadmap", href: "/blueprints/b-cyber/roadmap", badge: "Free Labs" }
+                        ].map((pillar) => {
+                          const isActive = location.pathname === pillar.href || (pillar.href !== '/blueprints/b-cyber' && location.pathname.startsWith(pillar.href));
+                          return (
+                            <Link
+                              key={pillar.name}
+                              to={pillar.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={cn(
+                                "flex items-center justify-between w-full p-3.5 rounded-xl border transition-all text-sm font-semibold",
+                                isActive
+                                  ? "bg-[#d1f34d]/15 text-[#d1f34d] border-[#d1f34d]/30 font-bold"
+                                  : "bg-white/5 text-slate-200 border-white/5 hover:bg-white/10"
+                              )}
+                            >
+                              <span>{pillar.name}</span>
+                              {pillar.badge && (
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                  {pillar.badge}
+                                </span>
+                              )}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
                     {mobileLinks.map((link) => {
                       const isActive = location.pathname.startsWith(link.href);
                       return (

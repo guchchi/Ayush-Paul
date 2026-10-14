@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Compass,
   ShieldCheck,
+  MapPin,
   CalendarCheck,
   ArrowRight,
   ArrowUpRight,
@@ -300,46 +301,95 @@ export function BCyberHomePage() {
             Understand India&apos;s premier practice-oriented undergraduate cybersecurity degree. Verified Senate ordinances, the distinctive 2+2 academic architecture, transparent expectations, and official source links.
           </p>
 
-          {/* Smart Fast-Track Entry Chips (Zero Linear Prison) */}
-          <div className="w-full max-w-2xl pt-4">
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs text-left">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-3">
-                Choose Your Next Step
+          {/* The 3-Pillar Architectural Guide Navigator */}
+          <div className="w-full max-w-4xl pt-6">
+            <div className="flex items-center justify-between mb-3 px-1 text-xs">
+              <span className="font-bold uppercase tracking-wider text-[11px] text-slate-500">
+                The 3-Pillar Architecture of This Guide
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <a
-                  href="#quick-answer"
-                  className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100 transition-all flex flex-col justify-between group"
-                >
-                  <span className="text-[11px] font-bold text-slate-900 flex items-center justify-between">
-                    <span>1. First-time visitor?</span>
-                    <ChevronDown size={14} className="text-slate-400 group-hover:translate-y-0.5 transition-transform" />
-                  </span>
-                  <span className="text-[10px] text-slate-500 mt-1">Start with the basics below</span>
-                </a>
+              <span className="text-slate-400 text-[11px] font-medium">You are exploring Pillar 01</span>
+            </div>
 
-                <Link
-                  to="/blueprints/b-cyber/admission"
-                  className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-brand-primary/40 hover:bg-brand-primary/5 transition-all flex flex-col justify-between group"
-                >
-                  <span className="text-[11px] font-bold text-slate-900 flex items-center justify-between">
-                    <span>2. Know the program?</span>
-                    <ArrowRight size={14} className="text-brand-primary group-hover:translate-x-0.5 transition-transform" />
-                  </span>
-                  <span className="text-[10px] text-slate-500 mt-1">Check admission &amp; eligibility</span>
-                </Link>
-
-                <Link
-                  to="/blueprints/b-cyber/roadmap"
-                  className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-brand-primary/40 hover:bg-brand-primary/5 transition-all flex flex-col justify-between group"
-                >
-                  <span className="text-[11px] font-bold text-slate-900 flex items-center justify-between">
-                    <span>3. Ready to prepare?</span>
-                    <ArrowRight size={14} className="text-brand-primary group-hover:translate-x-0.5 transition-transform" />
-                  </span>
-                  <span className="text-[10px] text-slate-500 mt-1">Explore preparation roadmap</span>
-                </Link>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-left">
+              {/* Pillar 1: Current Page */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white shadow-sm border border-slate-900 flex flex-col justify-between min-h-[135px]">
+                <div>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#d1f34d] font-bold">
+                      PILLAR 01 · ACTIVE
+                    </span>
+                    <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-[#d1f34d]">
+                      <Compass className="w-4 h-4" />
+                    </div>
+                  </div>
+                  <h3 className="text-sm sm:text-[15px] font-bold text-white">Degree &amp; Curriculum</h3>
+                  <p className="text-[11px] text-slate-300 mt-1 leading-snug">
+                    2+2 academic architecture, 5 core security labs, and Senate degree regulations.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-[#d1f34d] font-medium">
+                  <span>Reading this page</span>
+                  <a href="#quick-answer" className="text-white/80 hover:text-white underline underline-offset-2">
+                    Scroll down ↓
+                  </a>
+                </div>
               </div>
+
+              {/* Pillar 2: Admission & Selection */}
+              <Link
+                to="/blueprints/b-cyber/admission"
+                className="group p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-xs transition-all flex flex-col justify-between min-h-[135px]"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold group-hover:text-slate-600 transition-colors">
+                      PILLAR 02
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                      2027 Shift
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-[15px] font-bold text-slate-900 group-hover:text-brand-primary transition-colors flex items-center justify-between">
+                    <span>Admission &amp; Selection</span>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    Class 12 PCM rules, JEE Main discontinued, and separate test announced.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium group-hover:text-brand-primary transition-colors">
+                  <span>Eligibility &amp; Entrance</span>
+                  <span>Explore Pillar 2 →</span>
+                </div>
+              </Link>
+
+              {/* Pillar 3: Preparation Roadmap */}
+              <Link
+                to="/blueprints/b-cyber/roadmap"
+                className="group p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-xs transition-all flex flex-col justify-between min-h-[135px]"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold group-hover:text-slate-600 transition-colors">
+                      PILLAR 03
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Free Labs
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-[15px] font-bold text-slate-900 group-hover:text-brand-primary transition-colors flex items-center justify-between">
+                    <span>Preparation Roadmap</span>
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all" />
+                  </h3>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                    5-stage self-paced learning path, curated tools, and practical exercises.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium group-hover:text-brand-primary transition-colors">
+                  <span>Self-Study &amp; Exercises</span>
+                  <span>Start Preparing →</span>
+                </div>
+              </Link>
             </div>
           </div>
         </section>
