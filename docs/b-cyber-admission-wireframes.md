@@ -463,11 +463,13 @@ This document defines the structural, low-fidelity wireframe specifications, con
 │ Operational Environment & Technical Domains Tested                           │
 │                                                                              │
 │ OPERATIONAL SPECIFICATIONS (2026 New Core Lab Precedent):                    │
+│ [Previously published or observed in an earlier cycle]                       │
 │ • Duration: 6 continuous hours (10:00 AM – 4:00 PM) at New Core Lab, IITK.  │
 │ • Environment: Sanitized offline workstations; no personal laptops allowed.  │
 │ • Supervision: Faculty, technical officers, and C3iHub security engineers.   │
 │                                                                              │
-│ THE 8 PRACTICAL SECURITY DOMAINS:                                            │
+│ PREPARATION FOCUS AREAS (8 PRACTICAL SECURITY DOMAINS):                      │
+│ [Guide recommendation, not an official requirement]                         │
 │ ┌──────────────────────────┬──────────────────────────┬────────────────────┐ │
 │ │ 01. Cryptography         │ 02. Web Security         │ 03. API Security   │ │
 │ │ Ciphers, modular math,   │ SQLi, XSS, SSRF, IDOR,   │ BOLA, parameter    │ │
@@ -599,7 +601,7 @@ This document defines the structural, low-fidelity wireframe specifications, con
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ Refund Policy         Strictly Non-Refundable (FAQ 25)      Permanent Policy │
 │ ──────────────────────────────────────────────────────────────────────────── │
-│ Attempt Limit         Maximum 2 consecutive attempts (FAQ 21)Expected Policy │
+│ Attempt Limit         Maximum 2 consecutive attempts (FAQ 21)Not yet confirmed│
 │ ──────────────────────────────────────────────────────────────────────────── │
 │ Reservation Policy    GoI Statutory Rules (OBC/SC/ST/EWS/PwD)Senate Mandatory│
 │ ──────────────────────────────────────────────────────────────────────────── │
