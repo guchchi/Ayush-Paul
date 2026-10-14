@@ -440,135 +440,183 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          {/* Option 1: Modern Bento Specification Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-            {/* Bento Card 1: Credential & Award */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                    01 / CREDENTIAL &amp; DEGREE
-                  </span>
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 text-brand-primary flex items-center justify-center">
-                    <Award className="w-4 h-4" />
-                  </div>
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                  Bachelor of Cybersecurity (B.Cyber.)
+          {/* Option 2: Apple-style High-End Engineered Tech Specs Ledger */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs divide-y divide-slate-100 overflow-hidden">
+            
+            {/* Category 1: Degree & Credential */}
+            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="lg:col-span-4">
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
+                  SPECIFICATION 01
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
+                  Degree &amp; Conferred Standing
                 </h3>
-                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  Four-year statutory undergraduate degree conferred by the Indian Institute of Technology Kanpur (IITK) under official Senate regulations.
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Official statutory award approved by the IIT Kanpur Senate.
                 </p>
               </div>
 
-              <div className="mt-5 pt-3.5 border-t border-slate-100 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Alumni Status:</span>
-                  <span className="font-bold text-slate-900 bg-emerald-50 text-emerald-800 border border-emerald-200/60 px-2 py-0.5 rounded-full text-[11px]">
-                    Full Regular IITK Alumni (FAQ 16)
-                  </span>
+              <div className="lg:col-span-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Awarded Degree</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
+                      Bachelor of Cybersecurity (B.Cyber.)
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Conferred by IIT Kanpur (or IIT Madras based on seat allotment).
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Senate Duration:</span>
-                  <span className="font-semibold text-slate-700">4 Yrs (Max 6 Yrs permissible)</span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Alumni Standing</span>
+                  <div className="sm:col-span-8">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm sm:text-[15px] font-bold text-slate-900">
+                        Full Regular IITK Alumni
+                      </span>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                        FAQ 16
+                      </span>
+                    </div>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Identical institutional standing, alumni privileges, and degree validity.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Duration &amp; Limit</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-semibold text-slate-900 block">
+                      4 Academic Years (8 Semesters)
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Maximum permissible duration is 6 years under Senate undergraduate ordinances.
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 2: Academic Architecture */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                    02 / ACADEMIC ARCHITECTURE
-                  </span>
-                  <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                  Distinctive 2+2 Pedagogical Model
+            {/* Category 2: Academic & Pedagogical Model */}
+            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start bg-slate-50/30">
+              <div className="lg:col-span-4">
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
+                  SPECIFICATION 02
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
+                  2+2 Pedagogical Architecture
                 </h3>
-                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  Published academic structure divided into two distinct halves: intensive foundational theory followed by practical execution.
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Split framework balancing core theory with field deployment.
                 </p>
               </div>
 
-              <div className="mt-5 pt-3.5 border-t border-slate-100 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Phase 1 (Sem 1–4):</span>
-                  <span className="font-semibold text-slate-800">2 Yrs Campus Coursework + 5 Labs</span>
+              <div className="lg:col-span-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Semesters 1 to 4</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
+                      2 Years On-Campus Residency
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Coursework at IIT Kanpur including 5 specialized cyber labs (Malware, Forensics, VAPT, Cloud, Networks).
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Phase 2 (Sem 5–8):</span>
-                  <span className="font-semibold text-slate-800">2 Yrs Practical Industry Internship</span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Semesters 5 to 8</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
+                      2 Years Practical Field Internship
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Full-time deployment hosted primarily in selected government agencies &amp; critical national units.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Branch Transfer</span>
+                  <div className="sm:col-span-8">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm sm:text-[15px] font-bold text-slate-900">
+                        Strictly Prohibited
+                      </span>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/50">
+                        No Transfer to B.Tech
+                      </span>
+                    </div>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Senate rules prohibit switching between B.Cyber and conventional B.Tech programs.
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 3: Institutional Backing */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                    03 / GOVERNANCE &amp; ECOSYSTEM
-                  </span>
-                  <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center">
-                    <Building2 className="w-4 h-4" />
-                  </div>
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                  IITK WSAIS &amp; C3iHub Ecosystem
+            {/* Category 3: Institutional Governance & Career Reality */}
+            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="lg:col-span-4">
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
+                  SPECIFICATION 03
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
+                  Governance &amp; Career Reality
                 </h3>
-                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  Run by the Wadhwani School of AI and Intelligent Systems, backed by C3iHub (Cybersecurity and Cybersecurity of Cyber-Physical Systems Innovation Hub).
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Institutional ecosystem, administration, and ground-truth career parameters.
                 </p>
               </div>
 
-              <div className="mt-5 pt-3.5 border-t border-slate-100 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Administering School:</span>
-                  <span className="font-semibold text-slate-800">WSAIS, IIT Kanpur</span>
+              <div className="lg:col-span-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Ecosystem Backing</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
+                      WSAIS &amp; C3iHub Ecosystem
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Wadhwani School of AI and Intelligent Systems, backed by IIT Kanpur&apos;s National Cybersecurity Hub.
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Affiliated Institute:</span>
-                  <span className="font-semibold text-slate-800">IIT Madras (enrolled cohort)</span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Placement Support</span>
+                  <div className="sm:col-span-8">
+                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
+                      Dedicated WSAIS Placement Assistance
+                    </span>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Specific career assistance channels provided for program graduates upon successful completion.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
+                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Historical CTC Data</span>
+                  <div className="sm:col-span-8">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900">
+                        Zero Historical Placement Statistics
+                      </span>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60">
+                        Inaugural 2026 Batch
+                      </span>
+                    </div>
+                    <span className="text-xs text-slate-500 mt-0.5 block">
+                      Any coaching claim citing median packages is misleading; first batch graduates in 2030.
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 4: Ground Truth & Placements */}
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
-                    04 / GROUND TRUTH REALITY
-                  </span>
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
-                    <Scale className="w-4 h-4" />
-                  </div>
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-                  Placements &amp; Historical Transparency
-                </h3>
-                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                  Dedicated placement support is stated by WSAIS. Because the inaugural cohort launched in July 2026, no historical package stats exist yet.
-                </p>
-              </div>
-
-              <div className="mt-5 pt-3.5 border-t border-slate-100 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Historical CTC:</span>
-                  <span className="font-semibold text-amber-800 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-full text-[11px]">
-                    No Historical Data (New Degree)
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Placement Cell:</span>
-                  <span className="font-semibold text-slate-800">Dedicated Support Stated</span>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
