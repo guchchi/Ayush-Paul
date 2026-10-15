@@ -43,3 +43,6 @@ target_request.txt
 agentic-awesome-skills/
 .agents/skills.json
 scratch/
+__pycache__/
+*.py[cod]
+
