@@ -25,6 +25,7 @@ import {
   Square,
   Scale,
   Sparkles,
+  LayoutGrid,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
 import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
@@ -248,8 +249,8 @@ export function BCyberHomePage() {
     url: canonical,
   });
 
-  // State for active fact tab in Section 2 (Option 3 Interactive Blueprint Console)
-  const [activeFactTab, setActiveFactTab] = useState<'degree' | 'model' | 'governance' | 'reality'>('degree');
+  // State for active fact filter in Section 2 (Horizontal Filter Pills + Results Grid)
+  const [activeFactFilter, setActiveFactFilter] = useState<'all' | 'degree' | 'model' | 'governance' | 'reality'>('all');
 
   // State for active semester tab in Section 4
   const [activeSemIndex, setActiveSemIndex] = useState(0);
@@ -443,402 +444,281 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          {/* Option 3: Interactive Blueprint Specification Console */}
-          <div className="space-y-3.5">
-            {/* Interactive Context Guidance Banner */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 bg-slate-50/90 border border-slate-200/80 rounded-xl">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 relative shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
+          {/* Horizontal Filter Options + Results Grid (Inspired by Reference Design) */}
+          <div className="space-y-4">
+            {/* Horizontal Filter Pills Carousel/Row */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+              {/* Pill 0: All */}
+              <button
+                type="button"
+                onClick={() => setActiveFactFilter('all')}
+                className={cn(
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  activeFactFilter === 'all'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
+                    activeFactFilter === 'all' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                  )}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
                 </span>
-                <span className="text-xs font-bold text-slate-800">
-                  Interactive Program Inspector
+                <span>All</span>
+              </button>
+
+              {/* Pill 1: Degree & Alumni */}
+              <button
+                type="button"
+                onClick={() => setActiveFactFilter('degree')}
+                className={cn(
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  activeFactFilter === 'degree'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
+                    activeFactFilter === 'degree' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                  )}
+                >
+                  <Award className="w-3.5 h-3.5" />
                 </span>
-                <span className="text-xs text-slate-500 hidden md:inline">
-                  • Click any topic to inspect verified Senate parameters:
+                <span>Degree &amp; Alumni</span>
+              </button>
+
+              {/* Pill 2: 2+2 Model */}
+              <button
+                type="button"
+                onClick={() => setActiveFactFilter('model')}
+                className={cn(
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  activeFactFilter === 'model'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
+                    activeFactFilter === 'model' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                  )}
+                >
+                  <Layers className="w-3.5 h-3.5" />
                 </span>
-              </div>
-              <span className="text-[11px] font-mono font-medium text-slate-500 bg-white border border-slate-200/90 px-2.5 py-1 rounded-md shadow-2xs self-start sm:self-auto">
-                {activeFactTab === 'degree' && 'Pillar 1/4: Conferred Credential'}
-                {activeFactTab === 'model' && 'Pillar 2/4: 2+2 Model Rules'}
-                {activeFactTab === 'governance' && 'Pillar 3/4: Host Ecosystem'}
-                {activeFactTab === 'reality' && 'Pillar 4/4: Placement Reality'}
+                <span>2+2 Model Rules</span>
+              </button>
+
+              {/* Pill 3: Governance & Hub */}
+              <button
+                type="button"
+                onClick={() => setActiveFactFilter('governance')}
+                className={cn(
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  activeFactFilter === 'governance'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
+                    activeFactFilter === 'governance' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                  )}
+                >
+                  <Building2 className="w-3.5 h-3.5" />
+                </span>
+                <span>Ecosystem &amp; Host</span>
+              </button>
+
+              {/* Pill 4: Placement Reality */}
+              <button
+                type="button"
+                onClick={() => setActiveFactFilter('reality')}
+                className={cn(
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  activeFactFilter === 'reality'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                )}
+              >
+                <span
+                  className={cn(
+                    'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
+                    activeFactFilter === 'reality' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                  )}
+                >
+                  <Scale className="w-3.5 h-3.5" />
+                </span>
+                <span>Placement Reality</span>
+              </button>
+            </div>
+
+            {/* Results Micro-Heading (matching reference image) */}
+            <div className="flex items-center justify-between text-xs text-slate-500 pt-1 px-1">
+              <span className="font-semibold text-slate-700">
+                {activeFactFilter === 'all' && 'Most Important Program Parameters'}
+                {activeFactFilter === 'degree' && 'Filtered Result: Degree & Conferred Standing'}
+                {activeFactFilter === 'model' && 'Filtered Result: 2+2 Pedagogical Model'}
+                {activeFactFilter === 'governance' && 'Filtered Result: Ecosystem & Host Campuses'}
+                {activeFactFilter === 'reality' && 'Filtered Result: Career Ground Truth & CTC Data'}
+              </span>
+              <span className="text-[11px] font-mono text-slate-400">
+                {activeFactFilter === 'all' ? 'Showing 4 of 4' : 'Filtered: 1 of 4'}
               </span>
             </div>
 
-            {/* Segmented Controller with explicit tab styling & icons */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-              <button
-                type="button"
-                onClick={() => setActiveFactTab('degree')}
-                className={cn(
-                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
-                  activeFactTab === 'degree'
-                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
-                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Award className={cn('w-4 h-4 shrink-0', activeFactTab === 'degree' ? 'text-[#d1f34d]' : 'text-slate-400')} />
-                  <span>01 Degree &amp; Alumni</span>
-                </div>
-                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'degree' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveFactTab('model')}
-                className={cn(
-                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
-                  activeFactTab === 'model'
-                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
-                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Layers className={cn('w-4 h-4 shrink-0', activeFactTab === 'model' ? 'text-[#d1f34d]' : 'text-slate-400')} />
-                  <span>02 2+2 Model Rules</span>
-                </div>
-                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'model' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveFactTab('governance')}
-                className={cn(
-                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
-                  activeFactTab === 'governance'
-                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
-                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Building2 className={cn('w-4 h-4 shrink-0', activeFactTab === 'governance' ? 'text-[#d1f34d]' : 'text-slate-400')} />
-                  <span>03 Governance &amp; Host</span>
-                </div>
-                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'governance' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveFactTab('reality')}
-                className={cn(
-                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
-                  activeFactTab === 'reality'
-                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
-                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Scale className={cn('w-4 h-4 shrink-0', activeFactTab === 'reality' ? 'text-[#d1f34d]' : 'text-slate-400')} />
-                  <span>04 CTC &amp; Reality</span>
-                </div>
-                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'reality' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
-              </button>
-            </div>
-
-            {/* Active Specification Panel */}
-            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 sm:p-7 transition-all">
-              {/* TAB 01: DEGREE & ALUMNI */}
-              {activeFactTab === 'degree' && (
-                <div className="space-y-6 animate-in fade-in-50 duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
-                          STATUTORY CREDENTIAL
-                        </span>
-                        <span className="text-xs text-slate-400">• Senate Ordinance §4</span>
+            {/* Results Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+              {/* CARD 1: DEGREE & ALUMNI (Warm Peach/Rose tint) */}
+              {(activeFactFilter === 'all' || activeFactFilter === 'degree') && (
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef2f2] border border-[#fee4e2] hover:border-[#fecdca] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                  <div>
+                    {/* Card Top Row */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-rose-950 shadow-2xs">
+                        <Award className="w-3.5 h-3.5 text-rose-600" />
+                        <span>Degree Award</span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                        Bachelor of Cybersecurity (B.Cyber.)
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                        Conferred under official IIT Kanpur Senate regulations with 100% full regular alumni status.
-                      </p>
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-amber-800 shadow-2xs">
+                        <span className="text-amber-500">★</span>
+                        <span>FAQ 16 Regular Alumni</span>
+                      </div>
                     </div>
-                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
-                      Full Regular IITK Alumni (FAQ 16)
-                    </span>
+
+                    {/* Card Title & Content */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                      Bachelor of Cybersecurity (B.Cyber.)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                      Conferred under official IIT Kanpur Senate regulations. Students receive full regular IIT alumni status with identical convocation standing, alumni association rights, and 100% global parity for MS/Ph.D. admissions (FAQ 9).
+                    </p>
                   </div>
 
-                  {/* 2 Comparative Columns for complete clarity */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Column A: What You Receive */}
-                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-3">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        <span>What Is Conferred</span>
-                      </span>
-                      <ul className="space-y-2 text-xs text-slate-600">
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-600 font-bold">•</span>
-                          <span><strong>Degree Title:</strong> Bachelor of Cybersecurity (B.Cyber.) conferred at annual convocation.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-600 font-bold">•</span>
-                          <span><strong>Alumni Privileges:</strong> Full institutional network, lifelong email, and alumni chapter voting rights.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-emerald-600 font-bold">•</span>
-                          <span><strong>Higher Studies (FAQ 9):</strong> 100% equivalent to 4-year degree for global MS/Ph.D. admissions.</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* Column B: Critical Nuances */}
-                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-3">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                        <Info className="w-4 h-4 text-blue-600" />
-                        <span>Key Statutory Nuances</span>
-                      </span>
-                      <ul className="space-y-2 text-xs text-slate-600">
-                        <li className="flex items-start gap-2">
-                          <span className="text-blue-600 font-bold">•</span>
-                          <span><strong>Not a B.Tech CSE:</strong> B.Cyber has distinct Senate ordinance code and specialized curriculum.</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-blue-600 font-bold">•</span>
-                          <span><strong>Duration:</strong> 4 Academic Years standard (Senate permits maximum 6 years).</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-blue-600 font-bold">•</span>
-                          <span><strong>Senate Record:</strong> Independent degree designed specifically for national cyber infrastructure.</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Panel Footer with Navigation Button */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <span className="font-mono text-[11px] text-slate-400">
-                      OFFICIAL SOURCE: Senate Minutes &amp; WSAIS Portal FAQ 9, 16
+                  {/* Card Bottom Meta */}
+                  <div className="pt-4 border-t border-rose-200/50 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700">
+                      4 Academic Years (Max 6 Yrs)
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveFactTab('model')}
-                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
-                    >
-                      <span>Next: Inspect 2+2 Model Rules</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-rose-700 border border-rose-200/60 shadow-2xs">
+                      Senate Ord. §4
+                    </span>
                   </div>
                 </div>
               )}
 
-              {/* TAB 02: 2+2 MODEL RULES */}
-              {activeFactTab === 'model' && (
-                <div className="space-y-6 animate-in fade-in-50 duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
-                          PEDAGOGICAL STRUCTURE
-                        </span>
-                        <span className="text-xs text-slate-400">• 2 Yrs Campus + 2 Yrs Practicum</span>
+              {/* CARD 2: 2+2 PEDAGOGY (Warm Butterscotch/Amber tint) */}
+              {(activeFactFilter === 'all' || activeFactFilter === 'model') && (
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef9ee] border border-[#fef0c7] hover:border-[#fedf89] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                  <div>
+                    {/* Card Top Row */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-amber-950 shadow-2xs">
+                        <Layers className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Pedagogical Model</span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                        The 2+2 Split Architecture
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                        Equal distribution between rigorous on-campus theory and full-time practical field deployment.
-                      </p>
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-amber-800 shadow-2xs">
+                        <span className="text-amber-500">⚡</span>
+                        <span>2+2 Architecture</span>
+                      </div>
                     </div>
-                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/50 text-xs font-bold whitespace-nowrap shadow-2xs">
-                      Branch Transfer Prohibited
+
+                    {/* Card Title & Content */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                      2 Yrs Campus Labs + 2 Yrs Field Practicum
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                      Semesters 1–4 provide intensive campus coursework &amp; 5 live cyber labs (Malware, Forensics, VAPT, Cloud, Networks) at IIT Kanpur. Semesters 5–8 require full-time practical deployment in defense intelligence &amp; cyber infrastructure.
+                    </p>
+                  </div>
+
+                  {/* Card Bottom Meta */}
+                  <div className="pt-4 border-t border-amber-200/50 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700">
+                      200 Campus + 216 Field Credits
                     </span>
-                  </div>
-
-                  {/* 2 Visual Stage Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Phase 1 */}
-                    <div className="p-4 rounded-xl bg-blue-50/40 border border-blue-200/60 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono font-bold uppercase text-brand-primary">Phase 1: Semesters 1 to 4</span>
-                        <span className="text-[10px] font-semibold text-slate-500">200 Credits</span>
-                      </div>
-                      <h4 className="text-sm font-bold text-slate-900">Campus Residency at IIT Kanpur</h4>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Comprehensive computer science, electronics, and 5 mandatory technical labs: Malware Analysis, Digital Forensics, VAPT, Cloud Security, and Network Defense.
-                      </p>
-                    </div>
-
-                    {/* Phase 2 */}
-                    <div className="p-4 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono font-bold uppercase text-amber-800">Phase 2: Semesters 5 to 8</span>
-                        <span className="text-[10px] font-semibold text-slate-500">216 Credits</span>
-                      </div>
-                      <h4 className="text-sm font-bold text-slate-900">Full-Time Field Deployment Practicum</h4>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Practical deployment in defense intelligence units, CERT-In, NCIIPC, and national cyber infrastructure. Host organizations determine stipend arrangements.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Critical Prohibitive Rule Callout */}
-                  <div className="p-3.5 rounded-xl bg-rose-50/70 border border-rose-200/70 flex items-start gap-2.5">
-                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                    <div className="text-xs text-slate-700 leading-normal">
-                      <strong className="text-rose-900">Non-Transferability Notice (FAQ 12):</strong> Under Senate ordinances, branch change is strictly prohibited. B.Cyber students cannot transfer to regular B.Tech CSE, and regular B.Tech students cannot enter B.Cyber without qualifying the separate entrance.
-                    </div>
-                  </div>
-
-                  {/* Panel Footer */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <span className="font-mono text-[11px] text-slate-400">
-                      OFFICIAL SOURCE: Senate Approved Curriculum Schedule
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-amber-800 border border-amber-200/60 shadow-2xs">
+                      No Branch Change
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveFactTab('governance')}
-                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
-                    >
-                      <span>Next: Inspect Governance &amp; Host</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
                   </div>
                 </div>
               )}
 
-              {/* TAB 03: GOVERNANCE & HOST */}
-              {activeFactTab === 'governance' && (
-                <div className="space-y-6 animate-in fade-in-50 duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
-                          INSTITUTIONAL ECOSYSTEM
-                        </span>
-                        <span className="text-xs text-slate-400">• WSAIS &amp; C3iHub</span>
+              {/* CARD 3: GOVERNANCE & HOST (Soft Lavender/Indigo tint) */}
+              {(activeFactFilter === 'all' || activeFactFilter === 'governance') && (
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#f5f3ff] border border-[#ede9fe] hover:border-[#ddd6fe] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                  <div>
+                    {/* Card Top Row */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-purple-950 shadow-2xs">
+                        <Building2 className="w-3.5 h-3.5 text-purple-600" />
+                        <span>Host Ecosystem</span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                        Administered by WSAIS &amp; C3iHub
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                        Operated by IIT Kanpur&apos;s AI school with twin cohort participation from IIT Madras.
-                      </p>
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-purple-800 shadow-2xs">
+                        <span className="text-purple-600">🏛️</span>
+                        <span>IITK + IIT Madras</span>
+                      </div>
                     </div>
-                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-blue-50 text-brand-primary border border-blue-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
-                      IITK + IIT Madras Joint
-                    </span>
+
+                    {/* Card Title & Content */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                      WSAIS &amp; C3iHub National Hub
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                      Run by the Wadhwani School of AI and Intelligent Systems, backed by C3iHub (National Cybersecurity Innovation Hub). Offered jointly with IIT Madras sharing identical academic curriculum and Senate rigor.
+                    </p>
                   </div>
 
-                  {/* Institutional Breakdown */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
-                        ADMINISTERING BODY
-                      </span>
-                      <span className="text-sm font-bold text-slate-900 block mt-1">
-                        WSAIS, IIT Kanpur
-                      </span>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Wadhwani School of AI and Intelligent Systems manages academic instruction and governance.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
-                        RESEARCH POWERHOUSE
-                      </span>
-                      <span className="text-sm font-bold text-slate-900 block mt-1">
-                        C3iHub National Center
-                      </span>
-                      <p className="text-xs text-slate-500 mt-1">
-                        National innovation hub for cybersecurity of cyber-physical systems established at IIT Kanpur.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
-                        TWIN COHORT
-                      </span>
-                      <span className="text-sm font-bold text-slate-900 block mt-1">
-                        IIT Madras
-                      </span>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Jointly offered with IIT Madras with shared admission criteria and identical Senate standards.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Panel Footer */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <span className="font-mono text-[11px] text-slate-400">
-                      OFFICIAL SOURCE: Ministry of Education &amp; IITK WSAIS Charter
+                  {/* Card Bottom Meta */}
+                  <div className="pt-4 border-t border-purple-200/50 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700">
+                      Apex MoE Institutions
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveFactTab('reality')}
-                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
-                    >
-                      <span>Next: Inspect Placement &amp; CTC Truth</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-purple-700 border border-purple-200/60 shadow-2xs">
+                      National Center
+                    </span>
                   </div>
                 </div>
               )}
 
-              {/* TAB 04: CTC & PLACEMENT REALITY */}
-              {activeFactTab === 'reality' && (
-                <div className="space-y-6 animate-in fade-in-50 duration-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
-                          GROUND TRUTH ADVISORY
-                        </span>
-                        <span className="text-xs text-slate-400">• Inaugural July 2026 Batch</span>
+              {/* CARD 4: PLACEMENT REALITY (Soft Mint/Emerald tint) */}
+              {(activeFactFilter === 'all' || activeFactFilter === 'reality') && (
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#ecfdf3] border border-[#d1fadf] hover:border-[#a6f4c5] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                  <div>
+                    {/* Card Top Row */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-emerald-950 shadow-2xs">
+                        <Scale className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Career Reality</span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                        Zero Historical Placement Statistics
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                        Complete transparency: The inaugural cohort entered in July 2026; first graduation occurs in 2030.
-                      </p>
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-emerald-800 shadow-2xs">
+                        <span className="text-emerald-600">📅</span>
+                        <span>First Passout: 2030</span>
+                      </div>
                     </div>
-                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
-                      First Passout: Summer 2030
-                    </span>
+
+                    {/* Card Title & Content */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                      Zero Historical Salary Statistics
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                      Inaugural cohort enrolled in July 2026. Any coaching claims citing historical packages or average CTC are fictional marketing. Dedicated WSAIS career assistance is provided upon graduation.
+                    </p>
                   </div>
 
-                  {/* Reality Check Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-xl bg-rose-50/40 border border-rose-200/60 space-y-2">
-                      <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
-                        <AlertTriangle className="w-4 h-4 text-rose-600" />
-                        <span>Marketing Myth vs Truth</span>
-                      </span>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Any coaching institute or counselor claiming &ldquo;50 LPA average package&rdquo; or citing past placement records for B.Cyber is publishing fictional marketing. No student has graduated yet.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-emerald-50/40 border border-emerald-200/60 space-y-2">
-                      <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                        <span>Dedicated Placement Support</span>
-                      </span>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        Official WSAIS records state dedicated cybersecurity placement assistance will be provided upon successful completion of the academic and 2-year field practicum requirements.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Panel Footer */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <span className="font-mono text-[11px] text-slate-400">
-                      OFFICIAL SOURCE: WSAIS Portal FAQ 14, 21 • Independent Consumer Warning
+                  {/* Card Bottom Meta */}
+                  <div className="pt-4 border-t border-emerald-200/50 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700">
+                      Inaugural 2026 Intake
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveFactTab('degree')}
-                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
-                    >
-                      <span>← Back to Pillar 01: Degree &amp; Alumni</span>
-                    </button>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-emerald-800 border border-emerald-200/60 shadow-2xs">
+                      WSAIS FAQ 14
+                    </span>
                   </div>
                 </div>
               )}
