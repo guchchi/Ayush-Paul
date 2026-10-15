@@ -496,194 +496,270 @@ export function BCyberHomePage() {
           </div>
 
           {/* Balanced 2x2 Grid of All 4 Key Fact Cards (Clean, Permanent, Zero Filter Clutter) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* CARD 1: DEGREE & ALUMNI */}
-            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
-              <div>
-                {/* Card Top Row */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="inline-flex items-center gap-2 bg-slate-100/90 px-3 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <Award className="w-3.5 h-3.5 text-slate-700" />
-                    <span>Degree Award</span>
+            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-5 group">
+              <div className="space-y-4">
+                {/* Card Top Row with Index & Category */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-brand-primary border border-blue-200/70 flex items-center justify-center font-bold text-xs">
+                      01
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                      <Award className="w-3.5 h-3.5 text-brand-primary" />
+                      <span>Degree Award</span>
+                    </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Regular IIT Alumni (FAQ 16)</span>
-                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-bold">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>Regular IIT Alumni</span>
+                  </span>
                 </div>
 
                 {/* Card Title */}
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                   Bachelor of Cybersecurity (B.Cyber.)
                 </h3>
 
-                {/* Concise Bullet Points */}
-                <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Full regular IIT alumni status with identical convocation standing &amp; alumni association rights.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>100% global parity for international MS &amp; Ph.D. admissions worldwide (WSAIS FAQ 9).</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Four-year degree conferred directly under official IIT Kanpur Senate regulations.</span>
-                  </li>
-                </ul>
+                {/* Structured Micro-Rows (No plain bullets) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-emerald-600">
+                      <CheckCircle2 size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Alumni Standing:</strong> Full regular IIT alumni status with identical convocation rights and alumni association membership.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-emerald-600">
+                      <CheckCircle2 size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Global Parity:</strong> 100% recognized equivalence for international MS and Ph.D. admissions worldwide (WSAIS FAQ 9).
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-emerald-600">
+                      <CheckCircle2 size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Senate Award:</strong> Four-year undergraduate degree conferred under official IIT Kanpur Senate regulations.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Standardized Card Bottom Meta */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
                   4 Academic Years (Max 6 Yrs)
                 </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
                   Senate Ord. §4
                 </span>
               </div>
             </div>
 
             {/* CARD 2: 2+2 PEDAGOGY */}
-            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
-              <div>
-                {/* Card Top Row */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="inline-flex items-center gap-2 bg-slate-100/90 px-3 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <Layers className="w-3.5 h-3.5 text-slate-700" />
-                    <span>Pedagogical Model</span>
+            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-5 group">
+              <div className="space-y-4">
+                {/* Card Top Row with Index & Category */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-brand-primary border border-blue-200/70 flex items-center justify-center font-bold text-xs">
+                      02
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                      <Layers className="w-3.5 h-3.5 text-brand-primary" />
+                      <span>Pedagogical Model</span>
+                    </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <Clock className="w-3.5 h-3.5 text-brand-primary" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-primary border border-blue-200/80 text-[11px] font-bold">
+                    <Clock className="w-3 h-3 text-brand-primary" />
                     <span>2+2 Architecture</span>
-                  </div>
+                  </span>
                 </div>
 
                 {/* Card Title */}
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                   2 Yrs Campus Labs + 2 Yrs Field Practicum
                 </h3>
 
-                {/* Concise Bullet Points */}
-                <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Semesters 1–4: Intensive campus theory &amp; 5 live security labs (Malware, VAPT, Forensics) at IITK.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Semesters 5–8: Full-time practical deployment in defense intelligence &amp; critical national assets.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Strict branch lock: Transfer into regular B.Tech is prohibited by Senate rules (WSAIS FAQ 12).</span>
-                  </li>
-                </ul>
+                {/* Structured Micro-Rows (No plain bullets) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Campus Phase:</strong> Semesters 1–4 deliver intensive theory and 5 hands-on live security labs (Malware, VAPT, Forensics) at IITK.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Field Deployment:</strong> Semesters 5–8 practical placement in defense intelligence agencies and critical national infrastructure.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-amber-600">
+                      <Clock size={12} className="text-amber-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Branch Lock:</strong> Transfer into regular B.Tech is strictly prohibited by Senate ordinances (WSAIS FAQ 12).
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Standardized Card Bottom Meta */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
                   200 Campus + 216 Field Credits
                 </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs">
-                  Senate Ord. §8 · No Branch Change
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+                  Senate Ord. §8 · Branch Lock
                 </span>
               </div>
             </div>
 
             {/* CARD 3: GOVERNANCE & HOST */}
-            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
-              <div>
-                {/* Card Top Row */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="inline-flex items-center gap-2 bg-slate-100/90 px-3 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <Building2 className="w-3.5 h-3.5 text-slate-700" />
-                    <span>Host Ecosystem</span>
+            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-5 group">
+              <div className="space-y-4">
+                {/* Card Top Row with Index & Category */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-brand-primary border border-blue-200/70 flex items-center justify-center font-bold text-xs">
+                      03
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                      <Building2 className="w-3.5 h-3.5 text-brand-primary" />
+                      <span>Host Ecosystem</span>
+                    </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <ShieldCheck className="w-3.5 h-3.5 text-brand-primary" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80 text-[11px] font-bold">
+                    <ShieldCheck className="w-3 h-3 text-brand-primary" />
                     <span>Apex MoE Centers</span>
-                  </div>
+                  </span>
                 </div>
 
                 {/* Card Title */}
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                   WSAIS &amp; C3iHub National Hub
                 </h3>
 
-                {/* Concise Bullet Points */}
-                <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Anchored at Wadhwani School of AI and Intelligent Systems (WSAIS) at IIT Kanpur.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Technically supported by C3iHub — India&apos;s apex Cybersecurity Innovation Hub.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Offered jointly with IIT Madras sharing identical academic curriculum and Senate rigor.</span>
-                  </li>
-                </ul>
+                {/* Structured Micro-Rows (No plain bullets) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Host School:</strong> Anchored at the Wadhwani School of AI and Intelligent Systems (WSAIS) at IIT Kanpur.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Apex Cyber Hub:</strong> Technically supported by C3iHub — India&apos;s apex Cybersecurity Innovation Hub.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Joint Offering:</strong> Offered in close partnership with IIT Madras sharing identical academic curriculum and rigor.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Standardized Card Bottom Meta */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
                   IIT Kanpur &amp; IIT Madras Joint
                 </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
                   National Center
                 </span>
               </div>
             </div>
 
             {/* CARD 4: PLACEMENT REALITY */}
-            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
-              <div>
-                {/* Card Top Row */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="inline-flex items-center gap-2 bg-slate-100/90 px-3 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <Scale className="w-3.5 h-3.5 text-slate-700" />
-                    <span>Career Reality</span>
+            <div className="rounded-3xl p-6 sm:p-7 bg-white border border-slate-200/90 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-5 group">
+              <div className="space-y-4">
+                {/* Card Top Row with Index & Category */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-brand-primary border border-blue-200/70 flex items-center justify-center font-bold text-xs">
+                      04
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                      <Scale className="w-3.5 h-3.5 text-brand-primary" />
+                      <span>Career Reality</span>
+                    </div>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 border border-slate-200/80 shadow-2xs">
-                    <CalendarCheck className="w-3.5 h-3.5 text-slate-700" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80 text-[11px] font-bold">
+                    <CalendarCheck className="w-3 h-3 text-slate-700" />
                     <span>First Passout: 2030</span>
-                  </div>
+                  </span>
                 </div>
 
                 {/* Card Title */}
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                   Zero Historical Salary Statistics
                 </h3>
 
-                {/* Concise Bullet Points */}
-                <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Inaugural cohort enrolled in July 2026; first graduating class will pass out in 2030.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Beware coaching claims: Any past packages or median CTC figures quoted online are fictional.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0 group-hover:bg-slate-700 transition-colors" />
-                    <span>Dedicated WSAIS career assistance channel is provided to all program completers (WSAIS FAQ 14).</span>
-                  </li>
-                </ul>
+                {/* Structured Micro-Rows (No plain bullets) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-slate-700">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Cohort Timeline:</strong> Inaugural cohort enrolled in July 2026; the very first graduating class will pass out in 2030.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-amber-600">
+                      <Scale size={12} className="text-amber-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Fact Check:</strong> Beware coaching claims — any past packages or median CTC figures quoted online are fictional.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 group-hover:bg-slate-50 transition-colors flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <CheckCircle2 size={12} className="text-emerald-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Career Support:</strong> Dedicated WSAIS career assistance channel is provided to all program completers (WSAIS FAQ 14).
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Standardized Card Bottom Meta */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800">
-                  Inaugural 2026 Intake
+              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
+                  Inaugural 2026 Cohort
                 </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
                   WSAIS FAQ 14
                 </span>
               </div>
