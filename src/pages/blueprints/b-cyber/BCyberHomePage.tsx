@@ -1018,7 +1018,7 @@ export function BCyberHomePage() {
         </section>
 
         {/* =========================================================================
-            SECTION 7: IS B.CYBER RIGHT FOR YOU? (Fit & Self-Reflection)
+            SECTION 7: IS B.CYBER RIGHT FOR YOU? (Fit & Profile Assessment)
         ========================================================================= */}
         <section aria-labelledby="fit-heading" className="space-y-6">
           <div className="space-y-1">
@@ -1029,109 +1029,310 @@ export function BCyberHomePage() {
               Who Should Consider IIT Kanpur B.Cyber?
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Assess your genuine interest before committing to a specialized 4-year degree.
+              Assess your genuine technical interest and mindset before committing to a specialized 4-year degree.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Good Fit Column */}
-            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/20 p-5 sm:p-6 shadow-xs space-y-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                A Good Fit to Explore If...
-              </span>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                  <span>You are genuinely fascinated by computer networks, protocols, and OS internals.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                  <span>You enjoy patiently investigating edge-case bugs and dissecting disassembled binaries.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                  <span>You are eager to spend two full years deployed in national infrastructure and defense organizations.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                  <span>You want to practice cybersecurity in a disciplined, legally authorized, ethical framework.</span>
-                </li>
-              </ul>
+          {/* Dual Profile Archetype Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+            {/* COLUMN 1: STRONG ALIGNMENT */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-6 group">
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-950 border border-emerald-200 shadow-2xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>Strong Alignment</span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    High Retention
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight group-hover:text-emerald-950 transition-colors">
+                    Ideal Candidate Archetype
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Students with innate curiosity for low-level computing, protocol dissection, and disciplined defense engineering.
+                  </p>
+                </div>
+
+                {/* 4 Structured Criteria Cards */}
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      01
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Low-Level Systems Curiosity
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Fascinated by computer networks, TCP/IP handshakes, Linux OS internals, and memory architectures rather than just high-level UI apps.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      02
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Reverse-Engineering Grit
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Enjoys patiently investigating edge-case bugs, reading disassembled binary flows, and uncovering why software components fail.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      03
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        2-Year Practical Field Readiness
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Eager to spend Semesters 5–8 deployed on-site in critical national infrastructure, defense intelligence, or national cyber defense units.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      04
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Strict Ethical &amp; Legal Framework
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Committed to practicing defense research strictly within legally authorized boundaries, institutional rules, and cyber law standards.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Bottom Meta */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800">
+                  Profile Match
+                </span>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-950 border border-emerald-200 shadow-2xs">
+                  Systems &amp; Defense Track
+                </span>
+              </div>
             </div>
 
-            {/* Think Carefully Column */}
-            <div className="rounded-2xl border border-amber-200/80 bg-amber-50/20 p-5 sm:p-6 shadow-xs space-y-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
-                Think Carefully Before Choosing If...
-              </span>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>You are choosing the program purely for the &quot;IIT tag&quot; without interest in systems engineering.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>You assume cybersecurity is just running pre-made hacking scripts or automated scanners.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>You expect an immediate guarantee of high private corporate placement salaries.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>You plan to branch-change into regular B.Tech Computer Science (which is strictly prohibited).</span>
-                </li>
-              </ul>
+            {/* COLUMN 2: THINK CAREFULLY / MISALIGNMENT */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-6 group">
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-950 border border-amber-200 shadow-2xs">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-700" />
+                    <span>High Caution</span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    Friction Risks
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight group-hover:text-amber-950 transition-colors">
+                    Common Misalignment Factors
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Key expectation traps and assumptions that lead to dissatisfaction or academic friction in this program.
+                  </p>
+                </div>
+
+                {/* 4 Structured Criteria Cards */}
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      01
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        &quot;IIT Brand Tag&quot; Speculation
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Selecting the degree purely for the prestige label while lacking genuine interest in terminal-driven, low-level systems engineering.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      02
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        &quot;Script-Kiddie&quot; Tool Illusion
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Assuming cybersecurity is clicking pre-packaged hacking tools or running Kali scripts without mastering deep computer science foundations.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      03
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Branch-Transfer Expectation
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Planning to switch into regular B.Tech Computer Science (strictly barred under official IIT Kanpur Senate Ordinances, FAQ 12).
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      04
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Instant Big-Tech Salary Assumptions
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Expecting guaranteed private corporate packages instead of recognizing the inaugural 2026 defense cohort timeline where graduates pass out in 2030.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Bottom Meta */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800">
+                  Senate Advisory
+                </span>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-950 border border-amber-200 shadow-2xs">
+                  Zero Branch Change
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Interactive 3-Question Self-Reflection */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                Self-Reflection Check
-              </span>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                Is this degree worth exploring for you?
-              </h3>
+          {/* Interactive 3-Question Self-Reflection Diagnostic Box */}
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  Readiness Self-Assessment
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                  Is this degree worth exploring for you?
+                </h3>
+              </div>
+
+              {/* Alignment Progress Counter */}
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <span className="text-xs font-bold text-slate-800 block">
+                    Alignment Score: {reflectionCount}/3
+                  </span>
+                  <span className="text-[10px] text-slate-400 block">
+                    {reflectionCount === 3 ? '100% Confirmed' : reflectionCount === 2 ? '66% Confirmed' : reflectionCount === 1 ? '33% Confirmed' : '0% Confirmed'}
+                  </span>
+                </div>
+                <div className="w-20 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div
+                    className={cn(
+                      'h-full transition-all duration-300',
+                      reflectionCount === 3 ? 'bg-emerald-500 w-full' : reflectionCount === 2 ? 'bg-amber-500 w-2/3' : reflectionCount === 1 ? 'bg-brand-primary w-1/3' : 'w-0'
+                    )}
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2 text-xs sm:text-sm">
+            <div className="space-y-2.5 text-xs sm:text-sm">
               {[
-                'I am willing to spend 2 full years away from campus deployed on practical field assignments in government or critical infrastructure.',
-                'I am interested in low-level systems (Linux, C, networking, cryptography) rather than solely standard consumer web apps.',
-                'I understand that admission selection evaluates verifiable prior work and practical technical aptitude alongside academic criteria.',
-              ].map((prompt, idx) => {
+                {
+                  title: 'Two-Year Off-Campus Field Practicum',
+                  desc: 'I am willing to spend 2 full years away from campus deployed on practical field assignments in government or critical infrastructure.',
+                },
+                {
+                  title: 'Low-Level Systems Engineering Focus',
+                  desc: 'I am interested in low-level systems (Linux kernel, C, networks, applied cryptography) rather than solely standard consumer web apps.',
+                },
+                {
+                  title: 'Evidence-Based Technical Selection',
+                  desc: 'I understand that admission selection evaluates verifiable prior work and practical technical aptitude alongside academic criteria.',
+                },
+              ].map((item, idx) => {
                 const isChecked = !!reflectionChecks[idx];
                 return (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => toggleReflection(idx)}
-                    className="w-full p-3 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-slate-100 flex items-start gap-2.5 text-left transition-colors cursor-pointer"
-                  >
-                    {isChecked ? (
-                      <CheckSquare size={16} className="text-brand-primary shrink-0 mt-0.5" />
-                    ) : (
-                      <Square size={16} className="text-slate-400 shrink-0 mt-0.5" />
+                    className={cn(
+                      'w-full p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3.5 group',
+                      isChecked
+                        ? 'border-brand-primary/40 bg-brand-primary/5 shadow-2xs'
+                        : 'border-slate-200/80 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300'
                     )}
-                    <span className={cn('flex-1 text-xs', isChecked ? 'text-slate-900 font-semibold' : 'text-slate-600')}>
-                      {prompt}
+                  >
+                    <span className="mt-0.5 shrink-0">
+                      {isChecked ? (
+                        <CheckSquare className="w-5 h-5 text-brand-primary" />
+                      ) : (
+                        <Square className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                      )}
                     </span>
+                    <div className="flex-1">
+                      <span className={cn('text-xs sm:text-[13px] font-bold block', isChecked ? 'text-slate-900' : 'text-slate-800')}>
+                        {item.title}
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        {item.desc}
+                      </span>
+                    </div>
                   </button>
                 );
               })}
             </div>
 
-            <div className="pt-2 text-xs font-medium text-slate-600">
+            {/* Diagnostic Result Banner */}
+            <div className="pt-2">
               {reflectionCount === 3 ? (
-                <span className="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 inline-block">
-                  ✓ Your answers suggest this specialized curriculum aligns well with your goals.
-                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+                  <div className="flex items-center gap-2.5 text-xs text-emerald-900 font-semibold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span>High Curricular Alignment: Your expectations match official Senate regulations and the 2+2 model.</span>
+                  </div>
+                  <Link
+                    to="/blueprints/b-cyber/roadmap"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0b1c30] text-white text-xs font-bold hover:bg-slate-800 transition-all shadow-xs shrink-0"
+                  >
+                    <span>View Preparation Roadmap</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#d1f34d]" />
+                  </Link>
+                </div>
               ) : (
-                <span className="text-slate-500">
-                  {reflectionCount} of 3 prompts checked. Read the full curriculum and structural requirements before deciding.
-                </span>
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 flex items-center justify-between">
+                  <span>
+                    {reflectionCount} of 3 prompts confirmed. Check all three conditions to verify your complete alignment.
+                  </span>
+                  <Link
+                    to="/blueprints/b-cyber/curriculum"
+                    className="font-semibold text-brand-primary hover:underline shrink-0 ml-3"
+                  >
+                    Inspect Curriculum &rarr;
+                  </Link>
+                </div>
               )}
             </div>
           </div>
