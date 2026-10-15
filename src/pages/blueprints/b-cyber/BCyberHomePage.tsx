@@ -591,8 +591,8 @@ export function BCyberHomePage() {
                       </div>
                     </div>
 
-                    {/* Card Title */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-brand-primary transition-colors">
+                    {/* Card Title (Refined font-bold weight matching homepage) */}
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                       Bachelor of Cybersecurity (B.Cyber.)
                     </h3>
 
@@ -641,8 +641,8 @@ export function BCyberHomePage() {
                       </div>
                     </div>
 
-                    {/* Card Title */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-brand-primary transition-colors">
+                    {/* Card Title (Refined font-bold weight matching homepage) */}
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                       2 Yrs Campus Labs + 2 Yrs Field Practicum
                     </h3>
 
@@ -691,8 +691,8 @@ export function BCyberHomePage() {
                       </div>
                     </div>
 
-                    {/* Card Title */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-brand-primary transition-colors">
+                    {/* Card Title (Refined font-bold weight matching homepage) */}
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                       WSAIS &amp; C3iHub National Hub
                     </h3>
 
@@ -741,8 +741,8 @@ export function BCyberHomePage() {
                       </div>
                     </div>
 
-                    {/* Card Title */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-brand-primary transition-colors">
+                    {/* Card Title (Refined font-bold weight matching homepage) */}
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-3.5 leading-snug tracking-tight group-hover:text-brand-primary transition-colors">
                       Zero Historical Salary Statistics
                     </h3>
 
