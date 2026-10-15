@@ -1055,6 +1055,74 @@ export function BCyberHomePage() {
             const currentSem = CURRICULUM_SEMESTERS[activeSemIndex];
             const labCount = currentSem.subjects.filter((s) => s.isLab).length;
 
+            const getSubjectVisual = (sub: SemesterSubject) => {
+              if (sub.isLab) {
+                return {
+                  icon: Terminal,
+                  iconContainer: 'bg-blue-50 text-brand-primary border-blue-200/80 group-hover:bg-brand-primary group-hover:text-white',
+                  badge: (
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-brand-primary border border-blue-200/80 uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                      Hands-on Lab
+                    </span>
+                  ),
+                  creditBadge: 'bg-blue-50/70 border-blue-200/80 text-brand-primary',
+                  cardBorder: 'border-blue-200/90 hover:border-blue-300',
+                };
+              }
+              if (sub.type === 'Cognitive Science' || sub.type === 'Humanities') {
+                return {
+                  icon: Scale,
+                  iconContainer: 'bg-amber-50 text-amber-700 border-amber-200/80',
+                  badge: (
+                    <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/70 uppercase tracking-wider">
+                      {sub.type}
+                    </span>
+                  ),
+                  creditBadge: 'bg-slate-50 border-slate-200/80 text-slate-800',
+                  cardBorder: 'border-slate-200/80 hover:border-slate-300',
+                };
+              }
+              if (sub.type === 'Elective') {
+                return {
+                  icon: Layers,
+                  iconContainer: 'bg-purple-50 text-purple-700 border-purple-200/80',
+                  badge: (
+                    <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200/70 uppercase tracking-wider">
+                      Elective
+                    </span>
+                  ),
+                  creditBadge: 'bg-slate-50 border-slate-200/80 text-slate-800',
+                  cardBorder: 'border-slate-200/80 hover:border-slate-300',
+                };
+              }
+              if (sub.type === 'Core Systems' || sub.type === 'Security Core') {
+                return {
+                  icon: Cpu,
+                  iconContainer: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
+                  badge: (
+                    <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200/70 uppercase tracking-wider">
+                      {sub.type}
+                    </span>
+                  ),
+                  creditBadge: 'bg-slate-50 border-slate-200/80 text-slate-800',
+                  cardBorder: 'border-slate-200/80 hover:border-slate-300',
+                };
+              }
+              // Default: Core Theory
+              return {
+                icon: BookOpen,
+                iconContainer: 'bg-slate-100 text-slate-700 border-slate-200/80',
+                badge: (
+                  <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200/70 uppercase tracking-wider">
+                    {sub.type}
+                  </span>
+                ),
+                creditBadge: 'bg-slate-50 border-slate-200/80 text-slate-800',
+                cardBorder: 'border-slate-200/80 hover:border-slate-300',
+              };
+            };
+
             return (
               <div
                 role="tabpanel"
@@ -1084,68 +1152,52 @@ export function BCyberHomePage() {
                   </div>
                 </div>
 
-                {/* Symmetrical Subject Cards Grid */}
+                {/* Symmetrical Consistent Subject Cards Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
                   {currentSem.subjects.map((sub, i) => {
                     const isLastOdd = i === currentSem.subjects.length - 1 && currentSem.subjects.length % 2 !== 0;
+                    const visual = getSubjectVisual(sub);
+                    const IconComponent = visual.icon;
 
                     return (
                       <div
                         key={i}
                         className={cn(
-                          'p-4 rounded-2xl border transition-all duration-150 flex items-center justify-between gap-3',
-                          isLastOdd
-                            ? 'sm:col-span-2 bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'
-                            : sub.isLab
-                            ? 'border-blue-200/90 bg-blue-50/30 hover:bg-blue-50/50 shadow-2xs'
-                            : 'border-slate-200/80 bg-white hover:bg-slate-50/60 shadow-2xs'
+                          'p-4 rounded-2xl border bg-white shadow-2xs hover:shadow-xs hover:-translate-y-0.5 transition-all duration-150 flex items-center justify-between gap-3 group',
+                          isLastOdd ? 'sm:col-span-2' : '',
+                          visual.cardBorder
                         )}
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <div
                             className={cn(
-                              'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs',
-                              sub.isLab
-                                ? 'bg-brand-primary text-white'
-                                : 'bg-slate-100 text-slate-700 border border-slate-200/70'
+                              'w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border shadow-2xs transition-colors',
+                              visual.iconContainer
                             )}
                           >
-                            {sub.isLab ? <Terminal size={14} /> : <BookOpen size={14} />}
+                            <IconComponent size={15} />
                           </div>
-                          <div className="min-w-0">
-                            <span className="font-bold text-slate-900 text-xs sm:text-[13px] block truncate">
+                          <div className="min-w-0 space-y-1">
+                            <span className="font-bold text-slate-900 text-xs sm:text-[13px] block truncate group-hover:text-brand-primary transition-colors">
                               {sub.name}
                             </span>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span
-                                className={cn(
-                                  'text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wider',
-                                  sub.isLab
-                                    ? 'bg-blue-100/80 text-brand-primary font-bold'
-                                    : 'bg-slate-100 text-slate-600'
-                                )}
-                              >
-                                {sub.type}
-                              </span>
-                              {sub.isLab && (
-                                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">
-                                  Hands-on Lab
-                                </span>
-                              )}
+                            <div>
+                              {visual.badge}
                             </div>
                           </div>
                         </div>
 
-                        <span
+                        <div
                           className={cn(
-                            'text-xs font-mono font-bold px-2.5 py-1 rounded-xl border shrink-0',
-                            sub.isLab
-                              ? 'bg-white border-blue-200 text-brand-primary shadow-2xs'
-                              : 'bg-white border-slate-200 text-slate-800 shadow-2xs'
+                            'flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shrink-0 font-mono text-xs font-bold shadow-2xs transition-colors',
+                            visual.creditBadge
                           )}
                         >
-                          {sub.credits} Credits
-                        </span>
+                          <span>{sub.credits}</span>
+                          <span className="text-[10px] font-sans font-semibold text-slate-400 uppercase tracking-wider">
+                            Cr
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
