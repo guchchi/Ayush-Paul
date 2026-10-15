@@ -180,30 +180,35 @@ const COMPARISON_ROWS = [
 // --- 5 Misconceptions ---
 const MISCONCEPTIONS = [
   {
+    category: 'curriculum',
     topic: 'Curriculum & Engineering Focus',
     ref: 'Senate Curriculum Guide',
     myth: 'Cybersecurity is just ethical hacking and running Kali Linux tools.',
     fact: 'The official Senate curriculum is grounded in deep computer science: computing fundamentals, electronics, operating systems, data engineering, and cryptography. Script-kiddie tools without fundamentals are not the focus.',
   },
   {
+    category: 'internship',
     topic: 'Practicum Deployment & Employment',
     ref: 'WSAIS FAQ 14 & Senate Ord. §4',
     myth: 'The two-year internship structure means a guaranteed permanent job.',
     fact: 'The internship component is an academic degree requirement hosted primarily in selected government agencies. Permanent post-degree employment depends on organizational policies and individual selection.',
   },
   {
+    category: 'placement',
     topic: 'Placement Assistance vs Guarantees',
     ref: 'Institutional Placement Policy',
     myth: 'Placement support is identical to a guaranteed salary package.',
     fact: 'Official documentation states placement assistance is provided to successful completers via a dedicated cybersecurity channel. However, no specific starting salary or outcome can be guaranteed.',
   },
   {
+    category: 'admission',
     topic: 'Admission Gateway & 2027 Testing Shift',
     ref: 'WSAIS FAQ 23',
     myth: 'The 2026 JEE Main admission conditions will automatically apply to 2027.',
     fact: 'WSAIS FAQ 23 confirmed that JEE Main is discontinued for future intakes; a separate dedicated entrance test will be conducted. Each admission cycle requires independent verification.',
   },
   {
+    category: 'degree',
     topic: 'Degree Identity & Branch Boundaries',
     ref: 'Senate Ordinance §12',
     myth: 'B.Cyber is interchangeable with a standard B.Tech Computer Science degree.',
@@ -271,6 +276,9 @@ export function BCyberHomePage() {
     1: false,
     2: false,
   });
+
+  // State for active misconception filter in Section 10
+  const [activeMisconceptionFilter, setActiveMisconceptionFilter] = useState<string>('all');
 
   // State for FAQ accordion
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -1622,7 +1630,7 @@ export function BCyberHomePage() {
         </section>
 
         {/* =========================================================================
-            SECTION 10: COMMON MISCONCEPTIONS (Myth vs Fact Split Cards)
+            SECTION 10: COMMON MISCONCEPTIONS (Myth vs Fact 2-Column Grid)
         ========================================================================= */}
         <section aria-labelledby="myths-heading" className="space-y-6">
           <div className="space-y-1">
@@ -1637,50 +1645,84 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          <div className="space-y-4">
-            {MISCONCEPTIONS.map((item, idx) => (
+          {/* Horizontal Category Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {[
+              { id: 'all', label: 'All Reality Checks (5)' },
+              { id: 'curriculum', label: 'Curriculum & Scope' },
+              { id: 'internship', label: 'Practicum Deployment' },
+              { id: 'placement', label: 'Career & Salary' },
+              { id: 'admission', label: '2027 Admission Shift' },
+              { id: 'degree', label: 'Degree Distinction' },
+            ].map((tab) => {
+              const isActive = activeMisconceptionFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveMisconceptionFilter(tab.id)}
+                  className={cn(
+                    'px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer shrink-0',
+                    isActive
+                      ? 'bg-[#0b1c30] text-white font-bold shadow-xs'
+                      : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200/90 shadow-2xs font-medium'
+                  )}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Balanced 2-Column Responsive Card Grid */}
+          <div
+            className={cn(
+              'grid gap-5',
+              activeMisconceptionFilter === 'all'
+                ? 'grid-cols-1 md:grid-cols-2'
+                : 'grid-cols-1 max-w-2xl mx-auto'
+            )}
+          >
+            {MISCONCEPTIONS.filter(
+              (item) => activeMisconceptionFilter === 'all' || item.category === activeMisconceptionFilter
+            ).map((item) => (
               <div
-                key={idx}
-                className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all space-y-3.5 group"
+                key={item.category}
+                className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-4 group"
               >
                 {/* Header Meta */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[10px]">
-                      0{idx + 1}
+                      0{MISCONCEPTIONS.findIndex((m) => m.category === item.category) + 1}
                     </span>
                     <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
                       {item.topic}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono font-medium text-slate-500">
+                  <span className="text-[11px] font-mono font-medium text-slate-400">
                     {item.ref}
                   </span>
                 </div>
 
-                {/* 2-Column Split: Assumption vs Reality */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  {/* Assumption (Muted, dignified, NO loud red) */}
-                  <div className="p-4 rounded-2xl bg-slate-50/80 flex flex-col justify-between space-y-2.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200/90 text-[10px] font-bold uppercase tracking-wider text-slate-600 inline-flex items-center gap-1.5 shadow-2xs">
-                        <HelpCircle size={12} className="text-slate-400" />
-                        Common Internet Assumption
-                      </span>
-                    </div>
-                    <p className="text-xs sm:text-[13px] text-slate-700 font-medium leading-relaxed italic">
-                      &ldquo;{item.myth}&rdquo;
-                    </p>
-                  </div>
+                {/* Vertical Stack: Assumption Quote on Top */}
+                <div className="p-3.5 rounded-2xl bg-slate-50/80 space-y-1.5 border-l-2 border-slate-300">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 inline-flex items-center gap-1.5">
+                    <HelpCircle size={12} className="text-slate-400" />
+                    Common Assumption
+                  </span>
+                  <p className="text-xs sm:text-[13px] text-slate-800 font-medium leading-relaxed italic">
+                    &ldquo;{item.myth}&rdquo;
+                  </p>
+                </div>
 
-                  {/* Reality (Authoritative, clear, emerald accent) */}
-                  <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-2.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider text-emerald-950 inline-flex items-center gap-1.5 shadow-2xs">
-                        <CheckCircle2 size={12} className="text-emerald-700" />
-                        Official Institutional Fact
-                      </span>
-                    </div>
+                {/* Vertical Stack: Verified Reality Below (Full natural width, no empty whitespace) */}
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-2 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1.5">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider text-emerald-950 inline-flex items-center gap-1.5 shadow-2xs">
+                      <CheckCircle2 size={12} className="text-emerald-700" />
+                      Official Institutional Fact
+                    </span>
                     <p className="text-xs sm:text-[13px] text-slate-700 font-normal leading-relaxed">
                       {item.fact}
                     </p>
@@ -1688,6 +1730,48 @@ export function BCyberHomePage() {
                 </div>
               </div>
             ))}
+
+            {/* 6th Card: Verification Directory Anchor (ensures 3x2 grid balance when 'all' is active) */}
+            {activeMisconceptionFilter === 'all' && (
+              <div className="rounded-3xl border border-slate-200/90 bg-slate-50/60 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-md bg-blue-100 text-brand-primary flex items-center justify-center font-bold text-[10px]">
+                      06
+                    </span>
+                    <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
+                      Institutional Inquiries &amp; Verification
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono font-medium text-slate-400">
+                    Senate Ordinances
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white/90 border border-slate-200/80 space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 inline-flex items-center gap-1.5">
+                    <Info size={12} className="text-slate-400" />
+                    Additional Inquiries
+                  </span>
+                  <p className="text-xs sm:text-[13px] text-slate-800 font-medium leading-relaxed">
+                    Have an unlisted query or need to verify admissions, academic credits, or official contact desks?
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3 flex-1 flex flex-col justify-between">
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    All 26 Senate regulations, official admission circulars, and primary contact emails are indexed in our transparent FAQ directory.
+                  </p>
+                  <a
+                    href="#faq-heading"
+                    className="inline-flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#0b1c30] text-white hover:bg-slate-800 transition-colors text-xs font-bold"
+                  >
+                    <span>Browse All 8 FAQs</span>
+                    <ArrowRight size={14} className="text-[#d1f34d]" />
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
