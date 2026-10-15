@@ -744,28 +744,62 @@ export function BCyberHomePage() {
           </div>
 
           {/* Visual Progression Stepper Indicator */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs shadow-2xs">
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
-              <span className="w-6 h-6 rounded-lg bg-blue-100 text-brand-primary flex items-center justify-center font-bold text-xs shrink-0">
-                01
-              </span>
-              <span className="font-bold text-slate-900">Phase 1: Semesters 1 to 4</span>
-              <span className="text-slate-500 hidden md:inline">· On-Campus Coursework &amp; 5 Live Labs</span>
-            </div>
+          <div className="rounded-3xl bg-white border border-slate-200/90 shadow-2xs p-4 sm:p-5 relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto,1fr] items-center gap-4 sm:gap-6">
+              
+              {/* STAGE 1: ON-CAMPUS */}
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200/70 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 shadow-2xs">
+                  <span className="font-mono font-bold text-brand-primary text-sm">01</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-extrabold text-slate-900 text-sm sm:text-[15px] tracking-tight">
+                      Phase 1: 2 Yrs On-Campus
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-brand-primary border border-blue-200/60 shrink-0">
+                      Sem 1–4
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                    IIT Kanpur Campus · Core Computer Science + 5 Live Cyber Labs
+                  </p>
+                </div>
+              </div>
 
-            <div className="flex items-center gap-2 text-slate-400 shrink-0 self-center">
-              <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-0.5 rounded-full border border-slate-200 shadow-2xs">
-                Progression Gate
-              </span>
-              <ArrowRight className="w-4 h-4 text-slate-400 hidden sm:block" />
-            </div>
+              {/* CENTER PROGRESSION GATE */}
+              <div className="flex items-center justify-between lg:justify-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-50 border border-slate-200/80 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500">
+                    Gate:
+                  </span>
+                  <span className="text-xs font-bold text-slate-900">
+                    200 Credits Clearance
+                  </span>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-brand-primary" />
+              </div>
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto sm:justify-end">
-              <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs shrink-0">
-                02
-              </span>
-              <span className="font-bold text-slate-900">Phase 2: Semesters 5 to 8</span>
-              <span className="text-slate-500 hidden md:inline">· Full-Time Defense Field Deployment</span>
+              {/* STAGE 2: FIELD PRACTICUM */}
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200/70 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 shadow-2xs">
+                  <span className="font-mono font-bold text-amber-900 text-sm">02</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-extrabold text-slate-900 text-sm sm:text-[15px] tracking-tight">
+                      Phase 2: 2 Yrs Field Deployment
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200/60 shrink-0">
+                      Sem 5–8
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                    CERT-In, NCIIPC &amp; Defense Hubs · Live Threat Operations
+                  </p>
+                </div>
+              </div>
+
             </div>
           </div>
 
