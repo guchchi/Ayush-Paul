@@ -248,6 +248,9 @@ export function BCyberHomePage() {
     url: canonical,
   });
 
+  // State for active fact tab in Section 2 (Option 3 Interactive Blueprint Console)
+  const [activeFactTab, setActiveFactTab] = useState<'degree' | 'model' | 'governance' | 'reality'>('degree');
+
   // State for active semester tab in Section 4
   const [activeSemIndex, setActiveSemIndex] = useState(0);
 
@@ -440,183 +443,406 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          {/* Option 2: Apple-style High-End Engineered Tech Specs Ledger */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs divide-y divide-slate-100 overflow-hidden">
-            
-            {/* Category 1: Degree & Credential */}
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-4">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
-                  SPECIFICATION 01
+          {/* Option 3: Interactive Blueprint Specification Console */}
+          <div className="space-y-3.5">
+            {/* Interactive Context Guidance Banner */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-3 bg-slate-50/90 border border-slate-200/80 rounded-xl">
+              <div className="flex items-center gap-2">
+                <span className="flex h-2 w-2 relative shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
                 </span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
-                  Degree &amp; Conferred Standing
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Official statutory award approved by the IIT Kanpur Senate.
-                </p>
+                <span className="text-xs font-bold text-slate-800">
+                  Interactive Program Inspector
+                </span>
+                <span className="text-xs text-slate-500 hidden md:inline">
+                  • Click any topic to inspect verified Senate parameters:
+                </span>
               </div>
-
-              <div className="lg:col-span-8 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Awarded Degree</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
-                      Bachelor of Cybersecurity (B.Cyber.)
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Conferred by IIT Kanpur (or IIT Madras based on seat allotment).
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Alumni Standing</span>
-                  <div className="sm:col-span-8">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm sm:text-[15px] font-bold text-slate-900">
-                        Full Regular IITK Alumni
-                      </span>
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                        FAQ 16
-                      </span>
-                    </div>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Identical institutional standing, alumni privileges, and degree validity.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Duration &amp; Limit</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-semibold text-slate-900 block">
-                      4 Academic Years (8 Semesters)
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Maximum permissible duration is 6 years under Senate undergraduate ordinances.
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <span className="text-[11px] font-mono font-medium text-slate-500 bg-white border border-slate-200/90 px-2.5 py-1 rounded-md shadow-2xs self-start sm:self-auto">
+                {activeFactTab === 'degree' && 'Pillar 1/4: Conferred Credential'}
+                {activeFactTab === 'model' && 'Pillar 2/4: 2+2 Model Rules'}
+                {activeFactTab === 'governance' && 'Pillar 3/4: Host Ecosystem'}
+                {activeFactTab === 'reality' && 'Pillar 4/4: Placement Reality'}
+              </span>
             </div>
 
-            {/* Category 2: Academic & Pedagogical Model */}
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start bg-slate-50/30">
-              <div className="lg:col-span-4">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
-                  SPECIFICATION 02
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
-                  2+2 Pedagogical Architecture
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Split framework balancing core theory with field deployment.
-                </p>
-              </div>
-
-              <div className="lg:col-span-8 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Semesters 1 to 4</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
-                      2 Years On-Campus Residency
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Coursework at IIT Kanpur including 5 specialized cyber labs (Malware, Forensics, VAPT, Cloud, Networks).
-                    </span>
-                  </div>
+            {/* Segmented Controller with explicit tab styling & icons */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveFactTab('degree')}
+                className={cn(
+                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
+                  activeFactTab === 'degree'
+                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Award className={cn('w-4 h-4 shrink-0', activeFactTab === 'degree' ? 'text-[#d1f34d]' : 'text-slate-400')} />
+                  <span>01 Degree &amp; Alumni</span>
                 </div>
+                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'degree' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
+              </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Semesters 5 to 8</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
-                      2 Years Practical Field Internship
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Full-time deployment hosted primarily in selected government agencies &amp; critical national units.
-                    </span>
-                  </div>
+              <button
+                type="button"
+                onClick={() => setActiveFactTab('model')}
+                className={cn(
+                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
+                  activeFactTab === 'model'
+                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Layers className={cn('w-4 h-4 shrink-0', activeFactTab === 'model' ? 'text-[#d1f34d]' : 'text-slate-400')} />
+                  <span>02 2+2 Model Rules</span>
                 </div>
+                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'model' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
+              </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Branch Transfer</span>
-                  <div className="sm:col-span-8">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm sm:text-[15px] font-bold text-slate-900">
-                        Strictly Prohibited
-                      </span>
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/50">
-                        No Transfer to B.Tech
-                      </span>
-                    </div>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Senate rules prohibit switching between B.Cyber and conventional B.Tech programs.
-                    </span>
-                  </div>
+              <button
+                type="button"
+                onClick={() => setActiveFactTab('governance')}
+                className={cn(
+                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
+                  activeFactTab === 'governance'
+                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Building2 className={cn('w-4 h-4 shrink-0', activeFactTab === 'governance' ? 'text-[#d1f34d]' : 'text-slate-400')} />
+                  <span>03 Governance &amp; Host</span>
                 </div>
-              </div>
+                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'governance' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveFactTab('reality')}
+                className={cn(
+                  'px-3.5 py-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-between gap-2 border text-left cursor-pointer',
+                  activeFactTab === 'reality'
+                    ? 'bg-[#0b1c30] text-white border-[#0b1c30] shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 shadow-2xs'
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <Scale className={cn('w-4 h-4 shrink-0', activeFactTab === 'reality' ? 'text-[#d1f34d]' : 'text-slate-400')} />
+                  <span>04 CTC &amp; Reality</span>
+                </div>
+                <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', activeFactTab === 'reality' ? 'bg-[#d1f34d]' : 'bg-slate-200')} />
+              </button>
             </div>
 
-            {/* Category 3: Institutional Governance & Career Reality */}
-            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-4">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-slate-400 block">
-                  SPECIFICATION 03
-                </span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
-                  Governance &amp; Career Reality
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Institutional ecosystem, administration, and ground-truth career parameters.
-                </p>
-              </div>
-
-              <div className="lg:col-span-8 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Ecosystem Backing</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
-                      WSAIS &amp; C3iHub Ecosystem
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Wadhwani School of AI and Intelligent Systems, backed by IIT Kanpur&apos;s National Cybersecurity Hub.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 pb-3.5 border-b border-slate-100">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Placement Support</span>
-                  <div className="sm:col-span-8">
-                    <span className="text-sm sm:text-[15px] font-bold text-slate-900 block">
-                      Dedicated WSAIS Placement Assistance
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Specific career assistance channels provided for program graduates upon successful completion.
+            {/* Active Specification Panel */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 sm:p-7 transition-all">
+              {/* TAB 01: DEGREE & ALUMNI */}
+              {activeFactTab === 'degree' && (
+                <div className="space-y-6 animate-in fade-in-50 duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
+                          STATUTORY CREDENTIAL
+                        </span>
+                        <span className="text-xs text-slate-400">• Senate Ordinance §4</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                        Bachelor of Cybersecurity (B.Cyber.)
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                        Conferred under official IIT Kanpur Senate regulations with 100% full regular alumni status.
+                      </p>
+                    </div>
+                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
+                      Full Regular IITK Alumni (FAQ 16)
                     </span>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4">
-                  <span className="sm:col-span-4 text-xs font-medium text-slate-500">Historical CTC Data</span>
-                  <div className="sm:col-span-8">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900">
+                  {/* 2 Comparative Columns for complete clarity */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Column A: What You Receive */}
+                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-3">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>What Is Conferred</span>
+                      </span>
+                      <ul className="space-y-2 text-xs text-slate-600">
+                        <li className="flex items-start gap-2">
+                          <span className="text-emerald-600 font-bold">•</span>
+                          <span><strong>Degree Title:</strong> Bachelor of Cybersecurity (B.Cyber.) conferred at annual convocation.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-emerald-600 font-bold">•</span>
+                          <span><strong>Alumni Privileges:</strong> Full institutional network, lifelong email, and alumni chapter voting rights.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-emerald-600 font-bold">•</span>
+                          <span><strong>Higher Studies (FAQ 9):</strong> 100% equivalent to 4-year degree for global MS/Ph.D. admissions.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Column B: Critical Nuances */}
+                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-3">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                        <Info className="w-4 h-4 text-blue-600" />
+                        <span>Key Statutory Nuances</span>
+                      </span>
+                      <ul className="space-y-2 text-xs text-slate-600">
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 font-bold">•</span>
+                          <span><strong>Not a B.Tech CSE:</strong> B.Cyber has distinct Senate ordinance code and specialized curriculum.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 font-bold">•</span>
+                          <span><strong>Duration:</strong> 4 Academic Years standard (Senate permits maximum 6 years).</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-600 font-bold">•</span>
+                          <span><strong>Senate Record:</strong> Independent degree designed specifically for national cyber infrastructure.</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Panel Footer with Navigation Button */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="font-mono text-[11px] text-slate-400">
+                      OFFICIAL SOURCE: Senate Minutes &amp; WSAIS Portal FAQ 9, 16
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveFactTab('model')}
+                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
+                    >
+                      <span>Next: Inspect 2+2 Model Rules</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 02: 2+2 MODEL RULES */}
+              {activeFactTab === 'model' && (
+                <div className="space-y-6 animate-in fade-in-50 duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                          PEDAGOGICAL STRUCTURE
+                        </span>
+                        <span className="text-xs text-slate-400">• 2 Yrs Campus + 2 Yrs Practicum</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                        The 2+2 Split Architecture
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                        Equal distribution between rigorous on-campus theory and full-time practical field deployment.
+                      </p>
+                    </div>
+                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/50 text-xs font-bold whitespace-nowrap shadow-2xs">
+                      Branch Transfer Prohibited
+                    </span>
+                  </div>
+
+                  {/* 2 Visual Stage Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Phase 1 */}
+                    <div className="p-4 rounded-xl bg-blue-50/40 border border-blue-200/60 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono font-bold uppercase text-brand-primary">Phase 1: Semesters 1 to 4</span>
+                        <span className="text-[10px] font-semibold text-slate-500">200 Credits</span>
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900">Campus Residency at IIT Kanpur</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Comprehensive computer science, electronics, and 5 mandatory technical labs: Malware Analysis, Digital Forensics, VAPT, Cloud Security, and Network Defense.
+                      </p>
+                    </div>
+
+                    {/* Phase 2 */}
+                    <div className="p-4 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono font-bold uppercase text-amber-800">Phase 2: Semesters 5 to 8</span>
+                        <span className="text-[10px] font-semibold text-slate-500">216 Credits</span>
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900">Full-Time Field Deployment Practicum</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Practical deployment in defense intelligence units, CERT-In, NCIIPC, and national cyber infrastructure. Host organizations determine stipend arrangements.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Critical Prohibitive Rule Callout */}
+                  <div className="p-3.5 rounded-xl bg-rose-50/70 border border-rose-200/70 flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                    <div className="text-xs text-slate-700 leading-normal">
+                      <strong className="text-rose-900">Non-Transferability Notice (FAQ 12):</strong> Under Senate ordinances, branch change is strictly prohibited. B.Cyber students cannot transfer to regular B.Tech CSE, and regular B.Tech students cannot enter B.Cyber without qualifying the separate entrance.
+                    </div>
+                  </div>
+
+                  {/* Panel Footer */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="font-mono text-[11px] text-slate-400">
+                      OFFICIAL SOURCE: Senate Approved Curriculum Schedule
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveFactTab('governance')}
+                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
+                    >
+                      <span>Next: Inspect Governance &amp; Host</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 03: GOVERNANCE & HOST */}
+              {activeFactTab === 'governance' && (
+                <div className="space-y-6 animate-in fade-in-50 duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-brand-primary bg-brand-primary/10 px-2 py-0.5 rounded-full">
+                          INSTITUTIONAL ECOSYSTEM
+                        </span>
+                        <span className="text-xs text-slate-400">• WSAIS &amp; C3iHub</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
+                        Administered by WSAIS &amp; C3iHub
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                        Operated by IIT Kanpur&apos;s AI school with twin cohort participation from IIT Madras.
+                      </p>
+                    </div>
+                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-blue-50 text-brand-primary border border-blue-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
+                      IITK + IIT Madras Joint
+                    </span>
+                  </div>
+
+                  {/* Institutional Breakdown */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+                        ADMINISTERING BODY
+                      </span>
+                      <span className="text-sm font-bold text-slate-900 block mt-1">
+                        WSAIS, IIT Kanpur
+                      </span>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Wadhwani School of AI and Intelligent Systems manages academic instruction and governance.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+                        RESEARCH POWERHOUSE
+                      </span>
+                      <span className="text-sm font-bold text-slate-900 block mt-1">
+                        C3iHub National Center
+                      </span>
+                      <p className="text-xs text-slate-500 mt-1">
+                        National innovation hub for cybersecurity of cyber-physical systems established at IIT Kanpur.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+                        TWIN COHORT
+                      </span>
+                      <span className="text-sm font-bold text-slate-900 block mt-1">
+                        IIT Madras
+                      </span>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Jointly offered with IIT Madras with shared admission criteria and identical Senate standards.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Panel Footer */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="font-mono text-[11px] text-slate-400">
+                      OFFICIAL SOURCE: Ministry of Education &amp; IITK WSAIS Charter
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveFactTab('reality')}
+                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
+                    >
+                      <span>Next: Inspect Placement &amp; CTC Truth</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 04: CTC & PLACEMENT REALITY */}
+              {activeFactTab === 'reality' && (
+                <div className="space-y-6 animate-in fade-in-50 duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                          GROUND TRUTH ADVISORY
+                        </span>
+                        <span className="text-xs text-slate-400">• Inaugural July 2026 Batch</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
                         Zero Historical Placement Statistics
-                      </span>
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60">
-                        Inaugural 2026 Batch
-                      </span>
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                        Complete transparency: The inaugural cohort entered in July 2026; first graduation occurs in 2030.
+                      </p>
                     </div>
-                    <span className="text-xs text-slate-500 mt-0.5 block">
-                      Any coaching claim citing median packages is misleading; first batch graduates in 2030.
+                    <span className="self-start sm:self-center px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60 text-xs font-bold whitespace-nowrap shadow-2xs">
+                      First Passout: Summer 2030
                     </span>
                   </div>
-                </div>
-              </div>
-            </div>
 
+                  {/* Reality Check Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-xl bg-rose-50/40 border border-rose-200/60 space-y-2">
+                      <span className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                        <AlertTriangle className="w-4 h-4 text-rose-600" />
+                        <span>Marketing Myth vs Truth</span>
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Any coaching institute or counselor claiming &ldquo;50 LPA average package&rdquo; or citing past placement records for B.Cyber is publishing fictional marketing. No student has graduated yet.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-emerald-50/40 border border-emerald-200/60 space-y-2">
+                      <span className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>Dedicated Placement Support</span>
+                      </span>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Official WSAIS records state dedicated cybersecurity placement assistance will be provided upon successful completion of the academic and 2-year field practicum requirements.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Panel Footer */}
+                  <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="font-mono text-[11px] text-slate-400">
+                      OFFICIAL SOURCE: WSAIS Portal FAQ 14, 21 • Independent Consumer Warning
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActiveFactTab('degree')}
+                      className="inline-flex items-center gap-1.5 font-semibold text-brand-primary hover:text-slate-900 transition-colors self-start sm:self-auto cursor-pointer"
+                    >
+                      <span>← Back to Pillar 01: Degree &amp; Alumni</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
