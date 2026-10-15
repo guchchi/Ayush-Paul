@@ -552,16 +552,6 @@ export function BCyberHomePage() {
                   </div>
                 </div>
               </div>
-
-              {/* Standardized Card Bottom Meta */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
-                  4 Academic Years (Max 6 Yrs)
-                </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                  Senate Ord. §4
-                </span>
-              </div>
             </div>
 
             {/* CARD 2: 2+2 PEDAGOGY */}
@@ -618,16 +608,6 @@ export function BCyberHomePage() {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Standardized Card Bottom Meta */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
-                  200 Campus + 216 Field Credits
-                </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                  Senate Ord. §8 · Branch Lock
-                </span>
               </div>
             </div>
 
@@ -686,16 +666,6 @@ export function BCyberHomePage() {
                   </div>
                 </div>
               </div>
-
-              {/* Standardized Card Bottom Meta */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
-                  IIT Kanpur &amp; IIT Madras Joint
-                </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                  National Center
-                </span>
-              </div>
             </div>
 
             {/* CARD 4: PLACEMENT REALITY */}
@@ -752,16 +722,6 @@ export function BCyberHomePage() {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Standardized Card Bottom Meta */}
-              <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
-                  Inaugural 2026 Cohort
-                </span>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
-                  WSAIS FAQ 14
-                </span>
               </div>
             </div>
           </div>
