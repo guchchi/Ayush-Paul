@@ -743,51 +743,154 @@ export function BCyberHomePage() {
             </p>
           </div>
 
+          {/* Visual Progression Stepper Indicator */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs shadow-2xs">
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <span className="w-6 h-6 rounded-lg bg-blue-100 text-brand-primary flex items-center justify-center font-bold text-xs shrink-0">
+                01
+              </span>
+              <span className="font-bold text-slate-900">Phase 1: Semesters 1 to 4</span>
+              <span className="text-slate-500 hidden md:inline">· On-Campus Coursework &amp; 5 Live Labs</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-slate-400 shrink-0 self-center">
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-600 bg-white px-2.5 py-0.5 rounded-full border border-slate-200 shadow-2xs">
+                Progression Gate
+              </span>
+              <ArrowRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+            </div>
+
+            <div className="flex items-center gap-2.5 w-full sm:w-auto sm:justify-end">
+              <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs shrink-0">
+                02
+              </span>
+              <span className="font-bold text-slate-900">Phase 2: Semesters 5 to 8</span>
+              <span className="text-slate-500 hidden md:inline">· Full-Time Defense Field Deployment</span>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phase 1 Card */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-brand-primary bg-brand-primary/10 px-2.5 py-1 rounded-full">
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-5">
+              <div className="space-y-4">
+                {/* Card Top Row with Badge & Credit Pill */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand-primary bg-blue-50 border border-blue-200/80 px-3 py-1 rounded-full">
                     Years 01 – 02 (Semesters 1 to 4)
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">~200 Credits</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80 text-[11px] font-bold">
+                    <Clock className="w-3 h-3 text-slate-600" />
+                    <span>200 Campus Credits</span>
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">
+
+                {/* Card Title */}
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight">
                   On-Campus Coursework &amp; Deep Security Labs
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Students study on campus at IIT Kanpur (or IIT Madras for their enrolled cohort). The curriculum delivers foundational computing, electronics, operating systems, and computer networks alongside five intensive laboratory courses: Malware Analysis, Digital Forensics, Cloud Security, VAPT, and Network/Web Security.
-                </p>
+
+                {/* Structured Micro-Rows (Symmetrical to Phase 2) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-emerald-600">
+                      <CheckCircle2 size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Campus Residency:</strong> In-person residential study on campus at IIT Kanpur (or IIT Madras cohort) across Semesters 1–4.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <Layers size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Rigorous Foundations:</strong> Foundational computing, electronics, data structures, operating systems, and computer networks.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-brand-primary">
+                      <ShieldCheck size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">5 Live Cyber Labs:</strong> Hands-on lab courses in Malware Analysis, Digital Forensics, Cloud Security, VAPT, and Network Defense.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Symmetrical Context Callout Box */}
+                <div className="rounded-2xl bg-blue-50/60 border border-blue-200/70 p-3.5 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-brand-primary font-bold">Academic Gate:</strong> Full clearance of all 200 campus credits with requisite Senate CPI is mandatory before advancing to Phase 2 field deployment.
+                </div>
               </div>
-              <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                <Building2 size={14} className="text-slate-400" />
-                <span>Location: IIT Kanpur Campus Labs &amp; Residential Hostels</span>
+
+              {/* Card Footer Location Strip */}
+              <div className="pt-3.5 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600 font-medium">
+                <Building2 size={14} className="text-slate-500 shrink-0" />
+                <span>Host Campus: IIT Kanpur Campus Labs &amp; Residential Hostels</span>
               </div>
             </div>
 
             {/* Phase 2 Card */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-full">
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-5">
+              <div className="space-y-4">
+                {/* Card Top Row with Badge & Credit Pill */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200/80 px-3 py-1 rounded-full">
                     Years 03 – 04 (Semesters 5 to 8)
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">216 Credits (54/sem)</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200/80 text-[11px] font-bold">
+                    <Clock className="w-3 h-3 text-slate-600" />
+                    <span>216 Field Credits (54/sem)</span>
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900">
+
+                {/* Card Title */}
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug tracking-tight">
                   Full-Time Practical Field Deployment / Internship
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  According to official program descriptions, students spend the second two years deployed in selected government departments, defense intelligence agencies, CERT-In, NCIIPC, critical national infrastructure, and cybersecurity research incubators.
-                </p>
-                <div className="rounded-xl bg-slate-50 border border-slate-200/70 p-3 text-[11px] text-slate-600 leading-normal">
-                  <strong className="text-slate-900">Important Distinction:</strong> Field deployment is an academic internship component. Host organizations determine stipend arrangements; students remain registered IIT students throughout.
+
+                {/* Structured Micro-Rows (Symmetrical to Phase 1) */}
+                <div className="space-y-2.5">
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-amber-600">
+                      <ShieldCheck size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Defense &amp; Cyber Hubs:</strong> Deployed in CERT-In, NCIIPC, defense intelligence agencies, and critical infrastructure units.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-emerald-600">
+                      <CheckCircle2 size={12} />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Live Incident Operations:</strong> Practical experience solving live cyber threat missions, vulnerability research, and sovereign defense.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-slate-50/80 border border-slate-100/90 flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center shrink-0 mt-0.5 text-slate-700">
+                      <Scale size={12} className="text-slate-600" />
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 leading-relaxed">
+                      <strong className="text-slate-950 font-bold">Registered IIT Status:</strong> Students remain registered IIT students under continuous faculty evaluation and Senate oversight.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Symmetrical Context Callout Box */}
+                <div className="rounded-2xl bg-amber-50/60 border border-amber-200/70 p-3.5 text-xs text-slate-700 leading-relaxed">
+                  <strong className="text-amber-900 font-bold">Stipend &amp; Role Terms:</strong> Field deployment functions as an accredited internship component; host organizations determine stipend arrangements.
                 </div>
               </div>
-              <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                <ShieldCheck size={14} className="text-slate-400" />
-                <span>Host: Government Defense &amp; Critical Infrastructure Hubs</span>
+
+              {/* Card Footer Location Strip */}
+              <div className="pt-3.5 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600 font-medium">
+                <ShieldCheck size={14} className="text-slate-500 shrink-0" />
+                <span>Placement Hub: Government Defense &amp; Critical Infrastructure Units</span>
               </div>
             </div>
           </div>
