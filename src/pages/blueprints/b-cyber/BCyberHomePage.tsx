@@ -154,96 +154,45 @@ const FOCUS_AREAS: FocusArea[] = [
 ];
 
 // --- Degree Comparison Rows ---
-interface ComparisonRow {
-  parameter: string;
-  category: 'curriculum' | 'policy' | 'outcomes';
-  categoryLabel: string;
-  tag: string;
-  icon: React.ElementType;
-  bcyber: string;
-  bcyberHighlight: string;
-  conventional: string;
-}
-
-const COMPARISON_ROWS: ComparisonRow[] = [
+const COMPARISON_ROWS = [
   {
     parameter: 'Primary Orientation',
-    category: 'curriculum',
-    categoryLabel: 'Curriculum Focus',
-    tag: 'Specialized Track',
-    icon: Compass,
     bcyber: 'Cybersecurity-focused 4-year undergraduate degree',
-    bcyberHighlight: 'Dedicated Security Engineering',
     conventional: 'Generalist computing engineering curriculum',
   },
   {
     parameter: 'Academic Structure',
-    category: 'curriculum',
-    categoryLabel: 'Degree Format',
-    tag: '2+2 Model',
-    icon: Layers,
     bcyber: '2 Years On-Campus Coursework + 2 Years Practical Internship',
-    bcyberHighlight: '2+2 Hybrid Model',
     conventional: '4 Years primarily on-campus coursework with standard 8-week summer intern',
   },
   {
     parameter: 'Technical Labs',
-    category: 'curriculum',
-    categoryLabel: 'Practical Training',
-    tag: '5 Security Labs',
-    icon: Terminal,
     bcyber: 'Specialized security labs every semester (Malware, Forensics, VAPT, Cloud)',
-    bcyberHighlight: 'Every Semester Live Lab',
     conventional: 'General computing labs (DSA, DBMS, OS, Compilers)',
   },
   {
     parameter: 'Field Exposure',
-    category: 'curriculum',
-    categoryLabel: 'Industry Deployment',
-    tag: 'Apex Defense Units',
-    icon: Building2,
     bcyber: 'Full-time field deployment in selected government organizations & cyber defense units',
-    bcyberHighlight: 'Full-Time Field Practicum',
     conventional: 'Corporate summer internship (typically 2 months between 3rd & 4th year)',
   },
   {
     parameter: 'Degree & Alumni Award',
-    category: 'policy',
-    categoryLabel: 'Institutional Standing',
-    tag: 'Senate Ordinance §12',
-    icon: Award,
     bcyber: 'Bachelor of Cybersecurity (B.Cyber.) from IIT Kanpur/Madras with full alumni status',
-    bcyberHighlight: 'Full Regular IIT Alumni',
     conventional: 'Bachelor of Technology (B.Tech) in CSE with full alumni status',
   },
   {
     parameter: 'Branch Change Options',
-    category: 'policy',
-    categoryLabel: 'Transfer Mobility',
-    tag: 'Strict Boundary',
-    icon: Shuffle,
     bcyber: 'Strictly prohibited (no transfer to regular B.Tech allowed under Senate rules)',
-    bcyberHighlight: 'Dedicated Cohort Only',
     conventional: 'Branch change allowed within B.Tech disciplines based on 1st-year CGPA',
   },
   {
     parameter: 'Higher Studies Parity',
-    category: 'outcomes',
-    categoryLabel: 'Academic Credential',
-    tag: '100% Equivalent',
-    icon: Globe,
     bcyber: '100% equivalent to regular 4-year degree for global MS/Ph.D. admissions (FAQ 9)',
-    bcyberHighlight: 'Global MS/Ph.D. Eligible',
     conventional: 'Fully recognized 4-year undergraduate engineering degree',
   },
   {
     parameter: 'Historical Salary / Placement Data',
-    category: 'outcomes',
-    categoryLabel: 'Career Outcomes',
-    tag: 'Inaugural Cohort',
-    icon: TrendingUp,
     bcyber: 'No historical graduate statistics exist yet (inaugural batch launched July 2026)',
-    bcyberHighlight: 'First Batch (July 2026)',
     conventional: 'Decades of historical placement and median salary track records',
   },
 ];
@@ -344,9 +293,6 @@ export function BCyberHomePage() {
     1: false,
     2: false,
   });
-
-  // State for Section 6 Degree Comparison Filter
-  const [comparisonCategory, setComparisonCategory] = useState<'all' | 'curriculum' | 'policy' | 'outcomes'>('all');
 
   // State for FAQ accordion
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -1291,230 +1237,47 @@ export function BCyberHomePage() {
         </section>
 
         {/* =========================================================================
-            SECTION 6: BALANCED DEGREE COMPARISON (Elevated Shadcn Comparative Architecture)
+            SECTION 6: BALANCED DEGREE COMPARISON
         ========================================================================= */}
         <section aria-labelledby="comparison-heading" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                Objective Comparison
-              </span>
-              <h2 id="comparison-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                How Is B.Cyber Different from a Conventional Computing Degree?
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Direct side-by-side analysis between IIT Kanpur&apos;s practice-oriented security degree and traditional 4-year B.Tech CSE.
-              </p>
-            </div>
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Objective Comparison
+            </span>
+            <h2 id="comparison-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              How Is B.Cyber Different from a Conventional Computing Degree?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Compare differences factually without unsupported marketing claims.
+            </p>
           </div>
 
-          {/* Top Dual Overview Archetype Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Model A: IIT Kanpur B.Cyber */}
-            <div className="rounded-3xl border border-blue-200/90 bg-gradient-to-br from-blue-50/70 via-white to-slate-50/50 p-6 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-brand-primary border border-blue-200/80 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
-                    Specialized Track (2+2 Model)
-                  </span>
-                  <span className="text-[11px] font-mono font-bold text-slate-400">
-                    Senate Approved
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 tracking-tight">
-                  IIT Kanpur B.Cyber (Bachelor of Cybersecurity)
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Tailored specifically for defensive security engineering, low-level reverse engineering, critical national infrastructure defense, and 2 full years of real-world agency immersion.
-                </p>
-              </div>
-              <div className="pt-3 border-t border-blue-100/80 flex flex-wrap gap-2 text-[11px]">
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-blue-200/70 font-semibold text-slate-800 shadow-2xs">
-                  2 Yrs Campus + 2 Yrs Practicum
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-blue-200/70 font-semibold text-slate-800 shadow-2xs">
-                  5 Live Security Labs
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-white border border-blue-200/70 font-semibold text-brand-primary shadow-2xs">
-                  Regular IIT Alumni
-                </span>
-              </div>
-            </div>
-
-            {/* Model B: Conventional B.Tech CSE */}
-            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/80 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                    Generalist Track (4-Year Campus)
-                  </span>
-                  <span className="text-[11px] font-mono font-bold text-slate-400">
-                    Traditional Baseline
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 tracking-tight">
-                  Conventional B.Tech Computer Science (CSE)
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Broad theoretical foundations covering algorithms, compilers, databases, and software design patterns with standard summer internships and broad corporate recruiting channels.
-                </p>
-              </div>
-              <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-[11px]">
-                <span className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/70 font-medium text-slate-700">
-                  4 Yrs Campus Coursework
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/70 font-medium text-slate-700">
-                  Standard Computing Labs
-                </span>
-                <span className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/70 font-medium text-slate-700">
-                  Regular IIT Alumni
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Category Segmented Control (Shadcn Tabs Style) */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
-            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100/80 border border-slate-200/80 shadow-2xs self-start overflow-x-auto max-w-full">
-              <button
-                type="button"
-                onClick={() => setComparisonCategory('all')}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer',
-                  comparisonCategory === 'all'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                All Parameters (8)
-              </button>
-              <button
-                type="button"
-                onClick={() => setComparisonCategory('curriculum')}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer',
-                  comparisonCategory === 'curriculum'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                Curriculum &amp; Format (4)
-              </button>
-              <button
-                type="button"
-                onClick={() => setComparisonCategory('policy')}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer',
-                  comparisonCategory === 'policy'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                Degree &amp; Policy (2)
-              </button>
-              <button
-                type="button"
-                onClick={() => setComparisonCategory('outcomes')}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer',
-                  comparisonCategory === 'outcomes'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                Parity &amp; Placements (2)
-              </button>
-            </div>
-
-            <div className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-              <SlidersHorizontal size={13} className="text-slate-400" />
-              <span>Showing {comparisonCategory === 'all' ? 8 : comparisonCategory === 'curriculum' ? 4 : 2} verified points</span>
-            </div>
-          </div>
-
-          {/* Elevated Responsive Parameter Cards (No plain, boring table!) */}
-          <div className="space-y-3.5">
-            {COMPARISON_ROWS
-              .filter((row) => comparisonCategory === 'all' || row.category === comparisonCategory)
-              .map((row) => {
-                const RowIcon = row.icon;
-                return (
-                  <div
-                    key={row.parameter}
-                    className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all duration-150 space-y-4"
-                  >
-                    {/* Parameter Header Bar */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-100">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center shrink-0 border border-slate-200/70">
-                          <RowIcon size={14} className="text-slate-700" />
-                        </div>
-                        <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
-                          {row.parameter}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-2 self-start sm:self-auto">
-                        <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/70">
-                          {row.categoryLabel}
-                        </span>
-                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-brand-primary border border-blue-200/70">
-                          {row.tag}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Comparative Side-by-Side Dual Tiles */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                      {/* B.Cyber Side */}
-                      <div className="rounded-2xl p-4 bg-gradient-to-br from-blue-50/70 via-blue-50/30 to-white border border-blue-200/80 shadow-2xs space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-primary tracking-wide">
-                            <span className="w-2 h-2 rounded-full bg-brand-primary" />
-                            IIT Kanpur B.Cyber
-                          </span>
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-700 bg-white px-2 py-0.5 rounded-md border border-blue-200/80 shadow-2xs">
-                            {row.bcyberHighlight}
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[13px] font-semibold text-slate-900 leading-relaxed">
-                          {row.bcyber}
-                        </p>
-                      </div>
-
-                      {/* Conventional B.Tech CSE Side */}
-                      <div className="rounded-2xl p-4 bg-slate-50/70 border border-slate-200/80 shadow-2xs space-y-2">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 tracking-wide">
-                            <span className="w-2 h-2 rounded-full bg-slate-400" />
-                            Conventional B.Tech CSE
-                          </span>
-                          <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200/70">
-                            Generalist Baseline
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed">
-                          {row.conventional}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-
-          {/* Bottom Parity & Equivalence Banner */}
-          <div className="rounded-2xl bg-slate-50/90 border border-slate-200/80 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-slate-600">
-            <div className="flex items-start sm:items-center gap-2.5">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5 sm:mt-0" />
-              <span>
-                <strong className="text-slate-900 font-bold">100% Academic Equivalence:</strong> Both qualifications are officially recognized 4-year undergraduate degrees under IIT Senate ordinances, eligible for GATE, UPSC, and global postgraduate MS/Ph.D. admissions (WSAIS FAQ 9).
-              </span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 font-bold text-slate-800 shrink-0 self-start sm:self-auto">
-              <span>Senate Ordinance §12</span>
-              <FileCheck size={14} className="text-brand-primary" />
+          <div className="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold text-[11px] uppercase tracking-wider">
+                    <th className="p-3.5 sm:p-4">Comparison Parameter</th>
+                    <th className="p-3.5 sm:p-4 text-brand-primary">IIT Kanpur B.Cyber</th>
+                    <th className="p-3.5 sm:p-4">Conventional B.Tech CSE</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {COMPARISON_ROWS.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-3.5 sm:p-4 font-semibold text-slate-700 align-top">
+                        {row.parameter}
+                      </td>
+                      <td className="p-3.5 sm:p-4 text-slate-900 font-medium align-top bg-brand-primary/5">
+                        {row.bcyber}
+                      </td>
+                      <td className="p-3.5 sm:p-4 text-slate-600 align-top">
+                        {row.conventional}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
