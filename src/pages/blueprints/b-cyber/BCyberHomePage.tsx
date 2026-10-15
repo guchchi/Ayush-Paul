@@ -453,16 +453,16 @@ export function BCyberHomePage() {
                 type="button"
                 onClick={() => setActiveFactFilter('all')}
                 className={cn(
-                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs',
                   activeFactFilter === 'all'
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-[#0b1c30] text-white ring-2 ring-[#0b1c30]/20'
+                    : 'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950'
                 )}
               >
                 <span
                   className={cn(
                     'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
-                    activeFactFilter === 'all' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                    activeFactFilter === 'all' ? 'bg-white/20 text-[#d1f34d]' : 'bg-slate-100 text-slate-700 shadow-2xs'
                   )}
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
@@ -475,16 +475,16 @@ export function BCyberHomePage() {
                 type="button"
                 onClick={() => setActiveFactFilter('degree')}
                 className={cn(
-                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs',
                   activeFactFilter === 'degree'
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-[#0b1c30] text-white ring-2 ring-[#0b1c30]/20'
+                    : 'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950'
                 )}
               >
                 <span
                   className={cn(
                     'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
-                    activeFactFilter === 'degree' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                    activeFactFilter === 'degree' ? 'bg-white/20 text-[#d1f34d]' : 'bg-slate-100 text-slate-700 shadow-2xs'
                   )}
                 >
                   <Award className="w-3.5 h-3.5" />
@@ -497,16 +497,16 @@ export function BCyberHomePage() {
                 type="button"
                 onClick={() => setActiveFactFilter('model')}
                 className={cn(
-                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs',
                   activeFactFilter === 'model'
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-[#0b1c30] text-white ring-2 ring-[#0b1c30]/20'
+                    : 'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950'
                 )}
               >
                 <span
                   className={cn(
                     'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
-                    activeFactFilter === 'model' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                    activeFactFilter === 'model' ? 'bg-white/20 text-[#d1f34d]' : 'bg-slate-100 text-slate-700 shadow-2xs'
                   )}
                 >
                   <Layers className="w-3.5 h-3.5" />
@@ -519,16 +519,16 @@ export function BCyberHomePage() {
                 type="button"
                 onClick={() => setActiveFactFilter('governance')}
                 className={cn(
-                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs',
                   activeFactFilter === 'governance'
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-[#0b1c30] text-white ring-2 ring-[#0b1c30]/20'
+                    : 'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950'
                 )}
               >
                 <span
                   className={cn(
                     'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
-                    activeFactFilter === 'governance' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                    activeFactFilter === 'governance' ? 'bg-white/20 text-[#d1f34d]' : 'bg-slate-100 text-slate-700 shadow-2xs'
                   )}
                 >
                   <Building2 className="w-3.5 h-3.5" />
@@ -541,16 +541,16 @@ export function BCyberHomePage() {
                 type="button"
                 onClick={() => setActiveFactFilter('reality')}
                 className={cn(
-                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-2xs',
+                  'inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs',
                   activeFactFilter === 'reality'
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-[#0b1c30] text-white ring-2 ring-[#0b1c30]/20'
+                    : 'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950'
                 )}
               >
                 <span
                   className={cn(
                     'w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs transition-colors',
-                    activeFactFilter === 'reality' ? 'bg-white/20 text-[#d1f34d]' : 'bg-white text-slate-700 shadow-2xs'
+                    activeFactFilter === 'reality' ? 'bg-white/20 text-[#d1f34d]' : 'bg-slate-100 text-slate-700 shadow-2xs'
                   )}
                 >
                   <Scale className="w-3.5 h-3.5" />
@@ -559,53 +559,66 @@ export function BCyberHomePage() {
               </button>
             </div>
 
-            {/* Results Micro-Heading (matching reference image) */}
-            <div className="flex items-center justify-between text-xs text-slate-500 pt-1 px-1">
-              <span className="font-semibold text-slate-700">
+            {/* Results Micro-Heading & Counter (High Contrast & Clear) */}
+            <div className="flex items-center justify-between text-xs pt-1 px-1">
+              <span className="font-bold text-slate-800 sm:text-sm">
                 {activeFactFilter === 'all' && 'Most Important Program Parameters'}
                 {activeFactFilter === 'degree' && 'Filtered Result: Degree & Conferred Standing'}
                 {activeFactFilter === 'model' && 'Filtered Result: 2+2 Pedagogical Model'}
                 {activeFactFilter === 'governance' && 'Filtered Result: Ecosystem & Host Campuses'}
                 {activeFactFilter === 'reality' && 'Filtered Result: Career Ground Truth & CTC Data'}
               </span>
-              <span className="text-[11px] font-mono text-slate-400">
+              <span className="text-xs font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-full border border-slate-300/80 shadow-2xs">
                 {activeFactFilter === 'all' ? 'Showing 4 of 4' : 'Filtered: 1 of 4'}
               </span>
             </div>
 
-            {/* Results Grid */}
+            {/* Results Grid with Interactive Hover Elevation & High Contrast Badges */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               {/* CARD 1: DEGREE & ALUMNI (Warm Peach/Rose tint) */}
               {(activeFactFilter === 'all' || activeFactFilter === 'degree') && (
-                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef2f2] border border-[#fee4e2] hover:border-[#fecdca] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef2f2] border border-[#fee4e2] hover:border-rose-300 hover:shadow-lg hover:shadow-rose-100/70 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
                   <div>
                     {/* Card Top Row */}
                     <div className="flex items-center justify-between gap-2">
-                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-rose-950 shadow-2xs">
-                        <Award className="w-3.5 h-3.5 text-rose-600" />
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-extrabold text-rose-950 border border-rose-200/80 shadow-xs">
+                        <Award className="w-3.5 h-3.5 text-rose-700" />
                         <span>Degree Award</span>
                       </div>
-                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-amber-800 shadow-2xs">
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-extrabold text-rose-950 border border-rose-200/80 shadow-xs">
                         <span className="text-amber-500">★</span>
                         <span>FAQ 16 Regular Alumni</span>
                       </div>
                     </div>
 
-                    {/* Card Title & Content */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                    {/* Card Title */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-rose-950 transition-colors">
                       Bachelor of Cybersecurity (B.Cyber.)
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-                      Conferred under official IIT Kanpur Senate regulations. Students receive full regular IIT alumni status with identical convocation standing, alumni association rights, and 100% global parity for MS/Ph.D. admissions (FAQ 9).
-                    </p>
+
+                    {/* Concise Bullet Points (Reduced Density & Faster Readability) */}
+                    <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-800 leading-relaxed">
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 mt-2 shrink-0" />
+                        <span>Full regular IIT alumni status with identical convocation standing &amp; alumni association rights.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 mt-2 shrink-0" />
+                        <span>100% global parity for international MS &amp; Ph.D. admissions worldwide (WSAIS FAQ 9).</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 mt-2 shrink-0" />
+                        <span>Four-year degree conferred directly under official IIT Kanpur Senate regulations.</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  {/* Card Bottom Meta */}
-                  <div className="pt-4 border-t border-rose-200/50 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-700">
+                  {/* Card Bottom Meta (High Contrast WCAG AAA) */}
+                  <div className="pt-4 border-t border-rose-200/70 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-900">
                       4 Academic Years (Max 6 Yrs)
                     </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-rose-700 border border-rose-200/60 shadow-2xs">
+                    <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-full bg-white text-rose-950 border border-rose-300 shadow-xs">
                       Senate Ord. §4
                     </span>
                   </div>
@@ -614,35 +627,48 @@ export function BCyberHomePage() {
 
               {/* CARD 2: 2+2 PEDAGOGY (Warm Butterscotch/Amber tint) */}
               {(activeFactFilter === 'all' || activeFactFilter === 'model') && (
-                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef9ee] border border-[#fef0c7] hover:border-[#fedf89] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#fef9ee] border border-[#fef0c7] hover:border-amber-300 hover:shadow-lg hover:shadow-amber-100/70 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
                   <div>
                     {/* Card Top Row */}
                     <div className="flex items-center justify-between gap-2">
-                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-amber-950 shadow-2xs">
-                        <Layers className="w-3.5 h-3.5 text-amber-600" />
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-extrabold text-amber-950 border border-amber-200/80 shadow-xs">
+                        <Layers className="w-3.5 h-3.5 text-amber-700" />
                         <span>Pedagogical Model</span>
                       </div>
-                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-amber-800 shadow-2xs">
-                        <span className="text-amber-500">⚡</span>
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-extrabold text-amber-950 border border-amber-200/80 shadow-xs">
+                        <span className="text-amber-600">⚡</span>
                         <span>2+2 Architecture</span>
                       </div>
                     </div>
 
-                    {/* Card Title & Content */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                    {/* Card Title */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-amber-950 transition-colors">
                       2 Yrs Campus Labs + 2 Yrs Field Practicum
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-                      Semesters 1–4 provide intensive campus coursework &amp; 5 live cyber labs (Malware, Forensics, VAPT, Cloud, Networks) at IIT Kanpur. Semesters 5–8 require full-time practical deployment in defense intelligence &amp; cyber infrastructure.
-                    </p>
+
+                    {/* Concise Bullet Points */}
+                    <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-800 leading-relaxed">
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-2 shrink-0" />
+                        <span>Semesters 1–4: Intensive campus theory &amp; 5 live security labs (Malware, VAPT, Forensics) at IITK.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-2 shrink-0" />
+                        <span>Semesters 5–8: Full-time practical deployment in defense intelligence &amp; critical national assets.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-2 shrink-0" />
+                        <span>Strict branch lock: Transfer into regular B.Tech is prohibited by Senate rules (WSAIS FAQ 12).</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  {/* Card Bottom Meta */}
-                  <div className="pt-4 border-t border-amber-200/50 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-700">
+                  {/* Card Bottom Meta (High Contrast WCAG AAA) */}
+                  <div className="pt-4 border-t border-amber-200/70 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-900">
                       200 Campus + 216 Field Credits
                     </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-amber-800 border border-amber-200/60 shadow-2xs">
+                    <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-full bg-white text-amber-950 border border-amber-300 shadow-xs">
                       No Branch Change
                     </span>
                   </div>
@@ -651,35 +677,48 @@ export function BCyberHomePage() {
 
               {/* CARD 3: GOVERNANCE & HOST (Soft Lavender/Indigo tint) */}
               {(activeFactFilter === 'all' || activeFactFilter === 'governance') && (
-                <div className="rounded-3xl p-6 sm:p-7 bg-[#f5f3ff] border border-[#ede9fe] hover:border-[#ddd6fe] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#f5f3ff] border border-[#ede9fe] hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/70 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
                   <div>
                     {/* Card Top Row */}
                     <div className="flex items-center justify-between gap-2">
-                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-purple-950 shadow-2xs">
-                        <Building2 className="w-3.5 h-3.5 text-purple-600" />
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-extrabold text-purple-950 border border-purple-200/80 shadow-xs">
+                        <Building2 className="w-3.5 h-3.5 text-purple-700" />
                         <span>Host Ecosystem</span>
                       </div>
-                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-purple-800 shadow-2xs">
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-extrabold text-purple-950 border border-purple-200/80 shadow-xs">
                         <span className="text-purple-600">🏛️</span>
                         <span>IITK + IIT Madras</span>
                       </div>
                     </div>
 
-                    {/* Card Title & Content */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                    {/* Card Title */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-purple-950 transition-colors">
                       WSAIS &amp; C3iHub National Hub
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-                      Run by the Wadhwani School of AI and Intelligent Systems, backed by C3iHub (National Cybersecurity Innovation Hub). Offered jointly with IIT Madras sharing identical academic curriculum and Senate rigor.
-                    </p>
+
+                    {/* Concise Bullet Points */}
+                    <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-800 leading-relaxed">
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-2 shrink-0" />
+                        <span>Anchored at Wadhwani School of AI and Intelligent Systems (WSAIS) at IIT Kanpur.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-2 shrink-0" />
+                        <span>Technically supported by C3iHub — India&apos;s apex Cybersecurity Innovation Hub.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-600 mt-2 shrink-0" />
+                        <span>Offered jointly with IIT Madras sharing identical academic curriculum and Senate rigor.</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  {/* Card Bottom Meta */}
-                  <div className="pt-4 border-t border-purple-200/50 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-700">
+                  {/* Card Bottom Meta (High Contrast WCAG AAA) */}
+                  <div className="pt-4 border-t border-purple-200/70 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-900">
                       Apex MoE Institutions
                     </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-purple-700 border border-purple-200/60 shadow-2xs">
+                    <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-full bg-white text-purple-950 border border-purple-300 shadow-xs">
                       National Center
                     </span>
                   </div>
@@ -688,35 +727,48 @@ export function BCyberHomePage() {
 
               {/* CARD 4: PLACEMENT REALITY (Soft Mint/Emerald tint) */}
               {(activeFactFilter === 'all' || activeFactFilter === 'reality') && (
-                <div className="rounded-3xl p-6 sm:p-7 bg-[#ecfdf3] border border-[#d1fadf] hover:border-[#a6f4c5] shadow-2xs transition-all flex flex-col justify-between space-y-4">
+                <div className="rounded-3xl p-6 sm:p-7 bg-[#ecfdf3] border border-[#d1fadf] hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-100/70 hover:-translate-y-1 transition-all duration-200 cursor-default flex flex-col justify-between space-y-4 group">
                   <div>
                     {/* Card Top Row */}
                     <div className="flex items-center justify-between gap-2">
-                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-bold text-emerald-950 shadow-2xs">
-                        <Scale className="w-3.5 h-3.5 text-emerald-600" />
+                      <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full text-xs font-extrabold text-emerald-950 border border-emerald-200/80 shadow-xs">
+                        <Scale className="w-3.5 h-3.5 text-emerald-700" />
                         <span>Career Reality</span>
                       </div>
-                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-bold text-emerald-800 shadow-2xs">
+                      <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full text-xs font-extrabold text-emerald-950 border border-emerald-200/80 shadow-xs">
                         <span className="text-emerald-600">📅</span>
                         <span>First Passout: 2030</span>
                       </div>
                     </div>
 
-                    {/* Card Title & Content */}
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug">
+                    {/* Card Title */}
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-4 leading-snug group-hover:text-emerald-950 transition-colors">
                       Zero Historical Salary Statistics
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-                      Inaugural cohort enrolled in July 2026. Any coaching claims citing historical packages or average CTC are fictional marketing. Dedicated WSAIS career assistance is provided upon graduation.
-                    </p>
+
+                    {/* Concise Bullet Points */}
+                    <ul className="mt-3.5 space-y-2 text-xs sm:text-[13px] text-slate-800 leading-relaxed">
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-2 shrink-0" />
+                        <span>Inaugural cohort enrolled in July 2026; first graduating class will pass out in 2030.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-2 shrink-0" />
+                        <span>Beware coaching claims: Any past packages or median CTC figures quoted online are fictional.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-2 shrink-0" />
+                        <span>Dedicated WSAIS career assistance channel is provided to all program completers (WSAIS FAQ 14).</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  {/* Card Bottom Meta */}
-                  <div className="pt-4 border-t border-emerald-200/50 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-700">
+                  {/* Card Bottom Meta (High Contrast WCAG AAA) */}
+                  <div className="pt-4 border-t border-emerald-200/70 flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-900">
                       Inaugural 2026 Intake
                     </span>
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white/90 text-emerald-800 border border-emerald-200/60 shadow-2xs">
+                    <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-full bg-white text-emerald-950 border border-emerald-300 shadow-xs">
                       WSAIS FAQ 14
                     </span>
                   </div>
