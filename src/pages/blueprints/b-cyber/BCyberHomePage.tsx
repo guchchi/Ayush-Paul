@@ -180,22 +180,32 @@ const COMPARISON_ROWS = [
 // --- 5 Misconceptions ---
 const MISCONCEPTIONS = [
   {
+    topic: 'Curriculum & Engineering Focus',
+    ref: 'Senate Curriculum Guide',
     myth: 'Cybersecurity is just ethical hacking and running Kali Linux tools.',
     fact: 'The official Senate curriculum is grounded in deep computer science: computing fundamentals, electronics, operating systems, data engineering, and cryptography. Script-kiddie tools without fundamentals are not the focus.',
   },
   {
+    topic: 'Practicum Deployment & Employment',
+    ref: 'WSAIS FAQ 14 & Senate Ord. §4',
     myth: 'The two-year internship structure means a guaranteed permanent job.',
     fact: 'The internship component is an academic degree requirement hosted primarily in selected government agencies. Permanent post-degree employment depends on organizational policies and individual selection.',
   },
   {
+    topic: 'Placement Assistance vs Guarantees',
+    ref: 'Institutional Placement Policy',
     myth: 'Placement support is identical to a guaranteed salary package.',
     fact: 'Official documentation states placement assistance is provided to successful completers via a dedicated cybersecurity channel. However, no specific starting salary or outcome can be guaranteed.',
   },
   {
+    topic: 'Admission Gateway & 2027 Testing Shift',
+    ref: 'WSAIS FAQ 23',
     myth: 'The 2026 JEE Main admission conditions will automatically apply to 2027.',
     fact: 'WSAIS FAQ 23 confirmed that JEE Main is discontinued for future intakes; a separate dedicated entrance test will be conducted. Each admission cycle requires independent verification.',
   },
   {
+    topic: 'Degree Identity & Branch Boundaries',
+    ref: 'Senate Ordinance §12',
     myth: 'B.Cyber is interchangeable with a standard B.Tech Computer Science degree.',
     fact: 'B.Cyber has a dedicated Senate ordinance, distinct 2+2 model, zero branch-transfer privileges into regular B.Tech, and specialized security curricula tailored for national cyber defense.',
   },
@@ -1612,14 +1622,14 @@ export function BCyberHomePage() {
         </section>
 
         {/* =========================================================================
-            SECTION 10: COMMON MISCONCEPTIONS (Myth vs Fact Rows)
+            SECTION 10: COMMON MISCONCEPTIONS (Myth vs Fact Split Cards)
         ========================================================================= */}
         <section aria-labelledby="myths-heading" className="space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Hype Filter
             </span>
-            <h2 id="myths-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 id="myths-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               What You Should Know Before Choosing B.Cyber
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
@@ -1627,20 +1637,54 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs divide-y divide-slate-100">
+          <div className="space-y-4">
             {MISCONCEPTIONS.map((item, idx) => (
-              <div key={idx} className="p-5 sm:p-6 space-y-2">
-                <div className="flex items-start gap-2 text-xs sm:text-sm text-rose-800 font-semibold">
-                  <span className="px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200/80 text-[10px] uppercase font-bold shrink-0">
-                    Assumption
+              <div
+                key={idx}
+                className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all space-y-3.5 group"
+              >
+                {/* Header Meta */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+                      0{idx + 1}
+                    </span>
+                    <span className="font-bold text-slate-900 text-xs sm:text-[13px]">
+                      {item.topic}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono font-medium text-slate-500">
+                    {item.ref}
                   </span>
-                  <span>&quot;{item.myth}&quot;</span>
                 </div>
-                <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 font-normal pl-0 sm:pl-2">
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[10px] uppercase font-bold shrink-0">
-                    Reality
-                  </span>
-                  <span>{item.fact}</span>
+
+                {/* 2-Column Split: Assumption vs Reality */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {/* Assumption (Muted, dignified, NO loud red) */}
+                  <div className="p-4 rounded-2xl bg-slate-50/80 flex flex-col justify-between space-y-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2.5 py-0.5 rounded-full bg-white border border-slate-200/90 text-[10px] font-bold uppercase tracking-wider text-slate-600 inline-flex items-center gap-1.5 shadow-2xs">
+                        <HelpCircle size={12} className="text-slate-400" />
+                        Common Internet Assumption
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 font-medium leading-relaxed italic">
+                      &ldquo;{item.myth}&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Reality (Authoritative, clear, emerald accent) */}
+                  <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider text-emerald-950 inline-flex items-center gap-1.5 shadow-2xs">
+                        <CheckCircle2 size={12} className="text-emerald-700" />
+                        Official Institutional Fact
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-slate-700 font-normal leading-relaxed">
+                      {item.fact}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
