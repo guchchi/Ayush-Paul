@@ -944,73 +944,151 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          {/* Accessible Semester Tab Navigation */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Semesters">
-            {CURRICULUM_SEMESTERS.map((sem, idx) => (
-              <button
-                key={sem.semNumber}
-                role="tab"
-                aria-selected={activeSemIndex === idx}
-                aria-controls={`sem-panel-${sem.semNumber}`}
-                id={`sem-tab-${sem.semNumber}`}
-                onClick={() => setActiveSemIndex(idx)}
-                className={cn(
-                  'px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-primary',
-                  activeSemIndex === idx
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
-                )}
-              >
-                <span>Semester {sem.semNumber}</span>
-                <span className={cn('ml-1.5 text-[10px]', activeSemIndex === idx ? 'text-white/70' : 'text-slate-400')}>
-                  ({sem.totalCredits} Cr)
-                </span>
-              </button>
-            ))}
+          {/* Accessible Semester Tab Navigation + Phase Scope Pill */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Semesters">
+              {CURRICULUM_SEMESTERS.map((sem, idx) => (
+                <button
+                  key={sem.semNumber}
+                  role="tab"
+                  aria-selected={activeSemIndex === idx}
+                  aria-controls={`sem-panel-${sem.semNumber}`}
+                  id={`sem-tab-${sem.semNumber}`}
+                  onClick={() => setActiveSemIndex(idx)}
+                  className={cn(
+                    'px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-primary shadow-2xs',
+                    activeSemIndex === idx
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50 hover:text-slate-900'
+                  )}
+                >
+                  <span>Semester {sem.semNumber}</span>
+                  <span className={cn('ml-1.5 text-[11px] font-mono', activeSemIndex === idx ? 'text-white/80' : 'text-slate-400')}>
+                    ({sem.totalCredits} Cr)
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-xs text-slate-600 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              <span>Phase 1 On-Campus Curricula (200 Total Credits)</span>
+            </div>
           </div>
 
           {/* Active Semester Panel */}
           {(() => {
             const currentSem = CURRICULUM_SEMESTERS[activeSemIndex];
+            const labCount = currentSem.subjects.filter((s) => s.isLab).length;
+
             return (
               <div
                 role="tabpanel"
                 id={`sem-panel-${currentSem.semNumber}`}
                 aria-labelledby={`sem-tab-${currentSem.semNumber}`}
-                className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-xs space-y-4"
+                className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs space-y-5"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pb-3 border-b border-slate-100">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                    {currentSem.title}
-                  </h3>
-                  <span className="text-xs font-semibold text-slate-500">
-                    Total Credits: {currentSem.totalCredits}
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-600">
-                  {currentSem.focus}
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {currentSem.subjects.map((sub, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        'p-3.5 rounded-xl border flex items-center justify-between text-xs',
-                        sub.isLab
-                          ? 'border-brand-primary/30 bg-brand-primary/5 text-slate-900'
-                          : 'border-slate-200/80 bg-slate-50/60 text-slate-800'
-                      )}
-                    >
-                      <div className="space-y-0.5">
-                        <span className="font-semibold block">{sub.name}</span>
-                        <span className="text-[10px] text-slate-500 font-medium">{sub.type}</span>
-                      </div>
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200/80 text-slate-700 shrink-0">
-                        {sub.credits} Credits
+                {/* Panel Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div className="space-y-1">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                      {currentSem.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                      {currentSem.focus}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
+                      {currentSem.totalCredits} Total Credits
+                    </span>
+                    {labCount > 0 && (
+                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-blue-50 text-brand-primary border border-blue-200/80 shadow-2xs">
+                        {labCount} Live Lab{labCount > 1 ? 's' : ''}
                       </span>
-                    </div>
-                  ))}
+                    )}
+                  </div>
+                </div>
+
+                {/* Symmetrical Subject Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                  {currentSem.subjects.map((sub, i) => {
+                    const isLastOdd = i === currentSem.subjects.length - 1 && currentSem.subjects.length % 2 !== 0;
+
+                    return (
+                      <div
+                        key={i}
+                        className={cn(
+                          'p-4 rounded-2xl border transition-all duration-150 flex items-center justify-between gap-3',
+                          isLastOdd
+                            ? 'sm:col-span-2 bg-slate-50/70 border-slate-200/80 hover:bg-slate-50'
+                            : sub.isLab
+                            ? 'border-blue-200/90 bg-blue-50/30 hover:bg-blue-50/50 shadow-2xs'
+                            : 'border-slate-200/80 bg-white hover:bg-slate-50/60 shadow-2xs'
+                        )}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div
+                            className={cn(
+                              'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs font-bold text-xs',
+                              sub.isLab
+                                ? 'bg-brand-primary text-white'
+                                : 'bg-slate-100 text-slate-700 border border-slate-200/70'
+                            )}
+                          >
+                            {sub.isLab ? <Terminal size={14} /> : <BookOpen size={14} />}
+                          </div>
+                          <div className="min-w-0">
+                            <span className="font-bold text-slate-900 text-xs sm:text-[13px] block truncate">
+                              {sub.name}
+                            </span>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span
+                                className={cn(
+                                  'text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wider',
+                                  sub.isLab
+                                    ? 'bg-blue-100/80 text-brand-primary font-bold'
+                                    : 'bg-slate-100 text-slate-600'
+                                )}
+                              >
+                                {sub.type}
+                              </span>
+                              {sub.isLab && (
+                                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60">
+                                  Hands-on Lab
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <span
+                          className={cn(
+                            'text-xs font-mono font-bold px-2.5 py-1 rounded-xl border shrink-0',
+                            sub.isLab
+                              ? 'bg-white border-blue-200 text-brand-primary shadow-2xs'
+                              : 'bg-white border-slate-200 text-slate-800 shadow-2xs'
+                          )}
+                        >
+                          {sub.credits} Credits
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Practicum Transition Hint */}
+                <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <Info size={14} className="text-brand-primary shrink-0" />
+                    <span>
+                      Course syllabus &amp; credit weights verified against official Senate Ordinance §8.
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 font-semibold text-slate-700 shrink-0">
+                    <span>Semesters 5–8: Full-Time Field Practicum (216 Credits)</span>
+                    <ArrowRight size={12} className="text-brand-primary" />
+                  </div>
                 </div>
               </div>
             );
