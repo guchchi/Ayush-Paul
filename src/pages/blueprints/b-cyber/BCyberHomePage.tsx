@@ -1060,7 +1060,7 @@ export function BCyberHomePage() {
 
                 {/* 4 Structured Criteria Cards */}
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       01
                     </div>
@@ -1074,7 +1074,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       02
                     </div>
@@ -1088,7 +1088,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       03
                     </div>
@@ -1102,7 +1102,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       04
                     </div>
@@ -1154,7 +1154,7 @@ export function BCyberHomePage() {
 
                 {/* 4 Structured Criteria Cards */}
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       01
                     </div>
@@ -1168,7 +1168,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       02
                     </div>
@@ -1182,7 +1182,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       03
                     </div>
@@ -1196,7 +1196,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       04
                     </div>
@@ -1426,7 +1426,7 @@ export function BCyberHomePage() {
 
                 {/* 4 Structured Criteria Cards */}
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       01
                     </div>
@@ -1440,7 +1440,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       02
                     </div>
@@ -1454,7 +1454,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       03
                     </div>
@@ -1468,7 +1468,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       04
                     </div>
@@ -1520,7 +1520,7 @@ export function BCyberHomePage() {
 
                 {/* 4 Structured Criteria Cards */}
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       01
                     </div>
@@ -1534,7 +1534,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       02
                     </div>
@@ -1548,7 +1548,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       03
                     </div>
@@ -1562,7 +1562,7 @@ export function BCyberHomePage() {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/80 flex items-start gap-3 hover:bg-slate-100/70 transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
                       04
                     </div>
