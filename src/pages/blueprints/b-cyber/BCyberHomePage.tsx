@@ -324,87 +324,78 @@ export function BCyberHomePage() {
           <div className="w-full max-w-4xl pt-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
               {/* Metric 1: Entrance Hook */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
                   ENTRANCE
                 </span>
-                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight flex items-center gap-1.5">
-                  <span>NO JEE ADV REQ</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  No JEE Advanced Req
                 </span>
-                <span className="text-[11px] text-emerald-700 font-medium mt-0.5 block">
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
                   Separate Test · 12th PCM
                 </span>
               </div>
 
               {/* Metric 2: Prestige Hook */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
                   CREDENTIAL
                 </span>
-                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
                   IIT Alumni Status
                 </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
                   Official 4-Year B.Cyber Degree
                 </span>
               </div>
 
               {/* Metric 3: Structure & Practicum Hook */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  2+2 ARCHITECTURE
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  ARCHITECTURE
                 </span>
-                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
-                  2-Yr Paid Practicum
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  2-Yr Field Practicum
                 </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
-                  Work in Top Cyber Units
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
+                  Critical Cyber &amp; Defense Units
                 </span>
               </div>
 
               {/* Metric 4: Hands-on Cyber Labs */}
-              <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  PRACTICAL FOCUS
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  LAB TRAINING
                 </span>
-                <span className="text-sm sm:text-[15px] font-extrabold text-slate-900 block leading-tight">
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
                   5 Live Cyber Labs
                 </span>
-                <span className="text-[11px] text-brand-primary font-medium mt-0.5 block">
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
                   Sem 1 Malware &amp; Exploit Dev
                 </span>
               </div>
             </div>
 
-            {/* Quick Action Buttons */}
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            {/* Streamlined Pillar Navigation CTAs */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              {/* Primary CTA: Pillar 3 Preparation Roadmap */}
               <Link
                 to="/blueprints/b-cyber/roadmap"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs group"
               >
-                <span>Free Preparation Roadmap</span>
+                <span>Free Preparation Roadmap (Pillar 3)</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#d1f34d]" />
               </Link>
 
-              <a
-                href="#quick-answer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-700 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs"
+              {/* Secondary CTA: Pillar 2 Admission & Eligibility Guide */}
+              <Link
+                to="/blueprints/b-cyber/admission"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-800 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs group"
               >
-                <span>30-Sec Summary</span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              </a>
-
-              <a
-                href="https://iitk.ac.in/wsais/b-cyber.php"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors"
-                title="Official IIT Kanpur WSAIS portal"
-              >
-                <span>Official Portal</span>
-                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-              </a>
+                <ShieldCheck className="w-3.5 h-3.5 text-brand-primary group-hover:scale-105 transition-transform" />
+                <span>Admission &amp; 2027 Shift (Pillar 2)</span>
+                <ArrowRight className="w-3 h-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </div>
           </div>
         </section>
