@@ -1391,7 +1391,7 @@ export function BCyberHomePage() {
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Career &amp; Deployment Truth
             </span>
-            <h2 id="internship-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 id="internship-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               What Does the Internship and Career Picture Actually Look Like?
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
@@ -1399,54 +1399,215 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full">
-                What the Published Information Confirms
-              </span>
-              <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-slate-800 shrink-0 mt-0.5" />
-                  <span>Years three and four constitute the mandatory practical internship component.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-slate-800 shrink-0 mt-0.5" />
-                  <span>Host organizations are primarily selected government organizations and research incubators.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-slate-800 shrink-0 mt-0.5" />
-                  <span>Stipends are arranged based on host organization policies.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={16} className="text-slate-800 shrink-0 mt-0.5" />
-                  <span>Placement support is provided to successful completers via specialized cyber channels.</span>
-                </li>
-              </ul>
+          {/* Dual Verification Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+            {/* COLUMN 1: PUBLISHED PROVISIONS / INSTITUTIONAL FACTS */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-6 group">
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-950 border border-emerald-200 shadow-2xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>Published Provisions</span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    Institutional Facts
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight group-hover:text-emerald-950 transition-colors">
+                    What the Published Information Confirms
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Stipulated mandates established in official IIT Kanpur Senate ordinances, WSAIS admission brochures, and curriculum guidelines.
+                  </p>
+                </div>
+
+                {/* 4 Structured Criteria Cards */}
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      01
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Mandatory 2-Year Practical Practicum
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Years three and four (Semesters 5–8) constitute the compulsory full-time field practicum (216 credits), fully replacing standard on-campus classroom lectures.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      02
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Apex Host Organizations
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Host entities are primarily selected government organizations, national defense establishments, and specialized institutional research incubators.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      03
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Stipends Governed by Host Policy
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Financial stipends during the 24-month practical deployment are arranged and disbursed based on individual host organization policies.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      04
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Dedicated Placement Facilitation
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Career placement assistance is formally provided to successful program completers via specialized cybersecurity institutional channels.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Bottom Meta */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800">
+                  Documented Mandate
+                </span>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-950 border border-emerald-200 shadow-2xs">
+                  WSAIS FAQ 14 &amp; Senate Ord. §4
+                </span>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200/70 px-2.5 py-1 rounded-full">
-                What This Does NOT Establish
-              </span>
-              <ul className="space-y-2 text-xs sm:text-sm text-slate-700">
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>Every internship will necessarily offer an identical, guaranteed stipend sum.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>Students receive an automatic guarantee of permanent government employment.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>A proven historical placement record exists (inaugural cohort commenced July 2026).</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-                  <span>Any specific corporate salary package can be promised prior to graduation.</span>
-                </li>
-              </ul>
+            {/* COLUMN 2: WHAT THIS DOES NOT ESTABLISH / HYPE SEPARATION */}
+            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-6 group">
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-950 border border-amber-200 shadow-2xs">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-700" />
+                    <span>Clarified Boundaries</span>
+                  </div>
+                  <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    Hype Separation
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight group-hover:text-amber-950 transition-colors">
+                    What This Does NOT Establish
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Critical reality checks to separate commercial coaching promises from contractually guaranteed outcomes.
+                  </p>
+                </div>
+
+                {/* 4 Structured Criteria Cards */}
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      01
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        No Uniform Fixed Stipend Guarantee
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Official institutional documentation establishes no single guaranteed or standardized monthly stipend amount across all hosts.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      02
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        No Automatic Permanent Government Post
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Field deployment within a government agency does not confer an automatic civil service job offer or permanent absorption post-graduation.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      03
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Zero Historical Placement Precedent
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Because the inaugural cohort commenced in July 2026 and graduates in 2030, no prior placement statistics, batch averages, or recruitment metrics exist.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-150 flex items-start gap-3 hover:bg-slate-50 transition-colors">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100/70 text-amber-900 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                      04
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">
+                        No Pre-Graduation Package Promises
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed block mt-0.5">
+                        Any specific corporate salary package or multinational CTC figures claimed prior to cohort graduation are unverified marketing claims.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Bottom Meta */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800">
+                  Academic Reality
+                </span>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-950 border border-amber-200 shadow-2xs">
+                  Practicum ≠ Guaranteed Placement
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Institutional Deployment Guidance Advisory */}
+          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 text-brand-primary border border-blue-200/60 flex items-center justify-center shrink-0">
+                <Building2 className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="font-bold text-slate-900 block">Candidate Deployment Advisory</span>
+                <span className="text-slate-600">Candidates should approach Years 3–4 as an intensive experiential engineering practicum rather than an automated corporate placement shortcut.</span>
+              </div>
+            </div>
+            <a
+              href="#faq-heading"
+              className="inline-flex items-center gap-1.5 font-bold text-brand-primary hover:text-brand-dark transition-colors shrink-0 text-xs py-1"
+            >
+              <span>Explore Deployment FAQs</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         </section>
 
