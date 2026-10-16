@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-10-16 — B.Cyber Pillar 1 Working Optimization & SEO Schema Complete
+
+### Changes & Optimizations
+- **JSON-LD Structured Data Schema**: Injected `EducationalOccupationalProgram` (IIT Kanpur B.Cyber degree credentials, provider WSAIS, 4-year timeline) and `FAQPage` (all 8 official FAQs) via `useSEO` for rich Google search snippet eligibility.
+- **Section 7 Link Fix**: Corrected non-existent route link to in-page anchor `#curriculum-heading` for smooth navigation.
+- **Section 8 (Credential Parity)**: Elevated 3 sub-cards (`Official Degree Award`, `Alumni Privileges`, `Global Higher Studies`) with squircle icon badges, Senate ordinance tags, and hover micro-transitions matching Sections 2 & 4.
+- **Section 11 (FAQ Accordion)**: Elevated with smooth chevron transition, active highlight styling, and WCAG accessibility attributes (`aria-expanded`, `aria-controls`).
+
+---
+
 ## 2026-10-15 — B.Cyber Blueprint Pillar 1 UI Structure Elevation Completed
 
 ### Milestone Status

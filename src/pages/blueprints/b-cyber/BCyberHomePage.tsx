@@ -34,6 +34,7 @@ import {
   Globe,
   TrendingUp,
   SlidersHorizontal,
+  GraduationCap,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
 import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
@@ -275,6 +276,45 @@ const FAQS = [
 export function BCyberHomePage() {
   const canonical = getCanonicalUrl('/blueprints/b-cyber');
 
+  const bcyberSchema = {
+    '@graph': [
+      {
+        '@type': 'EducationalOccupationalProgram',
+        '@id': `${canonical}#program`,
+        name: 'Bachelor of Cybersecurity (B.Cyber)',
+        programType: 'Undergraduate Degree',
+        provider: {
+          '@type': 'CollegeOrUniversity',
+          name: 'Indian Institute of Technology Kanpur (IIT Kanpur)',
+          url: 'https://www.iitk.ac.in',
+          department: {
+            '@type': 'Organization',
+            name: 'Wadhwani School of AI and Intelligent Systems (WSAIS)',
+            url: 'https://iitk.ac.in/wsais/b-cyber.php',
+          },
+        },
+        educationalCredentialAwarded: 'Bachelor of Cybersecurity (B.Cyber.)',
+        timeToComplete: 'P4Y',
+        description:
+          'A 4-year undergraduate degree in cybersecurity offered jointly by IIT Kanpur and IIT Madras featuring a 2+2 model: 2 years on-campus coursework & 5 security labs followed by 2 years of full-time field practicum.',
+        occupationalCategory:
+          'Cybersecurity Engineer, Malware Analyst, Vulnerability Researcher, Security Architect, Digital Forensics Specialist',
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${canonical}#faq`,
+        mainEntity: FAQS.map((faq) => ({
+          '@type': 'Question',
+          name: faq.q,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.a,
+          },
+        })),
+      },
+    ],
+  };
+
   useSEO({
     title: 'IIT Kanpur B.Cyber: Degree, 2+2 Model & Curriculum Explained',
     description:
@@ -282,6 +322,7 @@ export function BCyberHomePage() {
     keywords:
       'IIT Kanpur B.Cyber, Bachelor of Cybersecurity, B.Cyber curriculum, B.Cyber 2+2 model, WSAIS IIT Kanpur, cybersecurity degree India, C3iHub IIT Kanpur, B.Cyber alumni status',
     url: canonical,
+    schema: bcyberSchema,
   });
 
   // State for active semester tab in Section 4
@@ -1591,12 +1632,12 @@ export function BCyberHomePage() {
                   <span>
                     {reflectionCount} of 3 prompts confirmed. Check all three conditions to verify your complete alignment.
                   </span>
-                  <Link
-                    to="/blueprints/b-cyber/curriculum"
+                  <a
+                    href="#curriculum-heading"
                     className="font-semibold text-brand-primary hover:underline shrink-0 ml-3"
                   >
                     Inspect Curriculum &rarr;
-                  </Link>
+                  </a>
                 </div>
               )}
             </div>
@@ -1625,17 +1666,61 @@ export function BCyberHomePage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs">
-              <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50 space-y-1">
-                <span className="font-bold text-slate-900 block">Degree Award</span>
-                <span className="text-slate-600">Bachelor of Cybersecurity (B.Cyber.)</span>
+              <div className="p-4.5 rounded-2xl border border-slate-200/90 bg-slate-50/70 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all flex flex-col justify-between space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-brand-primary border border-blue-200/60 flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                    SENATE ORD.
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-900 block text-xs sm:text-[13px] group-hover:text-brand-primary transition-colors">
+                    Official Degree Award
+                  </span>
+                  <span className="text-slate-600 leading-relaxed block mt-1 text-xs">
+                    Bachelor of Cybersecurity (B.Cyber.) conferred directly by IIT Kanpur.
+                  </span>
+                </div>
               </div>
-              <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50 space-y-1">
-                <span className="font-bold text-slate-900 block">Alumni Status</span>
-                <span className="text-slate-600">Full IIT Kanpur / IIT Madras Alumni Status</span>
+
+              <div className="p-4.5 rounded-2xl border border-slate-200/90 bg-slate-50/70 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all flex flex-col justify-between space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200/60 flex items-center justify-center shrink-0">
+                    <Users2 className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                    FULL STATUS
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-900 block text-xs sm:text-[13px] group-hover:text-emerald-950 transition-colors">
+                    Alumni Privileges
+                  </span>
+                  <span className="text-slate-600 leading-relaxed block mt-1 text-xs">
+                    Full IIT Kanpur &amp; IIT Madras alumni standing upon successful graduation.
+                  </span>
+                </div>
               </div>
-              <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50 space-y-1">
-                <span className="font-bold text-slate-900 block">Higher Studies (FAQ 9)</span>
-                <span className="text-slate-600">100% eligible for MS, M.Tech &amp; Ph.D. globally</span>
+
+              <div className="p-4.5 rounded-2xl border border-slate-200/90 bg-slate-50/70 hover:bg-white hover:border-slate-300 hover:shadow-xs transition-all flex flex-col justify-between space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 border border-purple-200/60 flex items-center justify-center shrink-0">
+                    <Globe className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                    FAQ 9
+                  </span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-900 block text-xs sm:text-[13px] group-hover:text-purple-950 transition-colors">
+                    Global Higher Studies
+                  </span>
+                  <span className="text-slate-600 leading-relaxed block mt-1 text-xs">
+                    100% eligibility parity for MS, M.Tech, GATE &amp; Ph.D. programs worldwide.
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -1998,25 +2083,39 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-6 shadow-xs divide-y divide-slate-100">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-xs divide-y divide-slate-100">
             {FAQS.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className="py-3.5 first:pt-0 last:pb-0">
+                <div
+                  key={idx}
+                  className={cn(
+                    'py-3.5 px-3 rounded-xl transition-all duration-200',
+                    isOpen ? 'bg-slate-50/80 shadow-2xs' : 'hover:bg-slate-50/40'
+                  )}
+                >
                   <button
                     type="button"
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${idx}`}
                     className="w-full flex items-center justify-between text-left gap-3 text-xs sm:text-sm font-bold text-slate-900 hover:text-brand-primary transition-colors cursor-pointer"
                   >
                     <span>{faq.q}</span>
-                    {isOpen ? (
-                      <ChevronUp size={16} className="text-slate-400 shrink-0" />
-                    ) : (
-                      <ChevronDown size={16} className="text-slate-400 shrink-0" />
-                    )}
+                    <span
+                      className={cn(
+                        'p-1 rounded-md transition-transform duration-200 shrink-0',
+                        isOpen ? 'rotate-180 text-brand-primary' : 'text-slate-400'
+                      )}
+                    >
+                      <ChevronDown size={16} />
+                    </span>
                   </button>
                   {isOpen && (
-                    <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed pr-6">
+                    <p
+                      id={`faq-answer-${idx}`}
+                      className="mt-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed pr-6 border-t border-slate-200/60 pt-2"
+                    >
                       {faq.a}
                     </p>
                   )}
