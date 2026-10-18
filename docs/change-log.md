@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-10-18 — B.Cyber Pillar 1 Design & Accessibility Audit Fixes (Option 1)
+
+### Changes & Optimizations
+- **Canonical In-Page Anchor IDs**: Added canonical anchor IDs (`#overview-start`, `#key-facts`, `#model-2plus2`, `#curriculum`, `#beyond-hacking`, `#degree-comparison`, `#fit-check`, `#degree-recognition`, `#internship-reality`, `#myths-vs-facts`, `#common-faqs`, `#official-sources`, `#next-steps`) with `scroll-mt-28` across all 14 section wrappers in [BCyberHomePage.tsx](file:///c:/Users/ap877/2026/Ayush-Paul/src/pages/blueprints/b-cyber/BCyberHomePage.tsx) to prevent header occlusion during direct links.
+- **Section 6 Responsive Dimension Stack**: Refactored Section 6 with a responsive pattern—retained the full original comparative matrix on desktop (`hidden md:block`) while adding a single-column dimension stack for mobile viewports (`block md:hidden`), eliminating horizontal overflow.
+- **Section 7 WCAG 2.1 AA Checklist Accessibility**: Upgraded candidate reflection self-diagnostic buttons with full ARIA semantics (`role="checkbox"`, `aria-checked`, `tabIndex={0}`, keyboard `Enter`/`Space` handlers, and `focus-visible` outline rings).
+- **Section 13 Gateway Link Anchors**: Updated decision gateway links to target `#admission-start` and `#prep-start` on subsequent pillar pages.
+
+---
+
 ## 2026-10-16 — B.Cyber Pillar 1 Working Optimization & SEO Schema Complete
 
 ### Changes & Optimizations

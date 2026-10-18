@@ -358,7 +358,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 0: HERO (First Impression & Fast-Track Route Jump)
         ========================================================================= */}
-        <section aria-labelledby="hero-heading" className="space-y-6 pt-4 text-center flex flex-col items-center">
+        <section id="overview-start" aria-labelledby="hero-heading" className="space-y-6 pt-4 text-center flex flex-col items-center">
           {/* Trust Stamp Pill */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200/90 text-[11px] font-semibold text-slate-700 tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -543,7 +543,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 2: PROGRAM AT A GLANCE (Verified Key Facts Matrix)
         ========================================================================= */}
-        <section aria-labelledby="facts-heading" className="space-y-6">
+        <section id="key-facts" aria-labelledby="facts-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Verified Data
@@ -791,7 +791,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 3: THE 4-YEAR, 2+2 MODEL (Visual Stepper & Timeline)
         ========================================================================= */}
-        <section aria-labelledby="model-heading" className="space-y-6">
+        <section id="model-2plus2" aria-labelledby="model-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Academic Architecture
@@ -992,7 +992,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 4: CURRICULUM AND SUBJECTS (Official Semester Courses)
         ========================================================================= */}
-        <section aria-labelledby="curriculum-heading" className="space-y-6">
+        <section id="curriculum" aria-labelledby="curriculum-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Syllabus Deep-Dive
@@ -1211,7 +1211,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 5: BEYOND HACKING: WHAT CYBERSECURITY ACTUALLY COVERS
         ========================================================================= */}
-        <section aria-labelledby="domains-heading" className="space-y-6">
+        <section id="beyond-hacking" aria-labelledby="domains-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Conceptual Domains
@@ -1280,7 +1280,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 6: BALANCED DEGREE COMPARISON
         ========================================================================= */}
-        <section aria-labelledby="comparison-heading" className="space-y-6">
+        <section id="degree-comparison" aria-labelledby="comparison-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Objective Comparison
@@ -1293,7 +1293,8 @@ export function BCyberHomePage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
+          {/* Desktop Table View (>= md) */}
+          <div className="hidden md:block rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
@@ -1321,12 +1322,51 @@ export function BCyberHomePage() {
               </table>
             </div>
           </div>
+
+          {/* Mobile Dimension Stack (< md) - Zero Horizontal Scroll */}
+          <div className="block md:hidden space-y-3">
+            {COMPARISON_ROWS.map((row, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xs space-y-2.5"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                    0{idx + 1}
+                  </span>
+                  <span className="text-xs font-bold text-slate-900">
+                    {row.parameter}
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="p-2.5 rounded-xl bg-brand-primary/5 border border-brand-primary/20 space-y-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-brand-primary block">
+                      IIT Kanpur B.Cyber
+                    </span>
+                    <p className="text-slate-900 font-medium leading-relaxed">
+                      {row.bcyber}
+                    </p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+                      Conventional B.Tech CSE
+                    </span>
+                    <p className="text-slate-600 leading-relaxed">
+                      {row.conventional}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* =========================================================================
             SECTION 7: IS B.CYBER RIGHT FOR YOU? (Fit & Profile Assessment)
         ========================================================================= */}
-        <section aria-labelledby="fit-heading" className="space-y-6">
+        <section id="fit-check" aria-labelledby="fit-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Fit &amp; Profile Assessment
@@ -1583,9 +1623,18 @@ export function BCyberHomePage() {
                   <button
                     key={idx}
                     type="button"
+                    role="checkbox"
+                    aria-checked={isChecked}
+                    tabIndex={0}
                     onClick={() => toggleReflection(idx)}
+                    onKeyDown={(e) => {
+                      if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        toggleReflection(idx);
+                      }
+                    }}
                     className={cn(
-                      'w-full p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3.5 group',
+                      'w-full p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
                       isChecked
                         ? 'border-brand-primary/40 bg-brand-primary/5 shadow-2xs'
                         : 'border-slate-200/80 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300'
@@ -1647,7 +1696,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 8: DEGREE, RECOGNITION & ALUMNI STATUS
         ========================================================================= */}
-        <section aria-labelledby="degree-heading" className="space-y-6">
+        <section id="degree-recognition" aria-labelledby="degree-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Credential Parity
@@ -1736,7 +1785,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 9: INTERNSHIP, STIPEND & PLACEMENT REALITY
         ========================================================================= */}
-        <section aria-labelledby="internship-heading" className="space-y-6">
+        <section id="internship-reality" aria-labelledby="internship-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Career &amp; Deployment Truth
@@ -1964,7 +2013,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 10: COMMON MISCONCEPTIONS (Myth vs Fact 2-Column Grid)
         ========================================================================= */}
-        <section aria-labelledby="myths-heading" className="space-y-6">
+        <section id="myths-vs-facts" aria-labelledby="myths-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Hype Filter
@@ -2056,7 +2105,7 @@ export function BCyberHomePage() {
                   All 26 Senate regulations, official admission circulars, and primary contact emails are indexed in our transparent FAQ directory.
                 </p>
                 <a
-                  href="#faq-heading"
+                  href="#common-faqs"
                   className="inline-flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#0b1c30] text-white hover:bg-slate-800 transition-colors text-xs font-bold"
                 >
                   <span>Browse All 8 FAQs</span>
@@ -2070,7 +2119,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 11: FREQUENTLY ASKED QUESTIONS (Concise Direct Answers)
         ========================================================================= */}
-        <section aria-labelledby="faq-heading" className="space-y-6">
+        <section id="common-faqs" aria-labelledby="faq-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Direct Answers
@@ -2128,7 +2177,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 12: SOURCES, VERIFICATION & EDITORIAL TRANSPARENCY
         ========================================================================= */}
-        <section aria-labelledby="sources-heading" className="space-y-6">
+        <section id="official-sources" aria-labelledby="sources-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
               Transparency
@@ -2177,7 +2226,7 @@ export function BCyberHomePage() {
         {/* =========================================================================
             SECTION 13: FINAL NEXT STEP DECISION GATEWAY (P2 / P3 Dual CTA)
         ========================================================================= */}
-        <section aria-labelledby="next-step-heading" className="rounded-2xl border border-slate-900 bg-slate-900 text-white p-8 sm:p-10 shadow-lg">
+        <section id="next-steps" aria-labelledby="next-step-heading" className="scroll-mt-28 rounded-2xl border border-slate-900 bg-slate-900 text-white p-8 sm:p-10 shadow-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-2 max-w-xl">
               <span className="text-[10px] font-bold uppercase tracking-widest text-[#d1f34d] block">
@@ -2193,14 +2242,14 @@ export function BCyberHomePage() {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
               <Link
-                to="/blueprints/b-cyber/admission"
+                to="/blueprints/b-cyber/admission#admission-start"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#d1f34d] text-slate-950 text-xs font-bold hover:bg-[#c0e045] transition-all shadow-sm group"
               >
                 <span>Check Admission &amp; Eligibility</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
-                to="/blueprints/b-cyber/roadmap"
+                to="/blueprints/b-cyber/roadmap#prep-start"
                 className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-all text-center border border-white/15"
               >
                 <span>Explore Preparation Roadmap</span>
