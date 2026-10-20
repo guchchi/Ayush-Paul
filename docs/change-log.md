@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-10-20 — B.Cyber Pillar 3 (Preparation Roadmap) Streamlined Direct Elevation
+
+### Changes & Optimizations
+- **Direct Roadmap Focus**: Transformed [BCyberPreparationPlannerPage.tsx](file:///c:/Users/ap877/2026/Ayush-Paul/src/pages/blueprints/b-cyber/BCyberPreparationPlannerPage.tsx) into a compact, direct, action-first technical preparation roadmap, removing 4 sections of preamble/fluff and giving students instant access to the core 5-stage curriculum.
+- **Harmonized Design Architecture**: Upgraded to match Pillar 1 & 2 design standards (`max-w-6xl` container, `#fafbfc` background, squircle badges, `scroll-mt-28` canonical anchor clearance, and consistent typography).
+- **Core Editorial Sections**:
+  - **Section 0 (`#prep-start`)**: Hero with trust badge, 4-metric executive strip, and fast-track action buttons directly to roadmap stages, free labs, and evidence template.
+  - **Section 1 (`#roadmap-stages`)**: Immediate access to the 5-stage practical curriculum (`BCyberRoadmapStageList`) with visual progression stepper.
+  - **Section 2 (`#resource-library`)**: Curated free resource directory (`BCyberResourceDirectory`) featuring OverTheWire, PortSwigger, PicoCTF, and Wireshark.
+  - **Section 3 (`#proof-of-work`)**: Evidence of prior work (FAQ 22) high-signal vs red flags guide and copyable standard project markdown template.
+  - **Section 4 (`#practice-tasks`)**: Hands-on problem-solving exercises (`BCyberPracticeExercises`).
+  - **Section 5 (`#weekly-pace`)**: Interactive study schedule selector (Casual, Balanced, Sprint) and 40/40/20 weekly balance model.
+  - **Section 6 (`#prep-faqs`)**: Direct-answer preparation FAQ accordion answering key background and hardware questions.
+  - **Section 7 (`#next-steps`)**: High-contrast decision gateway (`#0b1c30` card with `#d1f34d` action button linking to Pillar 2 `#admission-start` and Pillar 1 `#overview-start`).
+- **Structured JSON-LD SEO Schema**: Injected `Course` and `FAQPage` schemas via `useSEO`.
+- **Bundle Optimization**: Reduced bundle size from 114.6 kB to 77.8 kB for faster load times.
+
+---
+
 ## 2026-10-19 — B.Cyber Pillar 2 (Admission & Eligibility) Design & Architecture Elevation
 
 ### Changes & Optimizations

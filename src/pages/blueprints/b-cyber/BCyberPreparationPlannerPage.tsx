@@ -4,87 +4,65 @@ import {
   Compass,
   ShieldCheck,
   MapPin,
-  CalendarCheck,
-  RotateCcw,
   Clock,
   CheckCircle2,
   AlertCircle,
   AlertTriangle,
   ExternalLink,
   ChevronDown,
-  ChevronUp,
   ArrowRight,
   Sparkles,
-  HeartPulse,
-  FolderGit2,
+  Terminal,
   FileCheck,
   Copy,
   Check,
-  HelpCircle,
   BookOpen,
-  Terminal,
-  Network,
-  Shield,
-  Search,
-  Code2,
-  Sliders,
   Layers,
-  Zap,
+  Code2,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
-import { TrustBadge } from '../../../components/b-cyber/TrustBadge';
-import { BCyberReadinessDiagnostic } from '../../../components/b-cyber/BCyberReadinessDiagnostic';
 import { BCyberRoadmapStageList } from '../../../components/b-cyber/BCyberRoadmapStageList';
 import { BCyberResourceDirectory } from '../../../components/b-cyber/BCyberResourceDirectory';
 import { BCyberPracticeExercises } from '../../../components/b-cyber/BCyberPracticeExercises';
-import { BCyberPersonalPlanPreview } from '../../../components/b-cyber/BCyberPersonalPlanPreview';
-import { useBCyberPlannerStore } from '../../../lib/b-cyber-compass/store';
 import { useSEO } from '../../../hooks/useSEO';
 import { getCanonicalUrl } from '../../../lib/domain';
 import { cn } from '../../../lib/utils';
 
-interface NavSection {
-  id: string;
-  label: string;
-  secNum: string;
-}
-
-const SECTIONS: NavSection[] = [
-  { id: 'prep-start', label: 'Start Preparation', secNum: '00' },
-  { id: 'roadmap-certainty', label: 'Known vs Unknown', secNum: '01' },
-  { id: 'roadmap-summary', label: '60-Sec Summary', secNum: '02' },
-  { id: 'readiness-check', label: 'Readiness Diagnostic', secNum: '03' },
-  { id: 'roadmap-stages', label: '5-Stage Syllabus', secNum: '04' },
-  { id: 'resource-library', label: 'Curated Resources', secNum: '05' },
-  { id: 'weekly-pace', label: 'Weekly Pace Plan', secNum: '06' },
-  { id: 'proof-of-work', label: 'Proof-of-Work Dossier', secNum: '07' },
-  { id: 'practice-tasks', label: 'Practice Exercises', secNum: '08' },
-  { id: 'personal-plan', label: 'Paid Execution System', secNum: '09' },
-  { id: 'recovery-plan', label: 'Recovery & Missed Weeks', secNum: '10' },
-  { id: 'prep-faqs', label: 'Preparation FAQs', secNum: '11' },
-  { id: 'prep-sources', label: 'Sources & Methodology', secNum: '12' },
-  { id: 'prep-next', label: 'Next Steps Gateway', secNum: '13' },
+// --- Preparation FAQs ---
+const PREP_FAQS = [
+  {
+    q: 'How much prior programming experience is required before starting this roadmap?',
+    a: 'Zero prior programming knowledge is required to begin Stage 0 and Stage 1. You start with fundamental Linux terminal commands (cd, ls, grep) and file operations. By the conclusion of Stage 2, understanding basic Python loops, socket concepts, and string manipulation is more than sufficient for the foundational security challenges.',
+  },
+  {
+    q: 'Do I need a high-end laptop, gaming rig, or dedicated GPU?',
+    a: 'No. Any standard PC or laptop with 4GB to 8GB of RAM capable of running Windows Subsystem for Linux (WSL2) or a lightweight Linux virtual machine (Ubuntu 22.04/24.04) is 100% sufficient. High-end GPUs are only relevant for deep learning model training, not for network packet analysis, web inspection, or cryptography labs.',
+  },
+  {
+    q: 'Are free resources genuinely sufficient to prepare for B.Cyber selection?',
+    a: 'Yes. Authoritative platforms like OverTheWire Bandit, PortSwigger Web Security Academy, Wireshark sample captures, and PicoCTF are globally recognized, open-access, and standard across top university security curricula. The key differentiator in B.Cyber evaluation is your verifiable evidence and conceptual clarity, not expensive coaching packages.',
+  },
+  {
+    q: 'Can a candidate from a non-computer science Class 12 background succeed here?',
+    a: 'Yes. As long as you satisfy the statutory Class 12 PCM requirement, Stage 0 (Baseline) is purpose-built to bridge the gap. It guides you through safe terminal navigation, virtualization setup, and foundational computing logic without assuming prior coding background.',
+  },
+  {
+    q: 'How will this roadmap adapt when IIT Kanpur releases the official 2027 entrance syllabus?',
+    a: 'The roadmap will dynamically update upon official Senate publication. Core foundational security competencies (Linux, networking, web flaws, crypto, disassembly) are universal and transferable across all computing entrance tests. Any test-specific formats will be directly integrated with verified citation timestamps.',
+  },
 ];
 
 export function BCyberPreparationPlannerPage() {
-  const { isEmergencyRecoveryMode, toggleRecoveryMode } = useBCyberPlannerStore();
+  const canonical = getCanonicalUrl('/blueprints/b-cyber/roadmap');
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedPace, setSelectedPace] = useState<'casual' | 'balanced' | 'sprint'>('balanced');
   const [copiedTemplate, setCopiedTemplate] = useState(false);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-
-  useSEO({
-    title: 'B.Cyber Preparation Roadmap: Free 5-Stage Pipeline & Execution System | Ayush-Paul Blueprints',
-    description:
-      'Structured technical preparation roadmap for IIT Kanpur B.Cyber. 5 free foundational stages, Linux/Networking labs, PortSwigger exercises, and personalized execution engine.',
-    url: getCanonicalUrl('/blueprints/b-cyber/roadmap'),
-  });
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const markdownTemplate = `# Technical Artifact: [Project / Challenge Name]
 
 ## 1. Executive Summary
-- **Domain:** [Linux / Networking / Web / Cryptography / Reverse Engineering]
+- **Domain:** [Linux / Networking / Web Security / Cryptography / Reverse Engineering]
 - **Time Invested:** [e.g. 12 Hours]
 - **Core Security Concept:** [e.g. Broken Object Level Authorization / TCP Stream Framing]
 
@@ -107,7 +85,7 @@ python3 verify_exploit.py --target localhost:8080
 - How was the solution derived logically without guessing?
 
 ## 5. Security Remediation & Defense Recommendations
-- How should the developer patch this flaw in production?
+- How should developers patch this flaw in production?
 - Verified patch snippet or defensive configuration.`;
 
   const handleCopyTemplate = () => {
@@ -116,328 +94,239 @@ python3 verify_exploit.py --target localhost:8080
     setTimeout(() => setCopiedTemplate(false), 2500);
   };
 
-  const toggleFaq = (index: number) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  // Structured Data Schema for SEO
+  const roadmapSchema = {
+    '@graph': [
+      {
+        '@type': 'Course',
+        '@id': `${canonical}#course`,
+        name: 'B.Cyber Technical Preparation Roadmap',
+        description:
+          'A free 5-stage practice-oriented preparation roadmap for IIT Kanpur B.Cyber candidates. Covers Linux CLI, networking protocols, web security labs, cryptography primitives, and verifiable GitHub portfolios.',
+        provider: {
+          '@type': 'Organization',
+          name: 'B.Cyber Compass Independent Research',
+          url: 'https://ayushpaul.com/blueprints/b-cyber',
+        },
+        hasCourseInstance: {
+          '@type': 'CourseInstance',
+          courseMode: 'Online self-paced',
+          courseWorkload: 'PT80H',
+        },
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${canonical}#faq`,
+        mainEntity: PREP_FAQS.map((faq) => ({
+          '@type': 'Question',
+          name: faq.q,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.a,
+          },
+        })),
+      },
+    ],
   };
 
+  useSEO({
+    title: 'IIT Kanpur B.Cyber Preparation Roadmap: Free 5-Stage Technical Pipeline',
+    description:
+      'Direct, practice-first technical preparation roadmap for IIT Kanpur B.Cyber. 5 free stages covering Linux CLI, networking protocols, web security labs, and FAQ 22 portfolio evidence.',
+    keywords:
+      'B.Cyber preparation roadmap, IIT Kanpur B.Cyber syllabus, cybersecurity roadmap India, WSAIS FAQ 22 proof of work, OverTheWire Bandit, PortSwigger Academy, B.Cyber hackathon prep',
+    url: canonical,
+    schema: roadmapSchema,
+  });
+
   return (
-    <div className="w-full min-h-screen bg-[#fafbfc] text-[#0f172a]">
-      {/* Global Top Spacing for Fixed Main Navigation */}
+    <div className="w-full min-h-screen bg-[#fafbfc] text-[#0b1c30]">
+      {/* Global Spacing for Fixed Main Navigation */}
       <div className="pt-20 sm:pt-24" />
 
-      {/* Shared Contextual Navigation Header */}
+      {/* Contextual Sub-Navigation Layer */}
       <BCyberNav />
 
-      {/* On-This-Page Navigation Strip */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        {/* Desktop Anchor Strip */}
-        <div className="hidden lg:flex items-center gap-2 overflow-x-auto custom-scrollbar p-2 rounded-xl bg-white border border-slate-200/90 shadow-xs text-xs whitespace-nowrap">
-          <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px] pl-2 mr-1">
-            Sections:
-          </span>
-          {SECTIONS.map((sec) => (
-            <a
-              key={sec.id}
-              href={`#${sec.id}`}
-              className="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-            >
-              <span className="font-mono text-slate-400 text-[10px] mr-1">{sec.secNum}</span>
-              <span>{sec.label}</span>
-            </a>
-          ))}
-        </div>
+      {/* Main Content Area — Harmonized 6xl Container Matching Pillars 1 & 2 */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24 pb-24">
 
-        {/* Mobile Collapsible Section Drawer */}
-        <div className="lg:hidden">
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="w-full py-2.5 px-4 rounded-xl bg-white border border-slate-200/90 text-xs font-semibold text-slate-700 flex items-center justify-between shadow-xs cursor-pointer"
-          >
-            <span className="flex items-center gap-1.5">
-              <Compass className="w-4 h-4 text-brand-primary" />
-              <span>Jump to Section (14 Sections Available)</span>
-            </span>
-            {isMobileMenuOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
-
-          {isMobileMenuOpen && (
-            <div className="mt-2 p-3 rounded-xl bg-white border border-slate-200 shadow-md grid grid-cols-2 gap-1.5 text-xs">
-              {SECTIONS.map((sec) => (
-                <a
-                  key={sec.id}
-                  href={`#${sec.id}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5"
-                >
-                  <span className="font-mono text-[10px] text-brand-primary font-bold">{sec.secNum}</span>
-                  <span className="truncate">{sec.label}</span>
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Main Content Area: 14 Locked Sections */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24 pb-24">
-        
         {/* =========================================================================
-            SECTION 00: HERO (Start Your Preparation)
+            SECTION 0: HERO (Direct Starting Point & Immediate Roadmap Focus)
         ========================================================================= */}
-        <section id="prep-start" aria-labelledby="prep-hero-heading" className="scroll-mt-28 space-y-6 pt-2">
+        <section
+          id="prep-start"
+          aria-labelledby="hero-heading"
+          className="space-y-6 pt-4 text-center flex flex-col items-center"
+        >
           {/* Trust Stamp Pill */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200/90 text-[11px] font-semibold text-slate-700 tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Pillar 3 · Preparation Roadmap &amp; Execution System</span>
+            <span>Pillar 3 · Technical Preparation Roadmap &amp; Self-Study Engine</span>
           </div>
 
-          {/* H1 Heading */}
-          <div className="space-y-3 max-w-4xl">
-            <h1 id="prep-hero-heading" className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-              B.Cyber Preparation Roadmap: <br />
-              <span className="text-brand-primary text-2xl sm:text-4xl block mt-2 font-bold">
-                Free Universal Pipeline &amp; Personalized Execution Engine
-              </span>
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-3xl">
-              A cycle-aware, practice-oriented technical syllabus for aspiring cybersecurity undergraduates. Master Linux CLI, networking protocols, web security labs, and verifiable GitHub portfolios without generic fluff.
-            </p>
-          </div>
+          {/* H1 Heading - Crisp 2-Line Architecture */}
+          <h1
+            id="hero-heading"
+            className="text-3xl sm:text-5xl lg:text-[50px] font-extrabold text-[#0b1c30] tracking-tight max-w-4xl leading-[1.12]"
+          >
+            B.Cyber Technical Preparation Roadmap:
+            <span className="text-brand-primary text-xl sm:text-3xl lg:text-[32px] block mt-2 font-bold tracking-tight">
+              Free 5-Stage Practical Curriculum &amp; Proof-of-Work
+            </span>
+          </h1>
 
-          {/* Admission-Cycle Status Panel */}
-          <div className="rounded-2xl border border-indigo-200/90 bg-indigo-50/40 p-5 sm:p-6 text-xs text-indigo-950 space-y-3 shadow-xs">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-3">
-              <span className="font-bold text-indigo-900 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Admission Cycle Status &amp; Epistemic Grounding</span>
-              </span>
-              <span className="text-[10px] font-semibold bg-white border border-indigo-200 text-indigo-800 px-2 py-0.5 rounded">
-                Verified 12 Oct 2026
-              </span>
-            </div>
+          {/* Subtitle - Punchy & Direct */}
+          <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed font-normal">
+            A direct, practice-first technical roadmap for aspiring cybersecurity undergraduates. Master Linux CLI, networking protocols, web security labs, and verifiable GitHub portfolios without generic fluff.
+          </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <strong className="text-indigo-950 font-bold block">Officially Confirmed Announcement:</strong>
-                <p className="text-indigo-900/80 leading-relaxed">
-                  IIT Kanpur&apos;s official WSAIS B.Cyber page states that future admissions will feature a <strong>separate entrance test</strong> and that <strong>JEE Main will not be used</strong>.
-                </p>
+          {/* Executive Key Metrics Strip Matching Pillars 1 & 2 Aesthetic */}
+          <div className="w-full max-w-4xl pt-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
+              {/* Metric 1: 5 Stages */}
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  CURRICULUM
+                </span>
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  5 Practical Stages
+                </span>
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
+                  Stage 0 to Stage 4
+                </span>
               </div>
 
-              <div className="space-y-1">
-                <strong className="text-indigo-950 font-bold block">Status for Upcoming Cycle:</strong>
-                <p className="text-indigo-900/80 leading-relaxed">
-                  Detailed examination format, syllabus topics, and marking weights are <strong>not yet confirmed by the Senate</strong>. Our roadmap teaches fundamental transferable security competencies, not an assumed future paper pattern.
-                </p>
+              {/* Metric 2: Open Access */}
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  COST &amp; ACCESS
+                </span>
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  100% Free Labs
+                </span>
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
+                  Zero Paywalls on Skills
+                </span>
+              </div>
+
+              {/* Metric 3: Practical Security Domains */}
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  DOMAINS
+                </span>
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  8 Security Areas
+                </span>
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
+                  Aligned with IITK Lab
+                </span>
+              </div>
+
+              {/* Metric 4: Proof of Work */}
+              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
+                  EVIDENCE
+                </span>
+                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
+                  FAQ 22 Dossier
+                </span>
+                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
+                  Verifiable Code &amp; Repos
+                </span>
               </div>
             </div>
-          </div>
 
-          {/* Fast-Track CTA Chips */}
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <a
-              href="#readiness-check"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-brand-primary text-white text-xs font-bold hover:bg-brand-primary/90 transition-all shadow-xs cursor-pointer"
-            >
-              <span>Check My Starting Point ↓</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            {/* Fast-Track Actions: Direct Landing into the Roadmap */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="#roadmap-stages"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs group"
+              >
+                <span>Jump Directly to Roadmap Stages ↓</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#d1f34d]" />
+              </a>
 
-            <a
-              href="#roadmap-summary"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
-            >
-              <span>Explore Free 5-Stage Roadmap ↓</span>
-            </a>
+              <a
+                href="#resource-library"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-800 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs group"
+              >
+                <Terminal className="w-3.5 h-3.5 text-brand-primary" />
+                <span>Curated Free Labs</span>
+              </a>
 
-            <Link
-              to="/blueprints/b-cyber/admission#selection-process"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-all ml-auto"
-            >
-              <span>Review Admission Process in Pillar 2 →</span>
-            </Link>
+              <a
+                href="#proof-of-work"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-800 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs group"
+              >
+                <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>FAQ 22 Evidence Template</span>
+              </a>
+
+              <Link
+                to="/blueprints/b-cyber/admission#admission-start"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-all shadow-2xs"
+              >
+                <span>Check Admission Criteria (Pillar 2) →</span>
+              </Link>
+            </div>
           </div>
         </section>
 
         {/* =========================================================================
-            SECTION 01: WHAT WE KNOW VS WHAT IS STILL UNKNOWN
+            SECTION 1: THE 5-STAGE TECHNICAL ROADMAP (Directly Accessible First!)
         ========================================================================= */}
-        <section id="roadmap-certainty" aria-labelledby="certainty-heading" className="scroll-mt-28 space-y-4">
+        <section id="roadmap-stages" aria-labelledby="stages-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 01 · Institutional Epistemic Board
+              Direct Technical Curriculum
             </span>
-            <h2 id="certainty-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              What We Know vs. What Is Still Unknown
+            <h2 id="stages-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              The 5-Stage Preparation Roadmap
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Transparent separation between official circulars, past observations, and independent preparation advice.
+              Expandable curriculum with actionable task checklists, anti-trap guidance, deliverables, and estimated hours.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            {/* Box 1: Confirmed */}
-            <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/40 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span>Officially Confirmed</span>
-              </span>
-              <h3 className="font-bold text-sm text-emerald-950">Separate Entrance Test</h3>
-              <p className="text-emerald-900/80 leading-relaxed text-[11px]">
-                WSAIS announcements confirm future admissions will conduct an independent entrance test. JEE Main percentile ranking will no longer be used as the shortlist filter.
-              </p>
-            </div>
-
-            {/* Box 2: Past Observation */}
-            <div className="p-5 rounded-2xl border border-amber-200 bg-amber-50/40 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
-                <Clock className="w-3 h-3 text-amber-600" />
-                <span>Previous Cycle Precedent</span>
-              </span>
-              <h3 className="font-bold text-sm text-amber-950">6-Hour On-Campus Hackathon</h3>
-              <p className="text-amber-900/80 leading-relaxed text-[11px]">
-                In 2026, shortlisted applicants took a 6-hour practical test at IIT Kanpur across 8 domains and submitted documented prior work under FAQ 22.
-              </p>
-            </div>
-
-            {/* Box 3: Pending */}
-            <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-700 bg-slate-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
-                <AlertCircle className="w-3 h-3 text-slate-500" />
-                <span>Not Yet Confirmed</span>
-              </span>
-              <h3 className="font-bold text-sm text-slate-900">Upcoming Test Syllabus &amp; Dates</h3>
-              <p className="text-slate-600 leading-relaxed text-[11px]">
-                The exact syllabus, question pattern (CBT or written), dates, and weightages for the upcoming separate entrance test are strictly pending formal Senate notification.
-              </p>
-            </div>
-          </div>
-
-          {/* Cross-Link Banner to Pillar 2 */}
-          <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
-            <span className="text-slate-600">
-              Need to check whether your age, PCM marks, or 12th board satisfy statutory eligibility?
-            </span>
-            <Link
-              to="/blueprints/b-cyber/admission#eligibility-check"
-              className="text-brand-primary font-bold hover:underline inline-flex items-center gap-1 shrink-0"
-            >
-              <span>Run Interactive Screener in Pillar 2</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </section>
-
-        {/* =========================================================================
-            SECTION 02: ROADMAP IN 60 SECONDS
-        ========================================================================= */}
-        <section id="roadmap-summary" aria-labelledby="summary-heading" className="scroll-mt-28 space-y-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 02 · 60-Second Overview
-            </span>
-            <h2 id="summary-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Roadmap in 60 Seconds: Visual 5-Stage Path
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              A progressive skill tree designed to take you from complete beginner to building demonstrable cybersecurity proof-of-work.
-            </p>
-          </div>
-
-          {/* 5-Node Visual Stepper */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
+          {/* 5-Node Visual Pathway Strip for Instant Mental Mapping */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-xs">
             {[
-              {
-                num: 'Stage 0',
-                title: 'Baseline',
-                desc: 'WSL2 / VM setup, terminal literacy & legal ethics',
-                deliverable: 'Working local Linux terminal',
-              },
-              {
-                num: 'Stage 1',
-                title: 'Foundations',
-                desc: 'Linux files/permissions, TCP/IP & Wireshark PCAPs',
-                deliverable: 'Bandit L0–15 + PCAP capture',
-              },
-              {
-                num: 'Stage 2',
-                title: 'Security Core',
-                desc: 'OWASP web flaws, Burp Suite & crypto primitives',
-                deliverable: 'PortSwigger Apprentice labs',
-              },
-              {
-                num: 'Stage 3',
-                title: 'Investigation',
-                desc: 'Recon OSINT, ELF/PE disassembly & PicoCTF gym',
-                deliverable: '2 technical CTF writeups',
-              },
-              {
-                num: 'Stage 4',
-                title: 'Evidence',
-                desc: 'Multi-topic challenges & public GitHub portfolio',
-                deliverable: 'Documented evidence dossier',
-              },
+              { num: 'Stage 0', title: 'Baseline', desc: 'WSL2 / Linux setup & CLI ethics' },
+              { num: 'Stage 1', title: 'Foundations', desc: 'Bandit L0–15, TCP/IP & Wireshark' },
+              { num: 'Stage 2', title: 'Security Core', desc: 'PortSwigger web flaws & crypto' },
+              { num: 'Stage 3', title: 'Investigation', desc: 'OSINT, ELF reversing & PicoCTF' },
+              { num: 'Stage 4', title: 'Evidence', desc: 'FAQ 22 GitHub portfolio dossier' },
             ].map((node, i) => (
               <div
                 key={i}
-                className="p-4 rounded-xl border border-slate-200/90 bg-white space-y-2 relative shadow-xs flex flex-col justify-between"
+                className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1"
               >
-                <div className="space-y-1.5">
-                  <span className="font-mono text-[10px] font-bold text-brand-primary uppercase tracking-wider block">
-                    {node.num}
-                  </span>
-                  <h3 className="font-bold text-sm text-slate-900">{node.title}</h3>
-                  <p className="text-[11px] text-slate-500 leading-snug">{node.desc}</p>
-                </div>
-                <div className="pt-2 border-t border-slate-100 text-[10px] text-slate-600 font-semibold">
-                  <span className="text-slate-400 font-normal">Build: </span>
-                  {node.deliverable}
-                </div>
+                <span className="font-mono text-[10px] font-bold text-brand-primary uppercase tracking-wider block">
+                  {node.num}
+                </span>
+                <span className="text-xs font-bold text-slate-900 block">{node.title}</span>
+                <span className="text-[11px] text-slate-500 block leading-snug">{node.desc}</span>
               </div>
             ))}
           </div>
-        </section>
 
-        {/* =========================================================================
-            SECTION 03: FREE READINESS DIAGNOSTIC
-        ========================================================================= */}
-        <section id="readiness-check" aria-labelledby="readiness-heading" className="scroll-mt-28 space-y-4">
-          <BCyberReadinessDiagnostic />
-        </section>
-
-        {/* =========================================================================
-            SECTION 04: THE LEARNING ROADMAP — STAGE DETAILS
-        ========================================================================= */}
-        <section id="roadmap-stages" aria-labelledby="stages-heading" className="scroll-mt-28 space-y-4">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 04 · Complete Syllabus
-            </span>
-            <h2 id="stages-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              The Learning Roadmap: 5 Comprehensive Stages
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Expandable curriculum with actionable checkpoints, anti-trap guidance, and tangible deliverables.
-            </p>
-          </div>
-
+          {/* Interactive Expandable Stage List */}
           <BCyberRoadmapStageList />
         </section>
 
         {/* =========================================================================
-            SECTION 05: CURATED RESOURCE LIBRARY
+            SECTION 2: CURATED FREE RESOURCE LIBRARY
         ========================================================================= */}
-        <section id="resource-library" aria-labelledby="resources-heading" className="scroll-mt-28 space-y-4">
+        <section id="resource-library" aria-labelledby="resources-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 05 · Tool &amp; Academy Directory
+              Zero-Cost Labs &amp; Wargames
             </span>
             <h2 id="resources-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Curated Resource Library
+              Curated Free Resource Directory
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Vetted third-party platforms with unambiguous access conditions. Zero paywalls on foundational skills.
+              Vetted third-party platforms with unambiguous access conditions. No subscription paywalls on core competencies.
             </p>
           </div>
 
@@ -445,18 +334,129 @@ python3 verify_exploit.py --target localhost:8080
         </section>
 
         {/* =========================================================================
-            SECTION 06: WEEKLY PACE & SAMPLE PLAN
+            SECTION 3: PROOF-OF-WORK & EVIDENCE DOSSIER (FAQ 22 Alignment)
+        ========================================================================= */}
+        <section id="proof-of-work" aria-labelledby="pow-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Verifiable Portfolio
+            </span>
+            <h2 id="pow-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Proof-of-Work &amp; Evidence Dossier (FAQ 22 Standard)
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              How to document your technical work so evaluators can verify originality and reproducible engineering logic.
+            </p>
+          </div>
+
+          {/* High-Signal vs Red Flags Table */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="p-6 rounded-3xl border border-emerald-200 bg-emerald-50/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-sm text-emerald-950">High-Signal Evidence Formats</h3>
+              </div>
+              <ul className="space-y-2 text-[11px] text-emerald-900/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Documented GitHub repositories with clear setup instructions and commands.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Detailed CTF tournament writeups describing failed attempts, reasoning, and final exploit logic.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Annotated packet capture reports explaining exact TCP flags and application payloads.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">•</span>
+                  <span>Working Python/C utility tools with reproducible unit test commands.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-6 rounded-3xl border border-rose-200 bg-rose-50/40 space-y-3">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600" />
+                <h3 className="font-bold text-sm text-rose-950">Anti-Patterns &amp; Low-Signal Red Flags</h3>
+              </div>
+              <ul className="space-y-2 text-[11px] text-rose-900/90">
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Generic completion certificates from video courses (Coursera/Udemy/YouTube playlists).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Forked or cloned repositories with only cosmetic changes in README text.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Automated vulnerability scanner export dumps passed off as personal findings.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-rose-600 font-bold">•</span>
+                  <span>Exaggerated claims without reproducible code or public verification links.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Copyable Markdown Template Box */}
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-xs space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-bold text-sm text-slate-900">Standard Project Writeup Template</h3>
+                <p className="text-xs text-slate-500">Copy this markdown structure into your personal repository README.</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyTemplate}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+              >
+                {copiedTemplate ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedTemplate ? 'Copied to Clipboard!' : 'Copy Template'}</span>
+              </button>
+            </div>
+
+            <pre className="p-4 rounded-2xl bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto max-h-56">
+              {markdownTemplate}
+            </pre>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            SECTION 4: HANDS-ON PRACTICE EXERCISES & STARTER CHECKS
+        ========================================================================= */}
+        <section id="practice-tasks" aria-labelledby="practice-heading" className="scroll-mt-28 space-y-6">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Skill Self-Checks
+            </span>
+            <h2 id="practice-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Practice Exercises &amp; Hands-On Labs
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              Solve these starter tasks without looking at solutions first. Test your active problem-solving reflexes.
+            </p>
+          </div>
+
+          <BCyberPracticeExercises />
+        </section>
+
+        {/* =========================================================================
+            SECTION 5: WEEKLY STUDY PACE & TIME HORIZON
         ========================================================================= */}
         <section id="weekly-pace" aria-labelledby="pace-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 06 · Study Planning
+              Realistic Scheduling
             </span>
             <h2 id="pace-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Weekly Pace &amp; Sample Schedules
+              Weekly Study Pace &amp; Time Horizon
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Choose a realistic study pace that fits around your regular school or college exams.
+              Select a realistic study pace that fits around your regular school or college exams.
             </p>
           </div>
 
@@ -489,7 +489,7 @@ python3 verify_exploit.py --target localhost:8080
                 key={pace.id}
                 onClick={() => setSelectedPace(pace.id as any)}
                 className={cn(
-                  'p-5 rounded-2xl border transition-all cursor-pointer space-y-3 flex flex-col justify-between',
+                  'p-6 rounded-3xl border transition-all cursor-pointer space-y-3 flex flex-col justify-between',
                   selectedPace === pace.id
                     ? 'border-brand-primary bg-brand-primary/5 ring-1 ring-brand-primary/30 shadow-xs'
                     : 'border-slate-200/90 bg-white hover:border-slate-300'
@@ -513,21 +513,21 @@ python3 verify_exploit.py --target localhost:8080
             ))}
           </div>
 
-          {/* Weekly Balance Triangle */}
-          <div className="rounded-xl border border-slate-200/90 bg-white p-5 shadow-xs space-y-3">
+          {/* Weekly Balance Triangle (40 / 40 / 20 Rule) */}
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-3">
             <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
               The Recommended Weekly Balance (40 / 40 / 20 Rule)
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="p-3 rounded-lg bg-indigo-50/50 border border-indigo-100 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-1">
                 <span className="font-bold text-indigo-900 block">40% Concept Study</span>
                 <p className="text-indigo-800/80 text-[11px]">RFC protocols, OWASP guides, socket models.</p>
               </div>
-              <div className="p-3 rounded-lg bg-emerald-50/50 border border-emerald-100 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-1">
                 <span className="font-bold text-emerald-900 block">40% Hands-On Labs</span>
                 <p className="text-emerald-800/80 text-[11px]">Bandit wargames, Wireshark packet dissection, Burp Suite.</p>
               </div>
-              <div className="p-3 rounded-lg bg-amber-50/50 border border-amber-100 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-100 space-y-1">
                 <span className="font-bold text-amber-900 block">20% Documentation</span>
                 <p className="text-amber-800/80 text-[11px]">Writing markdown writeups and committing to GitHub.</p>
               </div>
@@ -536,260 +536,64 @@ python3 verify_exploit.py --target localhost:8080
         </section>
 
         {/* =========================================================================
-            SECTION 07: PROOF-OF-WORK & EVIDENCE DOSSIER
-        ========================================================================= */}
-        <section id="proof-of-work" aria-labelledby="pow-heading" className="scroll-mt-28 space-y-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 07 · Portfolio Preparation
-            </span>
-            <h2 id="pow-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Proof-of-Work &amp; Evidence Dossier (FAQ 22 Alignment)
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              How to document your technical work so evaluators can verify originality and reproducible reasoning.
-            </p>
-          </div>
-
-          {/* High-Signal vs Red Flags Table */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/40 space-y-3">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <h3 className="font-bold text-sm text-emerald-950">High-Signal Evidence Formats</h3>
-              </div>
-              <ul className="space-y-2 text-[11px] text-emerald-900/90">
-                <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span>Documented GitHub repositories with clear setup instructions and commands.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span>Detailed CTF tournament writeups describing failed attempts, thought processes, and the final exploit.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span>Annotated packet capture reports explaining exact TCP flags and application payloads.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
-                  <span>Working Python/C utility tools with unit tests.</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="p-5 rounded-2xl border border-rose-200 bg-rose-50/40 space-y-3">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-600" />
-                <h3 className="font-bold text-sm text-rose-950">Anti-Patterns &amp; Low-Signal Red Flags</h3>
-              </div>
-              <ul className="space-y-2 text-[11px] text-rose-900/90">
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span>Generic completion certificates from video courses (Coursera/Udemy/YouTube playlists).</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span>Forked or cloned repositories with only cosmetic changes in README text.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span>Automated vulnerability scanner export dumps passed off as personal findings.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-rose-600 font-bold">•</span>
-                  <span>Exaggerated claims without reproducible code or verification links.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Copyable Markdown Template Box */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="font-bold text-sm text-slate-900">Standard Project Writeup Template</h3>
-                <p className="text-xs text-slate-500">Copy this markdown structure into your personal repository README.</p>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyTemplate}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
-              >
-                {copiedTemplate ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedTemplate ? 'Copied to Clipboard!' : 'Copy Template'}</span>
-              </button>
-            </div>
-
-            <pre className="p-4 rounded-xl bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto max-h-56">
-              {markdownTemplate}
-            </pre>
-          </div>
-        </section>
-
-        {/* =========================================================================
-            SECTION 08: PRACTICE EXERCISES & SELF-CHECKS
-        ========================================================================= */}
-        <section id="practice-tasks" aria-labelledby="practice-heading" className="scroll-mt-28 space-y-4">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 08 · Hands-On Verification
-            </span>
-            <h2 id="practice-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Practice Exercises &amp; Self-Checks
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Solve these starter tasks without looking at solutions first. Test your active problem-solving reflexes.
-            </p>
-          </div>
-
-          <BCyberPracticeExercises />
-        </section>
-
-        {/* =========================================================================
-            SECTION 09: PERSONALIZED EXECUTION SYSTEM — PAID PREVIEW
-        ========================================================================= */}
-        <section id="personal-plan" aria-labelledby="paid-heading" className="scroll-mt-28 space-y-4">
-          <BCyberPersonalPlanPreview />
-        </section>
-
-        {/* =========================================================================
-            SECTION 10: PROGRESS, MISSED WEEKS & RECOVERY
-        ========================================================================= */}
-        <section id="recovery-plan" aria-labelledby="recovery-heading" className="scroll-mt-28 space-y-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 10 · Anti-Burnout Protocol
-            </span>
-            <h2 id="recovery-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Progress, Missed Weeks &amp; Recovery
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              How to handle school board exams, college tests, or illness without abandoning your preparation.
-            </p>
-          </div>
-
-          {/* Recovery Protocol Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            {/* The 60-Minute Emergency Routine */}
-            <div className="p-5 rounded-2xl border border-rose-200 bg-rose-50/40 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 bg-rose-100 px-2 py-0.5 rounded flex items-center gap-1">
-                  <HeartPulse className="w-3.5 h-3.5 text-rose-600" />
-                  <span>The 60-Minute Emergency Routine</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={toggleRecoveryMode}
-                  className={cn(
-                    'px-2.5 py-1 rounded-md text-[10px] font-bold border transition-colors cursor-pointer',
-                    isEmergencyRecoveryMode
-                      ? 'bg-rose-600 text-white border-rose-600'
-                      : 'bg-white border-rose-300 text-rose-800 hover:bg-rose-100/60'
-                  )}
-                >
-                  {isEmergencyRecoveryMode ? 'Freeze Mode Active' : 'Toggle 60m Freeze Mode'}
-                </button>
-              </div>
-
-              <h3 className="font-bold text-sm text-rose-950">When Academic Exams Strike</h3>
-              <p className="text-rose-900/80 leading-relaxed text-[11px]">
-                Do not attempt to complete full wargame levels during unit tests or board exam sprints. Spend exactly 60 minutes each weekend:
-              </p>
-              <ul className="space-y-1.5 text-[11px] text-rose-900/90 list-disc list-inside">
-                <li>Read 1 technical writeup or RFC section.</li>
-                <li>Make 1 small commit to your notes repository to preserve the habit.</li>
-                <li>Keep mental models warm without feeling guilty.</li>
-              </ul>
-            </div>
-
-            {/* Resumption Protocol */}
-            <div className="p-5 rounded-2xl border border-indigo-200 bg-indigo-50/40 space-y-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded inline-flex items-center gap-1">
-                <RotateCcw className="w-3.5 h-3.5 text-indigo-600" />
-                <span>The Resumption Protocol</span>
-              </span>
-              <h3 className="font-bold text-sm text-indigo-950">Never Restart from Scratch</h3>
-              <p className="text-indigo-900/80 leading-relaxed text-[11px]">
-                The biggest psychological failure mode is feeling &ldquo;I missed 3 weeks so I have to start again from Day 1.&rdquo;
-              </p>
-              <ul className="space-y-1.5 text-[11px] text-indigo-900/90 list-disc list-inside">
-                <li>Review the last completed checkpoint in your Stage checklist.</li>
-                <li>Spend 20 minutes re-running the last completed command.</li>
-                <li>Advance immediately to the next task in the queue.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================================
-            SECTION 11: PREPARATION FAQ CENTRE
+            SECTION 6: PREPARATION FAQ CENTRE (Accessible Accordion)
         ========================================================================= */}
         <section id="prep-faqs" aria-labelledby="faqs-heading" className="scroll-mt-28 space-y-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 11 · Direct Answers
+              Direct Answers
             </span>
             <h2 id="faqs-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Preparation FAQ Centre
+              Preparation Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
               Clear answers to the most common preparation and technical background queries.
             </p>
           </div>
 
-          <div className="space-y-3">
-            {[
-              {
-                q: 'Kitni programming aani chahiye preparation shuru karne se pehle?',
-                a: 'Stage 0 aur Stage 1 start karne ke liye zero programming knowledge required hai. Basic terminal commands (cd, ls, grep) se shuru karo. Stage 2 ke end tak Python ke basic loops aur string manipulation kaafi hain.',
-              },
-              {
-                q: 'Kya expensive laptop ya high-end GPU zaroori hai?',
-                a: 'Nahi. Any standard 4GB–8GB RAM laptop capable of running Windows WSL2 or a lightweight Linux virtual machine is 100% sufficient. High-end GPUs are only needed for heavy AI training, not for foundational network/web security labs.',
-              },
-              {
-                q: 'Kya free resources B.Cyber preparation ke liye enough hain?',
-                a: 'Haan. OverTheWire Bandit, PortSwigger Academy, Wireshark sample captures, Beej\'s Guide aur PicoCTF duniya ke sabse premium aur authoritative free resources hain. Paid tier sirf personalized schedule aur adaptive task sequence provide karta hai.',
-              },
-              {
-                q: 'Kya zero computer background se shuru karna possible hai?',
-                a: 'Haan. Stage 0 (Baseline) isi purpose ke liye banaya gaya hai. Yeh aapko step-by-step Linux setup aur safe CLI navigation sikhata hai bina configuration traps mein phansaye.',
-              },
-              {
-                q: 'Jab IIT Kanpur future entrance test ka detailed format release karega, toh roadmap kaise update hoga?',
-                a: 'Hamara roadmap dynamically update hoga. Official notice aane par stage mapping aur practice tasks realign kiye jayenge bina kisi extra fee ke. Updates publically verified dates ke saath display honge.',
-              },
-            ].map((faq, idx) => {
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-xs divide-y divide-slate-100">
+            {PREP_FAQS.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-200/90 bg-white overflow-hidden shadow-xs transition-colors"
+                  className={cn(
+                    'py-3.5 px-3 rounded-xl transition-all duration-200',
+                    isOpen ? 'bg-slate-50/80 shadow-2xs' : 'hover:bg-slate-50/40'
+                  )}
                 >
                   <button
                     type="button"
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`prep-faq-answer-${idx}`}
+                    className="w-full flex items-center justify-between text-left gap-3 text-xs sm:text-sm font-bold text-slate-900 hover:text-brand-primary transition-colors cursor-pointer"
                   >
-                    <span className="font-bold text-xs sm:text-sm text-slate-900">{faq.q}</span>
-                    <div className="w-6 h-6 rounded-md border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
-                      {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                    </div>
+                    <span>{faq.q}</span>
+                    <span
+                      className={cn(
+                        'p-1 rounded-md transition-transform duration-200 shrink-0',
+                        isOpen ? 'rotate-180 text-brand-primary' : 'text-slate-400'
+                      )}
+                    >
+                      <ChevronDown size={16} />
+                    </span>
                   </button>
-
                   {isOpen && (
-                    <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-100">
+                    <p
+                      id={`prep-faq-answer-${idx}`}
+                      className="mt-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed pr-6 border-t border-slate-200/60 pt-2"
+                    >
                       {faq.a}
-                    </div>
+                    </p>
                   )}
                 </div>
               );
             })}
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <span>Admission age cutoffs, board eligibility, ya fees se related sawal hain?</span>
+          <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span>Have questions about admission age cutoffs, board eligibility, or fees?</span>
             <Link
               to="/blueprints/b-cyber/admission#admission-faqs"
               className="text-brand-primary font-bold hover:underline inline-flex items-center gap-1 shrink-0"
@@ -800,146 +604,41 @@ python3 verify_exploit.py --target localhost:8080
         </section>
 
         {/* =========================================================================
-            SECTION 12: SOURCES, METHODOLOGY & UPDATE HISTORY
+            SECTION 7: FINAL NEXT STEP DECISION GATEWAY (Pillar 2 / Pillar 1)
         ========================================================================= */}
-        <section id="prep-sources" aria-labelledby="sources-heading" className="scroll-mt-28 space-y-4">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 12 · Transparency Record
-            </span>
-            <h2 id="sources-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Sources, Methodology &amp; Update History
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Full transparency regarding our reference documentation, curriculum benchmarks, and update logs.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <span className="font-bold text-slate-900 block">Primary Official Sources:</span>
-                <ul className="space-y-1 text-slate-600 text-[11px]">
-                  <li>• IIT Kanpur WSAIS B.Cyber Portal (<a href="https://iitk.ac.in/wsais/b-cyber.php" target="_blank" rel="noopener noreferrer" className="text-brand-primary underline">iitk.ac.in/wsais/b-cyber.php</a>)</li>
-                  <li>• IIT Kanpur Senate Ordinances &amp; 2026 Admission FAQ Records (FAQs 1–25)</li>
-                  <li>• C3iHub National Cybersecurity Hub Documentation</li>
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <span className="font-bold text-slate-900 block">Curriculum Benchmarking:</span>
-                <ul className="space-y-1 text-slate-600 text-[11px]">
-                  <li>• NIST NICE Cybersecurity Workforce Framework (NICE SP 800-181)</li>
-                  <li>• Open-source education benchmarks (OverTheWire, PortSwigger Academy, CMU PicoCTF)</li>
-                  <li>• Standard Indian IT Act (2000) ethical compliance guidelines</li>
-                </ul>
-              </div>
+        <section
+          id="next-steps"
+          aria-labelledby="next-step-heading"
+          className="scroll-mt-28 rounded-2xl border border-slate-900 bg-slate-900 text-white p-8 sm:p-10 shadow-lg"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#d1f34d] block">
+                Next Decision
+              </span>
+              <h2 id="next-step-heading" className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                Now That You Have the Roadmap, What&apos;s Next?
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                Verify whether your Class 12 PCM qualifications satisfy official admission criteria in Pillar 2, or revisit the complete 4-year degree overview in Pillar 1.
+              </p>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[11px] text-slate-400">
-              <span>Last substantive audit: 12 October 2026 · Independent Guide</span>
-              <a
-                href="mailto:corrections@ayushpaul.com?subject=B.Cyber%20Roadmap%20Correction"
-                className="text-slate-600 hover:text-brand-primary font-semibold underline"
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <Link
+                to="/blueprints/b-cyber/admission#admission-start"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#d1f34d] text-slate-950 text-xs font-bold hover:bg-[#c0e045] transition-all shadow-sm group"
               >
-                Submit an editorial correction or update
-              </a>
+                <span>Check Admission Criteria</span>
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <Link
+                to="/blueprints/b-cyber#overview-start"
+                className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-all text-center border border-white/15"
+              >
+                <span>Revisit Degree Overview</span>
+              </Link>
             </div>
-          </div>
-        </section>
-
-        {/* =========================================================================
-            SECTION 13: CONTEXTUAL NEXT-STEP GATEWAY
-        ========================================================================= */}
-        <section id="prep-next" aria-labelledby="next-heading" className="scroll-mt-28 space-y-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Section 13 · Decision Gateway
-            </span>
-            <h2 id="next-heading" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Where Would You Like to Go Next?
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Choose the logical next step based on where you are in your B.Cyber evaluation journey.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            {/* Action 1 */}
-            <a
-              href="#readiness-check"
-              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all shadow-xs space-y-2 flex flex-col justify-between group cursor-pointer"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-primary block">
-                  Action 01
-                </span>
-                <h3 className="font-bold text-sm text-slate-900">Take Readiness Diagnostic</h3>
-                <p className="text-[11px] text-slate-500 leading-snug">
-                  Answer 6 questions to find your exact starting stage and priority knowledge gaps.
-                </p>
-              </div>
-              <span className="text-brand-primary font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
-                <span>Start Diagnostic ↓</span>
-              </span>
-            </a>
-
-            {/* Action 2 */}
-            <Link
-              to="/blueprints/b-cyber/admission"
-              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all shadow-xs space-y-2 flex flex-col justify-between group"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
-                  Action 02
-                </span>
-                <h3 className="font-bold text-sm text-slate-900">Check Admission Criteria</h3>
-                <p className="text-[11px] text-slate-500 leading-snug">
-                  Interactive screener for board marks, age cutoffs, and 2026 vs 2027 selection shifts.
-                </p>
-              </div>
-              <span className="text-brand-primary font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
-                <span>Explore Pillar 2 →</span>
-              </span>
-            </Link>
-
-            {/* Action 3 */}
-            <a
-              href="#personal-plan"
-              className="p-5 rounded-2xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-xs space-y-2 flex flex-col justify-between group cursor-pointer"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 block">
-                  Action 03
-                </span>
-                <h3 className="font-bold text-sm text-indigo-950">Unlock Personal Workspace</h3>
-                <p className="text-[11px] text-indigo-900/80 leading-snug">
-                  Get a personalized weekly task queue, gap remediation, and dynamic rescheduling for ₹249.
-                </p>
-              </div>
-              <span className="text-indigo-700 font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
-                <span>View Paid Engine ↓</span>
-              </span>
-            </a>
-
-            {/* Action 4 */}
-            <Link
-              to="/blueprints/b-cyber"
-              className="p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-300 transition-all shadow-xs space-y-2 flex flex-col justify-between group"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                  Action 04
-                </span>
-                <h3 className="font-bold text-sm text-slate-900">Revisit Program Overview</h3>
-                <p className="text-[11px] text-slate-500 leading-snug">
-                  Review the 4-year degree architecture, 2+2 model, semester curriculum, and myths.
-                </p>
-              </div>
-              <span className="text-slate-700 font-bold inline-flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
-                <span>Go to Pillar 1 →</span>
-              </span>
-            </Link>
           </div>
         </section>
 
