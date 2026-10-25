@@ -4,6 +4,18 @@
 
 ---
 
+## 2026-10-25 — B.Cyber Pillar 2 (Admission & Eligibility) UI/UX Elevation (70/30 Layout & Sticky Companion)
+
+### Changes & Optimizations
+- **Asymmetrical 2-Column Hero**: Upgraded [BCyberAdmissionGuidePage.tsx](file:///c:/Users/ap877/2026/Ayush-Paul/src/pages/blueprints/b-cyber/BCyberAdmissionGuidePage.tsx) from a centered text wireframe to an asymmetrical 2-column hero (`col-span-7` narrative + `col-span-5` interactive live Admission Snapshot card) matching the proven design standards of *Get Your First 3 Clients*.
+- **70/30 Layout with Sticky Companion Sidebar**: Re-architected all 10 editorial sections into a balanced 2-column flex layout (`flex flex-col lg:flex-row gap-10 lg:gap-12`):
+  - **Left Narrative Column (~70%)**: Houses Sections 1 to 10 with high-contrast `#0b1c30` typography, clean `#c2c6d6/25` borders, numbered step badges (`01`, `02`), and eliminated wall-of-text fatigue.
+  - **Right Sticky Sidebar (~30% / 320px)**: Persistent companion featuring an in-page 10-section navigator with live anchors, high-contrast Action Hub with instant links to Pillar 3 Preparation Roadmap, real-time readiness checklist tracker, and official institutional citation links.
+- **Enhanced Visual Tokens**: Replaced muddy slate tones with crisp pure white card surfaces, `#0058be` accents, `#d1f34d` action punch, and clean pill badges.
+- **Build & Typecheck Passed**: Verified zero TypeScript errors (`npx tsc --noEmit`) and successful production bundle build (`npx vite build`).
+
+---
+
 ## 2026-10-20 — B.Cyber Pillar 3 (Preparation Roadmap) Streamlined Direct Elevation
 
 ### Changes & Optimizations

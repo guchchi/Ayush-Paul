@@ -27,6 +27,7 @@ import {
   CheckSquare,
   Square,
   HelpCircle,
+  Globe,
 } from 'lucide-react';
 import { BCyberNav } from '../../../components/b-cyber/BCyberNav';
 import { DisclaimerBanner } from '../../../components/b-cyber/DisclaimerBanner';
@@ -316,123 +317,223 @@ export function BCyberAdmissionGuidePage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24 pb-24">
 
         {/* =========================================================================
-            SECTION 0: HERO — ADMISSION & ELIGIBILITY (Scope & Fast-Track Actions)
+            SECTION 0: HERO — ASYMMETRICAL 2-COLUMN (Text Content + Live Snapshot Card)
         ========================================================================= */}
         <section
           id="admission-start"
           aria-labelledby="hero-heading"
-          className="space-y-6 pt-4 text-center flex flex-col items-center"
+          className="pt-2 sm:pt-6 mb-12 sm:mb-16 scroll-mt-28"
         >
-          {/* Trust Stamp Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200/90 text-[11px] font-semibold text-slate-700 tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Independent Guide · Based on Official IIT Kanpur Senate &amp; WSAIS Records</span>
-          </div>
-
-          {/* H1 Heading - Crisp 2-Line Architecture */}
-          <h1
-            id="hero-heading"
-            className="text-3xl sm:text-5xl lg:text-[50px] font-extrabold text-[#0b1c30] tracking-tight max-w-4xl leading-[1.12]"
-          >
-            How Admission to IIT Kanpur B.Cyber Works:
-            <span className="text-brand-primary text-xl sm:text-3xl lg:text-[32px] block mt-2 font-bold tracking-tight">
-              Eligibility, 2026 Precedent &amp; The 2027 Shift
-            </span>
-          </h1>
-
-          {/* Subtitle - High Signal & Grounded */}
-          <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed font-normal">
-            An evidence-grounded decision guide to statutory eligibility, selection stages, practical hackathon evaluations, and cycle-specific requirements under official Senate ordinances.
-          </p>
-
-          {/* Executive Key Metrics Strip Matching Pillar 1 Aesthetic */}
-          <div className="w-full max-w-4xl pt-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
-              {/* Metric 1: Academics */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
-                  ACADEMICS
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Left Column (col-span-7) */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Category & Status Badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-block text-[11px] font-bold uppercase tracking-widest text-[#0058be] bg-[#0058be]/10 px-3 py-1 rounded-full border border-[#0058be]/20">
+                  PILLAR 2 · ADMISSION COMPASS
                 </span>
-                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
-                  12th PCM Required
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
-                  5 Subjects · NIOS Accepted
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-semibold text-emerald-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Senate Verified Records
                 </span>
               </div>
 
-              {/* Metric 2: Paradigm Shift */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
-                  SELECTION SHIFT
+              {/* H1 Heading */}
+              <h1
+                id="hero-heading"
+                className="text-3xl sm:text-5xl lg:text-[46px] font-extrabold text-[#0b1c30] tracking-tight leading-[1.14]"
+              >
+                How Admission to IIT Kanpur B.Cyber Works:
+                <span className="text-[#0058be] text-2xl sm:text-3xl lg:text-[32px] block mt-2 font-bold tracking-tight">
+                  Statutory Rules, 2026 Precedent &amp; The 2027 Shift
                 </span>
-                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
-                  Separate Test 2027
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
-                  JEE Main Discontinued (FAQ 23)
-                </span>
+              </h1>
+
+              {/* Concise Outcome Description */}
+              <p className="text-base sm:text-lg text-[#424754] leading-relaxed max-w-2xl font-normal">
+                An evidence-grounded decision engine for candidates: statutory Class 12 PCM eligibility, official JEE Main discontinuation notice (WSAIS FAQ 23), the 6-hour practical hackathon format, and verifiable portfolio requirements.
+              </p>
+
+              {/* Metadata Capsules */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {[
+                  { icon: Clock, label: '10 Min Read' },
+                  { icon: GraduationCap, label: 'Class 12 PCM (5 Subj)' },
+                  { icon: Sparkles, label: 'Dedicated Test 2027 (No JEE)' },
+                  { icon: Terminal, label: '6-Hour In-Person Lab' },
+                  { icon: Globe, label: 'All Boards & NIOS Accepted' },
+                ].map((cap, idx) => {
+                  const Icon = cap.icon;
+                  return (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#c2c6d6]/30 text-xs text-[#424754] font-medium shadow-2xs"
+                    >
+                      <Icon size={12} className="text-[#0058be]" />
+                      {cap.label}
+                    </span>
+                  );
+                })}
               </div>
 
-              {/* Metric 3: Practical Lab */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
-                  PRACTICAL LAB
-                </span>
-                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
-                  6-Hour Hackathon
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
-                  New Core Lab, IIT Kanpur
-                </span>
+              {/* Trust Pills */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {[
+                  'WSAIS FAQ 23 Confirmed',
+                  'Zero Coaching Dependency',
+                  'Strict Senate Ordinances',
+                  'Verifiable Proof-of-Work',
+                ].map((pill, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f0faf0] border border-[#d4edda] text-[11px] text-[#2d6a30] font-medium"
+                  >
+                    <CheckCircle2 size={11} className="text-[#2d6a30]" />
+                    {pill}
+                  </span>
+                ))}
               </div>
 
-              {/* Metric 4: Proof of Work */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1 group-hover:text-slate-500 transition-colors">
-                  EVIDENCE
-                </span>
-                <span className="text-sm sm:text-[15px] font-bold text-slate-900 block leading-tight group-hover:text-brand-primary transition-colors">
-                  FAQ 22 Portfolio
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium mt-1 block">
-                  Verifiable Code &amp; Repos
-                </span>
+              {/* Fast-Track Action Jumps */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <a
+                  href="#eligibility-check"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs group"
+                >
+                  <span>Test My Eligibility Now</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#d1f34d]" />
+                </a>
+                <a
+                  href="#practical-assessment"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-800 text-xs font-semibold border border-[#c2c6d6]/30 hover:bg-slate-50 transition-all shadow-2xs group"
+                >
+                  <Terminal className="w-3.5 h-3.5 text-[#0058be]" />
+                  <span>6-Hour Hackathon Format</span>
+                </a>
+                <a
+                  href="#cycle-status"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-slate-600 text-xs font-medium border border-[#c2c6d6]/25 hover:text-slate-900 transition-all"
+                >
+                  <span>2027 Shift Board →</span>
+                </a>
               </div>
             </div>
 
-            {/* In-Page Fast-Track Navigation Jump Pills */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="#eligibility-check"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-slate-800 transition-all shadow-xs group"
-              >
-                <span>Check My Admission Readiness ↓</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-[#d1f34d]" />
-              </a>
+            {/* Right Column (col-span-5) — Admission Quick-Triage Spec Card */}
+            <div className="lg:col-span-5">
+              <div className="rounded-3xl border border-[#c2c6d6]/25 bg-white p-6 sm:p-7 shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#0b1c30]">
+                      Admission Snapshot
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-[#0058be] bg-[#0058be]/10 px-2 py-0.5 rounded-full border border-[#0058be]/20">
+                    Active Intake Specs
+                  </span>
+                </div>
 
-              <a
-                href="#selection-process"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-800 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs group"
-              >
-                <span>Understand Selection Process →</span>
-              </a>
+                {/* 4 Core Quick Spec Rows */}
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-2xl bg-[#fafbfc] border border-[#c2c6d6]/20 flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+                        ENTRANCE STATUS
+                      </span>
+                      <span className="text-xs font-bold text-[#0b1c30] block mt-0.5">
+                        Separate Dedicated Test
+                      </span>
+                      <span className="text-[11px] text-slate-500 block">
+                        JEE Main Discontinued (FAQ 23)
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#0058be] border border-blue-200 shrink-0">
+                      2027 Shift
+                    </span>
+                  </div>
 
-              <a
-                href="#practical-assessment"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-slate-800 text-xs font-semibold border border-slate-200/90 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-2xs group"
-              >
-                <Terminal className="w-3.5 h-3.5 text-brand-primary" />
-                <span>6-Hour Hackathon Format</span>
-              </a>
+                  <div className="p-3.5 rounded-2xl bg-[#fafbfc] border border-[#c2c6d6]/20 flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+                        CORE ACADEMICS
+                      </span>
+                      <span className="text-xs font-bold text-[#0b1c30] block mt-0.5">
+                        Class 12 PCM (5 Subjects)
+                      </span>
+                      <span className="text-[11px] text-slate-500 block">
+                        CBSE, CISCE, State &amp; NIOS
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
+                      Mandatory
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-[#fafbfc] border border-[#c2c6d6]/20 flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+                        PRACTICAL EXAM
+                      </span>
+                      <span className="text-xs font-bold text-[#0b1c30] block mt-0.5">
+                        6-Hour In-Person Hackathon
+                      </span>
+                      <span className="text-[11px] text-slate-500 block">
+                        New Core Lab, IIT Kanpur
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200 shrink-0">
+                      Hands-on
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-[#fafbfc] border border-[#c2c6d6]/20 flex items-start justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+                        PRIOR WORK (FAQ 22)
+                      </span>
+                      <span className="text-xs font-bold text-[#0b1c30] block mt-0.5">
+                        Verifiable Code Dossier
+                      </span>
+                      <span className="text-[11px] text-slate-500 block">
+                        GitHub repos, CTFs, tools
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shrink-0">
+                      High Signal
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card CTA */}
+                <div className="pt-2">
+                  <a
+                    href="#eligibility-check"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#0058be] text-white text-xs font-bold hover:bg-[#0047a0] transition-colors shadow-xs"
+                  >
+                    <span>Launch Eligibility Screener</span>
+                    <ArrowRight size={14} />
+                  </a>
+                  <p className="text-[11px] text-center text-slate-400 mt-2 font-mono">
+                    Zero sign-up required · 100% private in-browser
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* =========================================================================
-            SECTION 1: ADMISSION IN 30 SECONDS (Executive Direct Answer Card)
+            CORE 2-COLUMN LAYOUT: EDITORIAL SECTIONS (LEFT 70%) + STICKY SIDEBAR (RIGHT 30%)
         ========================================================================= */}
-        <section id="admission-summary" aria-labelledby="section-30sec-heading" className="scroll-mt-28">
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-start">
+          {/* Left Column: Main Narrative Sections 1 to 10 */}
+          <div className="flex-1 min-w-0 space-y-16 sm:space-y-20">
+
+            {/* =========================================================================
+                SECTION 1: ADMISSION IN 30 SECONDS (Executive Direct Answer Card)
+            ========================================================================= */}
+            <section id="admission-summary" aria-labelledby="section-30sec-heading" className="scroll-mt-28">
           <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xs relative overflow-hidden">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -1292,6 +1393,117 @@ export function BCyberAdmissionGuidePage() {
             <DisclaimerBanner variant="compact" />
           </div>
         </section>
+      </div>
+
+      {/* Right Column: Sticky Companion Sidebar (~30%) */}
+      <aside className="lg:w-[320px] shrink-0 hidden lg:block">
+        <div className="sticky top-28 space-y-5">
+          {/* Quick In-Page Navigator Card */}
+          <div className="rounded-3xl border border-[#c2c6d6]/25 bg-white p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0b1c30]">
+                In-Page Navigator
+              </span>
+              <span className="text-[10px] font-mono text-[#0058be] font-bold bg-[#0058be]/10 px-2 py-0.5 rounded-full border border-[#0058be]/20">
+                10 Sections
+              </span>
+            </div>
+
+            <nav className="space-y-1 text-xs">
+              {[
+                { href: '#admission-summary', num: '01', title: '30-Sec Direct Answer' },
+                { href: '#cycle-status', num: '02', title: '2027 Shift vs 2026 Board' },
+                { href: '#eligibility-check', num: '03', title: 'Statutory Screener' },
+                { href: '#eligibility-rules', num: '04', title: 'Permanent Rules Matrix' },
+                { href: '#selection-process', num: '05', title: 'Selection Architecture' },
+                { href: '#practical-assessment', num: '06', title: '6-Hour Hackathon' },
+                { href: '#prior-work', num: '07', title: 'Proof-of-Work Rubric' },
+                { href: '#application-readiness', num: '08', title: 'Document Checklist' },
+                { href: '#admission-faqs', num: '09', title: 'Candidate FAQs' },
+                { href: '#official-sources', num: '10', title: 'Verified Policy Search' },
+              ].map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center justify-between p-2 rounded-xl text-slate-600 hover:text-[#0058be] hover:bg-slate-50 transition-colors group"
+                >
+                  <div className="flex items-center gap-2.5 truncate">
+                    <span className="font-mono text-[10px] text-slate-400 group-hover:text-[#0058be] font-semibold">
+                      {item.num}
+                    </span>
+                    <span className="font-medium truncate">{item.title}</span>
+                  </div>
+                  <ArrowRight size={12} className="text-slate-300 group-hover:text-[#0058be] group-hover:translate-x-0.5 transition-all shrink-0" />
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          {/* Admission Action & Next Step Hub */}
+          <div className="rounded-3xl border border-slate-900 bg-[#0b1c30] text-white p-5 shadow-xs space-y-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#d1f34d]">
+                Action Hub
+              </span>
+              <h4 className="text-sm font-bold text-white">
+                Need Preparation Guidance?
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Build your FAQ 22 proof-of-work dossier and master the 8 hackathon security domains.
+              </p>
+            </div>
+
+            <div className="pt-1 space-y-2">
+              <Link
+                to="/blueprints/b-cyber/roadmap#prep-start"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#d1f34d] text-slate-950 text-xs font-bold hover:bg-[#c0e045] transition-all shadow-xs"
+              >
+                <span>Free Prep Roadmap</span>
+                <ArrowRight size={13} />
+              </Link>
+              <Link
+                to="/blueprints/b-cyber#overview-start"
+                className="w-full flex items-center justify-center py-2 px-4 rounded-xl bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-all border border-white/10"
+              >
+                <span>Degree Overview (Pillar 1)</span>
+              </Link>
+            </div>
+
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Document Checklist:</span>
+              <span className="font-bold text-[#d1f34d]">{readinessCount}/4 Confirmed</span>
+            </div>
+          </div>
+
+          {/* Primary Institutional Citations */}
+          <div className="rounded-3xl border border-[#c2c6d6]/25 bg-white p-5 shadow-xs space-y-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Official Institutional Links
+            </span>
+            <div className="space-y-2 text-xs">
+              <a
+                href="https://iitk.ac.in/wsais/b-cyber.php"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
+              >
+                <span className="font-medium truncate">WSAIS IIT Kanpur</span>
+                <ExternalLink size={12} className="text-slate-400 shrink-0" />
+              </a>
+              <a
+                href="https://iitk.ac.in/wsais/data/BCyber_IITM.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
+              >
+                <span className="font-medium truncate">IIT Madras Joint Circular</span>
+                <ExternalLink size={12} className="text-slate-400 shrink-0" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
 
         {/* =========================================================================
             SECTION 11: FINAL NEXT STEP DECISION GATEWAY (Pillar 3 / Pillar 1)
@@ -1299,7 +1511,7 @@ export function BCyberAdmissionGuidePage() {
         <section
           id="next-step"
           aria-labelledby="next-step-heading"
-          className="scroll-mt-28 rounded-2xl border border-slate-900 bg-slate-900 text-white p-8 sm:p-10 shadow-lg"
+          className="scroll-mt-28 rounded-2xl border border-slate-900 bg-[#0b1c30] text-white p-8 sm:p-10 shadow-lg"
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-2 max-w-xl">
