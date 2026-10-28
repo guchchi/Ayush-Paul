@@ -9,14 +9,26 @@ import {
   Sparkles,
   Info,
   ExternalLink,
+  Copy,
+  Check,
+  ArrowRight,
+  Terminal,
+  FileCheck,
+  Zap,
+  SlidersHorizontal,
+  BookmarkCheck,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-type AdmissionCycle = '2026_precedent' | '2027_upcoming';
+type AdmissionCycle = '2027_upcoming' | '2026_precedent';
+
+type TechnicalPoWStatus = 'verifiable_projects' | 'in_progress' | 'none';
 
 interface EligibilityState {
   cycle: AdmissionCycle;
   hasPcm5Subjects: boolean | null;
+  isNiosCandidate: boolean;
+  hasTechnicalPoW: TechnicalPoWStatus | null;
   dobYear: number;
   category: 'general' | 'obc_ncl' | 'ews' | 'sc' | 'st' | 'pwd';
   gender: 'male' | 'female' | 'other';
@@ -27,7 +39,9 @@ interface EligibilityState {
 const INITIAL_STATE: EligibilityState = {
   cycle: '2027_upcoming',
   hasPcm5Subjects: null,
-  dobYear: 2005,
+  isNiosCandidate: false,
+  hasTechnicalPoW: null,
+  dobYear: 2006,
   category: 'general',
   gender: 'male',
   josaaStatus: 'never_admitted',
@@ -36,6 +50,7 @@ const INITIAL_STATE: EligibilityState = {
 
 export const BCyberEligibilityScreener: React.FC = () => {
   const [state, setState] = useState<EligibilityState>(INITIAL_STATE);
+  const [copied, setCopied] = useState(false);
 
   // 2026 Age rule (Historical Precedent):
   // General/OBC/EWS: Born on or after Oct 1, 2001
@@ -55,9 +70,11 @@ export const BCyberEligibilityScreener: React.FC = () => {
 
   // Check if fundamental questions are answered:
   const isComplete =
-    state.hasPcm5Subjects !== null && state.isIndianNational !== null;
+    state.hasPcm5Subjects !== null &&
+    state.isIndianNational !== null &&
+    state.hasTechnicalPoW !== null;
 
-  // 2026 Eligibility:
+  // 2026 Full Eligibility:
   const isEligible2026 =
     isComplete && isAgeValid2026 && isJosaaValid && isPcmValid && isCitizenshipValid;
 
@@ -67,60 +84,153 @@ export const BCyberEligibilityScreener: React.FC = () => {
 
   const resetForm = () => setState(INITIAL_STATE);
 
+  // Presets for quick evaluation
+  const applyPreset = (preset: 'cbse' | 'nios' | 'dropper') => {
+    if (preset === 'cbse') {
+      setState({
+        cycle: '2027_upcoming',
+        hasPcm5Subjects: true,
+        isNiosCandidate: false,
+        hasTechnicalPoW: 'verifiable_projects',
+        dobYear: 2007,
+        category: 'general',
+        gender: 'male',
+        josaaStatus: 'never_admitted',
+        isIndianNational: true,
+      });
+    } else if (preset === 'nios') {
+      setState({
+        cycle: '2027_upcoming',
+        hasPcm5Subjects: true,
+        isNiosCandidate: true,
+        hasTechnicalPoW: 'in_progress',
+        dobYear: 2006,
+        category: 'obc_ncl',
+        gender: 'male',
+        josaaStatus: 'never_admitted',
+        isIndianNational: true,
+      });
+    } else if (preset === 'dropper') {
+      setState({
+        cycle: '2027_upcoming',
+        hasPcm5Subjects: true,
+        isNiosCandidate: false,
+        hasTechnicalPoW: 'verifiable_projects',
+        dobYear: 2005,
+        category: 'ews',
+        gender: 'female',
+        josaaStatus: 'withdrew_before_final_round',
+        isIndianNational: true,
+      });
+    }
+  };
+
+  const copySummaryReport = () => {
+    const reportText = `[IIT Kanpur B.Cyber Admission Eligibility Assessment]
+- Admission Cycle Evaluated: ${state.cycle === '2027_upcoming' ? '2027 Upcoming Shift' : '2026 Historical Precedent'}
+- Academic Eligibility: ${state.hasPcm5Subjects ? 'Pass Class 12 PCM (5 Subjects)' : 'Ineligible'} ${state.isNiosCandidate ? '(NIOS Candidate)' : ''}
+- Technical Proof-of-Work (FAQ 22): ${state.hasTechnicalPoW === 'verifiable_projects' ? 'High Signal (GitHub/CTF repos available)' : state.hasTechnicalPoW === 'in_progress' ? 'In Progress' : 'No verifiable code yet'}
+- Category: ${state.category.toUpperCase()} | Year of Birth: ${state.dobYear}
+- Prior IIT JoSAA Status: ${state.josaaStatus === 'never_admitted' ? 'Clean (Never admitted)' : state.josaaStatus === 'withdrew_before_final_round' ? 'Eligible (Withdrew before final round)' : 'Barred (Previously accepted IIT seat)'}
+- Nationality: ${state.isIndianNational ? 'Indian Citizen (Eligible)' : 'Foreign/OCI (Ineligible)'}
+- Senate Ordinance Verdict: ${
+      !isComplete
+        ? 'Incomplete'
+        : !isPcmValid || !isCitizenshipValid || !isJosaaValid
+        ? 'Ineligible under Senate Ordinances'
+        : state.hasTechnicalPoW === 'none'
+        ? 'Conditionally Eligible (Must build FAQ 22 Dossier)'
+        : 'Eligible for Selection Screening'
+    }
+- Generated via B.Cyber Compass (Official Senate Data: WSAIS FAQ 21, 22, 23)`;
+
+    navigator.clipboard.writeText(reportText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   return (
-    <div className="w-full rounded-2xl border border-slate-200/90 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)] overflow-hidden">
-      {/* Header with Cycle Selector */}
-      <div className="border-b border-slate-100 bg-slate-50/70 p-5 sm:p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-sans text-slate-700 font-semibold mb-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-brand-primary" />
-              <span>Cycle-Aware Eligibility Screener</span>
+    <div className="w-full rounded-3xl border border-[#c2c6d6]/35 bg-white shadow-xs overflow-hidden">
+      {/* Header with Cycle Selector & Quick Presets */}
+      <div className="border-b border-slate-100 bg-[#fafbfc] p-5 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200/80 text-xs text-[#0058be] font-bold">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Interactive Decision Screener</span>
             </div>
-            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#0b1c30]">
               Eligibility &amp; Senate Ordinance Screener
             </h2>
-            <p className="text-xs text-slate-500">
-              Check your background against confirmed Senate policies without treating past rules as confirmed 2027 mandates.
+            <p className="text-xs sm:text-sm text-slate-500 max-w-2xl">
+              Evaluate your exact profile against confirmed IIT Kanpur Senate criteria without misleading percentage scores or commercial bias.
             </p>
           </div>
 
           <button
             type="button"
             onClick={resetForm}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors self-start sm:self-auto shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors self-start sm:self-auto shadow-2xs cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Inputs</span>
+            <span>Reset All</span>
+          </button>
+        </div>
+
+        {/* Quick Candidate Profile Presets */}
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200/60">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
+            <SlidersHorizontal className="w-3 h-3" /> Quick Presets:
+          </span>
+          <button
+            type="button"
+            onClick={() => applyPreset('cbse')}
+            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-slate-200/80 text-slate-700 hover:border-[#0058be] hover:text-[#0058be] transition-colors shadow-2xs cursor-pointer"
+          >
+            Standard CBSE PCM + GitHub
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset('nios')}
+            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-slate-200/80 text-slate-700 hover:border-[#0058be] hover:text-[#0058be] transition-colors shadow-2xs cursor-pointer"
+          >
+            NIOS Open Schooling Candidate
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset('dropper')}
+            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-slate-200/80 text-slate-700 hover:border-[#0058be] hover:text-[#0058be] transition-colors shadow-2xs cursor-pointer"
+          >
+            Gap Year / Repeater Profile
           </button>
         </div>
 
         {/* Cycle Toggle Selector */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1">
-          <span className="text-xs font-bold text-slate-700">Admission Cycle:</span>
-          <div className="inline-flex rounded-xl p-1 bg-slate-200/70 border border-slate-300/60 max-w-fit">
+          <span className="text-xs font-bold text-slate-700 shrink-0">Evaluation Cycle:</span>
+          <div className="inline-flex rounded-xl p-1 bg-slate-200/60 border border-slate-300/60 max-w-fit">
             <button
               type="button"
               onClick={() => setState((s) => ({ ...s, cycle: '2027_upcoming' }))}
               className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+                'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
                 state.cycle === '2027_upcoming'
-                  ? 'bg-white text-slate-900 shadow-xs'
+                  ? 'bg-white text-[#0058be] shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
               )}
             >
               <span className="inline-flex items-center gap-1.5">
                 <Sparkles size={13} className="text-amber-500" />
-                <span>2027 Upcoming Cycle (Future)</span>
+                <span>2027 Upcoming Cycle (Dedicated Test)</span>
               </span>
             </button>
             <button
               type="button"
               onClick={() => setState((s) => ({ ...s, cycle: '2026_precedent' }))}
               className={cn(
-                'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+                'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
                 state.cycle === '2026_precedent'
-                  ? 'bg-white text-slate-900 shadow-xs'
+                  ? 'bg-white text-slate-900 shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
               )}
             >
@@ -131,56 +241,57 @@ export const BCyberEligibilityScreener: React.FC = () => {
 
         {/* Cycle Context Notice Banner */}
         {state.cycle === '2027_upcoming' ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-xs text-amber-900 flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="rounded-2xl border border-blue-200/80 bg-blue-50/50 p-3.5 text-xs text-blue-950 flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-[#0058be] shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <span className="font-bold">2027 Status: Official Selection Criteria Pending Announcement</span>
-              <p className="text-[11px] text-amber-800 leading-relaxed">
-                WSAIS FAQ 23 confirms that <strong>JEE Main is discontinued</strong> for future cycles and a separate test will be announced. However, exact 2027 cutoff dates, quotas, and application details have not yet been published by IIT Kanpur. This screener provides <em>provisional baseline guidance</em>, not a confirmed 2027 decision.
+              <span className="font-bold">2027 Focus: Dedicated IITK Test (JEE Main Discontinued)</span>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Official WSAIS FAQ 23 confirms that <strong>JEE Main is permanently discontinued</strong>. Evaluation will be based on IIT Kanpur&apos;s dedicated entrance test, technical proof-of-work (FAQ 22), and the hands-on lab hackathon.
               </p>
             </div>
           </div>
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-slate-100/70 p-3 text-xs text-slate-700 flex items-start gap-2.5">
+          <div className="rounded-2xl border border-slate-200 bg-slate-100/70 p-3.5 text-xs text-slate-700 flex items-start gap-2.5">
             <Calendar className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <span className="font-bold">2026 Precedent Mode: Verified Historical Guidelines</span>
+              <span className="font-bold">2026 Historical Benchmark Mode</span>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Evaluating against verified conditions from the inaugural 2026 admission cycle (FAQ 21, 24, 25). These criteria serve as precedent and are not guaranteed to remain identical for 2027.
+                Evaluating against observed criteria from the completed July 2026 cycle (FAQ 21, 24, 25). These criteria serve as precedent and establish baseline standards.
               </p>
             </div>
           </div>
         )}
       </div>
 
+      {/* Main Questions Grid */}
       <div className="p-5 sm:p-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Question 1: Academic Stream */}
+          {/* Question 1: Academic Stream & NIOS */}
           <div className="space-y-2.5">
             <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <span>1. Class 12th Academic Subjects</span>
+              <span>1. Class 12 Academic Subjects (PCM)</span>
               <span className="text-red-500">*</span>
-              <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
-                Official Senate Requirement
+              <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                Senate Mandatory
               </span>
             </label>
             <p className="text-[11px] text-slate-500">
-              Must have passed Class 12 (or NIOS equivalent) with Physics, Chemistry &amp; Mathematics (PCM) across at least 5 subjects (FAQ 21).
+              Must pass Class 12 with Physics, Chemistry &amp; Mathematics across minimum 5 subjects (FAQ 21). NIOS accepted.
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setState((s) => ({ ...s, hasPcm5Subjects: true }))}
                 className={cn(
-                  'p-2.5 rounded-xl border text-xs font-medium text-left transition-all cursor-pointer',
+                  'p-3 rounded-2xl border text-xs font-semibold text-left transition-all cursor-pointer',
                   state.hasPcm5Subjects === true
-                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-semibold shadow-xs ring-1 ring-emerald-500/20'
+                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 shadow-2xs ring-1 ring-emerald-500/20'
                     : 'border-slate-200 bg-slate-50/50 text-slate-700 hover:border-slate-300 hover:bg-white'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span>PCM (5 Subjects)</span>
-                  {state.hasPcm5Subjects === true && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+                  {state.hasPcm5Subjects === true && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
                 </div>
               </button>
 
@@ -188,56 +299,137 @@ export const BCyberEligibilityScreener: React.FC = () => {
                 type="button"
                 onClick={() => setState((s) => ({ ...s, hasPcm5Subjects: false }))}
                 className={cn(
-                  'p-2.5 rounded-xl border text-xs font-medium text-left transition-all cursor-pointer',
+                  'p-3 rounded-2xl border text-xs font-semibold text-left transition-all cursor-pointer',
                   state.hasPcm5Subjects === false
-                    ? 'border-red-400 bg-red-50/80 text-red-950 font-semibold shadow-xs ring-1 ring-red-400/20'
+                    ? 'border-red-400 bg-red-50/80 text-red-950 shadow-2xs ring-1 ring-red-400/20'
                     : 'border-slate-200 bg-slate-50/50 text-slate-700 hover:border-slate-300 hover:bg-white'
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span>No Math / &lt;5 Subjects</span>
-                  {state.hasPcm5Subjects === false && <XCircle className="w-3.5 h-3.5 text-red-600" />}
+                  <span>No Math / &lt;5 Subj</span>
+                  {state.hasPcm5Subjects === false && <XCircle className="w-4 h-4 text-red-600" />}
                 </div>
               </button>
             </div>
-          </div>
 
-          {/* Question 2: Year of Birth */}
-          <div className="space-y-2.5">
-            <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <span>2. Year of Birth</span>
-              <span className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                {state.cycle === '2026_precedent' ? '2026 Precedent' : 'Subject to 2027 Notice'}
-              </span>
-            </label>
-            <p className="text-[11px] text-slate-500">
-              {state.cycle === '2026_precedent'
-                ? `2026 cutoff: Born on or after Oct 1, ${cutoffYear2026} (${isReserved ? 'SC/ST/PwD' : 'General/OBC/EWS'}).`
-                : 'Exact cutoff birth date for the 2027 cycle will be declared in the official 2027 notification.'}
-            </p>
-            <div className="flex items-center gap-3">
-              <input
-                type="range"
-                min="1994"
-                max="2010"
-                value={state.dobYear}
-                onChange={(e) => setState((s) => ({ ...s, dobYear: parseInt(e.target.value, 10) }))}
-                className="w-full accent-slate-900 cursor-pointer"
-              />
-              <span className="px-3 py-1 rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-900 text-xs shrink-0 min-w-[56px] text-center">
-                {state.dobYear}
-              </span>
+            {/* NIOS Secondary Toggle */}
+            <div className="pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 select-none">
+                <input
+                  type="checkbox"
+                  checked={state.isNiosCandidate}
+                  onChange={(e) => setState((s) => ({ ...s, isNiosCandidate: e.target.checked }))}
+                  className="rounded border-slate-300 text-[#0058be] focus:ring-[#0058be] w-3.5 h-3.5"
+                />
+                <span>I completed / am appearing through NIOS (National Institute of Open Schooling)</span>
+              </label>
             </div>
           </div>
 
-          {/* Question 3: Category */}
+          {/* Question 2: Technical Proof of Work (FAQ 22) */}
           <div className="space-y-2.5">
             <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <span>3. Candidate Category</span>
-              <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
-                Statutory Reservation
+              <span>2. Prior Technical Proof-of-Work</span>
+              <span className="text-red-500">*</span>
+              <span className="text-[10px] font-semibold text-[#0058be] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                WSAIS FAQ 22
               </span>
             </label>
+            <p className="text-[11px] text-slate-500">
+              Verifiable computing or cybersecurity evidence (GitHub repositories, CTF achievements, CVEs, or tools).
+            </p>
+            <div className="space-y-2">
+              {[
+                {
+                  id: 'verifiable_projects',
+                  label: 'Verifiable Code / CTF Profile',
+                  sub: 'Public GitHub repos, reproducible setups, CTF handles',
+                  badge: 'High Signal',
+                },
+                {
+                  id: 'in_progress',
+                  label: 'Work In Progress / Learning',
+                  sub: 'Currently building projects; no public repo yet',
+                  badge: 'Needs Build',
+                },
+                {
+                  id: 'none',
+                  label: 'No Prior Code / Only Coaching',
+                  sub: 'Relying solely on entrance test preparation',
+                  badge: 'Disqualifying Risk',
+                },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setState((s) => ({ ...s, hasTechnicalPoW: opt.id as TechnicalPoWStatus }))}
+                  className={cn(
+                    'w-full p-2.5 rounded-2xl border text-xs text-left transition-all cursor-pointer flex items-center justify-between',
+                    state.hasTechnicalPoW === opt.id
+                      ? 'border-[#0058be] bg-blue-50/60 text-slate-900 font-semibold ring-1 ring-[#0058be]/20'
+                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  )}
+                >
+                  <div>
+                    <span className="block font-bold text-slate-900">{opt.label}</span>
+                    <span className="text-[11px] text-slate-500 font-normal">{opt.sub}</span>
+                  </div>
+                  <span className={cn(
+                    'text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ml-2',
+                    opt.badge === 'High Signal' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : opt.badge === 'Needs Build' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-red-50 text-red-800 border border-red-200'
+                  )}>
+                    {opt.badge}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Question 3: Year of Birth */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <span>3. Year of Birth</span>
+                <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  {state.cycle === '2026_precedent' ? '2026 Precedent' : '2027 Pending Notice'}
+                </span>
+              </label>
+              <span className="px-2.5 py-0.5 rounded-lg border border-slate-200 bg-slate-50 font-bold text-slate-900 text-xs">
+                {state.dobYear}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              {state.cycle === '2026_precedent'
+                ? `2026 cutoff: Born on or after Oct 1, ${cutoffYear2026} (${isReserved ? 'SC/ST/PwD 5-yr relaxation' : 'General/OBC/EWS'}).`
+                : 'Exact cutoff date for 2027 will be declared in the formal admission notification.'}
+            </p>
+            <input
+              type="range"
+              min="1995"
+              max="2010"
+              value={state.dobYear}
+              onChange={(e) => setState((s) => ({ ...s, dobYear: parseInt(e.target.value, 10) }))}
+              className="w-full accent-[#0058be] cursor-pointer"
+            />
+            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>1995</span>
+              <span>2001 (2026 Cutoff)</span>
+              <span>2006</span>
+              <span>2010</span>
+            </div>
+          </div>
+
+          {/* Question 4: Statutory Category */}
+          <div className="space-y-2.5">
+            <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              <span>4. Statutory Quota Category</span>
+              <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                GoI Reservation
+              </span>
+            </label>
+            <p className="text-[11px] text-slate-500">
+              Central Government category certificates required during verification.
+            </p>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: 'general', label: 'General' },
@@ -252,9 +444,9 @@ export const BCyberEligibilityScreener: React.FC = () => {
                   type="button"
                   onClick={() => setState((s) => ({ ...s, category: cat.id as any }))}
                   className={cn(
-                    'p-2 rounded-lg border text-xs text-center transition-all cursor-pointer font-medium',
+                    'p-2.5 rounded-xl border text-xs text-center transition-all cursor-pointer font-semibold',
                     state.category === cat.id
-                      ? 'border-slate-900 bg-slate-900 text-white font-semibold'
+                      ? 'border-[#0b1c30] bg-[#0b1c30] text-white'
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                   )}
                 >
@@ -264,19 +456,19 @@ export const BCyberEligibilityScreener: React.FC = () => {
             </div>
           </div>
 
-          {/* Question 4: Prior JoSAA Status */}
+          {/* Question 5: Prior JoSAA Status */}
           <div className="space-y-2.5">
             <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <span>4. Prior IIT Admission (JoSAA Record)</span>
-              <span className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                IIT Council Policy
+              <span>5. Prior IIT Enrolment (JoSAA Boundary)</span>
+              <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                WSAIS FAQ 21 §3
               </span>
             </label>
             <div className="space-y-2">
               {[
                 { id: 'never_admitted', label: 'Never Admitted to any IIT' },
                 { id: 'withdrew_before_final_round', label: 'Allocated seat but withdrew before final round' },
-                { id: 'admitted_to_iit', label: 'Formally admitted / accepted seat in an IIT' },
+                { id: 'admitted_to_iit', label: 'Formally admitted / accepted an IIT seat previously' },
               ].map((opt) => (
                 <button
                   key={opt.id}
@@ -285,7 +477,7 @@ export const BCyberEligibilityScreener: React.FC = () => {
                   className={cn(
                     'w-full p-2.5 rounded-xl border text-xs text-left transition-all cursor-pointer flex items-center justify-between',
                     state.josaaStatus === opt.id
-                      ? 'border-slate-900 bg-slate-900 text-white font-medium'
+                      ? 'border-[#0b1c30] bg-[#0b1c30] text-white font-medium'
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                   )}
                 >
@@ -296,32 +488,32 @@ export const BCyberEligibilityScreener: React.FC = () => {
             </div>
           </div>
 
-          {/* Question 5: Citizenship */}
-          <div className="space-y-2.5 md:col-span-2">
+          {/* Question 6: Nationality */}
+          <div className="space-y-2.5">
             <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <span>5. Nationality</span>
+              <span>6. Citizenship &amp; Nationality</span>
               <span className="text-red-500">*</span>
-              <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70">
-                Official Senate Requirement
+              <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                Senate Ordinance
               </span>
             </label>
             <p className="text-[11px] text-slate-500">
-              Under Senate ordinances, the B.Cyber program is open exclusively to Indian nationals.
+              The B.Cyber degree is open exclusively to Indian citizens. Foreign / OCI candidates are not eligible.
             </p>
-            <div className="grid grid-cols-2 gap-2 max-w-md">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setState((s) => ({ ...s, isIndianNational: true }))}
                 className={cn(
-                  'p-2.5 rounded-xl border text-xs font-medium text-left transition-all cursor-pointer',
+                  'p-3 rounded-2xl border text-xs font-semibold text-left transition-all cursor-pointer',
                   state.isIndianNational === true
-                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-semibold ring-1 ring-emerald-500/20'
+                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 ring-1 ring-emerald-500/20'
                     : 'border-slate-200 bg-slate-50/50 text-slate-700 hover:bg-white'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span>Indian National</span>
-                  {state.isIndianNational === true && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+                  {state.isIndianNational === true && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
                 </div>
               </button>
 
@@ -329,150 +521,144 @@ export const BCyberEligibilityScreener: React.FC = () => {
                 type="button"
                 onClick={() => setState((s) => ({ ...s, isIndianNational: false }))}
                 className={cn(
-                  'p-2.5 rounded-xl border text-xs font-medium text-left transition-all cursor-pointer',
+                  'p-3 rounded-2xl border text-xs font-semibold text-left transition-all cursor-pointer',
                   state.isIndianNational === false
-                    ? 'border-red-400 bg-red-50/80 text-red-950 font-semibold ring-1 ring-red-400/20'
+                    ? 'border-red-400 bg-red-50/80 text-red-950 ring-1 ring-red-400/20'
                     : 'border-slate-200 bg-slate-50/50 text-slate-700 hover:bg-white'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span>OCI / Foreign National</span>
-                  {state.isIndianNational === false && <XCircle className="w-3.5 h-3.5 text-red-600" />}
+                  {state.isIndianNational === false && <XCircle className="w-4 h-4 text-red-600" />}
                 </div>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Live Screener Verdict Ribbon */}
+        {/* Dynamic Verdict Card 2.0 */}
         <div
           className={cn(
-            'rounded-xl border p-5 transition-all space-y-3',
+            'rounded-3xl border p-6 sm:p-7 transition-all space-y-5',
             !isComplete
               ? 'border-slate-200 bg-slate-50/80 text-slate-700'
-              : state.cycle === '2027_upcoming'
-              ? !isPcmValid || !isCitizenshipValid || !isJosaaValid
-                ? 'border-red-300 bg-red-50/50 text-red-950'
-                : 'border-amber-300 bg-amber-50/50 text-amber-950'
-              : isEligible2026
-              ? 'border-emerald-300 bg-emerald-50/50 text-emerald-950'
-              : 'border-red-300 bg-red-50/50 text-red-950'
+              : !isPcmValid || !isCitizenshipValid || !isJosaaValid
+              ? 'border-red-300 bg-red-50/40 text-red-950'
+              : state.hasTechnicalPoW === 'none'
+              ? 'border-amber-300 bg-amber-50/50 text-amber-950'
+              : 'border-emerald-300 bg-emerald-50/40 text-emerald-950'
           )}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-3">
+          {/* Verdict Header Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/70">
+            <div className="flex items-start gap-3.5">
               {!isComplete ? (
-                <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600 font-bold shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
                   ?
                 </div>
-              ) : state.cycle === '2027_upcoming' ? (
-                !isPcmValid || !isCitizenshipValid || !isJosaaValid ? (
-                  <div className="w-8 h-8 rounded-lg bg-red-100 border border-red-300 flex items-center justify-center text-red-700 shrink-0">
-                    <XCircle className="w-5 h-5" />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-lg bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shrink-0">
-                    <AlertTriangle className="w-5 h-5" />
-                  </div>
-                )
-              ) : isEligible2026 ? (
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+              ) : !isPcmValid || !isCitizenshipValid || !isJosaaValid ? (
+                <div className="w-9 h-9 rounded-xl bg-red-100 border border-red-300 text-red-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <XCircle className="w-5 h-5" />
+                </div>
+              ) : state.hasTechnicalPoW === 'none' ? (
+                <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <AlertTriangle className="w-5 h-5" />
                 </div>
               ) : (
-                <div className="w-8 h-8 rounded-lg bg-red-100 border border-red-300 flex items-center justify-center text-red-700 shrink-0">
-                  <XCircle className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <CheckCircle2 className="w-5 h-5" />
                 </div>
               )}
 
               <div>
-                <h3 className="text-sm font-bold">
-                  {!isComplete ? (
-                    'Select Mandatory Questions (PCM & Nationality) to View Status'
-                  ) : state.cycle === '2027_upcoming' ? (
-                    !isPcmValid || !isCitizenshipValid || !isJosaaValid ? (
-                      'Provisional Ineligibility: Core Statutory Requirements Not Satisfied'
-                    ) : (
-                      '2027 Eligibility Rules Not Yet Confirmed by IIT Kanpur Senate'
-                    )
-                  ) : isEligible2026 ? (
-                    'Potentially Eligible under 2026 Precedent Rules'
-                  ) : (
-                    'Ineligible based on 2026 Published Institute Criteria'
-                  )}
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+                  INSTITUTIONAL ASSESSMENT VERDICT
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
+                  {!isComplete
+                    ? 'Complete All Mandatory Questions (PCM, PoW, Citizenship) Above'
+                    : !isPcmValid || !isCitizenshipValid || !isJosaaValid
+                    ? 'Ineligible Under Mandatory Senate Ordinances'
+                    : state.hasTechnicalPoW === 'none'
+                    ? 'Conditionally Eligible Baseline — Technical PoW (FAQ 22) Missing'
+                    : 'Statutory Eligibility Confirmed — Ready for 2027 Entrance Track'}
                 </h3>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  {!isComplete ? (
-                    'Answer all questions above to generate provisional guidance.'
-                  ) : state.cycle === '2027_upcoming' ? (
-                    !isPcmValid || !isCitizenshipValid || !isJosaaValid ? (
-                      'Class 12 PCM (5 subjects) and Indian nationality are foundational Senate requirements unlikely to change.'
-                    ) : (
-                      'You satisfy core baseline prerequisites (PCM & Indian nationality). Official 2027 birth-date cutoff, application fees, attempt limits, and entrance test dates will be confirmed by IIT Kanpur in the upcoming official notification.'
-                    )
-                  ) : isEligible2026 ? (
-                    `Satisfies verified 2026 criteria (FAQ 21, 24). Historical fee: ${fee2026} (FAQ 25, non-refundable). Attempt rule: Max 2 consecutive attempts (FAQ 21).`
-                  ) : (
-                    'Flagged restrictions violate published 2026 criteria (FAQ 21, 24, 25).'
-                  )}
-                </p>
               </div>
             </div>
 
-            {isComplete && state.cycle === '2026_precedent' && isEligible2026 && (
-              <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto pt-2 sm:pt-0">
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-500 font-semibold uppercase">2026 Fee Precedent (FAQ 25)</p>
-                  <p className="text-base font-extrabold text-slate-900">{fee2026}</p>
-                </div>
-              </div>
-            )}
-
-            {isComplete && state.cycle === '2027_upcoming' && (
-              <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto pt-2 sm:pt-0">
-                <div className="text-right">
-                  <p className="text-[10px] text-amber-700 font-semibold uppercase">2027 Fees &amp; Quotas</p>
-                  <p className="text-xs font-bold text-amber-900">Pending Notice</p>
-                </div>
-              </div>
+            {/* Copy Report Action Button */}
+            {isComplete && (
+              <button
+                type="button"
+                onClick={copySummaryReport}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold hover:bg-slate-50 transition-all shadow-2xs self-start sm:self-auto cursor-pointer"
+              >
+                {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} className="text-slate-500" />}
+                <span>{copied ? 'Copied to Clipboard!' : 'Copy Assessment Report'}</span>
+              </button>
             )}
           </div>
 
-          {/* Specific Flag Details */}
-          {isComplete && (!isPcmValid || !isCitizenshipValid || !isJosaaValid || (state.cycle === '2026_precedent' && !isAgeValid2026)) && (
-            <div className="pt-3 border-t border-slate-200/80 space-y-1.5 text-xs">
-              {!isPcmValid && (
-                <div className="flex items-center gap-2 text-red-900">
-                  <XCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                  <span>
-                    <strong>Academic Requirement:</strong> Class 12th Mathematics is strictly mandatory with minimum 5 total subjects (FAQ 21).
-                  </span>
-                </div>
-              )}
-              {!isCitizenshipValid && (
-                <div className="flex items-center gap-2 text-red-900">
-                  <XCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                  <span>
-                    <strong>Citizenship Restriction:</strong> The degree is restricted to Indian nationals under Senate ordinances.
-                  </span>
-                </div>
-              )}
-              {!isJosaaValid && (
-                <div className="flex items-center gap-2 text-red-900">
-                  <XCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                  <span>
-                    <strong>Prior IIT Admission Restriction:</strong> Candidates already admitted to any IIT under JoSAA are prohibited from reapplying.
-                  </span>
-                </div>
-              )}
-              {state.cycle === '2026_precedent' && !isAgeValid2026 && (
-                <div className="flex items-center gap-2 text-red-900">
-                  <XCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                  <span>
-                    <strong>2026 Age Precedent Exceeded:</strong> In 2026, candidates in your category were required to be born on or after Oct 1, {cutoffYear2026}.
-                  </span>
-                </div>
-              )}
+          {/* 3 Personalized Action Points */}
+          {isComplete && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+              <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  1. Academic Baseline
+                </span>
+                <span className="font-bold text-slate-900 block">
+                  {isPcmValid ? 'Class 12 PCM Satisfied' : 'Ineligible (PCM Missing)'}
+                </span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  {state.isNiosCandidate
+                    ? 'Your NIOS marksheet is valid provided it contains PCM across at least 5 distinct subjects (FAQ 21).'
+                    : isPcmValid
+                    ? 'You meet the 5-subject PCM criterion under Senate ordinances.'
+                    : 'Without Class 12 Mathematics and 5 subjects, admission is strictly barred.'}
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  2. Entrance Strategy
+                </span>
+                <span className="font-bold text-slate-900 block">
+                  Dedicated IITK Test Prep
+                </span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Do not rely on JEE Main ranks for 2027. WSAIS FAQ 23 confirms a separate test. Focus on programming, systems, and foundational math.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  3. Technical Dossier (FAQ 22)
+                </span>
+                <span className="font-bold text-slate-900 block">
+                  {state.hasTechnicalPoW === 'verifiable_projects'
+                    ? 'High-Signal Portfolio'
+                    : state.hasTechnicalPoW === 'in_progress'
+                    ? 'Publish Repositories with README'
+                    : 'Action Needed: Build Code'}
+                </span>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  {state.hasTechnicalPoW === 'verifiable_projects'
+                    ? 'Ensure repositories have clear reproducibility steps, clean commits, and no tutorial plagiarism.'
+                    : 'Without verifiable technical proof-of-work, candidates are screened out prior to the hackathon.'}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Quick Boundary Alerts If Ineligible */}
+          {isComplete && (!isPcmValid || !isCitizenshipValid || !isJosaaValid) && (
+            <div className="p-3.5 rounded-2xl bg-red-100/70 border border-red-200 text-xs text-red-900 space-y-1">
+              <span className="font-bold block">Disqualification Clauses Triggered:</span>
+              <ul className="list-disc list-inside space-y-0.5 text-[11px]">
+                {!isPcmValid && <li>Lacks Class 12 PCM with minimum 5 subjects (WSAIS FAQ 21).</li>}
+                {!isCitizenshipValid && <li>Degree is restricted to Indian citizens under Senate regulations.</li>}
+                {!isJosaaValid && <li>Candidates who previously accepted an IIT seat under JoSAA are ineligible (FAQ 21 §3).</li>}
+              </ul>
             </div>
           )}
         </div>
