@@ -429,3 +429,4 @@ When reviewing and writing for Pillar 1, focus on these 4 optimization levers:
 2. **Sharpen Cognitive Contrast:** Make sure headings clearly signal *“What this means for YOU”* rather than dry administrative jargon.
 3. **Enhance Search Intent (GEO/AEO):** Ensure the 30-second summary and Myth/Fact cards remain formatted in clean question-and-answer pairs for search crawlers.
 4. **Tone Balance:** Maintain a calm, senior-architectural mentorship voice—encouraging, objective, and realistic.
+
