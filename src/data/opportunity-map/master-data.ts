@@ -677,6 +677,43 @@ export const MASTER_TRACKS: CareerTrack[] = [
                   },
                 ],
               },
+              {
+                id: 'clinics',
+                label: 'Dental & Medical Clinics needing patient booking',
+                description:
+                  'Local healthcare practices and dental clinics with outdated, slow, or unoptimized websites who want to convert local searchers into booked patient consultations.',
+                offers: [
+                  {
+                    id: 'clinic_patient_booking_package',
+                    label: 'Clinic Patient Inquiries & Booking Website',
+                    description:
+                      'Fast mobile-first website with appointment inquiry form, doctor/staff profiles, Google Reviews social proof badge, Google Maps integration, and local SEO.',
+                    priceRange: '$1,800',
+                    deliveryFormat: '10-day turnaround with WhatsApp/Email booking notification setup and staff walkthrough',
+                    positioningTemplate:
+                      'I help local dental and medical clinics attract more patients with fast, modern websites designed to convert mobile visitors into scheduled appointments.',
+                    simulatorWeights: { demand: 9, competition: 5, execution_speed: 8 },
+                    clientSources: [
+                      {
+                        id: 'google_maps_clinic_audit_outreach',
+                        label: 'Google Maps Clinic Audit Outreach',
+                        description:
+                          'Audit 20 local clinics with 4.5+ star reviews on Google Maps whose websites are non-responsive, slow, or lack an appointment button; send a 60-second video audit.',
+                        channel: 'cold_outreach',
+                        difficulty: 'moderate',
+                      },
+                      {
+                        id: 'medical_directory_referrals',
+                        label: 'Healthcare & Dental Supply Network Referrals',
+                        description:
+                          'Connect with local healthcare equipment suppliers, medical billing specialists, or clinic consultants as an implementation partner.',
+                        channel: 'referral',
+                        difficulty: 'easy',
+                      },
+                    ],
+                  },
+                ],
+              },
             ],
           },
         ],

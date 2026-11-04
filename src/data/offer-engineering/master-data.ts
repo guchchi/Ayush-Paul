@@ -528,6 +528,12 @@ export const OFFER_ENGINEERING_MASTER_DATA: ServiceEngineeringMap = {
       '72 Hour Business Launch System',
     ],
     nicheMechanisms: {
+      clinics: [
+        'Patient-First Booking Architecture',
+        'Local Clinic Google Visibility System',
+        'Doctor Credential & Trust Framework',
+        'Mobile Emergency & Appointment Conversion Design',
+      ],
       restaurants: [
         'Menu-First Site Architecture',
         'Local SEO Visibility System',
@@ -566,6 +572,13 @@ export const OFFER_ENGINEERING_MASTER_DATA: ServiceEngineeringMap = {
       ],
     },
     nicheDeliverables: {
+      clinics: [
+        'Mobile-First Patient Booking Interface',
+        'Doctor & Staff Credential Profiles',
+        'Google Reviews & Patient Testimonial Showcase',
+        'Automated Appointment Request Notification System',
+        'Local SEO & Google Maps Direction Embed',
+      ],
       restaurants: [
         'Menu-Optimised WordPress Theme',
         'Online Ordering Integration',

@@ -104,6 +104,58 @@ export const MODULE1_ADAPTER_MAP: AdapterMap = {
         opportunityScore: 85,
         opportunityScoreSource: 'default_phase_1_mapping',
       },
+      clinics: {
+        serviceId: 'custom_theme_development',
+        offerId: 'clinic_patient_booking_package',
+        who: 'local dental and medical clinics',
+        result: 'attract more patients and increase booked appointments',
+        method: 'fast, mobile-first websites with integrated scheduling',
+        statementVariants: [
+          'I help local dental and medical clinics attract more patients using fast, mobile-first websites with integrated scheduling.',
+          'I help healthcare clinics turn mobile visitors into booked consultations with modern, trust-building web design.',
+          'I help local clinics eliminate lost patient inquiries through high-speed mobile pages and automated booking forms.',
+        ],
+        opportunityScore: 92,
+        opportunityScoreSource: 'default_phase_1_mapping',
+      },
+    },
+  },
+
+  frontend_developer: {
+    local_businesses: {
+      clinics: {
+        serviceId: 'custom_theme_development',
+        offerId: 'clinic_patient_booking_package',
+        who: 'local dental and medical clinics',
+        result: 'attract more patients and increase booked appointments',
+        method: 'fast, modern web applications with seamless scheduling',
+        statementVariants: [
+          'I help local dental and medical clinics attract more patients using fast, modern web applications with seamless scheduling.',
+          'I help healthcare clinics convert online visitors into scheduled appointments with high-performance responsive web design.',
+          'I help local clinics establish a trustworthy online presence that drives new patient consultations on autopilot.',
+        ],
+        opportunityScore: 92,
+        opportunityScoreSource: 'default_phase_1_mapping',
+      },
+    },
+  },
+
+  landing_page_developer: {
+    local_businesses: {
+      clinics: {
+        serviceId: 'custom_theme_development',
+        offerId: 'clinic_patient_booking_package',
+        who: 'local dental and medical clinics',
+        result: 'convert search traffic into scheduled patient appointments',
+        method: 'high-converting, mobile-optimized clinic landing pages',
+        statementVariants: [
+          'I help local dental and medical clinics convert search traffic into scheduled appointments with high-converting landing pages.',
+          'I help healthcare practices maximize patient inquiries from local search with focused, fast-loading booking pages.',
+          'I help local clinics turn Google Maps clicks into confirmed consultations through frictionless landing page design.',
+        ],
+        opportunityScore: 92,
+        opportunityScoreSource: 'default_phase_1_mapping',
+      },
     },
   },
 
