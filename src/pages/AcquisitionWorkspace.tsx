@@ -287,7 +287,13 @@ export function AcquisitionWorkspace() {
   /* ─── Selection handlers with reset cascade ─── */
   const handleMainTrackSelect = (id: 'editor' | 'developer' | 'designer') => {
     setMainTrack(id);
-    setTrackId(null);
+    // Pre-select the recommended sub-track (Frontend Developer for developer golden path)
+    const defaultSub = id === 'developer'
+      ? 'frontend_developer'
+      : id === 'editor'
+        ? 'video_editor'
+        : 'web_designer';
+    setTrackId(defaultSub);
     setMarketId(null);
     setNicheId(null);
     setStatement('');
@@ -295,10 +301,10 @@ export function AcquisitionWorkspace() {
     setIsSaved(false);
     setCompletedSections(prev => {
       const next = new Set(prev);
-      ['track', 'market', 'niche', 'statement', 'save'].forEach(s => next.delete(s));
+      ['market', 'niche', 'statement', 'save'].forEach(s => next.delete(s));
       return next;
     });
-    trackEvent('module1_main_track_selected', { selectedMainTrack: id });
+    trackEvent('module1_main_track_selected', { selectedMainTrack: id, defaultSub });
   };
 
   const handleTrackSelect = (id: string) => {
@@ -457,6 +463,23 @@ export function AcquisitionWorkspace() {
     (activeSection === 'statement' && !statement.trim());
 
   /* ─── Current step entry + stats for statement breakdown ─── */
+  const mainTrackLabel = useMemo(
+    () => MAIN_TRACK_OPTIONS.find(t => t.id === mainTrack)?.label ?? null,
+    [mainTrack],
+  );
+  const specializationLabel = useMemo(
+    () => MAIN_TRACK_OPTIONS.find(t => t.id === mainTrack)?.subTracks?.find(s => s.id === trackId)?.label ?? null,
+    [mainTrack, trackId],
+  );
+  const marketLabel = useMemo(
+    () => availableMarkets.find(m => m.id === marketId)?.label ?? null,
+    [availableMarkets, marketId],
+  );
+  const nicheLabel = useMemo(
+    () => availableNiches.find(n => n.id === nicheId)?.label ?? null,
+    [availableNiches, nicheId],
+  );
+
   const adapterEntry = (trackId && marketId && nicheId)
     ? getAdapterEntry(trackId, marketId, nicheId)
     : null;
@@ -497,6 +520,68 @@ export function AcquisitionWorkspace() {
       }}
       onBack={() => setModuleStarted(false)}
     >
+      {/* ── Direction Dossier Live Workbench Ribbon ── */}
+      <div className="mb-8 p-3.5 sm:p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-[0_2px_12px_rgba(11,28,48,0.03)] flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#0058be] animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
+            Direction Dossier
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 text-xs">
+          {/* Skill / Track Pill */}
+          <div className={cn(
+            "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all text-xs",
+            trackId
+              ? "bg-[#0058be]/8 border-[#0058be]/20 text-[#0058be] font-bold"
+              : "bg-neutral-50 border-neutral-200 text-neutral-400 font-medium"
+          )}>
+            <span className="text-[10px] uppercase tracking-wider text-neutral-400">Skill:</span>
+            <span className={trackId ? "text-[#0b1c30]" : ""}>
+              {specializationLabel || (mainTrackLabel ? `${mainTrackLabel}…` : 'Not chosen')}
+            </span>
+            {trackId && <Check size={11} className="text-[#0058be] stroke-[3]" />}
+          </div>
+
+          {/* Market Pill */}
+          <div className={cn(
+            "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all text-xs",
+            marketId
+              ? "bg-[#0058be]/8 border-[#0058be]/20 text-[#0058be] font-bold"
+              : "bg-neutral-50 border-neutral-200 text-neutral-400 font-medium"
+          )}>
+            <span className="text-[10px] uppercase tracking-wider text-neutral-400">Market:</span>
+            <span className={marketId ? "text-[#0b1c30]" : ""}>
+              {marketLabel || 'Pending'}
+            </span>
+            {marketId && <Check size={11} className="text-[#0058be] stroke-[3]" />}
+          </div>
+
+          {/* Niche Pill */}
+          <div className={cn(
+            "flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all text-xs",
+            nicheId
+              ? "bg-[#0058be]/8 border-[#0058be]/20 text-[#0058be] font-bold"
+              : "bg-neutral-50 border-neutral-200 text-neutral-400 font-medium"
+          )}>
+            <span className="text-[10px] uppercase tracking-wider text-neutral-400">Niche:</span>
+            <span className={nicheId ? "text-[#0b1c30]" : ""}>
+              {nicheLabel || 'Pending'}
+            </span>
+            {nicheId && <Check size={11} className="text-[#0058be] stroke-[3]" />}
+          </div>
+
+          {/* Statement Pill */}
+          {statement && (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d1f34d]/40 border border-[#d1f34d] text-[#0b1c30] font-bold text-[11px]">
+              <Sparkles size={11} className="text-[#0b1c30]" />
+              <span>Positioning Ready</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── Step header ── */}
       <div className="mb-8">
         <div
@@ -518,9 +603,6 @@ export function AcquisitionWorkspace() {
             <legend className="sr-only">Choose a primary track</legend>
             {MAIN_TRACK_OPTIONS.map(track => {
               const isSelected = mainTrack === track.id;
-              const clientSummary = track.clients?.length > 0
-                ? `Clients: ${track.clients.slice(0, 4).join(', ')}`
-                : null;
 
               return (
                 <label
@@ -529,8 +611,8 @@ export function AcquisitionWorkspace() {
                   className={cn(
                     'relative p-6 rounded-2xl border text-left flex flex-col h-full justify-between transition-all duration-200 cursor-pointer outline-none group',
                     isSelected
-                      ? 'bg-[#eff4ff]/20 border-[#0058be] ring-1 ring-[#0058be]'
-                      : 'bg-white border-neutral-200 hover:border-neutral-300',
+                      ? 'bg-white border-[#0058be] shadow-[0_8px_30px_rgba(0,88,190,0.12)] ring-1 ring-[#0058be]'
+                      : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm',
                     'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#0058be] has-[:focus-visible]:ring-offset-2'
                   )}
                 >
@@ -554,15 +636,15 @@ export function AcquisitionWorkspace() {
                   )}
 
                   <div>
-                    <div className="flex items-start justify-between mb-5">
+                    <div className="flex items-start justify-between mb-4">
                       <div className={cn(
                         'w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-colors duration-200',
-                        isSelected ? 'bg-[#0058be]/8' : 'bg-[#f8f9ff] group-hover:bg-[#0058be]/5',
+                        isSelected ? 'bg-[#0058be]/10' : 'bg-[#f8f9ff] group-hover:bg-[#0058be]/5',
                       )} aria-hidden="true">
                         {track.icon}
                       </div>
                       {track.id === 'developer' && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-xs">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-xs">
                           <Sparkles size={11} className="text-amber-500 fill-amber-500" />
                           Golden Path
                         </span>
@@ -578,22 +660,29 @@ export function AcquisitionWorkspace() {
                     <p className="text-xs text-neutral-500 leading-relaxed mb-4">{track.description}</p>
                   </div>
 
-                  <div className="mt-auto space-y-4">
-                    {clientSummary && (
-                      <div className="pt-3 border-t border-neutral-100/50">
-                        <p className="text-[10px] font-semibold text-neutral-500">
-                          {clientSummary}
-                        </p>
-                      </div>
-                    )}
-
-                    {track.bestFor && (
-                      <div className="pt-3 border-t border-neutral-100">
-                        <p className="text-[10px] text-neutral-500 leading-relaxed font-medium">
-                          <strong className={cn(isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]')}>Best for:</strong> {track.bestFor}
-                        </p>
-                      </div>
-                    )}
+                  {/* Differentiated, scan-friendly tags instead of repetitive small text walls */}
+                  <div className="mt-auto pt-4 border-t border-neutral-100 space-y-2">
+                    <div className="flex flex-wrap gap-1.5">
+                      {track.id === 'developer' ? (
+                        <>
+                          <span className="px-2 py-0.5 rounded-md bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold">Booking Systems</span>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">Clinics & Local Biz</span>
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold">$1.5k–$4k Projects</span>
+                        </>
+                      ) : track.id === 'editor' ? (
+                        <>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">YouTube & Reels</span>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">Creators & Brands</span>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">High Retention</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">UI/UX Systems</span>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">Figma Prototypes</span>
+                          <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 text-[10px] font-medium">Brand Identity</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </label>
               );
@@ -612,9 +701,17 @@ export function AcquisitionWorkspace() {
               animate={{ opacity: 1, y: 0 }}
               className="mt-8 pt-8 border-t border-neutral-200 space-y-4"
             >
-              <h2 className="text-sm font-bold uppercase tracking-widest text-[#0058be] mb-3">
-                Choose your {mainTrack === 'editor' ? 'Editor' : mainTrack === 'developer' ? 'Developer' : 'Designer'} specialization
-              </h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-bold uppercase tracking-widest text-[#0058be]">
+                  Choose your {mainTrack === 'editor' ? 'Editor' : mainTrack === 'developer' ? 'Developer' : 'Designer'} specialization
+                </h2>
+                {mainTrack === 'developer' && (
+                  <span className="text-[11px] font-medium text-neutral-500">
+                    Frontend Developer is pre-selected as your <strong className="text-[#0058be]">Golden Path</strong>.
+                  </span>
+                )}
+              </div>
+
               <fieldset className="grid sm:grid-cols-2 gap-4">
                 <legend className="sr-only">Choose a specialization</legend>
                 {MAIN_TRACK_OPTIONS.find(t => t.id === mainTrack)?.subTracks?.map(sub => {
@@ -627,8 +724,8 @@ export function AcquisitionWorkspace() {
                       className={cn(
                         'p-5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-200 relative cursor-pointer outline-none',
                         isSubSelected
-                          ? 'bg-[#eff4ff]/20 border-[#0058be] ring-1 ring-[#0058be]'
-                          : 'bg-white border-neutral-200 hover:border-neutral-350',
+                          ? 'bg-[#eff4ff]/20 border-[#0058be] ring-1 ring-[#0058be] shadow-sm'
+                          : 'bg-white border-neutral-200 hover:border-neutral-300',
                         'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#0058be] has-[:focus-visible]:ring-offset-2'
                       )}
                     >
@@ -643,7 +740,7 @@ export function AcquisitionWorkspace() {
                       />
 
                       <div className="w-full">
-                        <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <span className={cn(
                               'text-sm font-bold',
@@ -652,13 +749,13 @@ export function AcquisitionWorkspace() {
                               {sub.label}
                             </span>
                             {sub.id === 'frontend_developer' && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                Recommended
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                ✨ Golden Path
                               </span>
                             )}
                           </div>
                           {isSubSelected && (
-                            <span className="w-4.5 h-4.5 rounded-full bg-[#0058be] flex items-center justify-center" aria-hidden="true">
+                            <span className="w-4.5 h-4.5 rounded-full bg-[#0058be] flex items-center justify-center shadow-xs" aria-hidden="true">
                               <Check size={10} className="text-[#d1f34d] stroke-[3]" />
                             </span>
                           )}
@@ -667,8 +764,9 @@ export function AcquisitionWorkspace() {
                           {sub.description}
                         </p>
                       </div>
-                      <div className="text-[10px] text-neutral-500 mt-auto pt-2 border-t border-neutral-100/50">
-                        <strong>Best for:</strong> {sub.bestFor}
+                      <div className="text-[10px] text-neutral-500 mt-auto pt-2 border-t border-neutral-100 flex items-center gap-1.5">
+                        <span className="font-bold text-neutral-400 uppercase tracking-wider">Best for:</span>
+                        <span className="truncate">{sub.bestFor}</span>
                       </div>
                     </label>
                   );
@@ -684,8 +782,7 @@ export function AcquisitionWorkspace() {
                 <p className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
                   Selected Direction:{' '}
                   <span className="text-[#0058be]">
-                    {MAIN_TRACK_OPTIONS.find(t => t.id === mainTrack)?.label} ·{' '}
-                    {MAIN_TRACK_OPTIONS.find(t => t.id === mainTrack)?.subTracks?.find(s => s.id === trackId)?.label} selected
+                    {mainTrackLabel} · {specializationLabel}
                   </span>
                 </p>
               ) : (
@@ -762,12 +859,20 @@ export function AcquisitionWorkspace() {
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <h3 className={cn(
-                              'font-bold text-base leading-tight mb-1 transition-colors',
-                              isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]'
-                            )}>
-                              {market.label}
-                            </h3>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className={cn(
+                                'font-bold text-base leading-tight transition-colors',
+                                isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]'
+                              )}>
+                                {market.label}
+                              </h3>
+                              {market.id === 'local_businesses' && mainTrack === 'developer' && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                  <Sparkles size={10} className="text-amber-500 fill-amber-500" />
+                                  Golden Path Partner
+                                </span>
+                              )}
+                            </div>
                             <p className="text-xs text-[#525252] leading-relaxed">
                               {market.description}
                             </p>
@@ -899,12 +1004,20 @@ export function AcquisitionWorkspace() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <h3 className={cn(
-                          'font-bold text-lg transition-colors',
-                          isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]',
-                        )}>
-                          {niche.label}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className={cn(
+                            'font-bold text-lg transition-colors',
+                            isSelected ? 'text-[#0058be]' : 'text-[#0b1c30]',
+                          )}>
+                            {niche.label}
+                          </h3>
+                          {niche.id === 'clinics' && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                              <Sparkles size={10} className="text-amber-500 fill-amber-500" />
+                              Golden Path Niche
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <p className="text-sm text-neutral-500 leading-relaxed">
                         {niche.description}
@@ -999,21 +1112,24 @@ export function AcquisitionWorkspace() {
               </div>
 
               {/* Header row */}
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
-                  Direction Statement
-                </span>
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-2 pb-3 border-b border-neutral-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-[#0058be]" />
+                  <span className="text-[10px] font-bold text-[#0058be] uppercase tracking-widest">
+                    Executive Positioning Statement
+                  </span>
+                </div>
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={handleRegenerate}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-500 hover:bg-[#f8f9ff] hover:text-[#0058be] transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 bg-neutral-50 hover:bg-[#eff4ff] hover:text-[#0058be] border border-neutral-200/80 transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be] cursor-pointer"
                     title={`Variation ${(variantIndex % variantTotal) + 1} of ${variantTotal}`}
                     aria-label={`Regenerate statement (variant ${(variantIndex % variantTotal) + 1} of ${variantTotal})`}
                   >
                     <RefreshCw size={13} aria-hidden="true" />
-                    <span className="hidden sm:inline">Regenerate</span>
+                    <span>Variant</span>
                     {variantTotal > 0 && (
-                      <span className="text-[10px] bg-neutral-100 px-1.5 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold bg-white text-[#0058be] px-1.5 py-0.5 rounded-md border border-neutral-200">
                         {(variantIndex % variantTotal) + 1}/{variantTotal}
                       </span>
                     )}
@@ -1021,29 +1137,29 @@ export function AcquisitionWorkspace() {
                   <button
                     onClick={handleCopy}
                     className={cn(
-                      'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]',
+                      'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be] cursor-pointer',
                       copied
-                        ? 'bg-[#d1f34d] text-[#0b1c30]'
-                        : 'text-neutral-500 hover:bg-[#f8f9ff] hover:text-[#0058be]',
+                        ? 'bg-[#d1f34d] text-[#0b1c30] font-bold shadow-xs'
+                        : 'text-neutral-600 bg-neutral-50 hover:bg-[#eff4ff] hover:text-[#0058be] border border-neutral-200/80',
                     )}
                     aria-label={copied ? 'Copied to clipboard' : 'Copy statement to clipboard'}
                   >
                     {copied ? <Check size={13} aria-hidden="true" /> : <Copy size={13} aria-hidden="true" />}
-                    <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy'}</span>
+                    <span>{copied ? 'Copied!' : 'Copy'}</span>
                   </button>
                   <button
                     onClick={() => setIsEditing(e => !e)}
                     className={cn(
-                      'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]',
+                      'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be] cursor-pointer',
                       isEditing
-                        ? 'bg-[#0058be] text-white'
-                        : 'text-neutral-500 hover:bg-[#f8f9ff] hover:text-[#0058be]',
+                        ? 'bg-[#0058be] text-white shadow-xs'
+                        : 'text-neutral-600 bg-neutral-50 hover:bg-[#eff4ff] hover:text-[#0058be] border border-neutral-200/80',
                     )}
                     aria-pressed={isEditing}
                     aria-label={isEditing ? 'Done editing' : 'Edit statement manually'}
                   >
                     <Edit3 size={13} aria-hidden="true" />
-                    <span className="hidden sm:inline">{isEditing ? 'Done' : 'Edit'}</span>
+                    <span>{isEditing ? 'Done' : 'Edit'}</span>
                   </button>
                 </div>
               </div>
@@ -1060,7 +1176,7 @@ export function AcquisitionWorkspace() {
                     <textarea
                       value={statement}
                       onChange={e => handleStatementChange(e.target.value)}
-                      className="w-full text-2xl sm:text-3xl font-bold text-[#0b1c30] bg-[#f8f9ff] border border-[#0058be]/20 rounded-xl resize-none focus:ring-2 focus:ring-[#0058be]/30 focus:border-[#0058be]/40 p-3 leading-tight outline-none transition-all"
+                      className="w-full text-xl sm:text-2xl font-bold text-[#0b1c30] bg-[#f8f9ff] border border-[#0058be]/30 rounded-2xl resize-none focus:ring-2 focus:ring-[#0058be]/30 focus:border-[#0058be] p-4 leading-relaxed outline-none transition-all shadow-inner"
                       rows={4}
                       autoFocus
                       aria-label="Edit your direction statement"
@@ -1068,7 +1184,9 @@ export function AcquisitionWorkspace() {
                         if (e.key === 'Escape') setIsEditing(false);
                       }}
                     />
-                    <p className="text-xs text-neutral-400 mt-1.5">Press Esc to finish editing.</p>
+                    <p className="text-xs text-neutral-400 mt-2 flex items-center gap-1">
+                      <span>Press</span> <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 text-[10px] font-mono text-neutral-600 border border-neutral-200">Esc</kbd> <span>or click 'Done' to finish editing.</span>
+                    </p>
                   </motion.div>
                 ) : (
                   <motion.p
@@ -1076,10 +1194,10 @@ export function AcquisitionWorkspace() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-2xl sm:text-3xl font-bold text-[#0b1c30] leading-tight"
+                    className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#0b1c30] leading-snug tracking-tight py-2 select-text"
                     aria-live="polite"
                   >
-                    {statement}
+                    "{statement}"
                   </motion.p>
                 )}
               </AnimatePresence>

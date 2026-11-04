@@ -147,6 +147,24 @@ export function OfferEngineeringIntroPage({
                 Turn your selected direction into a clear, premium, client-ready offer with deliverables, pricing, scope, and proposal copy.
               </p>
 
+              {/* Active Direction Plaque from Module 1 */}
+              {positioning && (
+                <div className="p-4 rounded-2xl bg-[#0b1c30] text-white border border-[#0b1c30] shadow-md flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#d1f34d] text-[#0b1c30] flex items-center justify-center shrink-0 mt-0.5 font-black text-xs">
+                    M1
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-bold text-[#d1f34d] uppercase tracking-wider">Active Direction Injected</span>
+                      <span className="text-[10px] text-white/50">· {serviceLabel} ({nicheLabel || marketLabel})</span>
+                    </div>
+                    <p className="text-sm font-semibold text-white/90 leading-snug line-clamp-2 select-text">
+                      "{positioning}"
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Meta chips */}
               <div className="flex flex-wrap gap-2.5 pt-2" role="list" aria-label="Module details">
                 {[

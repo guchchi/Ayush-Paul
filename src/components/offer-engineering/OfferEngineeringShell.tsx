@@ -416,6 +416,9 @@ export function OfferEngineeringShell({
   const completedSteps = useOfferEngineeringStore((s) => s.completedSteps);
   const jumpToStep = useOfferEngineeringStore((s) => s.jumpToStep);
 
+  const nicheLabel = useOpportunityMapStore((s) => s.nicheLabel);
+  const marketLabel = useOpportunityMapStore((s) => s.marketLabel);
+
   const activeIndex = OFFER_ENGINEERING_STEPS.indexOf(currentStep);
   const prevStep = activeIndex > 0 ? OFFER_ENGINEERING_STEPS[activeIndex - 1] : null;
   const nextStep = activeIndex < OFFER_ENGINEERING_STEPS.length - 1 ? OFFER_ENGINEERING_STEPS[activeIndex + 1] : null;
@@ -634,6 +637,13 @@ export function OfferEngineeringShell({
                 </button>
               )}
             </div>
+
+            {(nicheLabel || marketLabel) && (
+              <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0058be]/8 border border-[#0058be]/20 text-[10px] font-bold text-[#0058be]">
+                <span className="text-neutral-400 font-normal">Target:</span>
+                <span className="text-[#0b1c30] truncate max-w-[140px] md:max-w-[200px]">{nicheLabel || marketLabel}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3 shrink-0">

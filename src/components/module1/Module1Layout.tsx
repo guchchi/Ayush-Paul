@@ -118,7 +118,9 @@ export function Module1Layout({
               />
             </div>
             <p className="text-xs font-bold text-neutral-400 mt-2 text-right">
-              {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+              {activeStep === 'save' && Math.round(progress) === 100
+                ? 'Module complete'
+                : `Step 0${steps.findIndex(s => s.id === activeStep) + 1} of 05 · ${Math.round(progress)}%`}
             </p>
           </motion.div>
         )}
@@ -226,7 +228,9 @@ export function Module1Layout({
             </div>
           </div>
           <span className="text-xs font-bold text-[#0b1c30] shrink-0">
-            {Math.round(progress) === 100 ? 'Module complete' : `${Math.round(progress)}% complete`}
+            {activeStep === 'save' && Math.round(progress) === 100
+              ? 'Module complete'
+              : `Step 0${steps.findIndex(s => s.id === activeStep) + 1} of 05 · ${Math.round(progress)}%`}
           </span>
         </div>
       )}
