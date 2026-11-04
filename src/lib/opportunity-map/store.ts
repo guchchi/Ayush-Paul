@@ -370,6 +370,8 @@ export const useOpportunityMapStore = create<OpportunityMapState>()(
   }),
     {
       name: 'blueprint-opportunity-map',
+      version: 1,
+      migrate: (persisted) => (persisted as any) ?? {},
       partialize: (state) => ({
         careerTrackId: state.careerTrackId,
         serviceId: state.serviceId,
