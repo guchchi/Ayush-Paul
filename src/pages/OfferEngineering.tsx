@@ -95,7 +95,7 @@ export function OfferEngineering() {
             Select your service, market, and niche to generate a tailored offer blueprint.
           </p>
           <button
-            onClick={() => navigate('/blueprints/get-your-first-3-clients')}
+            onClick={() => navigate('/workspace/client-acquisition')}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0058be] text-white font-bold text-sm transition-colors hover:bg-[#0047a0] cursor-pointer"
           >
             <ArrowLeft size={14} />

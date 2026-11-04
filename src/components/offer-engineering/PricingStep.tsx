@@ -35,6 +35,7 @@ const PRICING_CONTEXT: Record<string, string> = {
   product_ui_design: 'Pricing may depend on screen count, design system scope, prototype interactivity, and developer handoff depth.',
   brand_identity_visual_systems: 'Pricing may depend on logo variations, brand touchpoint count, social kit scope, and guideline detail.',
   ux_research_conversion_audits: 'Pricing may depend on product complexity, user testing participant count, research depth, and presentation format.',
+  frontend_developer: 'Pricing may depend on appointment scheduling complexity, mobile booking flow custom UX, review proof integration, and turnaround speed.',
   landing_page_design: 'Pricing may depend on page section count, copy support, mobile design complexity, and conversion strategy depth.',
 };
 

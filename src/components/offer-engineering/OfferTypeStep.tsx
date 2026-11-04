@@ -92,6 +92,11 @@ const SERVICE_EXAMPLES: Record<string, Record<OfferType, string>> = {
     one_time_project: 'Complete UX audit with usability analysis, conversion funnel review, user testing, and executive presentation.',
     milestone_based: 'Phase 1: Audit & user testing ($2,500). Phase 2: Analysis & recommendations ($2,000). Phase 3: Fix roadmap & presentation ($1,500).',
   },
+  frontend_developer: {
+    retainer: 'Monthly frontend maintenance, speed optimization, and booking UI improvements (,200/mo).',
+    one_time_project: 'Complete Clinic Patient Booking Frontend with mobile-first appointment flow and Google Reviews integration (,800, 10-day turnaround).',
+    milestone_based: 'Phase 1: Booking UI & Wireframes (). Phase 2: React frontend integration (). Phase 3: Launch & analytics ().',
+  },
   landing_page_design: {
     retainer: 'Monthly landing page updates with conversion optimisation, A/B test variations, and performance reviews.',
     one_time_project: 'Complete landing page design with hero section, conversion layout, social proof, FAQ section, and Figma file.',
