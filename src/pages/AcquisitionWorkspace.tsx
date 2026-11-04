@@ -561,6 +561,12 @@ export function AcquisitionWorkspace() {
                       )} aria-hidden="true">
                         {track.icon}
                       </div>
+                      {track.id === 'developer' && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-xs">
+                          <Sparkles size={11} className="text-amber-500 fill-amber-500" />
+                          Golden Path
+                        </span>
+                      )}
                     </div>
 
                     <h3 className={cn(
@@ -638,12 +644,19 @@ export function AcquisitionWorkspace() {
 
                       <div className="w-full">
                         <div className="flex items-center justify-between mb-3">
-                          <span className={cn(
-                            'text-sm font-bold',
-                            isSubSelected ? 'text-[#0058be]' : 'text-[#0b1c30]',
-                          )}>
-                            {sub.label}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={cn(
+                              'text-sm font-bold',
+                              isSubSelected ? 'text-[#0058be]' : 'text-[#0b1c30]',
+                            )}>
+                              {sub.label}
+                            </span>
+                            {sub.id === 'frontend_developer' && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                Recommended
+                              </span>
+                            )}
+                          </div>
                           {isSubSelected && (
                             <span className="w-4.5 h-4.5 rounded-full bg-[#0058be] flex items-center justify-center" aria-hidden="true">
                               <Check size={10} className="text-[#d1f34d] stroke-[3]" />
