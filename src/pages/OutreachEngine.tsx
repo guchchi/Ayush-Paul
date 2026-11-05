@@ -46,30 +46,7 @@ export function OutreachEnginePage() {
 
   return (
     <OutreachEngineShell>
-      <LockedModuleWorkspace 
-        config={{
-          moduleNumber: 6,
-          moduleName: "Outreach Engine",
-          status: "In Development",
-          whyItMatters: "This module scales your client acquisition through outbound strategies.",
-          progress: 32,
-          unlockFeatures: [
-            { title: "Cold Email Sequences", description: "High-converting templates." },
-            { title: "Multi-Channel Follow-up", description: "Omnichannel outreach strategies." },
-            { title: "List Building Strategies", description: "Find the right prospects." },
-            { title: "Objection Handling Scripts", description: "Overcome common objections." }
-          ],
-          milestones: [
-            { title: "Research", status: "complete" },
-            { title: "Content", status: "in-progress" },
-            { title: "Design", status: "pending" },
-            { title: "Development", status: "pending" },
-            { title: "Testing", status: "pending" }
-          ],
-          previousModuleName: "Client Pipeline",
-          previousModulePath: "/workspace/client-pipeline"
-        }}
-      />
+      <StepContent />
     </OutreachEngineShell>
   );
 }

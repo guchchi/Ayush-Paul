@@ -74,38 +74,15 @@ export function DeliverySystemPage() {
   // }
 
   /* ── Intro page for first-time / non-started users ── */
-  // if (!moduleStarted) {
-  //   return (
-  //     ...
-  //   );
-  // }
+  if (!moduleStarted) {
+    return (
+      <DeliverySystemIntroPage onStart={handleStart} onBackToBlueprint={handleBackToBlueprint} />
+    );
+  }
 
   return (
     <DeliverySystemShell>
-      <LockedModuleWorkspace 
-        config={{
-          moduleNumber: 7,
-          moduleName: "Client Delivery System",
-          status: "In Development",
-          whyItMatters: "This module ensures you can deliver high-quality work without burning out.",
-          progress: 10,
-          unlockFeatures: [
-            { title: "Service Fulfillment SOPs", description: "Standard operating procedures for delivery." },
-            { title: "Client Onboarding Portals", description: "Seamless onboarding experiences." },
-            { title: "Automated Feedback Loops", description: "Gather client feedback automatically." },
-            { title: "Scope Creep Protection", description: "Contracts and boundaries to protect your time." }
-          ],
-          milestones: [
-            { title: "Research", status: "in-progress" },
-            { title: "Content", status: "pending" },
-            { title: "Design", status: "pending" },
-            { title: "Development", status: "pending" },
-            { title: "Testing", status: "pending" }
-          ],
-          previousModuleName: "Outreach Engine",
-          previousModulePath: "/workspace/outreach-engine"
-        }}
-      />
+      <StepContent />
     </DeliverySystemShell>
   );
 }
