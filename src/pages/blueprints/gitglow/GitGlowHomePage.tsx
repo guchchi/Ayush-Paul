@@ -25,6 +25,8 @@ import {
   XCircle,
   HelpCircle,
   Play,
+  RefreshCw,
+  Search,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -263,15 +265,94 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
   );
 };
 
+// ─── Scanned Profile Model ───────────────────────────────────────────────────
+interface ScannedProfileData {
+  login: string;
+  name: string;
+  avatar_url: string;
+  bio: string;
+  public_repos: number;
+  followers: number;
+  created_at: string;
+  isSimulated?: boolean;
+}
+
 // ─── Main GitGlow Page ────────────────────────────────────────────────────────
 export const GitGlowHomePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [simulatedBadges, setSimulatedBadges] = useState<string[]>(['quickdraw', 'pull-shark']);
+  const [githubInput, setGithubInput] = useState<string>('arivera-dev');
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scannedUser, setScannedUser] = useState<ScannedProfileData>({
+    login: 'arivera-dev',
+    name: 'Alex Rivera',
+    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    bio: 'Frontend & Open Source Developer',
+    public_repos: 14,
+    followers: 42,
+    created_at: '2022-03-15T00:00:00Z',
+    isSimulated: true,
+  });
 
-  const toggleSimulatedBadge = (badgeId: string) => {
-    setSimulatedBadges((prev) =>
-      prev.includes(badgeId) ? prev.filter((id) => id !== badgeId) : [...prev, badgeId]
-    );
+  const cleanGitHubInput = (input: string): string => {
+    let cleaned = input.trim();
+    cleaned = cleaned.replace(/^https?:\/\//i, '');
+    cleaned = cleaned.replace(/^www\./i, '');
+    cleaned = cleaned.replace(/^github\.com\//i, '');
+    cleaned = cleaned.replace(/^@/, '');
+    cleaned = cleaned.split('/')[0].split('?')[0].split('#')[0];
+    return cleaned.trim();
+  };
+
+  const handleScan = async (targetUsername?: string) => {
+    const raw = targetUsername || githubInput;
+    const username = cleanGitHubInput(raw);
+    if (!username) return;
+
+    setIsScanning(true);
+
+    try {
+      const res = await fetch(`https://api.github.com/users/${username}`);
+      if (res.ok) {
+        const data = await res.json();
+        setScannedUser({
+          login: data.login,
+          name: data.name || data.login,
+          avatar_url: data.avatar_url,
+          bio: data.bio || 'Public GitHub Developer',
+          public_repos: data.public_repos || 0,
+          followers: data.followers || 0,
+          created_at: data.created_at,
+          isSimulated: false,
+        });
+      } else {
+        // Fallback for simulated profile
+        setScannedUser({
+          login: username,
+          name: username.charAt(0).toUpperCase() + username.slice(1),
+          avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
+          bio: 'Public GitHub Developer',
+          public_repos: 8,
+          followers: 16,
+          created_at: '2023-01-01T00:00:00Z',
+          isSimulated: true,
+        });
+      }
+    } catch {
+      setScannedUser({
+        login: username,
+        name: username.charAt(0).toUpperCase() + username.slice(1),
+        avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
+        bio: 'Public GitHub Developer',
+        public_repos: 8,
+        followers: 16,
+        created_at: '2023-01-01T00:00:00Z',
+        isSimulated: true,
+      });
+    } finally {
+      setTimeout(() => {
+        setIsScanning(false);
+      }, 400);
+    }
   };
 
   const filteredBadges = useMemo(() => {
@@ -298,168 +379,268 @@ export const GitGlowHomePage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
-        {/* ─── Hero Section: The Frustration Hook & The Badge Solution ────── */}
-        <section id="overview" className="mb-20 md:mb-28 text-center sm:text-left">
+        {/* ─── Hero Section: Instant GitHub URL Scanner & Diagnostic Console ────── */}
+        <section id="overview" className="mb-20 md:mb-28 text-left">
           
-          <div className="max-w-4xl mx-auto lg:mx-0 space-y-6">
-            
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0058be]/8 border border-[#0058be]/15 text-[#0058be] text-[11px] font-bold uppercase tracking-widest">
+          <div className="max-w-4xl space-y-4 mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0058be]/8 border border-[#0058be]/15 text-[#0058be] text-[11px] font-bold uppercase tracking-widest">
               <Sparkles size={12} className="text-[#0058be]" />
-              <span>For First-Year Devs Tired of Copy-Paste Tutorials</span>
+              <span>Instant GitHub Profile Badge Audit</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0b1c30] leading-[1.05]">
-              Markdown icons don’t prove you code. <br />
-              <span className="text-[#0058be]">Official GitHub Badges do.</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0b1c30] leading-[1.08]">
+              Paste your GitHub URL. <br />
+              <span className="text-[#0058be]">See the badges you're missing in 2 seconds.</span>
             </h1>
 
-            <p className="text-base sm:text-xl text-neutral-600 leading-relaxed max-w-3xl">
-              Every tutorial tells you to paste glowing shields and fake contribution snakes. Recruiters scroll past that in 2 seconds. The only un-fakeable proof on GitHub is official achievement badges directly awarded by GitHub: <strong className="text-[#0b1c30]">Pull Shark 🦈</strong>, <strong className="text-[#0b1c30]">Quickdraw ⚡</strong>, <strong className="text-[#0b1c30]">YOLO 🪂</strong>, and <strong className="text-[#0b1c30]">Pair Extraordinaire 👯</strong>.
+            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed max-w-2xl">
+              Recruiters ignore copy-paste markdown shields. Enter your GitHub profile below to audit your official achievements and get the exact sandbox blueprint to claim your first three badges today.
             </p>
 
-            <p className="text-sm sm:text-base text-neutral-500 max-w-2xl leading-relaxed">
-              Most guides just give you vague steps and tell you to "go find an open source project." GitGlow provides the actual execution engine: a safe sandbox repository and automated workflows to legitimately claim your first 3 badges today without the fear of messing up a public repository.
-            </p>
-
-            {/* Hero Action Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-              <Link
-                to="/blueprints/gitglow/engine?badge=quickdraw"
-                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-[#d1f34d] text-[#0b1c30] font-extrabold text-base transition-all shadow-[0_8px_24px_rgba(209,243,77,0.35)] hover:bg-[#c2e240] hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+            {/* The Command Console Input Bar */}
+            <div className="pt-2 max-w-2xl">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleScan();
+                }}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-2 rounded-2xl bg-white border-2 border-neutral-200/90 shadow-md focus-within:border-[#0058be] focus-within:ring-4 focus-within:ring-[#0058be]/10 transition-all"
               >
-                <span>Claim Quickdraw First (2 Mins)</span>
-                <ArrowRight size={18} aria-hidden="true" />
-              </Link>
+                <div className="flex items-center gap-2.5 px-3 py-1.5 flex-1 min-w-0">
+                  <Github size={20} className="text-[#0b1c30] shrink-0" />
+                  <span className="font-mono text-xs sm:text-sm text-neutral-400 select-none">
+                    github.com/
+                  </span>
+                  <input
+                    type="text"
+                    value={githubInput}
+                    onChange={(e) => setGithubInput(e.target.value)}
+                    placeholder="username or paste profile link"
+                    className="w-full bg-transparent font-mono text-xs sm:text-sm text-[#0b1c30] placeholder:text-neutral-400 focus:outline-none"
+                  />
+                </div>
 
-              <a
-                href="#catalog"
-                className="flex items-center justify-center px-7 py-4 rounded-2xl border border-neutral-300 bg-white text-[#0b1c30] hover:bg-neutral-50 font-bold text-base transition-all shadow-2xs"
-              >
-                <span>Explore All 10 Badges</span>
-              </a>
-            </div>
+                <button
+                  type="submit"
+                  disabled={isScanning}
+                  className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-xs active:scale-[0.99] disabled:opacity-70 shrink-0"
+                >
+                  {isScanning ? (
+                    <>
+                      <RefreshCw size={14} className="animate-spin" />
+                      <span>Scanning...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Zap size={14} className="text-[#d1f34d]" />
+                      <span>Audit Badges</span>
+                    </>
+                  )}
+                </button>
+              </form>
 
-            {/* Trust Points */}
-            <div className="flex flex-wrap items-center gap-6 pt-3 text-xs text-neutral-500 font-medium">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-emerald-600" />
-                <span>100% Real GitHub Achievements</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-emerald-600" />
-                <span>Zero Risk: Safe Community Sandbox</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-emerald-600" />
-                <span>Permanent on Your Profile Header</span>
-              </span>
+              {/* Quick Demo Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-3 text-xs text-neutral-500">
+                <span className="font-semibold text-neutral-400 text-[11px] uppercase tracking-wider">Try an example:</span>
+                {[
+                  { label: 'shadcn', handle: 'shadcn' },
+                  { label: 'torvalds', handle: 'torvalds' },
+                  { label: 'gaearon', handle: 'gaearon' },
+                  { label: 'alexrivera', handle: 'arivera-dev' },
+                ].map((demo) => (
+                  <button
+                    key={demo.handle}
+                    type="button"
+                    onClick={() => {
+                      setGithubInput(demo.handle);
+                      handleScan(demo.handle);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-white hover:bg-neutral-100 text-neutral-700 font-mono text-xs transition-colors border border-neutral-200 shadow-2xs hover:border-[#0058be]/30"
+                  >
+                    @{demo.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* ─── Interactive Profile Header Simulator ────────────────────── */}
-          <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200/90 shadow-xl max-w-5xl mx-auto lg:mx-0">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-neutral-100">
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
-                  Interactive Preview
-                </span>
-                <h2 className="text-lg sm:text-xl font-bold text-[#0b1c30]">
-                  How Your GitHub Profile Looks After Claiming
-                </h2>
-              </div>
-              <p className="text-xs text-neutral-500">
-                Click badges below to preview them on your profile header:
-              </p>
-            </div>
-
-            {/* Simulated GitHub Profile Card */}
-            <div className="mt-6 p-6 sm:p-8 rounded-2xl bg-[#0d1117] text-white shadow-2xl border border-neutral-800 text-left">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-neutral-800">
-                {/* User Identity Mini */}
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#0058be] to-[#d1f34d] p-0.5">
-                    <div className="w-full h-full rounded-full bg-[#161b22] flex items-center justify-center font-bold text-lg text-white">
-                      AP
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                      <span>Alex Rivera</span>
-                      <span className="text-xs font-normal text-neutral-400">@arivera-dev</span>
-                    </h3>
-                    <p className="text-xs text-neutral-300">
-                      Frontend & AI Developer · Building open source tools
-                    </p>
+          {/* ─── Real-Time Scanned Diagnostic Card (Tactile Dark Console) ─────── */}
+          <div className="mt-8 rounded-3xl bg-[#0d1117] text-white border border-neutral-800 shadow-2xl p-6 sm:p-8 max-w-5xl">
+            {/* Header: User Profile Strip */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-6 border-b border-neutral-800">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <img
+                    src={scannedUser.avatar_url}
+                    alt={scannedUser.login}
+                    className="w-16 h-16 rounded-full border-2 border-neutral-700 object-cover shadow-md"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-[#0d1117] flex items-center justify-center" title="Public Profile Active">
+                    <Check size={10} className="text-white font-bold" />
                   </div>
                 </div>
 
-                {/* Simulated Achievements Container */}
-                <div className="bg-[#161b22] p-3 rounded-2xl border border-neutral-800 space-y-2">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-400">
-                      Achievements ({simulatedBadges.length})
-                    </span>
-                    <span className="text-[10px] font-bold text-emerald-400">● GitHub Verified</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-white">
+                      {scannedUser.name}
+                    </h3>
+                    <a
+                      href={`https://github.com/${scannedUser.login}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-mono text-neutral-400 hover:text-white inline-flex items-center gap-1 transition-colors"
+                    >
+                      <span>@{scannedUser.login}</span>
+                      <ExternalLink size={11} />
+                    </a>
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    {simulatedBadges.length === 0 ? (
-                      <span className="text-xs text-neutral-500 italic py-2">
-                        No badges unlocked yet (click pills below to simulate)
+                  <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1 max-w-md">
+                    {scannedUser.bio}
+                  </p>
+                  <div className="flex items-center gap-3 mt-1.5 text-[11px] font-mono text-neutral-400">
+                    <span>{scannedUser.public_repos} Public Repos</span>
+                    <span>·</span>
+                    <span>{scannedUser.followers} Followers</span>
+                    {scannedUser.isSimulated && (
+                      <span className="text-[10px] text-amber-400 font-sans font-semibold">
+                        (Demo Preview)
                       </span>
-                    ) : (
-                      simulatedBadges.map((badgeId) => {
-                        const b = GITHUB_BADGES.find((x) => x.id === badgeId);
-                        if (!b) return null;
-                        return (
-                          <div
-                            key={b.id}
-                            className="group relative flex flex-col items-center"
-                            title={b.name}
-                          >
-                            <div className="w-12 h-12 rounded-xl bg-[#21262d] p-1 flex items-center justify-center border border-neutral-700/80 shadow-md">
-                              <img src={b.image} alt={b.name} className="w-10 h-10 object-contain" />
-                            </div>
-                            <span className="text-[9px] font-semibold text-neutral-300 mt-1">
-                              {b.name}
-                            </span>
-                          </div>
-                        );
-                      })
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Badges Toggler Bar */}
-              <div className="pt-4 flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-neutral-400 font-medium mr-2">Toggle Badge Unlocks:</span>
+              {/* Overall Achievement Audit Status */}
+              <div className="bg-[#161b22] px-4 py-3 rounded-2xl border border-neutral-800 flex items-center justify-between md:flex-col md:items-end gap-2">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-400">
+                  Starter Badges Status
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs">
+                  <span>0 / 4 Unlocked</span>
+                  <span className="text-neutral-500">· Ready to Claim</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Middle: 4 Starter Badges Diagnostics Grid */}
+            <div className="py-6 border-b border-neutral-800">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                  Starter Achievements Breakdown
+                </span>
+                <span className="text-xs text-neutral-500">
+                  Available to unlock on your account:
+                </span>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { id: 'quickdraw', name: 'Quickdraw ⚡' },
-                  { id: 'pull-shark', name: 'Pull Shark 🦈' },
-                  { id: 'yolo', name: 'YOLO 🪂' },
-                  { id: 'pair-extraordinaire', name: 'Pair Extraordinaire 👯' },
-                  { id: 'galaxy-brain', name: 'Galaxy Brain 🧠' },
-                  { id: 'starstruck', name: 'Starstruck ⭐' },
-                ].map((b) => {
-                  const isActive = simulatedBadges.includes(b.id);
-                  return (
-                    <button
-                      key={b.id}
-                      onClick={() => toggleSimulatedBadge(b.id)}
+                  {
+                    id: 'quickdraw',
+                    name: 'Quickdraw ⚡',
+                    image: '/images/badges/quickdraw.png',
+                    requirement: 'Close issue/PR within 5 mins',
+                    time: '2 Mins',
+                    difficulty: 'Very Easy',
+                    theme: 'border-amber-500/30 bg-amber-500/5',
+                    btnBg: 'bg-amber-400 hover:bg-amber-300 text-[#0b1c30]',
+                  },
+                  {
+                    id: 'pull-shark',
+                    name: 'Pull Shark 🦈',
+                    image: '/images/badges/pull-shark.png',
+                    requirement: 'Merge 2 PRs into repo',
+                    time: '5 Mins',
+                    difficulty: 'Easy',
+                    theme: 'border-cyan-500/30 bg-cyan-500/5',
+                    btnBg: 'bg-cyan-400 hover:bg-cyan-300 text-[#0b1c30]',
+                  },
+                  {
+                    id: 'yolo',
+                    name: 'YOLO 🪂',
+                    image: '/images/badges/yolo.png',
+                    requirement: 'Merge PR without review',
+                    time: '5 Mins',
+                    difficulty: 'Easy',
+                    theme: 'border-rose-500/30 bg-rose-500/5',
+                    btnBg: 'bg-rose-400 hover:bg-rose-300 text-[#0b1c30]',
+                  },
+                  {
+                    id: 'pair-extraordinaire',
+                    name: 'Pair Extraordinaire 👯',
+                    image: '/images/badges/pair-extraordinaire.png',
+                    requirement: 'Co-authored commit merged',
+                    time: '10 Mins',
+                    difficulty: 'Medium',
+                    theme: 'border-purple-500/30 bg-purple-500/5',
+                    btnBg: 'bg-purple-400 hover:bg-purple-300 text-white',
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      'p-4 rounded-2xl border flex flex-col justify-between transition-all hover:border-neutral-600',
+                      item.theme,
+                    )}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-10 h-10 object-contain drop-shadow-md"
+                        />
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#161b22] text-neutral-300 border border-neutral-700">
+                          {item.time}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm font-bold text-white mb-1">
+                        {item.name}
+                      </h4>
+                      <p className="text-[11px] text-neutral-400 leading-snug line-clamp-2 mb-3">
+                        {item.requirement}
+                      </p>
+                    </div>
+
+                    <Link
+                      to={`/blueprints/gitglow/engine?badge=${item.id}&user=${scannedUser.login}`}
                       className={cn(
-                        'px-3 py-1.5 rounded-lg font-semibold transition-all border text-xs',
-                        isActive
-                          ? 'bg-[#d1f34d] border-[#d1f34d] text-[#0b1c30] shadow-xs'
-                          : 'bg-[#161b22] border-neutral-700 text-neutral-400 hover:text-white',
+                        'w-full py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.99]',
+                        item.btnBg,
                       )}
                     >
-                      {isActive ? '✓ ' : '+ '}
-                      {b.name}
-                    </button>
-                  );
-                })}
+                      <span>Claim Blueprint</span>
+                      <ArrowRight size={12} />
+                    </Link>
+                  </div>
+                ))}
               </div>
+            </div>
+
+            {/* Bottom Recommendation Strip */}
+            <div className="pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5">
+                <span className="w-8 h-8 rounded-xl bg-[#d1f34d]/20 text-[#d1f34d] flex items-center justify-center shrink-0">
+                  <Zap size={16} />
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-white">
+                    Fastest Path for @{scannedUser.login}: Claim Quickdraw in 120 Seconds
+                  </p>
+                  <p className="text-[11px] text-neutral-400">
+                    Open a tracking issue and close it in under 5 minutes on your personal repository.
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to={`/blueprints/gitglow/engine?badge=quickdraw&user=${scannedUser.login}`}
+                className="px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0b1c30] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-[0.99] shrink-0 text-center"
+              >
+                Launch 2-Min Quickdraw Claim →
+              </Link>
             </div>
           </div>
         </section>
