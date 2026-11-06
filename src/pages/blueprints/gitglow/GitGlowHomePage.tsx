@@ -1,111 +1,35 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
   Github,
   Star,
   Zap,
-  Users,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  Trophy,
   Lock,
   Sparkles,
-  Code2,
-  GitPullRequest,
-  Activity,
   Shield,
-  Rocket,
-  ChevronDown,
-  ChevronUp,
-  Terminal,
-  GitBranch,
+  Layers,
   Clock,
   FileText,
   Check,
-  Compass,
-  Layers,
-  Sparkle,
-  Share2,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Code2,
+  GitPullRequest,
+  Terminal,
+  Trophy,
+  AlertCircle,
+  FolderGit2,
+  Cpu,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
 
-// ─── Design Tokens (Matching Module 1 / Site Core Theme) ─────────────────────
-const NAVY = '#0b1c30';
-const COBALT = '#0058be';
-const LIME = '#d1f34d';
-
-// ─── 8 Diagnostic Criteria for Profile Health Scorecard ───────────────────────
-interface Criterion {
-  id: string;
-  points: number;
-  label: string;
-  detail: string;
-  category: string;
-}
-
-const CRITERIA: Criterion[] = [
-  {
-    id: 'avatar',
-    points: 10,
-    label: 'High-Res Headshot with Clean Framing',
-    detail: 'Face clearly visible, good lighting. Avoid anime characters, anonymous graphics, or default GitHub identicons.',
-    category: 'Identity',
-  },
-  {
-    id: 'bio',
-    points: 10,
-    label: '160-Character Impact Bio Stating What You Build',
-    detail: 'Specifies your primary tech stack and what you solve instead of generic "Computer Science student at XYZ college".',
-    category: 'Identity',
-  },
-  {
-    id: 'special_repo',
-    points: 15,
-    label: 'Special Username Repository (username/username) Initialized',
-    detail: 'The official GitHub feature that mounts a custom markdown presentation directly onto your public profile page.',
-    category: 'Foundation',
-  },
-  {
-    id: 'readme_architecture',
-    points: 15,
-    label: 'Structured Profile README with Tech Stack Icon Grid',
-    detail: 'Organized markdown sections with visual shields/badges displaying your languages and frameworks readable in 3 seconds.',
-    category: 'Foundation',
-  },
-  {
-    id: 'pinned_repos',
-    points: 15,
-    label: '6 Curated Pinned Repositories with Descriptions & Tags',
-    detail: 'Every pinned card has a one-sentence problem statement, language tags, and a verifiable live deployment URL.',
-    category: 'Proof',
-  },
-  {
-    id: 'social_badges',
-    points: 10,
-    label: 'Verified Social & Recruiter Contact Touchpoints',
-    detail: 'Direct badge links to your LinkedIn, portfolio website, and professional email for rapid recruiter outreach.',
-    category: 'Proof',
-  },
-  {
-    id: 'dynamic_metrics',
-    points: 10,
-    label: 'Dynamic GitHub Stats & Streak SVG Cards',
-    detail: 'Self-refreshing activity cards highlighting commit frequency, PR counts, and language distribution.',
-    category: 'Automation',
-  },
-  {
-    id: 'official_badge',
-    points: 15,
-    label: 'At Least One Official GitHub Achievement Badge',
-    detail: 'Official achievements verified directly by GitHub (Pull Shark 🦈, Quickdraw ⚡, or Pair Extraordinaire 👯).',
-    category: 'Achievement',
-  },
-];
-
-// ─── 13 Quests Roadmap ────────────────────────────────────────────────────────
+// ─── 13 Quests Roadmap Data ──────────────────────────────────────────────────
 interface Quest {
   id: string;
   stepNumber: string;
@@ -119,14 +43,14 @@ interface Quest {
 }
 
 const QUESTS: Quest[] = [
-  // Phase 1: Identity & Foundation (Free)
+  // Phase 1: Identity & Foundation (Quests 01–04)
   {
     id: 'q1',
     stepNumber: '01',
     phaseNumber: 1,
     phaseName: 'Foundation',
     title: 'Profile Picture & Verified Display Name',
-    desc: 'Establish instant recruiter trust in 0.1s. Configure high-resolution framing and canonical naming.',
+    desc: 'Establish instant recruiter trust in 0.1s. Configure high-resolution headshot framing, clean lighting, and canonical name display.',
     estMinutes: 4,
     output: 'Identity Verified',
   },
@@ -136,7 +60,7 @@ const QUESTS: Quest[] = [
     phaseNumber: 1,
     phaseName: 'Foundation',
     title: 'The 160-Character Recruiter Pitch Bio',
-    desc: 'Craft an engineered bio stating what you solve, what stack you ship with, and your current engineering thesis.',
+    desc: 'Craft an engineered bio stating who you are, what stack you ship with, and what problems you solve instead of generic student tags.',
     estMinutes: 6,
     output: 'Positioning Statement',
   },
@@ -146,147 +70,146 @@ const QUESTS: Quest[] = [
     phaseNumber: 1,
     phaseName: 'Foundation',
     title: 'Initialize the Secret Username Repository',
-    desc: 'Unlock GitHub\'s profile canvas by provisioning a public repository matching your exact GitHub username.',
+    desc: 'Unlock GitHub\'s profile canvas by provisioning a special public repository matching your exact username (username/username).',
     estMinutes: 5,
-    output: 'Profile Canvas Active',
+    output: 'Canvas Initialized',
   },
   {
     id: 'q4',
     stepNumber: '04',
     phaseNumber: 1,
     phaseName: 'Foundation',
-    title: 'Scaffold the Markdown Profile README',
-    desc: 'Generate clean, responsive markdown typography: hero banner, engineering philosophy, and structured project sections.',
+    title: 'Tech Stack Icon Grid & Visual Shields',
+    desc: 'Mount organized shields.io badges displaying your programming languages, frontend libraries, and backend tools readable in 3 seconds.',
     estMinutes: 8,
-    output: 'README Masterfile',
+    output: 'Tech Stack Grid',
   },
 
-  // Phase 2: Proof & Architecture (Free)
+  // Phase 2: Proof & Architecture (Quests 05–08)
   {
     id: 'q5',
     stepNumber: '05',
     phaseNumber: 2,
-    phaseName: 'Proof & Portfolio',
-    title: 'Interactive Tech Stack Icon Grid',
-    desc: 'Build a visually striking icon grid of your languages, frameworks, and cloud tooling using curated SVGs.',
-    estMinutes: 7,
-    output: 'Tech Stack Matrix',
+    phaseName: 'Proof',
+    title: 'Curate 6 Pinned Showcase Repositories',
+    desc: 'Select 6 high-impact repositories to pin. Remove abandoned homework assignments and replace with structured, runnable projects.',
+    estMinutes: 10,
+    output: '6 Pinned Showcases',
   },
   {
     id: 'q6',
     stepNumber: '06',
     phaseNumber: 2,
-    phaseName: 'Proof & Portfolio',
-    title: 'Pin Your 6 Signature Repositories',
-    desc: 'Select and curate your top 6 projects. Add concise problem statements, language topic tags, and demo links.',
-    estMinutes: 10,
-    output: '6-Project Showcase',
+    phaseName: 'Proof',
+    title: 'Live Production Demos & Repository Topics',
+    desc: 'Add live deployment URLs (Vercel, Render, GitHub Pages) and discoverability topic tags (#react, #typescript, #fullstack) to each repo.',
+    estMinutes: 8,
+    output: 'Live Demos Linked',
   },
   {
     id: 'q7',
     stepNumber: '07',
     phaseNumber: 2,
-    phaseName: 'Proof & Portfolio',
-    title: 'Recruiter Contact & Social Badges Bar',
-    desc: 'Deploy custom SVG badge links to LinkedIn, Twitter/X, personal portfolio, and verified contact triggers.',
+    phaseName: 'Proof',
+    title: 'Social & Recruiter Contact Touchpoints',
+    desc: 'Add high-trust contact buttons for LinkedIn, portfolio website, and professional email directly on your profile README.',
     estMinutes: 5,
-    output: 'Contact Touchpoints',
+    output: 'Recruiter Hooks',
   },
   {
     id: 'q8',
     stepNumber: '08',
     phaseNumber: 2,
-    phaseName: 'Proof & Portfolio',
-    title: 'Dynamic GitHub Stats & Streak Cards',
-    desc: 'Embed automatically refreshing SVG analytics cards displaying total commits, PR contributions, and active streaks.',
-    estMinutes: 8,
-    output: 'Free Profile Pass',
+    phaseName: 'Proof',
+    title: 'The Standard Project README Architecture',
+    desc: 'Apply the 5-part README template (Problem, Solution, Architecture Diagram, Local Setup, Live Demo) to your flagship repository.',
+    estMinutes: 12,
+    output: 'Flagship README',
   },
 
-  // Phase 3: Automation & Achievements (Pro ₹199)
+  // Phase 3: Automation & Badging (Quests 09–13)
   {
     id: 'q9',
     stepNumber: '09',
     phaseNumber: 3,
-    phaseName: 'Automation & Pro Badges',
-    title: 'GitHub Actions Automated Cron Workflow',
-    desc: 'Deploy a serverless GitHub Action workflow that automatically syncs recent activity and stats every 24 hours.',
-    estMinutes: 12,
-    output: 'Self-Updating Engine',
+    phaseName: 'Automation',
+    title: 'Fork the Safe gitglow-community Sandbox',
+    desc: 'Fork our official safe sandbox repository with zero risk of breaking production. Set up your upstream remote properly.',
+    estMinutes: 5,
+    output: 'Sandbox Forked',
     isPro: true,
   },
   {
     id: 'q10',
     stepNumber: '10',
     phaseNumber: 3,
-    phaseName: 'Automation & Pro Badges',
-    title: 'Unlock Official "Pull Shark" 🦈 Achievement',
-    desc: 'Submit your first clean, automated Pull Request to the gitglow-community sandbox repo, safely merged by bot.',
-    estMinutes: 10,
-    output: 'Pull Shark Badge 🦈',
+    phaseName: 'Automation',
+    title: 'Create Your Contributor Card via Clean Git Branch',
+    desc: 'Practice proper Git feature branch workflow (git checkout -b feat/your-username) and commit your contributor profile JSON.',
+    estMinutes: 7,
+    output: 'Clean Branch & Commit',
     isPro: true,
   },
   {
     id: 'q11',
     stepNumber: '11',
     phaseNumber: 3,
-    phaseName: 'Automation & Pro Badges',
-    title: 'Unlock Official "Quickdraw" ⚡ Achievement',
-    desc: 'Master rapid issue triaging and resolution on your repository in under 5 minutes to trigger the official badge.',
-    estMinutes: 5,
-    output: 'Quickdraw Badge ⚡',
+    phaseName: 'Automation',
+    title: 'Submit Verified Pull Request & Unlock Pull Shark 🦈',
+    desc: 'Open your first verified pull request to gitglow-community. Passing automated CI tests will award your official GitHub Pull Shark badge.',
+    estMinutes: 8,
+    output: 'Pull Shark Badge',
     isPro: true,
   },
   {
     id: 'q12',
     stepNumber: '12',
     phaseNumber: 3,
-    phaseName: 'Automation & Pro Badges',
-    title: 'Deploy 3 Production Starter Projects',
-    desc: 'Scaffold 3 real projects: a Python AI API wrapper, a Next.js full-stack tool, and a CLI utility. Real green squares.',
-    estMinutes: 25,
-    output: '3 Production Repos',
+    phaseName: 'Automation',
+    title: 'Automated GitHub Actions CI Workflow',
+    desc: 'Implement a GitHub Actions workflow (.github/workflows/ci.yml) that automatically runs linter and build tests on every push.',
+    estMinutes: 10,
+    output: 'CI Automation Live',
     isPro: true,
   },
   {
     id: 'q13',
     stepNumber: '13',
     phaseNumber: 3,
-    phaseName: 'Automation & Pro Badges',
-    title: 'Green-Square Jumpstart & Pair Extraordinaire 👯',
-    desc: 'Execute co-authored commits and establish a sustainable contribution habit with automated daily prompts.',
-    estMinutes: 15,
-    output: 'Gold Pro Pioneer 🏆',
+    phaseName: 'Automation',
+    title: 'Dynamic Profile Stats & Activity Streak SVG',
+    desc: 'Embed self-refreshing GitHub Stats and contribution streak cards that update automatically on your profile as you ship code.',
+    estMinutes: 6,
+    output: 'Dynamic SVGs Active',
     isPro: true,
   },
 ];
 
-// ─── FAQ Item ─────────────────────────────────────────────────────────────────
-const FAQAccordion: React.FC<{ q: string; a: string }> = ({ q, a }) => {
+// ─── FAQ Accordion Item ──────────────────────────────────────────────────────
+const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-neutral-200 rounded-2xl overflow-hidden bg-white shadow-xs transition-colors">
+    <div className="border border-neutral-200 rounded-2xl bg-white overflow-hidden transition-all duration-200">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 px-6 py-4 sm:py-5 text-left hover:bg-neutral-50/80 transition-colors cursor-pointer"
+        className="w-full px-6 py-5 flex items-center justify-between text-left text-sm sm:text-base font-bold text-[#0b1c30] hover:text-[#0058be] transition-colors focus:outline-none"
+        aria-expanded={open}
       >
-        <span className="text-sm sm:text-base font-bold text-[#0b1c30]">
-          {q}
-        </span>
-        <div className="w-7 h-7 rounded-full bg-neutral-100 flex items-center justify-center shrink-0 text-neutral-500">
+        <span>{q}</span>
+        <span className="p-1 rounded-full bg-neutral-100 text-[#0b1c30] shrink-0 ml-4">
           {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </div>
+        </span>
       </button>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {open && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
+            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100">
+            <div className="px-6 pb-6 pt-1 text-xs sm:text-sm text-neutral-600 leading-relaxed border-t border-neutral-100">
               {a}
             </div>
           </motion.div>
@@ -296,859 +219,610 @@ const FAQAccordion: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   );
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// ─── GitGlow Home Page ────────────────────────────────────────────────────────
 export const GitGlowHomePage: React.FC = () => {
-  // Simulator State: 'raw' | 'glow'
-  const [simulatorMode, setSimulatorMode] = useState<'raw' | 'glow'>('glow');
+  const [activePhaseTab, setActivePhaseTab] = useState<number>(0); // 0 = all, 1, 2, 3
 
-  // Interactive Calculator State
-  const [checkedCriteria, setCheckedCriteria] = useState<Record<string, boolean>>({
-    avatar: true,
-    bio: false,
-    special_repo: false,
-    readme_architecture: false,
-    pinned_repos: false,
-    social_badges: false,
-    dynamic_metrics: false,
-    official_badge: false,
+  const filteredQuests = QUESTS.filter((q) => {
+    if (activePhaseTab === 0) return true;
+    return q.phaseNumber === activePhaseTab;
   });
 
-  const toggleCriterion = (id: string) => {
-    setCheckedCriteria(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const currentScore = useMemo(() => {
-    return CRITERIA.reduce((acc, c) => (checkedCriteria[c.id] ? acc + c.points : acc), 0);
-  }, [checkedCriteria]);
-
-  const scoreDiagnosis = useMemo(() => {
-    if (currentScore < 30) {
-      return {
-        label: 'Ghost Profile',
-        color: '#ef4444',
-        tag: 'Critical Risk',
-        desc: 'Recruiters bounce within 3 seconds. Zero proof of active work or engineering identity.',
-      };
-    }
-    if (currentScore < 60) {
-      return {
-        label: 'Developing Beginner',
-        color: '#f59e0b',
-        tag: 'Needs Structure',
-        desc: 'Shows basic presence, but lacks portfolio curation, badges, and professional markdown architecture.',
-      };
-    }
-    if (currentScore < 85) {
-      return {
-        label: 'Solid Builder Profile',
-        color: '#0058be',
-        tag: 'Above Average',
-        desc: 'Outranks 80% of student peers. A few automation workflows and official badges will make it elite.',
-      };
-    }
-    return {
-      label: 'Recruiter-Ready Elite',
-      color: '#16a34a',
-      tag: 'Top 5% Portfolio',
-      desc: 'Instant credibility. Complete markdown architecture, active green streak, and official GitHub achievements.',
-    };
-  }, [currentScore]);
-
   return (
-    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] pt-24 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0b1c30]">
       
-      {/* ── Upper Navigation / Back link (Identical to Module 1) ─────────── */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-8 sm:pt-10">
+      {/* ─── Upper Navigation / Back link ─────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-8">
         <Link
           to="/blueprints"
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-400 hover:text-[#0058be] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded-lg p-1.5"
-          aria-label="Back to Blueprints"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-500 hover:text-[#0058be] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded-lg p-1.5"
+          aria-label="Back to Blueprints collection"
         >
-          <ArrowLeft size={14} aria-hidden="true" /> Back to Blueprints
+          <ArrowLeft size={14} aria-hidden="true" />
+          <span>Back to Blueprints</span>
         </Link>
       </div>
 
-      {/* ── 1. HERO & BLUEPRINT AT A GLANCE (Module 1 Layout) ─────────────── */}
-      <div id="overview" className="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-14">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-        >
-          <div className="grid lg:grid-cols-[1fr_390px] gap-10 xl:gap-16 items-start mb-14 md:mb-20">
-            
-            {/* Left side: Hero Details */}
-            <div className="space-y-6">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[11px] font-bold uppercase tracking-widest">
-                <Github size={13} className="text-[#0058be]" aria-hidden="true" /> Blueprint 03 · GitGlow
-              </span>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+        
+        {/* ─── Hero Section (Module 1 Inspired 2-Column Layout) ───────────── */}
+        <section id="overview" className="grid lg:grid-cols-[1fr_390px] gap-10 xl:gap-16 items-start mb-16 md:mb-24">
+          
+          {/* Left Column: Hero Copy + Meta Chips + Primary Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASING.PREMIUM }}
+            className="space-y-6 text-left"
+          >
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[11px] font-bold uppercase tracking-widest border border-[#0058be]/15">
+              <Github size={12} className="text-[#0058be]" aria-hidden="true" />
+              <span>Blueprint 03 • Open Source Track</span>
+            </span>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0b1c30] leading-[1.08]">
-                Glow Up Your <br />
-                <span className="text-[#0058be]">GitHub Profile</span>
-              </h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0b1c30] leading-[1.08]">
+              Glow Up Your GitHub <br />
+              <span className="text-[#0058be]">From Zero to Pro</span>
+            </h1>
 
-              <p className="text-base sm:text-lg text-neutral-500 leading-relaxed max-w-2xl">
-                Before applying for internships or reaching out to senior engineers, you need a profile that proves you build.
-                GitGlow is a 13-quest guided workbench that turns a blank GitHub profile into a recruiter-ready portfolio — with real GitHub achievements, green squares, and official badges.
-              </p>
+            <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl">
+              A 13-quest execution blueprint engineered for first-year engineers and beginners. Transform your profile from an empty student assignment repo into a recruiter-grade engineering showcase with verified proof, badges, and automated workflows.
+            </p>
 
-              {/* Meta chips (Matching Module 1 exact chips) */}
-              <div className="flex flex-wrap gap-2.5 pt-2" role="list" aria-label="Blueprint details">
-                {[
-                  { icon: <Clock size={14} className="text-neutral-500" aria-hidden="true" />, label: '30–45 min' },
-                  { icon: <Star size={14} className="text-neutral-500" aria-hidden="true" />, label: '1st-Year Friendly' },
-                  { icon: <Layers size={14} className="text-neutral-500" aria-hidden="true" />, label: '13 Quests' },
-                  { icon: <FileText size={14} className="text-[#0b1c30]" aria-hidden="true" />, label: 'Output: Recruiter-Ready Portfolio', accent: true },
-                ].map((chip, i) => (
-                  <div
-                    key={i}
-                    role="listitem"
-                    className={cn(
-                      'flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold border select-none transition-all',
-                      chip.accent
-                        ? 'bg-[#d1f34d] border-[#d1f34d]/40 text-[#0b1c30] shadow-sm shadow-[#d1f34d]/20'
-                        : 'bg-white border-neutral-200 text-neutral-600',
-                    )}
-                  >
-                    {chip.icon}
-                    <span>{chip.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action row */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
-                <Link
-                  to="/blueprints/gitglow/engine"
-                  className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#0058be] text-white font-bold text-base transition-all hover:bg-[#0047a0] shadow-[0_8px_24px_rgba(0,88,190,0.2)] hover:scale-[1.01] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2"
+            {/* Meta Chips */}
+            <div className="flex flex-wrap gap-2.5 pt-2" role="list" aria-label="Blueprint details">
+              {[
+                { icon: <Clock size={14} className="text-neutral-500" />, label: '25–35 Mins Total' },
+                { icon: <Star size={14} className="text-neutral-500" />, label: 'Beginner Friendly' },
+                { icon: <Layers size={14} className="text-neutral-500" />, label: '13 Guided Quests' },
+                {
+                  icon: <FileText size={14} className="text-[#0b1c30]" />,
+                  label: 'Output: Recruiter-Ready Profile',
+                  accent: true,
+                },
+              ].map((chip, i) => (
+                <div
+                  key={i}
+                  role="listitem"
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border select-none transition-all',
+                    chip.accent
+                      ? 'bg-[#d1f34d] border-[#d1f34d]/60 text-[#0b1c30] shadow-xs'
+                      : 'bg-white border-neutral-200 text-neutral-600',
+                  )}
                 >
-                  <span>Launch GitGlow Engine</span>
-                  <ArrowRight size={18} aria-hidden="true" />
-                </Link>
+                  {chip.icon}
+                  <span>{chip.label}</span>
+                </div>
+              ))}
+            </div>
 
-                <a
-                  href="#simulator"
-                  className="flex items-center justify-center px-6 py-4 rounded-xl border border-neutral-200 bg-white text-[#0b1c30] hover:bg-neutral-50 font-bold text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]"
-                >
-                  View Live Simulator
-                </a>
+            {/* Action Buttons Row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-3">
+              <Link
+                to="/blueprints/gitglow/engine"
+                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#0058be] text-white font-bold text-base transition-all shadow-[0_8px_24px_rgba(0,88,190,0.22)] hover:bg-[#0047a0] hover:shadow-[0_12px_28px_rgba(0,88,190,0.3)] focus:outline-none focus:ring-2 focus:ring-[#0058be] focus:ring-offset-2"
+              >
+                <span>Launch GitGlow Engine</span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+
+              <a
+                href="#quests"
+                className="flex items-center justify-center px-6 py-4 rounded-xl border border-neutral-200 bg-white text-[#0b1c30] hover:bg-neutral-50 font-bold text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+              >
+                <span>View 13 Quests Roadmap</span>
+              </a>
+            </div>
+
+            <p className="text-xs text-neutral-500 font-medium pt-1">
+              Helper note: You are not writing thousands of lines of complex code. You are establishing clean repository architecture and verified open-source proof.
+            </p>
+          </motion.div>
+
+          {/* Right Column: "GitGlow at a glance" Card (Matching Module 1) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: EASING.PREMIUM }}
+            className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-xl space-y-6 text-left"
+          >
+            <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-3 flex items-center justify-between">
+              <span>GitGlow at a glance</span>
+              <span className="text-[#0058be] font-mono text-[10px]">v1.0 SPEC</span>
+            </h2>
+
+            {/* Curriculum Progress Preview */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-[#0b1c30]">Curriculum Scope</span>
+                <span className="text-sm font-extrabold text-[#0058be]">13 Quests</span>
               </div>
-
-              <p className="text-xs text-neutral-400 font-medium">
-                Helper note: You don't need years of coding experience. You just need a structured portfolio that proves you build.
+              <div className="w-full h-3 rounded-full bg-neutral-100 overflow-hidden relative">
+                <div
+                  className="h-full bg-[#0058be] rounded-full transition-all duration-500 ease-out"
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <p className="text-xs text-neutral-500 font-medium">
+                3 Structured Phases • Foundation, Proof & Automation
               </p>
             </div>
 
-            {/* Right side: Blueprint at a glance card (Matching Module 1 exact card structure) */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-xl space-y-6 text-left">
-              <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-3">
-                GitGlow at a glance
-              </h2>
+            {/* Final Deliverable Preview */}
+            <div className="p-4 rounded-2xl bg-[#f8f9ff] border border-neutral-100 space-y-2.5">
+              <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+                Final Deliverable
+              </h3>
+              <p className="text-sm font-bold text-[#0b1c30] leading-relaxed">
+                A verified GitHub presence featuring clean README architecture, 6 pinned showcase repos with live URLs, automated CI workflows, and the official GitHub Pull Shark 🦈 badge.
+              </p>
+              <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 font-semibold">
+                <CheckCircle2 size={12} className="text-emerald-600" />
+                <span>Verified across 13 guided steps</span>
+              </div>
+            </div>
 
-              {/* Health Score / Progress Preview */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-[#0b1c30]">Average Glow Up</span>
-                  <span className="text-sm font-extrabold text-[#0058be]">+74 Points</span>
-                </div>
-                <div className="w-full h-3 rounded-full bg-neutral-100 overflow-hidden relative">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#0058be] to-emerald-500 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: '96%' }}
-                  />
-                </div>
-                <p className="text-xs text-neutral-400 font-semibold flex items-center justify-between">
-                  <span>From 24 (Dormant)</span>
-                  <span className="text-emerald-600 font-bold">To 98 (Recruiter Ready)</span>
-                </p>
+            {/* Safe Sandbox Assurance */}
+            <div className="space-y-1.5 pt-1">
+              <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Shield size={12} className="text-emerald-600" />
+                <span>Zero Risk Guarantee</span>
+              </h3>
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                Practice Git commits and pull requests against our dedicated safe sandbox repository (<span className="font-mono text-[#0058be]">gitglow-community</span>) with automated bot reviews.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* ─── Section 2: The Transformation at a Glance (Before vs. After) ─── */}
+        <section id="transformation" className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-10 shadow-sm mb-16 md:mb-24 text-left">
+          <div className="max-w-2xl mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-3">
+              <Sparkles size={11} className="text-[#0058be]" /> Visual Proof
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight mb-2">
+              The Transformation at a Glance
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+              Why 87% of student GitHub profiles get ignored in the first 5 seconds — and how GitGlow restructures your profile into a hiring asset.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+            
+            {/* The Default Profile (Before) */}
+            <div className="p-6 rounded-2xl border border-rose-200 bg-rose-50/20 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-rose-100">
+                <span className="px-2.5 py-1 rounded-md bg-rose-100 text-rose-800 text-[11px] font-bold uppercase tracking-wider">
+                  Before: Default Profile
+                </span>
+                <span className="text-xs font-semibold text-rose-600">87% Ignored</span>
               </div>
 
-              {/* Output Preview */}
-              <div className="p-4 rounded-2xl bg-[#f8f9ff] border border-neutral-100 space-y-2.5">
-                <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                  Target Portfolio Deliverable
-                </h3>
-                <p className="text-sm font-bold text-[#0b1c30] leading-relaxed">
-                  github.com/your-username
-                </p>
-                <div className="flex flex-wrap items-center gap-2 text-[10px] text-neutral-500 font-medium">
-                  <span className="inline-flex items-center gap-1 text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    🦈 Pull Shark Unlocked
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                    ⚡ Quickdraw Unlocked
-                  </span>
+              <div className="space-y-3 text-xs sm:text-sm text-neutral-700">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <p><strong className="text-[#0b1c30]">Anonymous Identity:</strong> Default GitHub identicon or anime picture; recruiters cannot verify who you are.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <p><strong className="text-[#0b1c30]">Vague Bio:</strong> Generic “B.Tech Student @ College | Aspiring Developer” that says nothing about what you build.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <p><strong className="text-[#0b1c30]">Zero Pinned Projects:</strong> Either empty, or abandoned homework repos with names like “project-1” and no README.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <p><strong className="text-[#0b1c30]">Empty Contribution Canvas:</strong> Sporadic grey squares with zero open-source interaction and 0 achievement badges.</p>
                 </div>
               </div>
+            </div>
 
-              {/* Next Unlock Preview */}
-              <div className="space-y-1 pt-2">
-                <h3 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                  After this blueprint
-                </h3>
-                <p className="text-xs text-neutral-500 leading-relaxed">
-                  Share your verified GitGlow badge on LinkedIn, apply to college clubs, and stand out for internships with undeniable proof.
-                </p>
+            {/* The GitGlow Engineered Profile (After) */}
+            <div className="p-6 rounded-2xl border border-[#0058be]/25 bg-blue-50/20 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-[#0058be]/10">
+                <span className="px-2.5 py-1 rounded-md bg-[#0058be] text-white text-[11px] font-bold uppercase tracking-wider">
+                  After: GitGlow Profile
+                </span>
+                <span className="text-xs font-bold text-[#0058be]">Recruiter Ready in 5s</span>
+              </div>
+
+              <div className="space-y-3 text-xs sm:text-sm text-neutral-700">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</div>
+                  <p><strong className="text-[#0b1c30]">High-Trust Headshot:</strong> Clean professional framing and canonical name matching your resume and LinkedIn.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</div>
+                  <p><strong className="text-[#0b1c30]">160-Char Pitch Bio:</strong> States your stack, the systems you ship, and your primary technical focus clearly.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</div>
+                  <p><strong className="text-[#0b1c30]">6 Curated Showcases:</strong> Every repo has a 1-sentence value statement, topic tags, and a verifiable live demo URL.</p>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</div>
+                  <p><strong className="text-[#0b1c30]">Verified Pull Shark 🦈 Badge:</strong> Real open-source PR merged into our sandbox repo, proving collaborative Git fluency.</p>
+                </div>
               </div>
             </div>
 
           </div>
+        </section>
 
-          {/* ── 2. INTERACTIVE SHOWCASE FRAME (GitHub Darkroom inside Light Canvas) ─ */}
-          <div id="simulator" className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-8 shadow-sm mb-14 md:mb-20 space-y-6 text-left">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-5">
-              <div>
-                <h2 className="text-2xl font-bold text-[#0b1c30] mb-1">Interactive Profile Simulator</h2>
-                <p className="text-sm text-neutral-500">
-                  Toggle between the raw beginner profile and the GitGlow engineered portfolio.
-                </p>
+        {/* ─── Section 3: What You'll Complete: The 13 Quests Roadmap ─────── */}
+        <section id="quests" className="space-y-8 mb-16 md:mb-24 text-left">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#0058be]/15">
+                <Layers size={11} /> Guided Curriculum
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
+                What You’ll Complete
+              </h2>
+              <p className="text-sm sm:text-base text-neutral-600 mt-1 max-w-xl">
+                The blueprint is structured into 13 atomic quests across three distinct execution phases.
+              </p>
+            </div>
+
+            {/* Phase Filters */}
+            <div className="inline-flex items-center p-1 rounded-xl bg-white border border-neutral-200 shadow-2xs gap-1">
+              {[
+                { id: 0, label: 'All (13)' },
+                { id: 1, label: 'Phase 1: Foundation (4)' },
+                { id: 2, label: 'Phase 2: Proof (4)' },
+                { id: 3, label: 'Phase 3: Automation (5)' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActivePhaseTab(tab.id)}
+                  className={cn(
+                    'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all',
+                    activePhaseTab === tab.id
+                      ? 'bg-[#0b1c30] text-white shadow-xs'
+                      : 'text-neutral-600 hover:text-[#0b1c30] hover:bg-neutral-50',
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quests Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredQuests.map((quest) => (
+              <div
+                key={quest.id}
+                className={cn(
+                  'relative p-6 rounded-2xl border bg-white transition-all duration-200 flex flex-col justify-between hover:shadow-md hover:border-[#0058be]/30',
+                  quest.isPro ? 'border-neutral-200' : 'border-neutral-200',
+                )}
+              >
+                <div>
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between mb-3.5">
+                    <span className="w-8 h-8 rounded-xl bg-[#0058be]/8 text-[#0058be] font-mono font-extrabold text-xs flex items-center justify-center">
+                      {quest.stepNumber}
+                    </span>
+
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                        {quest.phaseName}
+                      </span>
+                      {quest.isPro && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#d1f34d] text-[#0b1c30]">
+                          Pro
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <h3 className="text-base font-bold text-[#0b1c30] leading-snug mb-2">
+                    {quest.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed mb-4">
+                    {quest.desc}
+                  </p>
+                </div>
+
+                {/* Card Footer: Output badge & time */}
+                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs">
+                  <span className="inline-flex items-center gap-1 font-semibold text-neutral-500">
+                    <Clock size={12} className="text-neutral-400" />
+                    <span>{quest.estMinutes} mins</span>
+                  </span>
+
+                  <span className="px-2.5 py-1 rounded-md bg-[#f8f9ff] border border-neutral-200 text-[#0b1c30] font-bold text-[10px] tracking-tight">
+                    {quest.output}
+                  </span>
+                </div>
               </div>
+            ))}
+          </div>
 
-              {/* Before / After Switcher */}
-              <div className="flex items-center p-1 rounded-xl bg-neutral-100 border border-neutral-200 gap-1.5 shrink-0">
-                <button
-                  onClick={() => setSimulatorMode('raw')}
-                  className={cn(
-                    'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer',
-                    simulatorMode === 'raw'
-                      ? 'bg-white text-rose-600 shadow-sm border border-neutral-200'
-                      : 'text-neutral-500 hover:text-[#0b1c30]'
-                  )}
-                >
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                  <span>Raw Profile (24/100)</span>
-                </button>
-
-                <button
-                  onClick={() => setSimulatorMode('glow')}
-                  className={cn(
-                    'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer',
-                    simulatorMode === 'glow'
-                      ? 'bg-[#0058be] text-white shadow-sm'
-                      : 'text-neutral-500 hover:text-[#0b1c30]'
-                  )}
-                >
-                  <span className="w-2 h-2 rounded-full bg-[#d1f34d] animate-pulse" />
-                  <span>GitGlow Pro (98/100)</span>
-                </button>
+          {/* Engine Direct Launch CTA */}
+          <div className="p-6 rounded-2xl bg-white border border-[#0058be]/20 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#d1f34d] text-[#0b1c30] flex items-center justify-center shrink-0">
+                <Code2 size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-[#0b1c30]">Ready to execute the quests step-by-step?</p>
+                <p className="text-xs text-neutral-500">Launch the interactive engine to track progress and generate all copy.</p>
               </div>
             </div>
 
-            {/* Embedded GitHub Window Container (The Darkroom Heart) */}
-            <div className="rounded-2xl bg-[#0d1117] border border-[#30363d] overflow-hidden shadow-2xl text-left text-[#c9d1d9]">
-              
-              {/* Window Controls */}
-              <div className="flex items-center justify-between px-4 py-3 bg-[#161b22] border-b border-[#30363d] text-xs font-mono">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-[#f85149]" />
-                  <div className="w-3 h-3 rounded-full bg-[#e3b341]" />
-                  <div className="w-3 h-3 rounded-full bg-[#3fb950]" />
-                  <span className="text-[#8b949e] ml-2">
-                    github.com/{simulatorMode === 'glow' ? 'ayush-engineer' : 'ayush-student'}
-                  </span>
+            <Link
+              to="/blueprints/gitglow/engine"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#0047a0] transition-colors shrink-0"
+            >
+              <span>Launch Engine Now</span>
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+        </section>
+
+        {/* ─── Section 4: Why This Works: The 3 Core Pillars ──────────────── */}
+        <section id="why-it-works" className="space-y-6 mb-16 md:mb-24 text-left">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-2">
+              <Shield size={11} className="text-emerald-600" /> Architectural Principles
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
+              Why GitGlow Works
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-600 mt-1">
+              Engineered around real recruiter heuristics and hiring manager scanning patterns.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-sm space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#0058be]/8 text-[#0058be] flex items-center justify-center font-bold">
+                <Zap size={22} />
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                1. Recruiter Scan Psychology
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Engineering recruiters spend an average of 15 seconds skimming a candidate’s profile. If your stack and top projects aren’t immediately visible, they move to the next candidate. GitGlow creates a high-contrast, instant-scan visual hierarchy.
+              </p>
+            </div>
+
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-sm space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <FolderGit2 size={22} />
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                2. Verifiable Proof Over Claims
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Anyone can write “Proficient in React and Node” on a resume. GitGlow proves competence by curating 6 pinned repositories, each equipped with live working URLs, topic tags, and architectural README breakdowns that verify you ship real code.
+              </p>
+            </div>
+
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-sm space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                <GitPullRequest size={22} />
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                3. Zero-Fear Open Source Sandbox
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Beginners often fear contributing to open source because they worry about making mistakes. Our dedicated repository (<span className="font-mono text-[#0058be]">gitglow-community</span>) gives you a friendly sandbox with automated bot checks where you can safely submit your first PR.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ─── Section 5: Transparent Tier Selection (Free vs Pro) ────────── */}
+        <section id="pricing" className="space-y-6 mb-16 md:mb-24 text-left">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-2">
+              <Trophy size={11} className="text-[#0058be]" /> Clear Pricing
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
+              Choose Your Starting Point
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-600 mt-1">
+              Start 100% free with the core blueprint, or upgrade to Pro Pioneer for advanced CI workflows and project kits.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-stretch">
+            
+            {/* Free Tier Card */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-sm flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between pb-4 border-b border-neutral-100">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Standard Access</span>
+                    <h3 className="text-2xl font-bold text-[#0b1c30]">GitGlow Core</h3>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-extrabold text-[#0b1c30]">₹0</span>
+                    <span className="block text-[11px] font-medium text-neutral-400">Free Forever</span>
+                  </div>
                 </div>
-                <span className={cn(
-                  'px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider',
-                  simulatorMode === 'glow' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                )}>
-                  {simulatorMode === 'glow' ? 'Diagnostic: 98/100 (Elite)' : 'Diagnostic: 24/100 (Critical)'}
+
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                  Everything you need to transform your personal profile into a professional, recruiter-ready developer showcase.
+                </p>
+
+                <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-700" role="list">
+                  {[
+                    'Quests 01–08 (Complete Foundation & Proof phases)',
+                    'The 160-character bio generator & formulas',
+                    'Custom Profile README Markdown architecture',
+                    'Tech stack shield & badge generator matrix',
+                    '6 Pinned showcase repository curation checklist',
+                    'Step-by-step first safe PR guide to gitglow-community',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <Check size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Link
+                to="/blueprints/gitglow/engine"
+                className="w-full py-4 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-[#0b1c30] font-bold text-sm text-center transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+              >
+                Launch Free Blueprint
+              </Link>
+            </div>
+
+            {/* Pro Pioneer Card */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border-2 border-[#0058be] shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
+              <div className="absolute top-4 right-4">
+                <span className="px-3 py-1 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-extrabold uppercase tracking-wider">
+                  Recommended
                 </span>
               </div>
 
-              {/* Profile Interior */}
-              <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-8">
-                
-                {/* Profile Sidebar */}
-                <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
-                  <div className="relative mb-4">
-                    {simulatorMode === 'glow' ? (
-                      <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-emerald-400/50 p-1 bg-[#0d1117] shadow-xl overflow-hidden relative">
-                        <img
-                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
-                          alt="Engineered Avatar"
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                        <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-[#238636] border-2 border-[#161b22] flex items-center justify-center">
-                          <span className="w-2 h-2 rounded-full bg-emerald-200 animate-ping" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-[#30363d] bg-[#21262d] flex items-center justify-center text-[#8b949e]">
-                        <Github size={48} className="opacity-40" />
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className="text-xl font-bold text-white mb-0.5">Ayush Paul</h3>
-                  <p className="text-xs font-mono text-[#8b949e] mb-3">
-                    {simulatorMode === 'glow' ? 'ayush-engineer' : 'ayush-student-99'}
-                  </p>
-
-                  <p className="text-xs text-[#c9d1d9] leading-relaxed mb-4">
-                    {simulatorMode === 'glow' ? (
-                      'Full-Stack & Autonomous AI Builder. Shipping distributed agent pipelines. Building tools for developers. 🚀'
-                    ) : (
-                      <span className="text-[#8b949e] italic">
-                        CS student at college. Learning C++ and Python. No bio provided.
-                      </span>
-                    )}
-                  </p>
-
-                  {/* Achievements Pill Bar */}
-                  <div className="w-full pt-4 border-t border-[#30363d]/60">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#8b949e] block mb-2">
-                      GitHub Achievements
-                    </span>
-                    {simulatorMode === 'glow' ? (
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#21262d] border border-[#30363d] text-[11px] font-semibold text-white">
-                          <span>🦈</span> Pull Shark
-                        </span>
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#21262d] border border-[#30363d] text-[11px] font-semibold text-white">
-                          <span>⚡</span> Quickdraw
-                        </span>
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#21262d] border border-[#30363d] text-[11px] font-semibold text-white">
-                          <span>👯</span> Pair
-                        </span>
-                      </div>
-                    ) : (
-                      <p className="text-xs text-[#8b949e]/60 italic font-mono">
-                        No public achievements unlocked yet.
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Profile Main Body */}
-                <div className="md:col-span-8 space-y-5">
-                  {/* README Box */}
-                  <div className="rounded-xl border border-[#30363d] bg-[#161b22] p-4 text-xs">
-                    <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#30363d] text-[11px] font-mono text-[#8b949e]">
-                      <span className="flex items-center gap-1.5 text-white">
-                        <FileText size={13} className="text-emerald-400" />
-                        README.md
-                      </span>
-                      <span className="text-emerald-400 font-mono">
-                        {simulatorMode === 'glow' ? 'STATUS: VERIFIED' : 'STATUS: MISSING'}
-                      </span>
-                    </div>
-
-                    {simulatorMode === 'glow' ? (
-                      <div className="space-y-3">
-                        <p className="font-bold text-white text-sm">Hey there, I'm Ayush 👋</p>
-                        <p className="text-[#8b949e] leading-relaxed">
-                          Software engineer focused on AI agents, TypeScript systems, and developer productivity tools.
-                        </p>
-                        <div className="flex flex-wrap gap-1 font-mono text-[10px]">
-                          {['TypeScript', 'React', 'Python', 'FastAPI', 'Node.js', 'Docker', 'PostgreSQL'].map(t => (
-                            <span key={t} className="px-2 py-0.5 rounded bg-[#0d1117] border border-[#30363d] text-emerald-400">
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="py-6 text-center text-[#8b949e] font-mono">
-                        Profile README repository does not exist.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Pinned Repos */}
+              <div className="space-y-5">
+                <div className="flex items-center justify-between pb-4 border-b border-neutral-100">
                   <div>
-                    <div className="flex items-center justify-between mb-2 text-xs font-mono text-[#8b949e]">
-                      <span>Pinned Repositories</span>
-                      <span>{simulatorMode === 'glow' ? '6 of 6' : '0 of 6'}</span>
-                    </div>
-
-                    {simulatorMode === 'glow' ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {[
-                          { name: 'agentic-crawler', desc: 'Autonomous headless web extraction engine.', lang: 'TypeScript', color: '#3178c6', stars: '84' },
-                          { name: 'b-cyber-planner', desc: 'Admission intelligence & roadmap planner.', lang: 'React', color: '#61dafb', stars: '49' },
-                          { name: 'rag-embedding-pipeline', desc: 'Semantic document chunking & vector search.', lang: 'Python', color: '#3572a5', stars: '112' },
-                          { name: 'gitglow-engine', desc: '13-quest GitHub profile workbench for students.', lang: 'Go', color: '#00add8', stars: '320' },
-                        ].map(r => (
-                          <div key={r.name} className="p-3 rounded-lg bg-[#161b22] border border-[#30363d]">
-                            <div className="text-xs font-bold text-[#58a6ff] mb-1 hover:underline cursor-pointer">
-                              {r.name}
-                            </div>
-                            <p className="text-[11px] text-[#8b949e] line-clamp-1 mb-2">
-                              {r.desc}
-                            </p>
-                            <div className="flex items-center gap-3 text-[10px] font-mono text-[#8b949e]">
-                              <span className="flex items-center gap-1">
-                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: r.color }} />
-                                {r.lang}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Star size={10} />
-                                {r.stars}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-4 rounded-xl border border-dashed border-[#30363d] text-center text-xs font-mono text-[#8b949e]">
-                        No pinned repositories selected.
-                      </div>
-                    )}
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0058be]">Full Career Suite</span>
+                    <h3 className="text-2xl font-bold text-[#0b1c30]">GitGlow Pro Pioneer</h3>
                   </div>
-
-                  {/* Contribution Heatmap */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5 text-xs font-mono text-[#8b949e]">
-                      <span>Contribution Streak</span>
-                      <span className="text-emerald-400 font-bold">{simulatorMode === 'glow' ? '🔥 42 day streak' : 'Streak: 0 days'}</span>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-[#161b22] border border-[#30363d] overflow-x-auto">
-                      <div className="flex gap-1 justify-between min-w-[450px]">
-                        {Array.from({ length: 36 }).map((_, c) => (
-                          <div key={c} className="flex flex-col gap-1">
-                            {Array.from({ length: 7 }).map((_, r) => {
-                              const lit = simulatorMode === 'glow'
-                                ? (c * 7 + r) % 3 !== 0
-                                : (c === 4 && r === 2) || (c === 20 && r === 5);
-                              return (
-                                <div
-                                  key={r}
-                                  className="w-2 h-2 rounded-2xs"
-                                  style={{
-                                    backgroundColor: lit
-                                      ? simulatorMode === 'glow'
-                                        ? ((c + r) % 4 === 0 ? '#39d353' : '#26a641')
-                                        : '#006d32'
-                                      : '#0d1117'
-                                  }}
-                                />
-                              );
-                            })}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          {/* ── 3. ROADMAP (Module 1 5-Card Step Layout) ──────────────────────── */}
-          <div id="quests" className="space-y-6 mb-14 md:mb-20 text-left">
-            <div>
-              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">The 13-Quest Curriculum</h2>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                Divided into 3 progressive phases. Complete each step in order inside the GitGlow workbench.
-              </p>
-            </div>
-
-            {/* Quests Cards Grid */}
-            <div className="grid gap-4 md:grid-cols-3">
-              {QUESTS.map((q) => (
-                <div
-                  key={q.id}
-                  className={cn(
-                    'p-6 rounded-2xl border transition-all flex flex-col justify-between',
-                    q.isPro
-                      ? 'bg-white border-purple-200/80 hover:border-purple-400 shadow-sm'
-                      : 'bg-white border-neutral-200 hover:border-[#0058be]/40 shadow-xs'
-                  )}
-                >
-                  <div>
-                    {/* Step badge */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div
-                        className={cn(
-                          'w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-xs',
-                          q.isPro
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-[#0058be]/8 text-[#0058be]'
-                        )}
-                      >
-                        {q.stepNumber}
-                      </div>
-
-                      <span
-                        className={cn(
-                          'text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md font-mono',
-                          q.isPro
-                            ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        )}
-                      >
-                        {q.isPro ? 'Pro Phase 3' : `Phase ${q.phaseNumber} · Free`}
-                      </span>
-                    </div>
-
-                    <h3 className="text-sm sm:text-base font-bold text-[#0b1c30] mb-2 leading-snug">
-                      {q.title}
-                    </h3>
-                    <p className="text-xs text-neutral-500 leading-relaxed mb-4">
-                      {q.desc}
-                    </p>
-                  </div>
-
-                  {/* Card bottom */}
-                  <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-[11px] font-mono text-neutral-400">
-                    <span>~{q.estMinutes} mins</span>
-                    <span className="font-semibold text-[#0058be]">{q.output}</span>
+                  <div className="text-right">
+                    <span className="text-3xl font-extrabold text-[#0058be]">₹199</span>
+                    <span className="block text-[11px] font-medium text-neutral-400">One-time payment</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* ── 4. INTERACTIVE PROFILE HEALTH CALCULATOR ─────────────────────── */}
-          <div id="calculator" className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-8 shadow-sm mb-14 md:mb-20 text-left">
-            <div className="max-w-xl mb-8">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider mb-2 border border-emerald-200">
-                <Activity size={12} /> Instant Diagnostic Tool
-              </span>
-              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">Profile Health Scorecard</h2>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                Check off what you currently have on your GitHub profile. Watch your diagnostic health rating update live.
-              </p>
-            </div>
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                  Full 13-quest access with CI automation templates, dynamic SVG activity streak workflows, and starter project kits.
+                </p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              
-              {/* Checkboxes List */}
-              <div className="lg:col-span-7 space-y-2.5">
-                {CRITERIA.map(c => {
-                  const isChecked = checkedCriteria[c.id];
-                  return (
-                    <div
-                      key={c.id}
-                      onClick={() => toggleCriterion(c.id)}
-                      className={cn(
-                        'p-4 rounded-2xl border transition-all cursor-pointer select-none flex items-start gap-3.5',
-                        isChecked
-                          ? 'bg-[#eff4ff]/50 border-[#0058be]/30 shadow-xs'
-                          : 'bg-neutral-50/50 border-neutral-200 hover:border-neutral-300'
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          'w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-colors border',
-                          isChecked
-                            ? 'bg-[#0058be] border-[#0058be] text-white'
-                            : 'border-neutral-300 bg-white'
-                        )}
-                      >
-                        {isChecked && <Check size={13} strokeWidth={3} />}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className={cn('text-xs sm:text-sm font-bold', isChecked ? 'text-[#0b1c30]' : 'text-neutral-500')}>
-                            {c.label}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold text-[#0058be] px-1.5 py-0.5 rounded bg-[#0058be]/8 shrink-0">
-                            +{c.points} pts
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-neutral-400 mt-1 leading-relaxed">
-                          {c.detail}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-700" role="list">
+                  {[
+                    'Everything in GitGlow Core (Quests 01–08)',
+                    'Complete Quests 09–13 (Advanced Automation & Badging)',
+                    'Official GitHub Actions CI workflow config (.github/ci.yml)',
+                    'Dynamic GitHub streak & stats SVG configuration',
+                    '6 Production starter project kits with live deployment guides',
+                    'Priority PR review & instant merge in gitglow-community',
+                    'Official Pull Shark 🦈 badge verification path',
+                    'Verified Certificate of Open Source Completion',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <Check size={16} className="text-[#0058be] shrink-0 mt-0.5" />
+                      <span className="font-medium text-[#0b1c30]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              {/* Dynamic Score Card */}
-              <div className="lg:col-span-5 lg:sticky lg:top-24">
-                <div className="rounded-3xl border border-neutral-200 bg-[#f8f9ff] p-6 sm:p-8 shadow-md text-center">
-                  <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block mb-4">
-                    Your Current Health Score
-                  </span>
-
-                  {/* Big Number */}
-                  <div className="text-6xl font-black font-mono tracking-tight mb-2" style={{ color: scoreDiagnosis.color }}>
-                    {currentScore}
-                    <span className="text-2xl text-neutral-400 font-sans font-normal">/100</span>
-                  </div>
-
-                  {/* Status Badge */}
-                  <div className="mb-4">
-                    <span
-                      className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border"
-                      style={{
-                        backgroundColor: `${scoreDiagnosis.color}10`,
-                        borderColor: `${scoreDiagnosis.color}30`,
-                        color: scoreDiagnosis.color,
-                      }}
-                    >
-                      {scoreDiagnosis.tag}: {scoreDiagnosis.label}
-                    </span>
-                  </div>
-
-                  {/* Bar */}
-                  <div className="w-full h-3 rounded-full bg-neutral-200/80 overflow-hidden mb-5">
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{ width: `${currentScore}%`, backgroundColor: scoreDiagnosis.color }}
-                    />
-                  </div>
-
-                  <p className="text-xs text-neutral-500 leading-relaxed mb-6 font-medium">
-                    {scoreDiagnosis.desc}
-                  </p>
-
-                  <Link
-                    to="/blueprints/gitglow/engine"
-                    className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-xs text-[#0b1c30] bg-[#d1f34d] hover:bg-[#c0e045] transition-all shadow-sm"
-                  >
-                    <span>Fix In GitGlow Engine →</span>
-                  </Link>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* ── 5. OUTCOME SECTION (Module 1 Exact Outcome Cards) ────────────── */}
-          <div className="bg-[#eff4ff]/60 border border-[#eff4ff] rounded-3xl p-6 sm:p-8 mb-14 md:mb-20 space-y-6 text-left">
-            <div>
-              <h2 className="text-2xl font-bold text-[#0b1c30] mb-2">What You’ll Have After This Blueprint</h2>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                By completing these 13 quests, you build the 3 core pillars of an undeniable developer portfolio.
-              </p>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              {[
-                {
-                  icon: <Compass className="text-[#0058be]" size={20} />,
-                  title: 'Engineering Identity',
-                  text: 'A clean high-resolution headshot, engineered 160-char positioning statement, and curated Profile README.',
-                },
-                {
-                  icon: <FileText className="text-[#0058be]" size={20} />,
-                  title: 'Verifiable Proof of Work',
-                  text: '6 pinned repositories with live deployment demo URLs, tech stack badge grid, and dynamic GitHub stats.',
-                },
-                {
-                  icon: <Trophy className="text-[#0058be]" size={20} />,
-                  title: 'Official GitHub Achievements',
-                  text: 'Pull Shark 🦈 and Quickdraw ⚡ badges verified directly by GitHub, plus continuous green square contribution habit.',
-                },
-              ].map((item, index) => (
-                <div key={index} className="p-6 rounded-2xl bg-white border border-neutral-100 space-y-4 shadow-2xs">
-                  <div className="w-10 h-10 rounded-xl bg-[#eff4ff] flex items-center justify-center shadow-xs">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm text-[#0b1c30] mb-1">{item.title}</h3>
-                    <p className="text-xs text-neutral-500 leading-relaxed">{item.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── 6. PRICING & CAMPUS PACK ─────────────────────────────────────── */}
-          <div id="pricing" className="mb-14 md:mb-20 text-left">
-            <div className="text-center max-w-xl mx-auto mb-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-2">
-                <Zap size={12} /> Simple Pricing
-              </span>
-              <h2 className="text-3xl font-bold text-[#0b1c30] mb-2">Free for Beginners. Pro for Pioneers.</h2>
-              <p className="text-sm text-neutral-500">
-                No monthly subscriptions ever. Single one-time payment for lifetime updates.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mb-6">
-              
-              {/* Free Tier */}
-              <div className="rounded-3xl border border-neutral-200 bg-white p-8 flex flex-col justify-between shadow-sm">
-                <div>
-                  <div className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 mb-2">
-                    Phase 1 & 2 · Free Tier
-                  </div>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-4xl font-extrabold text-[#0b1c30] font-mono">₹0</span>
-                    <span className="text-xs text-neutral-400 font-mono">/ forever free</span>
-                  </div>
-                  <p className="text-xs text-neutral-500 mb-6">
-                    Everything required to build a structured, high-trust developer profile from scratch.
-                  </p>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      'Full Profile Health Diagnostic Scan (0–100)',
-                      'Quests 01 to 08 (Complete Phase 1 & 2)',
-                      'Profile README Markdown Scaffold Generator',
-                      'Tech Stack & Languages Icon Grid Builder',
-                      'Pinned Repositories 6-Project Showcase',
-                      'Recruiter Social & Contact Badge Integration',
-                      'Dynamic GitHub Stats & Streak Cards',
-                    ].map(f => (
-                      <div key={f} className="flex items-center gap-2.5 text-xs text-neutral-600">
-                        <CheckCircle2 size={15} className="text-emerald-500 shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <Link
-                  to="/blueprints/gitglow/engine"
-                  className="w-full inline-flex items-center justify-center py-3.5 rounded-xl font-bold text-xs text-[#0b1c30] bg-neutral-100 hover:bg-neutral-200 transition-colors"
-                >
-                  Start Free Quests (01–08)
-                </Link>
-              </div>
-
-              {/* Pro Tier (Featured) */}
-              <div className="rounded-3xl border-2 border-[#0058be] bg-white p-8 flex flex-col justify-between shadow-xl relative">
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#d1f34d] text-[#0b1c30]">
-                    Most Popular
-                  </span>
-                </div>
-
-                <div>
-                  <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#0058be] mb-2">
-                    Full Engine · Pro Pioneer
-                  </div>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-4xl font-extrabold text-[#0b1c30] font-mono">₹199</span>
-                    <span className="text-xs text-neutral-400 font-mono">/ one-time payment</span>
-                  </div>
-                  <p className="text-xs text-neutral-500 mb-6">
-                    Automated workflows, 3 starter project kits, and official GitHub badge unlock accelerators.
-                  </p>
-
-                  <div className="space-y-3 mb-8">
-                    {[
-                      'Everything in Free Tier',
-                      'Quests 09 to 13 (Phase 3 Complete)',
-                      'Automated GitHub Actions Cron Workflow',
-                      'Pull Shark 🦈 First OSS PR Guided Walkthrough',
-                      'Quickdraw ⚡ Fast Issue Triaging Accelerator',
-                      '3 Production Starter Project Kits (Python/AI/Next)',
-                      'Green-Square Jumpstart: 30-Day Contribution Habit',
-                      'Gold "Verified Pro Pioneer" Community Badge',
-                    ].map(f => (
-                      <div key={f} className="flex items-center gap-2.5 text-xs text-[#0b1c30] font-medium">
-                        <CheckCircle2 size={15} className="text-[#0058be] shrink-0" />
-                        <span>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <Link
-                  to="/blueprints/gitglow/engine"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-xs text-white bg-[#0058be] hover:bg-[#0047a0] transition-all shadow-md shadow-[#0058be]/20"
-                >
-                  <Sparkles size={14} />
-                  <span>Unlock Pro Access — ₹199</span>
-                </Link>
-              </div>
-
-            </div>
-
-            {/* Campus Pack */}
-            <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
-              <div className="flex items-start sm:items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#0058be]/8 text-[#0058be] flex items-center justify-center shrink-0">
-                  <Users size={22} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#0b1c30] mb-0.5">Campus Club Pack (Coding Societies)</h3>
-                  <p className="text-xs text-neutral-500 leading-relaxed max-w-xl">
-                    Bulk licensing for college coding clubs, ACM/IEEE student branches, and hackathon teams. Includes 50 student seats, club leaderboard, and live onboarding AMA.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
-                <div>
-                  <span className="text-2xl font-bold font-mono text-[#0b1c30]">₹999</span>
-                  <span className="text-xs text-neutral-400 font-mono"> / club / yr</span>
-                </div>
-                <a
-                  href="mailto:contact@ayushpaul.in?subject=GitGlow Campus Pack Inquiry"
-                  className="px-5 py-2.5 rounded-xl text-xs font-bold text-[#0058be] border border-[#0058be]/30 hover:bg-[#eff4ff] transition-all"
-                >
-                  Inquire →
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* ── 7. FAQ ACCORDION ─────────────────────────────────────────────── */}
-          <div id="faq" className="max-w-4xl mx-auto mb-14 md:mb-20 text-left">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] mb-2">Frequently Asked Questions</h2>
-              <p className="text-sm text-neutral-500">
-                Common questions about the curriculum, sandbox PR repo, and official achievements.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {[
-                {
-                  q: 'I am a complete beginner in 1st year. Can I use this?',
-                  a: 'Yes, 100%. GitGlow is specifically built for students with zero prior Git knowledge. Every quest gives you visual click-by-click instructions, pre-scaffolded copy, and automated scripts so you never get stuck on cryptic command-line errors.',
-                },
-                {
-                  q: 'Will this affect or break my existing GitHub repositories?',
-                  a: 'Never. GitGlow only configures your special personal profile repository (your username/username) and helps you curate what is publicly displayed. It never deletes or alters your private code.',
-                },
-                {
-                  q: 'Are the GitHub achievement badges (Pull Shark, Quickdraw) real?',
-                  a: 'Yes, they are 100% official GitHub badges issued by GitHub Inc. that appear on your live github.com profile. We guide you through executing the exact Git actions that trigger GitHub\'s automated badge issuance.',
-                },
-                {
-                  q: 'What is the gitglow-community sandbox repo?',
-                  a: 'It is a public open-source repository where students safely make their first Pull Request. An automated GitHub Action bot reviews your JSON submission, validates formatting, and automatically merges it — unlocking your Pull Shark 🦈 badge safely.',
-                },
-                {
-                  q: 'Is there any monthly subscription or hidden charge?',
-                  a: 'No subscriptions ever. Free quests (01 to 08) are free forever with no credit card required. The Pro tier is a single one-time payment of ₹199 with lifetime updates.',
-                },
-              ].map(faq => (
-                <FAQAccordion key={faq.q} q={faq.q} a={faq.a} />
-              ))}
-            </div>
-          </div>
-
-          {/* ── 8. FINAL BOTTOM CALL TO ACTION (Module 1 Navy Card Exact) ────── */}
-          <div className="relative rounded-3xl bg-[#0b1c30] text-white p-8 sm:p-14 overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0058be]/25 via-transparent to-[#d1f34d]/10 pointer-events-none" />
-            
-            <div className="space-y-2 z-10 max-w-xl">
-              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
-                Ready to Glow Up Your Profile?
-              </h2>
-              <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-                Stop sending recruiters an empty GitHub link. Complete your 13 quests and turn your profile into your strongest job search asset.
-              </p>
-            </div>
-
-            <div className="z-10 shrink-0">
               <Link
-                to="/blueprints/gitglow/engine"
-                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-bold text-sm text-[#0b1c30] bg-[#d1f34d] hover:bg-[#c2e240] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl"
+                to="/blueprints/gitglow/engine?tier=pro"
+                className="w-full py-4 rounded-xl bg-[#0058be] hover:bg-[#0047a0] text-white font-bold text-sm text-center transition-all shadow-[0_8px_20px_rgba(0,88,190,0.25)] focus:outline-none focus:ring-2 focus:ring-[#0058be]"
               >
-                <span>Launch GitGlow Engine</span>
-                <ArrowRight size={17} />
+                Unlock Pro Pioneer — ₹199
               </Link>
             </div>
+
+          </div>
+        </section>
+
+        {/* ─── Section 6: Frequently Asked Questions ───────────────────────── */}
+        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-16 md:mb-24 text-left">
+          <div className="text-center space-y-2 mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest">
+              Got Questions?
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xs sm:text-sm text-neutral-500">
+              Everything you need to know about GitGlow, safe sandbox PRs, and badge unlocks.
+            </p>
           </div>
 
-        </motion.div>
-      </div>
+          <div className="space-y-3">
+            <FAQItem
+              q="I am a complete beginner in 1st year B.Tech. Can I do this?"
+              a="Yes, absolutely. GitGlow was built specifically for students and beginners. Every quest comes with exact copy-paste templates, step-by-step guidance, and visual examples. You do not need to be an expert programmer to establish clean presentation standards."
+            />
+            <FAQItem
+              q="What is the gitglow-community safe sandbox repository?"
+              a="When beginners try to make their first open-source pull request, they are often terrified of making mistakes on major repos. We created gitglow-community as a safe, welcoming sandbox where you can practice branching, committing, and opening a PR. Automated bot checks review your submission and merge it safely."
+            />
+            <FAQItem
+              q="How do I get the official GitHub Pull Shark 🦈 badge?"
+              a="GitHub automatically awards the Pull Shark badge to any user who has a pull request merged. By following Quest 11 and opening a clean PR to our gitglow-community repository, once merged, GitHub automatically adds the verified badge to your public profile."
+            />
+            <FAQItem
+              q="How long does it take to complete the blueprint?"
+              a="The core foundation quests (01–08) can easily be completed in 25 to 35 minutes. If you also configure the GitHub Actions CI workflows and dynamic SVG stats (Quests 09–13), the entire system takes about 45 to 60 minutes."
+            />
+            <FAQItem
+              q="Do I need to pay for GitGlow Core?"
+              a="No. The core blueprint (Quests 01 to 08) is 100% free forever. It gives you the full README architecture, 160-char bio generator, and repository curation checklist. Pro Pioneer is an optional upgrade for advanced GitHub Actions CI workflows and starter project kits."
+            />
+          </div>
+        </section>
 
+        {/* ─── Section 7: Final CTA Banner ─────────────────────────────────── */}
+        <section className="rounded-3xl bg-[#0b1c30] text-white p-8 sm:p-14 text-center space-y-6 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0058be]/25 via-transparent to-transparent pointer-events-none" />
+          
+          <div className="max-w-2xl mx-auto space-y-4 relative z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-widest border border-white/10">
+              <Sparkles size={11} /> Start Today
+            </span>
+
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+              Turn Your GitHub Into an <br />
+              <span className="text-[#d1f34d]">Engineered Showcase</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-xl mx-auto">
+              Skip the confusion of generic templates. Follow the 13-quest execution path and stand out to recruiters on your very next application.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <Link
+                to="/blueprints/gitglow/engine"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#d1f34d] text-[#0b1c30] font-extrabold text-sm uppercase tracking-wider hover:bg-[#c2e240] transition-colors shadow-lg shadow-[#d1f34d]/20"
+              >
+                Launch GitGlow Engine Now
+              </Link>
+              
+              <Link
+                to="/blueprints"
+                className="w-full sm:w-auto px-6 py-4 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-colors"
+              >
+                Browse All Blueprints
+              </Link>
+            </div>
+
+            <div className="flex items-center justify-center gap-6 pt-6 text-[11px] text-neutral-400 font-medium border-t border-white/10 mt-6">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#d1f34d]" /> Instant Free Access
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#d1f34d]" /> 100% Beginner Safe
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#d1f34d]" /> Real GitHub Achievements
+              </span>
+            </div>
+          </div>
+        </section>
+
+      </div>
     </div>
   );
 };
-
-export default GitGlowHomePage;

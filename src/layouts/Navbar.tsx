@@ -327,10 +327,9 @@ export const Navbar = () => {
             >
               {[
                 { label: 'Overview', href: '#overview' },
-                { label: 'Simulator', href: '#simulator' },
+                { label: 'Transformation', href: '#transformation' },
                 { label: '13 Quests', href: '#quests' },
-                { label: 'Scorecard', href: '#calculator' },
-                { label: 'Achievements', href: '#achievements' },
+                { label: 'Why It Works', href: '#why-it-works' },
                 { label: 'Pricing', href: '#pricing' },
                 { label: 'FAQ', href: '#faq' },
               ].map((pill) => (
