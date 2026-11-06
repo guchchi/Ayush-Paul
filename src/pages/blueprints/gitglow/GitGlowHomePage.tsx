@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
   Github,
-  Star,
-  Zap,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
@@ -13,38 +11,38 @@ import {
   Shield,
   Layers,
   Clock,
-  FileText,
-  Check,
   ChevronDown,
   ChevronUp,
-  ExternalLink,
-  Code2,
   GitPullRequest,
   Trophy,
-  AlertCircle,
-  HelpCircle,
-  Award,
-  Filter,
   Flame,
-  Info,
+  Award,
+  Zap,
+  Terminal,
+  ExternalLink,
+  Check,
+  Code2,
+  XCircle,
+  HelpCircle,
+  Play,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
-import { GITHUB_BADGES, GitHubBadge, BadgeCategory } from '../../../data/gitglow/github-badges';
+import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges';
 
 // ─── FAQ Accordion Item ──────────────────────────────────────────────────────
 const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-neutral-200 rounded-2xl bg-white overflow-hidden transition-all duration-200">
+    <div className="border border-neutral-200/90 rounded-2xl bg-white overflow-hidden transition-all duration-200 shadow-2xs hover:border-neutral-300">
       <button
         onClick={() => setOpen(!open)}
         className="w-full px-6 py-5 flex items-center justify-between text-left text-sm sm:text-base font-bold text-[#0b1c30] hover:text-[#0058be] transition-colors focus:outline-none"
         aria-expanded={open}
       >
-        <span>{q}</span>
-        <span className="p-1 rounded-full bg-neutral-100 text-[#0b1c30] shrink-0 ml-4">
-          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        <span className="pr-4">{q}</span>
+        <span className="p-1.5 rounded-full bg-neutral-100 text-[#0b1c30] shrink-0">
+          {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
         </span>
       </button>
       <AnimatePresence initial={false}>
@@ -71,20 +69,20 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
   const [expanded, setExpanded] = useState(false);
 
   const difficultyColors = {
-    'Very Easy': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    'Easy': 'bg-blue-50 text-blue-700 border-blue-200',
-    'Medium': 'bg-amber-50 text-amber-700 border-amber-200',
-    'Hard': 'bg-purple-50 text-purple-700 border-purple-200',
+    'Very Easy': 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    'Easy': 'bg-blue-50 text-blue-800 border-blue-200',
+    'Medium': 'bg-amber-50 text-amber-800 border-amber-200',
+    'Hard': 'bg-purple-50 text-purple-800 border-purple-200',
     'Special': 'bg-slate-100 text-slate-700 border-slate-300',
   }[badge.difficulty];
 
   return (
     <div
       className={cn(
-        'relative p-6 sm:p-7 rounded-3xl border bg-white transition-all duration-200 flex flex-col justify-between hover:shadow-lg',
+        'relative p-6 sm:p-7 rounded-3xl border bg-white transition-all duration-200 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1',
         badge.isRecommendedStarter
-          ? 'border-[#0058be]/30 ring-1 ring-[#0058be]/10 shadow-sm'
-          : 'border-neutral-200 hover:border-neutral-300',
+          ? 'border-[#0058be]/35 ring-1 ring-[#0058be]/15 shadow-sm'
+          : 'border-neutral-200/90 shadow-2xs hover:border-neutral-300',
       )}
     >
       <div>
@@ -92,16 +90,16 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
         <div className="flex items-start justify-between gap-4 mb-5">
           {/* Badge Image Frame */}
           <div className="relative group">
-            <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#f8f9ff] border border-neutral-200/80 p-2 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-2xl bg-[#f8f9ff] border border-neutral-200/80 p-2.5 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform duration-200">
               <img
                 src={badge.image}
                 alt={badge.name}
-                className="w-full h-full object-contain filter drop-shadow-md"
+                className="w-full h-full object-contain filter drop-shadow-md select-none"
                 loading="lazy"
               />
             </div>
             {badge.isRecommendedStarter && (
-              <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[9px] font-extrabold uppercase tracking-wider shadow-xs flex items-center gap-1">
+              <span className="absolute -top-2.5 -right-2 px-2.5 py-0.5 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[9px] font-extrabold uppercase tracking-wider shadow-xs flex items-center gap-1 border border-[#0b1c30]/10">
                 <Flame size={10} fill="#0b1c30" /> Starter
               </span>
             )}
@@ -121,9 +119,9 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
               className={cn(
                 'text-[9px] font-mono font-semibold px-2 py-0.5 rounded-md border',
                 badge.status === 'obtainable'
-                  ? 'bg-emerald-50/60 text-emerald-800 border-emerald-200/60'
+                  ? 'bg-emerald-50/70 text-emerald-800 border-emerald-200/70'
                   : badge.status === 'testing'
-                  ? 'bg-amber-50/60 text-amber-800 border-amber-200/60'
+                  ? 'bg-amber-50/70 text-amber-800 border-amber-200/70'
                   : 'bg-neutral-100 text-neutral-500 border-neutral-200',
               )}
             >
@@ -136,23 +134,23 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
         <h3 className="text-xl font-bold text-[#0b1c30] tracking-tight mb-1 flex items-center gap-2">
           <span>{badge.name}</span>
         </h3>
-        <p className="text-xs text-neutral-500 font-medium mb-3 italic">
+        <p className="text-xs text-neutral-500 font-medium mb-4 italic">
           "{badge.tagline}"
         </p>
 
         {/* How To Unlock Box */}
-        <div className="p-3.5 rounded-2xl bg-[#f8f9ff] border border-neutral-100 space-y-1.5 mb-4 text-xs text-neutral-700">
+        <div className="p-4 rounded-2xl bg-[#f8f9ff] border border-neutral-100 space-y-1.5 mb-4 text-xs text-neutral-700">
           <p className="font-bold text-[#0b1c30] flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
             <CheckCircle2 size={13} className="text-[#0058be]" />
             <span>GitHub Unlock Criteria:</span>
           </p>
-          <p className="leading-relaxed text-neutral-600">{badge.howToGet}</p>
+          <p className="leading-relaxed text-neutral-600 font-medium">{badge.howToGet}</p>
         </div>
 
         {/* Blueprint Strategy Callout */}
         <div className="space-y-1 mb-4 text-xs">
           <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">
-            Blueprint Claim Strategy
+            GitGlow Blueprint Engine Strategy
           </span>
           <p className="text-neutral-700 font-medium leading-relaxed">
             {badge.blueprintStrategy}
@@ -161,9 +159,9 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
 
         {/* Tiers Preview (if badge has tiers) */}
         {badge.tiers && badge.tiers.length > 0 && (
-          <div className="mb-4 pt-2 border-t border-neutral-100">
+          <div className="mb-4 pt-2.5 border-t border-neutral-100">
             <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider block mb-1.5">
-              Available Tiers:
+              Available Multiplier Tiers:
             </span>
             <div className="flex flex-wrap gap-1.5">
               {badge.tiers.map((tier, idx) => (
@@ -185,24 +183,24 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
         {badge.isObtainable ? (
           <Link
             to={`/blueprints/gitglow/engine?badge=${badge.id}`}
-            className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#0047a0] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+            className="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#0047a0] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0058be]"
           >
-            <span>Claim Badge Blueprint</span>
+            <span>Launch Claim Engine</span>
             <ArrowRight size={14} />
           </Link>
         ) : (
-          <div className="flex items-center justify-center gap-1.5 w-full py-3 px-4 rounded-xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider cursor-not-allowed">
+          <div className="flex items-center justify-center gap-1.5 w-full py-3.5 px-4 rounded-xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider cursor-not-allowed">
             <Lock size={13} />
-            <span>{badge.status === 'testing' ? 'In Beta Testing' : 'Archived 2020'}</span>
+            <span>{badge.status === 'testing' ? 'In GitHub Beta Testing' : 'Archived Snapshot'}</span>
           </div>
         )}
 
         {/* Expandable Gotchas / Details Button */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full text-center text-[11px] font-semibold text-neutral-500 hover:text-[#0058be] py-1 transition-colors flex items-center justify-center gap-1"
+          className="w-full text-center text-[11px] font-semibold text-neutral-500 hover:text-[#0058be] py-1.5 transition-colors flex items-center justify-center gap-1"
         >
-          <span>{expanded ? 'Hide Requirements & Gotchas' : 'View Requirements & Edge Cases'}</span>
+          <span>{expanded ? 'Hide Technical Rules & Gotchas' : 'View Technical Rules & Gotchas'}</span>
           {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         </button>
 
@@ -215,7 +213,7 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
               transition={{ duration: 0.2 }}
               className="overflow-hidden text-left text-xs space-y-2.5 pt-2"
             >
-              <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200/70 space-y-2">
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
                 <div>
                   <p className="font-bold text-[#0b1c30] text-[10px] uppercase tracking-wider mb-1">
                     Strict Requirements:
@@ -248,6 +246,13 @@ const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
 // ─── Main GitGlow Page ────────────────────────────────────────────────────────
 export const GitGlowHomePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [simulatedBadges, setSimulatedBadges] = useState<string[]>(['quickdraw', 'pull-shark']);
+
+  const toggleSimulatedBadge = (badgeId: string) => {
+    setSimulatedBadges((prev) =>
+      prev.includes(badgeId) ? prev.filter((id) => id !== badgeId) : [...prev, badgeId]
+    );
+  };
 
   const filteredBadges = useMemo(() => {
     if (selectedCategory === 'all') return GITHUB_BADGES;
@@ -260,7 +265,7 @@ export const GitGlowHomePage: React.FC = () => {
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] pt-24 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0b1c30]">
       
       {/* ─── Upper Navigation / Back link ─────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-8">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-6">
         <Link
           to="/blueprints"
           className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-500 hover:text-[#0058be] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0058be] rounded-lg p-1.5"
@@ -273,245 +278,300 @@ export const GitGlowHomePage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
-        {/* ─── Hero Section: The Badge Directory Overview ──────────────────── */}
-        <section id="overview" className="grid lg:grid-cols-[1fr_390px] gap-10 xl:gap-16 items-start mb-16 md:mb-24">
+        {/* ─── Hero Section: The Frustration Hook & The Badge Solution ────── */}
+        <section id="overview" className="mb-20 md:mb-28 text-center sm:text-left">
           
-          {/* Left Column: Hero Copy + Meta Chips */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: EASING.PREMIUM }}
-            className="space-y-6 text-left"
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0058be]/8 text-[#0058be] text-[11px] font-bold uppercase tracking-widest border border-[#0058be]/15">
-              <Trophy size={12} className="text-[#0058be]" aria-hidden="true" />
-              <span>Blueprint 03 • GitHub Achievement Catalog</span>
-            </span>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0b1c30] leading-[1.08]">
-              Official GitHub Badges <br />
-              <span className="text-[#0058be]">Catalog & Claim Blueprints</span>
-            </h1>
-
-            <p className="text-base sm:text-lg text-neutral-600 leading-relaxed max-w-2xl">
-              An exhaustive blueprint directory of official GitHub profile badges and achievements. Filter by difficulty, inspect exact unlock rules and tier thresholds, and launch the guided claiming blueprint for each badge.
-            </p>
-
-            {/* Meta Chips */}
-            <div className="flex flex-wrap gap-2.5 pt-2" role="list" aria-label="Achievement metadata">
-              {[
-                { label: '7 Obtainable Badges' },
-                { label: '3 Fast Beginner Unlocks' },
-                { label: 'Tier Multipliers (x2, x3, x4)' },
-                {
-                  label: 'Output: Verified Profile Achievements',
-                  accent: true,
-                },
-              ].map((chip, i) => (
-                <div
-                  key={i}
-                  role="listitem"
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border select-none transition-all',
-                    chip.accent
-                      ? 'bg-[#d1f34d] border-[#d1f34d]/60 text-[#0b1c30] shadow-xs'
-                      : 'bg-white border-neutral-200 text-neutral-600',
-                  )}
-                >
-                  <Award size={14} className={chip.accent ? 'text-[#0b1c30]' : 'text-neutral-500'} />
-                  <span>{chip.label}</span>
-                </div>
-              ))}
+          <div className="max-w-4xl mx-auto lg:mx-0 space-y-6">
+            
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0058be]/8 border border-[#0058be]/15 text-[#0058be] text-[11px] font-bold uppercase tracking-widest">
+              <Sparkles size={12} className="text-[#0058be]" />
+              <span>For First-Year Devs Tired of Copy-Paste Tutorials</span>
             </div>
 
-            {/* Action Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-3">
-              <a
-                href="#quickstart"
-                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-[#0058be] text-white font-bold text-base transition-all shadow-[0_8px_24px_rgba(0,88,190,0.22)] hover:bg-[#0047a0] focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0b1c30] leading-[1.05]">
+              Markdown icons don’t prove you code. <br />
+              <span className="text-[#0058be]">Official GitHub Badges do.</span>
+            </h1>
+
+            <p className="text-base sm:text-xl text-neutral-600 leading-relaxed max-w-3xl">
+              Every tutorial tells you to paste glowing shields and fake contribution snakes. Recruiters scroll past that in 2 seconds. The only un-fakeable proof on GitHub is official achievement badges directly awarded by GitHub: <strong className="text-[#0b1c30]">Pull Shark 🦈</strong>, <strong className="text-[#0b1c30]">Quickdraw ⚡</strong>, <strong className="text-[#0b1c30]">YOLO 🪂</strong>, and <strong className="text-[#0b1c30]">Pair Extraordinaire 👯</strong>.
+            </p>
+
+            <p className="text-sm sm:text-base text-neutral-500 max-w-2xl leading-relaxed">
+              Most guides just give you vague steps and tell you to "go find an open source project." GitGlow provides the actual execution engine: a safe sandbox repository and automated workflows to legitimately claim your first 3 badges today without the fear of messing up a public repository.
+            </p>
+
+            {/* Hero Action Row */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+              <Link
+                to="/blueprints/gitglow/engine?badge=quickdraw"
+                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-[#d1f34d] text-[#0b1c30] font-extrabold text-base transition-all shadow-[0_8px_24px_rgba(209,243,77,0.35)] hover:bg-[#c2e240] hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#0058be]"
               >
-                <span>Start With Easiest Badges</span>
+                <span>Claim Quickdraw First (2 Mins)</span>
                 <ArrowRight size={18} aria-hidden="true" />
-              </a>
+              </Link>
 
               <a
                 href="#catalog"
-                className="flex items-center justify-center px-6 py-4 rounded-xl border border-neutral-200 bg-white text-[#0b1c30] hover:bg-neutral-50 font-bold text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+                className="flex items-center justify-center px-7 py-4 rounded-2xl border border-neutral-300 bg-white text-[#0b1c30] hover:bg-neutral-50 font-bold text-base transition-all shadow-2xs"
               >
-                <span>Browse All 10 Badges</span>
+                <span>Explore All 10 Badges</span>
               </a>
             </div>
 
-            <p className="text-xs text-neutral-500 font-medium pt-1">
-              Note: Achievements appear directly on your public GitHub profile under your header and bio. They are permanently verified by GitHub's event system.
-            </p>
-          </motion.div>
+            {/* Trust Points */}
+            <div className="flex flex-wrap items-center gap-6 pt-3 text-xs text-neutral-500 font-medium">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-emerald-600" />
+                <span>100% Real GitHub Achievements</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-emerald-600" />
+                <span>Zero Risk: Safe Community Sandbox</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-emerald-600" />
+                <span>Permanent on Your Profile Header</span>
+              </span>
+            </div>
+          </div>
 
-          {/* Right Column: Quick Status & Visual Showcase */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: EASING.PREMIUM }}
-            className="p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200 shadow-xl space-y-6 text-left"
-          >
-            <h2 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-3 flex items-center justify-between">
-              <span>Achievement System Overview</span>
-              <span className="text-[#0058be] font-mono text-[10px]">OFFICIAL SPEC</span>
-            </h2>
-
-            {/* Visual Mini Showcase */}
-            <div className="flex items-center justify-around py-3 bg-[#f8f9ff] rounded-2xl border border-neutral-100">
-              <div className="text-center">
-                <img src="/images/badges/pull-shark.png" alt="Pull Shark" className="w-14 h-14 mx-auto mb-1 filter drop-shadow-sm" />
-                <span className="text-[10px] font-bold text-[#0b1c30]">Pull Shark</span>
+          {/* ─── Interactive Profile Header Simulator ────────────────────── */}
+          <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-white border border-neutral-200/90 shadow-xl max-w-5xl mx-auto lg:mx-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-neutral-100">
+              <div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#0058be]">
+                  Interactive Preview
+                </span>
+                <h2 className="text-lg sm:text-xl font-bold text-[#0b1c30]">
+                  How Your GitHub Profile Looks After Claiming
+                </h2>
               </div>
-              <div className="text-center">
-                <img src="/images/badges/quickdraw.png" alt="Quickdraw" className="w-14 h-14 mx-auto mb-1 filter drop-shadow-sm" />
-                <span className="text-[10px] font-bold text-[#0b1c30]">Quickdraw</span>
-              </div>
-              <div className="text-center">
-                <img src="/images/badges/yolo.png" alt="YOLO" className="w-14 h-14 mx-auto mb-1 filter drop-shadow-sm" />
-                <span className="text-[10px] font-bold text-[#0b1c30]">YOLO</span>
-              </div>
+              <p className="text-xs text-neutral-500">
+                Click badges below to preview them on your profile header:
+              </p>
             </div>
 
-            {/* Quick Metrics Breakdown */}
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-neutral-100">
-                <span className="text-neutral-500 font-medium">Active Achievements</span>
-                <span className="font-bold text-[#0b1c30]">7 Badges</span>
-              </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-neutral-100">
-                <span className="text-neutral-500 font-medium">In Beta Testing</span>
-                <span className="font-bold text-amber-600">2 Badges</span>
-              </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-neutral-100">
-                <span className="text-neutral-500 font-medium">Historic Archives</span>
-                <span className="font-bold text-slate-400">1 Badge (2020)</span>
-              </div>
-              <div className="flex items-center justify-between py-1.5">
-                <span className="text-neutral-500 font-medium">Indexing Latency</span>
-                <span className="font-bold text-emerald-600">10–30 mins post-action</span>
-              </div>
-            </div>
+            {/* Simulated GitHub Profile Card */}
+            <div className="mt-6 p-6 sm:p-8 rounded-2xl bg-[#0d1117] text-white shadow-2xl border border-neutral-800 text-left">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-neutral-800">
+                {/* User Identity Mini */}
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#0058be] to-[#d1f34d] p-0.5">
+                    <div className="w-full h-full rounded-full bg-[#161b22] flex items-center justify-center font-bold text-lg text-white">
+                      AP
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <span>Alex Rivera</span>
+                      <span className="text-xs font-normal text-neutral-400">@arivera-dev</span>
+                    </h3>
+                    <p className="text-xs text-neutral-300">
+                      Frontend & AI Developer · Building open source tools
+                    </p>
+                  </div>
+                </div>
 
-            {/* Safe Sandbox Note */}
-            <div className="p-3.5 rounded-2xl bg-blue-50/40 border border-blue-100 text-xs text-neutral-600 space-y-1">
-              <span className="font-bold text-[#0058be] block">Zero-Risk Sandbox</span>
-              <p>Practice PRs and co-authored commits safely against <span className="font-mono text-[#0b1c30]">gitglow-community</span> without polluting client repos.</p>
+                {/* Simulated Achievements Container */}
+                <div className="bg-[#161b22] p-3 rounded-2xl border border-neutral-800 space-y-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-400">
+                      Achievements ({simulatedBadges.length})
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-400">● GitHub Verified</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {simulatedBadges.length === 0 ? (
+                      <span className="text-xs text-neutral-500 italic py-2">
+                        No badges unlocked yet (click pills below to simulate)
+                      </span>
+                    ) : (
+                      simulatedBadges.map((badgeId) => {
+                        const b = GITHUB_BADGES.find((x) => x.id === badgeId);
+                        if (!b) return null;
+                        return (
+                          <div
+                            key={b.id}
+                            className="group relative flex flex-col items-center"
+                            title={b.name}
+                          >
+                            <div className="w-12 h-12 rounded-xl bg-[#21262d] p-1 flex items-center justify-center border border-neutral-700/80 shadow-md">
+                              <img src={b.image} alt={b.name} className="w-10 h-10 object-contain" />
+                            </div>
+                            <span className="text-[9px] font-semibold text-neutral-300 mt-1">
+                              {b.name}
+                            </span>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Badges Toggler Bar */}
+              <div className="pt-4 flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-neutral-400 font-medium mr-2">Toggle Badge Unlocks:</span>
+                {[
+                  { id: 'quickdraw', name: 'Quickdraw ⚡' },
+                  { id: 'pull-shark', name: 'Pull Shark 🦈' },
+                  { id: 'yolo', name: 'YOLO 🪂' },
+                  { id: 'pair-extraordinaire', name: 'Pair Extraordinaire 👯' },
+                  { id: 'galaxy-brain', name: 'Galaxy Brain 🧠' },
+                  { id: 'starstruck', name: 'Starstruck ⭐' },
+                ].map((b) => {
+                  const isActive = simulatedBadges.includes(b.id);
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => toggleSimulatedBadge(b.id)}
+                      className={cn(
+                        'px-3 py-1.5 rounded-lg font-semibold transition-all border text-xs',
+                        isActive
+                          ? 'bg-[#d1f34d] border-[#d1f34d] text-[#0b1c30] shadow-xs'
+                          : 'bg-[#161b22] border-neutral-700 text-neutral-400 hover:text-white',
+                      )}
+                    >
+                      {isActive ? '✓ ' : '+ '}
+                      {b.name}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
-        {/* ─── Section 2: Beginner Quick-Start Spotlight ───────────────────── */}
-        <section id="quickstart" className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-10 shadow-sm mb-16 md:mb-24 text-left">
+        {/* ─── Section 2: Why Most GitHub Advice Is Broken ────────────────── */}
+        <section className="mb-20 md:mb-28 text-left">
           <div className="max-w-2xl mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold uppercase tracking-widest mb-3 border border-emerald-200">
-              <Flame size={12} className="text-emerald-700" /> Start Here · 3 Fastest Unlocks
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 text-[10px] font-bold uppercase tracking-widest mb-2 border border-rose-200">
+              The Reality Check
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight mb-2">
-              The Beginner Trifecta
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+              Why 90% of Student GitHub Advice Is a Waste of Time
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-              If you have a fresh GitHub account or zero badges, claim these 3 first. They require no special permissions and can be unlocked within an afternoon.
+            <p className="text-sm sm:text-base text-neutral-600 mt-1">
+              Every college senior tells you to make your README colorful. Here is what actually happens when engineering leads look at your profile.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             
-            {/* Quickdraw Card */}
-            <div className="p-6 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/15 flex flex-col justify-between space-y-4 shadow-xs">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
-                    Fastest Unlock · 5 Mins
-                  </span>
-                </div>
-                <div className="w-20 h-20 mx-auto my-2 p-2 rounded-2xl bg-white border border-emerald-100 shadow-2xs flex items-center justify-center">
-                  <img src="/images/badges/quickdraw.png" alt="Quickdraw" className="w-full h-full object-contain filter drop-shadow-sm" />
-                </div>
-                <h3 className="text-lg font-bold text-[#0b1c30] text-center mb-1">Quickdraw</h3>
-                <p className="text-xs text-neutral-600 text-center leading-relaxed">
-                  Close an issue or pull request within 5 minutes of opening it on your own repository.
-                </p>
+            <div className="p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
+                ✕
               </div>
-              <Link
-                to="/blueprints/gitglow/engine?badge=quickdraw"
-                className="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider text-center hover:bg-emerald-700 transition-colors shadow-2xs"
-              >
-                Claim Quickdraw Blueprint →
-              </Link>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                The Shields.io Myth
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Putting 40 glowing tech stack badges on a profile takes 2 minutes using an online generator. Recruiters and engineering managers know this. It proves you know how to copy Markdown, not that you know how to write software.
+              </p>
             </div>
 
-            {/* Pull Shark Card */}
-            <div className="p-6 rounded-2xl border-2 border-[#0058be]/40 bg-blue-50/15 flex flex-col justify-between space-y-4 shadow-xs">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
-                    Flagship Badge · 10 Mins
-                  </span>
-                </div>
-                <div className="w-20 h-20 mx-auto my-2 p-2 rounded-2xl bg-white border border-blue-100 shadow-2xs flex items-center justify-center">
-                  <img src="/images/badges/pull-shark.png" alt="Pull Shark" className="w-full h-full object-contain filter drop-shadow-sm" />
-                </div>
-                <h3 className="text-lg font-bold text-[#0b1c30] text-center mb-1">Pull Shark 🦈</h3>
-                <p className="text-xs text-neutral-600 text-center leading-relaxed">
-                  Merge 2 pull requests into a public repository. Triggered instantly using our community sandbox.
-                </p>
+            <div className="p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
+                ✕
               </div>
-              <Link
-                to="/blueprints/gitglow/engine?badge=pull-shark"
-                className="w-full py-2.5 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider text-center hover:bg-[#0047a0] transition-colors shadow-2xs"
-              >
-                Claim Pull Shark Blueprint →
-              </Link>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                The Bot Green-Dot Trap
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Running a cron script to create automated commits just to turn your contribution graph green is an immediate red flag. Experienced engineers click into the commit history in 3 seconds and spot the automated commits immediately.
+              </p>
             </div>
 
-            {/* YOLO Card */}
-            <div className="p-6 rounded-2xl border-2 border-amber-500/40 bg-amber-50/15 flex flex-col justify-between space-y-4 shadow-xs">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">
-                    Solo Merge · 5 Mins
-                  </span>
-                </div>
-                <div className="w-20 h-20 mx-auto my-2 p-2 rounded-2xl bg-white border border-amber-100 shadow-2xs flex items-center justify-center">
-                  <img src="/images/badges/yolo.png" alt="YOLO" className="w-full h-full object-contain filter drop-shadow-sm" />
-                </div>
-                <h3 className="text-lg font-bold text-[#0b1c30] text-center mb-1">YOLO 🪂</h3>
-                <p className="text-xs text-neutral-600 text-center leading-relaxed">
-                  Merge a pull request directly without requesting or waiting for code review.
-                </p>
+            <div className="p-7 rounded-3xl bg-white border-2 border-emerald-500/40 bg-emerald-50/10 shadow-xs space-y-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+                ✓
               </div>
-              <Link
-                to="/blueprints/gitglow/engine?badge=yolo"
-                className="w-full py-2.5 rounded-xl bg-amber-600 text-white font-bold text-xs uppercase tracking-wider text-center hover:bg-amber-700 transition-colors shadow-2xs"
-              >
-                Claim YOLO Blueprint →
-              </Link>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                The Official Achievement Truth
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed font-medium">
+                Official GitHub Badges cannot be faked with markdown or copy-paste templates. They require real GitHub event triggers (merged pull requests, verified co-authors, accepted community discussions). That is why they carry instant credibility.
+              </p>
             </div>
 
           </div>
         </section>
 
-        {/* ─── Section 3: The Complete Badge Directory ────────────────────── */}
-        <section id="catalog" className="space-y-8 mb-16 md:mb-24 text-left">
+        {/* ─── Section 3: How The GitGlow Blueprint Engine Works ───────────── */}
+        <section className="bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-12 shadow-sm mb-20 md:mb-28 text-left">
+          <div className="max-w-2xl mb-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#0058be]/15">
+              The Implementation Solution
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+              How GitGlow Automates Your Badge Unlocks
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-600 mt-1">
+              No guesswork. No hunting for obscure open-source repos. Follow our 3-station engine blueprint.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#0b1c30] text-[#d1f34d] flex items-center justify-center font-mono font-bold text-base">
+                01
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                Select Target Badge
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Choose the badge you want to claim. We recommend starting with <strong className="text-[#0b1c30]">Quickdraw</strong> (2 mins), then advancing to <strong className="text-[#0b1c30]">Pull Shark 🦈</strong> and <strong className="text-[#0b1c30]">YOLO 🪂</strong>.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#0058be] text-white flex items-center justify-center font-mono font-bold text-base">
+                02
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                Launch Engine Recipe
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                The engine generates the exact Git commands, clean branch configuration, or contributor card JSON needed to trigger GitHub's internal achievement webhook.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#d1f34d] text-[#0b1c30] flex items-center justify-center font-mono font-bold text-base">
+                03
+              </div>
+              <h3 className="text-lg font-bold text-[#0b1c30]">
+                Safe Sandbox Merge
+              </h3>
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                Submit your pull request to our verified <code className="font-mono text-[#0058be] bg-blue-50 px-1 py-0.5 rounded">gitglow-community</code> sandbox. Our automated bot reviews and merges it immediately, unlocking the badge on your profile.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ─── Section 4: The Complete Badge Catalog Grid ─────────────────── */}
+        <section id="catalog" className="space-y-8 mb-20 md:mb-28 text-left">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#0058be]/15">
                 <Layers size={11} /> Complete Directory
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
-                All GitHub Profile Badges
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+                All 10 GitHub Profile Achievements
               </h2>
               <p className="text-sm sm:text-base text-neutral-600 mt-1 max-w-xl">
-                Browse every official achievement. Inspect requirements, gotchas, tier milestones, and claim guides.
+                Real badge graphics downloaded from official GitHub resources. Inspect requirements, gotchas, tier milestones, and claim blueprints.
               </p>
             </div>
 
             {/* Filter Pills */}
-            <div className="inline-flex items-center p-1 rounded-xl bg-white border border-neutral-200 shadow-2xs gap-1 flex-wrap">
+            <div className="inline-flex items-center p-1 rounded-2xl bg-white border border-neutral-200 shadow-2xs gap-1 flex-wrap">
               {[
                 { id: 'all', label: 'All (10)' },
                 { id: 'obtainable', label: 'Obtainable (7)' },
@@ -525,7 +585,7 @@ export const GitGlowHomePage: React.FC = () => {
                   key={filter.id}
                   onClick={() => setSelectedCategory(filter.id)}
                   className={cn(
-                    'px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
+                    'px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all',
                     selectedCategory === filter.id
                       ? 'bg-[#0b1c30] text-white shadow-xs'
                       : 'text-neutral-600 hover:text-[#0b1c30] hover:bg-neutral-50',
@@ -545,17 +605,17 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ─── Section 4: Tier Multiplier Guide ───────────────────────────── */}
-        <section id="tiers" className="bg-white border border-neutral-200 rounded-3xl p-6 sm:p-10 shadow-sm mb-16 md:mb-24 text-left">
+        {/* ─── Section 5: Tier Multiplier Ladders ─────────────────────────── */}
+        <section id="tiers" className="bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
           <div className="max-w-2xl mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-3">
               <Award size={11} className="text-[#0058be]" /> Multiplier Ladders
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0b1c30] tracking-tight mb-2">
               How Badge Tiers Work
             </h2>
             <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-              Certain badges evolve as you reach higher volume milestones. GitHub decorates your badge with Bronze (x2), Silver (x3), and Gold (x4) borders.
+              Certain badges evolve as your contribution volume increases. GitHub decorates your badge with Bronze (x2), Silver (x3), and Gold (x4) multipliers.
             </p>
           </div>
 
@@ -565,7 +625,7 @@ export const GitGlowHomePage: React.FC = () => {
                 Default Base
               </span>
               <p className="text-sm font-bold text-[#0b1c30]">Base Badge</p>
-              <p className="text-xs text-neutral-500 mt-1">First unlock milestone</p>
+              <p className="text-xs text-neutral-500 mt-1">Initial unlock threshold</p>
             </div>
 
             <div className="p-5 rounded-2xl border border-[#F9BFA7] bg-[#F9BFA7]/10 text-center">
@@ -573,7 +633,7 @@ export const GitGlowHomePage: React.FC = () => {
                 x2 Multiplier
               </span>
               <p className="text-sm font-bold text-[#0b1c30]">Bronze Tier</p>
-              <p className="text-xs text-neutral-600 mt-1">Hex: #F9BFA7</p>
+              <p className="text-xs text-neutral-600 mt-1">Border: #F9BFA7</p>
             </div>
 
             <div className="p-5 rounded-2xl border border-[#E1E4E4] bg-[#E1E4E4]/30 text-center">
@@ -581,7 +641,7 @@ export const GitGlowHomePage: React.FC = () => {
                 x3 Multiplier
               </span>
               <p className="text-sm font-bold text-[#0b1c30]">Silver Tier</p>
-              <p className="text-xs text-neutral-600 mt-1">Hex: #E1E4E4</p>
+              <p className="text-xs text-neutral-600 mt-1">Border: #E1E4E4</p>
             </div>
 
             <div className="p-5 rounded-2xl border border-[#FAE57E] bg-[#FAE57E]/20 text-center">
@@ -589,7 +649,7 @@ export const GitGlowHomePage: React.FC = () => {
                 x4 Multiplier
               </span>
               <p className="text-sm font-bold text-[#0b1c30]">Gold Tier</p>
-              <p className="text-xs text-neutral-600 mt-1">Hex: #FAE57E</p>
+              <p className="text-xs text-neutral-600 mt-1">Border: #FAE57E</p>
             </div>
           </div>
 
@@ -650,60 +710,60 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ─── Section 5: Frequently Asked Questions ───────────────────────── */}
-        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-16 md:mb-24 text-left">
+        {/* ─── Section 6: Frequently Asked Questions ───────────────────────── */}
+        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
           <div className="text-center space-y-2 mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest">
               Got Questions?
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#0b1c30] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0b1c30] tracking-tight">
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-neutral-500">
-              Everything you need to know about GitHub achievement detection, latency, and rules.
+              Clear answers on how GitHub calculates, displays, and protects achievement badges.
             </p>
           </div>
 
           <div className="space-y-3">
             <FAQItem
-              q="How long does it take for GitHub to display an unlocked badge?"
-              a="GitHub processes achievements asynchronously through internal background event queues. In most cases, badges show up on your profile within 10 to 30 minutes. Occasionally, if GitHub is experiencing heavy load, it can take up to 24 hours to index."
+              q="Is this against GitHub Terms of Service?"
+              a="No. Everything GitGlow guides you to do uses official Git workflows (standard git commits, standard branch creation, and standard pull requests). You are making real, valid contributions to our dedicated open-source repository (gitglow-community). There are no bots faking tokens or hacking GitHub servers."
+            />
+            <FAQItem
+              q="How long does it take for GitHub to show the badge on my profile?"
+              a="GitHub processes badge achievements asynchronously through background queue runners. Usually, badges appear within 10 to 30 minutes after the pull request or issue is closed. If GitHub is experiencing high load, it can take up to 24 hours."
             />
             <FAQItem
               q="Can I earn achievements on private repositories?"
-              a="Yes, but with one condition: you must go to your GitHub Profile Settings → Contribution Settings and enable 'Include private contributions on my profile'. If this is disabled, actions on private repositories are ignored for achievement calculations."
+              a="Yes, but only if you enable private contribution visibility in your GitHub settings: go to Settings → Profile Settings → Contribution Settings and check 'Include private contributions on my profile'."
             />
             <FAQItem
-              q="Do pull requests need to be merged to unlock Pull Shark?"
-              a="Yes. Pull requests that are simply closed without merging do NOT award the Pull Shark badge. They must be merged into the repository's default branch. However, closing an unmerged PR does count toward Quickdraw."
+              q="What if I make a mistake during the pull request?"
+              a="That is exactly why gitglow-community exists. It is a zero-judgment sandbox specifically built for students to practice. If your commit message format is wrong, our bot posts a helpful review comment showing you how to fix it."
             />
             <FAQItem
-              q="Can I hide achievements if I don't want them on my profile?"
-              a="Yes. GitHub provides a native toggle under Settings → Profile Settings → Achievements → 'Show Achievements on my profile'. You can opt out or re-enable them at any time."
-            />
-            <FAQItem
-              q="Can I still get the Arctic Code Vault badge?"
-              a="No. The Arctic Code Vault Contributor badge was awarded exclusively to accounts with qualifying commits made prior to February 2, 2020. It is a historic archival badge and is permanently unobtainable for newer accounts."
+              q="Can I still get the Arctic Code Vault Contributor badge?"
+              a="No. The Arctic Code Vault Contributor badge was only awarded to developers whose code was archived in the Svalbard Arctic World Archive on February 2, 2020. It is a historic badge and is permanently unobtainable for new accounts."
             />
           </div>
         </section>
 
-        {/* ─── Section 6: Final CTA Banner ─────────────────────────────────── */}
+        {/* ─── Section 7: Final CTA Banner ─────────────────────────────────── */}
         <section className="rounded-3xl bg-[#0b1c30] text-white p-8 sm:p-14 text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0058be]/25 via-transparent to-transparent pointer-events-none" />
           
           <div className="max-w-2xl mx-auto space-y-4 relative z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-widest border border-white/10">
-              <Sparkles size={11} /> Start Building Achievements
+              <Sparkles size={11} /> Start Building Real Proof
             </span>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
               Ready to Claim Your First <br />
               <span className="text-[#d1f34d]">GitHub Achievement?</span>
             </h2>
 
             <p className="text-sm sm:text-base text-neutral-300 leading-relaxed max-w-xl mx-auto">
-              Launch our claiming blueprint engine to follow the exact, step-by-step verified action path for Quickdraw, Pull Shark, and YOLO.
+              Stop decorating an empty canvas with copy-paste icons. Follow our automated claiming engine to get Quickdraw and Pull Shark on your profile today.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -711,7 +771,7 @@ export const GitGlowHomePage: React.FC = () => {
                 to="/blueprints/gitglow/engine?badge=quickdraw"
                 className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#d1f34d] text-[#0b1c30] font-extrabold text-sm uppercase tracking-wider hover:bg-[#c2e240] transition-colors shadow-lg shadow-[#d1f34d]/20"
               >
-                Claim Quickdraw First (5 Mins) →
+                Claim Quickdraw First (2 Mins) →
               </Link>
               
               <Link
