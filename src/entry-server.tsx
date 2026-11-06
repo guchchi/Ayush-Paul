@@ -191,6 +191,16 @@ export async function getRoutesConfig() {
     }
   });
 
+  // GitGlow Routes (SSG Prerendered)
+  routes.push({ 
+    url: '/blueprints/gitglow', 
+    seoData: { 
+      title: "GitGlow | Glow Up Your GitHub From Zero to Pro", 
+      description: "A 13-step interactive engine that transforms your blank GitHub profile into a recruiter-ready portfolio with real achievements, green squares, and official GitHub badges.",
+      schema: new SchemaFactory().addWebPage({ name: "GitGlow", description: "Glow up your GitHub from zero to pro.", url: "/blueprints/gitglow" }).build()
+    }
+  });
+
   // 2. Dynamic Routes
   try {
     const projectsRes = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/${dbId}/documents/projects?key=${apiKey}`);

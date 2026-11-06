@@ -106,6 +106,32 @@ export function generateInitialGraph(): { nodes: BaseNode[]; edges: BaseEdge[]; 
   edges.push(new EdgeBuilder('e_bcyber_eco', 'prod_b_cyber_compass', 'eco_blueprints', 'HAS_PARENT').build());
 
   // ==========================================
+  // 2c. PRODUCT NODE: GitGlow
+  // ==========================================
+  const gitGlowProduct = new NodeBuilder('prod_gitglow', 'PRODUCT')
+    .setTitle('GitGlow')
+    .setSlug('gitglow')
+    .setDescription('A 13-step interactive engine that transforms a blank GitHub profile into a recruiter-ready portfolio with real achievements, green squares, and official GitHub badges — built for complete beginners.')
+    .setProperties({ difficulty: 'BEGINNER', estimatedHours: 3, priceInCents: 0 })
+    .build();
+  nodes.push(gitGlowProduct);
+
+  const gitGlowContent = new NodeBuilder('cnt_prod_gitglow', 'CONTENT')
+    .setTitle('GitGlow — System Overview')
+    .setSlug('cnt-gitglow')
+    .setProperties({
+      bodyMarkdown: '# GitGlow\n\nGlow up your GitHub from zero to pro.\n\n### What You Unlock:\n- **Phase 1 (Free):** Profile Health Scan, 8 interactive quests covering photo, bio, README, tech stack icons, pinned repos, and GitHub stats cards.\n- **Phase 2 (Pro ₹199):** GitHub Actions automation, Pull Shark 🦈 and Quickdraw ⚡ badge walkthroughs, 3 starter mini-projects, real OSS contribution, Gold Verified badge.',
+      format: 'MARKDOWN',
+      readingTimeMinutes: 2,
+    })
+    .build();
+  nodes.push(gitGlowContent);
+
+  edges.push(new EdgeBuilder('e_prod_gitglow_cnt', 'prod_gitglow', 'cnt_prod_gitglow', 'HAS_CONTENT').build());
+  edges.push(new EdgeBuilder('e_eco_gitglow', 'eco_blueprints', 'prod_gitglow', 'HAS_CHILD').build());
+  edges.push(new EdgeBuilder('e_gitglow_eco', 'prod_gitglow', 'eco_blueprints', 'HAS_PARENT').build());
+
+  // ==========================================
   // 3. MODULE 1: Client Acquisition Strategy
   // ==========================================
   const mod1 = new NodeBuilder('mod_client_acquisition', 'MODULE')

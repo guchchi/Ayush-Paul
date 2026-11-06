@@ -1,9 +1,28 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight, Bot, Globe, Search } from 'lucide-react';
+import { ArrowUpRight, Bot, Globe, Search, Github } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const featuredSystems = [
+  {
+    id: 'gitglow',
+    slug: 'gitglow',
+    category: 'Interactive Engine',
+    categoryColor: '#16a34a',
+    categoryBg: '#f0fdf4',
+    categoryBorder: '#bbf7d0',
+    icon: Github,
+    iconBg: '#f0fdf4',
+    iconColor: '#16a34a',
+    title: 'GitGlow',
+    description:
+      'Transform your blank GitHub profile into a recruiter-ready portfolio in one session — with real achievements, green squares, and official GitHub badges.',
+    accentBg: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+    accentBorder: '#bbf7d0',
+    topBorderColor: '#22c55e',
+    visual: 'gitglow',
+    isNew: true,
+  },
   {
     id: 'ai-execution-framework',
     slug: 'ai-execution-framework',
@@ -21,24 +40,6 @@ const featuredSystems = [
     accentBorder: '#ebe5ff',
     topBorderColor: '#6b35ff',
     visual: 'ai',
-  },
-  {
-    id: 'website-launch-blueprint',
-    slug: 'website-launch-blueprint',
-    category: 'Blueprints',
-    categoryColor: '#0b1c30',
-    categoryBg: '#f0f0f0',
-    categoryBorder: '#e0e0e0',
-    icon: Globe,
-    iconBg: '#f5f5f5',
-    iconColor: '#0b1c30',
-    title: 'Website Launch Blueprint',
-    description:
-      'A structured framework for planning, building, publishing, and improving modern websites.',
-    accentBg: 'linear-gradient(135deg, #f5f5f5 0%, #ebebeb 100%)',
-    accentBorder: '#e0e0e0',
-    topBorderColor: '#0b1c30',
-    visual: 'website',
   },
   {
     id: 'authority-growth-system',
@@ -159,10 +160,47 @@ const SEOVisual = () => (
   </div>
 );
 
+const GitGlowVisual = () => (
+  <div className="w-full h-full flex items-center justify-center px-6 py-6 select-none">
+    <div className="w-full max-w-[260px] flex flex-col gap-2.5">
+      {/* Score bar */}
+      <div className="flex items-center gap-2">
+        <span className="text-[9px] font-bold text-[#16a34a] w-14 shrink-0">Score</span>
+        <div className="flex-1 h-2 rounded-full bg-green-100 overflow-hidden">
+          <div className="h-full rounded-full bg-green-500" style={{ width: '96%' }} />
+        </div>
+        <span className="text-[9px] font-black text-[#16a34a] w-7 text-right">96</span>
+      </div>
+      {/* Badges */}
+      {[
+        { emoji: '🦈', label: 'Pull Shark', color: '#0ea5e9' },
+        { emoji: '⚡', label: 'Quickdraw', color: '#f59e0b' },
+        { emoji: '👯', label: 'Pair Extraordinaire', color: '#8b5cf6' },
+      ].map(b => (
+        <div
+          key={b.label}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-white shadow-sm"
+          style={{ borderColor: `${b.color}30` }}
+        >
+          <span className="text-sm">{b.emoji}</span>
+          <span className="text-[9px] font-bold text-[#0b1c30]">{b.label}</span>
+          <span
+            className="ml-auto text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full"
+            style={{ backgroundColor: `${b.color}15`, color: b.color }}
+          >
+            Unlocked
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 const visualMap: Record<string, React.ReactNode> = {
   ai: <AIVisual />,
   website: <WebsiteVisual />,
   seo: <SEOVisual />,
+  gitglow: <GitGlowVisual />,
 };
 
 const FeaturedCard = ({
@@ -198,6 +236,13 @@ const FeaturedCard = ({
           >
             <Icon size={14} style={{ color: system.iconColor }} />
           </div>
+          {'isNew' in system && system.isNew && (
+            <div className="absolute top-3 left-3">
+              <span className="text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full bg-[#d1f34d] text-[#0b1c30]">
+                New
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col flex-1 p-6 text-left">

@@ -46,6 +46,9 @@ const BCyberOfficialUpdatesPage = lazy(() => import("./pages/blueprints/b-cyber/
 const BCyberEvidenceGuidePage = lazy(() => import("./pages/blueprints/b-cyber/BCyberEvidenceGuidePage").then(m => ({ default: m.BCyberEvidenceGuidePage })));
 const BCyberPreparationPlannerPage = lazy(() => import("./pages/blueprints/b-cyber/BCyberPreparationPlannerPage").then(m => ({ default: m.BCyberPreparationPlannerPage })));
 
+// --- GitGlow Pages (Lazy Loaded) ---
+const GitGlowHomePage = lazy(() => import("./pages/blueprints/gitglow/GitGlowHomePage").then(m => ({ default: m.GitGlowHomePage })));
+
 
 
 // --- Loading Fallback ---
@@ -169,6 +172,8 @@ export default function App() {
               <Route path="/blueprints/b-cyber/2026-process" element={wrapInLayout(<BCyber2026PrecedentPage />)} />
               <Route path="/blueprints/b-cyber/updates" element={wrapInLayout(<BCyberOfficialUpdatesPage />)} />
               <Route path="/blueprints/b-cyber/evidence-of-work" element={wrapInLayout(<BCyberEvidenceGuidePage />)} />
+              {/* GitGlow Routes (Declared before :slug) */}
+              <Route path="/blueprints/gitglow" element={wrapInLayout(<GitGlowHomePage />)} />
               <Route path="/blueprints/:slug" element={wrapInLayout(<BlueprintDetailPage />)} />
               <Route path="/blueprints/:slug/engine" element={<BlueprintEnginePage />} />
               <Route path="/academy" element={<Navigate to="/mastery" replace />} />
