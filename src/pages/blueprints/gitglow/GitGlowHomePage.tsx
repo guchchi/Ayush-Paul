@@ -66,200 +66,215 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   );
 };
 
-// ─── Badge Custom Theme Pedestal Map ─────────────────────────────────────────
-const BADGE_THEMES: Record<
+// ─── Badge Card Banner Themes Map (Cover + Medallion Style) ──────────────────
+const BANNER_THEMES: Record<
   string,
   {
+    bannerGradient: string;
     pedestalBg: string;
     pedestalBorder: string;
-    glow: string;
   }
 > = {
   quickdraw: {
-    pedestalBg: 'from-amber-100/80 via-yellow-50 to-amber-50/40',
-    pedestalBorder: 'border-amber-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200',
+    pedestalBg: 'bg-gradient-to-br from-amber-50 to-white',
+    pedestalBorder: 'border-amber-200',
   },
   'pull-shark': {
-    pedestalBg: 'from-cyan-100/80 via-blue-50 to-cyan-50/40',
-    pedestalBorder: 'border-cyan-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(6,182,212,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-cyan-600 via-blue-500 to-indigo-600',
+    pedestalBg: 'bg-gradient-to-br from-cyan-50 to-white',
+    pedestalBorder: 'border-cyan-200',
   },
   yolo: {
-    pedestalBg: 'from-rose-100/80 via-orange-50 to-rose-50/40',
-    pedestalBorder: 'border-rose-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(244,63,94,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400',
+    pedestalBg: 'bg-gradient-to-br from-rose-50 to-white',
+    pedestalBorder: 'border-rose-200',
   },
   'pair-extraordinaire': {
-    pedestalBg: 'from-purple-100/80 via-violet-50 to-purple-50/40',
-    pedestalBorder: 'border-purple-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(168,85,247,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-purple-600 via-violet-500 to-indigo-500',
+    pedestalBg: 'bg-gradient-to-br from-purple-50 to-white',
+    pedestalBorder: 'border-purple-200',
   },
   'galaxy-brain': {
-    pedestalBg: 'from-indigo-100/80 via-violet-50 to-indigo-50/40',
-    pedestalBorder: 'border-indigo-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(99,102,241,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-indigo-900 via-violet-800 to-purple-900',
+    pedestalBg: 'bg-gradient-to-br from-indigo-50 to-white',
+    pedestalBorder: 'border-indigo-200',
   },
   starstruck: {
-    pedestalBg: 'from-amber-100/80 via-yellow-50 to-amber-50/40',
-    pedestalBorder: 'border-amber-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400',
+    pedestalBg: 'bg-gradient-to-br from-amber-50 to-white',
+    pedestalBorder: 'border-amber-200',
   },
   'public-sponsor': {
-    pedestalBg: 'from-emerald-100/80 via-teal-50 to-emerald-50/40',
-    pedestalBorder: 'border-emerald-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(16,185,129,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600',
+    pedestalBg: 'bg-gradient-to-br from-emerald-50 to-white',
+    pedestalBorder: 'border-emerald-200',
   },
   'heart-on-your-sleeve': {
-    pedestalBg: 'from-pink-100/80 via-rose-50 to-pink-50/40',
-    pedestalBorder: 'border-pink-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(236,72,153,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-pink-500 via-rose-400 to-red-400',
+    pedestalBg: 'bg-gradient-to-br from-pink-50 to-white',
+    pedestalBorder: 'border-pink-200',
   },
   'open-sourcerer': {
-    pedestalBg: 'from-teal-100/80 via-cyan-50 to-teal-50/40',
-    pedestalBorder: 'border-teal-200/90',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(20,184,166,0.22)]',
+    bannerGradient: 'bg-gradient-to-r from-teal-500 via-cyan-400 to-sky-500',
+    pedestalBg: 'bg-gradient-to-br from-teal-50 to-white',
+    pedestalBorder: 'border-teal-200',
   },
   'arctic-code-vault': {
-    pedestalBg: 'from-slate-100/90 via-sky-50 to-slate-50/40',
-    pedestalBorder: 'border-slate-300/80',
-    glow: 'group-hover:shadow-[0_4px_20px_rgba(100,116,139,0.18)]',
+    bannerGradient: 'bg-gradient-to-r from-slate-700 via-slate-600 to-sky-900',
+    pedestalBg: 'bg-gradient-to-br from-slate-50 to-white',
+    pedestalBorder: 'border-slate-300',
   },
 };
 
-// ─── Option A: Compact Trophy Card Component ─────────────────────────────────
+// ─── Inspiration-Structured Badge Card Component ─────────────────────────────
 const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
-  const theme = BADGE_THEMES[badge.id] || {
-    pedestalBg: 'from-slate-100 via-neutral-50 to-slate-50',
+  const theme = BANNER_THEMES[badge.id] || {
+    bannerGradient: 'bg-gradient-to-r from-slate-700 to-slate-900',
+    pedestalBg: 'bg-white',
     pedestalBorder: 'border-neutral-200',
-    glow: 'group-hover:shadow-md',
   };
 
-  // Status Capsule Renderer (One consolidated pill per card)
-  const renderStatusCapsule = () => {
-    if (badge.isRecommendedStarter) {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-extrabold uppercase tracking-wide border border-[#0b1c30]/10 shadow-2xs">
-          <Flame size={11} fill="#0b1c30" className="text-[#0b1c30]" />
-          <span>Starter · 5 Mins</span>
-        </span>
-      );
-    }
-    if (badge.status === 'testing') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold uppercase tracking-wide border border-amber-200">
-          <Sparkles size={11} className="text-amber-600" />
-          <span>In GitHub Beta</span>
-        </span>
-      );
-    }
-    if (!badge.isObtainable) {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-500 text-[10px] font-bold uppercase tracking-wide border border-neutral-200">
-          <Lock size={10} />
-          <span>Archived (2020)</span>
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-wide border border-slate-200">
-        <span>{badge.difficulty} · Obtainable</span>
-      </span>
-    );
+  // 3 Key Metrics per Badge (Inspired by Rating | Posts | Followers)
+  const timeMap: Record<string, string> = {
+    quickdraw: '2 Mins',
+    'pull-shark': '5 Mins',
+    yolo: '5 Mins',
+    'pair-extraordinaire': '10 Mins',
+    'galaxy-brain': '15 Mins',
+    starstruck: 'Milestone',
+    'public-sponsor': '2 Mins',
+    'heart-on-your-sleeve': 'In Beta',
+    'open-sourcerer': 'In Beta',
+    'arctic-code-vault': 'Historic',
   };
+
+  const estTime = timeMap[badge.id] || '5 Mins';
+  const multiplierText =
+    badge.tiers && badge.tiers.length > 0 ? `${badge.tiers.length} Tiers` : 'Single';
 
   return (
-    <div
-      className={cn(
-        'group relative p-5 rounded-2xl border bg-white transition-all duration-200 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1',
-        badge.isRecommendedStarter
-          ? 'border-[#0058be]/30 ring-1 ring-[#0058be]/10 shadow-2xs'
-          : 'border-neutral-200/90 shadow-2xs hover:border-neutral-300',
-      )}
-    >
-      <div>
-        {/* Top Header: Custom Themed Trophy Pedestal + Single Meta Capsule */}
-        <div className="flex items-center justify-between gap-3 mb-4">
-          {/* Custom Trophy Pedestal */}
+    <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 shadow-2xs">
+      
+      {/* ─── Top Cover Banner Area (with Floating Corner Pill) ────────────── */}
+      <div className={cn('relative h-24 w-full p-3.5 flex items-start justify-end', theme.bannerGradient)}>
+        {badge.isRecommendedStarter ? (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-extrabold uppercase tracking-wide shadow-md border border-black/10">
+            <Flame size={11} fill="#0b1c30" />
+            <span>Starter · 5m</span>
+          </span>
+        ) : badge.status === 'testing' ? (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-amber-900 text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/40">
+            <Sparkles size={11} className="text-amber-600" />
+            <span>In Beta</span>
+          </span>
+        ) : !badge.isObtainable ? (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/40 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/20">
+            <Lock size={10} />
+            <span>Archived</span>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-slate-800 text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/40">
+            <CheckCircle2 size={11} className="text-emerald-600" />
+            <span>Obtainable</span>
+          </span>
+        )}
+      </div>
+
+      {/* ─── Card Body ────────────────────────────────────────────────────── */}
+      <div className="p-5 pt-0 flex flex-col justify-between flex-1">
+        
+        {/* Overlapping Trophy Medallion Row */}
+        <div className="flex items-end justify-between -mt-9 mb-3">
+          {/* Overlapping Medallion */}
           <div
             className={cn(
-              'relative w-16 h-16 rounded-2xl p-2 flex items-center justify-center bg-gradient-to-br border transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5 shadow-2xs',
+              'relative w-18 h-18 rounded-2xl p-2.5 flex items-center justify-center ring-4 ring-white shadow-md border transition-transform duration-300 group-hover:scale-105',
               theme.pedestalBg,
               theme.pedestalBorder,
-              theme.glow,
             )}
           >
-            {/* Specular Glint Reflection */}
-            <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.85),transparent_65%)] pointer-events-none" />
             <img
               src={badge.image}
               alt={badge.name}
-              className="relative z-10 w-12 h-12 object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.14)] transition-transform duration-300 group-hover:scale-110 select-none"
+              className="w-13 h-13 object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:scale-110 select-none"
               loading="lazy"
             />
           </div>
 
-          {/* Single Consolidated Status Capsule */}
-          <div>{renderStatusCapsule()}</div>
+          {/* Right Micro Pill (Category / Scope) */}
+          <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200/80 mb-1">
+            {badge.category.toUpperCase()}
+          </span>
         </div>
 
-        {/* Title & Authentic Tagline */}
-        <div className="space-y-1 mb-3">
+        {/* Title & Tagline */}
+        <div className="space-y-0.5 mb-2.5">
           <div className="text-lg font-bold text-[#0b1c30] tracking-tight group-hover:text-[#0058be] transition-colors leading-snug">
             {badge.name}
           </div>
-          <div className="text-xs text-neutral-500 font-medium line-clamp-1 leading-normal">
+          <div className="text-xs text-neutral-500 font-medium line-clamp-1">
             {badge.tagline}
           </div>
         </div>
 
-        {/* GitGlow Blueprint Strategy Capsule */}
-        <div className="p-3 rounded-xl bg-[#f8f9ff] border border-neutral-200/60 text-xs text-neutral-700 leading-relaxed min-h-[58px] flex items-center mb-3.5">
-          <div className="line-clamp-2 text-xs leading-relaxed">
-            <span className="font-bold text-[#0b1c30]">Blueprint: </span>
-            <span className="text-neutral-600 font-normal">{badge.blueprintStrategy}</span>
+        {/* Blueprint Strategy Description */}
+        <div className="text-xs text-neutral-600 leading-relaxed line-clamp-2 min-h-[36px] mb-3">
+          <span className="font-semibold text-[#0b1c30]">Blueprint: </span>
+          {badge.blueprintStrategy}
+        </div>
+
+        {/* ─── 3-Stat Metric Strip (Direct Homage to Inspiration Cards) ─── */}
+        <div className="grid grid-cols-3 gap-1 py-2 px-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 text-center mb-4">
+          <div>
+            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
+              <Clock size={11} className="text-[#0058be]" />
+              <span>{estTime}</span>
+            </div>
+            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
+              Est. Time
+            </div>
+          </div>
+
+          <div className="border-x border-neutral-200/60">
+            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
+              <Sparkles size={11} className="text-amber-500" />
+              <span>{badge.difficulty}</span>
+            </div>
+            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
+              Difficulty
+            </div>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
+              <Trophy size={11} className="text-purple-600" />
+              <span>{multiplierText}</span>
+            </div>
+            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
+              Multiplier
+            </div>
           </div>
         </div>
 
-        {/* Tiers Ladder Micro-Strip */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 bg-white border border-neutral-200/80 px-2.5 py-1.5 rounded-lg mb-4">
-          <span className="font-bold text-neutral-400 text-[10px] uppercase tracking-wider">
-            {badge.tiers && badge.tiers.length > 0 ? 'Tiers' : 'Scope'}
-          </span>
-          <div className="flex items-center gap-1.5 font-medium text-[#0b1c30]">
-            {badge.tiers && badge.tiers.length > 0 ? (
-              <>
-                <span>{badge.tiers[0]?.threshold.split(' ')[0]}</span>
-                <span className="text-neutral-300">·</span>
-                <span>{badge.tiers[1]?.threshold.split(' ')[0]} 🥉</span>
-                <span className="text-neutral-300">·</span>
-                <span>{badge.tiers[2]?.threshold.split(' ')[0]} 🥈</span>
-                <span className="text-neutral-300">·</span>
-                <span>{badge.tiers[3]?.threshold.split(' ')[0]} 🥇</span>
-              </>
-            ) : (
-              <span className="text-neutral-600 font-sans text-xs">Standard Single Unlock</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Card Action Row */}
-      <div className="pt-2 border-t border-neutral-100">
+        {/* ─── Bottom Pill Action Button (Inspired by Pill CTA with Icon) ─── */}
         {badge.isObtainable ? (
           <Link
             to={`/blueprints/gitglow/engine?badge=${badge.id}`}
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#0047a0] transition-colors shadow-2xs hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+            className="w-full py-2.5 px-4 rounded-2xl bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-between transition-all shadow-xs group-hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0058be]"
           >
-            <span>Launch Claim Engine</span>
-            <ArrowRight size={13} />
+            <span>Claim Blueprint</span>
+            <span className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+              <ArrowRight size={13} className="text-white" />
+            </span>
           </Link>
         ) : (
-          <div className="flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider cursor-not-allowed">
+          <div className="w-full py-2.5 px-4 rounded-2xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed">
             <Lock size={12} />
             <span>{badge.status === 'testing' ? 'In GitHub Beta' : 'Archived Milestone'}</span>
           </div>
         )}
+
       </div>
     </div>
   );
@@ -756,7 +771,7 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── Section 4: The Complete Badge Catalog Grid ─────────────────── */}
-        <section id="catalog" className="space-y-8 mb-20 md:mb-28 text-left">
+        <section id="catalog" className="scroll-mt-28 space-y-8 mb-20 md:mb-28 text-left">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -807,7 +822,7 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── Section 5: Tier Multiplier Ladders ─────────────────────────── */}
-        <section id="tiers" className="bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
+        <section id="tiers" className="scroll-mt-28 bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
           <div className="max-w-2xl mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-3">
               <Award size={11} className="text-[#0058be]" /> Multiplier Ladders
@@ -912,7 +927,7 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── Section 6: Frequently Asked Questions ───────────────────────── */}
-        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
+        <section id="faq" className="scroll-mt-28 max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
           <div className="text-center space-y-2 mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest">
               Got Questions?
