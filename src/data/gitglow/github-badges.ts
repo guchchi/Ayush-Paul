@@ -65,7 +65,7 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     isObtainable: true,
     isRecommendedStarter: true,
     howToGet: 'Have 2 pull requests merged into a public repository.',
-    blueprintStrategy: 'Submit 2 verified contributor cards to our safe sandbox repository (gitglow-community) with automated merge.',
+    blueprintStrategy: 'Submit 2 verified contributor cards to our sandbox repository with instant automated merge.',
     tiers: [
       { level: 'Default', threshold: '2 merged PRs', description: 'Unlocks base Pull Shark 🦈 badge' },
       { level: 'Bronze (x2)', threshold: '16 merged PRs', description: 'Bronze badge border with x2 multiplier' },
@@ -95,7 +95,7 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     isObtainable: true,
     isRecommendedStarter: true,
     howToGet: 'Merge a pull request without requesting or waiting for a code review.',
-    blueprintStrategy: 'Branch and open a PR on your own repository, then merge it directly to main without submitting a review request.',
+    blueprintStrategy: 'Open a PR on your own repository, then merge it directly to main without code review.',
     requirements: [
       'Requires opening a pull request from a branch to the main branch',
       'Direct merge without clicking "Request Review" or adding reviewers',
@@ -146,7 +146,7 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     isObtainable: true,
     isRecommendedStarter: false,
     howToGet: 'Get 2 accepted answers in GitHub Discussions across public repositories.',
-    blueprintStrategy: 'Answer discussions in community Q&A repositories where questions have answer verification enabled.',
+    blueprintStrategy: 'Answer community Q&A discussions and get 2 responses marked as accepted answers.',
     tiers: [
       { level: 'Default', threshold: '2 accepted answers', description: 'Unlocks base Galaxy Brain badge' },
       { level: 'Bronze (x2)', threshold: '8 accepted answers', description: 'Bronze badge border with x2 multiplier' },
@@ -173,7 +173,7 @@ export const GITHUB_BADGES: GitHubBadge[] = [
     isObtainable: true,
     isRecommendedStarter: false,
     howToGet: 'Create a public repository that earns at least 16 stars from the GitHub community.',
-    blueprintStrategy: 'Publish a useful open-source boilerplate, cheat sheet, or tool and share it across hackathon communities.',
+    blueprintStrategy: 'Publish an open-source template or developer utility to reach the 16 stars milestone.',
     tiers: [
       { level: 'Default', threshold: '16 repository stars', description: 'Unlocks base Starstruck badge' },
       { level: 'Bronze (x2)', threshold: '128 repository stars', description: 'Bronze badge border with x2 multiplier' },
