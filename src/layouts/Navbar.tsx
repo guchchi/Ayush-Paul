@@ -327,10 +327,9 @@ export const Navbar = () => {
             >
               {[
                 { label: 'Overview', href: '#overview' },
-                { label: 'Transformation', href: '#transformation' },
-                { label: '13 Quests', href: '#quests' },
-                { label: 'Why It Works', href: '#why-it-works' },
-                { label: 'Pricing', href: '#pricing' },
+                { label: 'Quick Start', href: '#quickstart' },
+                { label: 'Badge Catalog', href: '#catalog' },
+                { label: 'Tiers Guide', href: '#tiers' },
                 { label: 'FAQ', href: '#faq' },
               ].map((pill) => (
                 <a
