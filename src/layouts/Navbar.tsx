@@ -21,7 +21,7 @@ export const Navbar = () => {
   const isHomePage = location.pathname === '/';
   const isBCyber = location.pathname.startsWith('/blueprints/b-cyber');
   const isGitGlow = location.pathname.startsWith('/blueprints/gitglow');
-  const isNavLightText = !isHomePage && !isGitGlow;
+  const isNavLightText = !isHomePage;
   const isDrawerLight = false;
 
   // Scroll Progress Logic
@@ -148,14 +148,12 @@ export const Navbar = () => {
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-transparent py-6"
           : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out",
         !isHomePage && (isVisible ? "translate-y-0" : "-translate-y-full"),
-        isBCyber
+        (isBCyber || isGitGlow)
           ? "bg-white/95 border-b border-slate-200/90 backdrop-blur-md py-3 shadow-2xs"
-          : isGitGlow
-            ? "bg-[#0d1117]/95 border-b border-[#30363d] backdrop-blur-md py-3 shadow-md text-white"
-            : (!isHomePage && (isScrolled 
-                ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
-                : "bg-transparent border-transparent py-6")),
-        (!isNavLightText || isGitGlow) && "nav-force-white"
+          : (!isHomePage && (isScrolled 
+              ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
+              : "bg-transparent border-transparent py-6")),
+        !isNavLightText && "nav-force-white"
       )}>
         {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
         <motion.div
@@ -299,39 +297,39 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Model 2: Contextual Header Swap for GitGlow */
+          /* Contextual Header Swap for GitGlow */
           <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex justify-between items-center relative z-20">
             {/* Left: Brand Identity + GitGlow Context */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link 
                 to="/" 
-                className="font-bold text-lg sm:text-xl tracking-tight text-white hover:text-white/80 transition-colors"
+                className="font-bold text-lg sm:text-xl tracking-tight text-[#0b1c30] hover:opacity-80 transition-opacity"
               >
                 Ayush Paul
               </Link>
-              <span className="text-white/20 font-light select-none">/</span>
+              <span className="text-slate-300 font-light select-none">/</span>
               <Link 
                 to="/blueprints/gitglow"
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-800 hover:text-emerald-600 transition-colors"
               >
-                <Github className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="whitespace-nowrap font-bold text-white">GitGlow</span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                <Github className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="whitespace-nowrap font-bold text-[#0b1c30]">GitGlow</span>
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                   v1.0
                 </span>
               </Link>
             </div>
 
-            {/* Center: Segmented Navigation Pills */}
+            {/* Center: Segmented Navigation Pills Dock */}
             <nav 
               aria-label="GitGlow Sections"
-              className="hidden lg:flex items-center p-1 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/[0.08] shadow-2xs text-xs"
+              className="hidden lg:flex items-center p-1 rounded-full bg-slate-900/[0.04] backdrop-blur-md border border-slate-900/[0.08] shadow-2xs text-xs"
             >
               {[
                 { label: 'Overview', href: '#overview' },
                 { label: 'Simulator', href: '#simulator' },
                 { label: '13 Quests', href: '#quests' },
-                { label: 'Score Calculator', href: '#calculator' },
+                { label: 'Scorecard', href: '#calculator' },
                 { label: 'Achievements', href: '#achievements' },
                 { label: 'Pricing', href: '#pricing' },
                 { label: 'FAQ', href: '#faq' },
@@ -339,7 +337,7 @@ export const Navbar = () => {
                 <a
                   key={pill.label}
                   href={pill.href}
-                  className="px-3 py-1 rounded-full transition-colors flex items-center font-medium text-white/70 hover:text-white hover:bg-white/[0.08]"
+                  className="px-3.5 py-1.5 rounded-full transition-colors flex items-center font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-900/[0.03]"
                 >
                   {pill.label}
                 </a>
@@ -350,23 +348,23 @@ export const Navbar = () => {
             <div className="hidden sm:flex items-center gap-3">
               <Link
                 to="/blueprints"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700 bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/90 transition-all shadow-2xs"
               >
                 <span>← All Blueprints</span>
               </Link>
 
               <Link
                 to="/blueprints/gitglow/engine"
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold text-[#0b1c30] bg-[#d1f34d] hover:bg-[#c0e045] transition-all shadow-sm"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold text-[#0b1c30] bg-[#d1f34d] hover:bg-[#c0e045] transition-all shadow-xs"
               >
-                <span>Start Engine →</span>
+                <span>Launch Engine →</span>
               </Link>
             </div>
 
             {/* Mobile Menu Toggle Button */}
             <div className="lg:hidden flex items-center">
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-white hover:bg-white/10 transition-all active:scale-90"
+                className="w-9 h-9 flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100 transition-all active:scale-90"
                 onClick={() => setIsMobileMenuOpen(prev => !prev)}
                 aria-label="Toggle navigation menu"
               >
