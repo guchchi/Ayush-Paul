@@ -341,6 +341,11 @@ export const GitGlowHomePage: React.FC = () => {
   const [githubInput, setGithubInput] = useState<string>('arivera-dev');
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
+  const [inspectedMedal, setInspectedMedal] = useState<{
+    name: string;
+    tier?: string;
+    trigger: string;
+  } | null>(null);
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -531,6 +536,9 @@ export const GitGlowHomePage: React.FC = () => {
         <section id="compare" className="scroll-mt-24 mb-16 text-left max-w-4xl mx-auto">
           {/* Gentle Header */}
           <div className="text-center space-y-2 mb-8">
+            <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
+              Proof over vanity
+            </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
               Verified proof over vanity
             </h2>
@@ -559,58 +567,52 @@ export const GitGlowHomePage: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Realistic GitHub README File Capsule */}
-                <div className="rounded-xl border border-[#30363d] bg-[#010409] overflow-hidden shadow-inner">
-                  {/* File Tab Header */}
-                  <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-[#30363d]/80 bg-[#161b22] text-xs font-mono text-[#8b949e]">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs select-none">📄</span>
-                      <span className="text-[#f0f6fc] font-medium truncate">README.md</span>
-                    </div>
-                    <span className="text-[10px] text-[#8b949e] font-mono shrink-0">preview</span>
+                {/* Clean Visual Showcase Canvas */}
+                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 sm:p-5 space-y-3 shadow-inner">
+                  <div className="text-[11px] text-[#8b949e] flex items-center justify-between border-b border-[#30363d]/40 pb-2">
+                    <span className="font-medium text-[#f0f6fc]">Static Image Shields</span>
+                    <span className="font-mono text-[10px] text-[#8b949e]">img.shields.io</span>
                   </div>
-
-                  {/* README Content Canvas with Real Shields */}
-                  <div className="p-4 sm:p-5 space-y-3 min-h-[148px] flex flex-col justify-between">
-                    <div className="text-[10px] font-mono text-[#8b949e]">// Copy-pasted image shields (0 Git proof)</div>
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                      <img
-                        src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"
-                        alt="React"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                      <img
-                        src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"
-                        alt="TypeScript"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                      <img
-                        src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"
-                        alt="Node.js"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                      <img
-                        src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"
-                        alt="Python"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                      <img
-                        src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"
-                        alt="Docker"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                      <img
-                        src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white"
-                        alt="AWS"
-                        className="h-6 rounded object-contain"
-                        loading="lazy"
-                      />
-                    </div>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center pt-1 min-h-[52px]">
+                    <img
+                      src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"
+                      alt="React"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                    <img
+                      src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"
+                      alt="TypeScript"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                    <img
+                      src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"
+                      alt="Node.js"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                    <img
+                      src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"
+                      alt="Python"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                    <img
+                      src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"
+                      alt="Docker"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                    <img
+                      src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white"
+                      alt="AWS"
+                      className="h-6 rounded object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="h-5 flex items-center text-[11px] font-mono text-[#8b949e] border-t border-[#30363d]/20 pt-2">
+                    <span>Self-reported image URLs · 0 Git webhooks</span>
                   </div>
                 </div>
               </div>
@@ -643,57 +645,87 @@ export const GitGlowHomePage: React.FC = () => {
                       GitHub Profile Medallions
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium">
+                  <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#3fb950]"></span>
                     Server-Verified
                   </span>
                 </div>
 
-                {/* Realistic Official Profile Achievements Capsule */}
-                <div className="rounded-xl border border-[#30363d] bg-[#010409] overflow-hidden shadow-inner">
-                  {/* Profile Header Tab */}
-                  <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-[#30363d]/80 bg-[#161b22] text-xs font-mono text-[#8b949e]">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs select-none">🏆</span>
-                      <span className="text-[#f0f6fc] font-medium truncate">@{scannedUser.login}</span>
-                    </div>
-                    <span className="text-[10px] text-[#3fb950] font-mono shrink-0 font-medium">achievements</span>
+                {/* Clean Visual Showcase Canvas */}
+                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 sm:p-5 space-y-3 shadow-inner">
+                  <div className="text-[11px] text-[#8b949e] flex items-center justify-between border-b border-[#30363d]/40 pb-2">
+                    <span className="font-medium text-[#f0f6fc]">Official Profile Achievements</span>
+                    <span className="font-mono text-[10px] text-[#3fb950]">github.com/profile</span>
                   </div>
-
-                  {/* Official Medallions Row */}
-                  <div className="p-4 sm:p-5 space-y-3 min-h-[148px] flex flex-col justify-between">
-                    <div className="flex items-center justify-between text-[10px] font-mono text-[#8b949e]">
-                      <span>// Official GitHub webhooks</span>
-                      <span className="text-[#3fb950] font-bold">200 OK</span>
-                    </div>
-                    <div className="flex items-center gap-2.5 pt-0.5">
-                      {[
-                        { img: '/images/badges/pull-shark.png', name: 'Pull Shark', tier: 'x2' },
-                        { img: '/images/badges/quickdraw.png', name: 'Quickdraw' },
-                        { img: '/images/badges/pair-extraordinaire.png', name: 'Pair Extra' },
-                        { img: '/images/badges/yolo.png', name: 'YOLO' },
-                        { img: '/images/badges/starstruck.png', name: 'Starstruck' },
-                      ].map((item) => (
-                        <div
-                          key={item.name}
-                          className="relative group/badge flex flex-col items-center"
-                          title={item.name}
-                        >
-                          <div className="w-10 h-10 rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 flex items-center justify-center hover:border-[#58a6ff] hover:scale-105 transition-all shadow-sm">
-                            <img
-                              src={item.img}
-                              alt={item.name}
-                              className="w-7 h-7 object-contain select-none"
-                              loading="lazy"
-                            />
-                          </div>
-                          {item.tier && (
-                            <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117] shadow-xs">
-                              {item.tier}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                  <div className="flex items-center gap-2.5 sm:gap-3 pt-1 min-h-[52px]">
+                    {[
+                      {
+                        name: 'Pull Shark',
+                        tier: 'x2',
+                        img: '/images/badges/pull-shark.png',
+                        trigger: 'Merged 2 pull requests on default branch',
+                      },
+                      {
+                        name: 'Quickdraw',
+                        img: '/images/badges/quickdraw.png',
+                        trigger: 'Closed an issue/PR within 5 min of opening',
+                      },
+                      {
+                        name: 'Pair Extraordinaire',
+                        img: '/images/badges/pair-extraordinaire.png',
+                        trigger: 'Co-authored a commit with Git trailer',
+                      },
+                      {
+                        name: 'YOLO',
+                        img: '/images/badges/yolo.png',
+                        trigger: 'Merged a pull request without code review',
+                      },
+                      {
+                        name: 'Starstruck',
+                        img: '/images/badges/starstruck.png',
+                        trigger: 'Created a repository that earned stars',
+                      },
+                    ].map((item) => (
+                      <div
+                        key={item.name}
+                        onMouseEnter={() => setInspectedMedal(item)}
+                        onMouseLeave={() => setInspectedMedal(null)}
+                        onClick={() =>
+                          setInspectedMedal(
+                            inspectedMedal?.name === item.name ? null : item
+                          )
+                        }
+                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 shadow-sm hover:border-[#58a6ff] hover:scale-105 transition-all cursor-pointer select-none"
+                        title={`${item.name}${item.tier ? ` (${item.tier})` : ''}: ${item.trigger}`}
+                      >
+                        <img
+                          src={item.img}
+                          alt={item.name}
+                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain select-none"
+                          loading="lazy"
+                        />
+                        {item.tier && (
+                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117] shadow-xs">
+                            {item.tier}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="h-5 flex items-center text-[11px] font-mono overflow-hidden border-t border-[#30363d]/20 pt-2">
+                    {inspectedMedal ? (
+                      <span className="text-[#58a6ff] truncate">
+                        <span className="font-semibold text-[#f0f6fc]">
+                          {inspectedMedal.name}
+                          {inspectedMedal.tier ? ` ${inspectedMedal.tier}` : ''}:
+                        </span>{' '}
+                        {inspectedMedal.trigger}
+                      </span>
+                    ) : (
+                      <span className="text-[#8b949e]">
+                        Hover any medal to inspect verified Git trigger
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
