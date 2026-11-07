@@ -45,4 +45,5 @@ agentic-awesome-skills/
 scratch/
 __pycache__/
 *.py[cod]
+.taste-skill/
 

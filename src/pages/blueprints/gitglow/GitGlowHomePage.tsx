@@ -262,7 +262,7 @@ const InteractiveFAQSection: React.FC = () => {
   ];
 
   return (
-    <section id="faq" className="scroll-mt-24 max-w-2xl mx-auto mb-16 text-left">
+    <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto mb-20 text-left w-full">
       {/* Gentle Header */}
       <div className="text-center space-y-2 mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
@@ -483,7 +483,7 @@ export const GitGlowHomePage: React.FC = () => {
     <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] pt-20 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0d1117]">
       
       {/* ─── Upper Navigation Bar ─────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4 flex items-center justify-between">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4 flex items-center justify-between">
         <Link
           to="/blueprints"
           className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8b949e] hover:text-[#58a6ff] transition-colors rounded-lg p-1"
@@ -500,7 +500,7 @@ export const GitGlowHomePage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ─── SECTION 1: Hero ─────────────────────────────────────────────── */}
         <section
@@ -570,9 +570,9 @@ export const GitGlowHomePage: React.FC = () => {
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.14 }}
                 className="text-[#8b949e] text-base sm:text-lg leading-relaxed max-w-[42ch]"
               >
-                Complete real GitHub missions, build actual skills, and unlock{' '}
+                Complete real GitHub missions, master branch workflows, and claim{' '}
                 <strong className="text-[#f0f6fc] font-semibold">official achievements</strong>{' '}
-                — step by step.
+                in minutes.
               </motion.p>
 
               {/* CTAs */}
@@ -588,7 +588,7 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f0f6fc] text-[#0d1117] text-sm font-bold hover:bg-[#d1f34d] transition-colors duration-200 group"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f0f6fc] text-[#0d1117] text-sm font-bold hover:bg-[#d1f34d] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-150 group shadow-sm hover:shadow-[0_4px_16px_rgba(209,243,77,0.25)]"
                 >
                   Start Your First Mission
                   <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
@@ -597,7 +597,7 @@ export const GitGlowHomePage: React.FC = () => {
                   href="https://github.com/guchchi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#30363d] text-[#8b949e] text-sm font-medium hover:border-[#58a6ff] hover:text-[#58a6ff] transition-colors duration-200"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#30363d] text-[#8b949e] text-sm font-medium hover:border-[#58a6ff] hover:text-[#58a6ff] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-150"
                 >
                   <Play size={13} aria-hidden="true" />
                   Watch Demo
@@ -645,7 +645,7 @@ export const GitGlowHomePage: React.FC = () => {
                   <CheckCircle2 size={12} className="text-[#3fb950]" />
                 </span>
                 <div>
-                  <p className="text-[11px] font-semibold text-[#f0f6fc] leading-none mb-0.5">Mission Completed!</p>
+                  <p className="text-[11px] font-semibold text-[#f0f6fc] leading-none mb-0.5">Mission complete.</p>
                   <p className="text-[10px] text-[#8b949e] leading-none">You've earned a new badge.</p>
                 </div>
               </motion.div>
@@ -732,14 +732,14 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
-        <section id="catalog" className="scroll-mt-24 mb-16 text-left max-w-4xl mx-auto">
+        <section id="catalog" className="scroll-mt-24 mb-20 text-left w-full">
           {/* Gentle Header */}
           <div className="text-center space-y-2 mb-8">
             <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
               Achievement studio
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
-              Explore & Unlock GitHub Badges
+              Explore and claim GitHub badges
             </h2>
             <p className="text-xs sm:text-sm text-[#8b949e] max-w-lg mx-auto leading-relaxed">
               Select any official medallion to inspect its server requirements, tier multipliers, and copy verified Git recipes.
@@ -758,7 +758,7 @@ export const GitGlowHomePage: React.FC = () => {
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
                 className={cn(
-                  'px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer select-none',
+                  'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer select-none active:scale-95',
                   selectedCategory === tab.id
                     ? 'bg-[#21262d] text-[#f0f6fc] shadow-xs border border-[#30363d]'
                     : 'text-[#8b949e] hover:text-[#c9d1d9] border border-transparent'
@@ -778,10 +778,10 @@ export const GitGlowHomePage: React.FC = () => {
                   key={badge.id}
                   onClick={() => setSelectedBadgeId(badge.id)}
                   className={cn(
-                    'p-3 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer select-none relative group',
+                    'p-3 rounded-xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95',
                     isSelected
-                      ? 'bg-[#161b22] border-[#58a6ff] shadow-[0_0_15px_rgba(88,166,255,0.12)] ring-1 ring-[#58a6ff]/40'
-                      : 'bg-[#161b22]/40 border-[#30363d]/70 hover:border-[#30363d] hover:bg-[#161b22]/70'
+                      ? 'bg-[#161b22] border-[#58a6ff] shadow-[0_0_15px_rgba(88,166,255,0.14)] ring-1 ring-[#58a6ff]/40'
+                      : 'bg-[#161b22]/40 border-[#30363d]/70 hover:border-[#58a6ff]/50 hover:bg-[#161b22]/70'
                   )}
                 >
                   <div className="relative w-12 h-12 flex items-center justify-center">
@@ -991,7 +991,7 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
-        <section id="compare" className="scroll-mt-24 mb-16 text-left max-w-4xl mx-auto">
+        <section id="compare" className="scroll-mt-24 mb-20 text-left w-full">
           {/* Gentle Header */}
           <div className="text-center space-y-2 mb-8">
             <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
@@ -1075,17 +1075,17 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
               </div>
 
-              <ul className="space-y-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed pt-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm text-[#8b949e] leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Can be copied and pasted in 30 seconds from online generator templates.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Proves familiarity with markdown image syntax, not real Git workflow skills.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Hiring managers and senior engineers scroll right past it to commit history.</span>
                 </li>
               </ul>
@@ -1188,17 +1188,17 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
               </div>
 
-              <ul className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed pt-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Awarded automatically by GitHub server webhooks on real Git events.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Stamped directly onto your public GitHub profile header next to your bio.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Proves genuine branch hygiene, co-author trailers, and PR etiquette.</span>
                 </li>
               </ul>
@@ -1224,13 +1224,13 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
               to="/blueprints/gitglow/engine?badge=quickdraw"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-bold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-bold text-xs uppercase tracking-wider transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-[0_4px_20px_rgba(209,243,77,0.25)] cursor-pointer"
             >
               Claim Quickdraw (120s) →
             </Link>
             <Link
               to="/blueprints/gitglow/engine?badge=pull-shark"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0d1117] hover:bg-[#21262d] text-[#f0f6fc] border border-[#30363d] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0d1117] hover:bg-[#21262d] text-[#f0f6fc] border border-[#30363d] font-bold text-xs uppercase tracking-wider transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] hover:border-[#58a6ff] cursor-pointer"
             >
               Claim Pull Shark 🦈
             </Link>
