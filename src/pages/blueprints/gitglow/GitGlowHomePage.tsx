@@ -483,248 +483,311 @@ export const GitGlowHomePage: React.FC = () => {
     <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] pt-20 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0d1117]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ─── SECTION 1: Hero ─────────────────────────────────────────────── */}
+        {/* ─── SECTION 1: Hero (Supaste-Style Grand Centered Layout) ──────── */}
         <section
           id="hero"
-          className="relative pt-16 pb-24 sm:pt-20 sm:pb-32 border-b border-[#30363d]/40 mb-16 overflow-hidden"
+          className="relative pt-8 pb-20 sm:pt-12 sm:pb-28 mb-16 overflow-hidden"
         >
-          {/* Background ambient glows */}
+          {/* Supaste-Signature Royal Cobalt Ambient Glow (Radiating from under the notch) */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden"
+            className="pointer-events-none absolute -top-32 inset-x-0 h-[720px] overflow-hidden"
           >
-            <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-[#d1f34d]/5 blur-[120px]" />
-            <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-[#58a6ff]/6 blur-[100px]" />
-            {/* Subtle grid overlay */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] sm:w-[1300px] h-[600px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#0052ff]/30 via-[#002e99]/20 to-transparent blur-[85px]" />
+            <div className="absolute top-16 left-1/4 w-[450px] h-[320px] rounded-full bg-[#1e40af]/20 blur-[90px]" />
+            <div className="absolute top-16 right-1/4 w-[450px] h-[320px] rounded-full bg-[#2563eb]/20 blur-[90px]" />
             <div
-              className="absolute inset-0 opacity-[0.03]"
+              className="absolute inset-0 opacity-[0.04]"
               style={{
                 backgroundImage:
-                  'linear-gradient(#30363d 1px, transparent 1px), linear-gradient(90deg, #30363d 1px, transparent 1px)',
-                backgroundSize: '48px 48px',
+                  'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)',
+                backgroundSize: '40px 40px',
+                maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+                WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
               }}
             />
           </div>
 
-          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-
-            {/* ── LEFT: Text Column ── */}
-            <div className="space-y-6 lg:pr-8">
-
-              {/* Subtle Blueprints directory breadcrumb */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
-              >
-                <Link
-                  to="/blueprints"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono text-[#8b949e] hover:text-[#58a6ff] transition-colors py-1 group select-none"
-                >
-                  <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform" />
-                  <span>All Blueprints</span>
-                </Link>
-              </motion.div>
-
-              {/* Pill */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              >
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 text-[#d1f34d] text-xs font-semibold tracking-wide">
-                  <Sparkles size={11} aria-hidden="true" />
-                  The Practical Path to GitHub Achievements
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
-                className="space-y-1"
-              >
-                <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold text-[#f0f6fc] tracking-tight leading-[1.08]">
-                  Don't just add badges.
-                </h1>
-                <p className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold italic tracking-tight leading-[1.1]">
-                  <span className="relative inline-block">
-                    <span className="relative z-10 text-[#0d1117]">Earn them the right way.</span>
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 -mx-1 -my-0.5 rounded bg-[#d1f34d] skew-x-[-2deg]"
-                    />
-                  </span>
-                </p>
-              </motion.div>
-
-              {/* Body */}
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.14 }}
-                className="text-[#8b949e] text-base sm:text-lg leading-relaxed max-w-[42ch]"
-              >
-                Complete real GitHub missions, master branch workflows, and claim{' '}
-                <strong className="text-[#f0f6fc] font-semibold">official achievements</strong>{' '}
-                in minutes.
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
-                className="flex items-center flex-wrap gap-3"
-              >
-                <a
-                  href="#catalog"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f0f6fc] text-[#0d1117] text-sm font-bold hover:bg-[#d1f34d] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-150 group shadow-sm hover:shadow-[0_4px_16px_rgba(209,243,77,0.25)]"
-                >
-                  Start Your First Mission
-                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-                </a>
-                <a
-                  href="https://github.com/guchchi"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#30363d] text-[#8b949e] text-sm font-medium hover:border-[#58a6ff] hover:text-[#58a6ff] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-150"
-                >
-                  <Play size={13} aria-hidden="true" />
-                  Watch Demo
-                </a>
-              </motion.div>
-
-              {/* Stats Bar */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.3 }}
-                className="flex items-center flex-wrap gap-x-5 gap-y-2 pt-1"
-              >
-                {[
-                  { icon: <Github size={14} aria-hidden="true" />, value: '10K+', label: 'Developers' },
-                  { icon: <Award size={14} aria-hidden="true" />, value: '50+', label: 'Achievements' },
-                  { icon: <Zap size={14} aria-hidden="true" />, value: 'Level Up', label: 'Your Profile' },
-                ].map((stat) => (
-                  <div key={stat.label} className="flex items-center gap-1.5 text-xs text-[#8b949e]">
-                    <span className="text-[#58a6ff]">{stat.icon}</span>
-                    <span className="font-bold text-[#f0f6fc]">{stat.value}</span>
-                    <span>{stat.label}</span>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-
-            {/* ── RIGHT: Floating Card Composition ── */}
+          <div className="relative max-w-4xl mx-auto flex flex-col items-center text-center">
+            {/* Subtle Blueprints directory breadcrumb */}
             <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.12 }}
-              className="relative h-[380px] sm:h-[420px] lg:h-[460px] select-none"
-              aria-hidden="true"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
+              className="mb-6"
             >
-
-              {/* ── Mission Complete Toast ── */}
-              <motion.div
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.BOUNCE, delay: 0.5 }}
-                className="absolute top-0 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0 z-20 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#161b22] border border-[#3fb950]/50 shadow-lg shadow-black/40 w-max"
+              <Link
+                to="/blueprints"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white transition-colors px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:border-white/20 select-none group"
               >
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#3fb950]/15 flex items-center justify-center">
-                  <CheckCircle2 size={12} className="text-[#3fb950]" />
-                </span>
-                <div>
-                  <p className="text-[11px] font-semibold text-[#f0f6fc] leading-none mb-0.5">Mission complete.</p>
-                  <p className="text-[10px] text-[#8b949e] leading-none">You've earned a new badge.</p>
-                </div>
-              </motion.div>
+                <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
+                <span>All Blueprints</span>
+              </Link>
+            </motion.div>
 
-              {/* ── GitHub Achievements Panel ── */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.35 }}
-                className="absolute top-14 left-0 right-0 sm:left-4 sm:right-4 z-10 rounded-2xl bg-[#161b22] border border-[#30363d] shadow-2xl shadow-black/60 overflow-hidden"
+            {/* Supaste-Style Eyebrow Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+              className="mb-5"
+            >
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-white text-[13px] font-medium tracking-tight shadow-sm">
+                <Github size={14} className="text-white fill-current" />
+                <span>Official GitHub Profile Medallions</span>
+              </div>
+            </motion.div>
+
+            {/* Giant Centered Headline (Supaste Exact 2-Line Impact) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.05 }}
+              className="space-y-1 sm:space-y-2"
+            >
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-bold text-white tracking-[-0.04em] leading-[1.04]">
+                Don't just add badges.
+              </h1>
+              <p className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-bold tracking-[-0.04em] leading-[1.04] text-white">
+                Earn them the right way.
+              </p>
+            </motion.div>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
+              className="text-base sm:text-lg md:text-xl text-[#94a3b8] max-w-2xl mx-auto leading-relaxed mt-5"
+            >
+              GitGlow is the verified terminal handbook and engine for developers to unlock, verify, and showcase genuine GitHub profile achievements in minutes.
+            </motion.p>
+
+            {/* Supaste-Style Centered CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.15 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8"
+            >
+              <a
+                href="#recipes"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[46px] px-6 rounded-[12px] bg-white hover:bg-[#f0f0f0] text-black text-sm font-semibold tracking-[-0.01em] inline-flex items-center gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-white/10 group cursor-pointer"
               >
-                {/* Panel header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d]">
-                  <div className="flex items-center gap-2">
-                    <Github size={14} className="text-[#8b949e]" />
-                    <span className="text-xs font-semibold text-[#f0f6fc]">Achievements</span>
-                  </div>
-                  <span className="text-[10px] text-[#58a6ff] font-medium hover:underline cursor-pointer">
-                    View all →
-                  </span>
-                </div>
+                <Terminal size={16} className="text-black" />
+                <span>Start First Mission</span>
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </a>
 
-                {/* Badge Row */}
-                <div className="px-4 py-4 flex items-start gap-5 overflow-x-auto scrollbar-hide">
-                  {[
-                    { src: '/images/badges/pull-shark.png', name: 'Pull Shark', date: 'Oct 2024' },
-                    { src: '/images/badges/arctic-code-vault.png', name: 'Arctic Code Vault', date: 'Dec 2024' },
-                    { src: '/images/badges/quickdraw.png', name: 'Quickdraw', date: 'Jan 2025' },
-                    { src: '/images/badges/yolo.png', name: 'YOLO', date: 'Feb 2025' },
-                  ].map((badge, i) => (
-                    <motion.div
-                      key={badge.name}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.5 + i * 0.07 }}
-                      className="flex flex-col items-center gap-1.5 flex-shrink-0"
-                    >
-                      <div className="w-12 h-12 rounded-full bg-[#0d1117] border border-[#30363d] flex items-center justify-center overflow-hidden p-0.5">
-                        <img src={badge.src} alt={badge.name} className="w-full h-full object-cover rounded-full" />
-                      </div>
-                      <p className="text-[9px] font-medium text-[#8b949e] text-center leading-tight max-w-[52px]">{badge.name}</p>
-                      <p className="text-[9px] text-[#484f58] text-center">{badge.date}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* ── Contribution Graph Card ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.55 }}
-                className="absolute bottom-0 left-0 right-0 sm:left-4 sm:right-16 z-10 rounded-xl bg-[#161b22] border border-[#30363d] shadow-xl shadow-black/40 p-3"
+              <a
+                href="#catalog"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[46px] px-5 rounded-[12px] bg-white/5 hover:bg-white/10 text-white text-sm font-medium border border-white/10 hover:border-white/20 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer backdrop-blur-md"
               >
-                <p className="text-[10px] font-semibold text-[#8b949e] mb-2 uppercase tracking-wide">Your Contributions</p>
-                {/* Contribution grid mock */}
-                <div className="grid gap-[3px]" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
-                  {Array.from({ length: 182 }).map((_, i) => {
-                    const levels = ['bg-[#161b22]', 'bg-[#0e4429]', 'bg-[#006d32]', 'bg-[#26a641]', 'bg-[#39d353]'];
-                    const seed = (i * 37 + 11) % 100;
-                    const lvl = seed < 30 ? 0 : seed < 50 ? 1 : seed < 70 ? 2 : seed < 85 ? 3 : 4;
-                    return (
-                      <div
-                        key={i}
-                        className={cn('rounded-sm aspect-square', levels[lvl])}
-                      />
-                    );
-                  })}
-                </div>
-              </motion.div>
+                <Layers size={15} className="text-white/70" />
+                <span>Explore 10 Medallions</span>
+              </a>
+            </motion.div>
 
-              {/* ── Trophy accent ── */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.BOUNCE, delay: 0.7 }}
-                className="absolute bottom-16 right-0 sm:-right-4 z-20 w-12 h-12 rounded-2xl bg-gradient-to-br from-[#f0a500] to-[#c97d00] flex items-center justify-center shadow-lg shadow-[#f0a500]/20"
-              >
-                <Trophy size={22} className="text-white drop-shadow" />
-              </motion.div>
-
+            {/* Micro Trust Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
+              className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-5 text-[12px] font-mono text-white/50"
+            >
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#3fb950]" />
+                100% GitHub ToS Compliant
+              </span>
+              <span className="text-white/20 hidden sm:inline">·</span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#3fb950]" />
+                Personal Repo Safe
+              </span>
+              <span className="text-white/20 hidden sm:inline">·</span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-[#3fb950]" />
+                Permanent Profile Proof
+              </span>
             </motion.div>
           </div>
+
+          {/* ── Centerpiece: Supaste-Style macOS Application Mockup Window ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.25 }}
+            className="mt-12 sm:mt-16 w-full max-w-5xl mx-auto"
+          >
+            <div className="relative rounded-[20px] sm:rounded-[24px] border border-white/15 bg-[#161b22]/90 backdrop-blur-2xl shadow-[0_30px_90px_-20px_rgba(0,82,255,0.35),0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden">
+              {/* macOS Window Topbar */}
+              <div className="h-11 px-4 sm:px-5 bg-[#0d1117]/80 border-b border-white/10 flex items-center justify-between select-none">
+                {/* Traffic lights */}
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50" />
+                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50" />
+                  <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50" />
+                  <span className="ml-3 text-[11px] font-mono text-white/40 hidden sm:inline">
+                    GitGlow Desktop · v1.0
+                  </span>
+                </div>
+
+                {/* Category Pills inside the window matching Supaste */}
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  {[
+                    { id: 'all', label: 'All Badges', count: 10 },
+                    { id: 'starter', label: 'Starter', count: 4 },
+                    { id: 'tiers', label: 'Multi-Tier', count: 4 },
+                    { id: 'legacy', label: 'Historic', count: 1 },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory(tab.id);
+                        document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-[6px] text-[11px] font-medium transition-colors cursor-pointer flex items-center gap-1.5",
+                        selectedCategory === tab.id
+                          ? "bg-white/15 text-white font-semibold"
+                          : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                      )}
+                    >
+                      <span>{tab.label}</span>
+                      <span className="text-[10px] opacity-60 font-mono">({tab.count})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Window Content: 6 Rich Visual Cards Grid */}
+              <div className="p-4 sm:p-6 bg-[#0d1117]/60 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                {[
+                  {
+                    id: 'quickdraw',
+                    name: 'Quickdraw',
+                    tag: 'Starter · 5m',
+                    desc: 'Closed an issue or pull request within 5 minutes of opening.',
+                    image: '/images/badges/quickdraw.png',
+                    status: 'Verified',
+                    cmd: 'gh issue close 1',
+                  },
+                  {
+                    id: 'pull-shark',
+                    name: 'Pull Shark',
+                    tag: 'Tier: Bronze x4',
+                    desc: 'Merged 2+ pull requests via Git branch and auto-merge.',
+                    image: '/images/badges/pull-shark.png',
+                    status: 'Multi-Tier',
+                    cmd: 'gh pr merge --auto --merge',
+                  },
+                  {
+                    id: 'pair-extraordinaire',
+                    name: 'Pair Extraordinaire',
+                    tag: 'Co-Authored · x4',
+                    desc: 'Co-authored a commit that was merged into default branch.',
+                    image: '/images/badges/pair-extraordinaire.png',
+                    status: 'Multi-Tier',
+                    cmd: 'Co-authored-by: bot <bot@users...>',
+                  },
+                  {
+                    id: 'galaxy-brain',
+                    name: 'Galaxy Brain',
+                    tag: 'Community',
+                    desc: '2 accepted answers on public repository discussions.',
+                    image: '/images/badges/galaxy-brain.png',
+                    status: 'Obtainable',
+                    cmd: 'gh api graphql -f query="..."',
+                  },
+                  {
+                    id: 'yolo',
+                    name: 'YOLO',
+                    tag: 'Autonomous',
+                    desc: 'Merged a pull request without code review approval.',
+                    image: '/images/badges/yolo.png',
+                    status: 'Personal Safe',
+                    cmd: 'git push origin main',
+                  },
+                  {
+                    id: 'arctic-code-vault',
+                    name: 'Arctic Code Vault',
+                    tag: 'Historic Program',
+                    desc: 'Contributed code preserved in the 2020 Svalbard Vault.',
+                    image: '/images/badges/arctic-code-vault.png',
+                    status: 'Historic',
+                    cmd: 'Archive Snapshot 02/02/2020',
+                  },
+                ].map((card) => (
+                  <div
+                    key={card.id}
+                    onClick={() => {
+                      setSelectedBadgeId(card.id);
+                      document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group relative rounded-xl border border-white/10 bg-[#161b22]/70 hover:bg-[#161b22] hover:border-white/20 p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/50 cursor-pointer flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/70">
+                          {card.tag}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#3fb950]">
+                          <CheckCircle2 size={12} />
+                          {card.status}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 rounded-xl bg-[#0d1117] border border-white/10 p-1 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                          <img src={card.image} alt={card.name} className="w-9 h-9 object-contain" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-semibold text-white group-hover:text-[#58a6ff] transition-colors">
+                            {card.name}
+                          </h3>
+                          <p className="text-[11px] text-white/60 line-clamp-1 leading-snug">
+                            {card.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+                      <code className="text-[11px] font-mono text-white/40 truncate max-w-[180px]">
+                        {card.cmd}
+                      </code>
+                      <span className="text-[11px] text-[#58a6ff] font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                        Recipe <ArrowRight size={11} />
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Window Footer Statusbar */}
+              <div className="px-5 py-3 bg-[#0d1117]/90 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-white/50 font-mono gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#3fb950] animate-pulse" />
+                  <span>10 Official Medallions Indexed · 100% Verified Rules</span>
+                </div>
+                <a
+                  href="#catalog"
+                  className="text-[#58a6ff] hover:underline flex items-center gap-1"
+                >
+                  Inspect All In Catalog <ArrowRight size={12} />
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </section>
 
         {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
