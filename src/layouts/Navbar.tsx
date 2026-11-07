@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -146,22 +146,24 @@ export const Navbar = () => {
       <nav className={cn(
         isHomePage 
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-transparent py-6"
-          : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out",
-        !isHomePage && (isVisible ? "translate-y-0" : "-translate-y-full"),
-        isGitGlow
-          ? "bg-[#0d1117]/90 border-b border-[#30363d] backdrop-blur-md py-3 shadow-sm"
-          : (isBCyber
-              ? "bg-white/95 border-b border-slate-200/90 backdrop-blur-md py-3 shadow-2xs"
-              : (!isHomePage && (isScrolled 
-                  ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
-                  : "bg-transparent border-transparent py-6"))),
+          : (isGitGlow
+              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-transparent py-0"
+              : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
+        !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
+        !isGitGlow && (isBCyber
+          ? "bg-white/95 border-b border-slate-200/90 backdrop-blur-md py-3 shadow-2xs"
+          : (!isHomePage && (isScrolled 
+              ? "bg-white/90 border-b border-[#0b1c30]/5 backdrop-blur-md py-4 shadow-sm"
+              : "bg-transparent border-transparent py-6"))),
         !isNavLightText && !isGitGlow && "nav-force-white"
       )}>
         {/* Scroll Progress Indicator - Fixed to the very top window ceiling */}
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300 pointer-events-none z-[1001]"
-          style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
-        />
+        {!isGitGlow && (
+          <motion.div
+            className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-primary/20 via-brand-primary to-brand-primary/20 origin-left transition-opacity duration-300 pointer-events-none z-[1001]"
+            style={{ scaleX, opacity: isScrolled ? 1 : 0 }}
+          />
+        )}
 
         {isBCyber ? (
           /* Model 1: Contextual Header Swap for B.Cyber Compass */
@@ -299,90 +301,103 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Contextual Header Swap for GitGlow */
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex justify-between items-center relative z-20">
-            {/* Left: Brand Identity + GitGlow Context */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <Link 
-                to="/" 
-                className="font-bold text-lg sm:text-xl tracking-tight text-[#f0f6fc] hover:text-[#58a6ff] transition-colors"
+          /* Supaste-Style Hanging Island Notch Navbar for GitGlow */
+          <motion.div
+            initial={{ y: -64, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{
+              type: 'spring',
+              damping: 20,
+              stiffness: 240,
+              mass: 0.8,
+              delay: 0.1,
+            }}
+            className="pointer-events-auto relative select-none max-w-[calc(100vw-24px)]"
+          >
+            <div className="relative bg-black text-white h-[48px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-7 border-b border-x border-[#30363d]/80 shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
+              {/* Left Inverted Concave Ear (Dynamic Island corner) */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 -left-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
               >
-                Ayush Paul
-              </Link>
-              <span className="text-[#30363d] font-light select-none">/</span>
-              <Link 
-                to="/blueprints/gitglow"
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#f0f6fc] hover:text-[#58a6ff] transition-colors"
-              >
-                <Github className="w-4 h-4 text-[#3fb950] shrink-0" />
-                <span className="whitespace-nowrap font-bold text-[#f0f6fc]">GitGlow</span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#238636]/20 text-[#3fb950] border border-[#238636]/40">
-                  v1.0
-                </span>
-              </Link>
-            </div>
+                <svg viewBox="0 0 20 20" className="w-full h-full fill-black -scale-x-100">
+                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+                </svg>
+              </div>
 
-            {/* Center: Segmented Navigation Pills Dock */}
-            <nav 
-              aria-label="GitGlow Sections"
-              className="hidden lg:flex items-center p-1 rounded-full bg-[#161b22] border border-[#30363d] shadow-sm text-xs"
-            >
-              {[
-                { label: 'Overview', href: '#overview' },
-                { label: 'Compare', href: '#compare' },
-                { label: 'Git Pipeline', href: '#engine' },
-                { label: 'Badge Catalog', href: '#catalog' },
-                { label: 'Tiers Guide', href: '#tiers' },
-                { label: 'FAQ', href: '#faq' },
-              ].map((pill) => (
-                <a
-                  key={pill.label}
-                  href={pill.href}
-                  className="px-3.5 py-1.5 rounded-full transition-colors flex items-center font-medium text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d]"
+              {/* Right Inverted Concave Ear (Dynamic Island corner) */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 -right-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
+              >
+                <svg viewBox="0 0 20 20" className="w-full h-full fill-black">
+                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+                </svg>
+              </div>
+
+              {/* Left: App Icon + Logo */}
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <Link
+                  to="/blueprints/gitglow"
+                  className="flex items-center gap-2 group cursor-pointer"
                 >
-                  {pill.label}
+                  <div className="w-[26px] h-[26px] rounded-[7px] bg-[#161b22] border border-[#30363d] p-0.5 flex items-center justify-center shadow-xs group-hover:border-[#d1f34d] transition-colors">
+                    <Github size={14} className="text-[#f0f6fc] group-hover:text-[#d1f34d] transition-colors" />
+                  </div>
+                  <span className="text-sm font-semibold tracking-tight text-white group-hover:text-[#d1f34d] transition-colors">
+                    GitGlow
+                  </span>
+                </Link>
+
+                <Link
+                  to="/blueprints"
+                  className="hidden md:inline-flex items-center gap-1 text-[11px] font-mono text-[#8b949e] hover:text-[#58a6ff] transition-colors pl-2.5 border-l border-[#30363d]/70"
+                  title="Return to Blueprints Gallery"
+                >
+                  <span>← Blueprints</span>
+                </Link>
+              </div>
+
+              {/* Center: Navigation Links */}
+              <div className="hidden sm:flex items-center gap-4 sm:gap-5">
+                <a
+                  href="#catalog"
+                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                >
+                  Badges
                 </a>
-              ))}
-            </nav>
+                <a
+                  href="#catalog"
+                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                >
+                  Recipes
+                </a>
+                <a
+                  href="#compare"
+                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                >
+                  Proof
+                </a>
+                <a
+                  href="#faq"
+                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                >
+                  FAQ
+                </a>
+              </div>
 
-            {/* Right: Actions */}
-            <div className="hidden sm:flex items-center gap-3">
-              <Link
-                to="/blueprints"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#c9d1d9] bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] transition-all shadow-2xs"
-              >
-                <span>← All Blueprints</span>
-              </Link>
-
-              <Link
-                to="/blueprints/gitglow/engine"
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold text-[#0d1117] bg-[#d1f34d] hover:bg-[#c0e045] transition-all shadow-xs"
-              >
-                <span>Launch Engine →</span>
-              </Link>
+              {/* Right: Supaste-Style Action Button */}
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/blueprints/gitglow/engine"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-white hover:bg-[#d1f34d] text-black text-xs font-semibold tracking-tight transition-all duration-150 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
+                >
+                  <Zap size={12} className="text-black group-hover:scale-110 transition-transform" />
+                  <span>Claim Medallion</span>
+                </Link>
+              </div>
             </div>
-
-            {/* Mobile Menu Toggle Button */}
-            <div className="lg:hidden flex items-center">
-              <button
-                className="w-9 h-9 flex items-center justify-center rounded-full border border-[#30363d] bg-[#161b22] text-[#f0f6fc] hover:bg-[#21262d] transition-all active:scale-90"
-                onClick={() => setIsMobileMenuOpen(prev => !prev)}
-                aria-label="Toggle navigation menu"
-              >
-                <AnimatePresence mode="wait">
-                  {isMobileMenuOpen ? (
-                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                      <X size={16} />
-                    </motion.div>
-                  ) : (
-                    <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                      <Menu size={16} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
-          </div>
+          </motion.div>
         ) : (
           /* Standard Navbar for other pages */
           <div className="max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-16 flex justify-between items-center relative z-20">
