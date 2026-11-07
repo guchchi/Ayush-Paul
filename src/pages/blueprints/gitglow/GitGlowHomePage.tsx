@@ -320,6 +320,131 @@ const InteractiveFAQSection: React.FC = () => {
   );
 };
 
+// ─── Supaste-Style Hanging Island Navbar ─────────────────────────────────────
+const SupasteNavbar: React.FC = () => {
+  return (
+    <motion.header
+      initial={{ y: -64, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{
+        type: 'spring',
+        damping: 20,
+        stiffness: 240,
+        mass: 0.8,
+        delay: 0.1,
+      }}
+      className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-auto select-none"
+    >
+      <nav
+        aria-label="Primary navigation"
+        className="relative bg-black text-white h-[48px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-7 border-b border-x border-[#30363d]/80 shadow-[0_12px_36px_rgba(0,0,0,0.7)]"
+      >
+        {/* Left Inverted Concave Ear (Dynamic Island corner) */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 -left-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
+        >
+          <svg viewBox="0 0 20 20" className="w-full h-full fill-black -scale-x-100">
+            <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+          </svg>
+        </div>
+
+        {/* Right Inverted Concave Ear (Dynamic Island corner) */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 -right-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
+        >
+          <svg viewBox="0 0 20 20" className="w-full h-full fill-black">
+            <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+          </svg>
+        </div>
+
+        {/* Left: App Icon + Logo */}
+        <div className="flex items-center gap-2.5">
+          <Link
+            to="/blueprints/gitglow"
+            className="flex items-center gap-2 group cursor-pointer"
+          >
+            <div className="w-[26px] h-[26px] rounded-[7px] bg-[#161b22] border border-[#30363d] p-0.5 flex items-center justify-center shadow-xs group-hover:border-[#d1f34d] transition-colors">
+              <Github size={14} className="text-[#f0f6fc] group-hover:text-[#d1f34d] transition-colors" />
+            </div>
+            <span className="text-sm font-semibold tracking-tight text-white group-hover:text-[#d1f34d] transition-colors">
+              GitGlow
+            </span>
+          </Link>
+
+          <Link
+            to="/blueprints"
+            className="hidden md:inline-flex items-center gap-1 text-[11px] font-mono text-[#8b949e] hover:text-[#58a6ff] transition-colors pl-2.5 border-l border-[#30363d]/70"
+            title="Return to Blueprints Gallery"
+          >
+            <span>← Blueprints</span>
+          </Link>
+        </div>
+
+        {/* Center: Navigation Links */}
+        <div className="hidden sm:flex items-center gap-4 sm:gap-5">
+          <a
+            href="#catalog"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+          >
+            Badges
+          </a>
+          <a
+            href="#catalog"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+          >
+            Recipes
+          </a>
+          <a
+            href="#compare"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('compare')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+          >
+            Proof
+          </a>
+          <a
+            href="#faq"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+          >
+            FAQ
+          </a>
+        </div>
+
+        {/* Right: Supaste-Style Action Button */}
+        <div className="flex items-center gap-2">
+          <a
+            href="#catalog"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-white hover:bg-[#d1f34d] text-black text-xs font-semibold tracking-tight transition-all duration-150 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
+          >
+            <Zap size={12} className="text-black group-hover:scale-110 transition-transform" />
+            <span>Claim Medallion</span>
+          </a>
+        </div>
+      </nav>
+    </motion.header>
+  );
+};
+
 // ─── Scanned Profile Model ───────────────────────────────────────────────────
 interface ScannedProfileData {
   login: string;
@@ -482,23 +607,8 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] pt-20 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0d1117]">
       
-      {/* ─── Upper Navigation Bar ─────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4 flex items-center justify-between">
-        <Link
-          to="/blueprints"
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8b949e] hover:text-[#58a6ff] transition-colors rounded-lg p-1"
-          aria-label="Back to Blueprints collection"
-        >
-          <ArrowLeft size={14} aria-hidden="true" />
-          <span>All Blueprints</span>
-        </Link>
-
-        {/* Live Bot Telemetry Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161b22] border border-[#30363d] text-[11px] font-mono text-[#8b949e]">
-          <span className="w-2 h-2 rounded-full bg-[#3fb950] animate-pulse" />
-          <span>gitglow-sandbox: <strong className="text-[#3fb950] font-bold">online</strong> · 42s avg merge</span>
-        </div>
-      </div>
+      {/* ─── Supaste Hanging Island Navigation with Drop Effect ─── */}
+      <SupasteNavbar />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
