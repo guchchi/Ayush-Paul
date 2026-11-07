@@ -543,34 +543,79 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="rounded-2xl border border-[#30363d] bg-[#161b22]/50 divide-y md:divide-y-0 md:divide-x divide-[#30363d]/60 grid md:grid-cols-2 overflow-hidden shadow-sm">
             
             {/* Left Box: The Copy-Paste Illusion */}
-            <div className="p-6 sm:p-7 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
-                <div>
-                  <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block">
-                    Vanity metric
-                  </span>
-                  <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
-                    README Markdown Shields
-                  </h3>
-                </div>
-                <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
-                  Unverified
-                </span>
-              </div>
-
-              {/* Mockup of Cluttered README */}
-              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]/60 space-y-2 font-mono text-xs">
-                <div className="text-[#8b949e] text-[10px]">// README.md (copy-paste shields)</div>
-                <div className="flex flex-wrap gap-1.5 opacity-60">
-                  {['React', 'NodeJS', 'Python', 'Docker', 'AWS', 'MongoDB', 'Git', 'Linux'].map((tag) => (
-                    <span key={tag} className="px-2 py-0.5 rounded bg-[#21262d] text-[#8b949e] text-[10px] border border-[#30363d]">
-                      {tag}-v20
+            <div className="p-6 sm:p-7 space-y-5 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block">
+                      Vanity metric
                     </span>
-                  ))}
+                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                      README Markdown Shields
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
+                    Unverified
+                  </span>
+                </div>
+
+                {/* Realistic GitHub README File Capsule */}
+                <div className="rounded-xl border border-[#30363d] bg-[#010409] overflow-hidden shadow-inner">
+                  {/* File Tab Header */}
+                  <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-[#30363d]/80 bg-[#161b22] text-xs font-mono text-[#8b949e]">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs select-none">📄</span>
+                      <span className="text-[#f0f6fc] font-medium truncate">README.md</span>
+                    </div>
+                    <span className="text-[10px] text-[#8b949e] font-mono shrink-0">preview</span>
+                  </div>
+
+                  {/* README Content Canvas with Real Shields */}
+                  <div className="p-4 sm:p-5 space-y-3 min-h-[148px] flex flex-col justify-between">
+                    <div className="text-[10px] font-mono text-[#8b949e]">// Copy-pasted image shields (0 Git proof)</div>
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <img
+                        src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"
+                        alt="React"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                      <img
+                        src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"
+                        alt="TypeScript"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                      <img
+                        src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"
+                        alt="Node.js"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                      <img
+                        src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"
+                        alt="Python"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                      <img
+                        src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"
+                        alt="Docker"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                      <img
+                        src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white"
+                        alt="AWS"
+                        className="h-6 rounded object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <ul className="space-y-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed">
+              <ul className="space-y-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
                   <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
                   <span>Can be copied and pasted in 30 seconds from online generator templates.</span>
@@ -587,47 +632,73 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
 
             {/* Right Box: Official GitHub Webhook Medallions */}
-            <div className="p-6 sm:p-7 space-y-4 bg-[#161b22]/30">
-              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
-                <div>
-                  <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
-                    Verifiable proof
+            <div className="p-6 sm:p-7 space-y-5 bg-[#161b22]/30 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                      Verifiable proof
+                    </span>
+                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                      GitHub Profile Medallions
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium">
+                    Server-Verified
                   </span>
-                  <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
-                    GitHub Profile Medallions
-                  </h3>
                 </div>
-                <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium">
-                  Server-Verified
-                </span>
-              </div>
 
-              {/* Mockup of Official Profile Header Medallions */}
-              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]/60 space-y-2 font-mono text-xs">
-                <div className="flex items-center justify-between text-[#8b949e] text-[10px]">
-                  <span>// github.com/{scannedUser.login}</span>
-                  <span className="text-[#3fb950]">Achievements</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {[
-                    { img: '/images/badges/pull-shark.png', name: 'Pull Shark' },
-                    { img: '/images/badges/quickdraw.png', name: 'Quickdraw' },
-                    { img: '/images/badges/yolo.png', name: 'YOLO' },
-                    { img: '/images/badges/pair-extraordinaire.png', name: 'Pair Extra' },
-                  ].map((item) => (
-                    <div
-                      key={item.name}
-                      className="w-9 h-9 rounded-lg bg-[#161b22] border border-[#30363d] p-1 flex items-center justify-center hover:border-[#58a6ff]/60 transition-colors"
-                      title={item.name}
-                    >
-                      <img src={item.img} alt={item.name} className="w-6 h-6 object-contain select-none" />
+                {/* Realistic Official Profile Achievements Capsule */}
+                <div className="rounded-xl border border-[#30363d] bg-[#010409] overflow-hidden shadow-inner">
+                  {/* Profile Header Tab */}
+                  <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-[#30363d]/80 bg-[#161b22] text-xs font-mono text-[#8b949e]">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs select-none">🏆</span>
+                      <span className="text-[#f0f6fc] font-medium truncate">@{scannedUser.login}</span>
                     </div>
-                  ))}
-                  <span className="text-[11px] text-[#3fb950] font-sans font-medium pl-1">✓ Permanent</span>
+                    <span className="text-[10px] text-[#3fb950] font-mono shrink-0 font-medium">achievements</span>
+                  </div>
+
+                  {/* Official Medallions Row */}
+                  <div className="p-4 sm:p-5 space-y-3 min-h-[148px] flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-[#8b949e]">
+                      <span>// Official GitHub webhooks</span>
+                      <span className="text-[#3fb950] font-bold">200 OK</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 pt-0.5">
+                      {[
+                        { img: '/images/badges/pull-shark.png', name: 'Pull Shark', tier: 'x2' },
+                        { img: '/images/badges/quickdraw.png', name: 'Quickdraw' },
+                        { img: '/images/badges/pair-extraordinaire.png', name: 'Pair Extra' },
+                        { img: '/images/badges/yolo.png', name: 'YOLO' },
+                        { img: '/images/badges/starstruck.png', name: 'Starstruck' },
+                      ].map((item) => (
+                        <div
+                          key={item.name}
+                          className="relative group/badge flex flex-col items-center"
+                          title={item.name}
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 flex items-center justify-center hover:border-[#58a6ff] hover:scale-105 transition-all shadow-sm">
+                            <img
+                              src={item.img}
+                              alt={item.name}
+                              className="w-7 h-7 object-contain select-none"
+                              loading="lazy"
+                            />
+                          </div>
+                          {item.tier && (
+                            <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117] shadow-xs">
+                              {item.tier}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <ul className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+              <ul className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
                   <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
                   <span>Awarded automatically by GitHub server webhooks on real Git events.</span>
