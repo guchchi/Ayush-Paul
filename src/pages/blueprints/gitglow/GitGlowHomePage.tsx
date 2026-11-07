@@ -28,6 +28,7 @@ import {
   RefreshCw,
   Search,
   AlertCircle,
+  Copy,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -285,6 +286,14 @@ export const GitGlowHomePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [githubInput, setGithubInput] = useState<string>('arivera-dev');
   const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
+
+  const handleCopyCommand = (cmd: string) => {
+    navigator.clipboard.writeText(cmd);
+    setCopiedCommand(cmd);
+    setTimeout(() => setCopiedCommand(null), 2000);
+  };
+
   const [scannedUser, setScannedUser] = useState<ScannedProfileData>({
     login: 'arivera-dev',
     name: 'Alex Rivera',
@@ -522,17 +531,17 @@ export const GitGlowHomePage: React.FC = () => {
                   <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1 max-w-md">
                     {scannedUser.bio}
                   </p>
-                  <div className="flex items-center gap-3 mt-1.5 text-[11px] font-mono text-neutral-400">
-                    <span>{scannedUser.public_repos} Public Repos</span>
-                    <span>·</span>
-                    <span>{scannedUser.followers} Followers</span>
-                    <span>·</span>
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-2 text-[11px] font-mono text-neutral-400">
+                    <span className="whitespace-nowrap">{scannedUser.public_repos} repos</span>
+                    <span className="text-neutral-600">·</span>
+                    <span className="whitespace-nowrap">{scannedUser.followers} followers</span>
+                    <span className="text-neutral-600">·</span>
                     {scannedUser.statusType === 'verified' ? (
-                      <span className="text-[10px] text-emerald-400 font-sans font-semibold flex items-center gap-1">
-                        <Check size={10} className="text-emerald-400" /> {scannedUser.statusMessage || 'Verified Account'}
+                      <span className="text-[10px] text-emerald-400 font-sans font-semibold inline-flex items-center gap-1 whitespace-nowrap">
+                        <Check size={10} className="text-emerald-400" /> {scannedUser.statusMessage || 'Verified Profile'}
                       </span>
                     ) : (
-                      <span className="text-[10px] text-amber-300 font-sans font-semibold flex items-center gap-1">
+                      <span className="text-[10px] text-amber-300 font-sans font-semibold inline-flex items-center gap-1 whitespace-nowrap">
                         <AlertCircle size={10} className="text-amber-400" /> {scannedUser.statusMessage || 'Sandbox Mode'}
                       </span>
                     )}
@@ -541,11 +550,11 @@ export const GitGlowHomePage: React.FC = () => {
               </div>
 
               {/* Overall Achievement Audit Status */}
-              <div className="bg-[#161b22] px-4 py-3 rounded-2xl border border-neutral-800 flex items-center justify-between md:flex-col md:items-end gap-2">
+              <div className="bg-[#161b22] px-4 py-3 rounded-2xl border border-neutral-800 flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between gap-2 shrink-0">
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-400">
                   Starter Badges Status
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs whitespace-nowrap">
                   <span>0 / 4 Unlocked</span>
                   <span className="text-neutral-500">· Ready to Claim</span>
                 </span>
@@ -554,7 +563,7 @@ export const GitGlowHomePage: React.FC = () => {
 
             {/* Middle: 4 Starter Badges Diagnostics Grid */}
             <div className="py-6 border-b border-neutral-800">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
                 <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
                   Starter Achievements Breakdown
                 </span>
@@ -692,7 +701,7 @@ export const GitGlowHomePage: React.FC = () => {
             
             {/* Left Column: The Old Way (The Illusion) */}
             <div className="p-7 sm:p-8 rounded-3xl bg-rose-50/30 border border-rose-200/80 space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-rose-200/60">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-rose-200/60">
                 <div className="flex items-center gap-2.5">
                   <span className="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
                     ✕
@@ -701,7 +710,7 @@ export const GitGlowHomePage: React.FC = () => {
                     The Copy-Paste Illusion
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 bg-rose-100/80 px-2.5 py-1 rounded-full">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 bg-rose-100/80 px-2.5 py-1 rounded-full whitespace-nowrap">
                   High Noise · Zero Signal
                 </span>
               </div>
@@ -738,7 +747,7 @@ export const GitGlowHomePage: React.FC = () => {
 
             {/* Right Column: The GitGlow Way (Real Webhooks) */}
             <div className="p-7 sm:p-8 rounded-3xl bg-emerald-50/20 border-2 border-emerald-500/40 shadow-sm space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-emerald-200/60">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-emerald-200/60">
                 <div className="flex items-center gap-2.5">
                   <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
                     ✓
@@ -747,7 +756,7 @@ export const GitGlowHomePage: React.FC = () => {
                     The GitGlow Verified Blueprint
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full whitespace-nowrap">
                   Permanent · Unfakeable
                 </span>
               </div>
@@ -815,8 +824,24 @@ export const GitGlowHomePage: React.FC = () => {
               <p className="text-xs text-neutral-400 leading-relaxed">
                 Choose your target badge. Start with Quickdraw (2 mins), then advance to Pull Shark 🦈 and YOLO 🪂.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
-                <span className="text-emerald-400">$</span> git checkout -b claim/quickdraw
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
+                  <span className="text-emerald-400 select-none">$</span>
+                  <span>git switch -c claim/quickdraw</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyCommand('git switch -c claim/quickdraw')}
+                  className="p-1 rounded-md text-neutral-500 hover:text-white hover:bg-neutral-800 transition-colors shrink-0 ml-2"
+                  title="Copy command"
+                  aria-label="Copy station 1 command"
+                >
+                  {copiedCommand === 'git switch -c claim/quickdraw' ? (
+                    <Check size={12} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={12} />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -833,8 +858,24 @@ export const GitGlowHomePage: React.FC = () => {
               <p className="text-xs text-neutral-400 leading-relaxed">
                 The engine gives you the exact Git commands, branch format, or commit trailers needed for GitHub's webhook.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
-                <span className="text-emerald-400">$</span> git commit -m "feat: claim badge"
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
+                  <span className="text-emerald-400 select-none">$</span>
+                  <span>git commit -m "feat: claim badge"</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyCommand('git commit -m "feat: claim badge"')}
+                  className="p-1 rounded-md text-neutral-500 hover:text-white hover:bg-neutral-800 transition-colors shrink-0 ml-2"
+                  title="Copy command"
+                  aria-label="Copy station 2 command"
+                >
+                  {copiedCommand === 'git commit -m "feat: claim badge"' ? (
+                    <Check size={12} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={12} />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -851,8 +892,24 @@ export const GitGlowHomePage: React.FC = () => {
               <p className="text-xs text-neutral-400 leading-relaxed">
                 Submit to our verified sandbox. Our automated bot merges in 60s, unlocking the badge on your profile.
               </p>
-              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
-                <span className="text-emerald-400">$</span> gh pr merge --auto --merge
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
+                  <span className="text-emerald-400 select-none">$</span>
+                  <span>gh pr merge --auto --merge</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyCommand('gh pr merge --auto --merge')}
+                  className="p-1 rounded-md text-neutral-500 hover:text-white hover:bg-neutral-800 transition-colors shrink-0 ml-2"
+                  title="Copy command"
+                  aria-label="Copy station 3 command"
+                >
+                  {copiedCommand === 'gh pr merge --auto --merge' ? (
+                    <Check size={12} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={12} />
+                  )}
+                </button>
               </div>
             </div>
 
