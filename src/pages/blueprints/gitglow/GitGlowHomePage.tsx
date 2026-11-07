@@ -223,37 +223,290 @@ const BADGE_THEMES: Record<
   },
 };
 
-// ─── FAQ Accordion Item ──────────────────────────────────────────────────────
-const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border border-[#30363d] rounded-2xl bg-[#161b22] overflow-hidden transition-all duration-200 hover:border-[#58a6ff]/40">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full px-6 py-4 flex items-center justify-between text-left text-sm sm:text-base font-bold text-[#f0f6fc] hover:text-[#58a6ff] transition-colors focus:outline-none"
-        aria-expanded={open}
-      >
-        <span className="pr-4">{q}</span>
-        <span className="p-1 rounded-full bg-[#0d1117] border border-[#30363d] text-[#8b949e] shrink-0">
-          {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        </span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-            className="overflow-hidden"
-          >
-            <div className="px-6 pb-5 pt-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed border-t border-[#30363d] bg-[#0d1117]/60">
-              {a}
+// ─── Interactive FAQ Component ──────────────────────────────────────────────
+interface FAQData {
+  id: string;
+  category: 'safety' | 'solo' | 'troubleshoot' | 'tiers';
+  q: string;
+  badgeTag: string;
+  content: React.ReactNode;
+}
+
+const InteractiveFAQSection: React.FC<{
+  copiedSnippet: string | null;
+  onCopy: (text: string, label: string) => void;
+}> = ({ copiedSnippet, onCopy }) => {
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [openId, setOpenId] = useState<string | null>('ban-risk');
+
+  const faqs: FAQData[] = [
+    {
+      id: 'ban-risk',
+      category: 'safety',
+      q: 'Could my account get banned?',
+      badgeTag: 'Account Safety',
+      content: (
+        <div className="space-y-3.5">
+          <p className="text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+            <strong className="text-[#3fb950]">Zero ban risk.</strong> GitGlow guides you through standard, native Git commands on your own repositories. No automated bots, no token scraping, no private API abuse. GitHub’s achievement engine awards badges solely based on real Git event webhooks.
+          </p>
+
+          {/* Interactive Webhook Inspector */}
+          <div className="p-3 rounded-xl bg-[#010409] border border-[#30363d] font-mono text-[11px] space-y-1.5">
+            <div className="flex items-center justify-between text-[#8b949e] text-[10px] pb-1 border-b border-[#21262d]">
+              <span>// GitHub Server Ingestion Payload</span>
+              <span className="text-[#3fb950] font-bold">Status: 200 OK</span>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            <div className="text-[#c9d1d9] space-y-0.5">
+              <div><span className="text-[#58a6ff]">"event"</span>: <span className="text-[#3fb950]">"issues.closed"</span>,</div>
+              <div><span className="text-[#58a6ff]">"execution"</span>: <span className="text-[#3fb950]">"native_git_cli"</span>,</div>
+              <div><span className="text-[#58a6ff]">"ban_risk"</span>: <span className="text-[#3fb950]">"0% (Standard Repository Action)"</span></div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'solo-claims',
+      category: 'solo',
+      q: 'Can I earn badges completely solo?',
+      badgeTag: 'Solo Friendly',
+      content: (
+        <div className="space-y-3.5">
+          <p className="text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+            <strong className="text-[#f0f6fc]">Yes, 100% solo.</strong> You do not need a popular open-source project, stars, or collaborators to unlock your first badges. GitHub treats actions on your personal repositories identically to enterprise repos.
+          </p>
+
+          <div className="grid sm:grid-cols-3 gap-2.5 text-xs">
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <span className="text-[10px] font-mono text-[#d1f34d] font-bold block">Quickdraw ⚡</span>
+              <span className="text-[#8b949e] text-[11px] block">100% Solo. Open & close an issue in 120s on your scratchpad repo.</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <span className="text-[10px] font-mono text-[#58a6ff] font-bold block">Pull Shark 🦈</span>
+              <span className="text-[#8b949e] text-[11px] block">Merge 2 PRs into your own repo, or auto-merge via GitGlow sandbox.</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <span className="text-[10px] font-mono text-[#a855f7] font-bold block">Pair Extraordinaire 👯</span>
+              <span className="text-[#8b949e] text-[11px] block">Add a single commit trailer line: <code className="text-[#c9d1d9]">Co-authored-by:</code>.</span>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'no-badge-troubleshoot',
+      category: 'troubleshoot',
+      q: 'Merged a PR but no badge appeared?',
+      badgeTag: 'Troubleshooting',
+      content: (
+        <div className="space-y-3.5">
+          <p className="text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+            If GitHub didn't trigger your badge after a merge, 99% of the time it is caused by one of these 3 silent mismatches:
+          </p>
+
+          <div className="space-y-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#f0f6fc]">1. Target branch was not default</span>
+                <span className="text-[10px] font-mono text-[#f85149]">Common Mistake</span>
+              </div>
+              <p className="text-[#8b949e] text-[11px]">
+                PRs must merge into the repo's primary default branch (<code className="text-[#f0f6fc]">main</code> or <code className="text-[#f0f6fc]">master</code>). Merges into feature branches do not count.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#f0f6fc]">2. Git email mismatch</span>
+                <span className="text-[10px] font-mono text-[#f85149]">Common Mistake</span>
+              </div>
+              <p className="text-[#8b949e] text-[11px]">
+                Your local commit email must match a verified email on your GitHub account. Check via:
+              </p>
+              <div className="flex items-center justify-between p-1.5 rounded bg-[#161b22] border border-[#30363d] font-mono text-[10px] text-[#3fb950]">
+                <span>git config user.email</span>
+                <button
+                  type="button"
+                  onClick={() => onCopy('git config user.email', 'email-cmd')}
+                  className="text-[#8b949e] hover:text-white px-1.5 py-0.5 rounded cursor-pointer"
+                >
+                  {copiedSnippet === 'email-cmd' ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d] space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-[#f0f6fc]">3. GitHub background queue latency</span>
+                <span className="text-[10px] font-mono text-[#d29922]">10-30 Mins</span>
+              </div>
+              <p className="text-[#8b949e] text-[11px]">
+                GitHub indexes achievements through asynchronous queue runners. While actions trigger instantly, profile medallions take 10 to 30 minutes to appear publicly.
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'private-repos',
+      category: 'safety',
+      q: 'Do private repositories count?',
+      badgeTag: 'Private Code',
+      content: (
+        <div className="space-y-3.5">
+          <p className="text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+            <strong className="text-[#3fb950]">Yes.</strong> Your assignment code and repository names stay 100% private. GitHub only needs permission to count the anonymous event toward your profile graph.
+          </p>
+
+          <div className="p-3 rounded-xl bg-[#010409] border border-[#30363d] space-y-2 text-xs">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8b949e] block">
+              1-Minute Toggle in GitHub Settings:
+            </span>
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-[#161b22] border border-[#30363d] text-[11px] font-mono text-[#c9d1d9]">
+              <span className="text-[#3fb950] font-bold">✓</span>
+              <span>Settings → Public profile → "Include private contributions on my profile"</span>
+            </div>
+            <p className="text-[11px] text-[#8b949e]">
+              Once checked, merges in private repos immediately qualify for Pull Shark, Quickdraw, and tier upgrades without revealing a single line of your coursework.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'gold-tier-math',
+      category: 'tiers',
+      q: 'How do tier multipliers work?',
+      badgeTag: 'Tier Math',
+      content: (
+        <div className="space-y-3.5">
+          <p className="text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+            Certain badges (like Pull Shark 🦈 and Pair Extraordinaire 👯) evolve as your volume grows. GitHub calculates multipliers on an exponential curve:
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono text-xs">
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#30363d]">
+              <span className="text-[#8b949e] text-[10px] block">Base Badge</span>
+              <span className="text-[#f0f6fc] font-bold text-sm">2 PRs</span>
+              <span className="text-[#8b949e] text-[10px] block mt-1">~5 Minutes</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#b86241]/50">
+              <span className="text-[#f9bfa7] text-[10px] block font-bold">Bronze (x2)</span>
+              <span className="text-[#f0f6fc] font-bold text-sm">16 PRs</span>
+              <span className="text-[#8b949e] text-[10px] block mt-1">~2 Weeks</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#e1e4e4]/50">
+              <span className="text-[#e1e4e4] text-[10px] block font-bold">Silver (x3)</span>
+              <span className="text-[#f0f6fc] font-bold text-sm">128 PRs</span>
+              <span className="text-[#8b949e] text-[10px] block mt-1">~6 Months</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#010409] border border-[#fae57e]/50">
+              <span className="text-[#fae57e] text-[10px] block font-bold">Gold (x4)</span>
+              <span className="text-[#f0f6fc] font-bold text-sm">1,024 PRs</span>
+              <span className="text-[#8b949e] text-[10px] block mt-1">Maintainer</span>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  const filteredFaqs = faqs.filter((faq) => {
+    if (activeCategory === 'all') return true;
+    return faq.category === activeCategory;
+  });
+
+  return (
+    <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto space-y-6 mb-14 text-left">
+      {/* Gentle Header */}
+      <div className="text-center space-y-1.5 mb-6">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] text-[11px] font-mono font-medium tracking-wider uppercase">
+          Technical Answers
+        </span>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
+          Frequently Asked Questions
+        </h2>
+        <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto leading-relaxed">
+          Clear, concrete answers on GitHub webhook triggers, account safety, and gotchas.
+        </p>
+
+        {/* Gentle Filter Pills */}
+        <div className="inline-flex items-center p-1 rounded-xl bg-[#161b22] border border-[#30363d] gap-1 flex-wrap mt-3">
+          {[
+            { id: 'all', label: 'All Questions' },
+            { id: 'safety', label: 'Account Safety' },
+            { id: 'solo', label: 'Solo Claims' },
+            { id: 'troubleshoot', label: 'Troubleshooting' },
+            { id: 'tiers', label: 'Tier Math' },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={cn(
+                'px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+                activeCategory === cat.id
+                  ? 'bg-[#58a6ff] text-[#0d1117]'
+                  : 'text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d]',
+              )}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Accordion List */}
+      <div className="space-y-3">
+        {filteredFaqs.map((faq) => {
+          const isOpen = openId === faq.id;
+          return (
+            <div
+              key={faq.id}
+              className={cn(
+                'border rounded-2xl bg-[#161b22] overflow-hidden transition-all duration-200',
+                isOpen ? 'border-[#58a6ff]/50 ring-1 ring-[#58a6ff]/20' : 'border-[#30363d] hover:border-neutral-500',
+              )}
+            >
+              <button
+                onClick={() => setOpenId(isOpen ? null : faq.id)}
+                className="w-full px-4 sm:px-6 py-4 flex items-center justify-between text-left transition-colors focus:outline-none cursor-pointer group gap-3"
+                aria-expanded={isOpen}
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#0d1117] text-[#8b949e] border border-[#30363d] shrink-0 font-medium">
+                    {faq.badgeTag}
+                  </span>
+                  <span className="text-sm sm:text-base font-medium sm:font-semibold text-[#f0f6fc] group-hover:text-[#58a6ff] transition-colors leading-snug">
+                    {faq.q}
+                  </span>
+                </div>
+                <span className="p-1.5 rounded-lg bg-[#0d1117] border border-[#30363d] text-[#8b949e] group-hover:text-[#f0f6fc] group-hover:border-[#8b949e] shrink-0 transition-all">
+                  {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-5 sm:px-6 pb-5 pt-3 border-t border-[#30363d]/60 bg-[#0d1117]/50">
+                      {faq.content}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 
@@ -1004,49 +1257,24 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ─── SECTION 4: Streamlined Technical FAQ ─────────────────────────── */}
-        <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto space-y-5 mb-14 text-left">
-          <div className="text-center space-y-1 mb-6">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] text-[10px] font-mono font-bold uppercase tracking-wider">
-              Technical Clarity
-            </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#f0f6fc] tracking-tight">
-              Frequently Asked Questions
-            </h2>
-          </div>
+        {/* ─── SECTION 4: Interactive FAQ with Concrete Curiosity Triggers ──── */}
+        <InteractiveFAQSection copiedSnippet={copiedSnippet} onCopy={handleCopy} />
 
-          <div className="space-y-2.5">
-            <FAQItem
-              q="Is this against GitHub Terms of Service?"
-              a="No. Everything GitGlow guides you to do uses official Git workflows (standard git commits, standard branch creation, and standard pull requests). You make real, valid contributions to our dedicated open-source sandbox repository (gitglow-community). There are no bots faking tokens or hacking GitHub servers."
-            />
-            <FAQItem
-              q="How long does it take for GitHub to show the badge on my profile?"
-              a="GitHub processes badge achievements asynchronously through background queue runners. Usually, badges appear within 10 to 30 minutes after the pull request or issue is closed. If GitHub is experiencing high load, it can take up to 24 hours."
-            />
-            <FAQItem
-              q="Can I earn achievements on private repositories?"
-              a="Yes, but only if you enable private contribution visibility in your GitHub settings: go to Settings → Profile Settings → Contribution Settings and check 'Include private contributions on my profile'."
-            />
-            <FAQItem
-              q="What if I make a mistake during the pull request?"
-              a="That is exactly why gitglow-community exists. It is a zero-judgment sandbox specifically built for students to practice. If your commit message format is wrong, our bot posts a helpful review comment showing you how to fix it."
-            />
-          </div>
-        </section>
-
-        {/* ─── SECTION 5: Final Compact Action Ribbon ───────────────────────── */}
-        <section className="rounded-2xl bg-[#161b22] border border-[#30363d] p-6 sm:p-8 text-center space-y-4">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#f0f6fc] tracking-tight">
+        {/* ─── Final Direct Launch Action Ribbon ────────────────────────────── */}
+        <section className="rounded-2xl bg-[#161b22] border border-[#30363d] p-6 sm:p-8 text-center space-y-3.5 mb-8">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0d1117] border border-[#30363d] text-[#d1f34d] text-[10px] font-mono font-bold uppercase tracking-wider">
+            ⚡ 1-Click Execution
+          </span>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#f0f6fc] tracking-tight">
             Ready to Claim Your First Official GitHub Medallion?
           </h2>
-          <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto">
-            Choose Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
+          <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto leading-relaxed">
+            Start with Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
               to="/blueprints/gitglow/engine?badge=quickdraw"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-extrabold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-bold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer"
             >
               Claim Quickdraw (120s) →
             </Link>
