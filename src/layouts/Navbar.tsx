@@ -357,14 +357,8 @@ export const Navbar = () => {
                 </span>
               </Link>
 
-              {/* Center: Desktop Nav Links (Supaste exact: 14px, 500 weight, -0.02em, 60% opacity -> 100% hover, 6 links) */}
+              {/* Center: Desktop Nav Links (Supaste exact: 14px, 500 weight, -0.02em, 60% opacity -> 100% hover, 5 clear options) */}
               <div className="hidden md:flex items-center gap-6 lg:gap-7">
-                <a
-                  href="#hero"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Overview
-                </a>
                 <a
                   href="#catalog"
                   className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
@@ -399,13 +393,13 @@ export const Navbar = () => {
 
               {/* Right: Supaste-Style White Action Button */}
               <div className="flex items-center shrink-0">
-                <Link
-                  to="/blueprints/gitglow/engine"
+                <a
+                  href="#recipes"
                   className="h-[32px] px-3.5 rounded-[8px] bg-white hover:bg-[#ededed] text-black text-[12px] font-semibold tracking-[-0.01em] inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
                 >
                   <Github size={13} className="text-black fill-current" />
                   <span>Claim Medallion</span>
-                </Link>
+                </a>
               </div>
             </div>
           </motion.div>

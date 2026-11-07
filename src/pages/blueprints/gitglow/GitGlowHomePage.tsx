@@ -509,7 +509,22 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
             {/* ── LEFT: Text Column ── */}
-            <div className="space-y-7 lg:pr-8">
+            <div className="space-y-6 lg:pr-8">
+
+              {/* Subtle Blueprints directory breadcrumb */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.FAST, ease: EASING.PREMIUM }}
+              >
+                <Link
+                  to="/blueprints"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono text-[#8b949e] hover:text-[#58a6ff] transition-colors py-1 group select-none"
+                >
+                  <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform" />
+                  <span>All Blueprints</span>
+                </Link>
+              </motion.div>
 
               {/* Pill */}
               <motion.div
