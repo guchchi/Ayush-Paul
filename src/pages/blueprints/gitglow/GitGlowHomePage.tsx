@@ -866,7 +866,7 @@ export const GitGlowHomePage: React.FC = () => {
 
                 {/* Multi-Tier Multipliers (if available) */}
                 {activeBadge.tiers && activeBadge.tiers.length > 0 && (
-                  <div className="pt-2 border-t border-[#30363d]/30">
+                  <div id="tiers" className="scroll-mt-28 pt-2 border-t border-[#30363d]/30">
                     <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block mb-2">
                       Tier Multipliers
                     </span>
@@ -889,7 +889,7 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
 
             {/* Right: 3-Step Git Blueprint & Commands (7 cols) */}
-            <div className="md:col-span-7 p-6 sm:p-7 bg-[#161b22]/30 flex flex-col justify-between space-y-6">
+            <div id="recipes" className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#161b22]/30 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 {/* Recipe Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">

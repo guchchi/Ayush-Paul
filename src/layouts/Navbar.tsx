@@ -145,9 +145,9 @@ export const Navbar = () => {
 
       <nav className={cn(
         isHomePage 
-          ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-transparent py-6"
+          ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
-              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-transparent py-0"
+              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-none py-0"
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
         !isGitGlow && (isBCyber
@@ -301,98 +301,109 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Supaste-Style Hanging Island Notch Navbar for GitGlow */
+          /* Supaste-Exact Hanging Dynamic Island Notch Navbar for GitGlow */
           <motion.div
-            initial={{ y: -64, opacity: 0 }}
+            initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{
               type: 'spring',
+              stiffness: 260,
               damping: 20,
-              stiffness: 240,
               mass: 0.8,
-              delay: 0.1,
             }}
             className="pointer-events-auto relative select-none max-w-[calc(100vw-24px)]"
           >
-            <div className="relative bg-black text-white h-[48px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-7 border-b border-x border-[#30363d]/80 shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
-              {/* Left Inverted Concave Ear (Dynamic Island corner) */}
+            <div className="relative bg-black text-white h-[54px] px-4 rounded-b-[18px] flex items-center justify-between gap-7 lg:gap-10 border-0 outline-none shadow-[0_16px_36px_rgba(0,0,0,0.85)]">
+              {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
               <div
                 aria-hidden="true"
-                className="absolute top-0 -left-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
+                className="absolute top-0 -left-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
               >
-                <svg viewBox="0 0 20 20" className="w-full h-full fill-black -scale-x-100">
+                <svg
+                  viewBox="0 0 20 20"
+                  className="w-[20px] h-[20px] fill-black block"
+                  overflow="visible"
+                  style={{ transform: 'rotate(90deg)' }}
+                >
                   <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
                 </svg>
               </div>
 
-              {/* Right Inverted Concave Ear (Dynamic Island corner) */}
+              {/* Right Inverted Concave Ear (Supaste exact SVG scoop with 21px overlap) */}
               <div
                 aria-hidden="true"
-                className="absolute top-0 -right-[20px] w-[20px] h-[20px] pointer-events-none overflow-hidden"
+                className="absolute top-0 -right-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
               >
-                <svg viewBox="0 0 20 20" className="w-full h-full fill-black">
+                <svg
+                  viewBox="0 0 20 20"
+                  className="w-[20px] h-[20px] fill-black block"
+                  overflow="visible"
+                >
                   <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
                 </svg>
               </div>
 
-              {/* Left: App Icon + Logo */}
-              <div className="flex items-center gap-2 sm:gap-2.5">
-                <Link
-                  to="/blueprints/gitglow"
-                  className="flex items-center gap-2 group cursor-pointer"
-                >
-                  <div className="w-[26px] h-[26px] rounded-[7px] bg-[#161b22] border border-[#30363d] p-0.5 flex items-center justify-center shadow-xs group-hover:border-[#d1f34d] transition-colors">
-                    <Github size={14} className="text-[#f0f6fc] group-hover:text-[#d1f34d] transition-colors" />
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight text-white group-hover:text-[#d1f34d] transition-colors">
-                    GitGlow
-                  </span>
-                </Link>
+              {/* Left: 3D Mac-Style Glossy App Icon + Brand Title */}
+              <Link
+                to="/blueprints/gitglow"
+                className="flex items-center gap-2.5 group cursor-pointer shrink-0"
+              >
+                <div className="w-[30px] h-[30px] rounded-[8px] bg-gradient-to-b from-[#2d7df6] via-[#1062e6] to-[#004cd7] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6),inset_0_-1px_1px_rgba(0,0,0,0.3),0_2px_6px_rgba(0,76,215,0.4)] flex items-center justify-center relative overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105">
+                  <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/40 to-transparent rounded-t-[7px] pointer-events-none" />
+                  <Github size={16} className="text-white relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]" />
+                </div>
+                <span className="text-[16px] font-semibold tracking-[-0.02em] text-white">
+                  GitGlow
+                </span>
+              </Link>
 
-                <Link
-                  to="/blueprints"
-                  className="hidden md:inline-flex items-center gap-1 text-[11px] font-mono text-[#8b949e] hover:text-[#58a6ff] transition-colors pl-2.5 border-l border-[#30363d]/70"
-                  title="Return to Blueprints Gallery"
+              {/* Center: Desktop Nav Links (Supaste exact: 14px, 500 weight, -0.02em, 60% opacity -> 100% hover, 6 links) */}
+              <div className="hidden md:flex items-center gap-6 lg:gap-7">
+                <a
+                  href="#hero"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
-                  <span>← Blueprints</span>
-                </Link>
-              </div>
-
-              {/* Center: Navigation Links */}
-              <div className="hidden sm:flex items-center gap-4 sm:gap-5">
+                  Overview
+                </a>
                 <a
                   href="#catalog"
-                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
                   Badges
                 </a>
                 <a
-                  href="#catalog"
-                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                  href="#recipes"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
                   Recipes
                 </a>
                 <a
                   href="#compare"
-                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
-                  Proof
+                  Compare
+                </a>
+                <a
+                  href="#tiers"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Tiers
                 </a>
                 <a
                   href="#faq"
-                  className="text-[13px] font-medium text-white/60 hover:text-white transition-colors cursor-pointer"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
                   FAQ
                 </a>
               </div>
 
-              {/* Right: Supaste-Style Action Button */}
-              <div className="flex items-center gap-2">
+              {/* Right: Supaste-Style White Action Button */}
+              <div className="flex items-center shrink-0">
                 <Link
                   to="/blueprints/gitglow/engine"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-white hover:bg-[#d1f34d] text-black text-xs font-semibold tracking-tight transition-all duration-150 hover:scale-105 active:scale-95 shadow-sm group cursor-pointer"
+                  className="h-[32px] px-3.5 rounded-[8px] bg-white hover:bg-[#ededed] text-black text-[12px] font-semibold tracking-[-0.01em] inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
                 >
-                  <Zap size={12} className="text-black group-hover:scale-110 transition-transform" />
+                  <Github size={13} className="text-black fill-current" />
                   <span>Claim Medallion</span>
                 </Link>
               </div>
