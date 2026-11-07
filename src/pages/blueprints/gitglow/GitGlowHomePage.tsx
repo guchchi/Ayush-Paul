@@ -517,18 +517,262 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ─── SECTION 2: Section Two (Placeholder) ─────────────────────────── */}
-        <section id="section-2" className="py-24 sm:py-32 text-center border-b border-[#30363d]/40 mb-16">
-          <div className="max-w-md mx-auto space-y-2">
-            <span className="text-[11px] font-mono uppercase tracking-widest text-[#58a6ff] bg-[#161b22] px-3 py-1 rounded-full border border-[#30363d]">
-              Section 02
+        {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
+        <section id="catalog" className="scroll-mt-24 mb-16 text-left max-w-4xl mx-auto">
+          {/* Gentle Header */}
+          <div className="text-center space-y-2 mb-8">
+            <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
+              Achievement studio
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
-              Section Two
+              Explore & Unlock GitHub Badges
             </h2>
-            <p className="text-xs sm:text-sm text-[#8b949e]">
-              [Reserved for badges studio redesign]
+            <p className="text-xs sm:text-sm text-[#8b949e] max-w-lg mx-auto leading-relaxed">
+              Select any official medallion to inspect its server requirements, tier multipliers, and copy verified Git recipes.
             </p>
+          </div>
+
+          {/* Muted Filter Tabs */}
+          <div className="flex items-center justify-center gap-1.5 p-1 rounded-xl bg-[#161b22] border border-[#30363d] w-fit mx-auto mb-6 flex-wrap">
+            {[
+              { id: 'starter', label: 'Starter (4)' },
+              { id: 'tiers', label: 'Multi-Tier (4)' },
+              { id: 'all', label: 'All Badges (10)' },
+              { id: 'legacy', label: 'Historic (1)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedCategory(tab.id)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer select-none',
+                  selectedCategory === tab.id
+                    ? 'bg-[#21262d] text-[#f0f6fc] shadow-xs border border-[#30363d]'
+                    : 'text-[#8b949e] hover:text-[#c9d1d9] border border-transparent'
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Medallions Showcase Shelf */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
+            {filteredBadges.map((badge) => {
+              const isSelected = badge.id === activeBadge.id;
+              return (
+                <button
+                  key={badge.id}
+                  onClick={() => setSelectedBadgeId(badge.id)}
+                  className={cn(
+                    'p-3 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer select-none relative group',
+                    isSelected
+                      ? 'bg-[#161b22] border-[#58a6ff] shadow-[0_0_15px_rgba(88,166,255,0.12)] ring-1 ring-[#58a6ff]/40'
+                      : 'bg-[#161b22]/40 border-[#30363d]/70 hover:border-[#30363d] hover:bg-[#161b22]/70'
+                  )}
+                >
+                  <div className="relative w-12 h-12 flex items-center justify-center">
+                    <img
+                      src={badge.image}
+                      alt={badge.name}
+                      className={cn(
+                        'w-10 h-10 object-contain transition-transform duration-200 select-none',
+                        isSelected
+                          ? 'scale-110 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]'
+                          : 'group-hover:scale-105 opacity-85'
+                      )}
+                      loading="lazy"
+                    />
+                    {badge.tiers && badge.tiers.length > 0 && (
+                      <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117]">
+                        x4
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      'text-xs font-medium truncate w-full',
+                      isSelected
+                        ? 'text-[#f0f6fc]'
+                        : 'text-[#8b949e] group-hover:text-[#c9d1d9]'
+                    )}
+                  >
+                    {badge.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Single Unified Blueprint Card */}
+          <div className="rounded-2xl border border-[#30363d] bg-[#161b22]/50 divide-y md:divide-y-0 md:divide-x divide-[#30363d]/60 grid md:grid-cols-12 overflow-hidden shadow-sm">
+            {/* Left: Badge Identity & Verification Rules (5 cols) */}
+            <div className="md:col-span-5 p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                {/* Badge Header Bar */}
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#30363d]/40">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                      {activeBadge.category}
+                    </span>
+                    <h3 className="text-lg font-semibold text-[#f0f6fc] mt-0.5">
+                      {activeBadge.name}
+                    </h3>
+                  </div>
+                  <span
+                    className={cn(
+                      'text-[10px] font-mono px-2 py-0.5 rounded-md font-medium shrink-0',
+                      activeBadge.isObtainable
+                        ? 'text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40'
+                        : 'text-[#8b949e] bg-[#0d1117] border border-[#30363d]'
+                    )}
+                  >
+                    {activeBadge.difficulty}
+                  </span>
+                </div>
+
+                {/* 3D Showcase Pedestal */}
+                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 flex items-center gap-3.5 shadow-inner">
+                  <div className="relative w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 shadow-sm">
+                    <img
+                      src={activeBadge.image}
+                      alt={activeBadge.name}
+                      className="w-10 h-10 object-contain select-none"
+                    />
+                  </div>
+                  <div className="min-w-0 space-y-1">
+                    <div className="text-xs font-semibold text-[#f0f6fc] leading-snug">
+                      {activeBadge.tagline}
+                    </div>
+                    <div className="text-[11px] font-mono text-[#8b949e]">
+                      Est. time:{' '}
+                      <span className="text-[#c9d1d9]">
+                        {activeRecipe.estimatedTime}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* GitHub Verification Rule */}
+                <div className="space-y-2 pt-1">
+                  <span className="text-xs font-semibold text-[#f0f6fc] block">
+                    How GitHub Verifies This:
+                  </span>
+                  <ul className="space-y-1.5 text-xs text-[#8b949e] leading-relaxed">
+                    {activeBadge.requirements.slice(0, 3).map((req, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">
+                          ✓
+                        </span>
+                        <span>{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Multi-Tier Multipliers (if available) */}
+                {activeBadge.tiers && activeBadge.tiers.length > 0 && (
+                  <div className="pt-2 border-t border-[#30363d]/30">
+                    <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block mb-2">
+                      Tier Multipliers
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5 text-[11px] font-mono">
+                      {activeBadge.tiers.map((tier) => (
+                        <div
+                          key={tier.level}
+                          className="px-2 py-1 rounded bg-[#0d1117] border border-[#30363d]/60 flex items-center justify-between text-[#8b949e]"
+                        >
+                          <span className="truncate">{tier.level}</span>
+                          <span className="text-[#f0f6fc] font-bold shrink-0">
+                            {tier.threshold}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right: 3-Step Git Blueprint & Commands (7 cols) */}
+            <div className="md:col-span-7 p-6 sm:p-7 bg-[#161b22]/30 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                {/* Recipe Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                      Blueprint recipe
+                    </span>
+                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                      Step-by-Step Git Commands
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
+                    Personal Repo Safe
+                  </span>
+                </div>
+
+                {/* 3 Numbered Steps with 1-Click Copy */}
+                <div className="space-y-3">
+                  {[
+                    {
+                      label: activeRecipe.station1Label,
+                      cmd: activeRecipe.command1,
+                    },
+                    {
+                      label: activeRecipe.station2Label,
+                      cmd: activeRecipe.command2,
+                    },
+                    {
+                      label: activeRecipe.station3Label,
+                      cmd: activeRecipe.command3,
+                    },
+                  ].map((step, idx) => (
+                    <div key={idx} className="space-y-1.5">
+                      <span className="text-xs font-semibold text-[#c9d1d9] block">
+                        {step.label}
+                      </span>
+                      <div className="group/cmd rounded-xl border border-[#30363d]/80 bg-[#0d1117] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner">
+                        <code className="font-mono text-xs text-[#58a6ff] truncate">
+                          {step.cmd}
+                        </code>
+                        <button
+                          onClick={() =>
+                            handleCopy(step.cmd, `${activeBadge.id}-${idx}`)
+                          }
+                          className="shrink-0 text-xs text-[#8b949e] hover:text-[#f0f6fc] px-2 py-1 rounded bg-[#161b22] border border-[#30363d] transition-all flex items-center gap-1 cursor-pointer select-none"
+                          title="Copy command"
+                        >
+                          {copiedSnippet === `${activeBadge.id}-${idx}` ? (
+                            <>
+                              <Check size={12} className="text-[#3fb950]" />
+                              <span className="text-[#3fb950] text-[11px] font-mono">
+                                Copied
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={12} />
+                              <span className="text-[11px] font-mono">
+                                Copy
+                              </span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Gotcha Callout */}
+              <div className="rounded-xl border border-[#30363d]/60 bg-[#0d1117]/60 p-3.5 flex items-start gap-2.5 text-xs text-[#8b949e] leading-relaxed">
+                <Info size={15} className="text-[#58a6ff] shrink-0 mt-0.5" />
+                <span>
+                  <strong className="text-[#c9d1d9]">Anti-Mistake Gotcha:</strong>{' '}
+                  {activeRecipe.gotchaNote || activeBadge.gotchas[0]}
+                </span>
+              </div>
+            </div>
           </div>
         </section>
 
