@@ -957,81 +957,86 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
-        <section id="compare" className="scroll-mt-24 mb-14 text-left">
-          <div className="max-w-2xl mb-6">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-              Recruiter Signal vs Markdown Noise
-            </span>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-[#f0f6fc] tracking-tight">
-              Why Tech Leads Look at Official Medallions, Not README Shields
+        <section id="compare" className="scroll-mt-24 mb-16 text-left max-w-4xl mx-auto">
+          {/* Gentle Header */}
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
+              Verified proof over vanity
             </h2>
-            <p className="text-xs sm:text-sm text-[#8b949e] mt-1">
-              Markdown icons can be copied in 30 seconds. Official GitHub achievement webhooks require verifiable Git actions.
+            <p className="text-xs sm:text-sm text-[#8b949e] max-w-lg mx-auto leading-relaxed">
+              Why tech leads look for official GitHub profile medallions instead of copy-pasted README shields.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-5">
+          {/* Single Unified Comparison Card */}
+          <div className="rounded-2xl border border-[#30363d] bg-[#161b22]/50 divide-y md:divide-y-0 md:divide-x divide-[#30363d]/60 grid md:grid-cols-2 overflow-hidden shadow-sm">
             
             {/* Left Box: The Copy-Paste Illusion */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#161b22] border border-[#f85149]/40 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-[#f85149]/20 text-[#f85149] flex items-center justify-center font-bold text-xs">
-                    ✕
+            <div className="p-6 sm:p-7 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                <div>
+                  <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block">
+                    Vanity metric
                   </span>
-                  <span className="text-sm font-bold text-[#f0f6fc]">
-                    The Copy-Paste Illusion (README Shields)
-                  </span>
+                  <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                    README Markdown Shields
+                  </h3>
                 </div>
-                <span className="text-[10px] font-mono text-[#f85149] bg-[#f85149]/10 px-2 py-0.5 rounded">
-                  Zero Signal
+                <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
+                  Unverified
                 </span>
               </div>
 
               {/* Mockup of Cluttered README */}
-              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d] space-y-2 font-mono text-[11px]">
-                <div className="text-[#8b949e] text-[10px]">// README.md (Skipped by hiring managers in 2s)</div>
-                <div className="flex flex-wrap gap-1.5 opacity-70">
-                  {['React', 'NodeJS', 'Python', 'Docker', 'AWS', 'MongoDB', 'HTML5', 'CSS3', 'Git', 'Linux', 'Vite', 'Express'].map((tag) => (
+              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]/60 space-y-2 font-mono text-xs">
+                <div className="text-[#8b949e] text-[10px]">// README.md (copy-paste shields)</div>
+                <div className="flex flex-wrap gap-1.5 opacity-60">
+                  {['React', 'NodeJS', 'Python', 'Docker', 'AWS', 'MongoDB', 'Git', 'Linux'].map((tag) => (
                     <span key={tag} className="px-2 py-0.5 rounded bg-[#21262d] text-[#8b949e] text-[10px] border border-[#30363d]">
-                      {tag}-v20.0
+                      {tag}-v20
                     </span>
                   ))}
                 </div>
               </div>
 
-              <ul className="space-y-1.5 text-xs text-[#8b949e]">
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#f85149] font-bold">·</span> Generated via copy-paste online markdown tools.
+              <ul className="space-y-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <span>Can be copied and pasted in 30 seconds from online generator templates.</span>
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#f85149] font-bold">·</span> Proves you know image tags, not pull request etiquette.
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <span>Proves familiarity with markdown image syntax, not real Git workflow skills.</span>
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#f85149] font-bold">·</span> Senior engineers scroll straight past it to git log history.
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8b949e] font-mono text-xs mt-0.5 select-none">—</span>
+                  <span>Hiring managers and senior engineers scroll right past it to commit history.</span>
                 </li>
               </ul>
             </div>
 
             {/* Right Box: Official GitHub Webhook Medallions */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#161b22] border-2 border-[#238636]/60 space-y-4 shadow-lg">
-              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-[#238636]/20 text-[#3fb950] flex items-center justify-center font-bold text-xs">
-                    ✓
+            <div className="p-6 sm:p-7 space-y-4 bg-[#161b22]/30">
+              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                <div>
+                  <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                    Verifiable proof
                   </span>
-                  <span className="text-sm font-bold text-[#f0f6fc]">
-                    The GitGlow Verified Blueprint
-                  </span>
+                  <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                    GitHub Profile Medallions
+                  </h3>
                 </div>
-                <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/20 px-2 py-0.5 rounded font-bold">
-                  Permanent Proof
+                <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium">
+                  Server-Verified
                 </span>
               </div>
 
               {/* Mockup of Official Profile Header Medallions */}
-              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d] space-y-2 font-mono text-[11px]">
-                <div className="text-[#3fb950] text-[10px]">// github.com/{scannedUser.login} (Header Medallions)</div>
+              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d]/60 space-y-2 font-mono text-xs">
+                <div className="flex items-center justify-between text-[#8b949e] text-[10px]">
+                  <span>// github.com/{scannedUser.login}</span>
+                  <span className="text-[#3fb950]">Achievements</span>
+                </div>
                 <div className="flex items-center gap-2">
                   {[
                     { img: '/images/badges/pull-shark.png', name: 'Pull Shark' },
@@ -1041,25 +1046,28 @@ export const GitGlowHomePage: React.FC = () => {
                   ].map((item) => (
                     <div
                       key={item.name}
-                      className="w-9 h-9 rounded-lg bg-[#161b22] border border-[#30363d] p-1 flex items-center justify-center"
+                      className="w-9 h-9 rounded-lg bg-[#161b22] border border-[#30363d] p-1 flex items-center justify-center hover:border-[#58a6ff]/60 transition-colors"
                       title={item.name}
                     >
-                      <img src={item.img} alt={item.name} className="w-6 h-6 object-contain" />
+                      <img src={item.img} alt={item.name} className="w-6 h-6 object-contain select-none" />
                     </div>
                   ))}
-                  <span className="text-[10px] text-[#3fb950] font-sans font-bold pl-1">+ Verified</span>
+                  <span className="text-[11px] text-[#3fb950] font-sans font-medium pl-1">✓ Permanent</span>
                 </div>
               </div>
 
-              <ul className="space-y-1.5 text-xs text-[#c9d1d9]">
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#3fb950] font-bold">·</span> Awarded by GitHub server webhooks following real Git events.
+              <ul className="space-y-2 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <span>Awarded automatically by GitHub server webhooks on real Git events.</span>
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#3fb950] font-bold">·</span> Sits permanently in your public profile header next to your followers.
+                <li className="flex items-start gap-2">
+                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <span>Stamped directly onto your public GitHub profile header next to your bio.</span>
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="text-[#3fb950] font-bold">·</span> Proves branch management, co-author trailers, and PR merge history.
+                <li className="flex items-start gap-2">
+                  <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">✓</span>
+                  <span>Proves genuine branch hygiene, co-author trailers, and PR etiquette.</span>
                 </li>
               </ul>
             </div>
