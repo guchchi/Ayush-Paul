@@ -3,7 +3,7 @@
 **Target:** `http://localhost:3000/blueprints/gitglow`  
 **File:** `src/pages/blueprints/gitglow/GitGlowHomePage.tsx`  
 **Reviewed by:** Senior Product Designer (/plan-design-review)  
-**Status:** Approved by User  
+**Status:** Approved by User
 
 ---
 
@@ -18,42 +18,49 @@
 ## 2. Review Passes & Decision Log
 
 ### Pass 1: Information Architecture
+
 - **Initial Score:** 7 / 10
 - **Gap:** The page ended abruptly at the FAQ accordion without a closing conversion CTA, and lacked quick sub-nav anchor wayfinding.
 - **Decision:** **Approved A1** — Add Terminal Closeout CTA at the bottom of the page (repeating the profile scanner & Quickdraw fast-track) and wire sub-nav anchor linking (`#overview`, `#compare`, `#engine`, `#catalog`, `#tiers`, `#faq`).
 - **Score after Fix:** **9.5 / 10**
 
 ### Pass 2: Interaction State Coverage
+
 - **Initial Score:** 6 / 10
 - **Gap:** The GitHub URL scanner hid API 404s and rate-limits behind a silent identicon fallback with no explicit feedback; catalog lacked a zero-match state.
 - **Decision:** **Approved A1** — Add tactile API status banners on the scanner (Verified Checkmark vs 404 Not Found vs 403 Rate Limit notice) and an empty-state card for zero-match filters in the badge catalog.
 - **Score after Fix:** **9.5 / 10**
 
 ### Pass 3: User Journey & Emotional Arc
+
 - **Initial Score:** 7 / 10
 - **Gap:** After the hero excites the user with a 2-minute badge claim, Section 2 ("Why 90% of advice is a waste of time") disrupted momentum with a generic 3-card critique.
 - **Decision:** **Approved A1** — Transform Section 2 into a 2-column "Old Way vs GitGlow Way" Comparison Matrix ("The Fake Profile Trap" vs "The GitGlow Verified Blueprint"), keeping emotional momentum high.
 - **Score after Fix:** **9.5 / 10**
 
 ### Pass 4: AI Slop Risk
+
 - **Initial Score:** 7.5 / 10
 - **Gap:** Section 3 used generic "01, 02, 03" marketing cards with boilerplate text.
 - **Decision:** **Approved A1** — Upgrade Section 3 to a real Git Workflow Trace (`git switch -c claim/quickdraw`, `git commit --trailer "Co-authored-by: ..."`, `gh pr merge --auto`) with authentic terminal syntax.
 - **Score after Fix:** **9.5 / 10**
 
 ### Pass 5: Design System Alignment
+
 - **Initial Score:** 8 / 10
 - **Gap:** Some interactive hover/expand animations used inline arbitrary numbers rather than the project's standard motion presets.
 - **Decision:** **Approved A1** — Bind all animations to `EASING.PREMIUM` and `DURATION.NORMAL` from `src/lib/motion-presets.ts`, and standardize dark/light surface tokens.
 - **Score after Fix:** **10 / 10**
 
 ### Pass 6: Responsive & Accessibility
+
 - **Initial Score:** 6.5 / 10
 - **Gap:** Mobile touch targets in the diagnostic card were ~36px (< 44px WCAG), and small-viewport horizontal scrolling on the tier table had no visual affordance.
 - **Decision:** **Approved A1** — Apply full mobile & a11y suite: 44px minimum touch targets (`min-h-[44px]`), ARIA landmarks (`aria-busy`, `aria-label`), touch-optimized mobile diagnostic layout, and horizontal scroll indicator on the Tier table.
 - **Score after Fix:** **10 / 10**
 
 ### Pass 7: Unresolved Design Decisions
+
 - **Total Decisions Surfaced:** 6
 - **Decisions Resolved:** 6
 - **Decisions Deferred:** 0
@@ -141,15 +148,15 @@
 
 ## GSTACK REVIEW REPORT
 
-| Dimension | Initial Score | Final Score | Status | Findings |
-|:---|:---:|:---:|:---:|:---|
-| Pass 1: Information Architecture | 7.0/10 | 9.5/10 | PASSED | Terminal closeout CTA + subnav wayfinding approved |
-| Pass 2: Interaction State Coverage | 6.0/10 | 9.5/10 | PASSED | Explicit API status badges + catalog empty state approved |
-| Pass 3: User Journey & Emotional Arc | 7.0/10 | 9.5/10 | PASSED | 2-column "Old Way vs GitGlow Way" matrix approved |
-| Pass 4: AI Slop Risk | 7.5/10 | 9.5/10 | PASSED | Real Git terminal pipeline replacing generic 3-card steps |
-| Pass 5: Design System Alignment | 8.0/10 | 10.0/10 | PASSED | Strict EASING.PREMIUM & color token compliance |
-| Pass 6: Responsive & Accessibility | 6.5/10 | 10.0/10 | PASSED | 44px touch targets + ARIA landmarks + mobile layout |
-| Pass 7: Decision Register | — | — | PASSED | 6 of 6 design decisions resolved |
+| Dimension                            | Initial Score | Final Score | Status | Findings                                                  |
+| :----------------------------------- | :-----------: | :---------: | :----: | :-------------------------------------------------------- |
+| Pass 1: Information Architecture     |    7.0/10     |   9.5/10    | PASSED | Terminal closeout CTA + subnav wayfinding approved        |
+| Pass 2: Interaction State Coverage   |    6.0/10     |   9.5/10    | PASSED | Explicit API status badges + catalog empty state approved |
+| Pass 3: User Journey & Emotional Arc |    7.0/10     |   9.5/10    | PASSED | 2-column "Old Way vs GitGlow Way" matrix approved         |
+| Pass 4: AI Slop Risk                 |    7.5/10     |   9.5/10    | PASSED | Real Git terminal pipeline replacing generic 3-card steps |
+| Pass 5: Design System Alignment      |    8.0/10     |   10.0/10   | PASSED | Strict EASING.PREMIUM & color token compliance            |
+| Pass 6: Responsive & Accessibility   |    6.5/10     |   10.0/10   | PASSED | 44px touch targets + ARIA landmarks + mobile layout       |
+| Pass 7: Decision Register            |       —       |      —      | PASSED | 6 of 6 design decisions resolved                          |
 
 **VERDICT: DESIGN-COMPLETE (Score: 9.8 / 10)**  
 NO UNRESOLVED DECISIONS
