@@ -27,6 +27,7 @@ import {
   Play,
   RefreshCw,
   Search,
+  AlertCircle,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -66,215 +67,200 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   );
 };
 
-// ─── Badge Card Banner Themes Map (Cover + Medallion Style) ──────────────────
-const BANNER_THEMES: Record<
+// ─── Badge Custom Theme Pedestal Map ─────────────────────────────────────────
+const BADGE_THEMES: Record<
   string,
   {
-    bannerGradient: string;
     pedestalBg: string;
     pedestalBorder: string;
+    glow: string;
   }
 > = {
   quickdraw: {
-    bannerGradient: 'bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200',
-    pedestalBg: 'bg-gradient-to-br from-amber-50 to-white',
-    pedestalBorder: 'border-amber-200',
+    pedestalBg: 'from-amber-100/80 via-yellow-50 to-amber-50/40',
+    pedestalBorder: 'border-amber-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.22)]',
   },
   'pull-shark': {
-    bannerGradient: 'bg-gradient-to-r from-cyan-600 via-blue-500 to-indigo-600',
-    pedestalBg: 'bg-gradient-to-br from-cyan-50 to-white',
-    pedestalBorder: 'border-cyan-200',
+    pedestalBg: 'from-cyan-100/80 via-blue-50 to-cyan-50/40',
+    pedestalBorder: 'border-cyan-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(6,182,212,0.22)]',
   },
   yolo: {
-    bannerGradient: 'bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400',
-    pedestalBg: 'bg-gradient-to-br from-rose-50 to-white',
-    pedestalBorder: 'border-rose-200',
+    pedestalBg: 'from-rose-100/80 via-orange-50 to-rose-50/40',
+    pedestalBorder: 'border-rose-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(244,63,94,0.22)]',
   },
   'pair-extraordinaire': {
-    bannerGradient: 'bg-gradient-to-r from-purple-600 via-violet-500 to-indigo-500',
-    pedestalBg: 'bg-gradient-to-br from-purple-50 to-white',
-    pedestalBorder: 'border-purple-200',
+    pedestalBg: 'from-purple-100/80 via-violet-50 to-purple-50/40',
+    pedestalBorder: 'border-purple-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(168,85,247,0.22)]',
   },
   'galaxy-brain': {
-    bannerGradient: 'bg-gradient-to-r from-indigo-900 via-violet-800 to-purple-900',
-    pedestalBg: 'bg-gradient-to-br from-indigo-50 to-white',
-    pedestalBorder: 'border-indigo-200',
+    pedestalBg: 'from-indigo-100/80 via-violet-50 to-indigo-50/40',
+    pedestalBorder: 'border-indigo-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(99,102,241,0.22)]',
   },
   starstruck: {
-    bannerGradient: 'bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400',
-    pedestalBg: 'bg-gradient-to-br from-amber-50 to-white',
-    pedestalBorder: 'border-amber-200',
+    pedestalBg: 'from-amber-100/80 via-yellow-50 to-amber-50/40',
+    pedestalBorder: 'border-amber-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(245,158,11,0.22)]',
   },
   'public-sponsor': {
-    bannerGradient: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600',
-    pedestalBg: 'bg-gradient-to-br from-emerald-50 to-white',
-    pedestalBorder: 'border-emerald-200',
+    pedestalBg: 'from-emerald-100/80 via-teal-50 to-emerald-50/40',
+    pedestalBorder: 'border-emerald-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(16,185,129,0.22)]',
   },
   'heart-on-your-sleeve': {
-    bannerGradient: 'bg-gradient-to-r from-pink-500 via-rose-400 to-red-400',
-    pedestalBg: 'bg-gradient-to-br from-pink-50 to-white',
-    pedestalBorder: 'border-pink-200',
+    pedestalBg: 'from-pink-100/80 via-rose-50 to-pink-50/40',
+    pedestalBorder: 'border-pink-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(236,72,153,0.22)]',
   },
   'open-sourcerer': {
-    bannerGradient: 'bg-gradient-to-r from-teal-500 via-cyan-400 to-sky-500',
-    pedestalBg: 'bg-gradient-to-br from-teal-50 to-white',
-    pedestalBorder: 'border-teal-200',
+    pedestalBg: 'from-teal-100/80 via-cyan-50 to-teal-50/40',
+    pedestalBorder: 'border-teal-200/90',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(20,184,166,0.22)]',
   },
   'arctic-code-vault': {
-    bannerGradient: 'bg-gradient-to-r from-slate-700 via-slate-600 to-sky-900',
-    pedestalBg: 'bg-gradient-to-br from-slate-50 to-white',
-    pedestalBorder: 'border-slate-300',
+    pedestalBg: 'from-slate-100/90 via-sky-50 to-slate-50/40',
+    pedestalBorder: 'border-slate-300/80',
+    glow: 'group-hover:shadow-[0_4px_20px_rgba(100,116,139,0.18)]',
   },
 };
 
-// ─── Inspiration-Structured Badge Card Component ─────────────────────────────
+// ─── Option A: Compact Trophy Card Component ─────────────────────────────────
 const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
-  const theme = BANNER_THEMES[badge.id] || {
-    bannerGradient: 'bg-gradient-to-r from-slate-700 to-slate-900',
-    pedestalBg: 'bg-white',
+  const theme = BADGE_THEMES[badge.id] || {
+    pedestalBg: 'from-slate-100 via-neutral-50 to-slate-50',
     pedestalBorder: 'border-neutral-200',
+    glow: 'group-hover:shadow-md',
   };
 
-  // 3 Key Metrics per Badge (Inspired by Rating | Posts | Followers)
-  const timeMap: Record<string, string> = {
-    quickdraw: '2 Mins',
-    'pull-shark': '5 Mins',
-    yolo: '5 Mins',
-    'pair-extraordinaire': '10 Mins',
-    'galaxy-brain': '15 Mins',
-    starstruck: 'Milestone',
-    'public-sponsor': '2 Mins',
-    'heart-on-your-sleeve': 'In Beta',
-    'open-sourcerer': 'In Beta',
-    'arctic-code-vault': 'Historic',
+  // Status Capsule Renderer (One consolidated pill per card)
+  const renderStatusCapsule = () => {
+    if (badge.isRecommendedStarter) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-extrabold uppercase tracking-wide border border-[#0b1c30]/10 shadow-2xs">
+          <Flame size={11} fill="#0b1c30" className="text-[#0b1c30]" />
+          <span>Starter · 5 Mins</span>
+        </span>
+      );
+    }
+    if (badge.status === 'testing') {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold uppercase tracking-wide border border-amber-200">
+          <Sparkles size={11} className="text-amber-600" />
+          <span>In GitHub Beta</span>
+        </span>
+      );
+    }
+    if (!badge.isObtainable) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-500 text-[10px] font-bold uppercase tracking-wide border border-neutral-200">
+          <Lock size={10} />
+          <span>Archived (2020)</span>
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-wide border border-slate-200">
+        <span>{badge.difficulty} · Obtainable</span>
+      </span>
+    );
   };
-
-  const estTime = timeMap[badge.id] || '5 Mins';
-  const multiplierText =
-    badge.tiers && badge.tiers.length > 0 ? `${badge.tiers.length} Tiers` : 'Single';
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-neutral-200/90 bg-white transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 shadow-2xs">
-      
-      {/* ─── Top Cover Banner Area (with Floating Corner Pill) ────────────── */}
-      <div className={cn('relative h-24 w-full p-3.5 flex items-start justify-end', theme.bannerGradient)}>
-        {badge.isRecommendedStarter ? (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-extrabold uppercase tracking-wide shadow-md border border-black/10">
-            <Flame size={11} fill="#0b1c30" />
-            <span>Starter · 5m</span>
-          </span>
-        ) : badge.status === 'testing' ? (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-amber-900 text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/40">
-            <Sparkles size={11} className="text-amber-600" />
-            <span>In Beta</span>
-          </span>
-        ) : !badge.isObtainable ? (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-black/40 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/20">
-            <Lock size={10} />
-            <span>Archived</span>
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-slate-800 text-[10px] font-bold uppercase tracking-wide shadow-xs border border-white/40">
-            <CheckCircle2 size={11} className="text-emerald-600" />
-            <span>Obtainable</span>
-          </span>
-        )}
-      </div>
-
-      {/* ─── Card Body ────────────────────────────────────────────────────── */}
-      <div className="p-5 pt-0 flex flex-col justify-between flex-1">
-        
-        {/* Overlapping Trophy Medallion Row */}
-        <div className="flex items-end justify-between -mt-9 mb-3">
-          {/* Overlapping Medallion */}
+    <div
+      className={cn(
+        'group relative p-5 rounded-2xl border bg-white transition-all duration-200 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1',
+        badge.isRecommendedStarter
+          ? 'border-[#0058be]/30 ring-1 ring-[#0058be]/10 shadow-2xs'
+          : 'border-neutral-200/90 shadow-2xs hover:border-neutral-300',
+      )}
+    >
+      <div>
+        {/* Top Header: Custom Themed Trophy Pedestal + Single Meta Capsule */}
+        <div className="flex items-center justify-between gap-3 mb-4">
+          {/* Custom Trophy Pedestal */}
           <div
             className={cn(
-              'relative w-18 h-18 rounded-2xl p-2.5 flex items-center justify-center ring-4 ring-white shadow-md border transition-transform duration-300 group-hover:scale-105',
+              'relative w-16 h-16 rounded-2xl p-2 flex items-center justify-center bg-gradient-to-br border transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5 shadow-2xs',
               theme.pedestalBg,
               theme.pedestalBorder,
+              theme.glow,
             )}
           >
+            {/* Specular Glint Reflection */}
+            <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.85),transparent_65%)] pointer-events-none" />
             <img
               src={badge.image}
               alt={badge.name}
-              className="w-13 h-13 object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.16)] transition-transform duration-300 group-hover:scale-110 select-none"
+              className="relative z-10 w-12 h-12 object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.14)] transition-transform duration-300 group-hover:scale-110 select-none"
               loading="lazy"
             />
           </div>
 
-          {/* Right Micro Pill (Category / Scope) */}
-          <span className="text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200/80 mb-1">
-            {badge.category.toUpperCase()}
-          </span>
+          {/* Single Consolidated Status Capsule */}
+          <div>{renderStatusCapsule()}</div>
         </div>
 
-        {/* Title & Tagline */}
-        <div className="space-y-0.5 mb-2.5">
+        {/* Title & Authentic Tagline */}
+        <div className="space-y-1 mb-3">
           <div className="text-lg font-bold text-[#0b1c30] tracking-tight group-hover:text-[#0058be] transition-colors leading-snug">
             {badge.name}
           </div>
-          <div className="text-xs text-neutral-500 font-medium line-clamp-1">
+          <div className="text-xs text-neutral-500 font-medium line-clamp-1 leading-normal">
             {badge.tagline}
           </div>
         </div>
 
-        {/* Blueprint Strategy Description */}
-        <div className="text-xs text-neutral-600 leading-relaxed line-clamp-2 min-h-[36px] mb-3">
-          <span className="font-semibold text-[#0b1c30]">Blueprint: </span>
-          {badge.blueprintStrategy}
-        </div>
-
-        {/* ─── 3-Stat Metric Strip (Direct Homage to Inspiration Cards) ─── */}
-        <div className="grid grid-cols-3 gap-1 py-2 px-2.5 rounded-2xl bg-neutral-50 border border-neutral-200/70 text-center mb-4">
-          <div>
-            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
-              <Clock size={11} className="text-[#0058be]" />
-              <span>{estTime}</span>
-            </div>
-            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
-              Est. Time
-            </div>
-          </div>
-
-          <div className="border-x border-neutral-200/60">
-            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
-              <Sparkles size={11} className="text-amber-500" />
-              <span>{badge.difficulty}</span>
-            </div>
-            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
-              Difficulty
-            </div>
-          </div>
-
-          <div>
-            <div className="text-xs font-bold text-[#0b1c30] flex items-center justify-center gap-1">
-              <Trophy size={11} className="text-purple-600" />
-              <span>{multiplierText}</span>
-            </div>
-            <div className="text-[9px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5">
-              Multiplier
-            </div>
+        {/* GitGlow Blueprint Strategy Capsule */}
+        <div className="p-3 rounded-xl bg-[#f8f9ff] border border-neutral-200/60 text-xs text-neutral-700 leading-relaxed min-h-[58px] flex items-center mb-3.5">
+          <div className="line-clamp-2 text-xs leading-relaxed">
+            <span className="font-bold text-[#0b1c30]">Blueprint: </span>
+            <span className="text-neutral-600 font-normal">{badge.blueprintStrategy}</span>
           </div>
         </div>
 
-        {/* ─── Bottom Pill Action Button (Inspired by Pill CTA with Icon) ─── */}
+        {/* Tiers Ladder Micro-Strip */}
+        <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 bg-white border border-neutral-200/80 px-2.5 py-1.5 rounded-lg mb-4">
+          <span className="font-bold text-neutral-400 text-[10px] uppercase tracking-wider">
+            {badge.tiers && badge.tiers.length > 0 ? 'Tiers' : 'Scope'}
+          </span>
+          <div className="flex items-center gap-1.5 font-medium text-[#0b1c30]">
+            {badge.tiers && badge.tiers.length > 0 ? (
+              <>
+                <span>{badge.tiers[0]?.threshold.split(' ')[0]}</span>
+                <span className="text-neutral-300">·</span>
+                <span>{badge.tiers[1]?.threshold.split(' ')[0]} 🥉</span>
+                <span className="text-neutral-300">·</span>
+                <span>{badge.tiers[2]?.threshold.split(' ')[0]} 🥈</span>
+                <span className="text-neutral-300">·</span>
+                <span>{badge.tiers[3]?.threshold.split(' ')[0]} 🥇</span>
+              </>
+            ) : (
+              <span className="text-neutral-600 font-sans text-xs">Standard Single Unlock</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Card Action Row */}
+      <div className="pt-2 border-t border-neutral-100">
         {badge.isObtainable ? (
           <Link
             to={`/blueprints/gitglow/engine?badge=${badge.id}`}
-            className="w-full py-2.5 px-4 rounded-2xl bg-[#0b1c30] hover:bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-between transition-all shadow-xs group-hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#0058be]"
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#0058be] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#0047a0] transition-colors shadow-2xs hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0058be]"
           >
-            <span>Claim Blueprint</span>
-            <span className="w-6 h-6 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
-              <ArrowRight size={13} className="text-white" />
-            </span>
+            <span>Launch Claim Engine</span>
+            <ArrowRight size={13} />
           </Link>
         ) : (
-          <div className="w-full py-2.5 px-4 rounded-2xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed">
+          <div className="flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-neutral-100 text-neutral-400 font-bold text-xs uppercase tracking-wider cursor-not-allowed">
             <Lock size={12} />
             <span>{badge.status === 'testing' ? 'In GitHub Beta' : 'Archived Milestone'}</span>
           </div>
         )}
-
       </div>
     </div>
   );
@@ -290,6 +276,8 @@ interface ScannedProfileData {
   followers: number;
   created_at: string;
   isSimulated?: boolean;
+  statusType?: 'verified' | 'fallback' | 'rate-limit';
+  statusMessage?: string;
 }
 
 // ─── Main GitGlow Page ────────────────────────────────────────────────────────
@@ -306,6 +294,8 @@ export const GitGlowHomePage: React.FC = () => {
     followers: 42,
     created_at: '2022-03-15T00:00:00Z',
     isSimulated: true,
+    statusType: 'verified',
+    statusMessage: 'Interactive Demo Profile',
   });
 
   const cleanGitHubInput = (input: string): string => {
@@ -338,18 +328,35 @@ export const GitGlowHomePage: React.FC = () => {
           followers: data.followers || 0,
           created_at: data.created_at,
           isSimulated: false,
+          statusType: 'verified',
+          statusMessage: 'Public Profile Verified',
         });
-      } else {
-        // Fallback for simulated profile
+      } else if (res.status === 404) {
         setScannedUser({
           login: username,
           name: username.charAt(0).toUpperCase() + username.slice(1),
           avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
           bio: 'Public GitHub Developer',
-          public_repos: 8,
-          followers: 16,
+          public_repos: 4,
+          followers: 8,
           created_at: '2023-01-01T00:00:00Z',
           isSimulated: true,
+          statusType: 'fallback',
+          statusMessage: 'User not found on GitHub · Sandbox preview',
+        });
+      } else {
+        // 403 or other
+        setScannedUser({
+          login: username,
+          name: username.charAt(0).toUpperCase() + username.slice(1),
+          avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
+          bio: 'Public GitHub Developer',
+          public_repos: 6,
+          followers: 12,
+          created_at: '2023-01-01T00:00:00Z',
+          isSimulated: true,
+          statusType: 'rate-limit',
+          statusMessage: 'GitHub API limit reached · Sandbox preview',
         });
       }
     } catch {
@@ -358,10 +365,12 @@ export const GitGlowHomePage: React.FC = () => {
         name: username.charAt(0).toUpperCase() + username.slice(1),
         avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
         bio: 'Public GitHub Developer',
-        public_repos: 8,
-        followers: 16,
+        public_repos: 6,
+        followers: 12,
         created_at: '2023-01-01T00:00:00Z',
         isSimulated: true,
+        statusType: 'fallback',
+        statusMessage: 'Offline mode · Sandbox preview',
       });
     } finally {
       setTimeout(() => {
@@ -517,9 +526,14 @@ export const GitGlowHomePage: React.FC = () => {
                     <span>{scannedUser.public_repos} Public Repos</span>
                     <span>·</span>
                     <span>{scannedUser.followers} Followers</span>
-                    {scannedUser.isSimulated && (
-                      <span className="text-[10px] text-amber-400 font-sans font-semibold">
-                        (Demo Preview)
+                    <span>·</span>
+                    {scannedUser.statusType === 'verified' ? (
+                      <span className="text-[10px] text-emerald-400 font-sans font-semibold flex items-center gap-1">
+                        <Check size={10} className="text-emerald-400" /> {scannedUser.statusMessage || 'Verified Account'}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-amber-300 font-sans font-semibold flex items-center gap-1">
+                        <AlertCircle size={10} className="text-amber-400" /> {scannedUser.statusMessage || 'Sandbox Mode'}
                       </span>
                     )}
                   </div>
@@ -622,7 +636,7 @@ export const GitGlowHomePage: React.FC = () => {
                     <Link
                       to={`/blueprints/gitglow/engine?badge=${item.id}&user=${scannedUser.login}`}
                       className={cn(
-                        'w-full py-2 px-3 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.99]',
+                        'w-full py-2.5 px-3 min-h-[44px] rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.99]',
                         item.btnBg,
                       )}
                     >
@@ -652,7 +666,7 @@ export const GitGlowHomePage: React.FC = () => {
 
               <Link
                 to={`/blueprints/gitglow/engine?badge=quickdraw&user=${scannedUser.login}`}
-                className="px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0b1c30] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-[0.99] shrink-0 text-center"
+                className="px-6 py-3 min-h-[44px] rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0b1c30] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-[0.99] shrink-0 flex items-center justify-center text-center"
               >
                 Launch 2-Min Quickdraw Claim →
               </Link>
@@ -660,118 +674,193 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* ─── Section 2: Why Most GitHub Advice Is Broken ────────────────── */}
-        <section className="mb-20 md:mb-28 text-left">
-          <div className="max-w-2xl mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 text-[10px] font-bold uppercase tracking-widest mb-2 border border-rose-200">
-              The Reality Check
+        {/* ─── Section 2: Reality Check — Old Way vs GitGlow Way ────────────── */}
+        <section id="compare" className="scroll-mt-28 mb-20 md:mb-28 text-left">
+          <div className="max-w-3xl mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-2 border border-neutral-200">
+              Strategic Comparison
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
-              Why 90% of Student GitHub Advice Is a Waste of Time
+              The Fake Profile Trap vs. Real GitHub Achievements
             </h2>
             <p className="text-sm sm:text-base text-neutral-600 mt-1">
-              Every college senior tells you to make your README colorful. Here is what actually happens when engineering leads look at your profile.
+              What happens when an engineering hiring manager looks at your GitHub profile.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             
-            <div className="p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
-                ✕
+            {/* Left Column: The Old Way (The Illusion) */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-rose-50/30 border border-rose-200/80 space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-rose-200/60">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
+                    ✕
+                  </span>
+                  <h3 className="text-lg font-bold text-rose-950">
+                    The Copy-Paste Illusion
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 bg-rose-100/80 px-2.5 py-1 rounded-full">
+                  High Noise · Zero Signal
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                The Shields.io Myth
-              </h3>
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                Putting 40 glowing tech stack badges on a profile takes 2 minutes using an online generator. Recruiters and engineering managers know this. It proves you know how to copy Markdown, not that you know how to write software.
-              </p>
+
+              <div className="space-y-4 text-xs sm:text-sm text-neutral-700">
+                <div className="space-y-1">
+                  <p className="font-bold text-rose-900 flex items-center gap-1.5">
+                    <span className="text-rose-500 font-bold">1.</span> 40+ Generic Shields.io Badges
+                  </p>
+                  <p className="text-neutral-600 pl-4 leading-relaxed">
+                    Pasting glowing shields for React, Python, Docker takes 2 minutes using an online generator. It proves you know Markdown, not engineering.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-bold text-rose-900 flex items-center gap-1.5">
+                    <span className="text-rose-500 font-bold">2.</span> Bot-Generated Cron "Green Dots"
+                  </p>
+                  <p className="text-neutral-600 pl-4 leading-relaxed">
+                    Automating empty commits to paint your contribution graph green is spotted in 3 seconds by tech leads who click commit logs.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-bold text-rose-900 flex items-center gap-1.5">
+                    <span className="text-rose-500 font-bold">3.</span> The Recruiter Reality
+                  </p>
+                  <p className="text-neutral-600 pl-4 leading-relaxed">
+                    Recruiters and senior engineers scroll past vanity README templates in 2 seconds looking for actual pull requests and merge history.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="p-7 rounded-3xl bg-white border border-neutral-200/90 shadow-2xs space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm">
-                ✕
+            {/* Right Column: The GitGlow Way (Real Webhooks) */}
+            <div className="p-7 sm:p-8 rounded-3xl bg-emerald-50/20 border-2 border-emerald-500/40 shadow-sm space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-emerald-200/60">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+                    ✓
+                  </span>
+                  <h3 className="text-lg font-bold text-emerald-950">
+                    The GitGlow Verified Blueprint
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">
+                  Permanent · Unfakeable
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                The Bot Green-Dot Trap
-              </h3>
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                Running a cron script to create automated commits just to turn your contribution graph green is an immediate red flag. Experienced engineers click into the commit history in 3 seconds and spot the automated commits immediately.
-              </p>
-            </div>
 
-            <div className="p-7 rounded-3xl bg-white border-2 border-emerald-500/40 bg-emerald-50/10 shadow-xs space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
-                ✓
+              <div className="space-y-4 text-xs sm:text-sm text-neutral-800">
+                <div className="space-y-1">
+                  <p className="font-bold text-emerald-950 flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">1.</span> Official GitHub Event Webhooks
+                  </p>
+                  <p className="text-neutral-700 pl-4 leading-relaxed">
+                    Awarded directly by GitHub servers following real Git actions (merged pull requests, verified co-authors, accepted discussion answers).
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-bold text-emerald-950 flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">2.</span> Safe Sandboxed Execution
+                  </p>
+                  <p className="text-neutral-700 pl-4 leading-relaxed">
+                    Practice Git branching, trailer formatting, and PR etiquette in our dedicated sandbox repository with zero fear of messing up a public project.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-bold text-emerald-950 flex items-center gap-1.5">
+                    <span className="text-emerald-600 font-bold">3.</span> Permanent Profile Header Medallions
+                  </p>
+                  <p className="text-neutral-700 pl-4 leading-relaxed">
+                    Badges live permanently on your official GitHub profile header alongside your follower count and contribution graph.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                The Official Achievement Truth
-              </h3>
-              <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed font-medium">
-                Official GitHub Badges cannot be faked with markdown or copy-paste templates. They require real GitHub event triggers (merged pull requests, verified co-authors, accepted community discussions). That is why they carry instant credibility.
-              </p>
             </div>
 
           </div>
         </section>
 
-        {/* ─── Section 3: How The GitGlow Blueprint Engine Works ───────────── */}
-        <section className="bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-12 shadow-sm mb-20 md:mb-28 text-left">
+        {/* ─── Section 3: The 3-Station Git Pipeline ────────────────────────── */}
+        <div id="quickstart" className="relative -top-28 pointer-events-none" />
+        <section id="engine" className="scroll-mt-28 bg-[#0d1117] text-white border border-neutral-800 rounded-3xl p-6 sm:p-12 shadow-xl mb-20 md:mb-28 text-left">
           <div className="max-w-2xl mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0058be]/8 text-[#0058be] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#0058be]/15">
-              The Implementation Solution
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-2 border border-emerald-500/20 font-mono">
+              <Terminal size={11} /> Automated Git Execution Pipeline
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
-              How GitGlow Automates Your Badge Unlocks
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              How GitGlow Triggers GitHub Achievement Webhooks
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 mt-1">
-              No guesswork. No hunting for obscure open-source repos. Follow our 3-station engine blueprint.
+            <p className="text-sm sm:text-base text-neutral-400 mt-1">
+              No guesswork. No hunting for random open-source repos. Follow our 3-station pipeline.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#0b1c30] text-[#d1f34d] flex items-center justify-center font-mono font-bold text-base">
-                01
+            <div className="p-5 rounded-2xl bg-[#161b22] border border-neutral-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#d1f34d]">
+                  Station 01
+                </span>
+                <span className="text-xs text-neutral-500 font-mono">120s Setup</span>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                Select Target Badge
+              <h3 className="text-base font-bold text-white">
+                Select Badge Recipe
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                Choose the badge you want to claim. We recommend starting with <strong className="text-[#0b1c30]">Quickdraw</strong> (2 mins), then advancing to <strong className="text-[#0b1c30]">Pull Shark 🦈</strong> and <strong className="text-[#0b1c30]">YOLO 🪂</strong>.
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                Choose your target badge. Start with Quickdraw (2 mins), then advance to Pull Shark 🦈 and YOLO 🪂.
               </p>
+              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <span className="text-emerald-400">$</span> git checkout -b claim/quickdraw
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#0058be] text-white flex items-center justify-center font-mono font-bold text-base">
-                02
+            <div className="p-5 rounded-2xl bg-[#161b22] border border-neutral-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-400">
+                  Station 02
+                </span>
+                <span className="text-xs text-neutral-500 font-mono">Instant Gen</span>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                Launch Engine Recipe
+              <h3 className="text-base font-bold text-white">
+                Generate Git Triggers
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                The engine generates the exact Git commands, clean branch configuration, or contributor card JSON needed to trigger GitHub's internal achievement webhook.
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                The engine gives you the exact Git commands, branch format, or commit trailers needed for GitHub's webhook.
               </p>
+              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <span className="text-emerald-400">$</span> git commit -m "feat: claim badge"
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#d1f34d] text-[#0b1c30] flex items-center justify-center font-mono font-bold text-base">
-                03
+            <div className="p-5 rounded-2xl bg-[#161b22] border border-neutral-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+                  Station 03
+                </span>
+                <span className="text-xs text-neutral-500 font-mono">Auto Merge</span>
               </div>
-              <h3 className="text-lg font-bold text-[#0b1c30]">
-                Safe Sandbox Merge
+              <h3 className="text-base font-bold text-white">
+                Sandbox Bot Merge
               </h3>
-              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                Submit your pull request to our verified <code className="font-mono text-[#0058be] bg-blue-50 px-1 py-0.5 rounded">gitglow-community</code> sandbox. Our automated bot reviews and merges it immediately, unlocking the badge on your profile.
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                Submit to our verified sandbox. Our automated bot merges in 60s, unlocking the badge on your profile.
               </p>
+              <div className="p-2.5 rounded-xl bg-[#0d1117] border border-neutral-800 font-mono text-[11px] text-neutral-300">
+                <span className="text-emerald-400">$</span> gh pr merge --auto --merge
+              </div>
             </div>
 
           </div>
         </section>
 
         {/* ─── Section 4: The Complete Badge Catalog Grid ─────────────────── */}
-        <section id="catalog" className="scroll-mt-28 space-y-8 mb-20 md:mb-28 text-left">
+        <section id="catalog" className="space-y-8 mb-20 md:mb-28 text-left">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -814,15 +903,35 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
 
           {/* Badges Grid */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredBadges.map((badge) => (
-              <BadgeCard key={badge.id} badge={badge} />
-            ))}
-          </div>
+          {filteredBadges.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredBadges.map((badge) => (
+                <BadgeCard key={badge.id} badge={badge} />
+              ))}
+            </div>
+          ) : (
+            <div className="p-12 text-center rounded-3xl bg-white border border-neutral-200/90 shadow-2xs space-y-4 max-w-lg mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-neutral-100 text-neutral-400 flex items-center justify-center mx-auto">
+                <Award size={24} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-[#0b1c30]">No badges match this category</h3>
+                <p className="text-xs text-neutral-500">
+                  Switch back to all badges to inspect the complete 10-badge directory.
+                </p>
+              </div>
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#0058be] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#0047a0] transition-colors shadow-2xs active:scale-[0.99]"
+              >
+                Show All 10 Badges
+              </button>
+            </div>
+          )}
         </section>
 
         {/* ─── Section 5: Tier Multiplier Ladders ─────────────────────────── */}
-        <section id="tiers" className="scroll-mt-28 bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
+        <section id="tiers" className="bg-white border border-neutral-200/90 rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
           <div className="max-w-2xl mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest mb-3">
               <Award size={11} className="text-[#0058be]" /> Multiplier Ladders
@@ -869,7 +978,12 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400 mb-2 sm:hidden px-1">
+            <span>← Swipe table horizontally</span>
+            <span>→</span>
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border border-neutral-100">
             <table className="w-full text-xs text-left border-collapse">
               <thead>
                 <tr className="border-b border-neutral-200 text-neutral-400 font-bold uppercase tracking-wider">
@@ -927,7 +1041,7 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── Section 6: Frequently Asked Questions ───────────────────────── */}
-        <section id="faq" className="scroll-mt-28 max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
+        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
           <div className="text-center space-y-2 mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-[10px] font-bold uppercase tracking-widest">
               Got Questions?

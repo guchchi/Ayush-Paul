@@ -327,7 +327,8 @@ export const Navbar = () => {
             >
               {[
                 { label: 'Overview', href: '#overview' },
-                { label: 'Quick Start', href: '#quickstart' },
+                { label: 'Compare', href: '#compare' },
+                { label: 'Git Pipeline', href: '#engine' },
                 { label: 'Badge Catalog', href: '#catalog' },
                 { label: 'Tiers Guide', href: '#tiers' },
                 { label: 'FAQ', href: '#faq' },
