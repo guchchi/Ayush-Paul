@@ -29,10 +29,199 @@ import {
   Search,
   AlertCircle,
   Copy,
+  Info,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
 import { GITHUB_BADGES, GitHubBadge } from '../../../data/gitglow/github-badges';
+
+// ─── Badge Terminal Recipes Definition ────────────────────────────────────────
+interface BadgeRecipe {
+  command1: string;
+  command2: string;
+  command3: string;
+  station1Label: string;
+  station2Label: string;
+  station3Label: string;
+  estimatedTime: string;
+  isAutomated: boolean;
+  gotchaNote: string;
+}
+
+const BADGE_RECIPES: Record<string, BadgeRecipe> = {
+  quickdraw: {
+    station1Label: '1. Create Test Issue',
+    command1: 'gh issue create --title "track: quickdraw audit" --body "Temp milestone"',
+    station2Label: '2. Close Under 5 Mins',
+    command2: 'gh issue close 1 --comment "Closed for Quickdraw achievement"',
+    station3Label: '3. Webhook Ingestion',
+    command3: 'gh api user/public_emails',
+    estimatedTime: '120 Seconds',
+    isAutomated: true,
+    gotchaNote: 'Must close within 300s of opening. Closing PRs without merging also qualifies.',
+  },
+  'pull-shark': {
+    station1Label: '1. Switch Claim Branch',
+    command1: 'git switch -c claim/pull-shark',
+    station2Label: '2. Commit Verified Trigger',
+    command2: 'git commit --allow-empty -m "feat: claim pull shark"',
+    station3Label: '3. Auto-Merge PR',
+    command3: 'gh pr merge --auto --merge',
+    estimatedTime: '5 Minutes',
+    isAutomated: true,
+    gotchaNote: 'PR must be merged into main branch. Merged PRs qualify for Bronze (16) and Silver (128) multipliers.',
+  },
+  yolo: {
+    station1Label: '1. Create YOLO Branch',
+    command1: 'git switch -c claim/yolo',
+    station2Label: '2. Direct Commit',
+    command2: 'git commit --allow-empty -m "feat: direct merge without review"',
+    station3Label: '3. Merge Without Review',
+    command3: 'gh pr merge --admin --merge',
+    estimatedTime: '3 Minutes',
+    isAutomated: true,
+    gotchaNote: 'Requires merging directly without any reviewer approval requested or submitted.',
+  },
+  'pair-extraordinaire': {
+    station1Label: '1. Co-Authored Commit',
+    command1: 'git commit -m "feat: pair programming\n\nCo-authored-by: gitglow-bot <bot@gitglow.dev>"',
+    station2Label: '2. Push With Trailer',
+    command2: 'git push origin claim/pair-extraordinaire',
+    station3Label: '3. Merge Co-Authored PR',
+    command3: 'gh pr merge --auto --merge',
+    estimatedTime: '8 Minutes',
+    isAutomated: true,
+    gotchaNote: 'Trailer syntax must have exact blank line before "Co-authored-by:" and valid email format.',
+  },
+  'galaxy-brain': {
+    station1Label: '1. Find Open Discussion',
+    command1: 'gh browse https://github.com/orgs/community/discussions',
+    station2Label: '2. Post Helpful Solution',
+    command2: 'gh api graphql -f query="mutation { addDiscussionComment(...) }"',
+    station3Label: '3. Mark Accepted Answer',
+    command3: 'gh api graphql -f query="mutation { markDiscussionCommentAsAnswer(...) }"',
+    estimatedTime: '15 Minutes',
+    isAutomated: false,
+    gotchaNote: 'Requires an accepted answer in a repository with GitHub Discussions enabled.',
+  },
+  starstruck: {
+    station1Label: '1. Showcase Repository',
+    command1: 'gh repo edit --add-topic "gitglow-showcase" --add-topic "developer-portfolio"',
+    station2Label: '2. Share Milestone',
+    command2: 'gh repo view --web',
+    station3Label: '3. Reach 16 Stars',
+    command3: 'gh api repos/{owner}/{repo} --jq .stargazers_count',
+    estimatedTime: 'Community Milestone',
+    isAutomated: false,
+    gotchaNote: 'Stars from bot accounts or spam clusters can be pruned by GitHub fraud detectors.',
+  },
+  'public-sponsor': {
+    station1Label: '1. Select Maintainer',
+    command1: 'gh browse https://github.com/sponsors/guchchi',
+    station2Label: '2. Set Sponsorship Tier',
+    command2: 'gh api user/sponsorships_as_sponsor',
+    station3Label: '3. Webhook Trigger',
+    command3: 'gh api user/public_sponsorships',
+    estimatedTime: '2 Minutes',
+    isAutomated: false,
+    gotchaNote: 'Requires a valid GitHub Sponsors transaction ($1 minimum). Badge appears within 10 minutes.',
+  },
+  'heart-on-your-sleeve': {
+    station1Label: '1. Target Active PR',
+    command1: 'gh pr view 1 --web',
+    station2Label: '2. Add Heart Reaction',
+    command2: 'gh api repos/{owner}/{repo}/issues/{number}/reactions -f content="heart"',
+    station3Label: '3. Beta Sync',
+    command3: 'gh api user --jq .login',
+    estimatedTime: '1 Minute',
+    isAutomated: true,
+    gotchaNote: 'Currently rolling out in select GitHub testing clusters; badge activates once enabled on your shard.',
+  },
+  'open-sourcerer': {
+    station1Label: '1. Cross-Repo PRs',
+    command1: 'gh pr list --state merged --author @me',
+    station2Label: '2. Verify Public Repos',
+    command2: 'gh search prs --author @me --merged',
+    station3Label: '3. Activation Check',
+    command3: 'gh api user/achievements',
+    estimatedTime: 'Multi-Repo Milestone',
+    isAutomated: false,
+    gotchaNote: 'Testing badge awarded for merging PRs across distinct public organizations.',
+  },
+  'arctic-code-vault': {
+    station1Label: '1. Historic Snapshot',
+    command1: '# Archived on Feb 2, 2020 at Svalbard World Archive',
+    station2Label: '2. Archive Status',
+    command2: '# Permanently closed for new accounts',
+    station3Label: '3. Read-Only Milestone',
+    command3: '# Preserved for 1,000 years in arctic permafrost',
+    estimatedTime: 'Historic (Archived)',
+    isAutomated: false,
+    gotchaNote: 'Cannot be earned by new GitHub accounts. Preserved as a historical milestone.',
+  },
+};
+
+// ─── Badge Themes Definition ─────────────────────────────────────────────────
+const BADGE_THEMES: Record<
+  string,
+  {
+    pedestalBorder: string;
+    glow: string;
+    accentHex: string;
+  }
+> = {
+  quickdraw: {
+    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
+    accentHex: '#f59e0b',
+  },
+  'pull-shark': {
+    pedestalBorder: 'border-cyan-500/40 group-hover:border-cyan-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]',
+    accentHex: '#06b6d4',
+  },
+  yolo: {
+    pedestalBorder: 'border-rose-500/40 group-hover:border-rose-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]',
+    accentHex: '#f43f5e',
+  },
+  'pair-extraordinaire': {
+    pedestalBorder: 'border-purple-500/40 group-hover:border-purple-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]',
+    accentHex: '#a855f7',
+  },
+  'galaxy-brain': {
+    pedestalBorder: 'border-indigo-500/40 group-hover:border-indigo-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(99,102,241,0.2)]',
+    accentHex: '#6366f1',
+  },
+  starstruck: {
+    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
+    accentHex: '#eab308',
+  },
+  'public-sponsor': {
+    pedestalBorder: 'border-emerald-500/40 group-hover:border-emerald-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]',
+    accentHex: '#10b981',
+  },
+  'heart-on-your-sleeve': {
+    pedestalBorder: 'border-pink-500/40 group-hover:border-pink-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]',
+    accentHex: '#ec4899',
+  },
+  'open-sourcerer': {
+    pedestalBorder: 'border-teal-500/40 group-hover:border-teal-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(20,184,166,0.2)]',
+    accentHex: '#14b8a6',
+  },
+  'arctic-code-vault': {
+    pedestalBorder: 'border-sky-500/40 group-hover:border-sky-400',
+    glow: 'group-hover:shadow-[0_0_20px_rgba(56,189,248,0.2)]',
+    accentHex: '#38bdf8',
+  },
+};
 
 // ─── FAQ Accordion Item ──────────────────────────────────────────────────────
 const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
@@ -41,12 +230,12 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
     <div className="border border-[#30363d] rounded-2xl bg-[#161b22] overflow-hidden transition-all duration-200 hover:border-[#58a6ff]/40">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full px-6 py-5 flex items-center justify-between text-left text-sm sm:text-base font-bold text-[#f0f6fc] hover:text-[#58a6ff] transition-colors focus:outline-none"
+        className="w-full px-6 py-4 flex items-center justify-between text-left text-sm sm:text-base font-bold text-[#f0f6fc] hover:text-[#58a6ff] transition-colors focus:outline-none"
         aria-expanded={open}
       >
         <span className="pr-4">{q}</span>
-        <span className="p-1.5 rounded-full bg-[#0d1117] border border-[#30363d] text-[#8b949e] shrink-0">
-          {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+        <span className="p-1 rounded-full bg-[#0d1117] border border-[#30363d] text-[#8b949e] shrink-0">
+          {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </span>
       </button>
       <AnimatePresence initial={false}>
@@ -58,198 +247,12 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
             transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-6 pt-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed border-t border-[#30363d] bg-[#0d1117]/60">
+            <div className="px-6 pb-5 pt-2 text-xs sm:text-sm text-[#8b949e] leading-relaxed border-t border-[#30363d] bg-[#0d1117]/60">
               {a}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-};
-
-// ─── Badge Custom Theme Pedestal Map ─────────────────────────────────────────
-const BADGE_THEMES: Record<
-  string,
-  {
-    pedestalBorder: string;
-    glow: string;
-  }
-> = {
-  quickdraw: {
-    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
-  },
-  'pull-shark': {
-    pedestalBorder: 'border-cyan-500/40 group-hover:border-cyan-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]',
-  },
-  yolo: {
-    pedestalBorder: 'border-rose-500/40 group-hover:border-rose-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]',
-  },
-  'pair-extraordinaire': {
-    pedestalBorder: 'border-purple-500/40 group-hover:border-purple-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]',
-  },
-  'galaxy-brain': {
-    pedestalBorder: 'border-indigo-500/40 group-hover:border-indigo-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(99,102,241,0.2)]',
-  },
-  starstruck: {
-    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
-  },
-  'public-sponsor': {
-    pedestalBorder: 'border-emerald-500/40 group-hover:border-emerald-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]',
-  },
-  'heart-on-your-sleeve': {
-    pedestalBorder: 'border-pink-500/40 group-hover:border-pink-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]',
-  },
-  'open-sourcerer': {
-    pedestalBorder: 'border-teal-500/40 group-hover:border-teal-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(20,184,166,0.2)]',
-  },
-  'arctic-code-vault': {
-    pedestalBorder: 'border-sky-500/40 group-hover:border-sky-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(56,189,248,0.2)]',
-  },
-};
-
-// ─── Option A: Compact Trophy Card Component ─────────────────────────────────
-const BadgeCard: React.FC<{ badge: GitHubBadge }> = ({ badge }) => {
-  const theme = BADGE_THEMES[badge.id] || {
-    pedestalBorder: 'border-[#30363d]',
-    glow: 'group-hover:shadow-md',
-  };
-
-  // Status Capsule Renderer (One consolidated pill per card)
-  const renderStatusCapsule = () => {
-    if (badge.isRecommendedStarter) {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#d1f34d]/15 text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-wide border border-[#d1f34d]/30 shadow-2xs">
-          <Flame size={11} className="text-[#d1f34d]" />
-          <span>Starter · 5 Mins</span>
-        </span>
-      );
-    }
-    if (badge.status === 'testing') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 text-[10px] font-bold uppercase tracking-wide border border-amber-500/30">
-          <Sparkles size={11} className="text-amber-400" />
-          <span>In GitHub Beta</span>
-        </span>
-      );
-    }
-    if (!badge.isObtainable) {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0d1117] text-[#8b949e] text-[10px] font-bold uppercase tracking-wide border border-[#30363d]">
-          <Lock size={10} />
-          <span>Archived (2020)</span>
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0d1117] text-[#c9d1d9] text-[10px] font-bold uppercase tracking-wide border border-[#30363d]">
-        <span>{badge.difficulty} · Obtainable</span>
-      </span>
-    );
-  };
-
-  return (
-    <div
-      className={cn(
-        'group relative p-5 rounded-2xl border bg-[#161b22] transition-all duration-200 flex flex-col justify-between hover:border-[#58a6ff]/50 hover:shadow-xl hover:-translate-y-1',
-        badge.isRecommendedStarter
-          ? 'border-[#238636]/50 ring-1 ring-[#238636]/20 shadow-2xs'
-          : 'border-[#30363d]',
-      )}
-    >
-      <div>
-        {/* Top Header: Custom Themed Trophy Pedestal + Single Meta Capsule */}
-        <div className="flex items-center justify-between gap-3 mb-4">
-          {/* Custom Trophy Pedestal */}
-          <div
-            className={cn(
-              'relative w-16 h-16 rounded-2xl p-2 flex items-center justify-center bg-[#0d1117] border transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5 shadow-2xs',
-              theme.pedestalBorder,
-              theme.glow,
-            )}
-          >
-            {/* Specular Glint Reflection */}
-            <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.08),transparent_65%)] pointer-events-none" />
-            <img
-              src={badge.image}
-              alt={badge.name}
-              className="relative z-10 w-12 h-12 object-contain filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)] transition-transform duration-300 group-hover:scale-110 select-none"
-              loading="lazy"
-            />
-          </div>
-
-          {/* Single Consolidated Status Capsule */}
-          <div>{renderStatusCapsule()}</div>
-        </div>
-
-        {/* Title & Authentic Tagline */}
-        <div className="space-y-1 mb-3">
-          <div className="text-lg font-bold text-[#f0f6fc] tracking-tight group-hover:text-[#58a6ff] transition-colors leading-snug">
-            {badge.name}
-          </div>
-          <div className="text-xs text-[#8b949e] font-medium line-clamp-1 leading-normal">
-            {badge.tagline}
-          </div>
-        </div>
-
-        {/* GitGlow Blueprint Strategy Capsule */}
-        <div className="p-3 rounded-xl bg-[#0d1117] border border-[#30363d]/80 text-xs text-[#c9d1d9] leading-relaxed min-h-[58px] flex items-center mb-3.5">
-          <div className="line-clamp-2 text-xs leading-relaxed">
-            <span className="font-bold text-[#f0f6fc]">Blueprint: </span>
-            <span className="text-[#8b949e] font-normal">{badge.blueprintStrategy}</span>
-          </div>
-        </div>
-
-        {/* Tiers Ladder Micro-Strip */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2.5 py-1.5 rounded-lg mb-4">
-          <span className="font-bold text-[#8b949e] text-[10px] uppercase tracking-wider">
-            {badge.tiers && badge.tiers.length > 0 ? 'Tiers' : 'Scope'}
-          </span>
-          <div className="flex items-center gap-1.5 font-medium text-[#c9d1d9]">
-            {badge.tiers && badge.tiers.length > 0 ? (
-              <>
-                <span className="text-[#f0f6fc]">{badge.tiers[0]?.threshold.split(' ')[0]}</span>
-                <span className="text-[#30363d]">·</span>
-                <span className="text-[#f9bfa7]">{badge.tiers[1]?.threshold.split(' ')[0]} 🥉</span>
-                <span className="text-[#30363d]">·</span>
-                <span className="text-[#e1e4e4]">{badge.tiers[2]?.threshold.split(' ')[0]} 🥈</span>
-                <span className="text-[#30363d]">·</span>
-                <span className="text-[#fae57e]">{badge.tiers[3]?.threshold.split(' ')[0]} 🥇</span>
-              </>
-            ) : (
-              <span className="text-[#8b949e] font-sans text-xs">Standard Single Unlock</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Card Action Row */}
-      <div className="pt-2 border-t border-[#30363d]">
-        {badge.isObtainable ? (
-          <Link
-            to={`/blueprints/gitglow/engine?badge=${badge.id}`}
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-2xs hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-[#58a6ff]"
-          >
-            <span>Launch Claim Engine</span>
-            <ArrowRight size={13} />
-          </Link>
-        ) : (
-          <div className="flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-[#0d1117] text-[#8b949e] font-bold text-xs uppercase tracking-wider cursor-not-allowed border border-[#30363d]">
-            <Lock size={12} />
-            <span>{badge.status === 'testing' ? 'In GitHub Beta' : 'Archived Milestone'}</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
@@ -270,15 +273,16 @@ interface ScannedProfileData {
 
 // ─── Main GitGlow Page ────────────────────────────────────────────────────────
 export const GitGlowHomePage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
+  const [selectedCategory, setSelectedCategory] = useState<string>('starter');
   const [githubInput, setGithubInput] = useState<string>('arivera-dev');
   const [isScanning, setIsScanning] = useState<boolean>(false);
-  const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
+  const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
 
-  const handleCopyCommand = (cmd: string) => {
-    navigator.clipboard.writeText(cmd);
-    setCopiedCommand(cmd);
-    setTimeout(() => setCopiedCommand(null), 2000);
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedSnippet(label);
+    setTimeout(() => setCopiedSnippet(null), 2000);
   };
 
   const [scannedUser, setScannedUser] = useState<ScannedProfileData>({
@@ -341,7 +345,6 @@ export const GitGlowHomePage: React.FC = () => {
           statusMessage: 'User not found on GitHub · Sandbox preview',
         });
       } else {
-        // 403 or other
         setScannedUser({
           login: username,
           name: username.charAt(0).toUpperCase() + username.slice(1),
@@ -371,574 +374,227 @@ export const GitGlowHomePage: React.FC = () => {
     } finally {
       setTimeout(() => {
         setIsScanning(false);
-      }, 400);
+      }, 350);
     }
   };
 
   const filteredBadges = useMemo(() => {
     if (selectedCategory === 'all') return GITHUB_BADGES;
-    if (selectedCategory === 'obtainable') return GITHUB_BADGES.filter((b) => b.isObtainable);
     if (selectedCategory === 'starter') return GITHUB_BADGES.filter((b) => b.isRecommendedStarter);
-    return GITHUB_BADGES.filter((b) => b.category === selectedCategory);
+    if (selectedCategory === 'obtainable') return GITHUB_BADGES.filter((b) => b.isObtainable);
+    if (selectedCategory === 'tiers') return GITHUB_BADGES.filter((b) => b.tiers && b.tiers.length > 0);
+    if (selectedCategory === 'legacy') return GITHUB_BADGES.filter((b) => !b.isObtainable);
+    return GITHUB_BADGES;
   }, [selectedCategory]);
 
+  const activeBadge = useMemo(() => {
+    return GITHUB_BADGES.find((b) => b.id === selectedBadgeId) || GITHUB_BADGES[0];
+  }, [selectedBadgeId]);
+
+  const activeRecipe = useMemo(() => {
+    return (
+      BADGE_RECIPES[activeBadge.id] || {
+        station1Label: '1. Switch Branch',
+        command1: `git switch -c claim/${activeBadge.id}`,
+        station2Label: '2. Generate Commit',
+        command2: `git commit -m "feat: claim ${activeBadge.name}"`,
+        station3Label: '3. Merge PR',
+        command3: 'gh pr merge --auto --merge',
+        estimatedTime: '5 Minutes',
+        isAutomated: true,
+        gotchaNote: activeBadge.gotchas[0] || 'Follow standard Git branch conventions.',
+      }
+    );
+  }, [activeBadge]);
+
+  const allActiveCommands = useMemo(() => {
+    return `${activeRecipe.command1}\n${activeRecipe.command2}\n${activeRecipe.command3}`;
+  }, [activeRecipe]);
+
   return (
-    <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] pt-24 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0d1117]">
+    <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] pt-20 pb-20 overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0d1117]">
       
-      {/* ─── Upper Navigation / Back link ─────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-4 pb-6">
+      {/* ─── Upper Navigation Bar ─────────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4 flex items-center justify-between">
         <Link
           to="/blueprints"
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8b949e] hover:text-[#58a6ff] transition-colors focus:outline-none focus:ring-2 focus:ring-[#58a6ff] rounded-lg p-1.5"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8b949e] hover:text-[#58a6ff] transition-colors rounded-lg p-1"
           aria-label="Back to Blueprints collection"
         >
           <ArrowLeft size={14} aria-hidden="true" />
-          <span>Back to Blueprints</span>
+          <span>All Blueprints</span>
         </Link>
+
+        {/* Live Bot Telemetry Pill */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161b22] border border-[#30363d] text-[11px] font-mono text-[#8b949e]">
+          <span className="w-2 h-2 rounded-full bg-[#3fb950] animate-pulse" />
+          <span>gitglow-sandbox: <strong className="text-[#3fb950] font-bold">online</strong> · 42s avg merge</span>
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
-        
-        {/* ─── Hero Section: Instant GitHub URL Scanner & Diagnostic Console ────── */}
-        <section id="overview" className="mb-20 md:mb-28 text-left">
-          
-          <div className="max-w-4xl space-y-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#58a6ff] text-[11px] font-bold uppercase tracking-widest">
-              <Sparkles size={12} className="text-[#58a6ff]" />
-              <span>Instant GitHub Profile Badge Audit</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* ─── SECTION 1: High-Signal Command Header & Profile Scanner ──────── */}
+        <section id="overview" className="mb-10 text-left">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-[#30363d]">
+            <div className="max-w-2xl space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#58a6ff] text-[11px] font-mono font-bold uppercase tracking-wider">
+                <Sparkles size={11} className="text-[#58a6ff]" />
+                <span>Developer Achievement Workbench</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#f0f6fc] leading-tight">
+                Audit GitHub Profile. <br />
+                <span className="text-[#58a6ff]">Claim Missing Achievements In-Place.</span>
+              </h1>
+              <p className="text-xs sm:text-sm text-[#8b949e] leading-relaxed max-w-xl">
+                Recruiters ignore markdown badges. Select any official GitHub achievement below to inspect its exact git commands, gotchas, and 1-click sandbox recipe.
+              </p>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#f0f6fc] leading-[1.08]">
-              Paste your GitHub URL. <br />
-              <span className="text-[#58a6ff]">See the badges you're missing in 2 seconds.</span>
-            </h1>
-
-            <p className="text-sm sm:text-base text-[#8b949e] leading-relaxed max-w-2xl">
-              Recruiters ignore copy-paste markdown shields. Enter your GitHub profile below to audit your official achievements and get the exact sandbox blueprint to claim your first three badges today.
-            </p>
-
-            {/* The Command Console Input Bar */}
-            <div className="pt-2 max-w-2xl">
+            {/* Quick Profile Scanner Input */}
+            <div className="w-full lg:w-auto lg:min-w-[420px] space-y-2">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleScan();
                 }}
-                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-2 rounded-2xl bg-[#161b22] border border-[#30363d] shadow-lg focus-within:border-[#58a6ff] focus-within:ring-2 focus-within:ring-[#58a6ff]/20 transition-all"
+                className="flex items-center p-1.5 rounded-xl bg-[#161b22] border border-[#30363d] focus-within:border-[#58a6ff] focus-within:ring-2 focus-within:ring-[#58a6ff]/20 transition-all shadow-sm"
               >
-                <div className="flex items-center gap-2.5 px-3 py-1.5 flex-1 min-w-0 bg-[#0d1117] rounded-xl border border-[#30363d]/60">
-                  <Github size={20} className="text-[#8b949e] shrink-0" />
-                  <span className="font-mono text-xs sm:text-sm text-[#8b949e] select-none">
+                <div className="flex items-center gap-2 px-2.5 py-1 flex-1 min-w-0 bg-[#0d1117] rounded-lg border border-[#30363d]/60">
+                  <Github size={16} className="text-[#8b949e] shrink-0" />
+                  <span className="font-mono text-xs text-[#8b949e] select-none">
                     github.com/
                   </span>
                   <input
                     type="text"
                     value={githubInput}
                     onChange={(e) => setGithubInput(e.target.value)}
-                    placeholder="username or paste profile link"
-                    className="w-full bg-transparent font-mono text-xs sm:text-sm text-[#f0f6fc] placeholder:text-[#8b949e]/60 focus:outline-none"
+                    placeholder="username"
+                    className="w-full bg-transparent font-mono text-xs text-[#f0f6fc] placeholder:text-[#8b949e]/60 focus:outline-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isScanning}
-                  className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-xs active:scale-[0.99] disabled:opacity-70 shrink-0"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 ml-1.5 rounded-lg bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-70 shrink-0 cursor-pointer"
                 >
                   {isScanning ? (
-                    <>
-                      <RefreshCw size={14} className="animate-spin" />
-                      <span>Scanning...</span>
-                    </>
+                    <RefreshCw size={13} className="animate-spin" />
                   ) : (
                     <>
-                      <Zap size={14} className="text-[#d1f34d]" />
-                      <span>Audit Badges</span>
+                      <Zap size={13} className="text-[#d1f34d]" />
+                      <span>Audit</span>
                     </>
                   )}
                 </button>
               </form>
 
-              {/* Quick Demo Chips */}
-              <div className="flex flex-wrap items-center gap-2 pt-3 text-xs text-[#8b949e]">
-                <span className="font-semibold text-[#8b949e] text-[11px] uppercase tracking-wider">Try an example:</span>
-                {[
-                  { label: 'shadcn', handle: 'shadcn' },
-                  { label: 'torvalds', handle: 'torvalds' },
-                  { label: 'gaearon', handle: 'gaearon' },
-                  { label: 'alexrivera', handle: 'arivera-dev' },
-                ].map((demo) => (
+              {/* Demo Chips */}
+              <div className="flex items-center gap-1.5 text-[11px] text-[#8b949e]">
+                <span className="text-[#8b949e] font-mono text-[10px]">Try:</span>
+                {['shadcn', 'torvalds', 'gaearon', 'arivera-dev'].map((demo) => (
                   <button
-                    key={demo.handle}
+                    key={demo}
                     type="button"
                     onClick={() => {
-                      setGithubInput(demo.handle);
-                      handleScan(demo.handle);
+                      setGithubInput(demo);
+                      handleScan(demo);
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-[#161b22] hover:bg-[#21262d] text-[#c9d1d9] hover:text-[#f0f6fc] font-mono text-xs transition-colors border border-[#30363d] shadow-2xs hover:border-[#58a6ff]/50"
+                    className="px-2 py-0.5 rounded bg-[#161b22] hover:bg-[#21262d] text-[#c9d1d9] hover:text-[#f0f6fc] font-mono text-[11px] border border-[#30363d] transition-colors cursor-pointer"
                   >
-                    @{demo.label}
+                    @{demo}
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* ─── Real-Time Scanned Diagnostic Card (Tactile Dark Console) ─────── */}
-          <div className="mt-8 rounded-3xl bg-[#161b22] text-[#f0f6fc] border border-[#30363d] shadow-2xl p-6 sm:p-8 max-w-5xl">
-            {/* Header: User Profile Strip */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-6 border-b border-[#30363d]">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <img
-                    src={scannedUser.avatar_url}
-                    alt={scannedUser.login}
-                    className="w-16 h-16 rounded-full border-2 border-[#30363d] object-cover shadow-md"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#238636] border-2 border-[#161b22] flex items-center justify-center" title="Public Profile Active">
-                    <Check size={10} className="text-white font-bold" />
-                  </div>
+          {/* Scanned Profile Banner */}
+          <div className="mt-4 p-3.5 rounded-2xl bg-[#161b22] border border-[#30363d] flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <img
+                src={scannedUser.avatar_url}
+                alt={scannedUser.login}
+                className="w-9 h-9 rounded-full border border-[#30363d] object-cover"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-[#f0f6fc]">{scannedUser.name}</span>
+                  <a
+                    href={`https://github.com/${scannedUser.login}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[#8b949e] hover:text-[#58a6ff] inline-flex items-center gap-0.5 transition-colors"
+                  >
+                    <span>@{scannedUser.login}</span>
+                    <ExternalLink size={10} />
+                  </a>
                 </div>
-
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg sm:text-xl font-bold text-[#f0f6fc]">
-                      {scannedUser.name}
-                    </h3>
-                    <a
-                      href={`https://github.com/${scannedUser.login}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-mono text-[#8b949e] hover:text-[#58a6ff] inline-flex items-center gap-1 transition-colors"
-                    >
-                      <span>@{scannedUser.login}</span>
-                      <ExternalLink size={11} />
-                    </a>
-                  </div>
-                  <p className="text-xs text-[#8b949e] mt-0.5 line-clamp-1 max-w-md">
-                    {scannedUser.bio}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-2 text-[11px] font-mono text-[#8b949e]">
-                    <span className="whitespace-nowrap">{scannedUser.public_repos} repos</span>
-                    <span className="text-[#30363d]">·</span>
-                    <span className="whitespace-nowrap">{scannedUser.followers} followers</span>
-                    <span className="text-[#30363d]">·</span>
-                    {scannedUser.statusType === 'verified' ? (
-                      <span className="text-[10px] text-[#3fb950] font-sans font-semibold inline-flex items-center gap-1 whitespace-nowrap">
-                        <Check size={10} className="text-[#3fb950]" /> {scannedUser.statusMessage || 'Verified Profile'}
-                      </span>
-                    ) : (
-                      <span className="text-[10px] text-amber-400 font-sans font-semibold inline-flex items-center gap-1 whitespace-nowrap">
-                        <AlertCircle size={10} className="text-amber-400" /> {scannedUser.statusMessage || 'Sandbox Mode'}
-                      </span>
-                    )}
-                  </div>
+                <div className="flex items-center gap-2 text-[11px] font-mono text-[#8b949e]">
+                  <span>{scannedUser.public_repos} public repos</span>
+                  <span>·</span>
+                  <span>{scannedUser.followers} followers</span>
+                  <span>·</span>
+                  <span className="text-[#3fb950] font-sans font-semibold">
+                    {scannedUser.statusMessage || 'Verified Profile'}
+                  </span>
                 </div>
               </div>
+            </div>
 
-              {/* Overall Achievement Audit Status */}
-              <div className="bg-[#0d1117] px-4 py-3 rounded-2xl border border-[#30363d] flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between gap-2 shrink-0">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8b949e]">
+            {/* Quick Fast-Track Action */}
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:block text-right">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8b949e] block">
                   Starter Badges Status
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f85149]/10 border border-[#f85149]/30 text-[#f85149] font-bold text-xs whitespace-nowrap">
-                  <span>0 / 4 Unlocked</span>
-                  <span className="text-[#8b949e]">· Ready to Claim</span>
+                <span className="text-xs font-bold text-[#f85149]">
+                  0 / 4 Unlocked · Ready to Claim
                 </span>
               </div>
-            </div>
-
-            {/* Middle: 4 Starter Badges Diagnostics Grid */}
-            <div className="py-6 border-b border-[#30363d]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#8b949e]">
-                  Starter Achievements Breakdown
-                </span>
-                <span className="text-xs text-[#8b949e]">
-                  Available to unlock on your account:
-                </span>
-              </div>
-
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  {
-                    id: 'quickdraw',
-                    name: 'Quickdraw ⚡',
-                    image: '/images/badges/quickdraw.png',
-                    requirement: 'Close issue/PR within 5 mins',
-                    time: '2 Mins',
-                    difficulty: 'Very Easy',
-                    theme: 'border-amber-500/30 bg-[#0d1117] hover:border-amber-400/60',
-                    btnBg: 'bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117]',
-                  },
-                  {
-                    id: 'pull-shark',
-                    name: 'Pull Shark 🦈',
-                    image: '/images/badges/pull-shark.png',
-                    requirement: 'Merge 2 PRs into repo',
-                    time: '5 Mins',
-                    difficulty: 'Easy',
-                    theme: 'border-cyan-500/30 bg-[#0d1117] hover:border-cyan-400/60',
-                    btnBg: 'bg-[#58a6ff] hover:bg-[#388bfd] text-[#0d1117]',
-                  },
-                  {
-                    id: 'yolo',
-                    name: 'YOLO 🪂',
-                    image: '/images/badges/yolo.png',
-                    requirement: 'Merge PR without review',
-                    time: '5 Mins',
-                    difficulty: 'Easy',
-                    theme: 'border-rose-500/30 bg-[#0d1117] hover:border-rose-400/60',
-                    btnBg: 'bg-[#238636] hover:bg-[#2ea043] text-white',
-                  },
-                  {
-                    id: 'pair-extraordinaire',
-                    name: 'Pair Extraordinaire 👯',
-                    image: '/images/badges/pair-extraordinaire.png',
-                    requirement: 'Co-authored commit merged',
-                    time: '10 Mins',
-                    difficulty: 'Medium',
-                    theme: 'border-purple-500/30 bg-[#0d1117] hover:border-purple-400/60',
-                    btnBg: 'bg-[#21262d] hover:bg-[#30363d] text-[#f0f6fc] border border-[#30363d]',
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.id}
-                    className={cn(
-                      'p-4 rounded-2xl border flex flex-col justify-between transition-all duration-200',
-                      item.theme,
-                    )}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="w-12 h-12 rounded-xl bg-[#161b22] border border-[#30363d] flex items-center justify-center p-1.5">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-9 h-9 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-                          />
-                        </div>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#161b22] text-[#c9d1d9] border border-[#30363d]">
-                          {item.time}
-                        </span>
-                      </div>
-
-                      <h4 className="text-sm font-bold text-[#f0f6fc] mb-1">
-                        {item.name}
-                      </h4>
-                      <p className="text-[11px] text-[#8b949e] leading-snug line-clamp-2 mb-3">
-                        {item.requirement}
-                      </p>
-                    </div>
-
-                    <Link
-                      to={`/blueprints/gitglow/engine?badge=${item.id}&user=${scannedUser.login}`}
-                      className={cn(
-                        'w-full py-2.5 px-3 min-h-[44px] rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.99]',
-                        item.btnBg,
-                      )}
-                    >
-                      <span>Claim Blueprint</span>
-                      <ArrowRight size={12} />
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom Recommendation Strip */}
-            <div className="pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5">
-                <span className="w-8 h-8 rounded-xl bg-[#d1f34d]/20 text-[#d1f34d] flex items-center justify-center shrink-0">
-                  <Zap size={16} />
-                </span>
-                <div>
-                  <p className="text-xs font-bold text-[#f0f6fc]">
-                    Fastest Path for @{scannedUser.login}: Claim Quickdraw in 120 Seconds
-                  </p>
-                  <p className="text-[11px] text-[#8b949e]">
-                    Open a tracking issue and close it in under 5 minutes on your personal repository.
-                  </p>
-                </div>
-              </div>
-
-              <Link
-                to={`/blueprints/gitglow/engine?badge=quickdraw&user=${scannedUser.login}`}
-                className="px-6 py-3 min-h-[44px] rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-[0.99] shrink-0 flex items-center justify-center text-center"
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBadgeId('quickdraw');
+                  setSelectedCategory('starter');
+                }}
+                className="px-3.5 py-1.5 rounded-lg bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-extrabold text-xs tracking-wide transition-all shadow-xs cursor-pointer"
               >
-                Launch 2-Min Quickdraw Claim →
-              </Link>
+                ⚡ Fast-Track: Quickdraw (120s)
+              </button>
             </div>
           </div>
         </section>
 
-        {/* ─── Section 2: Reality Check — Old Way vs GitGlow Way ────────────── */}
-        <section id="compare" className="scroll-mt-28 mb-20 md:mb-28 text-left">
-          <div className="max-w-3xl mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22] text-[#8b949e] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#30363d]">
-              Strategic Comparison
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#f0f6fc] tracking-tight">
-              The Fake Profile Trap vs. Real GitHub Achievements
-            </h2>
-            <p className="text-sm sm:text-base text-[#8b949e] mt-1">
-              What happens when an engineering hiring manager looks at your GitHub profile.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            
-            {/* Left Column: The Old Way (The Illusion) */}
-            <div className="p-7 sm:p-8 rounded-3xl bg-[#161b22] border border-[#f85149]/40 space-y-6 shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#30363d]">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-8 h-8 rounded-xl bg-[#f85149]/15 text-[#f85149] border border-[#f85149]/30 flex items-center justify-center font-bold text-sm">
-                    ✕
-                  </span>
-                  <h3 className="text-lg font-bold text-[#f0f6fc]">
-                    The Copy-Paste Illusion
-                  </h3>
-                </div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#f85149] bg-[#f85149]/10 border border-[#f85149]/30 px-2.5 py-1 rounded-full whitespace-nowrap">
-                  High Noise · Zero Signal
-                </span>
-              </div>
-
-              <div className="space-y-4 text-xs sm:text-sm text-[#c9d1d9]">
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#f85149] font-bold">1.</span> 40+ Generic Shields.io Badges
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Pasting glowing shields for React, Python, Docker takes 2 minutes using an online generator. It proves you know Markdown, not engineering.
-                  </p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#f85149] font-bold">2.</span> Bot-Generated Cron "Green Dots"
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Automating empty commits to paint your contribution graph green is spotted in 3 seconds by tech leads who click commit logs.
-                  </p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#f85149] font-bold">3.</span> The Recruiter Reality
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Recruiters and senior engineers scroll past vanity README templates in 2 seconds looking for actual pull requests and merge history.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: The GitGlow Way (Real Webhooks) */}
-            <div className="p-7 sm:p-8 rounded-3xl bg-[#161b22] border-2 border-[#238636]/60 shadow-lg space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#30363d]">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-8 h-8 rounded-xl bg-[#238636]/20 text-[#3fb950] border border-[#238636]/40 flex items-center justify-center font-bold text-sm">
-                    ✓
-                  </span>
-                  <h3 className="text-lg font-bold text-[#f0f6fc]">
-                    The GitGlow Verified Blueprint
-                  </h3>
-                </div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3fb950] bg-[#238636]/20 border border-[#238636]/40 px-2.5 py-1 rounded-full whitespace-nowrap">
-                  Permanent · Unfakeable
-                </span>
-              </div>
-
-              <div className="space-y-4 text-xs sm:text-sm text-[#c9d1d9]">
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#3fb950] font-bold">1.</span> Official GitHub Event Webhooks
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Awarded directly by GitHub servers following real Git actions (merged pull requests, verified co-authors, accepted discussion answers).
-                  </p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#3fb950] font-bold">2.</span> Safe Sandboxed Execution
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Practice Git branching, trailer formatting, and PR etiquette in our dedicated sandbox repository with zero fear of messing up a public project.
-                  </p>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="font-bold text-[#f0f6fc] flex items-center gap-1.5">
-                    <span className="text-[#3fb950] font-bold">3.</span> Permanent Profile Header Medallions
-                  </p>
-                  <p className="text-[#8b949e] pl-4 leading-relaxed">
-                    Badges live permanently on your official GitHub profile header alongside your follower count and contribution graph.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ─── Section 3: The 3-Station Git Pipeline ────────────────────────── */}
-        <div id="quickstart" className="relative -top-28 pointer-events-none" />
-        <section id="engine" className="scroll-mt-28 bg-[#161b22] text-[#f0f6fc] border border-[#30363d] rounded-3xl p-6 sm:p-12 shadow-xl mb-20 md:mb-28 text-left">
-          <div className="max-w-2xl mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d1117] text-[#3fb950] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#238636]/30 font-mono">
-              <Terminal size={11} /> Automated Git Execution Pipeline
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#f0f6fc] tracking-tight">
-              How GitGlow Triggers GitHub Achievement Webhooks
-            </h2>
-            <p className="text-sm sm:text-base text-[#8b949e] mt-1">
-              No guesswork. No hunting for random open-source repos. Follow our 3-station pipeline.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            
-            <div className="p-5 rounded-2xl bg-[#0d1117] border border-[#30363d] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#d1f34d]">
-                  Station 01
-                </span>
-                <span className="text-xs text-[#8b949e] font-mono">120s Setup</span>
-              </div>
-              <h3 className="text-base font-bold text-[#f0f6fc]">
-                Select Badge Recipe
-              </h3>
-              <p className="text-xs text-[#8b949e] leading-relaxed">
-                Choose your target badge. Start with Quickdraw (2 mins), then advance to Pull Shark 🦈 and YOLO 🪂.
-              </p>
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#010409] border border-[#30363d] font-mono text-[11px] text-[#c9d1d9]">
-                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
-                  <span className="text-[#3fb950] select-none">$</span>
-                  <span>git switch -c claim/quickdraw</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyCommand('git switch -c claim/quickdraw')}
-                  className="p-1 rounded-md text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d] transition-colors shrink-0 ml-2"
-                  title="Copy command"
-                  aria-label="Copy station 1 command"
-                >
-                  {copiedCommand === 'git switch -c claim/quickdraw' ? (
-                    <Check size={12} className="text-[#3fb950]" />
-                  ) : (
-                    <Copy size={12} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#0d1117] border border-[#30363d] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#58a6ff]">
-                  Station 02
-                </span>
-                <span className="text-xs text-[#8b949e] font-mono">Instant Gen</span>
-              </div>
-              <h3 className="text-base font-bold text-[#f0f6fc]">
-                Generate Git Triggers
-              </h3>
-              <p className="text-xs text-[#8b949e] leading-relaxed">
-                The engine gives you the exact Git commands, branch format, or commit trailers needed for GitHub's webhook.
-              </p>
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#010409] border border-[#30363d] font-mono text-[11px] text-[#c9d1d9]">
-                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
-                  <span className="text-[#3fb950] select-none">$</span>
-                  <span>git commit -m "feat: claim badge"</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyCommand('git commit -m "feat: claim badge"')}
-                  className="p-1 rounded-md text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d] transition-colors shrink-0 ml-2"
-                  title="Copy command"
-                  aria-label="Copy station 2 command"
-                >
-                  {copiedCommand === 'git commit -m "feat: claim badge"' ? (
-                    <Check size={12} className="text-[#3fb950]" />
-                  ) : (
-                    <Copy size={12} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#0d1117] border border-[#30363d] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3fb950]">
-                  Station 03
-                </span>
-                <span className="text-xs text-[#8b949e] font-mono">Auto Merge</span>
-              </div>
-              <h3 className="text-base font-bold text-[#f0f6fc]">
-                Sandbox Bot Merge
-              </h3>
-              <p className="text-xs text-[#8b949e] leading-relaxed">
-                Submit to our verified sandbox. Our automated bot merges in 60s, unlocking the badge on your profile.
-              </p>
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#010409] border border-[#30363d] font-mono text-[11px] text-[#c9d1d9]">
-                <div className="flex items-center gap-1.5 overflow-x-auto select-all">
-                  <span className="text-[#3fb950] select-none">$</span>
-                  <span>gh pr merge --auto --merge</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyCommand('gh pr merge --auto --merge')}
-                  className="p-1 rounded-md text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d] transition-colors shrink-0 ml-2"
-                  title="Copy command"
-                  aria-label="Copy station 3 command"
-                >
-                  {copiedCommand === 'gh pr merge --auto --merge' ? (
-                    <Check size={12} className="text-[#3fb950]" />
-                  ) : (
-                    <Copy size={12} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* ─── Section 4: The Complete Badge Catalog Grid ─────────────────── */}
-        <section id="catalog" className="space-y-8 mb-20 md:mb-28 text-left">
+        {/* ─── SECTION 2: The Core Developer Workbench (2-Pane Studio) ──────── */}
+        <section id="catalog" className="mb-14 text-left">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22] text-[#58a6ff] text-[10px] font-bold uppercase tracking-widest mb-2 border border-[#30363d]">
-                <Layers size={11} /> Complete Directory
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-[#f0f6fc] tracking-tight">
-                All 10 GitHub Profile Achievements
+          {/* Workbench Header & Filter Tabs */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal size={15} className="text-[#58a6ff]" />
+              <h2 className="text-lg font-bold text-[#f0f6fc] tracking-tight">
+                Achievement Catalog & Recipe Console
               </h2>
-              <p className="text-sm sm:text-base text-[#8b949e] mt-1 max-w-xl">
-                Real badge graphics downloaded from official GitHub resources. Inspect requirements, gotchas, tier milestones, and claim blueprints.
-              </p>
             </div>
 
             {/* Filter Pills */}
-            <div className="inline-flex items-center p-1 rounded-2xl bg-[#161b22] border border-[#30363d] shadow-2xs gap-1 flex-wrap">
+            <div className="inline-flex items-center p-1 rounded-xl bg-[#161b22] border border-[#30363d] gap-1 flex-wrap">
               {[
-                { id: 'all', label: 'All (10)' },
+                { id: 'starter', label: '⚡ Quick Claims (4)' },
                 { id: 'obtainable', label: 'Obtainable (7)' },
-                { id: 'starter', label: 'Starter Badges (3)' },
-                { id: 'collaborative', label: 'Collaborative (2)' },
-                { id: 'community', label: 'Community (2)' },
-                { id: 'milestone', label: 'Milestones (2)' },
-                { id: 'legacy', label: 'Historic (1)' },
+                { id: 'tiers', label: '🏆 Multi-Tier (4)' },
+                { id: 'all', label: 'All 10 Badges' },
+                { id: 'legacy', label: '🔒 Historic (1)' },
               ].map((filter) => (
                 <button
                   key={filter.id}
                   onClick={() => setSelectedCategory(filter.id)}
                   className={cn(
-                    'px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all',
+                    'px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer',
                     selectedCategory === filter.id
-                      ? 'bg-[#58a6ff] text-[#0d1117] font-extrabold shadow-xs'
+                      ? 'bg-[#58a6ff] text-[#0d1117]'
                       : 'text-[#8b949e] hover:text-[#f0f6fc] hover:bg-[#21262d]',
                   )}
                 >
@@ -948,162 +604,421 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Badges Grid */}
-          {filteredBadges.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredBadges.map((badge) => (
-                <BadgeCard key={badge.id} badge={badge} />
-              ))}
+          {/* 2-Column Split Workbench */}
+          <div className="grid lg:grid-cols-12 gap-6 items-start">
+            
+            {/* ─── LEFT PANE: High-Density Interactive Badge Shelf (7 cols) ─── */}
+            <div className="lg:col-span-7 space-y-2.5">
+              {filteredBadges.map((badge) => {
+                const isSelected = badge.id === selectedBadgeId;
+                const theme = BADGE_THEMES[badge.id] || {
+                  pedestalBorder: 'border-[#30363d]',
+                  glow: '',
+                  accentHex: '#58a6ff',
+                };
+                const recipe = BADGE_RECIPES[badge.id];
+
+                return (
+                  <div
+                    key={badge.id}
+                    onClick={() => setSelectedBadgeId(badge.id)}
+                    className={cn(
+                      'group relative p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-4',
+                      isSelected
+                        ? 'bg-[#161b22] border-[#58a6ff] ring-1 ring-[#58a6ff]/40 shadow-lg'
+                        : 'bg-[#161b22]/70 border-[#30363d] hover:bg-[#161b22] hover:border-[#30363d] hover:border-neutral-500',
+                    )}
+                  >
+                    {/* Left: Badge Emblem on Recessed Pedestal */}
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div
+                        className={cn(
+                          'relative w-12 h-12 rounded-xl p-1.5 flex items-center justify-center bg-[#0d1117] border shrink-0 transition-all duration-200',
+                          theme.pedestalBorder,
+                          isSelected && 'border-[#58a6ff]',
+                        )}
+                      >
+                        <img
+                          src={badge.image}
+                          alt={badge.name}
+                          className="w-9 h-9 object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] select-none"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3
+                            className={cn(
+                              'text-sm font-bold tracking-tight truncate',
+                              isSelected ? 'text-[#58a6ff]' : 'text-[#f0f6fc] group-hover:text-white',
+                            )}
+                          >
+                            {badge.name}
+                          </h3>
+                          {badge.isRecommendedStarter && (
+                            <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-[#d1f34d]/15 text-[#d1f34d] border border-[#d1f34d]/30">
+                              Starter
+                            </span>
+                          )}
+                          {badge.status === 'testing' && (
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                              Beta
+                            </span>
+                          )}
+                          {!badge.isObtainable && (
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded bg-[#21262d] text-[#8b949e] border border-[#30363d]">
+                              Archived
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#8b949e] truncate max-w-sm mt-0.5">
+                          {badge.tagline}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right: Metadata & Select Indicator */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="hidden sm:flex flex-col items-end text-right">
+                        <span className="text-[10px] font-mono text-[#8b949e]">
+                          {recipe?.estimatedTime || badge.difficulty}
+                        </span>
+                        {badge.tiers && badge.tiers.length > 0 ? (
+                          <span className="text-[10px] font-mono text-[#f9bfa7]">
+                            4 Tiers Multiplier
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-[#8b949e]">Single Unlock</span>
+                        )}
+                      </div>
+
+                      <div
+                        className={cn(
+                          'w-7 h-7 rounded-lg flex items-center justify-center border transition-all',
+                          isSelected
+                            ? 'bg-[#58a6ff] text-[#0d1117] border-[#58a6ff]'
+                            : 'bg-[#0d1117] text-[#8b949e] border-[#30363d] group-hover:text-white group-hover:border-[#8b949e]',
+                        )}
+                      >
+                        <ArrowRight size={13} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ) : (
-            <div className="p-12 text-center rounded-3xl bg-[#161b22] border border-[#30363d] shadow-2xs space-y-4 max-w-lg mx-auto">
-              <div className="w-12 h-12 rounded-2xl bg-[#0d1117] border border-[#30363d] text-[#8b949e] flex items-center justify-center mx-auto">
-                <Award size={24} />
+
+            {/* ─── RIGHT PANE: Live Recipe Inspector (5 cols - Sticky) ───────── */}
+            <div className="lg:col-span-5 sticky top-20">
+              <div className="rounded-2xl border border-[#30363d] bg-[#161b22] p-5 sm:p-6 shadow-2xl space-y-5">
+                
+                {/* Active Badge Header */}
+                <div className="flex items-start justify-between gap-3 pb-4 border-b border-[#30363d]">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-14 h-14 rounded-2xl bg-[#0d1117] border border-[#30363d] p-2 flex items-center justify-center shrink-0">
+                      <img
+                        src={activeBadge.image}
+                        alt={activeBadge.name}
+                        className="w-10 h-10 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-bold text-[#f0f6fc]">
+                          {activeBadge.name}
+                        </h3>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0d1117] text-[#58a6ff] border border-[#30363d]">
+                          {activeRecipe.estimatedTime}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#8b949e] mt-0.5 leading-snug">
+                        {activeBadge.tagline}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Strategy Note */}
+                <div className="p-3 rounded-xl bg-[#0d1117] border border-[#30363d] text-xs leading-relaxed text-[#c9d1d9]">
+                  <span className="font-bold text-[#f0f6fc]">Sandbox Blueprint: </span>
+                  <span className="text-[#8b949e]">{activeBadge.blueprintStrategy}</span>
+                </div>
+
+                {/* Live Copyable Git Commands Terminal */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono text-[#8b949e]">
+                    <span className="flex items-center gap-1.5 text-[#3fb950] font-bold">
+                      <Terminal size={12} /> Execution Commands:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(allActiveCommands, 'all')}
+                      className="text-[11px] text-[#58a6ff] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedSnippet === 'all' ? (
+                        <>
+                          <Check size={11} className="text-[#3fb950]" />
+                          <span className="text-[#3fb950]">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={11} />
+                          <span>Copy All</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="space-y-1.5 font-mono text-[11px]">
+                    {/* Command 1 */}
+                    <div className="p-2.5 rounded-lg bg-[#010409] border border-[#30363d] flex items-center justify-between gap-2 group">
+                      <div className="flex items-center gap-2 overflow-x-auto select-all">
+                        <span className="text-[#3fb950] select-none">$</span>
+                        <span className="text-[#c9d1d9]">{activeRecipe.command1}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(activeRecipe.command1, 'cmd1')}
+                        className="text-[#8b949e] hover:text-white shrink-0 p-1 rounded hover:bg-[#21262d] transition-colors cursor-pointer"
+                        title="Copy command"
+                      >
+                        {copiedSnippet === 'cmd1' ? (
+                          <Check size={12} className="text-[#3fb950]" />
+                        ) : (
+                          <Copy size={12} />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Command 2 */}
+                    <div className="p-2.5 rounded-lg bg-[#010409] border border-[#30363d] flex items-center justify-between gap-2 group">
+                      <div className="flex items-center gap-2 overflow-x-auto select-all">
+                        <span className="text-[#3fb950] select-none">$</span>
+                        <span className="text-[#c9d1d9]">{activeRecipe.command2}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(activeRecipe.command2, 'cmd2')}
+                        className="text-[#8b949e] hover:text-white shrink-0 p-1 rounded hover:bg-[#21262d] transition-colors cursor-pointer"
+                        title="Copy command"
+                      >
+                        {copiedSnippet === 'cmd2' ? (
+                          <Check size={12} className="text-[#3fb950]" />
+                        ) : (
+                          <Copy size={12} />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Command 3 */}
+                    <div className="p-2.5 rounded-lg bg-[#010409] border border-[#30363d] flex items-center justify-between gap-2 group">
+                      <div className="flex items-center gap-2 overflow-x-auto select-all">
+                        <span className="text-[#3fb950] select-none">$</span>
+                        <span className="text-[#c9d1d9]">{activeRecipe.command3}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(activeRecipe.command3, 'cmd3')}
+                        className="text-[#8b949e] hover:text-white shrink-0 p-1 rounded hover:bg-[#21262d] transition-colors cursor-pointer"
+                        title="Copy command"
+                      >
+                        {copiedSnippet === 'cmd3' ? (
+                          <Check size={12} className="text-[#3fb950]" />
+                        ) : (
+                          <Copy size={12} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gotcha Notice */}
+                <div className="flex items-start gap-2 p-2.5 rounded-lg bg-[#0d1117] border border-[#30363d] text-[11px] text-[#8b949e]">
+                  <Info size={13} className="text-[#58a6ff] shrink-0 mt-0.5" />
+                  <span>
+                    <strong className="text-[#f0f6fc]">Technical gotcha: </strong>
+                    {activeRecipe.gotchaNote}
+                  </span>
+                </div>
+
+                {/* Tier Multiplier Evolution Bar (if tiers exist) */}
+                {activeBadge.tiers && activeBadge.tiers.length > 0 && (
+                  <div className="p-2.5 rounded-xl bg-[#0d1117] border border-[#30363d] space-y-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8b949e] block">
+                      Tier Multiplier Milestones:
+                    </span>
+                    <div className="grid grid-cols-4 gap-1 text-center font-mono text-[10px]">
+                      <div className="p-1 rounded bg-[#161b22] border border-[#30363d]">
+                        <span className="text-[#8b949e] block text-[9px]">Base</span>
+                        <span className="text-[#f0f6fc] font-bold">2 PRs</span>
+                      </div>
+                      <div className="p-1 rounded bg-[#161b22] border border-[#b86241]/40">
+                        <span className="text-[#f9bfa7] block text-[9px]">Bronze</span>
+                        <span className="text-[#f0f6fc] font-bold">16 PRs</span>
+                      </div>
+                      <div className="p-1 rounded bg-[#161b22] border border-[#e1e4e4]/40">
+                        <span className="text-[#e1e4e4] block text-[9px]">Silver</span>
+                        <span className="text-[#f0f6fc] font-bold">128 PRs</span>
+                      </div>
+                      <div className="p-1 rounded bg-[#161b22] border border-[#fae57e]/40">
+                        <span className="text-[#fae57e] block text-[9px]">Gold</span>
+                        <span className="text-[#f0f6fc] font-bold">1,024</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Direct Action Trigger */}
+                <div>
+                  {activeBadge.isObtainable ? (
+                    <Link
+                      to={`/blueprints/gitglow/engine?badge=${activeBadge.id}&user=${scannedUser.login}`}
+                      className="w-full py-3 px-4 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+                    >
+                      <span>Launch Sandbox Claim ({activeBadge.name})</span>
+                      <ArrowRight size={13} />
+                    </Link>
+                  ) : (
+                    <div className="w-full py-3 px-4 rounded-xl bg-[#0d1117] text-[#8b949e] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-[#30363d] cursor-not-allowed">
+                      <Lock size={12} />
+                      <span>{activeBadge.status === 'testing' ? 'In GitHub Beta Cluster' : 'Archived Milestone'}</span>
+                    </div>
+                  )}
+                </div>
+
               </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-[#f0f6fc]">No badges match this category</h3>
-                <p className="text-xs text-[#8b949e]">
-                  Switch back to all badges to inspect the complete 10-badge directory.
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-2xs active:scale-[0.99]"
-              >
-                Show All 10 Badges
-              </button>
             </div>
-          )}
+
+          </div>
         </section>
 
-        {/* ─── Section 5: Tier Multiplier Ladders ─────────────────────────── */}
-        <section id="tiers" className="bg-[#161b22] border border-[#30363d] rounded-3xl p-6 sm:p-10 shadow-sm mb-20 md:mb-28 text-left">
-          <div className="max-w-2xl mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d1117] text-[#8b949e] text-[10px] font-bold uppercase tracking-widest mb-3 border border-[#30363d]">
-              <Award size={11} className="text-[#58a6ff]" /> Multiplier Ladders
+        {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
+        <section id="compare" className="scroll-mt-24 mb-14 text-left">
+          <div className="max-w-2xl mb-6">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
+              Recruiter Signal vs Markdown Noise
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#f0f6fc] tracking-tight mb-2">
-              How Badge Tiers Work
+            <h2 className="text-xl sm:text-3xl font-extrabold text-[#f0f6fc] tracking-tight">
+              Why Tech Leads Look at Official Medallions, Not README Shields
             </h2>
-            <p className="text-sm sm:text-base text-[#8b949e] leading-relaxed">
-              Certain badges evolve as your contribution volume increases. GitHub decorates your badge with Bronze (x2), Silver (x3), and Gold (x4) multipliers.
+            <p className="text-xs sm:text-sm text-[#8b949e] mt-1">
+              Markdown icons can be copied in 30 seconds. Official GitHub achievement webhooks require verifiable Git actions.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-4 gap-4 mb-8">
-            <div className="p-5 rounded-2xl border border-[#30363d] bg-[#0d1117] text-center">
-              <span className="px-2.5 py-1 rounded-full bg-[#21262d] text-[#c9d1d9] text-[10px] font-bold uppercase tracking-wider inline-block mb-2 border border-[#30363d]">
-                Default Base
-              </span>
-              <p className="text-sm font-bold text-[#f0f6fc]">Base Badge</p>
-              <p className="text-xs text-[#8b949e] mt-1">Initial unlock threshold</p>
+          <div className="grid md:grid-cols-2 gap-5">
+            
+            {/* Left Box: The Copy-Paste Illusion */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#161b22] border border-[#f85149]/40 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-lg bg-[#f85149]/20 text-[#f85149] flex items-center justify-center font-bold text-xs">
+                    ✕
+                  </span>
+                  <span className="text-sm font-bold text-[#f0f6fc]">
+                    The Copy-Paste Illusion (README Shields)
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#f85149] bg-[#f85149]/10 px-2 py-0.5 rounded">
+                  Zero Signal
+                </span>
+              </div>
+
+              {/* Mockup of Cluttered README */}
+              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d] space-y-2 font-mono text-[11px]">
+                <div className="text-[#8b949e] text-[10px]">// README.md (Skipped by hiring managers in 2s)</div>
+                <div className="flex flex-wrap gap-1.5 opacity-70">
+                  {['React', 'NodeJS', 'Python', 'Docker', 'AWS', 'MongoDB', 'HTML5', 'CSS3', 'Git', 'Linux', 'Vite', 'Express'].map((tag) => (
+                    <span key={tag} className="px-2 py-0.5 rounded bg-[#21262d] text-[#8b949e] text-[10px] border border-[#30363d]">
+                      {tag}-v20.0
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <ul className="space-y-1.5 text-xs text-[#8b949e]">
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#f85149] font-bold">·</span> Generated via copy-paste online markdown tools.
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#f85149] font-bold">·</span> Proves you know image tags, not pull request etiquette.
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#f85149] font-bold">·</span> Senior engineers scroll straight past it to git log history.
+                </li>
+              </ul>
             </div>
 
-            <div className="p-5 rounded-2xl border border-[#b86241]/40 bg-[#0d1117] text-center">
-              <span className="px-2.5 py-1 rounded-full bg-[#b86241]/20 text-[#f9bfa7] border border-[#b86241]/40 text-[10px] font-extrabold uppercase tracking-wider inline-block mb-2">
-                x2 Multiplier
-              </span>
-              <p className="text-sm font-bold text-[#f0f6fc]">Bronze Tier</p>
-              <p className="text-xs text-[#f9bfa7] mt-1">Accent: #F9BFA7</p>
+            {/* Right Box: Official GitHub Webhook Medallions */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#161b22] border-2 border-[#238636]/60 space-y-4 shadow-lg">
+              <div className="flex items-center justify-between pb-3 border-b border-[#30363d]">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-lg bg-[#238636]/20 text-[#3fb950] flex items-center justify-center font-bold text-xs">
+                    ✓
+                  </span>
+                  <span className="text-sm font-bold text-[#f0f6fc]">
+                    The GitGlow Verified Blueprint
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/20 px-2 py-0.5 rounded font-bold">
+                  Permanent Proof
+                </span>
+              </div>
+
+              {/* Mockup of Official Profile Header Medallions */}
+              <div className="p-3.5 rounded-xl bg-[#0d1117] border border-[#30363d] space-y-2 font-mono text-[11px]">
+                <div className="text-[#3fb950] text-[10px]">// github.com/{scannedUser.login} (Header Medallions)</div>
+                <div className="flex items-center gap-2">
+                  {[
+                    { img: '/images/badges/pull-shark.png', name: 'Pull Shark' },
+                    { img: '/images/badges/quickdraw.png', name: 'Quickdraw' },
+                    { img: '/images/badges/yolo.png', name: 'YOLO' },
+                    { img: '/images/badges/pair-extraordinaire.png', name: 'Pair Extra' },
+                  ].map((item) => (
+                    <div
+                      key={item.name}
+                      className="w-9 h-9 rounded-lg bg-[#161b22] border border-[#30363d] p-1 flex items-center justify-center"
+                      title={item.name}
+                    >
+                      <img src={item.img} alt={item.name} className="w-6 h-6 object-contain" />
+                    </div>
+                  ))}
+                  <span className="text-[10px] text-[#3fb950] font-sans font-bold pl-1">+ Verified</span>
+                </div>
+              </div>
+
+              <ul className="space-y-1.5 text-xs text-[#c9d1d9]">
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#3fb950] font-bold">·</span> Awarded by GitHub server webhooks following real Git events.
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#3fb950] font-bold">·</span> Sits permanently in your public profile header next to your followers.
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="text-[#3fb950] font-bold">·</span> Proves branch management, co-author trailers, and PR merge history.
+                </li>
+              </ul>
             </div>
 
-            <div className="p-5 rounded-2xl border border-[#e1e4e4]/40 bg-[#0d1117] text-center">
-              <span className="px-2.5 py-1 rounded-full bg-[#e1e4e4]/15 text-[#e1e4e4] border border-[#e1e4e4]/30 text-[10px] font-extrabold uppercase tracking-wider inline-block mb-2">
-                x3 Multiplier
-              </span>
-              <p className="text-sm font-bold text-[#f0f6fc]">Silver Tier</p>
-              <p className="text-xs text-[#e1e4e4] mt-1">Accent: #E1E4E4</p>
-            </div>
-
-            <div className="p-5 rounded-2xl border border-[#fae57e]/40 bg-[#0d1117] text-center">
-              <span className="px-2.5 py-1 rounded-full bg-[#fae57e]/20 text-[#fae57e] border border-[#fae57e]/40 text-[10px] font-extrabold uppercase tracking-wider inline-block mb-2">
-                x4 Multiplier
-              </span>
-              <p className="text-sm font-bold text-[#f0f6fc]">Gold Tier</p>
-              <p className="text-xs text-[#fae57e] mt-1">Accent: #FAE57E</p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#8b949e] mb-2 sm:hidden px-1">
-            <span>← Swipe table horizontally</span>
-            <span>→</span>
-          </div>
-
-          <div className="overflow-x-auto rounded-xl border border-[#30363d]">
-            <table className="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr className="border-b border-[#30363d] bg-[#0d1117] text-[#8b949e] font-bold uppercase tracking-wider">
-                  <th className="py-3 px-4">Badge</th>
-                  <th className="py-3 px-4">Default</th>
-                  <th className="py-3 px-4 text-[#f9bfa7]">Bronze (x2)</th>
-                  <th className="py-3 px-4 text-[#e1e4e4]">Silver (x3)</th>
-                  <th className="py-3 px-4 text-[#fae57e]">Gold (x4)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#30363d] text-[#c9d1d9] font-medium bg-[#161b22]">
-                <tr className="hover:bg-[#21262d]/40 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-[#f0f6fc] flex items-center gap-2">
-                    <img src="/images/badges/pull-shark.png" alt="Pull Shark" className="w-6 h-6 object-contain" />
-                    <span>Pull Shark 🦈</span>
-                  </td>
-                  <td className="py-3.5 px-4">2 PRs</td>
-                  <td className="py-3.5 px-4 font-bold text-[#f9bfa7]">16 PRs</td>
-                  <td className="py-3.5 px-4 font-bold text-[#e1e4e4]">128 PRs</td>
-                  <td className="py-3.5 px-4 font-bold text-[#fae57e]">1,024 PRs</td>
-                </tr>
-                <tr className="hover:bg-[#21262d]/40 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-[#f0f6fc] flex items-center gap-2">
-                    <img src="/images/badges/pair-extraordinaire.png" alt="Pair Extraordinaire" className="w-6 h-6 object-contain" />
-                    <span>Pair Extraordinaire 👯</span>
-                  </td>
-                  <td className="py-3.5 px-4">1 Coauthored PR</td>
-                  <td className="py-3.5 px-4 font-bold text-[#f9bfa7]">10 PRs</td>
-                  <td className="py-3.5 px-4 font-bold text-[#e1e4e4]">24 PRs</td>
-                  <td className="py-3.5 px-4 font-bold text-[#fae57e]">48 PRs</td>
-                </tr>
-                <tr className="hover:bg-[#21262d]/40 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-[#f0f6fc] flex items-center gap-2">
-                    <img src="/images/badges/galaxy-brain.png" alt="Galaxy Brain" className="w-6 h-6 object-contain" />
-                    <span>Galaxy Brain 🧠</span>
-                  </td>
-                  <td className="py-3.5 px-4">2 Answers</td>
-                  <td className="py-3.5 px-4 font-bold text-[#f9bfa7]">8 Answers</td>
-                  <td className="py-3.5 px-4 font-bold text-[#e1e4e4]">16 Answers</td>
-                  <td className="py-3.5 px-4 font-bold text-[#fae57e]">32 Answers</td>
-                </tr>
-                <tr className="hover:bg-[#21262d]/40 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-[#f0f6fc] flex items-center gap-2">
-                    <img src="/images/badges/starstruck.png" alt="Starstruck" className="w-6 h-6 object-contain" />
-                    <span>Starstruck ⭐</span>
-                  </td>
-                  <td className="py-3.5 px-4">16 Stars</td>
-                  <td className="py-3.5 px-4 font-bold text-[#f9bfa7]">128 Stars</td>
-                  <td className="py-3.5 px-4 font-bold text-[#e1e4e4]">512 Stars</td>
-                  <td className="py-3.5 px-4 font-bold text-[#fae57e]">4,096 Stars</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </section>
 
-        {/* ─── Section 6: Frequently Asked Questions ───────────────────────── */}
-        <section id="faq" className="max-w-3xl mx-auto space-y-6 mb-20 md:mb-28 text-left">
-          <div className="text-center space-y-2 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22] text-[#8b949e] text-[10px] font-bold uppercase tracking-widest border border-[#30363d]">
-              Got Questions?
+        {/* ─── SECTION 4: Streamlined Technical FAQ ─────────────────────────── */}
+        <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto space-y-5 mb-14 text-left">
+          <div className="text-center space-y-1 mb-6">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-[#8b949e] text-[10px] font-mono font-bold uppercase tracking-wider">
+              Technical Clarity
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#f0f6fc] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#f0f6fc] tracking-tight">
               Frequently Asked Questions
             </h2>
-            <p className="text-xs sm:text-sm text-[#8b949e]">
-              Clear answers on how GitHub calculates, displays, and protects achievement badges.
-            </p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <FAQItem
               q="Is this against GitHub Terms of Service?"
-              a="No. Everything GitGlow guides you to do uses official Git workflows (standard git commits, standard branch creation, and standard pull requests). You are making real, valid contributions to our dedicated open-source repository (gitglow-community). There are no bots faking tokens or hacking GitHub servers."
+              a="No. Everything GitGlow guides you to do uses official Git workflows (standard git commits, standard branch creation, and standard pull requests). You make real, valid contributions to our dedicated open-source sandbox repository (gitglow-community). There are no bots faking tokens or hacking GitHub servers."
             />
             <FAQItem
               q="How long does it take for GitHub to show the badge on my profile?"
@@ -1117,58 +1032,30 @@ export const GitGlowHomePage: React.FC = () => {
               q="What if I make a mistake during the pull request?"
               a="That is exactly why gitglow-community exists. It is a zero-judgment sandbox specifically built for students to practice. If your commit message format is wrong, our bot posts a helpful review comment showing you how to fix it."
             />
-            <FAQItem
-              q="Can I still get the Arctic Code Vault Contributor badge?"
-              a="No. The Arctic Code Vault Contributor badge was only awarded to developers whose code was archived in the Svalbard Arctic World Archive on February 2, 2020. It is a historic badge and is permanently unobtainable for new accounts."
-            />
           </div>
         </section>
 
-        {/* ─── Section 7: Final CTA Banner ─────────────────────────────────── */}
-        <section className="rounded-3xl bg-[#161b22] text-[#f0f6fc] p-8 sm:p-14 text-center space-y-6 shadow-2xl border border-[#30363d] relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#58a6ff]/10 via-transparent to-transparent pointer-events-none" />
-          
-          <div className="max-w-2xl mx-auto space-y-4 relative z-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d1117] text-[#d1f34d] text-[10px] font-extrabold uppercase tracking-widest border border-[#30363d]">
-              <Sparkles size={11} /> Start Building Real Proof
-            </span>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#f0f6fc] leading-tight">
-              Ready to Claim Your First <br />
-              <span className="text-[#d1f34d]">GitHub Achievement?</span>
-            </h2>
-
-            <p className="text-sm sm:text-base text-[#8b949e] leading-relaxed max-w-xl mx-auto">
-              Stop decorating an empty canvas with copy-paste icons. Follow our automated claiming engine to get Quickdraw and Pull Shark on your profile today.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link
-                to="/blueprints/gitglow/engine?badge=quickdraw"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#d1f34d] text-[#0d1117] font-extrabold text-sm uppercase tracking-wider hover:bg-[#c2e240] transition-colors shadow-lg shadow-[#d1f34d]/20"
-              >
-                Claim Quickdraw First (2 Mins) →
-              </Link>
-              
-              <Link
-                to="/blueprints/gitglow/engine?badge=pull-shark"
-                className="w-full sm:w-auto px-6 py-4 rounded-xl border border-[#30363d] bg-[#0d1117] hover:bg-[#21262d] text-[#f0f6fc] font-bold text-sm transition-colors"
-              >
-                Claim Pull Shark 🦈
-              </Link>
-            </div>
-
-            <div className="flex items-center justify-center gap-6 pt-6 text-[11px] text-[#8b949e] font-medium border-t border-[#30363d] mt-6">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-[#d1f34d]" /> Official GitHub Events
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-[#d1f34d]" /> 100% Account Safe
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-[#d1f34d]" /> Instant Profile Verification
-              </span>
-            </div>
+        {/* ─── SECTION 5: Final Compact Action Ribbon ───────────────────────── */}
+        <section className="rounded-2xl bg-[#161b22] border border-[#30363d] p-6 sm:p-8 text-center space-y-4">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#f0f6fc] tracking-tight">
+            Ready to Claim Your First Official GitHub Medallion?
+          </h2>
+          <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto">
+            Choose Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <Link
+              to="/blueprints/gitglow/engine?badge=quickdraw"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-extrabold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer"
+            >
+              Claim Quickdraw (120s) →
+            </Link>
+            <Link
+              to="/blueprints/gitglow/engine?badge=pull-shark"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0d1117] hover:bg-[#21262d] text-[#f0f6fc] border border-[#30363d] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+            >
+              Claim Pull Shark 🦈
+            </Link>
           </div>
         </section>
 
