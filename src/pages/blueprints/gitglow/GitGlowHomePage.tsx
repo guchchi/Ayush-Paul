@@ -502,18 +502,232 @@ export const GitGlowHomePage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* ─── SECTION 1: Hero Section (Placeholder) ─────────────────────────── */}
-        <section id="hero" className="py-24 sm:py-32 text-center border-b border-[#30363d]/40 mb-16">
-          <div className="max-w-md mx-auto space-y-2">
-            <span className="text-[11px] font-mono uppercase tracking-widest text-[#58a6ff] bg-[#161b22] px-3 py-1 rounded-full border border-[#30363d]">
-              Section 01
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
-              Hero Section
-            </h1>
-            <p className="text-xs sm:text-sm text-[#8b949e]">
-              [Reserved for clean hero redesign]
-            </p>
+        {/* ─── SECTION 1: Hero ─────────────────────────────────────────────── */}
+        <section
+          id="hero"
+          className="relative pt-16 pb-24 sm:pt-20 sm:pb-32 border-b border-[#30363d]/40 mb-16 overflow-hidden"
+        >
+          {/* Background ambient glows */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+          >
+            <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full bg-[#d1f34d]/5 blur-[120px]" />
+            <div className="absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-[#58a6ff]/6 blur-[100px]" />
+            {/* Subtle grid overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(#30363d 1px, transparent 1px), linear-gradient(90deg, #30363d 1px, transparent 1px)',
+                backgroundSize: '48px 48px',
+              }}
+            />
+          </div>
+
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+
+            {/* ── LEFT: Text Column ── */}
+            <div className="space-y-7 lg:pr-8">
+
+              {/* Pill */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+              >
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d1f34d]/10 border border-[#d1f34d]/30 text-[#d1f34d] text-xs font-semibold tracking-wide">
+                  <Sparkles size={11} aria-hidden="true" />
+                  The Practical Path to GitHub Achievements
+                </span>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
+                className="space-y-1"
+              >
+                <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold text-[#f0f6fc] tracking-tight leading-[1.08]">
+                  Don't just add badges.
+                </h1>
+                <p className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold italic tracking-tight leading-[1.1]">
+                  <span className="relative inline-block">
+                    <span className="relative z-10 text-[#0d1117]">Earn them the right way.</span>
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 -mx-1 -my-0.5 rounded bg-[#d1f34d] skew-x-[-2deg]"
+                    />
+                  </span>
+                </p>
+              </motion.div>
+
+              {/* Body */}
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.14 }}
+                className="text-[#8b949e] text-base sm:text-lg leading-relaxed max-w-[42ch]"
+              >
+                Complete real GitHub missions, build actual skills, and unlock{' '}
+                <strong className="text-[#f0f6fc] font-semibold">official achievements</strong>{' '}
+                — step by step.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
+                className="flex items-center flex-wrap gap-3"
+              >
+                <a
+                  href="#catalog"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#f0f6fc] text-[#0d1117] text-sm font-bold hover:bg-[#d1f34d] transition-colors duration-200 group"
+                >
+                  Start Your First Mission
+                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                </a>
+                <a
+                  href="https://github.com/guchchi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#30363d] text-[#8b949e] text-sm font-medium hover:border-[#58a6ff] hover:text-[#58a6ff] transition-colors duration-200"
+                >
+                  <Play size={13} aria-hidden="true" />
+                  Watch Demo
+                </a>
+              </motion.div>
+
+              {/* Stats Bar */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.3 }}
+                className="flex items-center flex-wrap gap-x-5 gap-y-2 pt-1"
+              >
+                {[
+                  { icon: <Github size={14} aria-hidden="true" />, value: '10K+', label: 'Developers' },
+                  { icon: <Award size={14} aria-hidden="true" />, value: '50+', label: 'Achievements' },
+                  { icon: <Zap size={14} aria-hidden="true" />, value: 'Level Up', label: 'Your Profile' },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex items-center gap-1.5 text-xs text-[#8b949e]">
+                    <span className="text-[#58a6ff]">{stat.icon}</span>
+                    <span className="font-bold text-[#f0f6fc]">{stat.value}</span>
+                    <span>{stat.label}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* ── RIGHT: Floating Card Composition ── */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.12 }}
+              className="relative h-[380px] sm:h-[420px] lg:h-[460px] select-none"
+              aria-hidden="true"
+            >
+
+              {/* ── Mission Complete Toast ── */}
+              <motion.div
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.BOUNCE, delay: 0.5 }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 sm:translate-x-0 z-20 flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#161b22] border border-[#3fb950]/50 shadow-lg shadow-black/40 w-max"
+              >
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#3fb950]/15 flex items-center justify-center">
+                  <CheckCircle2 size={12} className="text-[#3fb950]" />
+                </span>
+                <div>
+                  <p className="text-[11px] font-semibold text-[#f0f6fc] leading-none mb-0.5">Mission Completed!</p>
+                  <p className="text-[10px] text-[#8b949e] leading-none">You've earned a new badge.</p>
+                </div>
+              </motion.div>
+
+              {/* ── GitHub Achievements Panel ── */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.35 }}
+                className="absolute top-14 left-0 right-0 sm:left-4 sm:right-4 z-10 rounded-2xl bg-[#161b22] border border-[#30363d] shadow-2xl shadow-black/60 overflow-hidden"
+              >
+                {/* Panel header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d]">
+                  <div className="flex items-center gap-2">
+                    <Github size={14} className="text-[#8b949e]" />
+                    <span className="text-xs font-semibold text-[#f0f6fc]">Achievements</span>
+                  </div>
+                  <span className="text-[10px] text-[#58a6ff] font-medium hover:underline cursor-pointer">
+                    View all →
+                  </span>
+                </div>
+
+                {/* Badge Row */}
+                <div className="px-4 py-4 flex items-start gap-5 overflow-x-auto scrollbar-hide">
+                  {[
+                    { src: '/images/badges/pull-shark.png', name: 'Pull Shark', date: 'Oct 2024' },
+                    { src: '/images/badges/arctic-code-vault.png', name: 'Arctic Code Vault', date: 'Dec 2024' },
+                    { src: '/images/badges/quickdraw.png', name: 'Quickdraw', date: 'Jan 2025' },
+                    { src: '/images/badges/yolo.png', name: 'YOLO', date: 'Feb 2025' },
+                  ].map((badge, i) => (
+                    <motion.div
+                      key={badge.name}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.5 + i * 0.07 }}
+                      className="flex flex-col items-center gap-1.5 flex-shrink-0"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[#0d1117] border border-[#30363d] flex items-center justify-center overflow-hidden p-0.5">
+                        <img src={badge.src} alt={badge.name} className="w-full h-full object-cover rounded-full" />
+                      </div>
+                      <p className="text-[9px] font-medium text-[#8b949e] text-center leading-tight max-w-[52px]">{badge.name}</p>
+                      <p className="text-[9px] text-[#484f58] text-center">{badge.date}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* ── Contribution Graph Card ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.55 }}
+                className="absolute bottom-0 left-0 right-0 sm:left-4 sm:right-16 z-10 rounded-xl bg-[#161b22] border border-[#30363d] shadow-xl shadow-black/40 p-3"
+              >
+                <p className="text-[10px] font-semibold text-[#8b949e] mb-2 uppercase tracking-wide">Your Contributions</p>
+                {/* Contribution grid mock */}
+                <div className="grid gap-[3px]" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
+                  {Array.from({ length: 182 }).map((_, i) => {
+                    const levels = ['bg-[#161b22]', 'bg-[#0e4429]', 'bg-[#006d32]', 'bg-[#26a641]', 'bg-[#39d353]'];
+                    const seed = (i * 37 + 11) % 100;
+                    const lvl = seed < 30 ? 0 : seed < 50 ? 1 : seed < 70 ? 2 : seed < 85 ? 3 : 4;
+                    return (
+                      <div
+                        key={i}
+                        className={cn('rounded-sm aspect-square', levels[lvl])}
+                      />
+                    );
+                  })}
+                </div>
+              </motion.div>
+
+              {/* ── Trophy accent ── */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.BOUNCE, delay: 0.7 }}
+                className="absolute bottom-16 right-0 sm:-right-4 z-20 w-12 h-12 rounded-2xl bg-gradient-to-br from-[#f0a500] to-[#c97d00] flex items-center justify-center shadow-lg shadow-[#f0a500]/20"
+              >
+                <Trophy size={22} className="text-white drop-shadow" />
+              </motion.div>
+
+            </motion.div>
           </div>
         </section>
 
