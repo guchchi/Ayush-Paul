@@ -705,7 +705,7 @@ const AnubiOrbitalHeroStage: React.FC<{
       )}
 
       {/* ── CENTER: Gravitational Anchor (Hero Content) ── */}
-      <div className="relative z-20 max-w-2xl mx-auto text-center pointer-events-auto px-4">
+      <div className="relative z-20 max-w-3xl xl:max-w-4xl mx-auto text-center pointer-events-auto px-4">
         {children}
       </div>
 
@@ -849,50 +849,92 @@ export const GitGlowHomePage: React.FC = () => {
       {/* ─── SECTION 01: HERO (Highest Priority WOW Section) ──────────────── */}
       <section
         id="hero"
-        className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#FFFFFF] text-[#161B22] overflow-hidden border-b border-[#D0D7DE]"
+        className="relative w-full pt-14 pb-18 sm:pt-16 sm:pb-22 bg-[#FFFFFF] text-[#161B22] overflow-hidden border-b border-[#D0D7DE]/60"
       >
-        {/* Clean Architectural Grid Overlay (No Fog / No Fuzzy Blobs) */}
+        {/* Top-Left Architectural Grid (Matching Reference Screenshot) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 overflow-hidden"
-        >
-          <div
-            className="absolute inset-0 opacity-[0.22]"
-            style={{
-              backgroundImage:
-                'linear-gradient(#E1E4E8 1px, transparent 1px), linear-gradient(90deg, #E1E4E8 1px, transparent 1px)',
-              backgroundSize: '48px 48px',
-              maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
-              WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
-            }}
-          />
-        </div>
+          className="pointer-events-none absolute top-0 left-0 w-[440px] h-[440px] opacity-[0.25] overflow-hidden"
+          style={{
+            backgroundImage:
+              'linear-gradient(#E1E4E8 1px, transparent 1px), linear-gradient(90deg, #E1E4E8 1px, transparent 1px)',
+            backgroundSize: '44px 44px',
+            maskImage: 'radial-gradient(ellipse at top left, black 25%, transparent 75%)',
+            WebkitMaskImage: 'radial-gradient(ellipse at top left, black 25%, transparent 75%)',
+          }}
+        />
+
+        {/* Bottom-Left Lime Radiant Blur Glow (Matching Reference Atmosphere) */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-24 -left-24 w-[480px] sm:w-[580px] h-[480px] sm:h-[580px] rounded-full bg-gradient-to-tr from-[#C7F246]/35 via-[#A3E635]/20 to-transparent blur-[90px] pointer-events-none select-none"
+        />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Left Floating Green 4-Point Sparkle Star */}
+          <div
+            aria-hidden="true"
+            className="hidden md:block absolute left-4 lg:left-8 top-[28%] pointer-events-none select-none z-10"
+          >
+            <SparkleStar size={22} className="text-[#22A849] drop-shadow-[0_0_12px_rgba(34,168,73,0.45)]" />
+          </div>
+
+          {/* Right Floating 3D White Ceramic Octocat Tile & Orbital Arc (Matching Reference Screenshot) */}
+          <div
+            aria-hidden="true"
+            className="hidden lg:block absolute right-4 lg:right-8 xl:right-14 top-[22%] lg:top-[24%] pointer-events-none select-none z-10"
+          >
+            <div className="relative">
+              {/* Delicate curved orbital arc passing through */}
+              <svg
+                className="absolute -top-14 -right-8 w-[380px] h-[340px] pointer-events-none overflow-visible"
+                viewBox="0 0 380 340"
+                fill="none"
+              >
+                <path
+                  d="M 20 310 C 10 170, 140 25, 360 35"
+                  stroke="#161B22"
+                  strokeWidth="1.2"
+                  strokeOpacity="0.16"
+                />
+              </svg>
+
+              {/* Dark 4-point sparkle star perched on top of orbital arc */}
+              <div className="absolute -top-11 right-14 pointer-events-none">
+                <SparkleStar size={16} className="text-[#161B22]" />
+              </div>
+
+              {/* 3D Tilted Ceramic Tile with Soft Neon Lime Underglow */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ perspective: 1200 }}
+                className="relative pointer-events-auto"
+              >
+                <div
+                  style={{
+                    transform: 'rotateZ(12deg) rotateY(-18deg) rotateX(14deg)',
+                    transformStyle: 'preserve-3d',
+                  }}
+                  className="w-36 h-36 xl:w-40 xl:h-40 rounded-[32px] bg-gradient-to-br from-white via-[#F9FBFC] to-[#EEF2F6] border border-white/90 shadow-[0_22px_44px_-8px_rgba(0,0,0,0.15),0_8px_18px_rgba(0,0,0,0.06)] flex items-center justify-center p-6 filter drop-shadow-[0_20px_35px_rgba(163,230,53,0.38)] group hover:scale-105 transition-transform duration-300"
+                >
+                  <Github size={68} className="text-[#161B22] filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.12)]" />
+                </div>
+              </motion.div>
+            </div>
+          </div>
           {/* ── ANUBI-INSPIRED 3D ORBITAL HERO STAGE ── */}
           <AnubiOrbitalHeroStage onSelectBadge={setSelectedBadgeId}>
-            {/* Central GitHub Squircle Icon Accent (Matching user reference) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className="flex items-center justify-center mb-5"
-            >
-              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#0D1117] flex items-center justify-center text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] border border-white/10 group hover:scale-105 transition-transform duration-300">
-                <Github size={28} className="text-white" />
-              </div>
-            </motion.div>
-
-            {/* Eyebrow Pill */}
+            {/* Eyebrow Pill (Positioned right at the top, matching reference) */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.04 }}
-              className="mb-4"
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+              className="mb-5 inline-flex justify-center"
             >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
-                <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
-                <span>Guided Missions · Real GitHub Achievements</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EFFDE6] text-[#1A7F37] border border-[#C3EFA0] text-[11px] font-mono font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
+                <Github size={13} className="text-[#161B22] fill-current" />
+                <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
               </div>
             </motion.div>
 
@@ -900,12 +942,12 @@ export const GitGlowHomePage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
               className="mb-4"
             >
-              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.1]">
+              <h1 className="text-4xl sm:text-5xl lg:text-[58px] xl:text-[62px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.08] max-w-4xl mx-auto">
                 Your GitHub profile is <br className="hidden sm:inline" />
-                <span className="text-[#2da44e]">about to get interesting.</span>
+                <span className="text-[#22A849]">about to get interesting.</span>
               </h1>
             </motion.div>
 
@@ -913,24 +955,25 @@ export const GitGlowHomePage: React.FC = () => {
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-              className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[560px] mx-auto font-normal mb-6"
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
+              className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[580px] mx-auto font-normal mb-7"
             >
-              Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
+              Earn real GitHub achievements through guided missions,<br className="hidden sm:inline" />
+              meaningful contributions, and hands-on developer challenges.
             </motion.p>
 
             {/* ── Centered Username Input Capsule ── */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.16 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.14 }}
               className="max-w-xl mx-auto pt-1 w-full mb-6"
             >
               <form onSubmit={handleScanProfile} className="relative flex items-center">
-                <div className="relative w-full flex items-center rounded-full bg-white border-2 border-[#D0D7DE] focus-within:border-[#2da44e] shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
+                <div className="relative w-full flex items-center rounded-full bg-white border border-[#D0D7DE] focus-within:border-[#22A849] focus-within:ring-2 focus-within:ring-[#22A849]/20 shadow-[0_12px_32px_rgba(0,0,0,0.07)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
                   <div className="flex items-center gap-1.5 text-[#656D76] font-mono text-xs sm:text-sm select-none pr-1">
                     <Github size={17} className="text-[#161B22]" />
-                    <span className="text-slate-400 font-normal">github.com/</span>
+                    <span className="text-[#656D76] font-normal">github.com/</span>
                   </div>
                   <input
                     type="text"
@@ -938,12 +981,12 @@ export const GitGlowHomePage: React.FC = () => {
                     onChange={(e) => setUsernameInput(e.target.value)}
                     placeholder="your-username"
                     aria-label="GitHub username to inspect missions"
-                    className="w-full bg-transparent text-sm sm:text-base font-medium text-[#161B22] placeholder:text-slate-400 focus:outline-none"
+                    className="w-full bg-transparent text-sm sm:text-base font-mono font-medium text-[#161B22] placeholder:text-[#8c959f] focus:outline-none"
                   />
                   <button
                     type="submit"
                     disabled={isScanning}
-                    className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#2da44e] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
+                    className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
                   >
                     {isScanning ? (
                       <>
@@ -1014,8 +1057,8 @@ export const GitGlowHomePage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
-              className="flex items-center justify-center flex-wrap gap-3.5 pt-1 mb-6"
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.18 }}
+              className="flex items-center justify-center flex-wrap gap-3.5 pt-1 mb-7"
             >
               <a
                 href="#achievements"
@@ -1025,6 +1068,7 @@ export const GitGlowHomePage: React.FC = () => {
                 }}
                 className="h-[46px] px-6 sm:px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
               >
+                <Rocket size={14} className="text-white" />
                 <span>Explore Achievements</span>
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
               </a>
@@ -1037,35 +1081,35 @@ export const GitGlowHomePage: React.FC = () => {
                 }}
                 className="h-[46px] px-6 sm:px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
               >
-                <Play size={12} className="text-[#2da44e] fill-[#2da44e]" />
+                <Play size={12} className="text-[#22A849] fill-[#22A849]" />
                 <span>Start Your First Mission</span>
               </a>
             </motion.div>
 
-            {/* Trust & Transparency Badges */}
+            {/* Value Proposition Row (Divided with clean vertical bars) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-              className="flex items-center justify-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.22 }}
+              className="flex items-center justify-center flex-wrap gap-3 sm:gap-6 pt-5 text-xs sm:text-[13px] font-medium text-[#161B22]"
             >
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-[#2da44e]" />
+                <CheckCircle2 size={15} className="text-[#22A849]" />
                 <span>Guided Missions</span>
               </div>
-              <div className="hidden sm:block text-slate-300">·</div>
+              <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1.5">
-                <GitPullRequest size={14} className="text-[#2da44e]" />
+                <GitPullRequest size={15} className="text-[#22A849]" />
                 <span>Real Pull Requests</span>
               </div>
-              <div className="hidden sm:block text-slate-300">·</div>
+              <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1.5">
-                <Award size={14} className="text-[#2da44e]" />
+                <Award size={15} className="text-[#22A849]" />
                 <span>Verified Badges</span>
               </div>
-              <div className="hidden sm:block text-slate-300">·</div>
+              <span className="text-slate-300">|</span>
               <div className="flex items-center gap-1.5">
-                <Shield size={14} className="text-[#2da44e]" />
+                <Shield size={15} className="text-[#22A849]" />
                 <span>No OAuth Required</span>
               </div>
             </motion.div>
