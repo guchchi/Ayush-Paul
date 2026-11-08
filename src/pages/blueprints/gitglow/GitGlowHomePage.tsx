@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useAnimationFrame } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
   Github,
@@ -409,6 +409,349 @@ const SparkleStar: React.FC<{ size?: number; className?: string }> = ({ size = 1
   </svg>
 );
 
+// ─── Anubi-Inspired 3D Orbital Hero Engine ────────────────────────────────────
+interface OrbitItemDef {
+  id: string;
+  type: 'badge' | 'pr-pill' | 'mission-pill' | 'hex-fork' | 'hex-star';
+  badgeImg?: string;
+  name?: string;
+  tag?: string;
+  badgeId?: string;
+  customTilt?: number;
+}
+
+const ORBIT_ITEMS_DEF: OrbitItemDef[] = [
+  {
+    id: 'orbit-pull-shark',
+    type: 'badge',
+    badgeImg: '/images/badges/pull-shark.png',
+    name: 'Pull Shark',
+    tag: 'First PR Merged',
+    badgeId: 'pull-shark',
+    customTilt: -3,
+  },
+  {
+    id: 'orbit-pr-pill',
+    type: 'pr-pill',
+    customTilt: 2,
+  },
+  {
+    id: 'orbit-hex-fork',
+    type: 'hex-fork',
+    customTilt: -5,
+  },
+  {
+    id: 'orbit-quickdraw',
+    type: 'badge',
+    badgeImg: '/images/badges/quickdraw.png',
+    name: 'Quickdraw',
+    tag: 'Closed <5m',
+    badgeId: 'quickdraw',
+    customTilt: 4,
+  },
+  {
+    id: 'orbit-galaxy-brain',
+    type: 'badge',
+    badgeImg: '/images/badges/galaxy-brain.png',
+    name: 'Galaxy Brain',
+    tag: 'Accepted Answer',
+    badgeId: 'galaxy-brain',
+    customTilt: 3,
+  },
+  {
+    id: 'orbit-mission-pill',
+    type: 'mission-pill',
+    customTilt: -2,
+  },
+  {
+    id: 'orbit-hex-star',
+    type: 'hex-star',
+    customTilt: 5,
+  },
+  {
+    id: 'orbit-yolo',
+    type: 'badge',
+    badgeImg: '/images/badges/yolo.png',
+    name: 'YOLO',
+    tag: 'Direct PR Merge',
+    badgeId: 'yolo',
+    customTilt: -4,
+  },
+];
+
+const AnubiOrbitalHeroStage: React.FC<{
+  onSelectBadge: (badgeId: string) => void;
+  children: React.ReactNode;
+}> = ({ onSelectBadge, children }) => {
+  const [rotation, setRotation] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragStartX = useRef<number>(0);
+  const dragStartRotation = useRef<number>(0);
+  const velocityRef = useRef<number>(0.0022);
+
+  // Anubi-Style Pointer Ink Trail Points
+  const [inkTrail, setInkTrail] = useState<{ x: number; y: number; id: number }[]>([]);
+  const inkIdCounter = useRef<number>(0);
+
+  // Responsive radii based on viewport
+  const [radii, setRadii] = useState<{ rx: number; ry: number }>({ rx: 530, ry: 195 });
+
+  useEffect(() => {
+    const updateRadii = () => {
+      const w = window.innerWidth;
+      if (w >= 1440) setRadii({ rx: 560, ry: 205 });
+      else if (w >= 1280) setRadii({ rx: 520, ry: 190 });
+      else if (w >= 1024) setRadii({ rx: 450, ry: 175 });
+      else setRadii({ rx: 320, ry: 140 });
+    };
+    updateRadii();
+    window.addEventListener('resize', updateRadii);
+    return () => window.removeEventListener('resize', updateRadii);
+  }, []);
+
+  // Continuous Orbital Physics Loop
+  useAnimationFrame((_, delta) => {
+    if (!isPaused && !isDragging) {
+      setRotation((prev) => (prev + velocityRef.current * (delta / 16.67)) % (2 * Math.PI));
+    }
+  });
+
+  // Pointer event handlers for interactive drag & ink trail
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('input, button, a')) return;
+    setIsDragging(true);
+    dragStartX.current = e.clientX;
+    dragStartRotation.current = rotation;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (isDragging) {
+      const deltaX = e.clientX - dragStartX.current;
+      const sensitivity = 0.0035;
+      setRotation(dragStartRotation.current + deltaX * sensitivity);
+      velocityRef.current = deltaX * 0.0001;
+    }
+
+    // Add ink trail point
+    inkIdCounter.current += 1;
+    setInkTrail((prev) => [...prev.slice(-8), { x, y, id: inkIdCounter.current }]);
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    velocityRef.current = 0.0022;
+  };
+
+  // Build SVG path from ink trail
+  const inkPathD = useMemo(() => {
+    if (inkTrail.length < 2) return '';
+    let d = `M ${inkTrail[0].x} ${inkTrail[0].y}`;
+    for (let i = 1; i < inkTrail.length; i++) {
+      const p = inkTrail[i];
+      d += ` L ${p.x} ${p.y}`;
+    }
+    return d;
+  }, [inkTrail]);
+
+  // Orbit angle calculations
+  const tiltRad = -10 * (Math.PI / 180);
+  const cosTilt = Math.cos(tiltRad);
+  const sinTilt = Math.sin(tiltRad);
+
+  return (
+    <div
+      ref={containerRef}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+      className={cn(
+        'relative w-full min-h-[640px] lg:min-h-[700px] flex items-center justify-center select-none overflow-visible',
+        isDragging ? 'cursor-grabbing' : 'cursor-default'
+      )}
+    >
+      {/* ── ANUBI POINTER INK TRAIL SVG (Fluid cursor motion) ── */}
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        className="pointer-events-none absolute inset-0 w-full h-full z-40 overflow-visible"
+      >
+        {inkPathD && (
+          <path
+            d={inkPathD}
+            fill="none"
+            stroke="#2da44e"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.35"
+            style={{ filter: 'drop-shadow(0 0 6px rgba(45,164,78,0.5))' }}
+          />
+        )}
+      </svg>
+
+      {/* ── 3D ORBITAL ELLIPSE GUIDELINE ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          width: radii.rx * 2,
+          height: radii.ry * 2,
+          transform: `translate(-50%, -50%) rotate(-10deg)`,
+        }}
+        className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/20 border-dashed"
+      />
+      <div
+        aria-hidden="true"
+        style={{
+          width: radii.rx * 2 - 30,
+          height: radii.ry * 2 - 20,
+          transform: `translate(-50%, -50%) rotate(-6deg)`,
+        }}
+        className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/10"
+      />
+
+      {/* ── 3D ORBITING ITEMS (Badges & Achievement Elements in Orbit) ── */}
+      <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-visible">
+        {ORBIT_ITEMS_DEF.map((item, index) => {
+          const theta = rotation + (2 * Math.PI * index) / ORBIT_ITEMS_DEF.length;
+          const x0 = Math.cos(theta) * radii.rx;
+          const y0 = Math.sin(theta) * radii.ry;
+
+          // Projected coords with tilt
+          const x = x0 * cosTilt - y0 * sinTilt;
+          const y = x0 * sinTilt + y0 * cosTilt;
+
+          // Depth 0 (far back) to 1 (front center)
+          const depth = (Math.sin(theta) + 1) / 2;
+          const isHovered = hoveredItemId === item.id;
+
+          const scale = isHovered ? 1.2 : 0.72 + depth * 0.38;
+          const opacity = isHovered ? 1 : 0.45 + depth * 0.55;
+          const zIndex = isHovered ? 60 : Math.round(10 + depth * 30);
+
+          const rotY = Math.cos(theta) * -24;
+          const rotX = Math.sin(theta) * 10;
+          const rotZ = Math.sin(theta) * -4 + (item.customTilt || 0);
+
+          return (
+            <div
+              key={item.id}
+              style={{
+                position: 'absolute',
+                left: `calc(50% + ${x}px)`,
+                top: `calc(50% + ${y}px)`,
+                transform: `translate(-50%, -50%) scale(${scale})`,
+                opacity,
+                zIndex,
+                perspective: 1000,
+                transition: isDragging
+                  ? 'none'
+                  : 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease',
+              }}
+              onMouseEnter={() => {
+                setIsPaused(true);
+                setHoveredItemId(item.id);
+              }}
+              onMouseLeave={() => {
+                setIsPaused(false);
+                setHoveredItemId(null);
+              }}
+              className="pointer-events-auto cursor-pointer"
+            >
+              <div
+                style={{
+                  transform: `rotateY(${rotY}deg) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`,
+                  transformStyle: 'preserve-3d',
+                }}
+                onClick={() => {
+                  if (item.badgeId) {
+                    onSelectBadge(item.badgeId);
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className={cn(
+                  'transition-all duration-200',
+                  isHovered && 'filter drop-shadow-[0_16px_32px_rgba(45,164,78,0.35)]'
+                )}
+              >
+                {item.type === 'badge' && item.badgeImg && (
+                  <div className="relative p-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] hover:border-[#2da44e] transition-colors">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0">
+                        <img
+                          src={item.badgeImg}
+                          alt={item.name}
+                          className="w-full h-full object-contain filter drop-shadow-xs"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="text-left pr-1 whitespace-nowrap">
+                        <div className="text-xs font-bold text-[#161B22] flex items-center gap-1.5">
+                          <span>{item.name}</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                        </div>
+                        <div className="text-[10px] font-mono text-[#656D76]">{item.tag}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {item.type === 'pr-pill' && (
+                  <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                    <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600">
+                      <Trophy size={14} />
+                    </div>
+                    <span className="text-xs font-bold text-[#161B22]">Pull Request Merged</span>
+                    <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center">
+                      <Check size={11} strokeWidth={3} />
+                    </div>
+                  </div>
+                )}
+
+                {item.type === 'mission-pill' && (
+                  <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                    <div className="w-6 h-6 rounded-full bg-[#2da44e] text-white flex items-center justify-center">
+                      <Check size={11} strokeWidth={3} />
+                    </div>
+                    <span className="text-xs font-bold text-[#161B22]">Mission Completed!</span>
+                  </div>
+                )}
+
+                {item.type === 'hex-fork' && <GreenHexBadge icon="fork" size={54} />}
+                {item.type === 'hex-star' && <GreenHexBadge icon="star" size={54} />}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── CENTER: Gravitational Anchor (Hero Content) ── */}
+      <div className="relative z-20 max-w-2xl mx-auto text-center pointer-events-auto px-4">
+        {children}
+      </div>
+
+      {/* ── ANUBI-INSPIRED ORBIT CONTROLS & HINT BAR ── */}
+      <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#D0D7DE] text-[11px] font-mono text-[#656D76] shadow-2xs select-none pointer-events-auto z-30">
+        <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
+        <span>3D Orbital Stage</span>
+        <span className="text-slate-300">·</span>
+        <span className="text-slate-500">Drag to rotate orbit · Click any badge to inspect mission</span>
+      </div>
+    </div>
+  );
+};
+
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
   const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
@@ -567,381 +910,235 @@ export const GitGlowHomePage: React.FC = () => {
             </Link>
           </div>
 
-          {/* ── AMBIENT GREEN ORBITAL RINGS (Matching GitHub Elements Reference) ── */}
-          <div
-            aria-hidden="true"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] md:w-[980px] lg:w-[1180px] h-[340px] md:h-[420px] rounded-[100%] border border-[#2da44e]/20 rotate-[-12deg] pointer-events-none"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] md:w-[920px] lg:w-[1120px] h-[320px] md:h-[390px] rounded-[100%] border border-[#2da44e]/10 rotate-[-8deg] pointer-events-none"
-          />
-
-          <div className="relative min-h-[560px] flex flex-col items-center justify-center">
-            {/* ── LEFT FLANK: 3D Flying Badges & GitHub Elements ── */}
-            <div className="hidden lg:block absolute left-0 xl:-left-4 top-1/2 -translate-y-1/2 w-64 xl:w-72 pointer-events-auto z-10">
-              <div className="relative h-[480px]">
-                {/* 1. Pull Shark 3D Badge */}
-                <FlyingBadgeCard
-                  badgeImg="/images/badges/pull-shark.png"
-                  name="Pull Shark"
-                  tag="First PR Merged"
-                  rotateY={-16}
-                  rotateX={8}
-                  rotateZ={-3}
-                  yOffset={[0, -12, 0]}
-                  duration={5.6}
-                  className="absolute top-2 left-4 xl:left-2"
-                  onClick={() => {
-                    setSelectedBadgeId('pull-shark');
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                />
-
-                {/* 2. Pull Request Merged Status Pill (Exact match to user's photo) */}
-                <FloatingStatusPill
-                  type="pr"
-                  rotateY={-12}
-                  rotateX={4}
-                  rotateZ={2}
-                  yOffset={[-6, 6, -6]}
-                  duration={4.8}
-                  className="absolute top-[138px] left-0 xl:-left-2"
-                />
-
-                {/* 3. 3D Green Hexagon Badge with Git Fork */}
-                <GreenHexBadge
-                  icon="fork"
-                  size={58}
-                  rotateY={-18}
-                  rotateX={12}
-                  rotateZ={-6}
-                  yOffset={[0, -10, 0]}
-                  duration={6.2}
-                  className="absolute top-[228px] left-8 xl:left-12"
-                />
-
-                {/* 4. Quickdraw 3D Badge */}
-                <FlyingBadgeCard
-                  badgeImg="/images/badges/quickdraw.png"
-                  name="Quickdraw"
-                  tag="Issue Closed <5m"
-                  rotateY={-10}
-                  rotateX={-6}
-                  rotateZ={4}
-                  yOffset={[-8, 8, -8]}
-                  duration={5.2}
-                  className="absolute bottom-4 left-2 xl:left-0"
-                  onClick={() => {
-                    setSelectedBadgeId('quickdraw');
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                />
-
-                {/* Sparkle star & soft circle accents from image */}
-                <div className="absolute top-24 right-4 pointer-events-none opacity-80">
-                  <SparkleStar size={16} />
-                </div>
-                <div className="absolute bottom-28 right-8 w-4 h-4 rounded-full border border-[#2da44e]/35 pointer-events-none" />
+          {/* ── ANUBI-INSPIRED 3D ORBITAL HERO STAGE ── */}
+          <AnubiOrbitalHeroStage onSelectBadge={setSelectedBadgeId}>
+            {/* Central GitHub Squircle Icon Accent (Matching user reference) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+              className="flex items-center justify-center mb-5"
+            >
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#0D1117] flex items-center justify-center text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] border border-white/10 group hover:scale-105 transition-transform duration-300">
+                <Github size={28} className="text-white" />
               </div>
-            </div>
+            </motion.div>
 
-            {/* ── RIGHT FLANK: 3D Flying Badges & GitHub Elements ── */}
-            <div className="hidden lg:block absolute right-0 xl:-right-4 top-1/2 -translate-y-1/2 w-64 xl:w-72 pointer-events-auto z-10">
-              <div className="relative h-[480px]">
-                {/* 1. Galaxy Brain 3D Badge */}
-                <FlyingBadgeCard
-                  badgeImg="/images/badges/galaxy-brain.png"
-                  name="Galaxy Brain"
-                  tag="Accepted Answer"
-                  rotateY={16}
-                  rotateX={6}
-                  rotateZ={3}
-                  yOffset={[0, -14, 0]}
-                  duration={5.4}
-                  className="absolute top-2 right-4 xl:right-2"
-                  onClick={() => {
-                    setSelectedBadgeId('galaxy-brain');
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                />
-
-                {/* 2. Mission Completed Status Pill (Exact match to user's photo) */}
-                <FloatingStatusPill
-                  type="mission"
-                  rotateY={12}
-                  rotateX={4}
-                  rotateZ={-2}
-                  yOffset={[-5, 7, -5]}
-                  duration={4.6}
-                  className="absolute top-[138px] right-0 xl:-right-2"
-                />
-
-                {/* 3. 3D Green Hexagon Badge with Star */}
-                <GreenHexBadge
-                  icon="star"
-                  size={58}
-                  rotateY={18}
-                  rotateX={10}
-                  rotateZ={6}
-                  yOffset={[0, -11, 0]}
-                  duration={5.8}
-                  className="absolute top-[228px] right-8 xl:right-12"
-                />
-
-                {/* 4. YOLO 3D Badge */}
-                <FlyingBadgeCard
-                  badgeImg="/images/badges/yolo.png"
-                  name="YOLO"
-                  tag="Direct PR Merge"
-                  rotateY={12}
-                  rotateX={-8}
-                  rotateZ={-3}
-                  yOffset={[-7, 7, -7]}
-                  duration={6}
-                  className="absolute bottom-4 right-2 xl:right-0"
-                  onClick={() => {
-                    setSelectedBadgeId('yolo');
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                />
-
-                {/* Sparkle star & soft circle accents from image */}
-                <div className="absolute top-24 left-4 pointer-events-none opacity-80">
-                  <SparkleStar size={16} />
-                </div>
-                <div className="absolute bottom-24 left-8 w-4 h-4 rounded-full border border-[#2da44e]/35 pointer-events-none" />
+            {/* Eyebrow Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.04 }}
+              className="mb-4"
+            >
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
+                <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
+                <span>Guided Missions · Real GitHub Achievements</span>
               </div>
-            </div>
+            </motion.div>
 
-            {/* ── CENTER: Clean, Focused, No-Noise Composition ── */}
-            <div className="relative z-20 max-w-2xl mx-auto text-center space-y-6 px-2 sm:px-4">
-              {/* Central GitHub Squircle Icon Accent (Matching user reference) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                className="flex items-center justify-center"
-              >
-                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#0D1117] flex items-center justify-center text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] border border-white/10 group hover:scale-105 transition-transform duration-300">
-                  <Github size={28} className="text-white" />
-                </div>
-              </motion.div>
+            {/* Headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
+              className="mb-4"
+            >
+              <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.1]">
+                Your GitHub profile is <br className="hidden sm:inline" />
+                <span className="text-[#2da44e]">about to get interesting.</span>
+              </h1>
+            </motion.div>
 
-              {/* Eyebrow Pill */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.04 }}
-              >
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
-                  <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
-                  <span>Guided Missions · Real GitHub Achievements</span>
-                </div>
-              </motion.div>
+            {/* Supporting Copy */}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
+              className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[560px] mx-auto font-normal mb-6"
+            >
+              Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
+            </motion.p>
 
-              {/* Headline */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
-              >
-                <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.1]">
-                  Your GitHub profile is <br className="hidden sm:inline" />
-                  <span className="text-[#2da44e]">about to get interesting.</span>
-                </h1>
-              </motion.div>
-
-              {/* Supporting Copy */}
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[560px] mx-auto font-normal"
-              >
-                Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
-              </motion.p>
-
-              {/* ── Centered Username Input Capsule ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.16 }}
-                className="max-w-xl mx-auto pt-1 w-full"
-              >
-                <form onSubmit={handleScanProfile} className="relative flex items-center">
-                  <div className="relative w-full flex items-center rounded-full bg-white border-2 border-[#D0D7DE] focus-within:border-[#2da44e] shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
-                    <div className="flex items-center gap-1.5 text-[#656D76] font-mono text-xs sm:text-sm select-none pr-1">
-                      <Github size={17} className="text-[#161B22]" />
-                      <span className="text-slate-400 font-normal">github.com/</span>
-                    </div>
-                    <input
-                      type="text"
-                      value={usernameInput}
-                      onChange={(e) => setUsernameInput(e.target.value)}
-                      placeholder="your-username"
-                      aria-label="GitHub username to inspect missions"
-                      className="w-full bg-transparent text-sm sm:text-base font-medium text-[#161B22] placeholder:text-slate-400 focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isScanning}
-                      className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#2da44e] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
-                    >
-                      {isScanning ? (
-                        <>
-                          <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Scanning...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Scan Profile</span>
-                          <ArrowRight size={14} />
-                        </>
-                      )}
-                    </button>
+            {/* ── Centered Username Input Capsule ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.16 }}
+              className="max-w-xl mx-auto pt-1 w-full mb-6"
+            >
+              <form onSubmit={handleScanProfile} className="relative flex items-center">
+                <div className="relative w-full flex items-center rounded-full bg-white border-2 border-[#D0D7DE] focus-within:border-[#2da44e] shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
+                  <div className="flex items-center gap-1.5 text-[#656D76] font-mono text-xs sm:text-sm select-none pr-1">
+                    <Github size={17} className="text-[#161B22]" />
+                    <span className="text-slate-400 font-normal">github.com/</span>
                   </div>
-                </form>
-
-                {/* Quick-try chips */}
-                <div className="flex items-center justify-center flex-wrap gap-2 pt-3 text-xs text-[#656D76]">
-                  <span className="text-slate-400 text-[11px] font-medium">Try with:</span>
-                  {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
-                    <button
-                      key={user}
-                      type="button"
-                      onClick={() => {
-                        setUsernameInput(user);
-                        simulateProfileScan(user);
-                      }}
-                      className="px-2.5 py-0.5 rounded-md bg-[#F6F8FA] hover:bg-slate-200 text-[#161B22] border border-[#D0D7DE] text-[11px] font-mono transition-colors cursor-pointer"
-                    >
-                      @{user}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Real-time Scan Result Toast */}
-                {scanResult && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="mt-4 p-3.5 rounded-2xl bg-[#dafbe1]/95 border border-[#2da44e]/50 text-left flex items-center justify-between gap-3 shadow-xs"
+                  <input
+                    type="text"
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    placeholder="your-username"
+                    aria-label="GitHub username to inspect missions"
+                    className="w-full bg-transparent text-sm sm:text-base font-medium text-[#161B22] placeholder:text-slate-400 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isScanning}
+                    className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#2da44e] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#2da44e] animate-ping" />
-                      <div>
-                        <div className="text-xs font-bold text-[#1a7f37]">
-                          Profile @{scanResult.handle} ready for first achievement!
-                        </div>
-                        <div className="text-[11px] text-[#24292f]">
-                          Recommended starter mission: <strong>{scanResult.targetName}</strong>
-                        </div>
+                    {isScanning ? (
+                      <>
+                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Scanning...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Scan Profile</span>
+                        <ArrowRight size={14} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              {/* Quick-try chips */}
+              <div className="flex items-center justify-center flex-wrap gap-2 pt-3 text-xs text-[#656D76]">
+                <span className="text-slate-400 text-[11px] font-medium">Try with:</span>
+                {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
+                  <button
+                    key={user}
+                    type="button"
+                    onClick={() => {
+                      setUsernameInput(user);
+                      simulateProfileScan(user);
+                    }}
+                    className="px-2.5 py-0.5 rounded-md bg-[#F6F8FA] hover:bg-slate-200 text-[#161B22] border border-[#D0D7DE] text-[11px] font-mono transition-colors cursor-pointer"
+                  >
+                    @{user}
+                  </button>
+                ))}
+              </div>
+
+              {/* Real-time Scan Result Toast */}
+              {scanResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="mt-4 p-3.5 rounded-2xl bg-[#dafbe1]/95 border border-[#2da44e]/50 text-left flex items-center justify-between gap-3 shadow-xs"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#2da44e] animate-ping" />
+                    <div>
+                      <div className="text-xs font-bold text-[#1a7f37]">
+                        Profile @{scanResult.handle} ready for first achievement!
+                      </div>
+                      <div className="text-[11px] text-[#24292f]">
+                        Recommended starter mission: <strong>{scanResult.targetName}</strong>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedBadgeId(scanResult.targetId);
-                        document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="px-3.5 py-1.5 rounded-full bg-[#2da44e] hover:bg-[#238636] text-white text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
-                    >
-                      Start Mission →
-                    </button>
-                  </motion.div>
-                )}
-              </motion.div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedBadgeId(scanResult.targetId);
+                      document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="px-3.5 py-1.5 rounded-full bg-[#2da44e] hover:bg-[#238636] text-white text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
+                  >
+                    Start Mission →
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
 
-              {/* Action Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
-                className="flex items-center justify-center flex-wrap gap-3.5 pt-2"
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
+              className="flex items-center justify-center flex-wrap gap-3.5 pt-1 mb-6"
+            >
+              <a
+                href="#achievements"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[46px] px-6 sm:px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
               >
-                <a
-                  href="#achievements"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-[46px] px-6 sm:px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
-                >
-                  <span>Explore Achievements</span>
-                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                </a>
+                <span>Explore Achievements</span>
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </a>
 
-                <a
-                  href="#missions"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-[46px] px-6 sm:px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
-                >
-                  <Play size={12} className="text-[#2da44e] fill-[#2da44e]" />
-                  <span>Start Your First Mission</span>
-                </a>
-              </motion.div>
-
-              {/* Trust & Transparency Badges */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-                className="flex items-center justify-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
+              <a
+                href="#missions"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[46px] px-6 sm:px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
               >
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 size={14} className="text-[#2da44e]" />
-                  <span>Guided Missions</span>
-                </div>
-                <div className="hidden sm:block text-slate-300">·</div>
-                <div className="flex items-center gap-1.5">
-                  <GitPullRequest size={14} className="text-[#2da44e]" />
-                  <span>Real Pull Requests</span>
-                </div>
-                <div className="hidden sm:block text-slate-300">·</div>
-                <div className="flex items-center gap-1.5">
-                  <Award size={14} className="text-[#2da44e]" />
-                  <span>Verified Badges</span>
-                </div>
-                <div className="hidden sm:block text-slate-300">·</div>
-                <div className="flex items-center gap-1.5">
-                  <Shield size={14} className="text-[#2da44e]" />
-                  <span>No OAuth Required</span>
-                </div>
-              </motion.div>
+                <Play size={12} className="text-[#2da44e] fill-[#2da44e]" />
+                <span>Start Your First Mission</span>
+              </a>
+            </motion.div>
 
-              {/* Mobile / Tablet Badge Strip (lg:hidden) */}
-              <div className="lg:hidden pt-4 pb-2">
-                <div className="text-[11px] font-mono text-[#656D76] font-semibold uppercase tracking-wider mb-2">
-                  Target Badges & Missions
-                </div>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  {[
-                    { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
-                    { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
-                    { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
-                    { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
-                  ].map((b) => (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedBadgeId(b.id);
-                        document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D0D7DE] shadow-2xs hover:border-[#2da44e] cursor-pointer"
-                    >
-                      <img src={b.img} alt={b.name} className="w-5 h-5 object-contain" />
-                      <span className="text-xs font-semibold text-[#161B22]">{b.name}</span>
-                    </button>
-                  ))}
-                </div>
+            {/* Trust & Transparency Badges */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
+              className="flex items-center justify-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
+            >
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-[#2da44e]" />
+                <span>Guided Missions</span>
+              </div>
+              <div className="hidden sm:block text-slate-300">·</div>
+              <div className="flex items-center gap-1.5">
+                <GitPullRequest size={14} className="text-[#2da44e]" />
+                <span>Real Pull Requests</span>
+              </div>
+              <div className="hidden sm:block text-slate-300">·</div>
+              <div className="flex items-center gap-1.5">
+                <Award size={14} className="text-[#2da44e]" />
+                <span>Verified Badges</span>
+              </div>
+              <div className="hidden sm:block text-slate-300">·</div>
+              <div className="flex items-center gap-1.5">
+                <Shield size={14} className="text-[#2da44e]" />
+                <span>No OAuth Required</span>
+              </div>
+            </motion.div>
+
+            {/* Mobile / Tablet Badge Strip (lg:hidden) */}
+            <div className="lg:hidden pt-4 pb-2">
+              <div className="text-[11px] font-mono text-[#656D76] font-semibold uppercase tracking-wider mb-2">
+                Target Badges & Missions
+              </div>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                {[
+                  { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
+                  { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
+                  { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
+                  { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
+                ].map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedBadgeId(b.id);
+                      document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D0D7DE] shadow-2xs hover:border-[#2da44e] cursor-pointer"
+                  >
+                    <img src={b.img} alt={b.name} className="w-5 h-5 object-contain" />
+                    <span className="text-xs font-semibold text-[#161B22]">{b.name}</span>
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+          </AnubiOrbitalHeroStage>
         </div>
       </section>
 
