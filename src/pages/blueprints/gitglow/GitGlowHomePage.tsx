@@ -267,16 +267,17 @@ const InteractiveFAQSection: React.FC = () => {
 
   return (
     <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto mb-20 text-left w-full">
-      {/* Gentle Header with Home-Page Theme */}
+      {/* Harmonized Header */}
       <div className="text-center space-y-2 mb-8 select-none">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
-          FREQUENTLY ASKED QUESTIONS
-        </span>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+          <span>Frequently Asked Questions</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
           Frequently asked questions
         </h2>
-        <p className="text-xs sm:text-sm text-[#424754] max-w-md mx-auto font-medium leading-relaxed">
-          Quick, clear answers to common questions about claiming verified GitHub badges.
+        <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
+          Quick, clear answers to common questions about claiming verified GitHub profile badges.
         </p>
       </div>
 
@@ -289,17 +290,17 @@ const InteractiveFAQSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="w-full px-6 py-4.5 sm:py-5 flex items-center justify-between text-left cursor-pointer group gap-4 transition-colors hover:bg-[#f8f9ff]"
+                className="w-full px-6 py-5 sm:py-5.5 flex items-center justify-between text-left cursor-pointer group gap-4 transition-colors hover:bg-[#f8f9ff]"
                 aria-expanded={isOpen}
               >
-                <span className="text-sm sm:text-base font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
+                <span className="text-base sm:text-[17px] font-bold text-[#0b1c30] tracking-[-0.015em] group-hover:text-[#1a7f37] transition-colors">
                   {faq.q}
                 </span>
                 <ChevronDown
-                  size={16}
+                  size={18}
                   className={cn(
                     'text-slate-400 shrink-0 transition-transform duration-200',
-                    isOpen && 'rotate-180 text-[#0058be]',
+                    isOpen && 'rotate-180 text-[#1a7f37]',
                   )}
                 />
               </button>
@@ -313,7 +314,7 @@ const InteractiveFAQSection: React.FC = () => {
                     transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-[#424754] font-medium leading-relaxed">
+                    <div className="px-6 pb-6 pt-1 text-sm sm:text-[15px] text-[#424754] font-normal leading-relaxed">
                       {faq.a}
                     </div>
                   </motion.div>
@@ -498,7 +499,7 @@ export const GitGlowHomePage: React.FC = () => {
   }, [activeRecipe]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0b1c30]">
+    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
       {/* ─── SECTION 1: Luminous Ethereal Hero (Home-Page Refined Theme) ─── */}
       <section
@@ -629,8 +630,8 @@ export const GitGlowHomePage: React.FC = () => {
                     const el = document.getElementById('recipe-terminal');
                     if (el) {
                       el.scrollIntoView({ behavior: 'smooth' });
-                      el.classList.add('ring-4', 'ring-[#d1f34d]', 'shadow-xl');
-                      setTimeout(() => el.classList.remove('ring-4', 'ring-[#d1f34d]', 'shadow-xl'), 2500);
+                      el.classList.add('ring-4', 'ring-[#2da44e]', 'shadow-xl');
+                      setTimeout(() => el.classList.remove('ring-4', 'ring-[#2da44e]', 'shadow-xl'), 2500);
                     } else {
                       document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
                     }
@@ -869,15 +870,16 @@ export const GitGlowHomePage: React.FC = () => {
 
         {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
         <section id="catalog" className="scroll-mt-24 mb-20 text-left w-full select-none">
-          {/* Gentle Header with Home-Page Theme */}
+          {/* Harmonized Header */}
           <div className="text-center space-y-2 mb-8">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
-              ACHIEVEMENT STUDIO
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Achievement Studio</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
               Explore and claim GitHub badges
             </h2>
-            <p className="text-xs sm:text-sm text-[#424754] max-w-lg mx-auto font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
               Select any official medallion to inspect its server requirements, tier multipliers, and copy verified Git recipes.
             </p>
           </div>
@@ -940,8 +942,8 @@ export const GitGlowHomePage: React.FC = () => {
                     className={cn(
                       'p-3.5 rounded-2xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95 min-h-[44px]',
                       isSelected
-                        ? 'bg-white border-[#0058be] shadow-[0_4px_20px_rgba(0,88,190,0.14)] ring-2 ring-[#0058be]/25 -translate-y-0.5'
-                        : 'bg-white border-slate-200/90 hover:border-[#0058be]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
+                        ? 'bg-white border-[#1a7f37] shadow-[0_4px_20px_rgba(26,127,55,0.14)] ring-2 ring-[#2da44e]/25 -translate-y-0.5'
+                        : 'bg-white border-slate-200/90 hover:border-[#1a7f37]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
                     )}
                   >
                     <div className="relative w-12 h-12 flex items-center justify-center">
@@ -957,7 +959,7 @@ export const GitGlowHomePage: React.FC = () => {
                         loading="lazy"
                       />
                       {badge.tiers && badge.tiers.length > 0 && (
-                        <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200/80 shadow-2xs">
+                        <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] px-1 rounded-full border border-[#2da44e]/30 shadow-2xs">
                           x4
                         </span>
                       )}
@@ -966,7 +968,7 @@ export const GitGlowHomePage: React.FC = () => {
                       className={cn(
                         'text-xs font-semibold truncate w-full',
                         isSelected
-                          ? 'text-[#0b1c30]'
+                          ? 'text-[#1a7f37] font-bold'
                           : 'text-slate-600 group-hover:text-[#0b1c30]'
                       )}
                     >
@@ -1007,10 +1009,10 @@ export const GitGlowHomePage: React.FC = () => {
                 {/* Badge Header Bar */}
                 <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#1a7f37] font-bold uppercase tracking-wider block">
                       {activeBadge.category}
                     </span>
-                    <h3 className="text-xl font-bold text-[#0b1c30] mt-0.5">
+                    <h3 className="text-2xl sm:text-[26px] font-extrabold text-[#0b1c30] tracking-[-0.025em] mt-0.5">
                       {activeBadge.name}
                     </h3>
                   </div>
@@ -1036,10 +1038,10 @@ export const GitGlowHomePage: React.FC = () => {
                     />
                   </div>
                   <div className="min-w-0 space-y-1">
-                    <div className="text-xs font-bold text-[#0b1c30] leading-snug">
+                    <div className="text-sm font-semibold text-[#0b1c30] leading-snug">
                       {activeBadge.tagline}
                     </div>
-                    <div className="text-[11px] font-mono text-[#424754]">
+                    <div className="text-xs font-mono text-[#424754]">
                       Est. time:{' '}
                       <span className="text-[#0b1c30] font-bold">
                         {activeRecipe.estimatedTime}
@@ -1050,10 +1052,10 @@ export const GitGlowHomePage: React.FC = () => {
 
                 {/* GitHub Verification Rule */}
                 <div className="space-y-2 pt-1">
-                  <span className="text-xs font-bold text-[#0b1c30] block">
+                  <span className="text-[13px] font-bold text-[#0b1c30] tracking-tight block">
                     How GitHub Verifies This:
                   </span>
-                  <ul className="space-y-1.5 text-xs text-[#424754] leading-relaxed">
+                  <ul className="space-y-1.5 text-xs sm:text-[13px] text-[#424754] leading-relaxed font-medium">
                     {activeBadge.requirements.slice(0, 3).map((req, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" />
@@ -1180,15 +1182,16 @@ export const GitGlowHomePage: React.FC = () => {
 
         {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
         <section id="compare" className="scroll-mt-24 mb-20 text-left w-full select-none">
-          {/* Gentle Header with Home-Page Theme */}
+          {/* Harmonized Header */}
           <div className="text-center space-y-2 mb-8">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
-              PROOF OVER VANITY
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Proof Over Vanity</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
               Verified proof over vanity
             </h2>
-            <p className="text-xs sm:text-sm text-[#424754] max-w-lg mx-auto font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
               Why tech leads look for official GitHub profile medallions instead of copy-pasted README shields.
             </p>
           </div>
@@ -1203,7 +1206,7 @@ export const GitGlowHomePage: React.FC = () => {
                     <span className="text-[11px] font-mono text-slate-500 font-bold uppercase tracking-wider block">
                       Vanity metric
                     </span>
-                    <h3 className="text-base font-bold text-[#0b1c30] mt-0.5">
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#0b1c30] tracking-[-0.02em] mt-0.5">
                       README Markdown Shields
                     </h3>
                   </div>
@@ -1283,10 +1286,10 @@ export const GitGlowHomePage: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#1a7f37] font-bold uppercase tracking-wider block">
                       Verifiable proof
                     </span>
-                    <h3 className="text-base font-bold text-[#0b1c30] mt-0.5">
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#0b1c30] tracking-[-0.02em] mt-0.5">
                       GitHub Profile Medallions
                     </h3>
                   </div>
@@ -1397,27 +1400,27 @@ export const GitGlowHomePage: React.FC = () => {
         {/* ─── SECTION 4: Simple, Clear FAQ ─────────────────────────────────── */}
         <InteractiveFAQSection />
 
-        {/* ─── Final Direct Launch Action Ribbon (Home-Page Signature Style) ─── */}
-        <section className="rounded-[32px] bg-[#0b1c30] border border-slate-800 p-8 sm:p-12 text-center space-y-4 mb-8 relative overflow-hidden shadow-2xl">
-          {/* Ambient Background Glows */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#d1f34d]/10 rounded-full filter blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0058be]/20 rounded-full filter blur-3xl pointer-events-none" />
+        {/* ─── Final Direct Launch Action Ribbon (Harmonized Signature Style) ─── */}
+        <section className="rounded-[32px] bg-[#0b1c30] border border-slate-800 p-8 sm:p-14 text-center space-y-5 mb-8 relative overflow-hidden shadow-2xl">
+          {/* Subtle Ambient Background Glows */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full filter blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full filter blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#d1f34d] text-[10px] font-mono font-bold uppercase tracking-widest shadow-sm">
-              <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-ping" />
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#40c463] text-[11px] font-mono font-bold uppercase tracking-[0.16em] shadow-sm">
+              <span className="w-1.5 h-1.5 bg-[#40c463] rounded-full animate-pulse" />
               1-Click Execution
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-white tracking-[-0.035em] leading-[1.12]">
               Ready to Claim Your First Official GitHub Medallion?
             </h2>
-            <p className="text-xs sm:text-sm text-white/80 max-w-md mx-auto font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 max-w-xl mx-auto font-normal leading-relaxed">
               Start with Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
               <Link
                 to="/blueprints/gitglow/engine?badge=quickdraw"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-[#0b1c30] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-[0_8px_25px_rgba(209,243,77,0.35)] cursor-pointer"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white hover:bg-slate-100 text-[#0b1c30] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
               >
                 Claim Quickdraw (120s) →
               </Link>
