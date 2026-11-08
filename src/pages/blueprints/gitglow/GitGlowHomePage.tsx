@@ -483,6 +483,9 @@ const AnubiOrbitalHeroStage: React.FC<{
   onSelectBadge: (badgeId: string) => void;
   children: React.ReactNode;
 }> = ({ onSelectBadge, children }) => {
+  // Temporary visibility toggle for floating orbit elements (kept intact for easy re-enabling)
+  const SHOW_FLOATING_ELEMENTS = false;
+
   const [rotation, setRotation] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -492,10 +495,6 @@ const AnubiOrbitalHeroStage: React.FC<{
   const dragStartX = useRef<number>(0);
   const dragStartRotation = useRef<number>(0);
   const velocityRef = useRef<number>(0.0022);
-
-  // Anubi-Style Pointer Ink Trail Points
-  const [inkTrail, setInkTrail] = useState<{ x: number; y: number; id: number }[]>([]);
-  const inkIdCounter = useRef<number>(0);
 
   // Responsive radii based on viewport
   const [radii, setRadii] = useState<{ rx: number; ry: number }>({ rx: 530, ry: 195 });
@@ -515,13 +514,14 @@ const AnubiOrbitalHeroStage: React.FC<{
 
   // Continuous Orbital Physics Loop
   useAnimationFrame((_, delta) => {
-    if (!isPaused && !isDragging) {
+    if (SHOW_FLOATING_ELEMENTS && !isPaused && !isDragging) {
       setRotation((prev) => (prev + velocityRef.current * (delta / 16.67)) % (2 * Math.PI));
     }
   });
 
-  // Pointer event handlers for interactive drag & ink trail
+  // Pointer event handlers for interactive drag
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (!SHOW_FLOATING_ELEMENTS) return;
     if ((e.target as HTMLElement).closest('input, button, a')) return;
     setIsDragging(true);
     dragStartX.current = e.clientX;
@@ -529,38 +529,19 @@ const AnubiOrbitalHeroStage: React.FC<{
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
+    if (!SHOW_FLOATING_ELEMENTS || !containerRef.current) return;
     if (isDragging) {
       const deltaX = e.clientX - dragStartX.current;
       const sensitivity = 0.0035;
       setRotation(dragStartRotation.current + deltaX * sensitivity);
       velocityRef.current = deltaX * 0.0001;
     }
-
-    // Add ink trail point
-    inkIdCounter.current += 1;
-    setInkTrail((prev) => [...prev.slice(-8), { x, y, id: inkIdCounter.current }]);
   };
 
   const handlePointerUp = () => {
     setIsDragging(false);
     velocityRef.current = 0.0022;
   };
-
-  // Build SVG path from ink trail
-  const inkPathD = useMemo(() => {
-    if (inkTrail.length < 2) return '';
-    let d = `M ${inkTrail[0].x} ${inkTrail[0].y}`;
-    for (let i = 1; i < inkTrail.length; i++) {
-      const p = inkTrail[i];
-      d += ` L ${p.x} ${p.y}`;
-    }
-    return d;
-  }, [inkTrail]);
 
   // Orbit angle calculations
   const tiltRad = -10 * (Math.PI / 180);
@@ -575,179 +556,168 @@ const AnubiOrbitalHeroStage: React.FC<{
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
       className={cn(
-        'relative w-full min-h-[640px] lg:min-h-[700px] flex items-center justify-center select-none overflow-visible',
+        'relative w-full flex items-center justify-center select-none overflow-visible',
+        SHOW_FLOATING_ELEMENTS ? 'min-h-[640px] lg:min-h-[700px]' : 'py-2 sm:py-6',
         isDragging ? 'cursor-grabbing' : 'cursor-default'
       )}
     >
-      {/* ── ANUBI POINTER INK TRAIL SVG (Fluid cursor motion) ── */}
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        className="pointer-events-none absolute inset-0 w-full h-full z-40 overflow-visible"
-      >
-        {inkPathD && (
-          <path
-            d={inkPathD}
-            fill="none"
-            stroke="#2da44e"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.35"
-            style={{ filter: 'drop-shadow(0 0 6px rgba(45,164,78,0.5))' }}
+      {/* ── 3D ORBITAL ELLIPSE GUIDELINE (Preserved, hidden for now) ── */}
+      {SHOW_FLOATING_ELEMENTS && (
+        <>
+          <div
+            aria-hidden="true"
+            style={{
+              width: radii.rx * 2,
+              height: radii.ry * 2,
+              transform: `translate(-50%, -50%) rotate(-10deg)`,
+            }}
+            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/20 border-dashed"
           />
-        )}
-      </svg>
+          <div
+            aria-hidden="true"
+            style={{
+              width: radii.rx * 2 - 30,
+              height: radii.ry * 2 - 20,
+              transform: `translate(-50%, -50%) rotate(-6deg)`,
+            }}
+            className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/10"
+          />
+        </>
+      )}
 
-      {/* ── 3D ORBITAL ELLIPSE GUIDELINE ── */}
-      <div
-        aria-hidden="true"
-        style={{
-          width: radii.rx * 2,
-          height: radii.ry * 2,
-          transform: `translate(-50%, -50%) rotate(-10deg)`,
-        }}
-        className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/20 border-dashed"
-      />
-      <div
-        aria-hidden="true"
-        style={{
-          width: radii.rx * 2 - 30,
-          height: radii.ry * 2 - 20,
-          transform: `translate(-50%, -50%) rotate(-6deg)`,
-        }}
-        className="pointer-events-none absolute left-1/2 top-1/2 rounded-[100%] border border-[#2da44e]/10"
-      />
+      {/* ── 3D ORBITING ITEMS (Preserved, hidden for now) ── */}
+      {SHOW_FLOATING_ELEMENTS && (
+        <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-visible">
+          {ORBIT_ITEMS_DEF.map((item, index) => {
+            const theta = rotation + (2 * Math.PI * index) / ORBIT_ITEMS_DEF.length;
+            const x0 = Math.cos(theta) * radii.rx;
+            const y0 = Math.sin(theta) * radii.ry;
 
-      {/* ── 3D ORBITING ITEMS (Badges & Achievement Elements in Orbit) ── */}
-      <div className="hidden lg:block pointer-events-none absolute inset-0 overflow-visible">
-        {ORBIT_ITEMS_DEF.map((item, index) => {
-          const theta = rotation + (2 * Math.PI * index) / ORBIT_ITEMS_DEF.length;
-          const x0 = Math.cos(theta) * radii.rx;
-          const y0 = Math.sin(theta) * radii.ry;
+            // Projected coords with tilt
+            const x = x0 * cosTilt - y0 * sinTilt;
+            const y = x0 * sinTilt + y0 * cosTilt;
 
-          // Projected coords with tilt
-          const x = x0 * cosTilt - y0 * sinTilt;
-          const y = x0 * sinTilt + y0 * cosTilt;
+            // Depth 0 (far back) to 1 (front center)
+            const depth = (Math.sin(theta) + 1) / 2;
+            const isHovered = hoveredItemId === item.id;
 
-          // Depth 0 (far back) to 1 (front center)
-          const depth = (Math.sin(theta) + 1) / 2;
-          const isHovered = hoveredItemId === item.id;
+            const scale = isHovered ? 1.2 : 0.72 + depth * 0.38;
+            const opacity = isHovered ? 1 : 0.45 + depth * 0.55;
+            const zIndex = isHovered ? 60 : Math.round(10 + depth * 30);
 
-          const scale = isHovered ? 1.2 : 0.72 + depth * 0.38;
-          const opacity = isHovered ? 1 : 0.45 + depth * 0.55;
-          const zIndex = isHovered ? 60 : Math.round(10 + depth * 30);
+            const rotY = Math.cos(theta) * -24;
+            const rotX = Math.sin(theta) * 10;
+            const rotZ = Math.sin(theta) * -4 + (item.customTilt || 0);
 
-          const rotY = Math.cos(theta) * -24;
-          const rotX = Math.sin(theta) * 10;
-          const rotZ = Math.sin(theta) * -4 + (item.customTilt || 0);
-
-          return (
-            <div
-              key={item.id}
-              style={{
-                position: 'absolute',
-                left: `calc(50% + ${x}px)`,
-                top: `calc(50% + ${y}px)`,
-                transform: `translate(-50%, -50%) scale(${scale})`,
-                opacity,
-                zIndex,
-                perspective: 1000,
-                transition: isDragging
-                  ? 'none'
-                  : 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease',
-              }}
-              onMouseEnter={() => {
-                setIsPaused(true);
-                setHoveredItemId(item.id);
-              }}
-              onMouseLeave={() => {
-                setIsPaused(false);
-                setHoveredItemId(null);
-              }}
-              className="pointer-events-auto cursor-pointer"
-            >
+            return (
               <div
+                key={item.id}
                 style={{
-                  transform: `rotateY(${rotY}deg) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`,
-                  transformStyle: 'preserve-3d',
+                  position: 'absolute',
+                  left: `calc(50% + ${x}px)`,
+                  top: `calc(50% + ${y}px)`,
+                  transform: `translate(-50%, -50%) scale(${scale})`,
+                  opacity,
+                  zIndex,
+                  perspective: 1000,
+                  transition: isDragging
+                    ? 'none'
+                    : 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease',
                 }}
-                onClick={() => {
-                  if (item.badgeId) {
-                    onSelectBadge(item.badgeId);
-                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                  } else {
-                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
-                  }
+                onMouseEnter={() => {
+                  setIsPaused(true);
+                  setHoveredItemId(item.id);
                 }}
-                className={cn(
-                  'transition-all duration-200',
-                  isHovered && 'filter drop-shadow-[0_16px_32px_rgba(45,164,78,0.35)]'
-                )}
+                onMouseLeave={() => {
+                  setIsPaused(false);
+                  setHoveredItemId(null);
+                }}
+                className="pointer-events-auto cursor-pointer"
               >
-                {item.type === 'badge' && item.badgeImg && (
-                  <div className="relative p-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] hover:border-[#2da44e] transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0">
-                        <img
-                          src={item.badgeImg}
-                          alt={item.name}
-                          className="w-full h-full object-contain filter drop-shadow-xs"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="text-left pr-1 whitespace-nowrap">
-                        <div className="text-xs font-bold text-[#161B22] flex items-center gap-1.5">
-                          <span>{item.name}</span>
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                <div
+                  style={{
+                    transform: `rotateY(${rotY}deg) rotateX(${rotX}deg) rotateZ(${rotZ}deg)`,
+                    transformStyle: 'preserve-3d',
+                  }}
+                  onClick={() => {
+                    if (item.badgeId) {
+                      onSelectBadge(item.badgeId);
+                      document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className={cn(
+                    'transition-all duration-200',
+                    isHovered && 'filter drop-shadow-[0_16px_32px_rgba(45,164,78,0.35)]'
+                  )}
+                >
+                  {item.type === 'badge' && item.badgeImg && (
+                    <div className="relative p-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] hover:border-[#2da44e] transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0">
+                          <img
+                            src={item.badgeImg}
+                            alt={item.name}
+                            className="w-full h-full object-contain filter drop-shadow-xs"
+                            loading="lazy"
+                          />
                         </div>
-                        <div className="text-[10px] font-mono text-[#656D76]">{item.tag}</div>
+                        <div className="text-left pr-1 whitespace-nowrap">
+                          <div className="text-xs font-bold text-[#161B22] flex items-center gap-1.5">
+                            <span>{item.name}</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                          </div>
+                          <div className="text-[10px] font-mono text-[#656D76]">{item.tag}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {item.type === 'pr-pill' && (
-                  <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
-                    <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600">
-                      <Trophy size={14} />
+                  {item.type === 'pr-pill' && (
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                      <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600">
+                        <Trophy size={14} />
+                      </div>
+                      <span className="text-xs font-bold text-[#161B22]">Pull Request Merged</span>
+                      <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center">
+                        <Check size={11} strokeWidth={3} />
+                      </div>
                     </div>
-                    <span className="text-xs font-bold text-[#161B22]">Pull Request Merged</span>
-                    <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center">
-                      <Check size={11} strokeWidth={3} />
-                    </div>
-                  </div>
-                )}
+                  )}
 
-                {item.type === 'mission-pill' && (
-                  <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
-                    <div className="w-6 h-6 rounded-full bg-[#2da44e] text-white flex items-center justify-center">
-                      <Check size={11} strokeWidth={3} />
+                  {item.type === 'mission-pill' && (
+                    <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_12px_28px_rgba(0,0,0,0.1)] whitespace-nowrap">
+                      <div className="w-6 h-6 rounded-full bg-[#2da44e] text-white flex items-center justify-center">
+                        <Check size={11} strokeWidth={3} />
+                      </div>
+                      <span className="text-xs font-bold text-[#161B22]">Mission Completed!</span>
                     </div>
-                    <span className="text-xs font-bold text-[#161B22]">Mission Completed!</span>
-                  </div>
-                )}
+                  )}
 
-                {item.type === 'hex-fork' && <GreenHexBadge icon="fork" size={54} />}
-                {item.type === 'hex-star' && <GreenHexBadge icon="star" size={54} />}
+                  {item.type === 'hex-fork' && <GreenHexBadge icon="fork" size={54} />}
+                  {item.type === 'hex-star' && <GreenHexBadge icon="star" size={54} />}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* ── CENTER: Gravitational Anchor (Hero Content) ── */}
       <div className="relative z-20 max-w-2xl mx-auto text-center pointer-events-auto px-4">
         {children}
       </div>
 
-      {/* ── ANUBI-INSPIRED ORBIT CONTROLS & HINT BAR ── */}
-      <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#D0D7DE] text-[11px] font-mono text-[#656D76] shadow-2xs select-none pointer-events-auto z-30">
-        <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
-        <span>3D Orbital Stage</span>
-        <span className="text-slate-300">·</span>
-        <span className="text-slate-500">Drag to rotate orbit · Click any badge to inspect mission</span>
-      </div>
+      {/* ── ANUBI-INSPIRED ORBIT CONTROLS & HINT BAR (Preserved, hidden for now) ── */}
+      {SHOW_FLOATING_ELEMENTS && (
+        <div className="hidden lg:flex absolute bottom-2 left-1/2 -translate-x-1/2 items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-[#D0D7DE] text-[11px] font-mono text-[#656D76] shadow-2xs select-none pointer-events-auto z-30">
+          <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
+          <span>3D Orbital Stage</span>
+          <span className="text-slate-300">·</span>
+          <span className="text-slate-500">Drag to rotate orbit · Click any badge to inspect mission</span>
+        </div>
+      )}
     </div>
   );
 };
@@ -899,17 +869,6 @@ export const GitGlowHomePage: React.FC = () => {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Blueprints directory breadcrumb */}
-          <div className="mb-6 sm:mb-8">
-            <Link
-              to="/blueprints"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-[#656D76] hover:text-[#161B22] transition-colors px-3 py-1 rounded-full bg-[#F6F8FA] border border-[#D0D7DE] shadow-2xs select-none group"
-            >
-              <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
-              <span>All Blueprints</span>
-            </Link>
-          </div>
-
           {/* ── ANUBI-INSPIRED 3D ORBITAL HERO STAGE ── */}
           <AnubiOrbitalHeroStage onSelectBadge={setSelectedBadgeId}>
             {/* Central GitHub Squircle Icon Accent (Matching user reference) */}
@@ -1110,34 +1069,6 @@ export const GitGlowHomePage: React.FC = () => {
                 <span>No OAuth Required</span>
               </div>
             </motion.div>
-
-            {/* Mobile / Tablet Badge Strip (lg:hidden) */}
-            <div className="lg:hidden pt-4 pb-2">
-              <div className="text-[11px] font-mono text-[#656D76] font-semibold uppercase tracking-wider mb-2">
-                Target Badges & Missions
-              </div>
-              <div className="flex items-center justify-center gap-2 flex-wrap">
-                {[
-                  { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
-                  { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
-                  { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
-                  { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
-                ].map((b) => (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedBadgeId(b.id);
-                      document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D0D7DE] shadow-2xs hover:border-[#2da44e] cursor-pointer"
-                  >
-                    <img src={b.img} alt={b.name} className="w-5 h-5 object-contain" />
-                    <span className="text-xs font-semibold text-[#161B22]">{b.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
           </AnubiOrbitalHeroStage>
         </div>
       </section>
