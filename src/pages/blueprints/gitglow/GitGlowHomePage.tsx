@@ -267,18 +267,21 @@ const InteractiveFAQSection: React.FC = () => {
 
   return (
     <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto mb-20 text-left w-full">
-      {/* Gentle Header */}
-      <div className="text-center space-y-2 mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
+      {/* Gentle Header with Home-Page Theme */}
+      <div className="text-center space-y-2 mb-8 select-none">
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
+          FREQUENTLY ASKED QUESTIONS
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
           Frequently asked questions
         </h2>
-        <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#424754] max-w-md mx-auto font-medium leading-relaxed">
           Quick, clear answers to common questions about claiming verified GitHub badges.
         </p>
       </div>
 
       {/* Clean Minimalist Accordion */}
-      <div className="divide-y divide-[#30363d]/60 rounded-2xl border border-[#30363d] bg-[#161b22]/50 overflow-hidden">
+      <div className="divide-y divide-slate-200/90 rounded-[24px] border border-slate-200/90 bg-white shadow-sm overflow-hidden">
         {faqs.map((faq) => {
           const isOpen = openId === faq.id;
           return (
@@ -286,17 +289,17 @@ const InteractiveFAQSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="w-full px-5 sm:px-6 py-4 sm:py-4.5 flex items-center justify-between text-left cursor-pointer group gap-4 transition-colors hover:bg-[#21262d]/40"
+                className="w-full px-6 py-4.5 sm:py-5 flex items-center justify-between text-left cursor-pointer group gap-4 transition-colors hover:bg-[#f8f9ff]"
                 aria-expanded={isOpen}
               >
-                <span className="text-sm sm:text-base font-medium text-[#f0f6fc] group-hover:text-[#58a6ff] transition-colors">
+                <span className="text-sm sm:text-base font-bold text-[#0b1c30] group-hover:text-[#0058be] transition-colors">
                   {faq.q}
                 </span>
                 <ChevronDown
                   size={16}
                   className={cn(
-                    'text-[#8b949e] shrink-0 transition-transform duration-200',
-                    isOpen && 'rotate-180 text-[#58a6ff]',
+                    'text-slate-400 shrink-0 transition-transform duration-200',
+                    isOpen && 'rotate-180 text-[#0058be]',
                   )}
                 />
               </button>
@@ -310,7 +313,7 @@ const InteractiveFAQSection: React.FC = () => {
                     transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
                     className="overflow-hidden"
                   >
-                    <div className="px-5 sm:px-6 pb-5 pt-1 text-xs sm:text-sm text-[#8b949e] leading-relaxed">
+                    <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-[#424754] font-medium leading-relaxed">
                       {faq.a}
                     </div>
                   </motion.div>
@@ -484,7 +487,7 @@ export const GitGlowHomePage: React.FC = () => {
   }, [activeRecipe]);
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-[#f0f6fc] overflow-x-hidden selection:bg-[#0047ff] selection:text-white">
+    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0b1c30]">
 
       {/* ─── SECTION 1: Luminous Ethereal Hero (Supaste / 21st.dev Style Replica) ─── */}
       <section
@@ -772,22 +775,22 @@ export const GitGlowHomePage: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
 
         {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
-        <section id="catalog" className="scroll-mt-24 mb-20 text-left w-full">
-          {/* Gentle Header */}
+        <section id="catalog" className="scroll-mt-24 mb-20 text-left w-full select-none">
+          {/* Gentle Header with Home-Page Theme */}
           <div className="text-center space-y-2 mb-8">
-            <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
-              Achievement studio
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
+              ACHIEVEMENT STUDIO
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
               Explore and claim GitHub badges
             </h2>
-            <p className="text-xs sm:text-sm text-[#8b949e] max-w-lg mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#424754] max-w-lg mx-auto font-medium leading-relaxed">
               Select any official medallion to inspect its server requirements, tier multipliers, and copy verified Git recipes.
             </p>
           </div>
 
           {/* Muted Filter Tabs */}
-          <div className="flex items-center justify-center gap-1.5 p-1 rounded-xl bg-[#161b22] border border-[#30363d] w-fit mx-auto mb-6 flex-wrap">
+          <div className="flex items-center justify-center gap-1.5 p-1 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs w-fit mx-auto mb-6 flex-wrap">
             {[
               { id: 'starter', label: 'Starter (4)' },
               { id: 'tiers', label: 'Multi-Tier (4)' },
@@ -798,10 +801,10 @@ export const GitGlowHomePage: React.FC = () => {
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
                 className={cn(
-                  'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer select-none active:scale-95',
+                  'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none active:scale-95',
                   selectedCategory === tab.id
-                    ? 'bg-[#21262d] text-[#f0f6fc] shadow-xs border border-[#30363d]'
-                    : 'text-[#8b949e] hover:text-[#c9d1d9] border border-transparent'
+                    ? 'bg-[#0b1c30] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0b1c30] hover:bg-slate-100/70'
                 )}
               >
                 {tab.label}
@@ -818,10 +821,10 @@ export const GitGlowHomePage: React.FC = () => {
                   key={badge.id}
                   onClick={() => setSelectedBadgeId(badge.id)}
                   className={cn(
-                    'p-3 rounded-xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95',
+                    'p-3.5 rounded-2xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95',
                     isSelected
-                      ? 'bg-[#161b22] border-[#58a6ff] shadow-[0_0_15px_rgba(88,166,255,0.14)] ring-1 ring-[#58a6ff]/40'
-                      : 'bg-[#161b22]/40 border-[#30363d]/70 hover:border-[#58a6ff]/50 hover:bg-[#161b22]/70'
+                      ? 'bg-white border-[#0058be] shadow-[0_4px_20px_rgba(0,88,190,0.14)] ring-2 ring-[#0058be]/25 -translate-y-0.5'
+                      : 'bg-white border-slate-200/90 hover:border-[#0058be]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
                   )}
                 >
                   <div className="relative w-12 h-12 flex items-center justify-center">
@@ -831,23 +834,23 @@ export const GitGlowHomePage: React.FC = () => {
                       className={cn(
                         'w-10 h-10 object-contain transition-transform duration-200 select-none',
                         isSelected
-                          ? 'scale-110 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]'
-                          : 'group-hover:scale-105 opacity-85'
+                          ? 'scale-110 drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]'
+                          : 'group-hover:scale-105 opacity-90'
                       )}
                       loading="lazy"
                     />
                     {badge.tiers && badge.tiers.length > 0 && (
-                      <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117]">
+                      <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200/80 shadow-2xs">
                         x4
                       </span>
                     )}
                   </div>
                   <span
                     className={cn(
-                      'text-xs font-medium truncate w-full',
+                      'text-xs font-semibold truncate w-full',
                       isSelected
-                        ? 'text-[#f0f6fc]'
-                        : 'text-[#8b949e] group-hover:text-[#c9d1d9]'
+                        ? 'text-[#0b1c30]'
+                        : 'text-slate-600 group-hover:text-[#0b1c30]'
                     )}
                   >
                     {badge.name}
@@ -858,26 +861,26 @@ export const GitGlowHomePage: React.FC = () => {
           </div>
 
           {/* Single Unified Blueprint Card */}
-          <div className="rounded-2xl border border-[#30363d] bg-[#161b22]/50 divide-y md:divide-y-0 md:divide-x divide-[#30363d]/60 grid md:grid-cols-12 overflow-hidden shadow-sm">
+          <div className="rounded-[28px] border border-slate-200/90 bg-white divide-y md:divide-y-0 md:divide-x divide-slate-200/80 grid md:grid-cols-12 overflow-hidden shadow-sm">
             {/* Left: Badge Identity & Verification Rules (5 cols) */}
             <div className="md:col-span-5 p-6 sm:p-7 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 {/* Badge Header Bar */}
-                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#30363d]/40">
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
                       {activeBadge.category}
                     </span>
-                    <h3 className="text-lg font-semibold text-[#f0f6fc] mt-0.5">
+                    <h3 className="text-xl font-bold text-[#0b1c30] mt-0.5">
                       {activeBadge.name}
                     </h3>
                   </div>
                   <span
                     className={cn(
-                      'text-[10px] font-mono px-2 py-0.5 rounded-md font-medium shrink-0',
+                      'text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold shrink-0',
                       activeBadge.isObtainable
-                        ? 'text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40'
-                        : 'text-[#8b949e] bg-[#0d1117] border border-[#30363d]'
+                        ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/90'
+                        : 'text-slate-600 bg-slate-100 border border-slate-200'
                     )}
                   >
                     {activeBadge.difficulty}
@@ -885,8 +888,8 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
 
                 {/* 3D Showcase Pedestal */}
-                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 flex items-center gap-3.5 shadow-inner">
-                  <div className="relative w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 shadow-sm">
+                <div className="rounded-2xl border border-slate-200/90 bg-[#f8f9ff] p-4 flex items-center gap-3.5 shadow-2xs">
+                  <div className="relative w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-white border border-slate-200/90 p-1.5 shadow-sm">
                     <img
                       src={activeBadge.image}
                       alt={activeBadge.name}
@@ -894,12 +897,12 @@ export const GitGlowHomePage: React.FC = () => {
                     />
                   </div>
                   <div className="min-w-0 space-y-1">
-                    <div className="text-xs font-semibold text-[#f0f6fc] leading-snug">
+                    <div className="text-xs font-bold text-[#0b1c30] leading-snug">
                       {activeBadge.tagline}
                     </div>
-                    <div className="text-[11px] font-mono text-[#8b949e]">
+                    <div className="text-[11px] font-mono text-[#424754]">
                       Est. time:{' '}
-                      <span className="text-[#c9d1d9]">
+                      <span className="text-[#0b1c30] font-bold">
                         {activeRecipe.estimatedTime}
                       </span>
                     </div>
@@ -908,15 +911,13 @@ export const GitGlowHomePage: React.FC = () => {
 
                 {/* GitHub Verification Rule */}
                 <div className="space-y-2 pt-1">
-                  <span className="text-xs font-semibold text-[#f0f6fc] block">
+                  <span className="text-xs font-bold text-[#0b1c30] block">
                     How GitHub Verifies This:
                   </span>
-                  <ul className="space-y-1.5 text-xs text-[#8b949e] leading-relaxed">
+                  <ul className="space-y-1.5 text-xs text-[#424754] leading-relaxed">
                     {activeBadge.requirements.slice(0, 3).map((req, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-[#3fb950] font-mono text-xs mt-0.5 select-none">
-                          ✓
-                        </span>
+                        <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" />
                         <span>{req}</span>
                       </li>
                     ))}
@@ -925,18 +926,18 @@ export const GitGlowHomePage: React.FC = () => {
 
                 {/* Multi-Tier Multipliers (if available) */}
                 {activeBadge.tiers && activeBadge.tiers.length > 0 && (
-                  <div id="tiers" className="scroll-mt-28 pt-2 border-t border-[#30363d]/30">
-                    <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block mb-2">
+                  <div id="tiers" className="scroll-mt-28 pt-2 border-t border-slate-200/80">
+                    <span className="text-[11px] font-mono text-slate-500 font-bold uppercase tracking-wider block mb-2">
                       Tier Multipliers
                     </span>
                     <div className="grid grid-cols-2 gap-1.5 text-[11px] font-mono">
                       {activeBadge.tiers.map((tier) => (
                         <div
                           key={tier.level}
-                          className="px-2 py-1 rounded bg-[#0d1117] border border-[#30363d]/60 flex items-center justify-between text-[#8b949e]"
+                          className="px-2.5 py-1.5 rounded-lg bg-[#f8f9ff] border border-slate-200/90 flex items-center justify-between text-slate-600 shadow-2xs"
                         >
                           <span className="truncate">{tier.level}</span>
-                          <span className="text-[#f0f6fc] font-bold shrink-0">
+                          <span className="text-[#0b1c30] font-bold shrink-0">
                             {tier.threshold}
                           </span>
                         </div>
@@ -948,19 +949,19 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
 
             {/* Right: 3-Step Git Blueprint & Commands (7 cols) */}
-            <div id="recipes" className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#161b22]/30 flex flex-col justify-between space-y-6">
+            <div id="recipes" className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#f8fafd] flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 {/* Recipe Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
                       Blueprint recipe
                     </span>
-                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                    <h3 className="text-base font-extrabold text-[#0b1c30] mt-0.5">
                       Step-by-Step Git Commands
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-mono text-slate-600 bg-white border border-slate-200/90 px-2.5 py-0.5 rounded-full shadow-2xs font-semibold">
                     Personal Repo Safe
                   </span>
                 </div>
@@ -982,24 +983,24 @@ export const GitGlowHomePage: React.FC = () => {
                     },
                   ].map((step, idx) => (
                     <div key={idx} className="space-y-1.5">
-                      <span className="text-xs font-semibold text-[#c9d1d9] block">
+                      <span className="text-xs font-bold text-[#0b1c30] block">
                         {step.label}
                       </span>
-                      <div className="group/cmd rounded-xl border border-[#30363d]/80 bg-[#0d1117] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner">
-                        <code className="font-mono text-xs text-[#58a6ff] truncate">
+                      <div className="group/cmd rounded-xl border border-slate-800 bg-[#0b1c30] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-md">
+                        <code className="font-mono text-xs text-[#d1f34d] truncate font-semibold">
                           {step.cmd}
                         </code>
                         <button
                           onClick={() =>
                             handleCopy(step.cmd, `${activeBadge.id}-${idx}`)
                           }
-                          className="shrink-0 text-xs text-[#8b949e] hover:text-[#f0f6fc] px-2 py-1 rounded bg-[#161b22] border border-[#30363d] transition-all flex items-center gap-1 cursor-pointer select-none"
+                          className="shrink-0 text-xs text-white/80 hover:text-white px-2 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/15 transition-all flex items-center gap-1 cursor-pointer select-none"
                           title="Copy command"
                         >
                           {copiedSnippet === `${activeBadge.id}-${idx}` ? (
                             <>
-                              <Check size={12} className="text-[#3fb950]" />
-                              <span className="text-[#3fb950] text-[11px] font-mono">
+                              <Check size={12} className="text-[#d1f34d]" />
+                              <span className="text-[#d1f34d] text-[11px] font-mono font-bold">
                                 Copied
                               </span>
                             </>
@@ -1019,10 +1020,10 @@ export const GitGlowHomePage: React.FC = () => {
               </div>
 
               {/* Gotcha Callout */}
-              <div className="rounded-xl border border-[#30363d]/60 bg-[#0d1117]/60 p-3.5 flex items-start gap-2.5 text-xs text-[#8b949e] leading-relaxed">
-                <Info size={15} className="text-[#58a6ff] shrink-0 mt-0.5" />
+              <div className="rounded-xl border border-amber-200/90 bg-amber-50/80 p-3.5 flex items-start gap-2.5 text-xs text-amber-950 leading-relaxed shadow-2xs">
+                <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
                 <span>
-                  <strong className="text-[#c9d1d9]">Anti-Mistake Gotcha:</strong>{' '}
+                  <strong className="text-amber-900 font-bold">Anti-Mistake Gotcha:</strong>{' '}
                   {activeRecipe.gotchaNote || activeBadge.gotchas[0]}
                 </span>
               </div>
@@ -1031,45 +1032,44 @@ export const GitGlowHomePage: React.FC = () => {
         </section>
 
         {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
-        <section id="compare" className="scroll-mt-24 mb-20 text-left w-full">
-          {/* Gentle Header */}
+        <section id="compare" className="scroll-mt-24 mb-20 text-left w-full select-none">
+          {/* Gentle Header with Home-Page Theme */}
           <div className="text-center space-y-2 mb-8">
-            <span className="text-xs font-mono text-[#58a6ff] uppercase tracking-wider font-medium">
-              Proof over vanity
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0b1c30] bg-[#d1f34d] px-4 py-1.5 rounded-full shadow-2xs w-fit inline-block mb-3">
+              PROOF OVER VANITY
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#f0f6fc] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0b1c30] tracking-tight">
               Verified proof over vanity
             </h2>
-            <p className="text-xs sm:text-sm text-[#8b949e] max-w-lg mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#424754] max-w-lg mx-auto font-medium leading-relaxed">
               Why tech leads look for official GitHub profile medallions instead of copy-pasted README shields.
             </p>
           </div>
 
           {/* Single Unified Comparison Card */}
-          <div className="rounded-2xl border border-[#30363d] bg-[#161b22]/50 divide-y md:divide-y-0 md:divide-x divide-[#30363d]/60 grid md:grid-cols-2 overflow-hidden shadow-sm">
-            
+          <div className="rounded-[28px] border border-slate-200/90 bg-white divide-y md:divide-y-0 md:divide-x divide-slate-200/80 grid md:grid-cols-2 overflow-hidden shadow-sm">
             {/* Left Box: The Copy-Paste Illusion */}
-            <div className="p-6 sm:p-7 space-y-5 flex flex-col justify-between">
+            <div className="p-6 sm:p-7 space-y-5 bg-slate-50/50 flex flex-col justify-between">
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#8b949e] uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-slate-500 font-bold uppercase tracking-wider block">
                       Vanity metric
                     </span>
-                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                    <h3 className="text-base font-bold text-[#0b1c30] mt-0.5">
                       README Markdown Shields
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-[#8b949e] bg-[#0d1117] border border-[#30363d] px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200/90 px-2.5 py-0.5 rounded-full font-bold">
                     Unverified
                   </span>
                 </div>
 
                 {/* Clean Visual Showcase Canvas */}
-                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 sm:p-5 space-y-3 shadow-inner">
-                  <div className="text-[11px] text-[#8b949e] flex items-center justify-between border-b border-[#30363d]/40 pb-2">
-                    <span className="font-medium text-[#f0f6fc]">Static Image Shields</span>
-                    <span className="font-mono text-[10px] text-[#8b949e]">img.shields.io</span>
+                <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 space-y-3 shadow-2xs">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between border-b border-slate-200/60 pb-2">
+                    <span className="font-semibold text-[#0b1c30]">Static Image Shields</span>
+                    <span className="font-mono text-[10px] text-slate-400">img.shields.io</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center pt-1 min-h-[52px]">
                     <img
@@ -1109,51 +1109,51 @@ export const GitGlowHomePage: React.FC = () => {
                       loading="lazy"
                     />
                   </div>
-                  <div className="h-5 flex items-center text-[11px] font-mono text-[#8b949e] border-t border-[#30363d]/20 pt-2">
+                  <div className="h-5 flex items-center text-[11px] font-mono text-slate-400 border-t border-slate-100 pt-2">
                     <span>Self-reported image URLs · 0 Git webhooks</span>
                   </div>
                 </div>
               </div>
 
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#8b949e] leading-relaxed pt-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm text-[#424754] leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
-                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
+                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Can be copied and pasted in 30 seconds from online generator templates.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
+                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Proves familiarity with markdown image syntax, not real Git workflow skills.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <XCircle size={14} className="text-[#f85149] shrink-0 mt-0.5" aria-hidden="true" />
+                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Hiring managers and senior engineers scroll right past it to commit history.</span>
                 </li>
               </ul>
             </div>
 
             {/* Right Box: Official GitHub Webhook Medallions */}
-            <div className="p-6 sm:p-7 space-y-5 bg-[#161b22]/30 flex flex-col justify-between">
+            <div className="p-6 sm:p-7 space-y-5 bg-[#f8fafd] flex flex-col justify-between">
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#30363d]/40">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#58a6ff] uppercase tracking-wider block">
+                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
                       Verifiable proof
                     </span>
-                    <h3 className="text-base font-semibold text-[#f0f6fc] mt-0.5">
+                    <h3 className="text-base font-bold text-[#0b1c30] mt-0.5">
                       GitHub Profile Medallions
                     </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-[#3fb950] bg-[#238636]/15 border border-[#238636]/40 px-2 py-0.5 rounded-md font-medium flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#3fb950]"></span>
+                  <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1.5 shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     Server-Verified
                   </span>
                 </div>
 
                 {/* Clean Visual Showcase Canvas */}
-                <div className="rounded-xl border border-[#30363d]/80 bg-[#0d1117] p-4 sm:p-5 space-y-3 shadow-inner">
-                  <div className="text-[11px] text-[#8b949e] flex items-center justify-between border-b border-[#30363d]/40 pb-2">
-                    <span className="font-medium text-[#f0f6fc]">Official Profile Achievements</span>
-                    <span className="font-mono text-[10px] text-[#3fb950]">github.com/profile</span>
+                <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 space-y-3 shadow-2xs">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between border-b border-slate-200/60 pb-2">
+                    <span className="font-semibold text-[#0b1c30]">Official Profile Achievements</span>
+                    <span className="font-mono text-[10px] text-emerald-600 font-semibold">github.com/profile</span>
                   </div>
                   <div className="flex items-center gap-2.5 sm:gap-3 pt-1 min-h-[52px]">
                     {[
@@ -1193,7 +1193,7 @@ export const GitGlowHomePage: React.FC = () => {
                             inspectedMedal?.name === item.name ? null : item
                           )
                         }
-                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#161b22] border border-[#30363d] p-1.5 shadow-sm hover:border-[#58a6ff] hover:scale-105 transition-all cursor-pointer select-none"
+                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#f8f9ff] border border-slate-200/90 p-1.5 shadow-2xs hover:border-[#0058be] hover:bg-white hover:scale-105 transition-all cursor-pointer select-none"
                         title={`${item.name}${item.tier ? ` (${item.tier})` : ''}: ${item.trigger}`}
                       >
                         <img
@@ -1203,24 +1203,24 @@ export const GitGlowHomePage: React.FC = () => {
                           loading="lazy"
                         />
                         {item.tier && (
-                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#b86241] text-white px-1 rounded-full border border-[#0d1117] shadow-xs">
+                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200 shadow-2xs">
                             {item.tier}
                           </span>
                         )}
                       </div>
                     ))}
                   </div>
-                  <div className="h-5 flex items-center text-[11px] font-mono overflow-hidden border-t border-[#30363d]/20 pt-2">
+                  <div className="h-5 flex items-center text-[11px] font-mono overflow-hidden border-t border-slate-100 pt-2">
                     {inspectedMedal ? (
-                      <span className="text-[#58a6ff] truncate">
-                        <span className="font-semibold text-[#f0f6fc]">
+                      <span className="text-[#0058be] truncate">
+                        <span className="font-bold text-[#0b1c30]">
                           {inspectedMedal.name}
                           {inspectedMedal.tier ? ` ${inspectedMedal.tier}` : ''}:
                         </span>{' '}
                         {inspectedMedal.trigger}
                       </span>
                     ) : (
-                      <span className="text-[#8b949e]">
+                      <span className="text-slate-500">
                         Hover any medal to inspect verified Git trigger
                       </span>
                     )}
@@ -1228,17 +1228,17 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
               </div>
 
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#c9d1d9] leading-relaxed pt-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm text-[#0b1c30] font-medium leading-relaxed pt-2">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Awarded automatically by GitHub server webhooks on real Git events.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Stamped directly onto your public GitHub profile header next to your bio.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-[#3fb950] shrink-0 mt-0.5" aria-hidden="true" />
+                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>Proves genuine branch hygiene, co-author trailers, and PR etiquette.</span>
                 </li>
               </ul>
@@ -1250,30 +1250,37 @@ export const GitGlowHomePage: React.FC = () => {
         {/* ─── SECTION 4: Simple, Clear FAQ ─────────────────────────────────── */}
         <InteractiveFAQSection />
 
-        {/* ─── Final Direct Launch Action Ribbon ────────────────────────────── */}
-        <section className="rounded-2xl bg-[#161b22] border border-[#30363d] p-6 sm:p-8 text-center space-y-3.5 mb-8">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0d1117] border border-[#30363d] text-[#d1f34d] text-[10px] font-mono font-bold uppercase tracking-wider">
-            ⚡ 1-Click Execution
-          </span>
-          <h2 className="text-xl sm:text-2xl font-bold text-[#f0f6fc] tracking-tight">
-            Ready to Claim Your First Official GitHub Medallion?
-          </h2>
-          <p className="text-xs sm:text-sm text-[#8b949e] max-w-md mx-auto leading-relaxed">
-            Start with Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              to="/blueprints/gitglow/engine?badge=quickdraw"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#d1f34d] hover:bg-[#c2e240] text-[#0d1117] font-bold text-xs uppercase tracking-wider transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-[0_4px_20px_rgba(209,243,77,0.25)] cursor-pointer"
-            >
-              Claim Quickdraw (120s) →
-            </Link>
-            <Link
-              to="/blueprints/gitglow/engine?badge=pull-shark"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0d1117] hover:bg-[#21262d] text-[#f0f6fc] border border-[#30363d] font-bold text-xs uppercase tracking-wider transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] hover:border-[#58a6ff] cursor-pointer"
-            >
-              Claim Pull Shark 🦈
-            </Link>
+        {/* ─── Final Direct Launch Action Ribbon (Home-Page Signature Style) ─── */}
+        <section className="rounded-[32px] bg-[#0b1c30] border border-slate-800 p-8 sm:p-12 text-center space-y-4 mb-8 relative overflow-hidden shadow-2xl">
+          {/* Ambient Background Glows */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#d1f34d]/10 rounded-full filter blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0058be]/20 rounded-full filter blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#d1f34d] text-[10px] font-mono font-bold uppercase tracking-widest shadow-sm">
+              <span className="w-1.5 h-1.5 bg-[#d1f34d] rounded-full animate-ping" />
+              1-Click Execution
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              Ready to Claim Your First Official GitHub Medallion?
+            </h2>
+            <p className="text-xs sm:text-sm text-white/80 max-w-md mx-auto font-medium leading-relaxed">
+              Start with Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+              <Link
+                to="/blueprints/gitglow/engine?badge=quickdraw"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#d1f34d] hover:bg-[#c0e045] text-[#0b1c30] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-[0_8px_25px_rgba(209,243,77,0.35)] cursor-pointer"
+              >
+                Claim Quickdraw (120s) →
+              </Link>
+              <Link
+                to="/blueprints/gitglow/engine?badge=pull-shark"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
+              >
+                Claim Pull Shark 🦈
+              </Link>
+            </div>
           </div>
         </section>
 
