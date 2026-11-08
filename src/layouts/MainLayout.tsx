@@ -83,7 +83,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         </AnimatePresence>
       </main>
       
-      <Footer />
+      {!location.pathname.startsWith('/blueprints/gitglow') && <Footer />}
     </SmoothScrollProvider>
   );
 };

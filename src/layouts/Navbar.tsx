@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
+import { Menu, X, ChevronRight, ArrowRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -351,14 +351,15 @@ export const Navbar = () => {
                 </svg>
               </div>
 
-              {/* Left: GitHub Octocat Dark Squircle Icon + Brand Title + Breadcrumb */}
+              {/* Left: Custom GitGlow Logo + Brand Title + Breadcrumb */}
               <div className="flex items-center gap-2.5 shrink-0">
                 <Link
                   to="/blueprints/gitglow"
                   className="flex items-center gap-2 group cursor-pointer"
                 >
-                  <div className="w-[30px] h-[30px] rounded-[9px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/15 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105">
-                    <Github size={17} className="text-white fill-current" />
+                  <div className="w-[30px] h-[30px] rounded-[9px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/15 flex items-center justify-center relative shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105">
+                    <Github size={16} className="text-white fill-current" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#A3E635] ring-2 ring-black animate-pulse" />
                   </div>
                   <span className="text-[16px] font-bold tracking-[-0.02em] text-white">
                     GitGlow
@@ -373,47 +374,54 @@ export const Navbar = () => {
                 </Link>
               </div>
 
-              {/* Center: Desktop Nav Links (GitGlow sections) */}
+              {/* Center: Desktop Nav Links (Missions, Achievements, How It Works, Community) */}
               <div className="hidden md:flex items-center gap-5 lg:gap-7">
                 <a
-                  href="#catalog"
+                  href="#missions"
                   className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
                 >
-                  Badges
+                  Missions
                 </a>
                 <a
-                  href="#recipes"
+                  href="#achievements"
                   className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
                 >
-                  Recipes
+                  Achievements
                 </a>
                 <a
-                  href="#compare"
+                  href="#how-it-works"
                   className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
                 >
-                  Proof
+                  How It Works
                 </a>
                 <a
-                  href="#faq"
+                  href="#community"
                   className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
                 >
-                  FAQ
+                  Community
                 </a>
               </div>
 
-              {/* Right: GitGlow Action Button */}
-              <div className="flex items-center shrink-0">
+              {/* Right: Sign In + Get Started Button */}
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="hidden sm:inline-block text-[12px] font-semibold text-white/70 hover:text-white transition-colors cursor-pointer px-2"
+                >
+                  Sign In
+                </button>
                 <a
-                  href="#recipes"
+                  href="#missions"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[34px] px-3.5 rounded-full bg-white hover:bg-slate-100 text-[#0b1c30] text-[12px] font-bold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
-                  aria-label="Claim your GitHub achievement medallion"
+                  className="h-[34px] px-3.5 sm:px-4 rounded-full bg-[#A3E635] hover:bg-[#bef264] text-[#0d1117] text-[12px] font-bold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
+                  aria-label="Start your first GitHub achievement mission"
                 >
-                  <Zap size={13} className="fill-[#0b1c30] text-[#0b1c30]" />
-                  <span>Claim Medallion</span>
+                  <span>Get Started</span>
+                  <ArrowRight size={13} className="text-[#0d1117]" />
                 </a>
               </div>
             </div>
@@ -613,12 +621,14 @@ export const Navbar = () => {
                           ⚡ GitGlow Blueprint
                         </div>
                         {[
-                          { name: "Overview & Scanner", href: "#overview" },
-                          { name: "Reality Comparison", href: "#compare" },
-                          { name: "Git Pipeline", href: "#engine" },
-                          { name: "Badge Catalog", href: "#catalog" },
-                          { name: "Tiers Guide", href: "#tiers" },
-                          { name: "FAQ", href: "#faq" },
+                          { name: "Missions", href: "#missions" },
+                          { name: "Achievements Wall", href: "#achievements" },
+                          { name: "Unlock First Achievement", href: "#first-achievement" },
+                          { name: "How GitGlow Works", href: "#how-it-works" },
+                          { name: "Explore All Missions", href: "#explore-missions" },
+                          { name: "Developer Progress", href: "#progress" },
+                          { name: "Real Work Comparison", href: "#comparison" },
+                          { name: "Community & FAQ", href: "#community" },
                         ].map((item) => (
                           <a
                             key={item.name}

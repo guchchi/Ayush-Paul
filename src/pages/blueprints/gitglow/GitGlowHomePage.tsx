@@ -6,17 +6,14 @@ import {
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  Lock,
   Sparkles,
   Shield,
   Layers,
   Clock,
   ChevronDown,
-  ChevronUp,
   GitPullRequest,
   GitFork,
   Trophy,
-  Flame,
   Award,
   Zap,
   Terminal,
@@ -26,15 +23,20 @@ import {
   XCircle,
   HelpCircle,
   Play,
-  RefreshCw,
   Search,
-  AlertCircle,
   Copy,
   Info,
   SlidersHorizontal,
   Rocket,
   TrendingUp,
   Star,
+  Users,
+  Compass,
+  FileCode,
+  Flame,
+  Activity,
+  Workflow,
+  CheckCheck,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -49,312 +51,272 @@ interface BadgeRecipe {
   station2Label: string;
   station3Label: string;
   estimatedTime: string;
+  difficulty: string;
   isAutomated: boolean;
   gotchaNote: string;
+  missionContext: string;
 }
 
 const BADGE_RECIPES: Record<string, BadgeRecipe> = {
   quickdraw: {
-    station1Label: '1. Create Test Issue',
+    station1Label: '1. Create Test Issue or PR',
     command1: 'gh issue create --title "track: quickdraw audit" --body "Temp milestone"',
-    station2Label: '2. Close Under 5 Mins',
+    station2Label: '2. Close Under 300 Seconds',
     command2: 'gh issue close 1 --comment "Closed for Quickdraw achievement"',
-    station3Label: '3. Webhook Ingestion',
+    station3Label: '3. Webhook Ingestion Check',
     command3: 'gh api user/public_emails',
     estimatedTime: '120 Seconds',
+    difficulty: 'Very Easy',
     isAutomated: true,
-    gotchaNote: 'Must close within 300s of opening. Closing PRs without merging also qualifies.',
+    gotchaNote: 'Must close within 300s of opening. Closing PRs without merging also qualifies as long as it is within the 5-minute window.',
+    missionContext: 'Learn issue lifecycles and fast triage by triggering GitHub webhook timing events on personal repositories.',
   },
   'pull-shark': {
-    station1Label: '1. Switch Claim Branch',
-    command1: 'git switch -c claim/pull-shark',
-    station2Label: '2. Commit Verified Trigger',
-    command2: 'git commit --allow-empty -m "feat: claim pull shark"',
-    station3Label: '3. Auto-Merge PR',
+    station1Label: '1. Create Feature Branch',
+    command1: 'git switch -c feat/contributor-card',
+    station2Label: '2. Commit Verified Work',
+    command2: 'git commit --allow-empty -m "feat: add verified contributor card"',
+    station3Label: '3. Merge PR into Default Branch',
     command3: 'gh pr merge --auto --merge',
     estimatedTime: '5 Minutes',
+    difficulty: 'Beginner',
     isAutomated: true,
-    gotchaNote: 'PR must be merged into main branch. Merged PRs qualify for Bronze (16) and Silver (128) multipliers.',
+    gotchaNote: 'PR must be merged into the default branch (main). Merged PRs count toward multi-tier multipliers (x2, x16, x128).',
+    missionContext: 'Master feature branch workflows, commit discipline, and pull request merging on real GitHub repos.',
   },
   yolo: {
-    station1Label: '1. Create YOLO Branch',
-    command1: 'git switch -c claim/yolo',
-    station2Label: '2. Direct Commit',
-    command2: 'git commit --allow-empty -m "feat: direct merge without review"',
-    station3Label: '3. Merge Without Review',
+    station1Label: '1. Create Production Branch',
+    command1: 'git switch -c yolo/direct-push',
+    station2Label: '2. Direct Work Commit',
+    command2: 'git commit --allow-empty -m "fix: emergency patch direct merge"',
+    station3Label: '3. Merge Without Pull Review',
     command3: 'gh pr merge --admin --merge',
     estimatedTime: '3 Minutes',
+    difficulty: 'Intermediate',
     isAutomated: true,
-    gotchaNote: 'Requires merging directly without any reviewer approval requested or submitted.',
+    gotchaNote: 'Requires merging directly without any reviewer approval requested or submitted on a multi-contributor repo.',
+    missionContext: 'Understand branch protection rules, code review workflows, and emergency bypass mechanics.',
   },
   'pair-extraordinaire': {
-    station1Label: '1. Co-Authored Commit',
-    command1: 'git commit -m "feat: pair programming\n\nCo-authored-by: gitglow-bot <bot@gitglow.dev>"',
-    station2Label: '2. Push With Trailer',
-    command2: 'git push origin claim/pair-extraordinaire',
-    station3Label: '3. Merge Co-Authored PR',
+    station1Label: '1. Co-Authored Git Trailer',
+    command1: 'git commit -m "feat: pair programming sprint\n\nCo-authored-by: partner <peer@github.com>"',
+    station2Label: '2. Push Trailer Commit',
+    command2: 'git push origin feat/pair-session',
+    station3Label: '3. Merge Co-Authored Pull Request',
     command3: 'gh pr merge --auto --merge',
     estimatedTime: '8 Minutes',
+    difficulty: 'Intermediate',
     isAutomated: true,
-    gotchaNote: 'Trailer syntax must have exact blank line before "Co-authored-by:" and valid email format.',
+    gotchaNote: 'Trailer syntax requires a blank line directly before "Co-authored-by:" and a valid GitHub email format.',
+    missionContext: 'Practice professional open-source collaboration using RFC-standard Git commit trailer headers.',
   },
   'galaxy-brain': {
-    station1Label: '1. Find Open Discussion',
+    station1Label: '1. Locate Open Discussion',
     command1: 'gh browse https://github.com/orgs/community/discussions',
     station2Label: '2. Post Helpful Solution',
     command2: 'gh api graphql -f query="mutation { addDiscussionComment(...) }"',
-    station3Label: '3. Mark Accepted Answer',
+    station3Label: '3. Answer Accepted by Author',
     command3: 'gh api graphql -f query="mutation { markDiscussionCommentAsAnswer(...) }"',
     estimatedTime: '15 Minutes',
+    difficulty: 'Intermediate',
     isAutomated: false,
-    gotchaNote: 'Requires an accepted answer in a repository with GitHub Discussions enabled.',
+    gotchaNote: 'Requires an accepted answer in a public repository with GitHub Discussions officially enabled.',
+    missionContext: 'Build technical communication skills by debugging community questions and earning community answers.',
   },
   starstruck: {
-    station1Label: '1. Showcase Repository',
+    station1Label: '1. Showcase Repository Topics',
     command1: 'gh repo edit --add-topic "gitglow-showcase" --add-topic "developer-portfolio"',
-    station2Label: '2. Share Milestone',
+    station2Label: '2. Share Milestone Link',
     command2: 'gh repo view --web',
-    station3Label: '3. Reach 16 Stars',
+    station3Label: '3. Reach 16 Community Stars',
     command3: 'gh api repos/{owner}/{repo} --jq .stargazers_count',
     estimatedTime: 'Community Milestone',
+    difficulty: 'Milestone',
     isAutomated: false,
-    gotchaNote: 'Stars from bot accounts or spam clusters can be pruned by GitHub fraud detectors.',
-  },
-  'public-sponsor': {
-    station1Label: '1. Select Maintainer',
-    command1: 'gh browse https://github.com/sponsors/guchchi',
-    station2Label: '2. Set Sponsorship Tier',
-    command2: 'gh api user/sponsorships_as_sponsor',
-    station3Label: '3. Webhook Trigger',
-    command3: 'gh api user/public_sponsorships',
-    estimatedTime: '2 Minutes',
-    isAutomated: false,
-    gotchaNote: 'Requires a valid GitHub Sponsors transaction ($1 minimum). Badge appears within 10 minutes.',
-  },
-  'heart-on-your-sleeve': {
-    station1Label: '1. Target Active PR',
-    command1: 'gh pr view 1 --web',
-    station2Label: '2. Add Heart Reaction',
-    command2: 'gh api repos/{owner}/{repo}/issues/{number}/reactions -f content="heart"',
-    station3Label: '3. Beta Sync',
-    command3: 'gh api user --jq .login',
-    estimatedTime: '1 Minute',
-    isAutomated: true,
-    gotchaNote: 'Currently rolling out in select GitHub testing clusters; badge activates once enabled on your shard.',
-  },
-  'open-sourcerer': {
-    station1Label: '1. Cross-Repo PRs',
-    command1: 'gh pr list --state merged --author @me',
-    station2Label: '2. Verify Public Repos',
-    command2: 'gh search prs --author @me --merged',
-    station3Label: '3. Activation Check',
-    command3: 'gh api user/achievements',
-    estimatedTime: 'Multi-Repo Milestone',
-    isAutomated: false,
-    gotchaNote: 'Testing badge awarded for merging PRs across distinct public organizations.',
-  },
-  'arctic-code-vault': {
-    station1Label: '1. Historic Snapshot',
-    command1: '# Archived on Feb 2, 2020 at Svalbard World Archive',
-    station2Label: '2. Archive Status',
-    command2: '# Permanently closed for new accounts',
-    station3Label: '3. Read-Only Milestone',
-    command3: '# Preserved for 1,000 years in arctic permafrost',
-    estimatedTime: 'Historic (Archived)',
-    isAutomated: false,
-    gotchaNote: 'Cannot be earned by new GitHub accounts. Preserved as a historical milestone.',
+    gotchaNote: 'Stars from bot clusters can be pruned by GitHub security. Earn genuine stars through open-source sharing.',
+    missionContext: 'Launch an open-source tool, document your README, and attract genuine developer stars.',
   },
 };
 
-// ─── Badge Themes Definition ─────────────────────────────────────────────────
-const BADGE_THEMES: Record<
-  string,
-  {
-    pedestalBorder: string;
-    glow: string;
-    accentHex: string;
-  }
-> = {
-  quickdraw: {
-    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
-    accentHex: '#f59e0b',
-  },
-  'pull-shark': {
-    pedestalBorder: 'border-cyan-500/40 group-hover:border-cyan-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]',
-    accentHex: '#06b6d4',
-  },
-  yolo: {
-    pedestalBorder: 'border-rose-500/40 group-hover:border-rose-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]',
-    accentHex: '#f43f5e',
-  },
-  'pair-extraordinaire': {
-    pedestalBorder: 'border-purple-500/40 group-hover:border-purple-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]',
-    accentHex: '#a855f7',
-  },
-  'galaxy-brain': {
-    pedestalBorder: 'border-indigo-500/40 group-hover:border-indigo-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(99,102,241,0.2)]',
-    accentHex: '#6366f1',
-  },
-  starstruck: {
-    pedestalBorder: 'border-amber-500/40 group-hover:border-amber-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
-    accentHex: '#eab308',
-  },
-  'public-sponsor': {
-    pedestalBorder: 'border-emerald-500/40 group-hover:border-emerald-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]',
-    accentHex: '#10b981',
-  },
-  'heart-on-your-sleeve': {
-    pedestalBorder: 'border-pink-500/40 group-hover:border-pink-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]',
-    accentHex: '#ec4899',
-  },
-  'open-sourcerer': {
-    pedestalBorder: 'border-teal-500/40 group-hover:border-teal-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(20,184,166,0.2)]',
-    accentHex: '#14b8a6',
-  },
-  'arctic-code-vault': {
-    pedestalBorder: 'border-sky-500/40 group-hover:border-sky-400',
-    glow: 'group-hover:shadow-[0_0_20px_rgba(56,189,248,0.2)]',
-    accentHex: '#38bdf8',
-  },
-};
-
-// ─── Interactive FAQ Component ──────────────────────────────────────────────
-interface FAQData {
+// ─── Guided Mission Catalog Definition ────────────────────────────────────────
+interface GuidedMission {
   id: string;
-  q: string;
-  a: string;
+  title: string;
+  category: 'Fundamentals' | 'Pull Requests' | 'Open Source' | 'Collaboration' | 'Automation';
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estimatedTime: string;
+  skillPracticed: string;
+  targetBadgeName: string;
+  targetBadgeImage: string;
+  summary: string;
+  completionRate: string;
 }
 
-const InteractiveFAQSection: React.FC = () => {
-  const [openId, setOpenId] = useState<string | null>('ban-risk');
+const GUIDED_MISSIONS: GuidedMission[] = [
+  {
+    id: 'm1-quickdraw',
+    title: 'The 120-Second Quickdraw',
+    category: 'Fundamentals',
+    difficulty: 'Beginner',
+    estimatedTime: '2 Mins',
+    skillPracticed: 'Issue lifecycles & fast triage automation',
+    targetBadgeName: 'Quickdraw',
+    targetBadgeImage: '/images/badges/quickdraw.png',
+    summary: 'Open a tracking issue and close it under 5 minutes to trigger the GitHub Quickdraw webhook.',
+    completionRate: '98% Success Rate',
+  },
+  {
+    id: 'm2-pull-shark',
+    title: 'First Pull Request Merge',
+    category: 'Pull Requests',
+    difficulty: 'Beginner',
+    estimatedTime: '5 Mins',
+    skillPracticed: 'Feature branching, commit staging & PR merges',
+    targetBadgeName: 'Pull Shark',
+    targetBadgeImage: '/images/badges/pull-shark.png',
+    summary: 'Create a feature branch, author a verified commit, open a PR, and merge into default main.',
+    completionRate: '94% Success Rate',
+  },
+  {
+    id: 'm3-pair-collab',
+    title: 'The Co-Authoring Handshake',
+    category: 'Collaboration',
+    difficulty: 'Intermediate',
+    estimatedTime: '8 Mins',
+    skillPracticed: 'Git trailer RFC standards & multi-author commits',
+    targetBadgeName: 'Pair Extraordinaire',
+    targetBadgeImage: '/images/badges/pair-extraordinaire.png',
+    summary: 'Add a co-author trailer to your commit so GitHub attributes the contribution to both developers.',
+    completionRate: '89% Success Rate',
+  },
+  {
+    id: 'm4-yolo-merge',
+    title: 'Direct Production Merge (YOLO)',
+    category: 'Fundamentals',
+    difficulty: 'Intermediate',
+    estimatedTime: '3 Mins',
+    skillPracticed: 'Branch permissions & administrative merges',
+    targetBadgeName: 'YOLO',
+    targetBadgeImage: '/images/badges/yolo.png',
+    summary: 'Merge a pull request directly without code review on a repository with multiple collaborators.',
+    completionRate: '91% Success Rate',
+  },
+  {
+    id: 'm5-discussion-solver',
+    title: 'Discussion Problem Solver',
+    category: 'Open Source',
+    difficulty: 'Intermediate',
+    estimatedTime: '15 Mins',
+    skillPracticed: 'Technical troubleshooting & accepted answers',
+    targetBadgeName: 'Galaxy Brain',
+    targetBadgeImage: '/images/badges/galaxy-brain.png',
+    summary: 'Answer a developer question in GitHub Discussions and have your solution accepted by the author.',
+    completionRate: '78% Success Rate',
+  },
+  {
+    id: 'm6-open-source',
+    title: 'Open Source Contributor Launchpad',
+    category: 'Open Source',
+    difficulty: 'Advanced',
+    estimatedTime: '25 Mins',
+    skillPracticed: 'Upstream remotes, fork synchronization & PR etiquette',
+    targetBadgeName: 'Open Sourcerer',
+    targetBadgeImage: '/images/badges/open-sourcerer.png',
+    summary: 'Fork a public repository, synchronize remotes, squash commits, and land a merged pull request.',
+    completionRate: '82% Success Rate',
+  },
+];
 
-  const faqs: FAQData[] = [
-    {
-      id: 'ban-risk',
-      q: 'Could my GitHub account get banned?',
-      a: 'No. GitGlow never uses automated bots, scrapers, or tokens. It simply guides you through standard Git commands you run yourself on your own repositories. GitHub awards badges based on native Git webhooks, exactly like everyday commits.',
-    },
-    {
-      id: 'solo-claims',
-      q: 'Can I earn badges completely solo?',
-      a: 'Yes, 100%. You do not need a team, collaborators, or open-source stars. Badges like Quickdraw, Pull Shark, and Pair Extraordinaire can all be unlocked on personal scratchpad repositories in just a few minutes.',
-    },
-    {
-      id: 'troubleshoot',
-      q: "Why didn't my badge appear after merging a PR?",
-      a: 'Two common reasons: first, you must merge into your repository’s default branch (main or master). Second, GitHub processes achievements in an asynchronous background queue, so medallions usually take 10 to 30 minutes to appear on your profile.',
-    },
-    {
-      id: 'private-repos',
-      q: 'Do private repositories count?',
-      a: 'Yes. Private student coursework and university assignments count toward achievements without exposing your code. You only need to check "Include private contributions on my profile" in your GitHub profile settings.',
-    },
-    {
-      id: 'tiers',
-      q: 'How do tier multipliers work?',
-      a: 'Certain badges like Pull Shark and Pair Extraordinaire level up as your activity increases: Base (2 PRs), Bronze (16 PRs), Silver (128 PRs), and Gold (1,024 PRs). GitGlow guides you through the fastest path to each milestone.',
-    },
-  ];
+// ─── 3D Hero Graphic Helpers ──────────────────────────────────────────────────
+const SparkleStar: React.FC<{ className?: string; size?: number }> = ({ className, size = 16 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="#2da44e"
+    className={cn('text-[#2da44e]', className)}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
+  </svg>
+);
 
-  return (
-    <section id="faq" className="scroll-mt-24 max-w-3xl mx-auto mb-20 text-left w-full">
-      {/* Harmonized Header */}
-      <div className="text-center space-y-2 mb-8 select-none">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
-          <span>Frequently Asked Questions</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
-          Frequently asked questions
-        </h2>
-        <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
-          Quick, clear answers to common questions about claiming verified GitHub profile badges.
-        </p>
-      </div>
+const HexBadge: React.FC<{
+  icon: 'git' | 'star';
+  className?: string;
+  size?: number;
+}> = ({ icon, className, size = 52 }) => (
+  <div className={cn('relative select-none pointer-events-none', className)}>
+    <svg
+      width={size}
+      height={size * 1.15}
+      viewBox="0 0 60 70"
+      fill="none"
+      className="filter drop-shadow-[0_8px_16px_rgba(45,164,78,0.35)]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <polygon
+        points="30,4 56,19 56,51 30,66 4,51 4,19"
+        fill="#1a7f37"
+      />
+      <polygon
+        points="30,2 54,16 54,46 30,60 6,46 6,16"
+        fill="url(#hexGreenGrad)"
+      />
+      <polygon
+        points="30,5 51,17 51,44 30,57 9,44 9,17"
+        fill="none"
+        stroke="#4ac26b"
+        strokeWidth="1.5"
+        opacity="0.85"
+      />
+      <defs>
+        <linearGradient id="hexGreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#3fb950" />
+          <stop offset="100%" stopColor="#238636" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <div className="absolute inset-0 flex items-center justify-center -translate-y-1 text-white">
+      {icon === 'git' ? (
+        <GitFork size={18} className="text-white stroke-[2.5]" />
+      ) : (
+        <Star size={16} className="text-white fill-white" />
+      )}
+    </div>
+  </div>
+);
 
-      {/* Clean Minimalist Accordion */}
-      <div className="divide-y divide-slate-200/90 rounded-[24px] border border-slate-200/90 bg-white shadow-sm overflow-hidden">
-        {faqs.map((faq) => {
-          const isOpen = openId === faq.id;
-          return (
-            <div key={faq.id} className="transition-colors">
-              <button
-                type="button"
-                onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="w-full px-6 py-5 sm:py-5.5 flex items-center justify-between text-left cursor-pointer group gap-4 transition-colors hover:bg-[#f8f9ff]"
-                aria-expanded={isOpen}
-              >
-                <span className="text-base sm:text-[17px] font-bold text-[#0b1c30] tracking-[-0.015em] group-hover:text-[#1a7f37] transition-colors">
-                  {faq.q}
-                </span>
-                <ChevronDown
-                  size={18}
-                  className={cn(
-                    'text-slate-400 shrink-0 transition-transform duration-200',
-                    isOpen && 'rotate-180 text-[#1a7f37]',
-                  )}
-                />
-              </button>
+const OctocatSilhouette: React.FC<{ className?: string }> = ({ className }) => (
+  <svg
+    viewBox="0 0 200 200"
+    className={cn('w-28 h-28 sm:w-36 sm:h-36 fill-white', className)}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M 110 46 C 103 46 96 48 92 50 C 88 41 83 32 78 26 C 76 36 72 45 68 53 C 60 62 58 70 58 76 C 58 87 70 94 82 97 C 81 106 80 114 79 122 C 70 124 60 126 52 118 C 46 112 47 104 52 100 C 50 98 44 102 41 109 C 36 119 39 130 47 138 C 55 146 68 147 78 142 L 80 162 C 80 165 82 166 85 166 L 97 166 C 100 166 102 164 102 161 L 104 144 C 108 144 116 144 120 144 L 122 161 C 122 164 124 166 127 166 L 139 166 C 142 166 144 165 144 162 L 144 130 C 145 116 142 104 138 97 C 150 94 162 87 162 76 C 162 70 160 62 152 53 C 148 45 144 36 142 26 C 137 32 132 41 128 50 C 124 48 117 46 110 46 Z" />
+  </svg>
+);
 
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-6 pb-6 pt-1 text-sm sm:text-[15px] text-[#424754] font-normal leading-relaxed">
-                      {faq.a}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
+const HERO_BADGE_PREVIEWS: Record<
+  string,
+  { line1: string; line2: string; icon: 'trophy' | 'timer' | 'zap' | 'brain' | 'users' | 'star' }
+> = {
+  'pull-shark': { line1: 'Pull Request', line2: 'Merged', icon: 'trophy' },
+  quickdraw: { line1: 'Issue Closed', line2: '< 300 Seconds', icon: 'timer' },
+  yolo: { line1: 'Direct Push', line2: 'Merged YOLO', icon: 'zap' },
+  'galaxy-brain': { line1: 'Discussion Answer', line2: 'Accepted', icon: 'brain' },
+  'pair-extraordinaire': { line1: 'Co-Authored Commit', line2: 'Merged PR', icon: 'users' },
+  starstruck: { line1: 'Community Stars', line2: '16 Reached', icon: 'star' },
 };
 
-// ─── Scanned Profile Model ───────────────────────────────────────────────────
-interface ScannedProfileData {
-  login: string;
-  name: string;
-  avatar_url: string;
-  bio: string;
-  public_repos: number;
-  followers: number;
-  created_at: string;
-  isSimulated?: boolean;
-  statusType?: 'verified' | 'fallback' | 'rate-limit';
-  statusMessage?: string;
-}
-
-// ─── Main GitGlow Page ────────────────────────────────────────────────────────
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
-  const [selectedCategory, setSelectedCategory] = useState<string>('starter');
+  const [heroActiveBadgeId, setHeroActiveBadgeId] = useState<string>('pull-shark');
+  const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
+  const [missionCategoryFilter, setMissionCategoryFilter] = useState<string>('all');
   const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
-  const [githubInput, setGithubInput] = useState<string>('');
-  const [isScanning, setIsScanning] = useState<boolean>(false);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
-  const [inspectedMedal, setInspectedMedal] = useState<{
-    name: string;
-    tier?: string;
-    trigger: string;
-  } | null>(null);
+  const [activeFaqId, setActiveFaqId] = useState<number | null>(null);
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -362,94 +324,11 @@ export const GitGlowHomePage: React.FC = () => {
     setTimeout(() => setCopiedSnippet(null), 2000);
   };
 
-  const [scannedUser, setScannedUser] = useState<ScannedProfileData | null>(null);
-
-  const cleanGitHubInput = (input: string): string => {
-    let cleaned = input.trim();
-    cleaned = cleaned.replace(/^https?:\/\//i, '');
-    cleaned = cleaned.replace(/^www\./i, '');
-    cleaned = cleaned.replace(/^github\.com\//i, '');
-    cleaned = cleaned.replace(/^@/, '');
-    cleaned = cleaned.split('/')[0].split('?')[0].split('#')[0];
-    return cleaned.trim();
-  };
-
-  const handleScan = async (targetUsername?: string) => {
-    const raw = targetUsername || githubInput;
-    const username = cleanGitHubInput(raw);
-    if (!username) return;
-
-    setIsScanning(true);
-
-    try {
-      const res = await fetch(`https://api.github.com/users/${username}`);
-      if (res.ok) {
-        const data = await res.json();
-        setScannedUser({
-          login: data.login,
-          name: data.name || data.login,
-          avatar_url: data.avatar_url,
-          bio: data.bio || 'Public GitHub Developer',
-          public_repos: data.public_repos || 0,
-          followers: data.followers || 0,
-          created_at: data.created_at,
-          isSimulated: false,
-          statusType: 'verified',
-          statusMessage: 'Public Profile Verified',
-        });
-      } else if (res.status === 404) {
-        setScannedUser({
-          login: username,
-          name: username.charAt(0).toUpperCase() + username.slice(1),
-          avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
-          bio: 'Public GitHub Developer',
-          public_repos: 4,
-          followers: 8,
-          created_at: '2023-01-01T00:00:00Z',
-          isSimulated: true,
-          statusType: 'fallback',
-          statusMessage: 'User not found on GitHub · Sandbox preview',
-        });
-      } else {
-        setScannedUser({
-          login: username,
-          name: username.charAt(0).toUpperCase() + username.slice(1),
-          avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
-          bio: 'Public GitHub Developer',
-          public_repos: 6,
-          followers: 12,
-          created_at: '2023-01-01T00:00:00Z',
-          isSimulated: true,
-          statusType: 'rate-limit',
-          statusMessage: 'GitHub API limit reached · Sandbox preview',
-        });
-      }
-    } catch {
-      setScannedUser({
-        login: username,
-        name: username.charAt(0).toUpperCase() + username.slice(1),
-        avatar_url: `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`,
-        bio: 'Public GitHub Developer',
-        public_repos: 6,
-        followers: 12,
-        created_at: '2023-01-01T00:00:00Z',
-        isSimulated: true,
-        statusType: 'fallback',
-        statusMessage: 'Offline mode · Sandbox preview',
-      });
-    } finally {
-      setTimeout(() => {
-        setIsScanning(false);
-      }, 350);
-    }
-  };
-
   const filteredBadges = useMemo(() => {
     let list = GITHUB_BADGES;
-    if (selectedCategory === 'starter') list = list.filter((b) => b.isRecommendedStarter);
-    else if (selectedCategory === 'obtainable') list = list.filter((b) => b.isObtainable);
-    else if (selectedCategory === 'tiers') list = list.filter((b) => b.tiers && b.tiers.length > 0);
-    else if (selectedCategory === 'legacy') list = list.filter((b) => !b.isObtainable);
+    if (badgeCategoryFilter === 'starter') list = list.filter((b) => b.isRecommendedStarter);
+    else if (badgeCategoryFilter === 'tiers') list = list.filter((b) => b.tiers && b.tiers.length > 0);
+    else if (badgeCategoryFilter === 'legacy') list = list.filter((b) => !b.isObtainable);
 
     if (badgeSearchQuery.trim()) {
       const q = badgeSearchQuery.toLowerCase().trim();
@@ -461,7 +340,7 @@ export const GitGlowHomePage: React.FC = () => {
       );
     }
     return list;
-  }, [selectedCategory, badgeSearchQuery]);
+  }, [badgeCategoryFilter, badgeSearchQuery]);
 
   const activeBadge = useMemo(() => {
     return GITHUB_BADGES.find((b) => b.id === selectedBadgeId) || GITHUB_BADGES[0];
@@ -470,15 +349,17 @@ export const GitGlowHomePage: React.FC = () => {
   const activeRecipe = useMemo(() => {
     return (
       BADGE_RECIPES[activeBadge.id] || {
-        station1Label: '1. Switch Branch',
-        command1: `git switch -c claim/${activeBadge.id}`,
+        station1Label: '1. Switch Feature Branch',
+        command1: `git switch -c feat/claim-${activeBadge.id}`,
         station2Label: '2. Generate Commit',
-        command2: `git commit -m "feat: claim ${activeBadge.name}"`,
-        station3Label: '3. Merge PR',
+        command2: `git commit -m "feat: complete ${activeBadge.name} mission"`,
+        station3Label: '3. Merge Pull Request',
         command3: 'gh pr merge --auto --merge',
         estimatedTime: '5 Minutes',
+        difficulty: 'Beginner',
         isAutomated: true,
-        gotchaNote: activeBadge.gotchas[0] || 'Follow standard Git branch conventions.',
+        gotchaNote: activeBadge.gotchas[0] || 'Follow standard GitHub branching and pull request guidelines.',
+        missionContext: 'Complete real GitHub activity to trigger the official achievement webhook.',
       }
     );
   }, [activeBadge]);
@@ -487,25 +368,59 @@ export const GitGlowHomePage: React.FC = () => {
     return `${activeRecipe.command1}\n${activeRecipe.command2}\n${activeRecipe.command3}`;
   }, [activeRecipe]);
 
-  return (
-    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
+  const filteredMissions = useMemo(() => {
+    if (missionCategoryFilter === 'all') return GUIDED_MISSIONS;
+    return GUIDED_MISSIONS.filter(
+      (m) => m.category.toLowerCase().replace(/\s+/g, '-') === missionCategoryFilter
+    );
+  }, [missionCategoryFilter]);
 
-      {/* ─── SECTION 1: Luminous Ethereal Hero (Home-Page Refined Theme) ─── */}
+  const faqs = [
+    {
+      id: 1,
+      q: 'Does GitGlow give me official GitHub badges directly?',
+      a: 'No. GitHub directly controls and awards all official profile achievements. GitGlow provides guided missions, step-by-step Git recipes, and verified contribution workflows that help you complete the exact real-world tasks GitHub requires to award them.',
+    },
+    {
+      id: 2,
+      q: 'Will these achievements show up on my real GitHub profile?',
+      a: 'Yes, 100%. Because you execute real Git operations (merging PRs, co-authoring commits, closing issues within 5 minutes) on real GitHub repositories, GitHub server webhooks automatically trigger and display the official badge on your profile.',
+    },
+    {
+      id: 3,
+      q: 'Do I need prior open-source experience to begin?',
+      a: 'Not at all. GitGlow was built specifically for students and beginners. Missions start with 120-second starter challenges (like Quickdraw) before advancing to multi-tier pull request workflows and open-source contributions.',
+    },
+    {
+      id: 4,
+      q: 'Is GitGlow safe to use with my personal GitHub account?',
+      a: 'Yes. All recipes follow standard GitHub CLI and Git conventions. Missions are executed in your own test repositories or verified sandbox environments. No passwords or tokens are stored.',
+    },
+    {
+      id: 5,
+      q: 'How long does GitHub take to display a badge after completing a mission?',
+      a: 'GitHub background indexing runs in periodic batches. In most cases, achievements appear on your public profile within 10 to 30 minutes after your pull request or issue event is closed and indexed.',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
+
+      {/* ─── SECTION 01: HERO (Highest Priority WOW Section) ──────────────── */}
       <section
         id="hero"
-        className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#f8f9ff] text-[#0b1c30] overflow-hidden border-b border-slate-200/80"
+        className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#FFFFFF] text-[#161B22] overflow-hidden border-b border-[#D0D7DE]"
       >
-        {/* Clean Architectural Grid Overlay (No Color Fog / Blur) */}
+        {/* Clean Architectural Grid Overlay (No Fog / No Fuzzy Blobs) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 overflow-hidden"
         >
-          {/* Delicate Architectural Grid Overlay */}
           <div
             className="absolute inset-0 opacity-[0.22]"
             style={{
               backgroundImage:
-                'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)',
+                'linear-gradient(#E1E4E8 1px, transparent 1px), linear-gradient(90deg, #E1E4E8 1px, transparent 1px)',
               backgroundSize: '48px 48px',
               maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
               WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
@@ -514,21 +429,21 @@ export const GitGlowHomePage: React.FC = () => {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Subtle Blueprints directory breadcrumb */}
+          {/* Blueprints directory breadcrumb */}
           <div className="mb-6 sm:mb-8">
             <Link
               to="/blueprints"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-[#0b1c30] transition-colors px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs select-none group"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-[#656D76] hover:text-[#161B22] transition-colors px-3 py-1 rounded-full bg-[#F6F8FA] border border-[#D0D7DE] shadow-2xs select-none group"
             >
               <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
               <span>All Blueprints</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* ── LEFT: Copy & CTAs (7 cols) ── */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              {/* Eyebrow Pill with Authentic GitHub Contribution Green Vibe */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            {/* ── LEFT: Copy & CTAs (6 cols) ── */}
+            <div className="lg:col-span-6 xl:col-span-6 space-y-6 text-left">
+              {/* Eyebrow Pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -536,63 +451,33 @@ export const GitGlowHomePage: React.FC = () => {
               >
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
                   <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
-                  <span>Level Up Your GitHub Profile</span>
+                  <span>Guided Missions · Real GitHub Achievements</span>
                 </div>
               </motion.div>
 
-              {/* Bold Headline with GitHub Contribution Green Gradient */}
+              {/* Bold Headline */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
               >
-                <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[76px] font-extrabold text-[#0b1c30] tracking-[-0.038em] leading-[1.05]">
-                  Earn real GitHub <br />
-                  achievements. <br />
-                  <span className="relative inline-block bg-gradient-to-r from-[#1a7f37] via-[#2da44e] to-[#40c463] bg-clip-text text-transparent">
-                    By doing the work.
-                    {/* Decorative GitHub Git-branch contribution line accent */}
-                    <svg
-                      viewBox="0 0 280 16"
-                      fill="none"
-                      className="absolute -bottom-2 left-0 w-full h-[10px] pointer-events-none"
-                    >
-                      <path
-                        d="M 4 10 C 60 4, 180 5, 274 8"
-                        stroke="url(#githubUnderlineGrad)"
-                        strokeWidth="3.2"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M 18 14 C 75 9, 160 10, 235 13"
-                        stroke="#40c463"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        opacity="0.6"
-                      />
-                      <defs>
-                        <linearGradient id="githubUnderlineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#1a7f37" />
-                          <stop offset="50%" stopColor="#2da44e" />
-                          <stop offset="100%" stopColor="#40c463" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </span>
+                <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[74px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.05]">
+                  Your GitHub profile is <br />
+                  <span className="text-[#2da44e]">about to get interesting.</span>
                 </h1>
               </motion.div>
 
-              {/* Description Body */}
+              {/* Supporting Copy */}
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[#424754] text-base sm:text-lg lg:text-[19px] leading-relaxed max-w-[490px] font-medium"
+                className="text-[#656D76] text-base sm:text-lg lg:text-[19px] leading-relaxed max-w-[530px] font-medium"
               >
-                Complete guided missions, make meaningful contributions, and build a profile that truly stands out.
+                Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
               </motion.p>
 
-              {/* Action Buttons with Home-Page Theme */}
+              {/* Action Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -600,519 +485,498 @@ export const GitGlowHomePage: React.FC = () => {
                 className="flex items-center flex-wrap gap-4 pt-1"
               >
                 <a
-                  href="#recipes"
+                  href="#achievements"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[52px] px-8 rounded-full bg-[#0b1c30] hover:bg-[#15273e] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0969da] group cursor-pointer"
-                  aria-label="Explore interactive GitHub achievement missions"
+                  className="h-[52px] px-8 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2da44e] group cursor-pointer select-none"
+                  aria-label="Explore authentic GitHub achievement badges"
                 >
-                  <span>Explore Missions</span>
+                  <span>Explore Achievements</span>
                   <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
                 </a>
 
                 <a
-                  href="#recipe-terminal"
+                  href="#missions"
                   onClick={(e) => {
                     e.preventDefault();
-                    const el = document.getElementById('recipe-terminal');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth' });
-                      el.classList.add('ring-4', 'ring-[#2da44e]', 'shadow-xl');
-                      setTimeout(() => el.classList.remove('ring-4', 'ring-[#2da44e]', 'shadow-xl'), 2500);
-                    } else {
-                      document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0969da] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0969da] rounded-full"
-                  aria-label="Learn how GitGlow works and view step-by-step commands"
+                  className="h-[52px] px-8 rounded-full bg-white hover:bg-slate-50 text-[#161B22] border border-[#D0D7DE] text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2da44e] cursor-pointer select-none"
+                  aria-label="Start your first guided GitHub mission"
                 >
-                  <span className="w-11 h-11 rounded-full bg-white group-hover:bg-slate-50 border border-slate-200 shadow-2xs flex items-center justify-center transition-all group-hover:scale-105 group-hover:border-slate-300">
-                    <Play size={13} className="text-[#0b1c30] fill-[#0b1c30] ml-0.5" />
-                  </span>
-                  <span>How it works</span>
+                  <Play size={13} className="text-[#2da44e] fill-[#2da44e]" />
+                  <span>Start Your First Mission</span>
                 </a>
               </motion.div>
 
-              {/* Compact Feature Row with GitHub Light Vibe */}
+              {/* Compact Value Row */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-slate-200/80 text-xs sm:text-[13px] font-semibold text-[#424754]"
+                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-semibold text-[#656D76]"
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
-                  <Rocket size={15} className="text-[#0b1c30]" />
-                  <span>Real Missions</span>
+                  <CheckCircle2 size={15} className="text-[#2da44e]" />
+                  <span>Guided Missions</span>
                 </div>
-                <span className="text-slate-300">|</span>
+                <div className="hidden sm:block text-slate-300">|</div>
                 <div className="flex items-center gap-2">
-                  <Award size={15} className="text-[#0b1c30]" />
+                  <GitPullRequest size={15} className="text-[#2da44e]" />
+                  <span>Real Pull Requests</span>
+                </div>
+                <div className="hidden sm:block text-slate-300">|</div>
+                <div className="flex items-center gap-2">
+                  <Award size={15} className="text-[#2da44e]" />
                   <span>Verified Badges</span>
                 </div>
-                <span className="text-slate-300">|</span>
+                <div className="hidden sm:block text-slate-300">|</div>
                 <div className="flex items-center gap-2">
-                  <TrendingUp size={15} className="text-[#0b1c30]" />
-                  <span>Track Progress</span>
+                  <Shield size={15} className="text-[#2da44e]" />
+                  <span>100% Legitimate</span>
                 </div>
               </motion.div>
             </div>
 
-            {/* ── RIGHT: 3D Floating GitHub Artifact Composition (5 cols) ── */}
+            {/* ── RIGHT: 3D Achievement Showcase Visual (Matching User Brief & Mockup) ── */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.92 }}
+              initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
-              className="lg:col-span-5 relative h-[380px] sm:h-[460px] w-full flex items-center justify-center select-none scale-[0.82] sm:scale-95 md:scale-100 origin-center max-w-full"
+              className="lg:col-span-6 xl:col-span-6 relative w-full flex flex-col items-center justify-center select-none pt-4 pb-2"
             >
-              {/* Clean GitHub Contribution Orbital Ring (Crisp Vector Stroke, No Fog) */}
-              <svg
-                aria-hidden="true"
-                className="absolute -inset-10 w-[130%] h-[130%] pointer-events-none overflow-visible"
-                viewBox="0 0 400 400"
-              >
-                <ellipse
-                  cx="200"
-                  cy="200"
-                  rx="180"
-                  ry="88"
-                  fill="none"
-                  stroke="url(#orbitGlowGrad)"
-                  strokeWidth="2.2"
-                  transform="rotate(-18 200 200)"
-                  opacity="0.85"
+              {/* Outer Graphic Showcase Stage */}
+              <div className="relative w-full max-w-[460px] sm:max-w-[500px] flex items-center justify-center py-6 sm:py-8">
+                
+                {/* 1. Subtle Background Grid Texture Layer */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 pointer-events-none opacity-40"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(#E2E8F0 1px, transparent 1px), linear-gradient(90deg, #E2E8F0 1px, transparent 1px)',
+                    backgroundSize: '28px 28px',
+                    maskImage: 'radial-gradient(circle at center, black 45%, transparent 75%)',
+                    WebkitMaskImage: 'radial-gradient(circle at center, black 45%, transparent 75%)',
+                  }}
                 />
-                <defs>
-                  <linearGradient id="orbitGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#2da44e" />
-                    <stop offset="35%" stopColor="#40c463" />
-                    <stop offset="70%" stopColor="#9be9a8" />
-                    <stop offset="100%" stopColor="#2da44e" />
-                  </linearGradient>
-                </defs>
-              </svg>
 
-              {/* 3D Tilted Glossy Dark GitHub Tile with Subtle Spring Tilt */}
-              <motion.div
-                whileHover={{ scale: 1.03, rotateY: -10, rotateX: 6 }}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative z-10 w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] rounded-[44px] sm:rounded-[50px] bg-gradient-to-br from-[#1e2330] via-[#0d1017] to-[#040608] border border-white/20 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.22)] flex items-center justify-center overflow-hidden cursor-pointer group"
-                style={{
-                  transform: 'perspective(1100px) rotateY(-15deg) rotateX(8deg) rotateZ(-3deg)',
-                }}
-              >
-                {/* Specular gloss top reflection */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-transparent pointer-events-none rounded-[inherit]" />
-                <div className="absolute inset-px rounded-[inherit] border border-white/10 pointer-events-none" />
-                {/* White GitHub Octocat Glyph */}
-                <Github
-                  size={120}
-                  className="text-white fill-current drop-shadow-[0_6px_20px_rgba(0,0,0,0.65)] group-hover:scale-105 transition-transform duration-300"
+                {/* 2. Delicate Faint Wireframe Circle (Left Side) */}
+                <div
+                  aria-hidden="true"
+                  className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slate-300/60 pointer-events-none"
                 />
-              </motion.div>
 
-              {/* Floating Toast 1: Top-Right (Pull Request Merged) */}
-              <motion.div
-                whileHover={{ scale: 1.04, y: -4 }}
-                animate={{ y: [0, -11, 0] }}
-                transition={{ duration: 4.4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                className="absolute -top-3 -right-2 sm:right-2 z-20 px-4 py-3 rounded-2xl bg-white border border-slate-200/90 shadow-[0_16px_36px_rgba(11,28,48,0.1)] flex items-center gap-3.5 select-none cursor-pointer transition-shadow hover:shadow-[0_20px_40px_rgba(11,28,48,0.14)]"
-              >
-                <div className="w-[38px] h-[38px] rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center shrink-0">
-                  <Trophy size={19} className="text-amber-600 fill-amber-500/20" />
+                {/* 3. Floating 4-Point Green Sparkles */}
+                <div className="absolute top-4 right-14 sm:right-20 pointer-events-none animate-pulse">
+                  <SparkleStar size={16} />
                 </div>
-                <div>
-                  <p className="text-[12px] font-bold text-[#0b1c30] leading-tight">Pull Request</p>
-                  <p className="text-[12px] font-bold text-[#0b1c30] leading-tight">Merged</p>
+                <div className="absolute top-1/3 left-2 sm:left-6 pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}>
+                  <SparkleStar size={14} />
                 </div>
-                <CheckCircle2 size={19} className="text-emerald-600 fill-emerald-100 shrink-0 ml-0.5" />
 
-                {/* Celebratory spark rays (GitHub Green burst) */}
-                <div className="absolute -top-3 right-3 flex items-center justify-center pointer-events-none">
-                  <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
-                    <line x1="4" y1="10" x2="2" y2="2" stroke="#40c463" strokeWidth="2" strokeLinecap="round" />
-                    <line x1="13" y1="10" x2="13" y2="1" stroke="#2da44e" strokeWidth="2.4" strokeLinecap="round" />
-                    <line x1="22" y1="10" x2="24" y2="2" stroke="#40c463" strokeWidth="2" strokeLinecap="round" />
+                {/* 4. Elliptical Orbit Ring - Back Arc (Behind Central Card, z-0) */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
+                >
+                  <svg
+                    viewBox="0 0 500 300"
+                    className="w-[125%] h-[125%] -rotate-[22deg] overflow-visible"
+                    fill="none"
+                  >
+                    {/* Back Arc: Loops behind top of card */}
+                    <path
+                      d="M 40 150 A 210 80 0 0 1 460 150"
+                      stroke="#2da44e"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      className="opacity-95"
+                    />
                   </svg>
                 </div>
-              </motion.div>
 
-              {/* Floating Toast 2: Bottom-Left (Mission Completed!) */}
-              <motion.div
-                whileHover={{ scale: 1.04, y: 4 }}
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                className="absolute bottom-6 -left-4 sm:left-0 z-20 px-4 py-3 rounded-2xl bg-white border border-slate-200/90 shadow-[0_16px_36px_rgba(11,28,48,0.1)] flex items-center gap-3 select-none cursor-pointer transition-shadow hover:shadow-[0_20px_40px_rgba(11,28,48,0.14)]"
-              >
-                <CheckCircle2 size={21} className="text-emerald-600 fill-emerald-100 shrink-0" />
-                <span className="text-[13px] font-bold text-[#0b1c30]">Mission Completed!</span>
-              </motion.div>
+                {/* 5. Central Dark Squircle Card with GitHub Sitting Cat Silhouette (z-10) */}
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative z-10 w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-[40px] sm:rounded-[48px] bg-gradient-to-b from-[#21262d] via-[#161b22] to-[#0d1117] border border-[#30363d]/70 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.32),inset_0_1px_1px_rgba(255,255,255,0.14)] flex items-center justify-center cursor-default group"
+                >
+                  {/* Subtle Top Inner Sheen */}
+                  <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-              {/* Floating Hexagon 1: Top-Left (3D Beveled GitHub Contribution Green) */}
-              <motion.div
-                whileHover={{ scale: 1.08 }}
-                animate={{ y: [0, -9, 0], rotate: [-2, 2, -2] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-4 left-0 sm:left-2 z-20 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center select-none cursor-pointer filter drop-shadow-[0_12px_24px_rgba(45,164,78,0.28)]"
-              >
-                <svg viewBox="0 0 72 80" className="w-full h-full overflow-visible">
-                  <defs>
-                    <linearGradient id="hexGradFork" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#40c463" />
-                      <stop offset="50%" stopColor="#2da44e" />
-                      <stop offset="100%" stopColor="#1a7f37" />
-                    </linearGradient>
-                    <linearGradient id="hexRimFork" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#9be9a8" />
-                      <stop offset="100%" stopColor="#196c2e" />
-                    </linearGradient>
-                  </defs>
-                  <polygon
-                    points="36,4 68,22 68,58 36,76 4,58 4,22"
-                    fill="url(#hexGradFork)"
-                    stroke="url(#hexRimFork)"
-                    strokeWidth="2.5"
-                    strokeLinejoin="round"
-                  />
-                  <polygon
-                    points="36,9 63,24 63,56 36,71 9,56 9,24"
-                    fill="white"
-                    fillOpacity="0.14"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <GitFork size={22} className="text-white drop-shadow-sm" />
+                  {/* Sitting GitHub Octocat Silhouette */}
+                  <OctocatSilhouette className="transition-transform duration-300 group-hover:scale-105" />
+                </motion.div>
+
+                {/* 6. Elliptical Orbit Ring - Front Arc (In Front of Central Card, z-20) */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+                >
+                  <svg
+                    viewBox="0 0 500 300"
+                    className="w-[125%] h-[125%] -rotate-[22deg] overflow-visible"
+                    fill="none"
+                  >
+                    {/* Front Arc: Loops in front across bottom */}
+                    <path
+                      d="M 460 150 A 210 80 0 0 1 40 150"
+                      stroke="#2da44e"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      className="opacity-95 drop-shadow-[0_2px_8px_rgba(45,164,78,0.35)]"
+                    />
+                  </svg>
                 </div>
-              </motion.div>
 
-              {/* Floating Hexagon 2: Bottom-Right (3D Beveled Dark Navy & GitHub Green Rim Star) */}
-              <motion.div
-                whileHover={{ scale: 1.08 }}
-                animate={{ y: [0, 9, 0], rotate: [2, -2, 2] }}
-                transition={{ duration: 5.4, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-                className="absolute bottom-2 right-0 sm:right-2 z-20 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center select-none cursor-pointer filter drop-shadow-[0_14px_28px_rgba(11,28,48,0.28)]"
-              >
-                <svg viewBox="0 0 72 80" className="w-full h-full overflow-visible">
-                  <defs>
-                    <linearGradient id="hexGradStar" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2da44e" />
-                      <stop offset="45%" stopColor="#1a7f37" />
-                      <stop offset="100%" stopColor="#0b1c30" />
-                    </linearGradient>
-                    <linearGradient id="hexRimStar" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#40c463" />
-                      <stop offset="100%" stopColor="#165028" />
-                    </linearGradient>
-                  </defs>
-                  <polygon
-                    points="36,4 68,22 68,58 36,76 4,58 4,22"
-                    fill="url(#hexGradStar)"
-                    stroke="url(#hexRimStar)"
-                    strokeWidth="2.5"
-                    strokeLinejoin="round"
-                  />
-                  <polygon
-                    points="36,9 63,24 63,56 36,71 9,56 9,24"
-                    fill="white"
-                    fillOpacity="0.1"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <Star size={22} className="text-white fill-white drop-shadow-sm" />
+                {/* 7. Floating Top-Left 3D Hexagonal Badge: Git Branch / Fork (z-25) */}
+                <motion.div
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                  className="absolute top-4 left-0 sm:-left-3 z-25 pointer-events-none"
+                >
+                  <HexBadge icon="git" size={54} />
+                </motion.div>
+
+                {/* 8. Floating Top-Right Pill: "Pull Request Merged" (z-30) */}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+                  className="absolute -top-3 right-0 sm:-right-4 z-30"
+                >
+                  {/* Celebratory Green Rays */}
+                  <div className="absolute -top-3.5 right-6 flex items-end justify-center gap-1 text-[#2da44e] pointer-events-none">
+                    <span className="w-0.5 h-2.5 bg-[#2da44e] rounded-full -rotate-[24deg] transform origin-bottom" />
+                    <span className="w-0.5 h-3.5 bg-[#2da44e] rounded-full" />
+                    <span className="w-0.5 h-2.5 bg-[#2da44e] rounded-full rotate-[24deg] transform origin-bottom" />
+                  </div>
+
+                  {/* White Pill Card */}
+                  <div className="bg-white rounded-2xl shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 p-3 sm:p-3.5 pr-4 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-500 shrink-0">
+                      {(() => {
+                        const preview = HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark'];
+                        if (preview.icon === 'timer') return <Clock size={18} className="text-amber-600" />;
+                        if (preview.icon === 'zap') return <Zap size={18} className="text-amber-600" />;
+                        if (preview.icon === 'brain') return <Sparkles size={18} className="text-amber-600" />;
+                        if (preview.icon === 'users') return <Users size={18} className="text-amber-600" />;
+                        if (preview.icon === 'star') return <Star size={18} className="fill-amber-400 text-amber-600" />;
+                        return <Trophy size={18} className="fill-amber-400/30 text-amber-600" />;
+                      })()}
+                    </div>
+                    <div className="text-left">
+                      <p className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight">
+                        {(HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark']).line1}
+                      </p>
+                      <p className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight">
+                        {(HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark']).line2}
+                      </p>
+                    </div>
+                    <div className="w-6 h-6 rounded-full border-2 border-[#2da44e] flex items-center justify-center text-[#2da44e] ml-1 shrink-0">
+                      <Check size={13} strokeWidth={3} />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* 9. Floating Bottom-Left Pill: "Mission Completed!" (z-30) */}
+                <motion.div
+                  animate={{ y: [0, 4, 0] }}
+                  transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                  className="absolute -bottom-3 left-0 sm:-left-4 z-30"
+                >
+                  <div className="bg-white rounded-full sm:rounded-2xl shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-6 h-6 rounded-full border-2 border-[#2da44e] flex items-center justify-center text-[#2da44e] shrink-0">
+                      <Check size={13} strokeWidth={3} />
+                    </div>
+                    <span className="text-xs sm:text-sm font-bold text-[#161B22] tracking-tight whitespace-nowrap">
+                      Mission Completed!
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* 10. Floating Bottom-Right 3D Hexagonal Badge: Star (z-25) */}
+                <motion.div
+                  animate={{ y: [0, 5, 0] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                  className="absolute bottom-2 right-1 sm:-right-2 z-25 pointer-events-none"
+                >
+                  <HexBadge icon="star" size={54} />
+                </motion.div>
+
+                {/* 11. Subtle DEV badge in bottom-right corner */}
+                <div className="absolute -bottom-4 right-1 sm:right-3 z-30 flex items-center gap-1.5 pointer-events-none">
+                  <div className="relative w-8 h-8 rounded-full bg-[#0969da] text-white flex items-center justify-center shadow-md">
+                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6v-2h12v2zm0-3H6V7h12v2z" />
+                    </svg>
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#f85149] ring-2 ring-white" />
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-mono font-bold shadow-2xs">
+                    DEV
+                  </span>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Floating Mathematical 4-Pointed Sparkle Stars (✦) with GitHub Contribution Accents */}
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute top-14 right-20 w-4 h-4 text-[#2da44e] select-none pointer-events-none animate-pulse"
-              >
-                <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
-              </svg>
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute bottom-20 right-3 w-3.5 h-3.5 text-[#0b1c30] select-none pointer-events-none animate-pulse"
-                style={{ animationDelay: '1s' }}
-              >
-                <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
-              </svg>
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="absolute top-28 -left-2 w-3 h-3 text-[#2da44e] select-none pointer-events-none animate-pulse"
-                style={{ animationDelay: '0.5s' }}
-              >
-                <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
-              </svg>
+              {/* 12. Authentic GitHub Badges Interactive Dock (Beneath the 3D Graphic) */}
+              <div className="w-full max-w-[420px] sm:max-w-[460px] mt-6 p-2 sm:p-2.5 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] shadow-xs">
+                <div className="flex items-center justify-between px-2 pb-1.5 text-[10px] font-mono text-[#656D76] uppercase tracking-wider font-semibold">
+                  <span>Authentic Badge Targets</span>
+                  <span className="text-[#2da44e] font-bold">100% Legitimate</span>
+                </div>
+                <div className="grid grid-cols-6 gap-1.5 bg-white p-2 rounded-xl border border-[#D0D7DE]/70">
+                  {[
+                    { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
+                    { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
+                    { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
+                    { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
+                    { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', img: '/images/badges/pair-extraordinaire.png' },
+                    { id: 'starstruck', name: 'Starstruck', img: '/images/badges/starstruck.png' },
+                  ].map((badge) => {
+                    const isSelected = heroActiveBadgeId === badge.id;
+                    return (
+                      <button
+                        key={badge.id}
+                        type="button"
+                        onClick={() => {
+                          setHeroActiveBadgeId(badge.id);
+                          setSelectedBadgeId(badge.id);
+                        }}
+                        className={cn(
+                          'relative flex flex-col items-center justify-center p-1.5 rounded-lg transition-all duration-150 cursor-pointer group',
+                          isSelected
+                            ? 'bg-[#dafbe1] border border-[#2da44e] shadow-2xs scale-105'
+                            : 'hover:bg-slate-100 opacity-75 hover:opacity-100 border border-transparent'
+                        )}
+                        title={`Target: ${badge.name}`}
+                      >
+                        <img
+                          src={badge.img}
+                          alt={badge.name}
+                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
+                          loading="lazy"
+                        />
+                        {isSelected && (
+                          <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ─── WORKBENCH & DIRECTORY WRAPPER ──────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
-
-        {/* ─── SECTION 2: The Badges Studio & Interactive Workbench ──────── */}
-        <section id="catalog" className="scroll-mt-24 mb-20 text-left w-full select-none">
-          {/* Harmonized Header */}
-          <div className="text-center space-y-2 mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
+      {/* ─── SECTION 02: ACHIEVEMENT WALL ─────────────────────────────────── */}
+      <section
+        id="achievements"
+        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
               <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
-              <span>Achievement Studio</span>
+              <span>Official GitHub Achievement Wall</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
-              Explore and claim GitHub badges
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              These aren't profile decorations.
             </h2>
-            <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
-              Select any official medallion to inspect its server requirements, tier multipliers, and copy verified Git recipes.
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              Every achievement represents something you actually did on GitHub. Authenticated by GitHub server webhooks.
             </p>
           </div>
 
-          {/* Live GitHub Profile Audit Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="p-1.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center gap-2">
-              <div className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-slate-500 w-full sm:w-auto shrink-0 select-none">
-                <Github size={16} className="text-[#0b1c30]" />
-                <span>github.com/</span>
-              </div>
-              <input
-                type="text"
-                value={githubInput}
-                onChange={(e) => setGithubInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleScan()}
-                placeholder="your-github-username"
-                className="w-full px-3 py-2 text-xs sm:text-sm text-[#0b1c30] placeholder:text-slate-400 bg-transparent focus:outline-none font-medium min-h-[38px]"
-                aria-label="Enter GitHub username to scan achievement eligibility"
-              />
+          {/* Filter Pills */}
+          <div className="flex items-center justify-center gap-2 mb-10 flex-wrap">
+            {[
+              { id: 'all', label: 'All Badges (10)' },
+              { id: 'starter', label: 'Starter Friendly (4)' },
+              { id: 'tiers', label: 'Multi-Tier Multipliers (4)' },
+              { id: 'legacy', label: 'Historic (1)' },
+            ].map((tab) => (
               <button
-                type="button"
-                onClick={() => handleScan()}
-                disabled={isScanning || !githubInput.trim()}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-[#16273c] disabled:opacity-40 disabled:hover:bg-[#0b1c30] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all cursor-pointer select-none shrink-0 min-h-[38px] active:scale-95"
-              >
-                {isScanning ? (
-                  <>
-                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                    <span>Auditing...</span>
-                  </>
-                ) : (
-                  <>
-                    <Zap size={13} className="fill-current text-[#40c463]" />
-                    <span>Audit Handle</span>
-                  </>
+                key={tab.id}
+                onClick={() => setBadgeCategoryFilter(tab.id)}
+                className={cn(
+                  'px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer select-none',
+                  badgeCategoryFilter === tab.id
+                    ? 'bg-[#161B22] text-white shadow-xs'
+                    : 'bg-white text-[#656D76] border border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
                 )}
+              >
+                {tab.label}
               </button>
-            </div>
+            ))}
+          </div>
 
-            {/* Audit Result Card if Scanned */}
-            <AnimatePresence>
-              {scannedUser && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: -10, height: 0 }}
-                  className="mt-3 overflow-hidden"
+          {/* Achievement Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filteredBadges.map((badge) => {
+              const isSelected = badge.id === selectedBadgeId;
+              return (
+                <div
+                  key={badge.id}
+                  className={cn(
+                    'p-5 rounded-2xl bg-white border transition-all duration-200 flex flex-col justify-between group hover:-translate-y-1 hover:shadow-md cursor-pointer',
+                    isSelected
+                      ? 'border-[#2da44e] ring-2 ring-[#2da44e]/20 shadow-sm'
+                      : 'border-[#D0D7DE]'
+                  )}
+                  onClick={() => {
+                    setSelectedBadgeId(badge.id);
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                 >
-                  <div className="p-4 rounded-2xl bg-white border border-[#2da44e]/30 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 min-w-0">
+                  <div className="space-y-4">
+                    {/* Badge Image Pedestal */}
+                    <div className="w-full h-32 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center relative overflow-hidden group-hover:border-[#2da44e]/40 transition-colors">
                       <img
-                        src={scannedUser.avatar_url}
-                        alt={scannedUser.name}
-                        className="w-10 h-10 rounded-full border border-slate-200 object-cover shrink-0"
+                        src={badge.image}
+                        alt={badge.name}
+                        className="w-20 h-20 object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-200 select-none"
+                        loading="lazy"
                       />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-[#0b1c30] text-sm truncate">
-                            {scannedUser.name}
-                          </span>
-                          <span className="text-xs font-mono text-[#57606a]">
-                            @{scannedUser.login}
-                          </span>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30">
-                            {scannedUser.statusMessage}
-                          </span>
-                        </div>
-                        <p className="text-xs text-[#57606a] mt-0.5">
-                          {scannedUser.public_repos} public repositories · Primed for Starter Medallions
-                        </p>
-                      </div>
+                      {badge.tiers && badge.tiers.length > 0 && (
+                        <span className="absolute top-2.5 right-2.5 text-[9px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 px-2 py-0.5 rounded-full shadow-2xs">
+                          {badge.tiers.length} Tiers
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
-                      <button
-                        onClick={() => {
-                          setSelectedBadgeId('quickdraw');
-                          document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#dafbe1] hover:bg-[#c2f3cc] text-[#1a7f37] border border-[#2da44e]/30 text-xs font-bold transition-all cursor-pointer select-none"
-                      >
-                        Claim Quickdraw →
-                      </button>
-                      <button
-                        onClick={() => setScannedUser(null)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer select-none"
-                        title="Dismiss audit"
-                      >
-                        <XCircle size={16} />
-                      </button>
+
+                    {/* Badge Title & Status */}
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-lg font-bold text-[#161B22] tracking-tight">
+                          {badge.name}
+                        </h3>
+                        <span className="text-[10px] font-mono font-bold text-[#1a7f37] bg-[#dafbe1] px-2 py-0.5 rounded-full">
+                          Official
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#656D76] font-medium leading-relaxed mt-1">
+                        {badge.tagline}
+                      </p>
+                    </div>
+
+                    {/* Requirement Note */}
+                    <div className="pt-2 border-t border-[#E1E4E8] text-[11px] text-[#656D76] leading-relaxed">
+                      <strong className="text-[#161B22]">Activity:</strong> {badge.howToGet}
                     </div>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+
+                  {/* Card Bottom CTA */}
+                  <div className="pt-4 mt-2">
+                    <button
+                      type="button"
+                      className="w-full py-2 px-3 rounded-lg bg-[#F6F8FA] group-hover:bg-[#161B22] group-hover:text-white border border-[#D0D7DE] text-xs font-bold text-[#161B22] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <span>Start Mission</span>
+                      <ArrowRight size={12} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 03: UNLOCK YOUR FIRST ACHIEVEMENT (Interactive Workbench) ── */}
+      <section
+        id="first-achievement"
+        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Interactive Mission Runner</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              Your first achievement starts with one mission.
+            </h2>
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              Choose an achievement below, inspect its exact server criteria, and execute the verified Git commands.
+            </p>
           </div>
 
-          {/* Filter Tabs & Search Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 max-w-3xl mx-auto">
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs flex-wrap justify-center">
-              {[
-                { id: 'starter', label: 'Starter (4)' },
-                { id: 'tiers', label: 'Multi-Tier (4)' },
-                { id: 'all', label: 'All Badges (10)' },
-                { id: 'legacy', label: 'Historic (1)' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedCategory(tab.id)}
-                  className={cn(
-                    'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none active:scale-95 min-h-[36px]',
-                    selectedCategory === tab.id
-                      ? 'bg-[#0b1c30] text-white shadow-xs'
-                      : 'text-slate-600 hover:text-[#0b1c30] hover:bg-slate-100/70'
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="relative w-full sm:w-56">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search badges..."
-                value={badgeSearchQuery}
-                onChange={(e) => setBadgeSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-7 py-1.5 rounded-xl border border-slate-200/90 bg-white text-xs text-[#0b1c30] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0969da]/30 focus:border-[#0969da] shadow-2xs font-medium min-h-[36px]"
-                aria-label="Filter badges by name or requirement"
-              />
-              {badgeSearchQuery && (
-                <button
-                  onClick={() => setBadgeSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
-                  aria-label="Clear badge search query"
-                >
-                  <XCircle size={14} />
-                </button>
-              )}
-            </div>
+          {/* 5-Step Progress Pathway Graphic */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10 text-center">
+            {[
+              { num: '01', title: 'Choose Badge', desc: 'Select target medal' },
+              { num: '02', title: 'Inspect Criteria', desc: 'Read webhook rules' },
+              { num: '03', title: 'Start Mission', desc: 'Launch Git recipe' },
+              { num: '04', title: 'Execute Activity', desc: 'Push & merge PR' },
+              { num: '05', title: 'Unlock Medal', desc: 'Profile reflects badge' },
+            ].map((step, idx) => (
+              <div
+                key={step.num}
+                className="p-3.5 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-1 shadow-2xs"
+              >
+                <div className="text-[10px] font-mono font-bold text-[#2da44e] uppercase tracking-wider">
+                  Step {step.num}
+                </div>
+                <div className="text-xs font-bold text-[#161B22]">{step.title}</div>
+                <div className="text-[11px] text-[#656D76]">{step.desc}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Medallions Showcase Shelf with Empty State Fallback */}
-          {filteredBadges.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
-              {filteredBadges.map((badge) => {
-                const isSelected = badge.id === activeBadge.id;
+          {/* Interactive Badge Selector Pills */}
+          <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+            {['quickdraw', 'pull-shark', 'pair-extraordinaire', 'yolo', 'galaxy-brain', 'starstruck'].map(
+              (id) => {
+                const badge = GITHUB_BADGES.find((b) => b.id === id);
+                if (!badge) return null;
+                const isSelected = activeBadge.id === badge.id;
                 return (
                   <button
                     key={badge.id}
                     onClick={() => setSelectedBadgeId(badge.id)}
                     className={cn(
-                      'p-3.5 rounded-2xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95 min-h-[44px]',
+                      'px-3.5 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-2 border transition-all cursor-pointer',
                       isSelected
-                        ? 'bg-white border-[#1a7f37] shadow-[0_4px_20px_rgba(26,127,55,0.14)] ring-2 ring-[#2da44e]/25 -translate-y-0.5'
-                        : 'bg-white border-slate-200/90 hover:border-[#1a7f37]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
+                        ? 'bg-[#161B22] text-white border-[#161B22] shadow-xs'
+                        : 'bg-white text-[#656D76] border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
                     )}
                   >
-                    <div className="relative w-12 h-12 flex items-center justify-center">
-                      <img
-                        src={badge.image}
-                        alt={badge.name}
-                        className={cn(
-                          'w-10 h-10 object-contain transition-transform duration-200 select-none',
-                          isSelected
-                            ? 'scale-110 drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]'
-                            : 'group-hover:scale-105 opacity-90'
-                        )}
-                        loading="lazy"
-                      />
-                      {badge.tiers && badge.tiers.length > 0 && (
-                        <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] px-1 rounded-full border border-[#2da44e]/30 shadow-2xs">
-                          x4
-                        </span>
-                      )}
-                    </div>
-                    <span
-                      className={cn(
-                        'text-xs font-semibold truncate w-full',
-                        isSelected
-                          ? 'text-[#1a7f37] font-bold'
-                          : 'text-slate-600 group-hover:text-[#0b1c30]'
-                      )}
-                    >
-                      {badge.name}
-                    </span>
+                    <img src={badge.image} alt={badge.name} className="w-4 h-4 object-contain" />
+                    <span>{badge.name}</span>
                   </button>
                 );
-              })}
-            </div>
-          ) : (
-            <div className="py-12 px-4 text-center rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
-                <Search size={20} />
-              </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-[#0b1c30]">No matching badges found</h4>
-                <p className="text-xs text-[#424754]">
-                  No badges match &ldquo;{badgeSearchQuery}&rdquo;. Try clearing search or exploring Starter badges.
-                </p>
-              </div>
-              <button
-                onClick={() => {
-                  setBadgeSearchQuery('');
-                  setSelectedCategory('all');
-                }}
-                className="px-4 py-1.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-[#1a3050] transition-colors cursor-pointer min-h-[44px]"
-              >
-                Reset filters
-              </button>
-            </div>
-          )}
+              }
+            )}
+          </div>
 
-          {/* Single Unified Blueprint Card */}
-          <div className="rounded-[28px] border border-slate-200/90 bg-white divide-y md:divide-y-0 md:divide-x divide-slate-200/80 grid md:grid-cols-12 overflow-hidden shadow-sm">
-            {/* Left: Badge Identity & Verification Rules (5 cols) */}
-            <div className="md:col-span-5 p-6 sm:p-7 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
+          {/* Dual-Pane Mission Workbench */}
+          <div className="rounded-[28px] border border-[#D0D7DE] bg-white divide-y md:divide-y-0 md:divide-x divide-[#D0D7DE] grid md:grid-cols-12 overflow-hidden shadow-sm">
+            {/* Left Column: Requirements & Pedestal (5 cols) */}
+            <div className="md:col-span-5 p-6 sm:p-7 flex flex-col justify-between space-y-6 bg-[#FFFFFF]">
+              <div className="space-y-5">
                 {/* Badge Header Bar */}
-                <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-200/80">
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#E1E4E8]">
                   <div>
-                    <span className="text-[11px] font-mono text-[#1a7f37] font-bold uppercase tracking-wider block">
-                      {activeBadge.category}
+                    <span className="text-[11px] font-mono text-[#2da44e] font-bold uppercase tracking-wider block">
+                      Target Medal
                     </span>
-                    <h3 className="text-2xl sm:text-[26px] font-extrabold text-[#0b1c30] tracking-[-0.025em] mt-0.5">
+                    <h3 className="text-2xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
                       {activeBadge.name}
                     </h3>
                   </div>
-                  <span
-                    className={cn(
-                      'text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold shrink-0',
-                      activeBadge.isObtainable
-                        ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/90'
-                        : 'text-slate-600 bg-slate-100 border border-slate-200'
-                    )}
-                  >
+                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30">
                     {activeBadge.difficulty}
                   </span>
                 </div>
 
                 {/* 3D Showcase Pedestal */}
-                <div className="rounded-2xl border border-slate-200/90 bg-[#f8f9ff] p-4 flex items-center gap-3.5 shadow-2xs">
-                  <div className="relative w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-white border border-slate-200/90 p-1.5 shadow-sm">
+                <div className="rounded-2xl border border-[#D0D7DE] bg-[#F6F8FA] p-4 flex items-center gap-3.5 shadow-2xs">
+                  <div className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-white border border-[#D0D7DE] p-1.5 shadow-sm">
                     <img
                       src={activeBadge.image}
                       alt={activeBadge.name}
@@ -1120,71 +984,67 @@ export const GitGlowHomePage: React.FC = () => {
                     />
                   </div>
                   <div className="min-w-0 space-y-1">
-                    <div className="text-sm font-semibold text-[#0b1c30] leading-snug">
+                    <div className="text-sm font-semibold text-[#161B22] leading-snug">
                       {activeBadge.tagline}
                     </div>
-                    <div className="text-xs font-mono text-[#424754]">
+                    <div className="text-xs font-mono text-[#656D76]">
                       Est. time:{' '}
-                      <span className="text-[#0b1c30] font-bold">
+                      <span className="text-[#161B22] font-bold">
                         {activeRecipe.estimatedTime}
                       </span>
                     </div>
                   </div>
                 </div>
 
+                {/* Mission Context */}
+                <div className="space-y-1.5">
+                  <span className="text-xs font-bold text-[#161B22] block">
+                    Mission Purpose:
+                  </span>
+                  <p className="text-xs text-[#656D76] leading-relaxed">
+                    {activeRecipe.missionContext}
+                  </p>
+                </div>
+
                 {/* GitHub Verification Rule */}
                 <div className="space-y-2 pt-1">
-                  <span className="text-[13px] font-bold text-[#0b1c30] tracking-tight block">
-                    How GitHub Verifies This:
+                  <span className="text-xs font-bold text-[#161B22] tracking-tight block">
+                    Official Verification Criteria:
                   </span>
-                  <ul className="space-y-1.5 text-xs sm:text-[13px] text-[#424754] leading-relaxed font-medium">
+                  <ul className="space-y-1.5 text-xs text-[#656D76] leading-relaxed font-medium">
                     {activeBadge.requirements.slice(0, 3).map((req, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" />
+                        <CheckCircle2 size={14} className="text-[#2da44e] shrink-0 mt-0.5" />
                         <span>{req}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
+              </div>
 
-                {/* Multi-Tier Multipliers (if available) */}
-                {activeBadge.tiers && activeBadge.tiers.length > 0 && (
-                  <div id="tiers" className="scroll-mt-28 pt-2 border-t border-slate-200/80">
-                    <span className="text-[11px] font-mono text-slate-500 font-bold uppercase tracking-wider block mb-2">
-                      Tier Multipliers
-                    </span>
-                    <div className="grid grid-cols-2 gap-1.5 text-[11px] font-mono">
-                      {activeBadge.tiers.map((tier) => (
-                        <div
-                          key={tier.level}
-                          className="px-2.5 py-1.5 rounded-lg bg-[#f8f9ff] border border-slate-200/90 flex items-center justify-between text-slate-600 shadow-2xs"
-                        >
-                          <span className="truncate">{tier.level}</span>
-                          <span className="text-[#0b1c30] font-bold shrink-0">
-                            {tier.threshold}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              {/* Anti-Mistake Callout */}
+              <div className="rounded-xl border border-amber-200/90 bg-amber-50/80 p-3.5 flex items-start gap-2.5 text-xs text-amber-950 leading-relaxed shadow-2xs">
+                <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong className="text-amber-900 font-bold">Gotcha Warning:</strong>{' '}
+                  {activeRecipe.gotchaNote}
+                </span>
               </div>
             </div>
 
-            {/* Right: Authentic GitHub CLI Terminal & Recipe Runner (7 cols) */}
+            {/* Right Column: Authentic GitHub CLI Terminal & Commands (7 cols) */}
             <div
-              id="recipe-terminal"
-              className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#0d1117] text-[#c9d1d9] flex flex-col justify-between space-y-6 transition-all duration-300 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px] border-t md:border-t-0 md:border-l border-[#30363d]"
+              id="recipes"
+              className="md:col-span-7 p-6 sm:p-7 bg-[#0D1117] text-[#c9d1d9] flex flex-col justify-between space-y-6 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px]"
             >
-              <div id="recipes" className="space-y-4">
+              <div className="space-y-4">
                 {/* Terminal Window Header Bar */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-[#30363d]">
+                <div className="flex items-center justify-between pb-3.5 border-b border-[#30363D]">
                   <div className="flex items-center gap-3">
-                    {/* Window Controls */}
                     <div className="flex items-center gap-1.5" aria-hidden="true">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/85 block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/85 block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]/85 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] font-mono text-[#7ee787] font-bold uppercase tracking-wider">
@@ -1192,7 +1052,7 @@ export const GitGlowHomePage: React.FC = () => {
                       </span>
                       <span className="text-[#8b949e] font-mono text-xs select-none">/</span>
                       <span className="text-[11px] font-mono text-[#8b949e]">
-                        claim-{activeBadge.id}.sh
+                        mission-{activeBadge.id}.sh
                       </span>
                     </div>
                   </div>
@@ -1220,18 +1080,9 @@ export const GitGlowHomePage: React.FC = () => {
                 {/* 3 Numbered Steps with 1-Click Copy */}
                 <div className="space-y-3">
                   {[
-                    {
-                      label: activeRecipe.station1Label,
-                      cmd: activeRecipe.command1,
-                    },
-                    {
-                      label: activeRecipe.station2Label,
-                      cmd: activeRecipe.command2,
-                    },
-                    {
-                      label: activeRecipe.station3Label,
-                      cmd: activeRecipe.command3,
-                    },
+                    { label: activeRecipe.station1Label, cmd: activeRecipe.command1 },
+                    { label: activeRecipe.station2Label, cmd: activeRecipe.command2 },
+                    { label: activeRecipe.station3Label, cmd: activeRecipe.command3 },
                   ].map((step, idx) => (
                     <div key={idx} className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs">
@@ -1242,7 +1093,7 @@ export const GitGlowHomePage: React.FC = () => {
                           Step {idx + 1} of 3
                         </span>
                       </div>
-                      <div className="group/cmd rounded-xl border border-[#30363d] bg-[#161b22] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner hover:border-[#8b949e]/40 transition-colors">
+                      <div className="rounded-xl border border-[#30363D] bg-[#161B22] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner hover:border-[#8b949e]/40 transition-colors">
                         <div className="flex items-center gap-2 font-mono text-xs overflow-hidden">
                           <span className="text-[#8b949e] select-none">$</span>
                           <code className="text-[#7ee787] truncate font-semibold">
@@ -1274,273 +1125,566 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Gotcha Callout */}
-              <div className="rounded-xl border border-[#d29922]/40 bg-[#bb8009]/10 p-3.5 flex items-start gap-2.5 text-xs text-[#e3b341] leading-relaxed">
-                <Info size={16} className="text-[#d29922] shrink-0 mt-0.5" />
-                <span>
-                  <strong className="text-[#f0f6fc] font-bold">Anti-Mistake Gotcha:</strong>{' '}
-                  {activeRecipe.gotchaNote || activeBadge.gotchas[0]}
+              {/* Terminal Bottom Action */}
+              <div className="pt-2">
+                <Link
+                  to={`/blueprints/gitglow/engine?badge=${activeBadge.id}`}
+                  className="w-full py-3 rounded-xl bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                >
+                  <Play size={13} className="fill-current" />
+                  <span>Launch Live Mission Session →</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 04: HOW GITGLOW WORKS ─────────────────────────────────── */}
+      <section
+        id="how-it-works"
+        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-14">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>4-Step Execution Pipeline</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              Learn it. Do it. Earn it.
+            </h2>
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              No boring video playlists or fake README badges. A structured engineering workflow from zero to real contribution.
+            </p>
+          </div>
+
+          {/* 4 Horizontal Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                step: '01',
+                title: 'Discover a Mission',
+                desc: 'Browse beginner-friendly challenges mapped directly to official GitHub profile achievements.',
+                icon: <Search className="text-[#2da44e]" size={20} />,
+                chip: 'Target Identification',
+              },
+              {
+                step: '02',
+                title: 'Follow the Guided Workflow',
+                desc: 'Get exact CLI commands, branch conventions, and anti-mistake gotchas before pushing any code.',
+                icon: <Terminal className="text-[#2da44e]" size={20} />,
+                chip: 'Command Guidance',
+              },
+              {
+                step: '03',
+                title: 'Complete Real GitHub Activity',
+                desc: 'Push commits, author pull requests, and co-author branches on live, indexed repositories.',
+                icon: <GitPullRequest className="text-[#2da44e]" size={20} />,
+                chip: 'Live Git Execution',
+              },
+              {
+                step: '04',
+                title: 'Track Verified Progress',
+                desc: 'GitHub official event webhooks register your activity and award the genuine medallion to your profile.',
+                icon: <Award className="text-[#2da44e]" size={20} />,
+                chip: 'Webhook Verification',
+              },
+            ].map((card) => (
+              <div
+                key={card.step}
+                className="p-6 rounded-2xl bg-white border border-[#D0D7DE] flex flex-col justify-between space-y-5 hover:-translate-y-1 transition-all duration-200 shadow-2xs hover:shadow-sm"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-mono font-extrabold text-[#2da44e]">
+                      {card.step}
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] flex items-center justify-center">
+                      {card.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold text-[#161B22] tracking-tight">
+                    {card.title}
+                  </h3>
+                  <p className="text-xs text-[#656D76] font-medium leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+                <div className="pt-3 border-t border-[#E1E4E8] text-[10px] font-mono text-[#656D76] font-bold uppercase tracking-wider">
+                  {card.chip}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 05: EXPLORE MISSIONS ──────────────────────────────────── */}
+      <section
+        id="missions"
+        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Guided Missions Explorer</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              Your next contribution starts here.
+            </h2>
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              Step-by-step developer challenges designed to build genuine muscle memory across core Git workflows.
+            </p>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex items-center justify-center gap-2 mb-10 flex-wrap">
+            {[
+              { id: 'all', label: 'All Missions (6)' },
+              { id: 'fundamentals', label: 'Fundamentals' },
+              { id: 'pull-requests', label: 'Pull Requests' },
+              { id: 'collaboration', label: 'Collaboration' },
+              { id: 'open-source', label: 'Open Source' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setMissionCategoryFilter(cat.id)}
+                className={cn(
+                  'px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer select-none',
+                  missionCategoryFilter === cat.id
+                    ? 'bg-[#161B22] text-white shadow-xs'
+                    : 'bg-[#F6F8FA] text-[#656D76] border border-[#D0D7DE] hover:bg-slate-100 hover:text-[#161B22]'
+                )}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Mission Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {filteredMissions.map((mission) => (
+              <div
+                key={mission.id}
+                className="p-6 rounded-2xl bg-white border border-[#D0D7DE] flex flex-col justify-between space-y-5 hover:-translate-y-1 hover:shadow-md transition-all duration-200"
+              >
+                <div className="space-y-4">
+                  {/* Top Tags */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#F6F8FA] text-[#656D76] border border-[#D0D7DE]">
+                      {mission.category}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-[#1a7f37] bg-[#dafbe1] px-2 py-0.5 rounded-full">
+                      {mission.difficulty}
+                    </span>
+                  </div>
+
+                  {/* Title & Target Medal Pill */}
+                  <div>
+                    <h3 className="text-xl font-bold text-[#161B22] tracking-tight">
+                      {mission.title}
+                    </h3>
+                    <p className="text-xs text-[#656D76] font-medium leading-relaxed mt-2">
+                      {mission.summary}
+                    </p>
+                  </div>
+
+                  {/* Target Achievement preview */}
+                  <div className="p-3 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <img
+                        src={mission.targetBadgeImage}
+                        alt={mission.targetBadgeName}
+                        className="w-7 h-7 object-contain"
+                      />
+                      <span className="text-xs font-bold text-[#161B22]">
+                        Unlocks: {mission.targetBadgeName}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-[#656D76] font-bold">
+                      {mission.estimatedTime}
+                    </span>
+                  </div>
+
+                  {/* Skills Practiced */}
+                  <div className="text-[11px] text-[#656D76] space-y-1">
+                    <strong className="text-[#161B22]">Skill Practiced:</strong>{' '}
+                    <span>{mission.skillPracticed}</span>
+                  </div>
+                </div>
+
+                {/* Card Action */}
+                <div className="pt-4 border-t border-[#E1E4E8] flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-[#1a7f37] font-bold">
+                    {mission.completionRate}
+                  </span>
+                  <Link
+                    to={`/blueprints/gitglow/engine?badge=${mission.id.replace(/^m\d+-/, '')}`}
+                    className="text-xs font-bold text-[#161B22] hover:text-[#2da44e] inline-flex items-center gap-1 transition-colors"
+                  >
+                    <span>Start Mission</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Section Central CTA */}
+          <div className="text-center">
+            <Link
+              to="/blueprints/gitglow/engine"
+              className="h-12 px-8 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <span>Explore All Missions →</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SECTION 06: YOUR DEVELOPER PROGRESS ───────────────────────────── */}
+      <section
+        id="progress"
+        className="scroll-mt-20 py-20 bg-[#F6F8FA] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Real Progress Tracking</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              Your progress should be visible.
+            </h2>
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              Track completed missions, commit milestones, skills practiced, and achievement unlocks on one unified dashboard.
+            </p>
+          </div>
+
+          {/* Product Dashboard Preview */}
+          <div className="max-w-5xl mx-auto rounded-[28px] bg-white border border-[#D0D7DE] shadow-sm p-6 sm:p-8 space-y-8">
+            {/* Top Stat Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-[#E1E4E8]">
+              <div>
+                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                  Missions Done
+                </span>
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                  3 of 6
+                </span>
+                <span className="text-[10px] text-[#2da44e] font-semibold">Starter Track 50%</span>
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                  Pull Requests Merged
+                </span>
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                  2 Merged
+                </span>
+                <span className="text-[10px] text-[#2da44e] font-semibold">Pull Shark Unlocked</span>
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                  Co-Authored Commits
+                </span>
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                  1 Verified
+                </span>
+                <span className="text-[10px] text-[#2da44e] font-semibold">Git Trailer Valid</span>
+              </div>
+              <div>
+                <span className="text-[11px] font-mono text-[#656D76] uppercase tracking-wider block">
+                  Badges Earned
+                </span>
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#161B22] mt-0.5 block">
+                  2 Official
+                </span>
+                <span className="text-[10px] text-[#2da44e] font-semibold">Indexed on GitHub</span>
+              </div>
+            </div>
+
+            {/* Contribution Activity Heatmap Preview */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#161B22]">
+                  Contribution Heatmap Simulation
+                </span>
+                <span className="text-[11px] font-mono text-[#656D76]">
+                  Real Commit Attribution
                 </span>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── SECTION 3: Visual Proof — Real Medallions vs Cluttered Shields ─── */}
-        <section id="compare" className="scroll-mt-24 mb-20 text-left w-full select-none">
-          {/* Harmonized Header */}
-          <div className="text-center space-y-2 mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
-              <span>Proof Over Vanity</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0b1c30] tracking-[-0.035em] leading-[1.12]">
-              Verified proof over vanity
-            </h2>
-            <p className="text-base sm:text-lg text-[#424754] max-w-xl mx-auto font-normal leading-relaxed">
-              Why tech leads look for official GitHub profile medallions instead of copy-pasted README shields.
-            </p>
-          </div>
-
-          {/* Single Unified Comparison Card */}
-          <div className="rounded-[28px] border border-slate-200/90 bg-white divide-y md:divide-y-0 md:divide-x divide-slate-200/80 grid md:grid-cols-2 overflow-hidden shadow-sm">
-            {/* Left Box: The Copy-Paste Illusion */}
-            <div className="p-6 sm:p-7 space-y-5 bg-slate-50/50 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
-                  <div>
-                    <span className="text-[11px] font-mono text-slate-500 font-bold uppercase tracking-wider block">
-                      Vanity metric
-                    </span>
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#0b1c30] tracking-[-0.02em] mt-0.5">
-                      README Markdown Shields
-                    </h3>
-                  </div>
-                  <span className="text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200/90 px-2.5 py-0.5 rounded-full font-bold">
-                    Unverified
-                  </span>
-                </div>
-
-                {/* Clean Visual Showcase Canvas */}
-                <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 space-y-3 shadow-2xs">
-                  <div className="text-[11px] text-slate-500 flex items-center justify-between border-b border-slate-200/60 pb-2">
-                    <span className="font-semibold text-[#0b1c30]">Static Image Shields</span>
-                    <span className="font-mono text-[10px] text-slate-400">img.shields.io</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center pt-1 min-h-[52px]">
-                    <img
-                      src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"
-                      alt="React"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"
-                      alt="TypeScript"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"
-                      alt="Node.js"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"
-                      alt="Python"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"
-                      alt="Docker"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                    <img
-                      src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white"
-                      alt="AWS"
-                      className="h-6 rounded object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="h-5 flex items-center text-[11px] font-mono text-slate-400 border-t border-slate-100 pt-2">
-                    <span>Self-reported image URLs · 0 Git webhooks</span>
-                  </div>
-                </div>
-              </div>
-
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#424754] leading-relaxed pt-2">
-                <li className="flex items-start gap-2">
-                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Can be copied and pasted in 30 seconds from online generator templates.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Proves familiarity with markdown image syntax, not real Git workflow skills.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <XCircle size={15} className="text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Hiring managers and senior engineers scroll right past it to commit history.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Right Box: Official GitHub Webhook Medallions */}
-            <div className="p-6 sm:p-7 space-y-5 bg-[#f8fafd] flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
-                  <div>
-                    <span className="text-[11px] font-mono text-[#1a7f37] font-bold uppercase tracking-wider block">
-                      Verifiable proof
-                    </span>
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#0b1c30] tracking-[-0.02em] mt-0.5">
-                      GitHub Profile Medallions
-                    </h3>
-                  </div>
-                  <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/90 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1.5 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Server-Verified
-                  </span>
-                </div>
-
-                {/* Clean Visual Showcase Canvas */}
-                <div className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 space-y-3 shadow-2xs">
-                  <div className="text-[11px] text-slate-500 flex items-center justify-between border-b border-slate-200/60 pb-2">
-                    <span className="font-semibold text-[#0b1c30]">Official Profile Achievements</span>
-                    <span className="font-mono text-[10px] text-emerald-600 font-semibold">github.com/profile</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 sm:gap-3 pt-1 min-h-[52px]">
-                    {[
-                      {
-                        name: 'Pull Shark',
-                        tier: 'x2',
-                        img: '/images/badges/pull-shark.png',
-                        trigger: 'Merged 2 pull requests on default branch',
-                      },
-                      {
-                        name: 'Quickdraw',
-                        img: '/images/badges/quickdraw.png',
-                        trigger: 'Closed an issue/PR within 5 min of opening',
-                      },
-                      {
-                        name: 'Pair Extraordinaire',
-                        img: '/images/badges/pair-extraordinaire.png',
-                        trigger: 'Co-authored a commit with Git trailer',
-                      },
-                      {
-                        name: 'YOLO',
-                        img: '/images/badges/yolo.png',
-                        trigger: 'Merged a pull request without code review',
-                      },
-                      {
-                        name: 'Starstruck',
-                        img: '/images/badges/starstruck.png',
-                        trigger: 'Created a repository that earned stars',
-                      },
-                    ].map((item) => (
+              {/* Heatmap Grid */}
+              <div className="p-4 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] overflow-x-auto">
+                <div className="flex items-center gap-1.5 min-w-[500px]">
+                  {Array.from({ length: 32 }).map((_, i) => {
+                    const levels = ['bg-[#EBEDF0]', 'bg-[#9BE9A8]', 'bg-[#40C463]', 'bg-[#30A14E]', 'bg-[#216E39]'];
+                    const level = i % 7 === 0 ? levels[3] : i % 3 === 0 ? levels[2] : i % 5 === 0 ? levels[1] : levels[0];
+                    return (
                       <div
-                        key={item.name}
-                        onMouseEnter={() => setInspectedMedal(item)}
-                        onMouseLeave={() => setInspectedMedal(null)}
-                        onClick={() =>
-                          setInspectedMedal(
-                            inspectedMedal?.name === item.name ? null : item
-                          )
-                        }
-                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#f8f9ff] border border-slate-200/90 p-1.5 shadow-2xs hover:border-[#1a7f37] hover:bg-white hover:scale-105 transition-all cursor-pointer select-none"
-                        title={`${item.name}${item.tier ? ` (${item.tier})` : ''}: ${item.trigger}`}
-                      >
-                        <img
-                          src={item.img}
-                          alt={item.name}
-                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain select-none"
-                          loading="lazy"
-                        />
-                        {item.tier && (
-                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] px-1 rounded-full border border-[#2da44e]/30 shadow-2xs">
-                            {item.tier}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="h-5 flex items-center text-[11px] font-mono overflow-hidden border-t border-slate-100 pt-2">
-                    {inspectedMedal ? (
-                      <span className="text-[#1a7f37] truncate font-medium">
-                        <span className="font-bold text-[#0b1c30]">
-                          {inspectedMedal.name}
-                          {inspectedMedal.tier ? ` ${inspectedMedal.tier}` : ''}:
-                        </span>{' '}
-                        {inspectedMedal.trigger}
-                      </span>
-                    ) : (
-                      <span className="text-slate-500">
-                        Hover any medal to inspect verified Git trigger
-                      </span>
-                    )}
-                  </div>
+                        key={i}
+                        className={cn('w-3.5 h-3.5 rounded-xs transition-transform hover:scale-125', level)}
+                        title={`Day ${i + 1}: Verified Git Activity`}
+                      />
+                    );
+                  })}
                 </div>
               </div>
-
-              <ul className="space-y-2.5 text-xs sm:text-sm text-[#0b1c30] font-medium leading-relaxed pt-2">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Awarded automatically by GitHub server webhooks on real Git events.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Stamped directly onto your public GitHub profile header next to your bio.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 size={15} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Proves genuine branch hygiene, co-author trailers, and PR etiquette.</span>
-                </li>
-              </ul>
             </div>
 
+            {/* Skill Mastery Row */}
+            <div className="grid md:grid-cols-3 gap-4 pt-2">
+              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#161B22]">Git Branching</span>
+                  <span className="font-mono text-[#2da44e] font-bold">Level 2</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
+                  <div className="h-full bg-[#2da44e] w-[80%]" />
+                </div>
+              </div>
+              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#161B22]">PR Etiquette</span>
+                  <span className="font-mono text-[#2da44e] font-bold">Level 3</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
+                  <div className="h-full bg-[#2da44e] w-[100%]" />
+                </div>
+              </div>
+              <div className="p-4 rounded-xl bg-[#F6F8FA] border border-[#D0D7DE] space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#161B22]">Git Trailers</span>
+                  <span className="font-mono text-[#2da44e] font-bold">Level 1</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-[#E1E4E8] overflow-hidden">
+                  <div className="h-full bg-[#2da44e] w-[60%]" />
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ─── SECTION 4: Simple, Clear FAQ ─────────────────────────────────── */}
-        <InteractiveFAQSection />
-
-        {/* ─── Final Direct Launch Action Ribbon (Harmonized Signature Style) ─── */}
-        <section className="rounded-[32px] bg-[#0b1c30] border border-slate-800 p-8 sm:p-14 text-center space-y-5 mb-8 relative overflow-hidden shadow-2xl">
-          {/* Subtle Ambient Background Glows */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full filter blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full filter blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[#40c463] text-[11px] font-mono font-bold uppercase tracking-[0.16em] shadow-sm">
-              <span className="w-1.5 h-1.5 bg-[#40c463] rounded-full animate-pulse" />
-              1-Click Execution
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-white tracking-[-0.035em] leading-[1.12]">
-              Ready to Claim Your First Official GitHub Medallion?
+      {/* ─── SECTION 07: REAL WORK. REAL CONTRIBUTIONS. ────────────────────── */}
+      <section
+        id="comparison"
+        className="scroll-mt-20 py-20 bg-[#FFFFFF] border-b border-[#D0D7DE] select-none text-left"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center space-y-3 mb-14">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+              <span>Authenticity First</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#161B22] tracking-[-0.035em] leading-[1.12]">
+              Not another GitHub profile generator.
             </h2>
-            <p className="text-base sm:text-lg text-white/80 max-w-xl mx-auto font-normal leading-relaxed">
-              Start with Quickdraw for an instant 120-second win, or advance to Pull Shark 🦈 to begin your tier multipliers.
+            <p className="text-base sm:text-lg text-[#656D76] max-w-2xl mx-auto font-normal leading-relaxed">
+              Why tech leads and engineering hiring managers respect official profile achievements instead of copy-pasted README shields.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
-              <Link
-                to="/blueprints/gitglow/engine?badge=quickdraw"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white hover:bg-slate-100 text-[#0b1c30] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
-              >
-                Claim Quickdraw (120s) →
-              </Link>
-              <Link
-                to="/blueprints/gitglow/engine?badge=pull-shark"
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
-              >
-                Claim Pull Shark 🦈
-              </Link>
+          </div>
+
+          {/* Comparison Cards Grid */}
+          <div className="rounded-[28px] border border-[#D0D7DE] bg-white divide-y md:divide-y-0 md:divide-x divide-[#D0D7DE] grid md:grid-cols-2 overflow-hidden shadow-sm">
+            {/* Left Card: Typical README Generators */}
+            <div className="p-7 sm:p-9 space-y-6 bg-[#F6F8FA]/60 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E1E4E8]">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#656D76] font-bold uppercase tracking-wider block">
+                      Typical Tools
+                    </span>
+                    <h3 className="text-xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
+                      README Profile Generators
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full font-bold">
+                    Zero Verification
+                  </span>
+                </div>
+
+                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#656D76] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />
+                    <span><strong>Static image decorations:</strong> Anyone can copy markdown badges into a README in under 10 seconds.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />
+                    <span><strong>Passive tutorials:</strong> Explains Git theory without hands-on practice, leaving beginners stuck when merge conflicts arise.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />
+                    <span><strong>Fake skill claims:</strong> Generates "90% React" progress bars that provide zero proof of repository activity.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <XCircle size={16} className="text-rose-500 shrink-0 mt-0.5" />
+                    <span><strong>Superficial appearance:</strong> Experienced engineering managers scroll straight past README badges to inspect commit history.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Right Card: GitGlow Guided Missions */}
+            <div className="p-7 sm:p-9 space-y-6 bg-white flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E1E4E8]">
+                  <div>
+                    <span className="text-[11px] font-mono text-[#2da44e] font-bold uppercase tracking-wider block">
+                      The GitGlow Way
+                    </span>
+                    <h3 className="text-xl font-extrabold text-[#161B22] tracking-tight mt-0.5">
+                      Guided Missions &amp; Real Activity
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#1a7f37] bg-[#dafbe1] border border-[#2da44e]/30 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1">
+                    <Check size={11} /> Server Verified
+                  </span>
+                </div>
+
+                <ul className="space-y-3.5 text-xs sm:text-[13px] text-[#161B22] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <span><strong>Guided hands-on missions:</strong> Step-by-step CLI execution that builds genuine muscle memory for feature branching.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <span><strong>Real pull requests &amp; merges:</strong> Authentic GitHub commits indexed by GitHub official event webhooks.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <span><strong>Multi-tier multipliers:</strong> Track progress toward Pull Shark x16 and Galaxy Brain x32 milestones.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-[#2da44e] shrink-0 mt-0.5" />
+                    <span><strong>Actual developer growth:</strong> You earn achievements by doing real work, producing a profile that tech leads respect.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-      </div>
+      {/* ─── SECTION 08: FINAL CTA & FOOTER ────────────────────────────────── */}
+      <section
+        id="community"
+        className="scroll-mt-20 py-20 bg-[#FFFFFF] select-none text-left"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Action Ribbon Card */}
+          <div className="rounded-[32px] bg-[#0D1117] text-white p-8 sm:p-14 text-center space-y-6 mb-20 relative overflow-hidden shadow-2xl border border-[#30363D]">
+            <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#238636]/30 border border-[#2ea043]/40 text-[#7ee787] text-[11px] font-mono font-bold uppercase tracking-[0.16em]">
+                <span className="w-1.5 h-1.5 bg-[#7ee787] rounded-full animate-pulse" />
+                1-Click Mission Execution
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-white tracking-[-0.035em] leading-[1.12]">
+                Your next GitHub achievement starts today.
+              </h2>
+              <p className="text-base sm:text-lg text-white/80 max-w-lg mx-auto font-normal leading-relaxed">
+                Choose a mission. Make your first contribution. Start building a profile that means something.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+                <a
+                  href="#missions"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#A3E635] hover:bg-[#bef264] text-[#0D1117] font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg cursor-pointer"
+                >
+                  Start Your First Mission →
+                </a>
+                <a
+                  href="#achievements"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs uppercase tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
+                >
+                  Explore Achievements
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Clean Dedicated GitGlow Footer */}
+          <footer className="pt-12 border-t border-[#D0D7DE]">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+              {/* Brand Column */}
+              <div className="col-span-2 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-[8px] bg-[#0D1117] border border-white/15 flex items-center justify-center relative">
+                    <Github size={15} className="text-white fill-current" />
+                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-[#A3E635]" />
+                  </div>
+                  <span className="text-lg font-bold text-[#161B22] tracking-tight">
+                    GitGlow
+                  </span>
+                </div>
+                <p className="text-xs text-[#656D76] leading-relaxed max-w-sm font-medium">
+                  The guided mission platform for authentic GitHub developer achievements. Built to help beginners contribute meaningfully.
+                </p>
+              </div>
+
+              {/* Column 1: Missions */}
+              <div className="space-y-2.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                  Missions
+                </h4>
+                <ul className="space-y-2 text-xs text-[#656D76]">
+                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Quickdraw (120s)</a></li>
+                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Pull Shark (PR Merge)</a></li>
+                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Pair Programming</a></li>
+                  <li><a href="#missions" className="hover:text-[#161B22] transition-colors">Open Source Track</a></li>
+                </ul>
+              </div>
+
+              {/* Column 2: Achievements */}
+              <div className="space-y-2.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                  Achievements
+                </h4>
+                <ul className="space-y-2 text-xs text-[#656D76]">
+                  <li><a href="#achievements" className="hover:text-[#161B22] transition-colors">Official Badges</a></li>
+                  <li><a href="#achievements" className="hover:text-[#161B22] transition-colors">Multi-Tier Multipliers</a></li>
+                  <li><a href="#first-achievement" className="hover:text-[#161B22] transition-colors">Webhook Rules</a></li>
+                  <li><a href="#how-it-works" className="hover:text-[#161B22] transition-colors">How It Works</a></li>
+                </ul>
+              </div>
+
+              {/* Column 3: Community & Legal */}
+              <div className="space-y-2.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#161B22]">
+                  Community
+                </h4>
+                <ul className="space-y-2 text-xs text-[#656D76]">
+                  <li><Link to="/blueprints" className="hover:text-[#161B22] transition-colors">All Blueprints</Link></li>
+                  <li><a href="https://github.com/guchchi" target="_blank" rel="noopener noreferrer" className="hover:text-[#161B22] transition-colors">GitHub Repository</a></li>
+                  <li><Link to="/privacy" className="hover:text-[#161B22] transition-colors">Privacy Policy</Link></li>
+                  <li><Link to="/terms" className="hover:text-[#161B22] transition-colors">Terms of Service</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom Disclaimer */}
+            <div className="pt-8 border-t border-[#E1E4E8] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#656D76]">
+              <p>© 2026 GitGlow. An independent open-source blueprint platform.</p>
+              <p className="text-[11px] text-[#8b949e]">
+                GitHub and the GitHub logo are registered trademarks of GitHub, Inc.
+              </p>
+            </div>
+          </footer>
+        </div>
+      </section>
+
     </div>
   );
 };
