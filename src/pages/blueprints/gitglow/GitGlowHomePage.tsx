@@ -227,91 +227,8 @@ const GUIDED_MISSIONS: GuidedMission[] = [
   },
 ];
 
-// ─── 3D Hero Graphic Helpers ──────────────────────────────────────────────────
-const SparkleStar: React.FC<{ className?: string; size?: number }> = ({ className, size = 16 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="#2da44e"
-    className={cn('text-[#2da44e]', className)}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
-  </svg>
-);
-
-const HexBadge: React.FC<{
-  icon: 'git' | 'star';
-  className?: string;
-  size?: number;
-}> = ({ icon, className, size = 52 }) => (
-  <div className={cn('relative select-none pointer-events-none', className)}>
-    <svg
-      width={size}
-      height={size * 1.15}
-      viewBox="0 0 60 70"
-      fill="none"
-      className="filter drop-shadow-[0_8px_16px_rgba(45,164,78,0.35)]"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <polygon
-        points="30,4 56,19 56,51 30,66 4,51 4,19"
-        fill="#1a7f37"
-      />
-      <polygon
-        points="30,2 54,16 54,46 30,60 6,46 6,16"
-        fill="url(#hexGreenGrad)"
-      />
-      <polygon
-        points="30,5 51,17 51,44 30,57 9,44 9,17"
-        fill="none"
-        stroke="#4ac26b"
-        strokeWidth="1.5"
-        opacity="0.85"
-      />
-      <defs>
-        <linearGradient id="hexGreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#3fb950" />
-          <stop offset="100%" stopColor="#238636" />
-        </linearGradient>
-      </defs>
-    </svg>
-    <div className="absolute inset-0 flex items-center justify-center -translate-y-1 text-white">
-      {icon === 'git' ? (
-        <GitFork size={18} className="text-white stroke-[2.5]" />
-      ) : (
-        <Star size={16} className="text-white fill-white" />
-      )}
-    </div>
-  </div>
-);
-
-const OctocatSilhouette: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    viewBox="0 0 200 200"
-    className={cn('w-28 h-28 sm:w-36 sm:h-36 fill-white', className)}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M 110 46 C 103 46 96 48 92 50 C 88 41 83 32 78 26 C 76 36 72 45 68 53 C 60 62 58 70 58 76 C 58 87 70 94 82 97 C 81 106 80 114 79 122 C 70 124 60 126 52 118 C 46 112 47 104 52 100 C 50 98 44 102 41 109 C 36 119 39 130 47 138 C 55 146 68 147 78 142 L 80 162 C 80 165 82 166 85 166 L 97 166 C 100 166 102 164 102 161 L 104 144 C 108 144 116 144 120 144 L 122 161 C 122 164 124 166 127 166 L 139 166 C 142 166 144 165 144 162 L 144 130 C 145 116 142 104 138 97 C 150 94 162 87 162 76 C 162 70 160 62 152 53 C 148 45 144 36 142 26 C 137 32 132 41 128 50 C 124 48 117 46 110 46 Z" />
-  </svg>
-);
-
-const HERO_BADGE_PREVIEWS: Record<
-  string,
-  { line1: string; line2: string; icon: 'trophy' | 'timer' | 'zap' | 'brain' | 'users' | 'star' }
-> = {
-  'pull-shark': { line1: 'Pull Request', line2: 'Merged', icon: 'trophy' },
-  quickdraw: { line1: 'Issue Closed', line2: '< 300 Seconds', icon: 'timer' },
-  yolo: { line1: 'Direct Push', line2: 'Merged YOLO', icon: 'zap' },
-  'galaxy-brain': { line1: 'Discussion Answer', line2: 'Accepted', icon: 'brain' },
-  'pair-extraordinaire': { line1: 'Co-Authored Commit', line2: 'Merged PR', icon: 'users' },
-  starstruck: { line1: 'Community Stars', line2: '16 Reached', icon: 'star' },
-};
-
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
-  const [heroActiveBadgeId, setHeroActiveBadgeId] = useState<string>('pull-shark');
   const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
   const [missionCategoryFilter, setMissionCategoryFilter] = useState<string>('all');
   const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
@@ -461,8 +378,8 @@ export const GitGlowHomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
               >
-                <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[74px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.05]">
-                  Your GitHub profile is <br />
+                <h1 className="text-4xl sm:text-5xl lg:text-[60px] xl:text-[66px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.08]">
+                  Your GitHub profile is <br className="hidden sm:inline" />
                   <span className="text-[#2da44e]">about to get interesting.</span>
                 </h1>
               </motion.div>
@@ -472,7 +389,7 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[#656D76] text-base sm:text-lg lg:text-[19px] leading-relaxed max-w-[530px] font-medium"
+                className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[500px] font-normal"
               >
                 Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
               </motion.p>
@@ -482,7 +399,7 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.18 }}
-                className="flex items-center flex-wrap gap-4 pt-1"
+                className="flex items-center flex-wrap gap-3.5 pt-1"
               >
                 <a
                   href="#achievements"
@@ -490,11 +407,11 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[52px] px-8 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2da44e] group cursor-pointer select-none"
+                  className="h-[48px] px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
                   aria-label="Explore authentic GitHub achievement badges"
                 >
                   <span>Explore Achievements</span>
-                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </a>
 
                 <a
@@ -503,10 +420,10 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[52px] px-8 rounded-full bg-white hover:bg-slate-50 text-[#161B22] border border-[#D0D7DE] text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2da44e] cursor-pointer select-none"
+                  className="h-[48px] px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
                   aria-label="Start your first guided GitHub mission"
                 >
-                  <Play size={13} className="text-[#2da44e] fill-[#2da44e]" />
+                  <Play size={12} className="text-[#2da44e] fill-[#2da44e]" />
                   <span>Start Your First Mission</span>
                 </a>
               </motion.div>
@@ -516,7 +433,7 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-semibold text-[#656D76]"
+                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
               >
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-[#2da44e]" />
@@ -540,230 +457,79 @@ export const GitGlowHomePage: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* ── RIGHT: 3D Achievement Showcase Visual (Matching User Brief & Mockup) ── */}
+            {/* ── RIGHT: 3D Achievement Showcase Visual (High-Res Rendered Asset + Interactive Dock) ── */}
             <motion.div
               initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
-              className="lg:col-span-6 xl:col-span-6 relative w-full flex flex-col items-center justify-center select-none pt-4 pb-2"
+              className="lg:col-span-6 xl:col-span-6 relative w-full flex flex-col items-center justify-center select-none"
             >
-              {/* Outer Graphic Showcase Stage */}
-              <div className="relative w-full max-w-[460px] sm:max-w-[500px] flex items-center justify-center py-6 sm:py-8">
-                
-                {/* 1. Subtle Background Grid Texture Layer */}
+              <div className="relative w-full max-w-[480px] sm:max-w-[510px] group">
+                {/* Subtle Ambient Glow */}
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 pointer-events-none opacity-40"
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(#E2E8F0 1px, transparent 1px), linear-gradient(90deg, #E2E8F0 1px, transparent 1px)',
-                    backgroundSize: '28px 28px',
-                    maskImage: 'radial-gradient(circle at center, black 45%, transparent 75%)',
-                    WebkitMaskImage: 'radial-gradient(circle at center, black 45%, transparent 75%)',
-                  }}
+                  className="absolute -inset-4 bg-gradient-to-tr from-[#2da44e]/15 via-emerald-100/30 to-lime-200/20 rounded-[44px] blur-2xl opacity-60 pointer-events-none group-hover:opacity-80 transition-opacity duration-500"
                 />
 
-                {/* 2. Delicate Faint Wireframe Circle (Left Side) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slate-300/60 pointer-events-none"
-                />
-
-                {/* 3. Floating 4-Point Green Sparkles */}
-                <div className="absolute top-4 right-14 sm:right-20 pointer-events-none animate-pulse">
-                  <SparkleStar size={16} />
-                </div>
-                <div className="absolute top-1/3 left-2 sm:left-6 pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}>
-                  <SparkleStar size={14} />
-                </div>
-
-                {/* 4. Elliptical Orbit Ring - Back Arc (Behind Central Card, z-0) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-                >
-                  <svg
-                    viewBox="0 0 500 300"
-                    className="w-[125%] h-[125%] -rotate-[22deg] overflow-visible"
-                    fill="none"
-                  >
-                    {/* Back Arc: Loops behind top of card */}
-                    <path
-                      d="M 40 150 A 210 80 0 0 1 460 150"
-                      stroke="#2da44e"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      className="opacity-95"
-                    />
-                  </svg>
-                </div>
-
-                {/* 5. Central Dark Squircle Card with GitHub Sitting Cat Silhouette (z-10) */}
+                {/* 3D Illustration Showcase Card */}
                 <motion.div
                   animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative z-10 w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-[40px] sm:rounded-[48px] bg-gradient-to-b from-[#21262d] via-[#161b22] to-[#0d1117] border border-[#30363d]/70 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.32),inset_0_1px_1px_rgba(255,255,255,0.14)] flex items-center justify-center cursor-default group"
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                  className="relative rounded-[32px] sm:rounded-[36px] overflow-hidden border border-[#D0D7DE]/90 bg-[#FFFFFF] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]"
                 >
-                  {/* Subtle Top Inner Sheen */}
-                  <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-                  {/* Sitting GitHub Octocat Silhouette */}
-                  <OctocatSilhouette className="transition-transform duration-300 group-hover:scale-105" />
+                  <img
+                    src="/images/gitglow/hero-illustration.jpg"
+                    alt="GitGlow Guided Missions & GitHub Achievement Showcase"
+                    className="w-full h-auto object-cover select-none transform transition-transform duration-500 group-hover:scale-[1.01]"
+                    loading="eager"
+                  />
                 </motion.div>
 
-                {/* 6. Elliptical Orbit Ring - Front Arc (In Front of Central Card, z-20) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
-                >
-                  <svg
-                    viewBox="0 0 500 300"
-                    className="w-[125%] h-[125%] -rotate-[22deg] overflow-visible"
-                    fill="none"
-                  >
-                    {/* Front Arc: Loops in front across bottom */}
-                    <path
-                      d="M 460 150 A 210 80 0 0 1 40 150"
-                      stroke="#2da44e"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      className="opacity-95 drop-shadow-[0_2px_8px_rgba(45,164,78,0.35)]"
-                    />
-                  </svg>
-                </div>
-
-                {/* 7. Floating Top-Left 3D Hexagonal Badge: Git Branch / Fork (z-25) */}
-                <motion.div
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                  className="absolute top-4 left-0 sm:-left-3 z-25 pointer-events-none"
-                >
-                  <HexBadge icon="git" size={54} />
-                </motion.div>
-
-                {/* 8. Floating Top-Right Pill: "Pull Request Merged" (z-30) */}
-                <motion.div
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                  className="absolute -top-3 right-0 sm:-right-4 z-30"
-                >
-                  {/* Celebratory Green Rays */}
-                  <div className="absolute -top-3.5 right-6 flex items-end justify-center gap-1 text-[#2da44e] pointer-events-none">
-                    <span className="w-0.5 h-2.5 bg-[#2da44e] rounded-full -rotate-[24deg] transform origin-bottom" />
-                    <span className="w-0.5 h-3.5 bg-[#2da44e] rounded-full" />
-                    <span className="w-0.5 h-2.5 bg-[#2da44e] rounded-full rotate-[24deg] transform origin-bottom" />
+                {/* Interactive Achievement Dock Directly Below */}
+                <div className="mt-4 p-2 sm:p-2.5 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] shadow-xs">
+                  <div className="flex items-center justify-between px-2 pb-1.5 text-[10px] font-mono text-[#656D76] uppercase tracking-wider font-semibold">
+                    <span>Authentic Badge Targets</span>
+                    <span className="text-[#2da44e] font-bold">100% Legitimate</span>
                   </div>
-
-                  {/* White Pill Card */}
-                  <div className="bg-white rounded-2xl shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 p-3 sm:p-3.5 pr-4 flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center text-amber-500 shrink-0">
-                      {(() => {
-                        const preview = HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark'];
-                        if (preview.icon === 'timer') return <Clock size={18} className="text-amber-600" />;
-                        if (preview.icon === 'zap') return <Zap size={18} className="text-amber-600" />;
-                        if (preview.icon === 'brain') return <Sparkles size={18} className="text-amber-600" />;
-                        if (preview.icon === 'users') return <Users size={18} className="text-amber-600" />;
-                        if (preview.icon === 'star') return <Star size={18} className="fill-amber-400 text-amber-600" />;
-                        return <Trophy size={18} className="fill-amber-400/30 text-amber-600" />;
-                      })()}
-                    </div>
-                    <div className="text-left">
-                      <p className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight">
-                        {(HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark']).line1}
-                      </p>
-                      <p className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight">
-                        {(HERO_BADGE_PREVIEWS[heroActiveBadgeId] || HERO_BADGE_PREVIEWS['pull-shark']).line2}
-                      </p>
-                    </div>
-                    <div className="w-6 h-6 rounded-full border-2 border-[#2da44e] flex items-center justify-center text-[#2da44e] ml-1 shrink-0">
-                      <Check size={13} strokeWidth={3} />
-                    </div>
+                  <div className="grid grid-cols-6 gap-1.5 bg-white p-2 rounded-xl border border-[#D0D7DE]/70">
+                    {[
+                      { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
+                      { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
+                      { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
+                      { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
+                      { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', img: '/images/badges/pair-extraordinaire.png' },
+                      { id: 'starstruck', name: 'Starstruck', img: '/images/badges/starstruck.png' },
+                    ].map((badge) => {
+                      const isSelected = selectedBadgeId === badge.id;
+                      return (
+                        <button
+                          key={badge.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedBadgeId(badge.id);
+                            document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          className={cn(
+                            'relative flex flex-col items-center justify-center p-1.5 rounded-lg transition-all duration-150 cursor-pointer group/btn',
+                            isSelected
+                              ? 'bg-[#dafbe1] border border-[#2da44e] shadow-2xs scale-105'
+                              : 'hover:bg-slate-100 opacity-80 hover:opacity-100 border border-transparent'
+                          )}
+                          title={`Target: ${badge.name} (Click to inspect mission)`}
+                        >
+                          <img
+                            src={badge.img}
+                            alt={badge.name}
+                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain transition-transform group-hover/btn:scale-110"
+                            loading="lazy"
+                          />
+                          {isSelected && (
+                            <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
-                </motion.div>
-
-                {/* 9. Floating Bottom-Left Pill: "Mission Completed!" (z-30) */}
-                <motion.div
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-                  className="absolute -bottom-3 left-0 sm:-left-4 z-30"
-                >
-                  <div className="bg-white rounded-full sm:rounded-2xl shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.05)] border border-slate-100 px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-6 h-6 rounded-full border-2 border-[#2da44e] flex items-center justify-center text-[#2da44e] shrink-0">
-                      <Check size={13} strokeWidth={3} />
-                    </div>
-                    <span className="text-xs sm:text-sm font-bold text-[#161B22] tracking-tight whitespace-nowrap">
-                      Mission Completed!
-                    </span>
-                  </div>
-                </motion.div>
-
-                {/* 10. Floating Bottom-Right 3D Hexagonal Badge: Star (z-25) */}
-                <motion.div
-                  animate={{ y: [0, 5, 0] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                  className="absolute bottom-2 right-1 sm:-right-2 z-25 pointer-events-none"
-                >
-                  <HexBadge icon="star" size={54} />
-                </motion.div>
-
-                {/* 11. Subtle DEV badge in bottom-right corner */}
-                <div className="absolute -bottom-4 right-1 sm:right-3 z-30 flex items-center gap-1.5 pointer-events-none">
-                  <div className="relative w-8 h-8 rounded-full bg-[#0969da] text-white flex items-center justify-center shadow-md">
-                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 10H6v-2h12v2zm0-3H6V7h12v2z" />
-                    </svg>
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#f85149] ring-2 ring-white" />
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-mono font-bold shadow-2xs">
-                    DEV
-                  </span>
-                </div>
-              </div>
-
-              {/* 12. Authentic GitHub Badges Interactive Dock (Beneath the 3D Graphic) */}
-              <div className="w-full max-w-[420px] sm:max-w-[460px] mt-6 p-2 sm:p-2.5 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] shadow-xs">
-                <div className="flex items-center justify-between px-2 pb-1.5 text-[10px] font-mono text-[#656D76] uppercase tracking-wider font-semibold">
-                  <span>Authentic Badge Targets</span>
-                  <span className="text-[#2da44e] font-bold">100% Legitimate</span>
-                </div>
-                <div className="grid grid-cols-6 gap-1.5 bg-white p-2 rounded-xl border border-[#D0D7DE]/70">
-                  {[
-                    { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
-                    { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
-                    { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
-                    { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
-                    { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', img: '/images/badges/pair-extraordinaire.png' },
-                    { id: 'starstruck', name: 'Starstruck', img: '/images/badges/starstruck.png' },
-                  ].map((badge) => {
-                    const isSelected = heroActiveBadgeId === badge.id;
-                    return (
-                      <button
-                        key={badge.id}
-                        type="button"
-                        onClick={() => {
-                          setHeroActiveBadgeId(badge.id);
-                          setSelectedBadgeId(badge.id);
-                        }}
-                        className={cn(
-                          'relative flex flex-col items-center justify-center p-1.5 rounded-lg transition-all duration-150 cursor-pointer group',
-                          isSelected
-                            ? 'bg-[#dafbe1] border border-[#2da44e] shadow-2xs scale-105'
-                            : 'hover:bg-slate-100 opacity-75 hover:opacity-100 border border-transparent'
-                        )}
-                        title={`Target: ${badge.name}`}
-                      >
-                        <img
-                          src={badge.img}
-                          alt={badge.name}
-                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
-                          loading="lazy"
-                        />
-                        {isSelected && (
-                          <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
-                        )}
-                      </button>
-                    );
-                  })}
                 </div>
               </div>
             </motion.div>
