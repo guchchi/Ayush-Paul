@@ -35,17 +35,19 @@ export const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const scrollDiff = currentScrollY - lastScrollY.current;
       
       setIsScrolled(currentScrollY > 20);
 
       // Hide or show logic based on scroll direction
-      if (currentScrollY <= 50) {
+      if (currentScrollY <= 40) {
+        // Near top of page: always keep visible
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide navbar
+      } else if (scrollDiff > 6) {
+        // Scrolling down: hide navbar
         setIsVisible(false);
-      } else {
-        // Scrolling up - show navbar
+      } else if (scrollDiff < -3) {
+        // Scrolling up even slightly: reveal navbar immediately
         setIsVisible(true);
       }
 
@@ -303,17 +305,23 @@ export const Navbar = () => {
         ) : isGitGlow ? (
           /* Supaste-Exact Hanging Dynamic Island Notch Navbar for GitGlow */
           <motion.div
-            initial={{ y: -60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: -70, opacity: 0 }}
+            animate={{ 
+              y: isVisible ? 0 : -85,
+              opacity: isVisible ? 1 : 0,
+            }}
             transition={{
               type: 'spring',
-              stiffness: 260,
-              damping: 20,
-              mass: 0.8,
+              stiffness: 340,
+              damping: 28,
+              mass: 0.5,
             }}
-            className="pointer-events-auto relative select-none max-w-[calc(100vw-24px)]"
+            className={cn(
+              "relative select-none max-w-[calc(100vw-24px)]",
+              isVisible ? "pointer-events-auto" : "pointer-events-none"
+            )}
           >
-            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_16px_36px_rgba(0,0,0,0.85)]">
+            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_8px_24px_-4px_rgba(0,0,0,0.18),0_2px_6px_-1px_rgba(0,0,0,0.08)]">
               {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
               <div
                 aria-hidden="true"
