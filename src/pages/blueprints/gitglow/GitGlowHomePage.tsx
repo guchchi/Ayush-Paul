@@ -505,20 +505,14 @@ export const GitGlowHomePage: React.FC = () => {
         id="hero"
         className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#f8f9ff] text-[#0b1c30] overflow-hidden border-b border-slate-200/80"
       >
-        {/* Subtle, Tasteful Ambient Atmosphere (Clean GitHub Green Vibe) */}
+        {/* Clean Architectural Grid Overlay (No Color Fog / Blur) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 overflow-hidden"
         >
-          {/* Gentle soft top-center GitHub contribution green bloom */}
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] sm:w-[1100px] h-[400px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-400/20 via-green-300/10 to-transparent blur-[100px]" />
-          
-          {/* Soft neutral top-right GitHub green accent */}
-          <div className="absolute -top-16 -right-20 w-[450px] h-[380px] rounded-full bg-emerald-200/15 blur-[100px]" />
-
           {/* Delicate Architectural Grid Overlay */}
           <div
-            className="absolute inset-0 opacity-[0.25]"
+            className="absolute inset-0 opacity-[0.22]"
             style={{
               backgroundImage:
                 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)',
@@ -683,13 +677,7 @@ export const GitGlowHomePage: React.FC = () => {
               transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
               className="lg:col-span-5 relative h-[380px] sm:h-[460px] w-full flex items-center justify-center select-none scale-[0.82] sm:scale-95 md:scale-100 origin-center max-w-full"
             >
-              {/* Natural Soft Floor Shadow with GitHub Contribution Green Glow */}
-              <div
-                aria-hidden="true"
-                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[320px] h-[40px] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(45,164,78,0.22)_0%,_rgba(11,28,48,0.08)_45%,_transparent_75%)] blur-lg pointer-events-none"
-              />
-
-              {/* Luminous GitHub Contribution Orbital Ring */}
+              {/* Clean GitHub Contribution Orbital Ring (Crisp Vector Stroke, No Fog) */}
               <svg
                 aria-hidden="true"
                 className="absolute -inset-10 w-[130%] h-[130%] pointer-events-none overflow-visible"
@@ -702,10 +690,9 @@ export const GitGlowHomePage: React.FC = () => {
                   ry="88"
                   fill="none"
                   stroke="url(#orbitGlowGrad)"
-                  strokeWidth="2.6"
+                  strokeWidth="2.2"
                   transform="rotate(-18 200 200)"
-                  opacity="0.9"
-                  style={{ filter: 'drop-shadow(0 0 8px rgba(45, 164, 78, 0.45))' }}
+                  opacity="0.85"
                 />
                 <defs>
                   <linearGradient id="orbitGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -722,7 +709,7 @@ export const GitGlowHomePage: React.FC = () => {
                 whileHover={{ scale: 1.03, rotateY: -10, rotateX: 6 }}
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4.6, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative z-10 w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] rounded-[44px] sm:rounded-[50px] bg-gradient-to-br from-[#1e2330] via-[#0d1017] to-[#040608] border border-white/20 shadow-[0_32px_64px_-15px_rgba(11,28,48,0.38)] flex items-center justify-center overflow-hidden cursor-pointer group"
+                className="relative z-10 w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] rounded-[44px] sm:rounded-[50px] bg-gradient-to-br from-[#1e2330] via-[#0d1017] to-[#040608] border border-white/20 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.22)] flex items-center justify-center overflow-hidden cursor-pointer group"
                 style={{
                   transform: 'perspective(1100px) rotateY(-15deg) rotateX(8deg) rotateZ(-3deg)',
                 }}
