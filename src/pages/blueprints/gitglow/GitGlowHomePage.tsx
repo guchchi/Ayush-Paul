@@ -345,6 +345,7 @@ interface ScannedProfileData {
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
   const [selectedCategory, setSelectedCategory] = useState<string>('starter');
+  const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
   const [githubInput, setGithubInput] = useState<string>('arivera-dev');
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
@@ -454,13 +455,23 @@ export const GitGlowHomePage: React.FC = () => {
   };
 
   const filteredBadges = useMemo(() => {
-    if (selectedCategory === 'all') return GITHUB_BADGES;
-    if (selectedCategory === 'starter') return GITHUB_BADGES.filter((b) => b.isRecommendedStarter);
-    if (selectedCategory === 'obtainable') return GITHUB_BADGES.filter((b) => b.isObtainable);
-    if (selectedCategory === 'tiers') return GITHUB_BADGES.filter((b) => b.tiers && b.tiers.length > 0);
-    if (selectedCategory === 'legacy') return GITHUB_BADGES.filter((b) => !b.isObtainable);
-    return GITHUB_BADGES;
-  }, [selectedCategory]);
+    let list = GITHUB_BADGES;
+    if (selectedCategory === 'starter') list = list.filter((b) => b.isRecommendedStarter);
+    else if (selectedCategory === 'obtainable') list = list.filter((b) => b.isObtainable);
+    else if (selectedCategory === 'tiers') list = list.filter((b) => b.tiers && b.tiers.length > 0);
+    else if (selectedCategory === 'legacy') list = list.filter((b) => !b.isObtainable);
+
+    if (badgeSearchQuery.trim()) {
+      const q = badgeSearchQuery.toLowerCase().trim();
+      list = list.filter(
+        (b) =>
+          b.name.toLowerCase().includes(q) ||
+          b.tagline.toLowerCase().includes(q) ||
+          b.category.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [selectedCategory, badgeSearchQuery]);
 
   const activeBadge = useMemo(() => {
     return GITHUB_BADGES.find((b) => b.id === selectedBadgeId) || GITHUB_BADGES[0];
@@ -617,12 +628,20 @@ export const GitGlowHomePage: React.FC = () => {
                 </a>
 
                 <a
-                  href="#catalog"
+                  href="#recipe-terminal"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+                    const el = document.getElementById('recipe-terminal');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth' });
+                      el.classList.add('ring-4', 'ring-[#d1f34d]', 'shadow-xl');
+                      setTimeout(() => el.classList.remove('ring-4', 'ring-[#d1f34d]', 'shadow-xl'), 2500);
+                    } else {
+                      document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
-                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0969da] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer"
+                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0969da] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer min-h-[44px]"
+                  aria-label="Learn how GitGlow works and view step-by-step commands"
                 >
                   <span className="w-10 h-10 rounded-full bg-white hover:bg-slate-100 border border-slate-200 shadow-2xs flex items-center justify-center transition-colors">
                     <Play size={13} className="text-[#0b1c30] fill-[#0b1c30] ml-0.5" />
@@ -661,7 +680,7 @@ export const GitGlowHomePage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
-              className="lg:col-span-5 relative h-[400px] sm:h-[460px] w-full flex items-center justify-center select-none"
+              className="lg:col-span-5 relative h-[380px] sm:h-[460px] w-full flex items-center justify-center select-none scale-[0.82] sm:scale-95 md:scale-100 origin-center max-w-full"
             >
               {/* Natural Soft Floor Shadow (Clean deep neutral depth) */}
               <div
@@ -791,76 +810,122 @@ export const GitGlowHomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Muted Filter Tabs */}
-          <div className="flex items-center justify-center gap-1.5 p-1 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs w-fit mx-auto mb-6 flex-wrap">
-            {[
-              { id: 'starter', label: 'Starter (4)' },
-              { id: 'tiers', label: 'Multi-Tier (4)' },
-              { id: 'all', label: 'All Badges (10)' },
-              { id: 'legacy', label: 'Historic (1)' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedCategory(tab.id)}
-                className={cn(
-                  'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none active:scale-95',
-                  selectedCategory === tab.id
-                    ? 'bg-[#0b1c30] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-[#0b1c30] hover:bg-slate-100/70'
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Medallions Showcase Shelf */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
-            {filteredBadges.map((badge) => {
-              const isSelected = badge.id === activeBadge.id;
-              return (
+          {/* Filter Tabs & Search Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 max-w-3xl mx-auto">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs flex-wrap justify-center">
+              {[
+                { id: 'starter', label: 'Starter (4)' },
+                { id: 'tiers', label: 'Multi-Tier (4)' },
+                { id: 'all', label: 'All Badges (10)' },
+                { id: 'legacy', label: 'Historic (1)' },
+              ].map((tab) => (
                 <button
-                  key={badge.id}
-                  onClick={() => setSelectedBadgeId(badge.id)}
+                  key={tab.id}
+                  onClick={() => setSelectedCategory(tab.id)}
                   className={cn(
-                    'p-3.5 rounded-2xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95',
-                    isSelected
-                      ? 'bg-white border-[#0058be] shadow-[0_4px_20px_rgba(0,88,190,0.14)] ring-2 ring-[#0058be]/25 -translate-y-0.5'
-                      : 'bg-white border-slate-200/90 hover:border-[#0058be]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
+                    'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none active:scale-95 min-h-[36px]',
+                    selectedCategory === tab.id
+                      ? 'bg-[#0b1c30] text-white shadow-xs'
+                      : 'text-slate-600 hover:text-[#0b1c30] hover:bg-slate-100/70'
                   )}
                 >
-                  <div className="relative w-12 h-12 flex items-center justify-center">
-                    <img
-                      src={badge.image}
-                      alt={badge.name}
-                      className={cn(
-                        'w-10 h-10 object-contain transition-transform duration-200 select-none',
-                        isSelected
-                          ? 'scale-110 drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]'
-                          : 'group-hover:scale-105 opacity-90'
-                      )}
-                      loading="lazy"
-                    />
-                    {badge.tiers && badge.tiers.length > 0 && (
-                      <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200/80 shadow-2xs">
-                        x4
-                      </span>
-                    )}
-                  </div>
-                  <span
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative w-full sm:w-56">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search badges..."
+                value={badgeSearchQuery}
+                onChange={(e) => setBadgeSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-7 py-1.5 rounded-xl border border-slate-200/90 bg-white text-xs text-[#0b1c30] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0969da]/30 focus:border-[#0969da] shadow-2xs font-medium min-h-[36px]"
+                aria-label="Filter badges by name or requirement"
+              />
+              {badgeSearchQuery && (
+                <button
+                  onClick={() => setBadgeSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                  aria-label="Clear badge search query"
+                >
+                  <XCircle size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Medallions Showcase Shelf with Empty State Fallback */}
+          {filteredBadges.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-6">
+              {filteredBadges.map((badge) => {
+                const isSelected = badge.id === activeBadge.id;
+                return (
+                  <button
+                    key={badge.id}
+                    onClick={() => setSelectedBadgeId(badge.id)}
                     className={cn(
-                      'text-xs font-semibold truncate w-full',
+                      'p-3.5 rounded-2xl border flex flex-col items-center gap-2 text-center transition-all duration-150 cursor-pointer select-none relative group hover:-translate-y-0.5 active:scale-95 min-h-[44px]',
                       isSelected
-                        ? 'text-[#0b1c30]'
-                        : 'text-slate-600 group-hover:text-[#0b1c30]'
+                        ? 'bg-white border-[#0058be] shadow-[0_4px_20px_rgba(0,88,190,0.14)] ring-2 ring-[#0058be]/25 -translate-y-0.5'
+                        : 'bg-white border-slate-200/90 hover:border-[#0058be]/40 hover:bg-[#f8f9ff] hover:shadow-xs'
                     )}
                   >
-                    {badge.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                      <img
+                        src={badge.image}
+                        alt={badge.name}
+                        className={cn(
+                          'w-10 h-10 object-contain transition-transform duration-200 select-none',
+                          isSelected
+                            ? 'scale-110 drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]'
+                            : 'group-hover:scale-105 opacity-90'
+                        )}
+                        loading="lazy"
+                      />
+                      {badge.tiers && badge.tiers.length > 0 && (
+                        <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200/80 shadow-2xs">
+                          x4
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={cn(
+                        'text-xs font-semibold truncate w-full',
+                        isSelected
+                          ? 'text-[#0b1c30]'
+                          : 'text-slate-600 group-hover:text-[#0b1c30]'
+                      )}
+                    >
+                      {badge.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="py-12 px-4 text-center rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3 mb-6">
+              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                <Search size={20} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-bold text-[#0b1c30]">No matching badges found</h4>
+                <p className="text-xs text-[#424754]">
+                  No badges match &ldquo;{badgeSearchQuery}&rdquo;. Try clearing search or exploring Starter badges.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setBadgeSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="px-4 py-1.5 rounded-full bg-[#0b1c30] text-white text-xs font-semibold hover:bg-[#1a3050] transition-colors cursor-pointer min-h-[44px]"
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
 
           {/* Single Unified Blueprint Card */}
           <div className="rounded-[28px] border border-slate-200/90 bg-white divide-y md:divide-y-0 md:divide-x divide-slate-200/80 grid md:grid-cols-12 overflow-hidden shadow-sm">
@@ -951,14 +1016,22 @@ export const GitGlowHomePage: React.FC = () => {
             </div>
 
             {/* Right: 3-Step Git Blueprint & Commands (7 cols) */}
-            <div id="recipes" className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#f8fafd] flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
+            <div
+              id="recipe-terminal"
+              className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#f8fafd] flex flex-col justify-between space-y-6 transition-all duration-300 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px]"
+            >
+              <div id="recipes" className="space-y-4">
                 {/* Recipe Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
                   <div>
-                    <span className="text-[11px] font-mono text-[#0058be] font-bold uppercase tracking-wider block">
-                      Blueprint recipe
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-mono text-[#0969da] font-bold uppercase tracking-wider block">
+                        Blueprint recipe
+                      </span>
+                      <span className="text-[10px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-2 py-0.5 rounded-full shadow-2xs">
+                        3-Station Run
+                      </span>
+                    </div>
                     <h3 className="text-base font-extrabold text-[#0b1c30] mt-0.5">
                       Step-by-Step Git Commands
                     </h3>
