@@ -8,6 +8,12 @@ import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
 import { auth, onAuthStateChanged } from "../firebase";
 
+const AppleIcon = ({ className = "w-3.5 h-3.5 fill-current" }: { className?: string }) => (
+  <svg viewBox="0 0 170 170" className={className} fill="currentColor">
+    <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.6-7.79-11.71-14.24-5.74-9.04-10.23-19.16-13.48-30.34-3.26-11.19-4.89-21.9-4.89-32.16 0-14.39 3.53-26.33 10.59-35.81 7.06-9.48 16.03-14.34 26.91-14.59 4.93.07 10.15 1.25 15.65 3.54 5.51 2.29 9.38 3.51 11.61 3.67 1.83-.16 5.86-1.42 12.08-3.79 6.23-2.37 11.62-3.41 16.18-3.14 12.23.63 21.84 5.14 28.84 13.53-10.89 6.64-16.22 15.86-16 27.66.24 9.16 3.73 16.89 10.47 23.2 6.74 6.31 14.78 9.92 24.12 10.83-2.02 6.27-4.45 12.57-7.29 18.91zM119.22 31.84c0-7.39 2.66-14.39 7.98-21.01 5.32-6.62 11.79-10.55 19.41-11.83.18 1.04.27 2.08.27 3.12 0 7.39-2.73 14.53-8.19 21.43-5.46 6.9-12 10.74-19.63 11.52-.28-1.07-.42-2.14-.42-3.23z" />
+  </svg>
+);
+
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -313,7 +319,7 @@ export const Navbar = () => {
             }}
             className="pointer-events-auto relative select-none max-w-[calc(100vw-24px)]"
           >
-            <div className="relative bg-black text-white h-[54px] px-4 rounded-b-[18px] flex items-center justify-between gap-7 lg:gap-10 border-0 outline-none shadow-[0_16px_36px_rgba(0,0,0,0.85)]">
+            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_16px_36px_rgba(0,0,0,0.85)]">
               {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
               <div
                 aria-hidden="true"
@@ -348,46 +354,56 @@ export const Navbar = () => {
                 to="/blueprints/gitglow"
                 className="flex items-center gap-2.5 group cursor-pointer shrink-0"
               >
-                <div className="w-[30px] h-[30px] rounded-[8px] bg-gradient-to-b from-[#2d7df6] via-[#1062e6] to-[#004cd7] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6),inset_0_-1px_1px_rgba(0,0,0,0.3),0_2px_6px_rgba(0,76,215,0.4)] flex items-center justify-center relative overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105">
-                  <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/40 to-transparent rounded-t-[7px] pointer-events-none" />
-                  <Github size={16} className="text-white relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]" />
+                <div className="w-[30px] h-[30px] rounded-[8px] bg-gradient-to-b from-[#38bdf8] via-[#1648e8] to-[#0d36c2] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7),inset_0_-1px_1px_rgba(0,0,0,0.3),0_2px_6px_rgba(22,72,232,0.4)] flex items-center justify-center relative overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105">
+                  <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/45 to-transparent rounded-t-[7px] pointer-events-none" />
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-white relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="16" rx="3" fill="currentColor" fillOpacity="0.2" />
+                    <line x1="7" y1="9" x2="17" y2="9" />
+                    <line x1="7" y1="13" x2="14" y2="13" />
+                  </svg>
                 </div>
                 <span className="text-[16px] font-semibold tracking-[-0.02em] text-white">
-                  GitGlow
+                  Supaste
                 </span>
               </Link>
 
-              {/* Center: Desktop Nav Links (Supaste exact: 14px, 500 weight, -0.02em, 60% opacity -> 100% hover, 5 clear options) */}
-              <div className="hidden md:flex items-center gap-6 lg:gap-7">
+              {/* Center: Desktop Nav Links (Supaste exact: Features, FAQ, Updates, Cooldock, Screen Movie, Pricing) */}
+              <div className="hidden md:flex items-center gap-5 lg:gap-7">
                 <a
                   href="#catalog"
                   className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
-                  Badges
-                </a>
-                <a
-                  href="#recipes"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Recipes
-                </a>
-                <a
-                  href="#compare"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Compare
-                </a>
-                <a
-                  href="#tiers"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Tiers
+                  Features
                 </a>
                 <a
                   href="#faq"
                   className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
                   FAQ
+                </a>
+                <a
+                  href="#tiers"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Updates
+                </a>
+                <a
+                  href="#recipes"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Cooldock
+                </a>
+                <a
+                  href="#pipeline"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Screen Movie
+                </a>
+                <a
+                  href="#compare"
+                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Pricing
                 </a>
               </div>
 
@@ -397,8 +413,8 @@ export const Navbar = () => {
                   href="#recipes"
                   className="h-[32px] px-3.5 rounded-[8px] bg-white hover:bg-[#ededed] text-black text-[12px] font-semibold tracking-[-0.01em] inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
                 >
-                  <Github size={13} className="text-black fill-current" />
-                  <span>Claim Medallion</span>
+                  <AppleIcon className="w-3.5 h-3.5 fill-current text-black" />
+                  <span>Download</span>
                 </a>
               </div>
             </div>
