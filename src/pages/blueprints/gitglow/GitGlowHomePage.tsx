@@ -227,6 +227,188 @@ const GUIDED_MISSIONS: GuidedMission[] = [
   },
 ];
 
+// ─── 3D Flying Badge Card Component ──────────────────────────────────────────
+const FlyingBadgeCard: React.FC<{
+  badgeImg: string;
+  name: string;
+  tag: string;
+  rotateY?: number;
+  rotateX?: number;
+  rotateZ?: number;
+  yOffset?: number[];
+  duration?: number;
+  className?: string;
+  onClick?: () => void;
+}> = ({
+  badgeImg,
+  name,
+  tag,
+  rotateY = 0,
+  rotateX = 0,
+  rotateZ = 0,
+  yOffset = [0, -10, 0],
+  duration = 5,
+  className,
+  onClick,
+}) => (
+  <motion.div
+    animate={{ y: yOffset }}
+    transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+    style={{
+      perspective: 1000,
+    }}
+    className={cn('cursor-pointer select-none group', className)}
+    onClick={onClick}
+  >
+    <div
+      style={{
+        transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
+        transformStyle: 'preserve-3d',
+      }}
+      className="relative p-2.5 sm:p-3 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_22px_44px_-8px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105 group-hover:border-[#2da44e]/60"
+    >
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center p-1 shrink-0 shadow-2xs group-hover:border-[#2da44e]/30 transition-colors">
+          <img
+            src={badgeImg}
+            alt={name}
+            className="w-full h-full object-contain filter drop-shadow-sm group-hover:scale-110 transition-transform duration-300"
+            loading="lazy"
+          />
+        </div>
+        <div className="text-left pr-1">
+          <div className="text-xs sm:text-[13px] font-bold text-[#161B22] leading-tight flex items-center gap-1.5">
+            <span>{name}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
+          </div>
+          <div className="text-[10px] font-mono text-[#656D76] font-medium mt-0.5">
+            {tag}
+          </div>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ─── 3D Green Hexagon Badge (Matching GitHub Elements Reference) ─────────────
+const GreenHexBadge: React.FC<{
+  icon: 'fork' | 'star';
+  size?: number;
+  className?: string;
+  rotateY?: number;
+  rotateX?: number;
+  rotateZ?: number;
+  yOffset?: number[];
+  duration?: number;
+}> = ({
+  icon,
+  size = 54,
+  className,
+  rotateY = 0,
+  rotateX = 0,
+  rotateZ = 0,
+  yOffset = [0, -8, 0],
+  duration = 4.8,
+}) => (
+  <motion.div
+    animate={{ y: yOffset }}
+    transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+    style={{ perspective: 1000 }}
+    className={cn('cursor-pointer select-none group', className)}
+  >
+    <div
+      style={{
+        transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
+        transformStyle: 'preserve-3d',
+      }}
+      className="relative filter drop-shadow-[0_12px_24px_rgba(45,164,78,0.32)] transition-transform duration-300 group-hover:scale-110"
+    >
+      <svg width={size} height={size * 1.15} viewBox="0 0 100 115" fill="none">
+        <defs>
+          <linearGradient id={`hexGrad-${icon}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3fb950" />
+            <stop offset="50%" stopColor="#238636" />
+            <stop offset="100%" stopColor="#196c2e" />
+          </linearGradient>
+          <linearGradient id={`hexStroke-${icon}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#7ee787" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#0d4420" stopOpacity="0.95" />
+          </linearGradient>
+        </defs>
+        {/* 3D bottom extrusion */}
+        <polygon points="50,5 95,29 95,84 50,108 5,84 5,29" fill="#144620" transform="translate(0, 5)" />
+        {/* Main Hex Face */}
+        <polygon points="50,4 94,28 94,83 50,107 6,83 6,28" fill={`url(#hexGrad-${icon})`} stroke={`url(#hexStroke-${icon})`} strokeWidth="3.5" />
+        {/* Inner Bevel highlight */}
+        <polygon points="50,12 86,32 86,79 50,99 14,79 14,32" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center text-white pb-1.5 pointer-events-none">
+        {icon === 'fork' ? <GitFork size={size * 0.42} strokeWidth={2.4} /> : <Star size={size * 0.42} className="fill-white" />}
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ─── Floating Status Pill Component (Exact Match to GitHub Elements) ──────────
+const FloatingStatusPill: React.FC<{
+  type: 'pr' | 'mission';
+  rotateY?: number;
+  rotateX?: number;
+  rotateZ?: number;
+  yOffset?: number[];
+  duration?: number;
+  className?: string;
+}> = ({
+  type,
+  rotateY = 0,
+  rotateX = 0,
+  rotateZ = 0,
+  yOffset = [0, -10, 0],
+  duration = 5.2,
+  className,
+}) => (
+  <motion.div
+    animate={{ y: yOffset }}
+    transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+    style={{ perspective: 1000 }}
+    className={cn('select-none group pointer-events-auto', className)}
+  >
+    <div
+      style={{
+        transform: `rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
+        transformStyle: 'preserve-3d',
+      }}
+      className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/95 backdrop-blur-md border border-[#D0D7DE] shadow-[0_16px_36px_-6px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)] group-hover:shadow-[0_20px_40px_-6px_rgba(0,0,0,0.18)] transition-all duration-300 group-hover:scale-105"
+    >
+      {type === 'pr' ? (
+        <>
+          <div className="w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-2xs">
+            <Trophy size={14} />
+          </div>
+          <span className="text-xs sm:text-[13px] font-bold text-[#161B22] tracking-tight">Pull Request Merged</span>
+          <div className="w-5 h-5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/40 flex items-center justify-center ml-0.5">
+            <Check size={11} strokeWidth={3} />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="w-5 h-5 rounded-full bg-[#2da44e] text-white flex items-center justify-center shadow-2xs">
+            <Check size={11} strokeWidth={3} />
+          </div>
+          <span className="text-xs sm:text-[13px] font-bold text-[#161B22] tracking-tight">Mission Completed!</span>
+        </>
+      )}
+    </div>
+  </motion.div>
+);
+
+// ─── 4-Point Sparkle Icon ────────────────────────────────────────────────────
+const SparkleStar: React.FC<{ size?: number; className?: string }> = ({ size = 16, className }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={cn('text-[#2da44e]', className)}>
+    <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
+  </svg>
+);
+
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
   const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
@@ -234,6 +416,34 @@ export const GitGlowHomePage: React.FC = () => {
   const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [activeFaqId, setActiveFaqId] = useState<number | null>(null);
+
+  // Centered Username Scanner State
+  const [usernameInput, setUsernameInput] = useState<string>('');
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanResult, setScanResult] = useState<{ handle: string; targetId: string; targetName: string } | null>(null);
+
+  const simulateProfileScan = (handle: string) => {
+    const cleanHandle = handle.trim().replace(/^@/, '') || 'developer';
+    setIsScanning(true);
+    setScanResult(null);
+    setTimeout(() => {
+      setIsScanning(false);
+      setScanResult({
+        handle: cleanHandle,
+        targetId: 'pull-shark',
+        targetName: 'Pull Shark (First PR Merge)',
+      });
+    }, 650);
+  };
+
+  const handleScanProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!usernameInput.trim()) {
+      simulateProfileScan('developer');
+      return;
+    }
+    simulateProfileScan(usernameInput);
+  };
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -357,14 +567,172 @@ export const GitGlowHomePage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-            {/* ── LEFT: Copy & CTAs (6 cols) ── */}
-            <div className="lg:col-span-6 xl:col-span-6 space-y-6 text-left">
+          {/* ── AMBIENT GREEN ORBITAL RINGS (Matching GitHub Elements Reference) ── */}
+          <div
+            aria-hidden="true"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[760px] md:w-[980px] lg:w-[1180px] h-[340px] md:h-[420px] rounded-[100%] border border-[#2da44e]/20 rotate-[-12deg] pointer-events-none"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] md:w-[920px] lg:w-[1120px] h-[320px] md:h-[390px] rounded-[100%] border border-[#2da44e]/10 rotate-[-8deg] pointer-events-none"
+          />
+
+          <div className="relative min-h-[560px] flex flex-col items-center justify-center">
+            {/* ── LEFT FLANK: 3D Flying Badges & GitHub Elements ── */}
+            <div className="hidden lg:block absolute left-0 xl:-left-4 top-1/2 -translate-y-1/2 w-64 xl:w-72 pointer-events-auto z-10">
+              <div className="relative h-[480px]">
+                {/* 1. Pull Shark 3D Badge */}
+                <FlyingBadgeCard
+                  badgeImg="/images/badges/pull-shark.png"
+                  name="Pull Shark"
+                  tag="First PR Merged"
+                  rotateY={-16}
+                  rotateX={8}
+                  rotateZ={-3}
+                  yOffset={[0, -12, 0]}
+                  duration={5.6}
+                  className="absolute top-2 left-4 xl:left-2"
+                  onClick={() => {
+                    setSelectedBadgeId('pull-shark');
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+
+                {/* 2. Pull Request Merged Status Pill (Exact match to user's photo) */}
+                <FloatingStatusPill
+                  type="pr"
+                  rotateY={-12}
+                  rotateX={4}
+                  rotateZ={2}
+                  yOffset={[-6, 6, -6]}
+                  duration={4.8}
+                  className="absolute top-[138px] left-0 xl:-left-2"
+                />
+
+                {/* 3. 3D Green Hexagon Badge with Git Fork */}
+                <GreenHexBadge
+                  icon="fork"
+                  size={58}
+                  rotateY={-18}
+                  rotateX={12}
+                  rotateZ={-6}
+                  yOffset={[0, -10, 0]}
+                  duration={6.2}
+                  className="absolute top-[228px] left-8 xl:left-12"
+                />
+
+                {/* 4. Quickdraw 3D Badge */}
+                <FlyingBadgeCard
+                  badgeImg="/images/badges/quickdraw.png"
+                  name="Quickdraw"
+                  tag="Issue Closed <5m"
+                  rotateY={-10}
+                  rotateX={-6}
+                  rotateZ={4}
+                  yOffset={[-8, 8, -8]}
+                  duration={5.2}
+                  className="absolute bottom-4 left-2 xl:left-0"
+                  onClick={() => {
+                    setSelectedBadgeId('quickdraw');
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+
+                {/* Sparkle star & soft circle accents from image */}
+                <div className="absolute top-24 right-4 pointer-events-none opacity-80">
+                  <SparkleStar size={16} />
+                </div>
+                <div className="absolute bottom-28 right-8 w-4 h-4 rounded-full border border-[#2da44e]/35 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* ── RIGHT FLANK: 3D Flying Badges & GitHub Elements ── */}
+            <div className="hidden lg:block absolute right-0 xl:-right-4 top-1/2 -translate-y-1/2 w-64 xl:w-72 pointer-events-auto z-10">
+              <div className="relative h-[480px]">
+                {/* 1. Galaxy Brain 3D Badge */}
+                <FlyingBadgeCard
+                  badgeImg="/images/badges/galaxy-brain.png"
+                  name="Galaxy Brain"
+                  tag="Accepted Answer"
+                  rotateY={16}
+                  rotateX={6}
+                  rotateZ={3}
+                  yOffset={[0, -14, 0]}
+                  duration={5.4}
+                  className="absolute top-2 right-4 xl:right-2"
+                  onClick={() => {
+                    setSelectedBadgeId('galaxy-brain');
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+
+                {/* 2. Mission Completed Status Pill (Exact match to user's photo) */}
+                <FloatingStatusPill
+                  type="mission"
+                  rotateY={12}
+                  rotateX={4}
+                  rotateZ={-2}
+                  yOffset={[-5, 7, -5]}
+                  duration={4.6}
+                  className="absolute top-[138px] right-0 xl:-right-2"
+                />
+
+                {/* 3. 3D Green Hexagon Badge with Star */}
+                <GreenHexBadge
+                  icon="star"
+                  size={58}
+                  rotateY={18}
+                  rotateX={10}
+                  rotateZ={6}
+                  yOffset={[0, -11, 0]}
+                  duration={5.8}
+                  className="absolute top-[228px] right-8 xl:right-12"
+                />
+
+                {/* 4. YOLO 3D Badge */}
+                <FlyingBadgeCard
+                  badgeImg="/images/badges/yolo.png"
+                  name="YOLO"
+                  tag="Direct PR Merge"
+                  rotateY={12}
+                  rotateX={-8}
+                  rotateZ={-3}
+                  yOffset={[-7, 7, -7]}
+                  duration={6}
+                  className="absolute bottom-4 right-2 xl:right-0"
+                  onClick={() => {
+                    setSelectedBadgeId('yolo');
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+
+                {/* Sparkle star & soft circle accents from image */}
+                <div className="absolute top-24 left-4 pointer-events-none opacity-80">
+                  <SparkleStar size={16} />
+                </div>
+                <div className="absolute bottom-24 left-8 w-4 h-4 rounded-full border border-[#2da44e]/35 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* ── CENTER: Clean, Focused, No-Noise Composition ── */}
+            <div className="relative z-20 max-w-2xl mx-auto text-center space-y-6 px-2 sm:px-4">
+              {/* Central GitHub Squircle Icon Accent (Matching user reference) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+                className="flex items-center justify-center"
+              >
+                <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#0D1117] flex items-center justify-center text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] border border-white/10 group hover:scale-105 transition-transform duration-300">
+                  <Github size={28} className="text-white" />
+                </div>
+              </motion.div>
+
               {/* Eyebrow Pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.04 }}
               >
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30 text-[11px] font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
                   <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
@@ -372,13 +740,13 @@ export const GitGlowHomePage: React.FC = () => {
                 </div>
               </motion.div>
 
-              {/* Bold Headline */}
+              {/* Headline */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.08 }}
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-[60px] xl:text-[66px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.08]">
+                <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.1]">
                   Your GitHub profile is <br className="hidden sm:inline" />
                   <span className="text-[#2da44e]">about to get interesting.</span>
                 </h1>
@@ -389,17 +757,108 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[500px] font-normal"
+                className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[560px] mx-auto font-normal"
               >
                 Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
               </motion.p>
+
+              {/* ── Centered Username Input Capsule ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.16 }}
+                className="max-w-xl mx-auto pt-1 w-full"
+              >
+                <form onSubmit={handleScanProfile} className="relative flex items-center">
+                  <div className="relative w-full flex items-center rounded-full bg-white border-2 border-[#D0D7DE] focus-within:border-[#2da44e] shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
+                    <div className="flex items-center gap-1.5 text-[#656D76] font-mono text-xs sm:text-sm select-none pr-1">
+                      <Github size={17} className="text-[#161B22]" />
+                      <span className="text-slate-400 font-normal">github.com/</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={usernameInput}
+                      onChange={(e) => setUsernameInput(e.target.value)}
+                      placeholder="your-username"
+                      aria-label="GitHub username to inspect missions"
+                      className="w-full bg-transparent text-sm sm:text-base font-medium text-[#161B22] placeholder:text-slate-400 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isScanning}
+                      className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#2da44e] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
+                    >
+                      {isScanning ? (
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>Scanning...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Scan Profile</span>
+                          <ArrowRight size={14} />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                {/* Quick-try chips */}
+                <div className="flex items-center justify-center flex-wrap gap-2 pt-3 text-xs text-[#656D76]">
+                  <span className="text-slate-400 text-[11px] font-medium">Try with:</span>
+                  {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
+                    <button
+                      key={user}
+                      type="button"
+                      onClick={() => {
+                        setUsernameInput(user);
+                        simulateProfileScan(user);
+                      }}
+                      className="px-2.5 py-0.5 rounded-md bg-[#F6F8FA] hover:bg-slate-200 text-[#161B22] border border-[#D0D7DE] text-[11px] font-mono transition-colors cursor-pointer"
+                    >
+                      @{user}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Real-time Scan Result Toast */}
+                {scanResult && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className="mt-4 p-3.5 rounded-2xl bg-[#dafbe1]/95 border border-[#2da44e]/50 text-left flex items-center justify-between gap-3 shadow-xs"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2da44e] animate-ping" />
+                      <div>
+                        <div className="text-xs font-bold text-[#1a7f37]">
+                          Profile @{scanResult.handle} ready for first achievement!
+                        </div>
+                        <div className="text-[11px] text-[#24292f]">
+                          Recommended starter mission: <strong>{scanResult.targetName}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedBadgeId(scanResult.targetId);
+                        document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="px-3.5 py-1.5 rounded-full bg-[#2da44e] hover:bg-[#238636] text-white text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
+                    >
+                      Start Mission →
+                    </button>
+                  </motion.div>
+                )}
+              </motion.div>
 
               {/* Action Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.18 }}
-                className="flex items-center flex-wrap gap-3.5 pt-1"
+                transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.2 }}
+                className="flex items-center justify-center flex-wrap gap-3.5 pt-2"
               >
                 <a
                   href="#achievements"
@@ -407,8 +866,7 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[48px] px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
-                  aria-label="Explore authentic GitHub achievement badges"
+                  className="h-[46px] px-6 sm:px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
                 >
                   <span>Explore Achievements</span>
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -420,119 +878,69 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[48px] px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
-                  aria-label="Start your first guided GitHub mission"
+                  className="h-[46px] px-6 sm:px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
                 >
                   <Play size={12} className="text-[#2da44e] fill-[#2da44e]" />
                   <span>Start Your First Mission</span>
                 </a>
               </motion.div>
 
-              {/* Compact Value Row */}
+              {/* Trust & Transparency Badges */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
+                className="flex items-center justify-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-[#D0D7DE] text-xs sm:text-[13px] font-medium text-[#656D76]"
               >
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[#2da44e]" />
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 size={14} className="text-[#2da44e]" />
                   <span>Guided Missions</span>
                 </div>
-                <div className="hidden sm:block text-slate-300">|</div>
-                <div className="flex items-center gap-2">
-                  <GitPullRequest size={15} className="text-[#2da44e]" />
+                <div className="hidden sm:block text-slate-300">·</div>
+                <div className="flex items-center gap-1.5">
+                  <GitPullRequest size={14} className="text-[#2da44e]" />
                   <span>Real Pull Requests</span>
                 </div>
-                <div className="hidden sm:block text-slate-300">|</div>
-                <div className="flex items-center gap-2">
-                  <Award size={15} className="text-[#2da44e]" />
+                <div className="hidden sm:block text-slate-300">·</div>
+                <div className="flex items-center gap-1.5">
+                  <Award size={14} className="text-[#2da44e]" />
                   <span>Verified Badges</span>
                 </div>
-                <div className="hidden sm:block text-slate-300">|</div>
-                <div className="flex items-center gap-2">
-                  <Shield size={15} className="text-[#2da44e]" />
-                  <span>100% Legitimate</span>
+                <div className="hidden sm:block text-slate-300">·</div>
+                <div className="flex items-center gap-1.5">
+                  <Shield size={14} className="text-[#2da44e]" />
+                  <span>No OAuth Required</span>
                 </div>
               </motion.div>
-            </div>
 
-            {/* ── RIGHT: 3D Achievement Showcase Visual (High-Res Rendered Asset + Interactive Dock) ── */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
-              className="lg:col-span-6 xl:col-span-6 relative w-full flex flex-col items-center justify-center select-none"
-            >
-              <div className="relative w-full max-w-[480px] sm:max-w-[510px] group">
-                {/* Subtle Ambient Glow */}
-                <div
-                  aria-hidden="true"
-                  className="absolute -inset-4 bg-gradient-to-tr from-[#2da44e]/15 via-emerald-100/30 to-lime-200/20 rounded-[44px] blur-2xl opacity-60 pointer-events-none group-hover:opacity-80 transition-opacity duration-500"
-                />
-
-                {/* 3D Illustration Showcase Card */}
-                <motion.div
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative rounded-[32px] sm:rounded-[36px] overflow-hidden border border-[#D0D7DE]/90 bg-[#FFFFFF] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]"
-                >
-                  <img
-                    src="/images/gitglow/hero-illustration.jpg"
-                    alt="GitGlow Guided Missions & GitHub Achievement Showcase"
-                    className="w-full h-auto object-cover select-none transform transition-transform duration-500 group-hover:scale-[1.01]"
-                    loading="eager"
-                  />
-                </motion.div>
-
-                {/* Interactive Achievement Dock Directly Below */}
-                <div className="mt-4 p-2 sm:p-2.5 rounded-2xl bg-[#F6F8FA] border border-[#D0D7DE] shadow-xs">
-                  <div className="flex items-center justify-between px-2 pb-1.5 text-[10px] font-mono text-[#656D76] uppercase tracking-wider font-semibold">
-                    <span>Authentic Badge Targets</span>
-                    <span className="text-[#2da44e] font-bold">100% Legitimate</span>
-                  </div>
-                  <div className="grid grid-cols-6 gap-1.5 bg-white p-2 rounded-xl border border-[#D0D7DE]/70">
-                    {[
-                      { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
-                      { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
-                      { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
-                      { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
-                      { id: 'pair-extraordinaire', name: 'Pair Extraordinaire', img: '/images/badges/pair-extraordinaire.png' },
-                      { id: 'starstruck', name: 'Starstruck', img: '/images/badges/starstruck.png' },
-                    ].map((badge) => {
-                      const isSelected = selectedBadgeId === badge.id;
-                      return (
-                        <button
-                          key={badge.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedBadgeId(badge.id);
-                            document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          className={cn(
-                            'relative flex flex-col items-center justify-center p-1.5 rounded-lg transition-all duration-150 cursor-pointer group/btn',
-                            isSelected
-                              ? 'bg-[#dafbe1] border border-[#2da44e] shadow-2xs scale-105'
-                              : 'hover:bg-slate-100 opacity-80 hover:opacity-100 border border-transparent'
-                          )}
-                          title={`Target: ${badge.name} (Click to inspect mission)`}
-                        >
-                          <img
-                            src={badge.img}
-                            alt={badge.name}
-                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain transition-transform group-hover/btn:scale-110"
-                            loading="lazy"
-                          />
-                          {isSelected && (
-                            <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#2da44e]" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Mobile / Tablet Badge Strip (lg:hidden) */}
+              <div className="lg:hidden pt-4 pb-2">
+                <div className="text-[11px] font-mono text-[#656D76] font-semibold uppercase tracking-wider mb-2">
+                  Target Badges & Missions
+                </div>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {[
+                    { id: 'pull-shark', name: 'Pull Shark', img: '/images/badges/pull-shark.png' },
+                    { id: 'quickdraw', name: 'Quickdraw', img: '/images/badges/quickdraw.png' },
+                    { id: 'galaxy-brain', name: 'Galaxy Brain', img: '/images/badges/galaxy-brain.png' },
+                    { id: 'yolo', name: 'YOLO', img: '/images/badges/yolo.png' },
+                  ].map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedBadgeId(b.id);
+                        document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D0D7DE] shadow-2xs hover:border-[#2da44e] cursor-pointer"
+                    >
+                      <img src={b.img} alt={b.name} className="w-5 h-5 object-contain" />
+                      <span className="text-xs font-semibold text-[#161B22]">{b.name}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
