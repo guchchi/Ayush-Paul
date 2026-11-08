@@ -554,27 +554,34 @@ export const GitGlowHomePage: React.FC = () => {
                 <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[76px] font-extrabold text-[#0b1c30] tracking-[-0.038em] leading-[1.05]">
                   Earn real GitHub <br />
                   achievements. <br />
-                  <span className="text-[#0058be] relative inline-block">
+                  <span className="relative inline-block bg-gradient-to-r from-[#0969da] via-[#1a7f37] to-[#2da44e] bg-clip-text text-transparent">
                     By doing the work.
-                    {/* Decorative hand-drawn underline accent */}
+                    {/* Decorative GitHub Git-branch contribution line accent */}
                     <svg
                       viewBox="0 0 280 16"
                       fill="none"
-                      className="absolute -bottom-2 left-0 w-full h-[10px] text-[#0058be]/50 pointer-events-none"
+                      className="absolute -bottom-2 left-0 w-full h-[10px] pointer-events-none"
                     >
                       <path
                         d="M 4 10 C 60 4, 180 5, 274 8"
-                        stroke="currentColor"
+                        stroke="url(#githubUnderlineGrad)"
                         strokeWidth="3.2"
                         strokeLinecap="round"
                       />
                       <path
                         d="M 18 14 C 75 9, 160 10, 235 13"
-                        stroke="currentColor"
+                        stroke="#2da44e"
                         strokeWidth="2.2"
                         strokeLinecap="round"
-                        opacity="0.6"
+                        opacity="0.5"
                       />
+                      <defs>
+                        <linearGradient id="githubUnderlineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#0969da" />
+                          <stop offset="50%" stopColor="#1a7f37" />
+                          <stop offset="100%" stopColor="#2da44e" />
+                        </linearGradient>
+                      </defs>
                     </svg>
                   </span>
                 </h1>
@@ -615,7 +622,7 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0058be] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer"
+                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0969da] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer"
                 >
                   <span className="w-10 h-10 rounded-full bg-white hover:bg-slate-100 border border-slate-200 shadow-2xs flex items-center justify-center transition-colors">
                     <Play size={13} className="text-[#0b1c30] fill-[#0b1c30] ml-0.5" />
@@ -624,7 +631,7 @@ export const GitGlowHomePage: React.FC = () => {
                 </a>
               </motion.div>
 
-              {/* Compact Feature Row */}
+              {/* Compact Feature Row with GitHub Light Vibe */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -632,17 +639,18 @@ export const GitGlowHomePage: React.FC = () => {
                 className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-slate-200/80 text-xs sm:text-[13px] font-semibold text-[#424754]"
               >
                 <div className="flex items-center gap-2">
-                  <Rocket size={16} className="text-[#0b1c30]" />
+                  <span className="w-2 h-2 rounded-full bg-[#2da44e] animate-pulse" />
+                  <Rocket size={15} className="text-[#0b1c30]" />
                   <span>Real Missions</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <div className="flex items-center gap-2">
-                  <Award size={16} className="text-[#0b1c30]" />
+                  <Award size={15} className="text-[#0b1c30]" />
                   <span>Verified Badges</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <div className="flex items-center gap-2">
-                  <TrendingUp size={16} className="text-[#0b1c30]" />
+                  <TrendingUp size={15} className="text-[#0b1c30]" />
                   <span>Track Progress</span>
                 </div>
               </motion.div>
@@ -661,7 +669,7 @@ export const GitGlowHomePage: React.FC = () => {
                 className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[300px] h-[40px] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(11,28,48,0.22)_0%,_rgba(11,28,48,0.06)_50%,_transparent_75%)] blur-lg pointer-events-none"
               />
 
-              {/* Elegant Subtle Orbital Ring */}
+              {/* Elegant GitHub-Inspired Orbital Ring */}
               <svg
                 aria-hidden="true"
                 className="absolute -inset-10 w-[130%] h-[130%] pointer-events-none overflow-visible"
@@ -680,9 +688,9 @@ export const GitGlowHomePage: React.FC = () => {
                 />
                 <defs>
                   <linearGradient id="orbitGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#94a3b8" />
-                    <stop offset="50%" stopColor="#0058be" />
-                    <stop offset="100%" stopColor="#94a3b8" />
+                    <stop offset="0%" stopColor="#0969da" />
+                    <stop offset="50%" stopColor="#2da44e" />
+                    <stop offset="100%" stopColor="#0969da" />
                   </linearGradient>
                 </defs>
               </svg>
