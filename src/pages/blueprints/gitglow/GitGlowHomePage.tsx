@@ -489,37 +489,31 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] overflow-x-hidden selection:bg-[#d1f34d] selection:text-[#0b1c30]">
 
-      {/* ─── SECTION 1: Luminous Ethereal Hero (Supaste / 21st.dev Style Replica) ─── */}
+      {/* ─── SECTION 1: Luminous Ethereal Hero (Home-Page Refined Theme) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#f8fafd] text-slate-900 overflow-hidden border-b border-slate-200/80"
+        className="relative w-full pt-20 pb-20 sm:pt-24 sm:pb-28 bg-[#f8f9ff] text-[#0b1c30] overflow-hidden border-b border-slate-200/80"
       >
-        {/* Supaste-Signature Royal Cyan/Sky Ambient Atmosphere (Radiating beneath top notch) */}
+        {/* Subtle, Tasteful Ambient Atmosphere (Clean & Balanced, not oversaturated blue) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 overflow-hidden"
         >
-          {/* Intense top-center bloom radiating under the dynamic island notch */}
-          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[900px] sm:w-[1400px] h-[520px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#38bdf8]/35 via-[#60a5fa]/22 to-transparent blur-[85px]" />
+          {/* Gentle soft top-center bloom */}
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] sm:w-[1100px] h-[400px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-200/20 via-sky-100/10 to-transparent blur-[90px]" />
           
-          {/* Top-right ambient cloud */}
-          <div className="absolute -top-12 -right-16 w-[600px] h-[500px] rounded-full bg-[#60a5fa]/25 blur-[110px]" />
-          
-          {/* Top-left ambient cloud */}
-          <div className="absolute -top-12 -left-20 w-[550px] h-[450px] rounded-full bg-[#93c5fd]/30 blur-[100px]" />
-          
-          {/* Bottom-left organic curved petal bloom (exact reference match) */}
-          <div className="absolute -bottom-16 -left-16 w-[480px] h-[340px] rounded-tr-[160px] bg-gradient-to-tr from-[#93c5fd]/50 via-[#bfdbfe]/35 to-transparent blur-[70px]" />
+          {/* Soft neutral top-right accent */}
+          <div className="absolute -top-16 -right-20 w-[450px] h-[380px] rounded-full bg-blue-100/15 blur-[100px]" />
 
           {/* Delicate Architectural Grid Overlay */}
           <div
-            className="absolute inset-0 opacity-[0.45]"
+            className="absolute inset-0 opacity-[0.25]"
             style={{
               backgroundImage:
                 'linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)',
               backgroundSize: '48px 48px',
-              maskImage: 'radial-gradient(ellipse at center, black 50%, transparent 92%)',
-              WebkitMaskImage: 'radial-gradient(ellipse at center, black 50%, transparent 92%)',
+              maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 85%)',
             }}
           />
         </div>
@@ -529,7 +523,7 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="mb-6 sm:mb-8">
             <Link
               to="/blueprints"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-slate-900 transition-colors px-3 py-1 rounded-full bg-white/80 border border-slate-200 shadow-2xs select-none group"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 hover:text-[#0b1c30] transition-colors px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs select-none group"
             >
               <ArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
               <span>All Blueprints</span>
@@ -539,14 +533,14 @@ export const GitGlowHomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* ── LEFT: Copy & CTAs (7 cols) ── */}
             <div className="lg:col-span-7 space-y-6 text-left">
-              {/* Eyebrow Pill */}
+              {/* Eyebrow Pill with Home-Page Signature Lime Accent */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
               >
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#eff4ff] border border-[#dbeafe] text-[#1648e8] text-xs font-semibold tracking-tight shadow-2xs select-none">
-                  <Zap size={13} className="fill-current text-[#1648e8]" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#d1f34d] text-[#0b1c30] text-[10px] font-bold uppercase tracking-[0.2em] shadow-2xs select-none">
+                  <Zap size={12} className="fill-[#0b1c30] text-[#0b1c30]" />
                   <span>Level Up Your GitHub Profile</span>
                 </div>
               </motion.div>
@@ -557,16 +551,16 @@ export const GitGlowHomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
               >
-                <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[76px] font-black text-[#050505] tracking-[-0.038em] leading-[1.05]">
+                <h1 className="text-5xl sm:text-6xl lg:text-[68px] xl:text-[76px] font-extrabold text-[#0b1c30] tracking-[-0.038em] leading-[1.05]">
                   Earn real GitHub <br />
                   achievements. <br />
-                  <span className="text-[#1648e8] relative inline-block">
+                  <span className="text-[#0058be] relative inline-block">
                     By doing the work.
-                    {/* Decorative hand-drawn underline accent matching reference screenshot */}
+                    {/* Decorative hand-drawn underline accent */}
                     <svg
                       viewBox="0 0 280 16"
                       fill="none"
-                      className="absolute -bottom-2 left-0 w-full h-[10px] text-[#1648e8]/75 pointer-events-none"
+                      className="absolute -bottom-2 left-0 w-full h-[10px] text-[#0058be]/50 pointer-events-none"
                     >
                       <path
                         d="M 4 10 C 60 4, 180 5, 274 8"
@@ -591,12 +585,12 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-slate-600 text-base sm:text-lg lg:text-[19px] leading-relaxed max-w-[490px]"
+                className="text-[#424754] text-base sm:text-lg lg:text-[19px] leading-relaxed max-w-[490px] font-medium"
               >
                 Complete guided missions, make meaningful contributions, and build a profile that truly stands out.
               </motion.p>
 
-              {/* Action Buttons */}
+              {/* Action Buttons with Home-Page Theme */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -609,10 +603,10 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[50px] px-8 rounded-full bg-[#050505] hover:bg-slate-800 text-white text-[15px] font-semibold tracking-[-0.01em] inline-flex items-center gap-2.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-black/15 group cursor-pointer"
+                  className="h-[50px] px-8 rounded-full bg-[#0b1c30] hover:bg-[#1a3050] text-white text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2.5 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] shadow-md group cursor-pointer"
                 >
                   <span>Explore Missions</span>
-                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
                 </a>
 
                 <a
@@ -621,10 +615,10 @@ export const GitGlowHomePage: React.FC = () => {
                     e.preventDefault();
                     document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="inline-flex items-center gap-3 text-slate-800 hover:text-black text-[15px] font-semibold transition-colors py-2 px-3 group cursor-pointer"
+                  className="inline-flex items-center gap-3 text-[#0b1c30] hover:text-[#0058be] text-xs font-bold uppercase tracking-wider transition-colors py-2 px-3 group cursor-pointer"
                 >
-                  <span className="w-10 h-10 rounded-full bg-slate-100/90 group-hover:bg-slate-200 border border-slate-200/80 flex items-center justify-center transition-colors shadow-2xs">
-                    <Play size={13} className="text-slate-900 fill-slate-900 ml-0.5" />
+                  <span className="w-10 h-10 rounded-full bg-white hover:bg-slate-100 border border-slate-200 shadow-2xs flex items-center justify-center transition-colors">
+                    <Play size={13} className="text-[#0b1c30] fill-[#0b1c30] ml-0.5" />
                   </span>
                   <span>How it works</span>
                 </a>
@@ -635,20 +629,20 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.24 }}
-                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-slate-200/70 text-xs sm:text-[13.5px] font-medium text-slate-700"
+                className="flex items-center flex-wrap gap-4 sm:gap-6 pt-5 border-t border-slate-200/80 text-xs sm:text-[13px] font-semibold text-[#424754]"
               >
                 <div className="flex items-center gap-2">
-                  <Rocket size={16} className="text-slate-900" />
+                  <Rocket size={16} className="text-[#0b1c30]" />
                   <span>Real Missions</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <div className="flex items-center gap-2">
-                  <Award size={16} className="text-slate-900" />
+                  <Award size={16} className="text-[#0b1c30]" />
                   <span>Verified Badges</span>
                 </div>
                 <span className="text-slate-300">|</span>
                 <div className="flex items-center gap-2">
-                  <TrendingUp size={16} className="text-slate-900" />
+                  <TrendingUp size={16} className="text-[#0b1c30]" />
                   <span>Track Progress</span>
                 </div>
               </motion.div>
@@ -661,13 +655,13 @@ export const GitGlowHomePage: React.FC = () => {
               transition={{ duration: DURATION.SLOW, ease: EASING.PREMIUM, delay: 0.15 }}
               className="lg:col-span-5 relative h-[400px] sm:h-[460px] w-full flex items-center justify-center select-none"
             >
-              {/* Diffuse Floor Shadow with royal blue ambient core */}
+              {/* Natural Soft Floor Shadow (Clean deep neutral depth) */}
               <div
                 aria-hidden="true"
-                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[300px] h-[45px] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(22,72,232,0.45)_0%,_rgba(22,72,232,0.15)_45%,_transparent_75%)] blur-xl pointer-events-none"
+                className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[300px] h-[40px] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(11,28,48,0.22)_0%,_rgba(11,28,48,0.06)_50%,_transparent_75%)] blur-lg pointer-events-none"
               />
 
-              {/* Glowing Cyan/Blue Orbital Ring */}
+              {/* Elegant Subtle Orbital Ring */}
               <svg
                 aria-hidden="true"
                 className="absolute -inset-10 w-[130%] h-[130%] pointer-events-none overflow-visible"
@@ -680,15 +674,15 @@ export const GitGlowHomePage: React.FC = () => {
                   ry="85"
                   fill="none"
                   stroke="url(#orbitGlowGrad)"
-                  strokeWidth="2.8"
+                  strokeWidth="2.4"
                   transform="rotate(-18 200 200)"
-                  opacity="0.9"
+                  opacity="0.75"
                 />
                 <defs>
                   <linearGradient id="orbitGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#38bdf8" />
-                    <stop offset="50%" stopColor="#1648e8" />
-                    <stop offset="100%" stopColor="#38bdf8" />
+                    <stop offset="0%" stopColor="#94a3b8" />
+                    <stop offset="50%" stopColor="#0058be" />
+                    <stop offset="100%" stopColor="#94a3b8" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -697,7 +691,7 @@ export const GitGlowHomePage: React.FC = () => {
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative z-10 w-[230px] h-[230px] sm:w-[270px] sm:h-[270px] rounded-[42px] sm:rounded-[48px] bg-gradient-to-br from-[#1c202a] via-[#0d1017] to-[#040608] border border-white/20 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.55),0_0_60px_rgba(22,72,232,0.32)] flex items-center justify-center overflow-hidden"
+                className="relative z-10 w-[230px] h-[230px] sm:w-[270px] sm:h-[270px] rounded-[42px] sm:rounded-[48px] bg-gradient-to-br from-[#1c202a] via-[#0d1017] to-[#040608] border border-white/20 shadow-[0_30px_60px_-15px_rgba(11,28,48,0.35)] flex items-center justify-center overflow-hidden"
                 style={{
                   transform: 'perspective(1000px) rotateY(-14deg) rotateX(8deg) rotateZ(-3deg)',
                 }}
@@ -715,19 +709,19 @@ export const GitGlowHomePage: React.FC = () => {
               <motion.div
                 animate={{ y: [0, -12, 0] }}
                 transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-                className="absolute -top-3 -right-2 sm:right-2 z-20 px-4 py-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-white/90 shadow-[0_20px_45px_rgba(15,23,42,0.14)] flex items-center gap-3.5 select-none"
+                className="absolute -top-3 -right-2 sm:right-2 z-20 px-4 py-3 rounded-2xl bg-white border border-slate-200/90 shadow-[0_16px_36px_rgba(11,28,48,0.1)] flex items-center gap-3.5 select-none"
               >
-                <div className="w-[38px] h-[38px] rounded-full bg-amber-500/10 flex items-center justify-center shrink-0">
-                  <Trophy size={19} className="text-amber-500 fill-amber-500/30" />
+                <div className="w-[38px] h-[38px] rounded-full bg-amber-50 border border-amber-200/60 flex items-center justify-center shrink-0">
+                  <Trophy size={19} className="text-amber-600 fill-amber-500/20" />
                 </div>
                 <div>
-                  <p className="text-[12px] font-bold text-slate-900 leading-tight">Pull Request</p>
-                  <p className="text-[12px] font-bold text-slate-900 leading-tight">Merged</p>
+                  <p className="text-[12px] font-bold text-[#0b1c30] leading-tight">Pull Request</p>
+                  <p className="text-[12px] font-bold text-[#0b1c30] leading-tight">Merged</p>
                 </div>
-                <CheckCircle2 size={19} className="text-emerald-500 fill-emerald-100 shrink-0 ml-0.5" />
+                <CheckCircle2 size={19} className="text-emerald-600 fill-emerald-100 shrink-0 ml-0.5" />
 
                 {/* Decorative festive sparks */}
-                <div className="absolute -top-2.5 right-3 flex gap-0.5 pointer-events-none text-[#1648e8] font-bold text-[11px]">
+                <div className="absolute -top-2.5 right-3 flex gap-0.5 pointer-events-none text-slate-400 font-bold text-[11px]">
                   <span>/</span>
                   <span>|</span>
                   <span>\</span>
@@ -738,34 +732,34 @@ export const GitGlowHomePage: React.FC = () => {
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-                className="absolute bottom-6 -left-4 sm:left-0 z-20 px-4 py-3 rounded-2xl bg-white/95 backdrop-blur-xl border border-white/90 shadow-[0_20px_45px_rgba(15,23,42,0.14)] flex items-center gap-3 select-none"
+                className="absolute bottom-6 -left-4 sm:left-0 z-20 px-4 py-3 rounded-2xl bg-white border border-slate-200/90 shadow-[0_16px_36px_rgba(11,28,48,0.1)] flex items-center gap-3 select-none"
               >
-                <CheckCircle2 size={21} className="text-emerald-500 fill-emerald-100 shrink-0" />
-                <span className="text-[13px] font-bold text-slate-900">Mission Completed!</span>
+                <CheckCircle2 size={21} className="text-emerald-600 fill-emerald-100 shrink-0" />
+                <span className="text-[13px] font-bold text-[#0b1c30]">Mission Completed!</span>
               </motion.div>
 
               {/* Floating Hexagon 1: Top-Left (Git Fork) */}
               <motion.div
                 animate={{ y: [0, -9, 0], rotate: [-2, 2, -2] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-6 left-2 sm:left-4 z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] bg-gradient-to-br from-white/95 via-[#dbeafe]/90 to-[#bfdbfe]/60 backdrop-blur-md border border-white/90 shadow-[0_14px_30px_rgba(22,72,232,0.22)] flex items-center justify-center select-none"
+                className="absolute top-6 left-2 sm:left-4 z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-[0_12px_24px_rgba(11,28,48,0.08)] flex items-center justify-center select-none"
               >
-                <GitFork size={24} className="text-[#1648e8]" />
+                <GitFork size={24} className="text-[#0058be]" />
               </motion.div>
 
               {/* Floating Hexagon 2: Bottom-Right (Star) */}
               <motion.div
                 animate={{ y: [0, 9, 0], rotate: [2, -2, 2] }}
                 transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-                className="absolute bottom-4 right-1 sm:right-4 z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] bg-gradient-to-br from-[#1e293b]/95 to-[#0f172a]/95 backdrop-blur-md border border-white/20 shadow-[0_18px_36px_rgba(0,0,0,0.35)] flex items-center justify-center select-none"
+                className="absolute bottom-4 right-1 sm:right-4 z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-[18px] bg-[#0b1c30] border border-slate-800 shadow-[0_16px_32px_rgba(11,28,48,0.2)] flex items-center justify-center select-none"
               >
                 <Star size={22} className="text-white fill-white" />
               </motion.div>
 
-              {/* Floating Sparkles (✦) matching reference screenshot */}
-              <span className="absolute top-16 right-24 text-slate-900 text-lg select-none pointer-events-none animate-pulse">✦</span>
-              <span className="absolute bottom-20 right-2 text-slate-900 text-base select-none pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}>✦</span>
-              <span className="absolute top-28 left-0 text-slate-900 text-sm select-none pointer-events-none animate-pulse" style={{ animationDelay: '0.5s' }}>✦</span>
+              {/* Floating Sparkles (✦) */}
+              <span className="absolute top-16 right-24 text-slate-800 text-lg select-none pointer-events-none animate-pulse">✦</span>
+              <span className="absolute bottom-20 right-2 text-slate-800 text-base select-none pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}>✦</span>
+              <span className="absolute top-28 left-0 text-slate-800 text-sm select-none pointer-events-none animate-pulse" style={{ animationDelay: '0.5s' }}>✦</span>
             </motion.div>
           </div>
         </div>
