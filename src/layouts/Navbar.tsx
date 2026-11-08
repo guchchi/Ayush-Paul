@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, ArrowRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -303,7 +303,7 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Premium Dark Floating Capsule Navbar for GitGlow */
+          /* Supaste-Exact Hanging Dynamic Island Notch Navbar for GitGlow */
           <motion.div
             initial={{ y: -70, opacity: 0 }}
             animate={{ 
@@ -317,22 +317,50 @@ export const Navbar = () => {
               mass: 0.5,
             }}
             className={cn(
-              "relative select-none max-w-[calc(100vw-24px)] mt-3 sm:mt-4",
+              "relative select-none max-w-[calc(100vw-24px)]",
               isVisible ? "pointer-events-auto" : "pointer-events-none"
             )}
           >
-            <div className="relative bg-[#0D1117]/95 backdrop-blur-md text-white h-[48px] sm:h-[50px] px-3 sm:px-4 rounded-full flex items-center justify-between gap-3 sm:gap-6 lg:gap-8 border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.18)]">
-              {/* Left: Custom GitGlow Logo + Brand Title + Breadcrumb */}
+            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_8px_24px_-4px_rgba(0,0,0,0.18),0_2px_6px_-1px_rgba(0,0,0,0.08)]">
+              {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 -left-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  className="w-[20px] h-[20px] fill-black block"
+                  overflow="visible"
+                  style={{ transform: 'rotate(90deg)' }}
+                >
+                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+                </svg>
+              </div>
+
+              {/* Right Inverted Concave Ear (Supaste exact SVG scoop with 21px overlap) */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 -right-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
+              >
+                <svg
+                  viewBox="0 0 20 20"
+                  className="w-[20px] h-[20px] fill-black block"
+                  overflow="visible"
+                >
+                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
+                </svg>
+              </div>
+
+              {/* Left: GitHub Octocat Dark Squircle Icon + Brand Title + Breadcrumb */}
               <div className="flex items-center gap-2.5 shrink-0">
                 <Link
                   to="/blueprints/gitglow"
                   className="flex items-center gap-2 group cursor-pointer"
                 >
-                  <div className="w-[28px] h-[28px] rounded-[8px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/15 flex items-center justify-center relative shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105">
-                    <Github size={15} className="text-white fill-current" />
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#A3E635] ring-2 ring-black animate-pulse" />
+                  <div className="w-[30px] h-[30px] rounded-[9px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/15 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105">
+                    <Github size={17} className="text-white fill-current" />
                   </div>
-                  <span className="text-[15px] font-bold tracking-[-0.02em] text-white">
+                  <span className="text-[16px] font-bold tracking-[-0.02em] text-white">
                     GitGlow
                   </span>
                 </Link>
@@ -345,44 +373,47 @@ export const Navbar = () => {
                 </Link>
               </div>
 
-              {/* Center: Desktop Nav Links (Missions, Achievements, How It Works, Community) */}
-              <div className="hidden md:flex items-center gap-1 lg:gap-2">
-                {[
-                  { label: 'Missions', href: '#missions' },
-                  { label: 'Achievements', href: '#achievements' },
-                  { label: 'How It Works', href: '#how-it-works' },
-                  { label: 'Community', href: '#community' },
-                ].map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="px-3 py-1 rounded-full text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all cursor-pointer"
-                  >
-                    {item.label}
-                  </a>
-                ))}
+              {/* Center: Desktop Nav Links (GitGlow sections) */}
+              <div className="hidden md:flex items-center gap-5 lg:gap-7">
+                <a
+                  href="#catalog"
+                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
+                >
+                  Badges
+                </a>
+                <a
+                  href="#recipes"
+                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
+                >
+                  Recipes
+                </a>
+                <a
+                  href="#compare"
+                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
+                >
+                  Proof
+                </a>
+                <a
+                  href="#faq"
+                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
+                >
+                  FAQ
+                </a>
               </div>
 
-              {/* Right: Sign In + Get Started Button */}
-              <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setIsAuthModalOpen(true)}
-                  className="hidden sm:inline-block text-[12px] font-medium text-white/70 hover:text-white transition-colors cursor-pointer px-2.5 py-1 rounded-full hover:bg-white/[0.06]"
-                >
-                  Sign In
-                </button>
+              {/* Right: GitGlow Action Button */}
+              <div className="flex items-center shrink-0">
                 <a
-                  href="#missions"
+                  href="#recipes"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="h-[32px] sm:h-[34px] px-3.5 sm:px-4 rounded-full bg-[#A3E635] hover:bg-[#bef264] text-[#0d1117] text-[12px] font-bold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer"
-                  aria-label="Start your first GitHub achievement mission"
+                  className="h-[34px] px-3.5 rounded-full bg-white hover:bg-slate-100 text-[#0b1c30] text-[12px] font-bold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
+                  aria-label="Claim your GitHub achievement medallion"
                 >
-                  <span>Get Started</span>
-                  <ArrowRight size={13} className="text-[#0d1117]" />
+                  <Zap size={13} className="fill-[#0b1c30] text-[#0b1c30]" />
+                  <span>Claim Medallion</span>
                 </a>
               </div>
             </div>
@@ -582,14 +613,12 @@ export const Navbar = () => {
                           ⚡ GitGlow Blueprint
                         </div>
                         {[
-                          { name: "Missions", href: "#missions" },
-                          { name: "Achievements Wall", href: "#achievements" },
-                          { name: "Unlock First Achievement", href: "#first-achievement" },
-                          { name: "How GitGlow Works", href: "#how-it-works" },
-                          { name: "Explore All Missions", href: "#explore-missions" },
-                          { name: "Developer Progress", href: "#progress" },
-                          { name: "Real Work Comparison", href: "#comparison" },
-                          { name: "Community & FAQ", href: "#community" },
+                          { name: "Overview & Scanner", href: "#overview" },
+                          { name: "Reality Comparison", href: "#compare" },
+                          { name: "Git Pipeline", href: "#engine" },
+                          { name: "Badge Catalog", href: "#catalog" },
+                          { name: "Tiers Guide", href: "#tiers" },
+                          { name: "FAQ", href: "#faq" },
                         ].map((item) => (
                           <a
                             key={item.name}
