@@ -347,7 +347,7 @@ export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
   const [selectedCategory, setSelectedCategory] = useState<string>('starter');
   const [badgeSearchQuery, setBadgeSearchQuery] = useState<string>('');
-  const [githubInput, setGithubInput] = useState<string>('arivera-dev');
+  const [githubInput, setGithubInput] = useState<string>('');
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const [inspectedMedal, setInspectedMedal] = useState<{
@@ -362,18 +362,7 @@ export const GitGlowHomePage: React.FC = () => {
     setTimeout(() => setCopiedSnippet(null), 2000);
   };
 
-  const [scannedUser, setScannedUser] = useState<ScannedProfileData>({
-    login: 'arivera-dev',
-    name: 'Alex Rivera',
-    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    bio: 'Frontend & Open Source Developer',
-    public_repos: 14,
-    followers: 42,
-    created_at: '2022-03-15T00:00:00Z',
-    isSimulated: true,
-    statusType: 'verified',
-    statusMessage: 'Interactive Demo Profile',
-  });
+  const [scannedUser, setScannedUser] = useState<ScannedProfileData | null>(null);
 
   const cleanGitHubInput = (input: string): string => {
     let cleaned = input.trim();
@@ -884,6 +873,99 @@ export const GitGlowHomePage: React.FC = () => {
             </p>
           </div>
 
+          {/* Live GitHub Profile Audit Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="p-1.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center gap-2">
+              <div className="flex items-center gap-2 px-3 py-2 text-xs font-mono text-slate-500 w-full sm:w-auto shrink-0 select-none">
+                <Github size={16} className="text-[#0b1c30]" />
+                <span>github.com/</span>
+              </div>
+              <input
+                type="text"
+                value={githubInput}
+                onChange={(e) => setGithubInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleScan()}
+                placeholder="your-github-username"
+                className="w-full px-3 py-2 text-xs sm:text-sm text-[#0b1c30] placeholder:text-slate-400 bg-transparent focus:outline-none font-medium min-h-[38px]"
+                aria-label="Enter GitHub username to scan achievement eligibility"
+              />
+              <button
+                type="button"
+                onClick={() => handleScan()}
+                disabled={isScanning || !githubInput.trim()}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-[#16273c] disabled:opacity-40 disabled:hover:bg-[#0b1c30] text-white text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 transition-all cursor-pointer select-none shrink-0 min-h-[38px] active:scale-95"
+              >
+                {isScanning ? (
+                  <>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                    <span>Auditing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap size={13} className="fill-current text-[#40c463]" />
+                    <span>Audit Handle</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Audit Result Card if Scanned */}
+            <AnimatePresence>
+              {scannedUser && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -10, height: 0 }}
+                  className="mt-3 overflow-hidden"
+                >
+                  <div className="p-4 rounded-2xl bg-white border border-[#2da44e]/30 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={scannedUser.avatar_url}
+                        alt={scannedUser.name}
+                        className="w-10 h-10 rounded-full border border-slate-200 object-cover shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-[#0b1c30] text-sm truncate">
+                            {scannedUser.name}
+                          </span>
+                          <span className="text-xs font-mono text-[#57606a]">
+                            @{scannedUser.login}
+                          </span>
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#dafbe1] text-[#1a7f37] border border-[#2da44e]/30">
+                            {scannedUser.statusMessage}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#57606a] mt-0.5">
+                          {scannedUser.public_repos} public repositories · Primed for Starter Medallions
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                      <button
+                        onClick={() => {
+                          setSelectedBadgeId('quickdraw');
+                          document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="px-3.5 py-1.5 rounded-lg bg-[#dafbe1] hover:bg-[#c2f3cc] text-[#1a7f37] border border-[#2da44e]/30 text-xs font-bold transition-all cursor-pointer select-none"
+                      >
+                        Claim Quickdraw →
+                      </button>
+                      <button
+                        onClick={() => setScannedUser(null)}
+                        className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer select-none"
+                        title="Dismiss audit"
+                      >
+                        <XCircle size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           {/* Filter Tabs & Search Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 max-w-3xl mx-auto">
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/90 border border-slate-200/90 shadow-2xs flex-wrap justify-center">
@@ -1089,30 +1171,50 @@ export const GitGlowHomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right: 3-Step Git Blueprint & Commands (7 cols) */}
+            {/* Right: Authentic GitHub CLI Terminal & Recipe Runner (7 cols) */}
             <div
               id="recipe-terminal"
-              className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#f8fafd] flex flex-col justify-between space-y-6 transition-all duration-300 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px]"
+              className="scroll-mt-28 md:col-span-7 p-6 sm:p-7 bg-[#0d1117] text-[#c9d1d9] flex flex-col justify-between space-y-6 transition-all duration-300 rounded-b-[28px] md:rounded-b-none md:rounded-r-[28px] border-t md:border-t-0 md:border-l border-[#30363d]"
             >
               <div id="recipes" className="space-y-4">
-                {/* Recipe Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
-                  <div>
+                {/* Terminal Window Header Bar */}
+                <div className="flex items-center justify-between pb-3.5 border-b border-[#30363d]">
+                  <div className="flex items-center gap-3">
+                    {/* Window Controls */}
+                    <div className="flex items-center gap-1.5" aria-hidden="true">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]/85 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]/85 block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]/85 block" />
+                    </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-mono text-[#0969da] font-bold uppercase tracking-wider block">
-                        Blueprint recipe
+                      <span className="text-[11px] font-mono text-[#7ee787] font-bold uppercase tracking-wider">
+                        Terminal
                       </span>
-                      <span className="text-[10px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-2 py-0.5 rounded-full shadow-2xs">
-                        3-Station Run
+                      <span className="text-[#8b949e] font-mono text-xs select-none">/</span>
+                      <span className="text-[11px] font-mono text-[#8b949e]">
+                        claim-{activeBadge.id}.sh
                       </span>
                     </div>
-                    <h3 className="text-base font-extrabold text-[#0b1c30] mt-0.5">
-                      Step-by-Step Git Commands
-                    </h3>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-600 bg-white border border-slate-200/90 px-2.5 py-0.5 rounded-full shadow-2xs font-semibold">
-                    Personal Repo Safe
-                  </span>
+
+                  {/* Master Copy All Button */}
+                  <button
+                    onClick={() => handleCopy(allActiveCommands, `${activeBadge.id}-all`)}
+                    className="h-8 px-3 rounded-lg bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] text-[11px] font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer select-none active:scale-95"
+                    title="Copy full 3-station bash script"
+                  >
+                    {copiedSnippet === `${activeBadge.id}-all` ? (
+                      <>
+                        <Check size={12} className="text-[#3fb950]" />
+                        <span className="text-[#3fb950] font-bold">Script Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Zap size={12} className="text-[#3fb950] fill-[#3fb950]" />
+                        <span>Copy All Steps</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 {/* 3 Numbered Steps with 1-Click Copy */}
@@ -1132,33 +1234,37 @@ export const GitGlowHomePage: React.FC = () => {
                     },
                   ].map((step, idx) => (
                     <div key={idx} className="space-y-1.5">
-                      <span className="text-xs font-bold text-[#0b1c30] block">
-                        {step.label}
-                      </span>
-                      <div className="group/cmd rounded-xl border border-slate-800 bg-[#0b1c30] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-md">
-                        <code className="font-mono text-xs text-[#d1f34d] truncate font-semibold">
-                          {step.cmd}
-                        </code>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-[#f0f6fc] tracking-tight">
+                          {step.label}
+                        </span>
+                        <span className="font-mono text-[10px] text-[#8b949e]">
+                          Step {idx + 1} of 3
+                        </span>
+                      </div>
+                      <div className="group/cmd rounded-xl border border-[#30363d] bg-[#161b22] px-3.5 py-2.5 flex items-center justify-between gap-3 shadow-inner hover:border-[#8b949e]/40 transition-colors">
+                        <div className="flex items-center gap-2 font-mono text-xs overflow-hidden">
+                          <span className="text-[#8b949e] select-none">$</span>
+                          <code className="text-[#7ee787] truncate font-semibold">
+                            {step.cmd}
+                          </code>
+                        </div>
                         <button
-                          onClick={() =>
-                            handleCopy(step.cmd, `${activeBadge.id}-${idx}`)
-                          }
-                          className="shrink-0 text-xs text-white/80 hover:text-white px-2 py-1 rounded bg-white/10 hover:bg-white/20 border border-white/15 transition-all flex items-center gap-1 cursor-pointer select-none"
+                          onClick={() => handleCopy(step.cmd, `${activeBadge.id}-${idx}`)}
+                          className="shrink-0 text-xs text-[#c9d1d9] hover:text-white px-2 py-1 rounded bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] transition-all flex items-center gap-1 cursor-pointer select-none active:scale-95"
                           title="Copy command"
                         >
                           {copiedSnippet === `${activeBadge.id}-${idx}` ? (
                             <>
-                              <Check size={12} className="text-[#d1f34d]" />
-                              <span className="text-[#d1f34d] text-[11px] font-mono font-bold">
+                              <Check size={12} className="text-[#3fb950]" />
+                              <span className="text-[#3fb950] text-[11px] font-mono font-bold">
                                 Copied
                               </span>
                             </>
                           ) : (
                             <>
                               <Copy size={12} />
-                              <span className="text-[11px] font-mono">
-                                Copy
-                              </span>
+                              <span className="text-[11px] font-mono">Copy</span>
                             </>
                           )}
                         </button>
@@ -1169,10 +1275,10 @@ export const GitGlowHomePage: React.FC = () => {
               </div>
 
               {/* Gotcha Callout */}
-              <div className="rounded-xl border border-amber-200/90 bg-amber-50/80 p-3.5 flex items-start gap-2.5 text-xs text-amber-950 leading-relaxed shadow-2xs">
-                <Info size={16} className="text-amber-600 shrink-0 mt-0.5" />
+              <div className="rounded-xl border border-[#d29922]/40 bg-[#bb8009]/10 p-3.5 flex items-start gap-2.5 text-xs text-[#e3b341] leading-relaxed">
+                <Info size={16} className="text-[#d29922] shrink-0 mt-0.5" />
                 <span>
-                  <strong className="text-amber-900 font-bold">Anti-Mistake Gotcha:</strong>{' '}
+                  <strong className="text-[#f0f6fc] font-bold">Anti-Mistake Gotcha:</strong>{' '}
                   {activeRecipe.gotchaNote || activeBadge.gotchas[0]}
                 </span>
               </div>
@@ -1343,7 +1449,7 @@ export const GitGlowHomePage: React.FC = () => {
                             inspectedMedal?.name === item.name ? null : item
                           )
                         }
-                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#f8f9ff] border border-slate-200/90 p-1.5 shadow-2xs hover:border-[#0058be] hover:bg-white hover:scale-105 transition-all cursor-pointer select-none"
+                        className="relative group/badge flex items-center justify-center w-11 h-11 rounded-xl bg-[#f8f9ff] border border-slate-200/90 p-1.5 shadow-2xs hover:border-[#1a7f37] hover:bg-white hover:scale-105 transition-all cursor-pointer select-none"
                         title={`${item.name}${item.tier ? ` (${item.tier})` : ''}: ${item.trigger}`}
                       >
                         <img
@@ -1353,7 +1459,7 @@ export const GitGlowHomePage: React.FC = () => {
                           loading="lazy"
                         />
                         {item.tier && (
-                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#d1f34d] text-[#0b1c30] px-1 rounded-full border border-slate-200 shadow-2xs">
+                          <span className="absolute -bottom-1 -right-1 text-[8px] font-mono font-bold bg-[#dafbe1] text-[#1a7f37] px-1 rounded-full border border-[#2da44e]/30 shadow-2xs">
                             {item.tier}
                           </span>
                         )}
@@ -1362,7 +1468,7 @@ export const GitGlowHomePage: React.FC = () => {
                   </div>
                   <div className="h-5 flex items-center text-[11px] font-mono overflow-hidden border-t border-slate-100 pt-2">
                     {inspectedMedal ? (
-                      <span className="text-[#0058be] truncate">
+                      <span className="text-[#1a7f37] truncate font-medium">
                         <span className="font-bold text-[#0b1c30]">
                           {inspectedMedal.name}
                           {inspectedMedal.tier ? ` ${inspectedMedal.tier}` : ''}:
