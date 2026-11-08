@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap, ArrowRight } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -153,7 +153,7 @@ export const Navbar = () => {
         isHomePage 
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
-              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-none py-0"
+              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-none py-3.5 sm:py-5 px-4"
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
         !isGitGlow && (isBCyber
@@ -307,9 +307,9 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Supaste-Exact Hanging Dynamic Island Notch Navbar for GitGlow */
+          /* GitGlow Floating Rounded-Pill Navbar */
           <motion.div
-            initial={{ y: -60, opacity: 0 }}
+            initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{
               type: 'spring',
@@ -317,104 +317,82 @@ export const Navbar = () => {
               damping: 20,
               mass: 0.8,
             }}
-            className="pointer-events-auto relative select-none max-w-[calc(100vw-24px)]"
+            className="pointer-events-auto relative select-none w-full max-w-5xl"
           >
-            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_16px_36px_rgba(0,0,0,0.85)]">
-              {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
-              <div
-                aria-hidden="true"
-                className="absolute top-0 -left-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="w-[20px] h-[20px] fill-black block"
-                  overflow="visible"
-                  style={{ transform: 'rotate(90deg)' }}
-                >
-                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
-                </svg>
-              </div>
-
-              {/* Right Inverted Concave Ear (Supaste exact SVG scoop with 21px overlap) */}
-              <div
-                aria-hidden="true"
-                className="absolute top-0 -right-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
-              >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="w-[20px] h-[20px] fill-black block"
-                  overflow="visible"
-                >
-                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
-                </svg>
-              </div>
-
-              {/* Left: 3D Mac-Style Glossy App Icon + Brand Title */}
+            <div className="relative bg-[#0d1117] text-white h-[48px] sm:h-[52px] px-3.5 sm:px-5 rounded-full flex items-center justify-between gap-3 sm:gap-6 lg:gap-8 border border-white/10 shadow-[0_14px_34px_rgba(0,0,0,0.4)] backdrop-blur-md">
+              {/* Left: Custom Geometric GitGlow Logo + Brand Title */}
               <Link
                 to="/blueprints/gitglow"
                 className="flex items-center gap-2.5 group cursor-pointer shrink-0"
               >
-                <div className="w-[30px] h-[30px] rounded-[8px] bg-gradient-to-b from-[#38bdf8] via-[#1648e8] to-[#0d36c2] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7),inset_0_-1px_1px_rgba(0,0,0,0.3),0_2px_6px_rgba(22,72,232,0.4)] flex items-center justify-center relative overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105">
-                  <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/45 to-transparent rounded-t-[7px] pointer-events-none" />
-                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-white relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="16" rx="3" fill="currentColor" fillOpacity="0.2" />
-                    <line x1="7" y1="9" x2="17" y2="9" />
-                    <line x1="7" y1="13" x2="14" y2="13" />
+                <div className="w-[28px] h-[28px] sm:w-[30px] sm:h-[30px] rounded-[8px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_2px_8px_rgba(0,0,0,0.5)] flex items-center justify-center relative overflow-hidden shrink-0 transition-transform duration-200 group-hover:scale-105">
+                  <div className="absolute top-0 inset-x-0 h-[45%] bg-gradient-to-b from-white/25 to-transparent rounded-t-[7px] pointer-events-none" />
+                  <svg viewBox="0 0 24 24" className="w-[17px] h-[17px] sm:w-[18px] sm:h-[18px] relative z-10" fill="none">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c4.32 0 8.04-2.73 9.47-6.58h-3.32C16.92 19.12 14.65 20.2 12 20.2c-4.52 0-8.2-3.68-8.2-8.2S7.48 3.8 12 3.8c2.42 0 4.59.98 6.16 2.56L20.8 3.72C18.57 1.63 15.45 2 12 2z"
+                      fill="white"
+                    />
+                    <path
+                      d="M12 9.5h8.8c.13.78.2 1.6.2 2.5 0 1.25-.18 2.38-.5 3.5h-8.5V9.5z"
+                      fill="white"
+                    />
+                    <circle cx="12" cy="12.5" r="1.6" fill="#2da44e" />
                   </svg>
                 </div>
-                <span className="text-[16px] font-semibold tracking-[-0.02em] text-white">
-                  Supaste
+                <span className="text-[15px] sm:text-[16px] font-bold tracking-tight text-white">
+                  GitGlow
                 </span>
               </Link>
 
-              {/* Center: Desktop Nav Links (Supaste exact: Features, FAQ, Updates, Cooldock, Screen Movie, Pricing) */}
-              <div className="hidden md:flex items-center gap-5 lg:gap-7">
-                <a
-                  href="#catalog"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Features
-                </a>
-                <a
-                  href="#faq"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  FAQ
-                </a>
-                <a
-                  href="#tiers"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
-                >
-                  Updates
-                </a>
+              {/* Center: Desktop Nav Links (Missions, Achievements, How It Works, Community, Pricing) */}
+              <div className="hidden md:flex items-center gap-4 lg:gap-6">
                 <a
                   href="#recipes"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                  className="text-[13px] font-medium tracking-tight text-white/70 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
-                  Cooldock
+                  Missions
                 </a>
                 <a
-                  href="#pipeline"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                  href="#catalog"
+                  className="text-[13px] font-medium tracking-tight text-white/70 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
-                  Screen Movie
+                  Achievements
+                </a>
+                <a
+                  href="#recipe-terminal"
+                  className="text-[13px] font-medium tracking-tight text-white/70 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  How It Works
                 </a>
                 <a
                   href="#compare"
-                  className="text-[14px] font-medium tracking-[-0.02em] text-white/60 hover:text-white transition-opacity duration-150 cursor-pointer"
+                  className="text-[13px] font-medium tracking-tight text-white/70 hover:text-white transition-opacity duration-150 cursor-pointer"
+                >
+                  Community
+                </a>
+                <a
+                  href="#faq"
+                  className="text-[13px] font-medium tracking-tight text-white/70 hover:text-white transition-opacity duration-150 cursor-pointer"
                 >
                   Pricing
                 </a>
               </div>
 
-              {/* Right: Supaste-Style White Action Button */}
-              <div className="flex items-center shrink-0">
+              {/* Right: Sign In + Explore Missions Action Button */}
+              <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="hidden sm:inline-block text-[13px] font-medium text-white/75 hover:text-white transition-colors cursor-pointer px-1.5"
+                >
+                  Sign In
+                </button>
                 <a
                   href="#recipes"
-                  className="h-[32px] px-3.5 rounded-[8px] bg-white hover:bg-[#ededed] text-black text-[12px] font-semibold tracking-[-0.01em] inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
+                  className="h-[30px] sm:h-[32px] px-3 sm:px-3.5 rounded-full bg-white hover:bg-[#ededed] text-black text-[11px] sm:text-[12px] font-semibold tracking-[-0.01em] inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
                 >
-                  <AppleIcon className="w-3.5 h-3.5 fill-current text-black" />
-                  <span>Download</span>
+                  <span>Explore Missions</span>
+                  <ArrowRight size={13} className="text-black" />
                 </a>
               </div>
             </div>
