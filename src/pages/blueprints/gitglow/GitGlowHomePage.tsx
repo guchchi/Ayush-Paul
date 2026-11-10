@@ -37,6 +37,8 @@ import {
   Activity,
   Workflow,
   CheckCheck,
+  ShieldCheck,
+  Ban,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -722,6 +724,197 @@ const AnubiOrbitalHeroStage: React.FC<{
   );
 };
 
+// ─── 3D Monument Centerpiece (Matching Reference Screenshot) ─────────────────
+const HeroMonument3D: React.FC = () => {
+  return (
+    <div className="relative w-full max-w-[540px] xl:max-w-[620px] h-[480px] sm:h-[540px] lg:h-[620px] flex items-center justify-center select-none overflow-visible">
+      {/* ── Background Luminous Lime Glow Bloom ── */}
+      <div
+        aria-hidden="true"
+        className="absolute top-[26%] right-[10%] w-[380px] sm:w-[480px] lg:w-[540px] h-[380px] sm:h-[480px] lg:h-[540px] rounded-full bg-gradient-to-br from-[#D4F843]/35 via-[#A3E635]/20 to-transparent blur-[85px] pointer-events-none"
+      />
+
+      {/* ── Floating 4-Point Sparkle Star ── */}
+      <div className="absolute top-6 sm:top-10 right-8 sm:right-16 pointer-events-none select-none z-30">
+        <SparkleStar size={18} className="text-[#161B22]" />
+      </div>
+
+      {/* ── Micro-motion Container ── */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative w-full h-full flex items-center justify-center"
+      >
+        {/* ── GLOWING NEON-LIME ORBITAL RINGS ── */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+          viewBox="0 0 560 600"
+          fill="none"
+        >
+          {/* Main glowing neon orbital ring */}
+          <ellipse
+            cx="380"
+            cy="270"
+            rx="185"
+            ry="60"
+            transform="rotate(-20 380 270)"
+            stroke="#D4F843"
+            strokeWidth="2.5"
+            className="filter drop-shadow-[0_0_12px_rgba(212,248,67,0.95)]"
+          />
+          {/* Secondary subtle concentric orbit ring */}
+          <ellipse
+            cx="380"
+            cy="274"
+            rx="155"
+            ry="46"
+            transform="rotate(-16 380 274)"
+            stroke="#D4F843"
+            strokeWidth="1.2"
+            strokeOpacity="0.45"
+            className="filter drop-shadow-[0_0_8px_rgba(212,248,67,0.6)]"
+          />
+        </svg>
+
+        {/* ── FACETED DARK ARCHITECTURAL PEDESTAL ── */}
+        <svg
+          className="absolute right-0 bottom-0 w-[380px] sm:w-[440px] lg:w-[500px] h-[340px] sm:h-[400px] pointer-events-none z-15 overflow-visible"
+          viewBox="0 0 500 400"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="pedestalLeftFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#282F38" />
+              <stop offset="50%" stopColor="#1B2027" />
+              <stop offset="100%" stopColor="#101419" />
+            </linearGradient>
+            <linearGradient id="pedestalRightFacet" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#161B22" />
+              <stop offset="60%" stopColor="#0E1217" />
+              <stop offset="100%" stopColor="#080A0D" />
+            </linearGradient>
+            <linearGradient id="pedestalNeckGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#1A2027" />
+              <stop offset="50%" stopColor="#2F3642" />
+              <stop offset="100%" stopColor="#151A21" />
+            </linearGradient>
+          </defs>
+
+          {/* Left Facet */}
+          <polygon
+            points="245,100 40,400 295,400 295,100"
+            fill="url(#pedestalLeftFacet)"
+          />
+          {/* Right Facet */}
+          <polygon
+            points="295,100 295,400 500,400 500,160"
+            fill="url(#pedestalRightFacet)"
+          />
+          {/* Center Specular Ridge Line */}
+          <line
+            x1="295"
+            y1="100"
+            x2="295"
+            y2="400"
+            stroke="#3C4654"
+            strokeWidth="1.5"
+            strokeOpacity="0.85"
+          />
+          {/* Left Ridge Bevel Line */}
+          <line
+            x1="245"
+            y1="100"
+            x2="40"
+            y2="400"
+            stroke="#2E3744"
+            strokeWidth="1"
+            strokeOpacity="0.5"
+          />
+
+          {/* Pedestal Collar / Neck (Supporting the Medallion) */}
+          <ellipse cx="270" cy="100" rx="36" ry="12" fill="#323B47" />
+          <path d="M 234 100 L 234 125 C 234 132 306 132 306 125 L 306 100 Z" fill="url(#pedestalNeckGrad)" />
+          <ellipse cx="270" cy="125" rx="36" ry="10" fill="#1A1F26" />
+        </svg>
+
+        {/* ── 3D GITHUB MEDALLION / COIN ── */}
+        <div
+          style={{
+            perspective: 1200,
+            position: 'absolute',
+            top: '10%',
+            right: '12%',
+            zIndex: 25,
+          }}
+          className="cursor-pointer group"
+        >
+          <div
+            style={{
+              transform: 'rotateY(-24deg) rotateX(10deg) rotateZ(-3deg)',
+              transformStyle: 'preserve-3d',
+            }}
+            className="relative w-[190px] h-[190px] sm:w-[220px] sm:h-[220px] lg:w-[250px] lg:h-[250px] rounded-full transition-transform duration-300 group-hover:scale-105"
+          >
+            {/* Outer Thick Metallic Coin Edge & Rim */}
+            <div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: 'linear-gradient(135deg, #3D4653 0%, #20262F 45%, #101419 100%)',
+                boxShadow: `
+                  inset 0 3px 6px rgba(255,255,255,0.35),
+                  inset 0 -6px 12px rgba(0,0,0,0.85),
+                  0 24px 48px -8px rgba(0,0,0,0.65),
+                  0 12px 24px rgba(0,0,0,0.4)
+                `,
+                padding: '13px',
+              }}
+            >
+              {/* Inner Rim Bezel & Coin Face */}
+              <div
+                className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
+                style={{
+                  background: 'radial-gradient(circle at 35% 30%, #1A2027 0%, #12161C 65%, #0B0E12 100%)',
+                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.9), inset 0 0 0 2px #2A313C',
+                }}
+              >
+                {/* Surface Specular Reflection Sheen */}
+                <div
+                  className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(125deg, white 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.12) 100%)',
+                  }}
+                />
+
+                {/* Embossed White/Silver GitHub Octocat Icon */}
+                <div
+                  className="relative z-10 flex items-center justify-center"
+                  style={{
+                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.7)) drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+                  }}
+                >
+                  <Github
+                    size={115}
+                    className="text-[#F3F5F8] fill-[#F3F5F8]"
+                    style={{
+                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.6))',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Bottom-Right Corner Label ── */}
+      <div className="absolute right-0 bottom-2 text-xs font-mono text-[#8C959F] tracking-tight flex items-center gap-2 select-none z-30">
+        <span>Built for Developers</span>
+        <span className="w-6 h-[1px] bg-[#8C959F]/60" />
+      </div>
+    </div>
+  );
+};
+
 export const GitGlowHomePage: React.FC = () => {
   const [selectedBadgeId, setSelectedBadgeId] = useState<string>('quickdraw');
   const [badgeCategoryFilter, setBadgeCategoryFilter] = useState<string>('all');
@@ -846,274 +1039,169 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
-      {/* ─── SECTION 01: HERO (Highest Priority WOW Section) ──────────────── */}
+      {/* ─── SECTION 01: HERO (Matching Reference media_1794299048864_21177560.jpg) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-14 pb-18 sm:pt-16 sm:pb-22 bg-[#FFFFFF] text-[#161B22] overflow-hidden border-b border-[#D0D7DE]/60"
+        className="relative w-full pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
       >
-        {/* Top-Left Architectural Grid (Matching Reference Screenshot) */}
+        {/* Soft bottom-left ambient glow */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-0 left-0 w-[440px] h-[440px] opacity-[0.25] overflow-hidden"
-          style={{
-            backgroundImage:
-              'linear-gradient(#E1E4E8 1px, transparent 1px), linear-gradient(90deg, #E1E4E8 1px, transparent 1px)',
-            backgroundSize: '44px 44px',
-            maskImage: 'radial-gradient(ellipse at top left, black 25%, transparent 75%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at top left, black 25%, transparent 75%)',
-          }}
+          className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-[#D4F843]/18 via-[#A3E635]/10 to-transparent blur-[85px] pointer-events-none select-none"
         />
 
-        {/* Bottom-Left Lime Radiant Blur Glow (Matching Reference Atmosphere) */}
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-24 -left-24 w-[480px] sm:w-[580px] h-[480px] sm:h-[580px] rounded-full bg-gradient-to-tr from-[#C7F246]/35 via-[#A3E635]/20 to-transparent blur-[90px] pointer-events-none select-none"
-        />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Left Floating Green 4-Point Sparkle Star */}
-          <div
-            aria-hidden="true"
-            className="hidden md:block absolute left-4 lg:left-8 top-[28%] pointer-events-none select-none z-10"
-          >
-            <SparkleStar size={22} className="text-[#22A849] drop-shadow-[0_0_12px_rgba(34,168,73,0.45)]" />
-          </div>
-
-          {/* Right Floating 3D White Ceramic Octocat Tile & Orbital Arc (Matching Reference Screenshot) */}
-          <div
-            aria-hidden="true"
-            className="hidden lg:block absolute right-4 lg:right-8 xl:right-14 top-[22%] lg:top-[24%] pointer-events-none select-none z-10"
-          >
-            <div className="relative">
-              {/* Delicate curved orbital arc passing through */}
-              <svg
-                className="absolute -top-14 -right-8 w-[380px] h-[340px] pointer-events-none overflow-visible"
-                viewBox="0 0 380 340"
-                fill="none"
-              >
-                <path
-                  d="M 20 310 C 10 170, 140 25, 360 35"
-                  stroke="#161B22"
-                  strokeWidth="1.2"
-                  strokeOpacity="0.16"
-                />
-              </svg>
-
-              {/* Dark 4-point sparkle star perched on top of orbital arc */}
-              <div className="absolute -top-11 right-14 pointer-events-none">
-                <SparkleStar size={16} className="text-[#161B22]" />
-              </div>
-
-              {/* 3D Tilted Ceramic Tile with Soft Neon Lime Underglow */}
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+            {/* ── LEFT COLUMN: Headline, Subtitle, Username Input, Proof Row ── */}
+            <div className="w-full lg:w-[54%] xl:w-[52%] shrink-0 text-left z-20">
+              {/* Eyebrow Pill */}
               <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ perspective: 1200 }}
-                className="relative pointer-events-auto"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: EASING.PREMIUM }}
+                className="mb-6 inline-flex"
               >
-                <div
-                  style={{
-                    transform: 'rotateZ(12deg) rotateY(-18deg) rotateX(14deg)',
-                    transformStyle: 'preserve-3d',
-                  }}
-                  className="w-36 h-36 xl:w-40 xl:h-40 rounded-[32px] bg-gradient-to-br from-white via-[#F9FBFC] to-[#EEF2F6] border border-white/90 shadow-[0_22px_44px_-8px_rgba(0,0,0,0.15),0_8px_18px_rgba(0,0,0,0.06)] flex items-center justify-center p-6 filter drop-shadow-[0_20px_35px_rgba(163,230,53,0.38)] group hover:scale-105 transition-transform duration-300"
-                >
-                  <Github size={68} className="text-[#161B22] filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.12)]" />
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F3F7E8] text-[#374528] border border-[#E0ECC8] text-[12px] font-medium tracking-tight select-none">
+                  <SparkleStar size={13} className="text-[#8CAE38]" />
+                  <span>Turn your GitHub profile into an achievement hub</span>
+                </div>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
+                className="mb-4"
+              >
+                <h1 className="text-[48px] sm:text-[64px] lg:text-[72px] xl:text-[80px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[0.98] select-none">
+                  Your GitHub <br />
+                  profile is about <br />
+                  to <span className="italic font-extrabold text-[#84CC16]">level up.</span>
+                  <span className="inline-block w-[3px] h-[0.82em] bg-[#161B22] ml-2 align-middle animate-pulse" />
+                </h1>
+              </motion.div>
+
+              {/* Subtitle */}
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
+                className="text-[17px] sm:text-[19px] text-[#57606A] font-normal tracking-tight mt-5 mb-8"
+              >
+                Complete missions. Earn real achievements.
+              </motion.p>
+
+              {/* Input Capsule (Matching reference pill: rounded capsule with Octocat badge left, username, black arrow button right) */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
+                className="max-w-[480px] w-full mb-8 sm:mb-10"
+              >
+                <form onSubmit={handleScanProfile} className="relative">
+                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#E1E4E8] shadow-[0_4px_24px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:border-[#161B22]/30 p-1.5 pl-2.5 sm:pl-3 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#84CC16]/20">
+                    {/* Octocat circular badge on left */}
+                    <div className="w-10 h-10 rounded-full bg-[#161B22] flex items-center justify-center shrink-0 text-white shadow-xs">
+                      <Github size={20} className="text-white fill-current" />
+                    </div>
+
+                    <input
+                      type="text"
+                      value={usernameInput}
+                      onChange={(e) => setUsernameInput(e.target.value)}
+                      placeholder="Enter your GitHub username"
+                      aria-label="GitHub username"
+                      className="w-full bg-transparent px-3.5 text-sm sm:text-[15px] font-normal text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none"
+                    />
+
+                    {/* Circular black arrow button on right */}
+                    <button
+                      type="submit"
+                      disabled={isScanning}
+                      className="w-10 h-10 rounded-full bg-[#161B22] hover:bg-[#24292F] text-white flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm cursor-pointer"
+                      aria-label="Scan profile"
+                    >
+                      {isScanning ? (
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <ArrowRight size={17} />
+                      )}
+                    </button>
+                  </div>
+                </form>
+
+                {/* Quick-try chips */}
+                <div className="flex items-center gap-2 pt-3 pl-2">
+                  <span className="text-[#9CA3AF] text-[12px]">Try:</span>
+                  {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
+                    <button
+                      key={user}
+                      type="button"
+                      onClick={() => { setUsernameInput(user); simulateProfileScan(user); }}
+                      className="px-2 py-0.5 rounded-full bg-transparent hover:bg-[#F3F4F6] text-[#656D76] hover:text-[#161B22] text-[11px] font-mono transition-colors cursor-pointer"
+                    >
+                      @{user}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Scan result notification if scanned */}
+                {scanResult && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
+                      <div>
+                        <div className="text-[12px] font-semibold text-[#1A7F37]">@{scanResult.handle} — ready</div>
+                        <div className="text-[11px] text-[#444D56]">Start with: <strong>{scanResult.targetName}</strong></div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setSelectedBadgeId(scanResult.targetId); document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="px-3 py-1.5 rounded-full bg-[#2DA44E] hover:bg-[#238636] text-white text-[11px] font-semibold shrink-0 cursor-pointer transition-colors"
+                    >
+                      View Mission →
+                    </button>
+                  </motion.div>
+                )}
+              </motion.div>
+
+              {/* Value Proposition Row (Guided Missions | Verified Badges | No OAuth Required) */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.22 }}
+                className="flex items-center flex-wrap gap-4 sm:gap-6 text-xs sm:text-[13px] font-medium text-[#161B22]"
+              >
+                <div className="flex items-center gap-2">
+                  <Rocket size={15} className="text-[#161B22]" />
+                  <span>Guided Missions</span>
+                </div>
+                <span className="text-[#D0D7DE]">|</span>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={15} className="text-[#161B22]" />
+                  <span>Verified Badges</span>
+                </div>
+                <span className="text-[#D0D7DE]">|</span>
+                <div className="flex items-center gap-2">
+                  <Ban size={15} className="text-[#161B22]" />
+                  <span>No OAuth Required</span>
                 </div>
               </motion.div>
             </div>
+
+            {/* ── RIGHT COLUMN: 3D Medallion Monument on Faceted Pedestal ── */}
+            <div className="w-full lg:w-[46%] xl:w-[48%] flex items-center justify-center lg:justify-end z-20">
+              <HeroMonument3D />
+            </div>
           </div>
-          {/* ── ANUBI-INSPIRED 3D ORBITAL HERO STAGE ── */}
-          <AnubiOrbitalHeroStage onSelectBadge={setSelectedBadgeId}>
-            {/* Eyebrow Pill (Positioned right at the top, matching reference) */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM }}
-              className="mb-5 inline-flex justify-center"
-            >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EFFDE6] text-[#1A7F37] border border-[#C3EFA0] text-[11px] font-mono font-bold uppercase tracking-[0.16em] shadow-2xs select-none">
-                <Github size={13} className="text-[#161B22] fill-current" />
-                <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
-              </div>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.06 }}
-              className="mb-4"
-            >
-              <h1 className="text-4xl sm:text-5xl lg:text-[58px] xl:text-[62px] font-extrabold text-[#161B22] tracking-[-0.038em] leading-[1.08] max-w-4xl mx-auto">
-                Your GitHub profile is <br className="hidden sm:inline" />
-                <span className="text-[#22A849]">about to get interesting.</span>
-              </h1>
-            </motion.div>
-
-            {/* Supporting Copy */}
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.1 }}
-              className="text-[#656D76] text-base sm:text-lg leading-relaxed max-w-[580px] mx-auto font-normal mb-7"
-            >
-              Earn real GitHub achievements through guided missions,<br className="hidden sm:inline" />
-              meaningful contributions, and hands-on developer challenges.
-            </motion.p>
-
-            {/* ── Centered Username Input Capsule ── */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.14 }}
-              className="max-w-xl mx-auto pt-1 w-full mb-6"
-            >
-              <form onSubmit={handleScanProfile} className="relative flex items-center">
-                <div className="relative w-full flex items-center rounded-full bg-white border border-[#D0D7DE] focus-within:border-[#22A849] focus-within:ring-2 focus-within:ring-[#22A849]/20 shadow-[0_12px_32px_rgba(0,0,0,0.07)] hover:border-[#161B22]/40 transition-all p-1.5 pl-4 sm:pl-5">
-                  <div className="flex items-center gap-1.5 text-[#656D76] font-mono text-xs sm:text-sm select-none pr-1">
-                    <Github size={17} className="text-[#161B22]" />
-                    <span className="text-[#656D76] font-normal">github.com/</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={usernameInput}
-                    onChange={(e) => setUsernameInput(e.target.value)}
-                    placeholder="your-username"
-                    aria-label="GitHub username to inspect missions"
-                    className="w-full bg-transparent text-sm sm:text-base font-mono font-medium text-[#161B22] placeholder:text-[#8c959f] focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isScanning}
-                    className="shrink-0 h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-xs sm:text-sm font-semibold tracking-tight transition-all duration-200 flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.98]"
-                  >
-                    {isScanning ? (
-                      <>
-                        <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Scanning...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Scan Profile</span>
-                        <ArrowRight size={14} />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              {/* Quick-try chips */}
-              <div className="flex items-center justify-center flex-wrap gap-2 pt-3 text-xs text-[#656D76]">
-                <span className="text-slate-400 text-[11px] font-medium">Try with:</span>
-                {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
-                  <button
-                    key={user}
-                    type="button"
-                    onClick={() => {
-                      setUsernameInput(user);
-                      simulateProfileScan(user);
-                    }}
-                    className="px-2.5 py-0.5 rounded-md bg-[#F6F8FA] hover:bg-slate-200 text-[#161B22] border border-[#D0D7DE] text-[11px] font-mono transition-colors cursor-pointer"
-                  >
-                    @{user}
-                  </button>
-                ))}
-              </div>
-
-              {/* Real-time Scan Result Toast */}
-              {scanResult && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  className="mt-4 p-3.5 rounded-2xl bg-[#dafbe1]/95 border border-[#2da44e]/50 text-left flex items-center justify-between gap-3 shadow-xs"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#2da44e] animate-ping" />
-                    <div>
-                      <div className="text-xs font-bold text-[#1a7f37]">
-                        Profile @{scanResult.handle} ready for first achievement!
-                      </div>
-                      <div className="text-[11px] text-[#24292f]">
-                        Recommended starter mission: <strong>{scanResult.targetName}</strong>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedBadgeId(scanResult.targetId);
-                      document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="px-3.5 py-1.5 rounded-full bg-[#2da44e] hover:bg-[#238636] text-white text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-2xs"
-                  >
-                    Start Mission →
-                  </button>
-                </motion.div>
-              )}
-            </motion.div>
-
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.18 }}
-              className="flex items-center justify-center flex-wrap gap-3.5 pt-1 mb-7"
-            >
-              <a
-                href="#achievements"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="h-[46px] px-6 sm:px-7 rounded-full bg-[#161B22] hover:bg-[#24292f] text-white text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer select-none group"
-              >
-                <Rocket size={14} className="text-white" />
-                <span>Explore Achievements</span>
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-              </a>
-
-              <a
-                href="#missions"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('missions')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="h-[46px] px-6 sm:px-7 rounded-full bg-white hover:bg-[#F6F8FA] text-[#161B22] border border-[#D0D7DE] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] shadow-2xs hover:shadow-xs cursor-pointer select-none"
-              >
-                <Play size={12} className="text-[#22A849] fill-[#22A849]" />
-                <span>Start Your First Mission</span>
-              </a>
-            </motion.div>
-
-            {/* Value Proposition Row (Divided with clean vertical bars) */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: DURATION.NORMAL, ease: EASING.PREMIUM, delay: 0.22 }}
-              className="flex items-center justify-center flex-wrap gap-3 sm:gap-6 pt-5 text-xs sm:text-[13px] font-medium text-[#161B22]"
-            >
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 size={15} className="text-[#22A849]" />
-                <span>Guided Missions</span>
-              </div>
-              <span className="text-slate-300">|</span>
-              <div className="flex items-center gap-1.5">
-                <GitPullRequest size={15} className="text-[#22A849]" />
-                <span>Real Pull Requests</span>
-              </div>
-              <span className="text-slate-300">|</span>
-              <div className="flex items-center gap-1.5">
-                <Award size={15} className="text-[#22A849]" />
-                <span>Verified Badges</span>
-              </div>
-              <span className="text-slate-300">|</span>
-              <div className="flex items-center gap-1.5">
-                <Shield size={15} className="text-[#22A849]" />
-                <span>No OAuth Required</span>
-              </div>
-            </motion.div>
-          </AnubiOrbitalHeroStage>
         </div>
       </section>
 

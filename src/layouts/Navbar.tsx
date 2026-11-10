@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
-import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap } from 'lucide-react';
+import { Menu, X, ChevronRight, Github, Linkedin, Youtube, Compass, ExternalLink, Sparkles, Zap, Trophy, ArrowRight } from 'lucide-react';
 import { cn } from "@/src/lib/utils";
 import { SupportModal } from "../components/ui/SupportButton";
 import { AuthModal } from "../components/ui/AuthModal";
@@ -149,7 +149,10 @@ export const Navbar = () => {
         isHomePage 
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
-              ? "fixed top-0 left-0 right-0 z-[1000] pointer-events-none flex justify-center bg-transparent border-none py-0"
+              ? cn(
+                  "fixed top-0 left-0 right-0 z-[1000] transition-all duration-200 pointer-events-auto",
+                  isScrolled ? "bg-[#FAF9F5]/90 backdrop-blur-md border-b border-[#E1E4E8]/70 py-3.5 shadow-2xs" : "bg-transparent py-5 sm:py-6"
+                )
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
         !isGitGlow && (isBCyber
@@ -303,121 +306,66 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Supaste-Exact Hanging Dynamic Island Notch Navbar for GitGlow */
-          <motion.div
-            initial={{ y: -70, opacity: 0 }}
-            animate={{ 
-              y: isVisible ? 0 : -85,
-              opacity: isVisible ? 1 : 0,
-            }}
-            transition={{
-              type: 'spring',
-              stiffness: 340,
-              damping: 28,
-              mass: 0.5,
-            }}
-            className={cn(
-              "relative select-none max-w-[calc(100vw-24px)]",
-              isVisible ? "pointer-events-auto" : "pointer-events-none"
-            )}
-          >
-            <div className="relative bg-black text-white h-[54px] px-3.5 sm:px-4 rounded-b-[18px] flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 border-0 outline-none shadow-[0_8px_24px_-4px_rgba(0,0,0,0.18),0_2px_6px_-1px_rgba(0,0,0,0.08)]">
-              {/* Left Inverted Concave Ear (Supaste exact SVG scoop) */}
-              <div
-                aria-hidden="true"
-                className="absolute top-0 -left-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
+          /* GitGlow Exact Minimalist Header matching Reference Screenshot */
+          <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-12 flex justify-between items-center relative z-20">
+            {/* Left: Stylized Logo & Wordmark (Matching Reference: G in black circle + GitGlow) */}
+            <Link
+              to="/blueprints/gitglow"
+              className="flex items-center gap-2.5 group cursor-pointer select-none"
+            >
+              <div className="w-[32px] h-[32px] rounded-full bg-[#161B22] flex items-center justify-center text-white transition-transform duration-200 group-hover:scale-105 shadow-xs">
+                <span className="font-extrabold text-[16px] font-sans leading-none tracking-tight">G</span>
+              </div>
+              <span className="text-[20px] font-bold tracking-tight text-[#161B22]">
+                GitGlow
+              </span>
+            </Link>
+
+            {/* Center: Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-8 lg:gap-10">
+              <a
+                href="#achievements"
+                className="text-[14px] font-medium text-[#161B22] hover:text-[#84CC16] transition-colors cursor-pointer"
               >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="w-[20px] h-[20px] fill-black block"
-                  overflow="visible"
-                  style={{ transform: 'rotate(90deg)' }}
-                >
-                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
-                </svg>
-              </div>
-
-              {/* Right Inverted Concave Ear (Supaste exact SVG scoop with 21px overlap) */}
-              <div
-                aria-hidden="true"
-                className="absolute top-0 -right-[20px] w-[21px] h-[20px] pointer-events-none overflow-visible"
+                Badges
+              </a>
+              <a
+                href="#first-achievement"
+                className="text-[14px] font-medium text-[#161B22] hover:text-[#84CC16] transition-colors cursor-pointer"
               >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="w-[20px] h-[20px] fill-black block"
-                  overflow="visible"
-                >
-                  <path d="M 0 0 L 20 0 C 8.954 0 0 8.954 0 20 Z" />
-                </svg>
-              </div>
-
-              {/* Left: GitHub Octocat Dark Squircle Icon + Brand Title + Breadcrumb */}
-              <div className="flex items-center gap-2.5 shrink-0">
-                <Link
-                  to="/blueprints/gitglow"
-                  className="flex items-center gap-2 group cursor-pointer"
-                >
-                  <div className="w-[30px] h-[30px] rounded-[9px] bg-gradient-to-b from-[#24292f] via-[#161b22] to-[#0d1117] border border-white/15 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_8px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105">
-                    <Github size={17} className="text-white fill-current" />
-                  </div>
-                  <span className="text-[16px] font-bold tracking-[-0.02em] text-white">
-                    GitGlow
-                  </span>
-                </Link>
-                <span className="text-white/20 select-none text-xs">|</span>
-                <Link
-                  to="/blueprints"
-                  className="text-[11px] font-mono text-white/50 hover:text-white transition-colors hidden sm:inline"
-                >
-                  ← Blueprints
-                </Link>
-              </div>
-
-              {/* Center: Desktop Nav Links (GitGlow sections) */}
-              <div className="hidden md:flex items-center gap-5 lg:gap-7">
-                <a
-                  href="#catalog"
-                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
-                >
-                  Badges
-                </a>
-                <a
-                  href="#recipes"
-                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
-                >
-                  Recipes
-                </a>
-                <a
-                  href="#compare"
-                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
-                >
-                  Proof
-                </a>
-                <a
-                  href="#faq"
-                  className="text-[13px] font-semibold tracking-tight text-white/70 hover:text-white transition-colors cursor-pointer"
-                >
-                  FAQ
-                </a>
-              </div>
-
-              {/* Right: GitGlow Action Button */}
-              <div className="flex items-center shrink-0">
-                <a
-                  href="#recipes"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('recipes')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="h-[34px] px-3.5 rounded-full bg-white hover:bg-slate-100 text-[#0b1c30] text-[12px] font-bold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
-                  aria-label="Claim your GitHub achievement medallion"
-                >
-                  <Zap size={13} className="fill-[#0b1c30] text-[#0b1c30]" />
-                  <span>Claim Medallion</span>
-                </a>
-              </div>
+                Recipes
+              </a>
+              <a
+                href="#comparison"
+                className="text-[14px] font-medium text-[#161B22] hover:text-[#84CC16] transition-colors cursor-pointer"
+              >
+                Proof
+              </a>
+              <a
+                href="#faq"
+                className="text-[14px] font-medium text-[#161B22] hover:text-[#84CC16] transition-colors cursor-pointer"
+              >
+                FAQ
+              </a>
             </div>
-          </motion.div>
+
+            {/* Right: Claim Medallion Button */}
+            <div className="flex items-center">
+              <a
+                href="#first-achievement"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-[38px] px-4 sm:px-5 rounded-full bg-[#D4F843] hover:bg-[#C5E935] text-[#161B22] text-[13px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-xs cursor-pointer select-none"
+                aria-label="Claim Medallion"
+              >
+                <Trophy size={14} className="text-[#161B22] fill-[#161B22]" />
+                <span>Claim Medallion</span>
+                <ArrowRight size={13} className="text-[#161B22]" />
+              </a>
+            </div>
+          </div>
         ) : (
           /* Standard Navbar for other pages */
           <div className="max-w-7xl mx-auto w-full px-6 md:px-12 lg:px-16 flex justify-between items-center relative z-20">
