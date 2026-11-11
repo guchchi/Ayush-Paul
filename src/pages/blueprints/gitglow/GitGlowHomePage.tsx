@@ -39,6 +39,8 @@ import {
   CheckCheck,
   ShieldCheck,
   Ban,
+  Box,
+  ChevronRight,
 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DURATION, EASING } from '../../../lib/motion-presets';
@@ -724,90 +726,96 @@ const AnubiOrbitalHeroStage: React.FC<{
   );
 };
 
-// ─── 3D Monument Centerpiece (Matching Reference Screenshot) ─────────────────
+// ─── 3D Monument Centerpiece with Orbiting Achievement Cards ─────────────────
 const HeroMonument3D: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[540px] xl:max-w-[620px] h-[480px] sm:h-[540px] lg:h-[620px] flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full max-w-[560px] xl:max-w-[640px] h-[480px] sm:h-[540px] lg:h-[600px] flex items-center justify-center select-none overflow-visible">
       {/* ── Background Luminous Lime Glow Bloom ── */}
       <div
         aria-hidden="true"
-        className="absolute top-[26%] right-[10%] w-[380px] sm:w-[480px] lg:w-[540px] h-[380px] sm:h-[480px] lg:h-[540px] rounded-full bg-gradient-to-br from-[#D4F843]/35 via-[#A3E635]/20 to-transparent blur-[85px] pointer-events-none"
+        className="absolute top-[22%] right-[8%] w-[380px] sm:w-[460px] lg:w-[520px] h-[380px] sm:h-[460px] lg:h-[520px] rounded-full bg-gradient-to-br from-[#D4F843]/40 via-[#A3E635]/20 to-transparent blur-[80px] pointer-events-none"
       />
 
-      {/* ── Floating 4-Point Sparkle Star ── */}
-      <div className="absolute top-6 sm:top-10 right-8 sm:right-16 pointer-events-none select-none z-30">
-        <SparkleStar size={18} className="text-[#161B22]" />
+      {/* ── 3D Lime Orb Accent (Mid-Right Edge) ── */}
+      <div
+        aria-hidden="true"
+        className="hidden sm:block absolute bottom-[12%] -right-10 w-[130px] h-[130px] rounded-full bg-gradient-to-br from-[#E2FB5B] via-[#B4EE2B] to-[#7CB518] opacity-85 blur-[1px] shadow-[0_20px_50px_rgba(180,238,43,0.4)] pointer-events-none z-10"
+      />
+
+      {/* ── Floating 4-Point Sparkle Stars ── */}
+      <div className="hidden sm:block absolute top-[54%] left-[4%] pointer-events-none select-none z-30">
+        <SparkleStar size={16} className="text-[#161B22]" />
       </div>
 
       {/* ── Micro-motion Container ── */}
       <motion.div
-        animate={{ y: [0, -8, 0] }}
+        animate={{ y: [0, -7, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         className="relative w-full h-full flex items-center justify-center"
       >
         {/* ── GLOWING NEON-LIME ORBITAL RINGS ── */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+          className="absolute inset-0 w-full h-full pointer-events-none z-15 overflow-visible"
           viewBox="0 0 560 600"
           fill="none"
         >
           {/* Main glowing neon orbital ring */}
           <ellipse
-            cx="380"
-            cy="270"
-            rx="185"
-            ry="60"
-            transform="rotate(-20 380 270)"
-            stroke="#D4F843"
+            cx="330"
+            cy="265"
+            rx="215"
+            ry="66"
+            transform="rotate(-22 330 265)"
+            stroke="#C8FA32"
             strokeWidth="2.5"
-            className="filter drop-shadow-[0_0_12px_rgba(212,248,67,0.95)]"
+            className="filter drop-shadow-[0_0_12px_rgba(200,250,50,0.95)]"
           />
           {/* Secondary subtle concentric orbit ring */}
           <ellipse
-            cx="380"
-            cy="274"
-            rx="155"
-            ry="46"
-            transform="rotate(-16 380 274)"
-            stroke="#D4F843"
+            cx="335"
+            cy="260"
+            rx="185"
+            ry="54"
+            transform="rotate(-14 335 260)"
+            stroke="#C8FA32"
             strokeWidth="1.2"
             strokeOpacity="0.45"
-            className="filter drop-shadow-[0_0_8px_rgba(212,248,67,0.6)]"
+            className="filter drop-shadow-[0_0_8px_rgba(200,250,50,0.6)]"
           />
         </svg>
 
         {/* ── FACETED DARK ARCHITECTURAL PEDESTAL ── */}
         <svg
-          className="absolute right-0 bottom-0 w-[380px] sm:w-[440px] lg:w-[500px] h-[340px] sm:h-[400px] pointer-events-none z-15 overflow-visible"
+          className="absolute -right-6 bottom-[-40px] sm:bottom-[-60px] w-[420px] sm:w-[490px] lg:w-[540px] h-[360px] sm:h-[420px] pointer-events-none z-15 overflow-visible"
           viewBox="0 0 500 400"
           fill="none"
         >
           <defs>
             <linearGradient id="pedestalLeftFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#282F38" />
-              <stop offset="50%" stopColor="#1B2027" />
-              <stop offset="100%" stopColor="#101419" />
+              <stop offset="0%" stopColor="#2B323C" />
+              <stop offset="50%" stopColor="#1A2027" />
+              <stop offset="100%" stopColor="#0E1217" />
             </linearGradient>
             <linearGradient id="pedestalRightFacet" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#161B22" />
-              <stop offset="60%" stopColor="#0E1217" />
-              <stop offset="100%" stopColor="#080A0D" />
+              <stop offset="60%" stopColor="#0D1117" />
+              <stop offset="100%" stopColor="#06080B" />
             </linearGradient>
             <linearGradient id="pedestalNeckGrad" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#1A2027" />
-              <stop offset="50%" stopColor="#2F3642" />
-              <stop offset="100%" stopColor="#151A21" />
+              <stop offset="50%" stopColor="#3B4452" />
+              <stop offset="100%" stopColor="#13171D" />
             </linearGradient>
           </defs>
 
           {/* Left Facet */}
           <polygon
-            points="245,100 40,400 295,400 295,100"
+            points="240,100 10,400 295,400 295,100"
             fill="url(#pedestalLeftFacet)"
           />
           {/* Right Facet */}
           <polygon
-            points="295,100 295,400 500,400 500,160"
+            points="295,100 295,400 500,400 500,145"
             fill="url(#pedestalRightFacet)"
           />
           {/* Center Specular Ridge Line */}
@@ -816,25 +824,25 @@ const HeroMonument3D: React.FC = () => {
             y1="100"
             x2="295"
             y2="400"
-            stroke="#3C4654"
+            stroke="#444F5E"
             strokeWidth="1.5"
             strokeOpacity="0.85"
           />
           {/* Left Ridge Bevel Line */}
           <line
-            x1="245"
+            x1="240"
             y1="100"
-            x2="40"
+            x2="10"
             y2="400"
-            stroke="#2E3744"
+            stroke="#36404E"
             strokeWidth="1"
-            strokeOpacity="0.5"
+            strokeOpacity="0.55"
           />
 
           {/* Pedestal Collar / Neck (Supporting the Medallion) */}
-          <ellipse cx="270" cy="100" rx="36" ry="12" fill="#323B47" />
-          <path d="M 234 100 L 234 125 C 234 132 306 132 306 125 L 306 100 Z" fill="url(#pedestalNeckGrad)" />
-          <ellipse cx="270" cy="125" rx="36" ry="10" fill="#1A1F26" />
+          <ellipse cx="272" cy="96" rx="40" ry="13" fill="#323B47" />
+          <path d="M 232 96 L 232 128 C 232 137 312 137 312 128 L 312 96 Z" fill="url(#pedestalNeckGrad)" />
+          <ellipse cx="272" cy="128" rx="40" ry="11" fill="#181D24" />
         </svg>
 
         {/* ── 3D GITHUB MEDALLION / COIN ── */}
@@ -842,61 +850,61 @@ const HeroMonument3D: React.FC = () => {
           style={{
             perspective: 1200,
             position: 'absolute',
-            top: '10%',
-            right: '12%',
+            top: '9%',
+            right: '14%',
             zIndex: 25,
           }}
           className="cursor-pointer group"
         >
           <div
             style={{
-              transform: 'rotateY(-24deg) rotateX(10deg) rotateZ(-3deg)',
+              transform: 'rotateY(-20deg) rotateX(8deg) rotateZ(-2deg)',
               transformStyle: 'preserve-3d',
             }}
-            className="relative w-[190px] h-[190px] sm:w-[220px] sm:h-[220px] lg:w-[250px] lg:h-[250px] rounded-full transition-transform duration-300 group-hover:scale-105"
+            className="relative w-[195px] h-[195px] sm:w-[225px] sm:h-[225px] lg:w-[255px] lg:h-[255px] rounded-full transition-transform duration-300 group-hover:scale-105"
           >
             {/* Outer Thick Metallic Coin Edge & Rim */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                background: 'linear-gradient(135deg, #3D4653 0%, #20262F 45%, #101419 100%)',
+                background: 'linear-gradient(135deg, #4B5563 0%, #242B35 45%, #0D1117 100%)',
                 boxShadow: `
-                  inset 0 3px 6px rgba(255,255,255,0.35),
+                  inset 0 3px 6px rgba(255,255,255,0.4),
                   inset 0 -6px 12px rgba(0,0,0,0.85),
                   0 24px 48px -8px rgba(0,0,0,0.65),
                   0 12px 24px rgba(0,0,0,0.4)
                 `,
-                padding: '13px',
+                padding: '14px',
               }}
             >
               {/* Inner Rim Bezel & Coin Face */}
               <div
                 className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
                 style={{
-                  background: 'radial-gradient(circle at 35% 30%, #1A2027 0%, #12161C 65%, #0B0E12 100%)',
-                  boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.9), inset 0 0 0 2px #2A313C',
+                  background: 'radial-gradient(circle at 35% 30%, #1F262E 0%, #12161C 65%, #0B0E12 100%)',
+                  boxShadow: 'inset 0 3px 10px rgba(0,0,0,0.95), inset 0 0 0 2px #343C48',
                 }}
               >
                 {/* Surface Specular Reflection Sheen */}
                 <div
-                  className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
+                  className="absolute inset-0 rounded-full opacity-20 pointer-events-none"
                   style={{
                     background: 'linear-gradient(125deg, white 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.12) 100%)',
                   }}
                 />
 
-                {/* Embossed White/Silver GitHub Octocat Icon */}
+                {/* Embossed Silver/Chrome GitHub Octocat Icon */}
                 <div
                   className="relative z-10 flex items-center justify-center"
                   style={{
-                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.7)) drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.8)) drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
                   }}
                 >
                   <Github
-                    size={115}
-                    className="text-[#F3F5F8] fill-[#F3F5F8]"
+                    size={122}
+                    className="text-[#CBD5E1] fill-[#CBD5E1]"
                     style={{
-                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.6))',
+                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.65))',
                     }}
                   />
                 </div>
@@ -904,13 +912,96 @@ const HeroMonument3D: React.FC = () => {
             </div>
           </div>
         </div>
-      </motion.div>
 
-      {/* ── Bottom-Right Corner Label ── */}
-      <div className="absolute right-0 bottom-2 text-xs font-mono text-[#8C959F] tracking-tight flex items-center gap-2 select-none z-30">
-        <span>Built for Developers</span>
-        <span className="w-6 h-[1px] bg-[#8C959F]/60" />
-      </div>
+        {/* ── 4 ORBITING GLASS ACHIEVEMENT PROGRESS CARDS ── */}
+        {/* Card 1: Top-Left — Pull Request Expert (95%) */}
+        <motion.div
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+          className="hidden sm:block absolute top-[12%] left-[2%] lg:left-[0%] z-30 w-[160px] rounded-2xl bg-white/85 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 -rotate-2"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-[#161B22] flex items-center justify-center shrink-0">
+              <GitPullRequest size={14} className="text-[#D4F843]" />
+            </div>
+            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
+              Pull Request Expert
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
+            <span>95%</span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+            <div className="h-full w-[95%] rounded-full bg-[#A3E635]" />
+          </div>
+        </motion.div>
+
+        {/* Card 2: Middle-Right — Open Source Contributor (100%) */}
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+          className="hidden sm:block absolute top-[32%] -right-2 lg:-right-4 z-30 w-[172px] rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 rotate-1"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center shrink-0">
+              <Code2 size={14} className="text-[#161B22]" />
+            </div>
+            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
+              Open Source Contributor
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
+            <span>100%</span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+            <div className="h-full w-full rounded-full bg-[#A3E635]" />
+          </div>
+        </motion.div>
+
+        {/* Card 3: Bottom-Left — Star Collector (95%) */}
+        <motion.div
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }}
+          className="hidden sm:block absolute bottom-[26%] left-[4%] lg:left-[2%] z-30 w-[155px] rounded-2xl bg-white/85 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 rotate-1"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-[#F7FEE7] border border-[#D9F99D] flex items-center justify-center shrink-0">
+              <Star size={14} className="text-[#161B22] fill-[#D4F843]" />
+            </div>
+            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
+              Star Collector
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
+            <span>95%</span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+            <div className="h-full w-[95%] rounded-full bg-[#A3E635]" />
+          </div>
+        </motion.div>
+
+        {/* Card 4: Bottom-Right — Builder (75%) */}
+        <motion.div
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
+          className="hidden sm:block absolute bottom-[18%] right-[4%] lg:right-[2%] z-30 w-[140px] rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 -rotate-2"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center shrink-0">
+              <Box size={14} className="text-[#161B22]" />
+            </div>
+            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
+              Builder
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
+            <span>75%</span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+            <div className="h-full w-[75%] rounded-full bg-[#A3E635]" />
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
@@ -1039,22 +1130,36 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
-      {/* ─── SECTION 01: HERO (Matching Reference media_1794299048864_21177560.jpg) ─── */}
+      {/* ─── SECTION 01: HERO (Matching Reference media_1794412454162_773fcfec.jpg) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
+        className="relative w-full pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-36 lg:pb-16 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
       >
-        {/* Soft bottom-left ambient glow */}
+        {/* Top-Right Lime Ambient 3D Orb */}
         <div
           aria-hidden="true"
-          className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-[#D4F843]/18 via-[#A3E635]/10 to-transparent blur-[85px] pointer-events-none select-none"
+          className="absolute -top-20 -right-12 sm:-top-16 sm:right-[-40px] w-[240px] sm:w-[320px] h-[240px] sm:h-[320px] rounded-full bg-gradient-to-br from-[#E2FB5B] via-[#B4EE2B] to-[#84CC16]/30 opacity-85 blur-[2px] pointer-events-none select-none"
         />
 
+        {/* Soft Bottom-Left Ambient Glow & Dark Sphere Accent */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-[#D4F843]/25 via-[#A3E635]/15 to-transparent blur-[85px] pointer-events-none select-none"
+        />
+        <div
+          aria-hidden="true"
+          className="hidden sm:block absolute -bottom-24 -left-16 w-[200px] h-[200px] rounded-full bg-gradient-to-tr from-[#0B0E12] via-[#1C2319] to-[#A3E635]/40 opacity-90 pointer-events-none select-none"
+        />
 
         <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
-            {/* ── LEFT COLUMN: Headline, Subtitle, Username Input, Proof Row ── */}
-            <div className="w-full lg:w-[54%] xl:w-[52%] shrink-0 text-left z-20">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-6">
+            {/* ── LEFT COLUMN: Eyebrow, Headline, Subtitle, Input, Chips, CTAs ── */}
+            <div className="relative w-full lg:w-[52%] xl:w-[50%] shrink-0 text-left z-20">
+              {/* Floating Sparkle Star near upper-right of headline */}
+              <div className="hidden sm:block absolute top-10 right-[12%] pointer-events-none select-none">
+                <SparkleStar size={18} className="text-[#161B22]" />
+              </div>
+
               {/* Eyebrow Pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -1062,9 +1167,11 @@ export const GitGlowHomePage: React.FC = () => {
                 transition={{ duration: 0.4, ease: EASING.PREMIUM }}
                 className="mb-6 inline-flex"
               >
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F3F7E8] text-[#374528] border border-[#E0ECC8] text-[12px] font-medium tracking-tight select-none">
-                  <SparkleStar size={13} className="text-[#8CAE38]" />
-                  <span>Turn your GitHub profile into an achievement hub</span>
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F4F8E8]/90 text-[#24292F] border border-[#B7CE63]/60 text-[10.5px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.12em] select-none shadow-2xs">
+                  <span className="w-4 h-4 rounded-full bg-[#D4F843] flex items-center justify-center shrink-0">
+                    <SparkleStar size={9} className="text-[#161B22]" />
+                  </span>
+                  <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
                 </div>
               </motion.div>
 
@@ -1073,13 +1180,34 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
-                className="mb-4"
+                className="mb-5"
               >
-                <h1 className="text-[48px] sm:text-[64px] lg:text-[72px] xl:text-[80px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[0.98] select-none">
+                <h1 className="text-[44px] sm:text-[58px] lg:text-[64px] xl:text-[72px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[1.02] select-none">
                   Your GitHub <br />
                   profile is about <br />
-                  to <span className="italic font-extrabold text-[#84CC16]">level up.</span>
-                  <span className="inline-block w-[3px] h-[0.82em] bg-[#161B22] ml-2 align-middle animate-pulse" />
+                  to get{' '}
+                  <span className="relative inline-block ml-1">
+                    <span
+                      aria-hidden="true"
+                      className="absolute -inset-x-2 inset-y-0.5 bg-[#D4F843] -skew-x-6 rounded-[4px]"
+                    />
+                    <span className="relative italic font-serif font-bold text-[#161B22] px-1">
+                      interesting.
+                    </span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 220 12"
+                      className="absolute -bottom-2 left-0 w-full h-3 overflow-visible pointer-events-none"
+                      fill="none"
+                    >
+                      <path
+                        d="M 4 7 Q 110 1 216 6"
+                        stroke="#161B22"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
                 </h1>
               </motion.div>
 
@@ -1088,61 +1216,72 @@ export const GitGlowHomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[17px] sm:text-[19px] text-[#57606A] font-normal tracking-tight mt-5 mb-8"
+                className="text-[15px] sm:text-[17px] text-[#374151] font-normal leading-relaxed max-w-[490px] mt-5 mb-7"
               >
-                Complete missions. Earn real achievements.
+                Earn real GitHub achievements through guided missions, meaningful contributions, and hands-on developer challenges.
               </motion.p>
 
-              {/* Input Capsule (Matching reference pill: rounded capsule with Octocat badge left, username, black arrow button right) */}
+              {/* Search Input Capsule + Try Chips */}
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
-                className="max-w-[480px] w-full mb-8 sm:mb-10"
+                className="max-w-[500px] w-full mb-6"
               >
                 <form onSubmit={handleScanProfile} className="relative">
-                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#E1E4E8] shadow-[0_4px_24px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.03)] hover:border-[#161B22]/30 p-1.5 pl-2.5 sm:pl-3 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#84CC16]/20">
-                    {/* Octocat circular badge on left */}
-                    <div className="w-10 h-10 rounded-full bg-[#161B22] flex items-center justify-center shrink-0 text-white shadow-xs">
-                      <Github size={20} className="text-white fill-current" />
-                    </div>
-
+                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#161B22]/25 shadow-[0_6px_24px_rgba(0,0,0,0.05)] hover:border-[#161B22]/45 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
+                    <Search size={16} className="text-[#57606A] shrink-0 mr-2.5" />
+                    <span className="text-[#57606A] text-[13px] font-mono shrink-0 select-none">
+                      github.com/&nbsp;
+                    </span>
                     <input
                       type="text"
                       value={usernameInput}
                       onChange={(e) => setUsernameInput(e.target.value)}
-                      placeholder="Enter your GitHub username"
+                      placeholder="username (e.g. torvalds)"
                       aria-label="GitHub username"
-                      className="w-full bg-transparent px-3.5 text-sm sm:text-[15px] font-normal text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none"
+                      className="flex-1 min-w-0 bg-transparent text-[13px] font-mono text-[#161B22] placeholder:text-[#9CA3AF] focus:outline-none py-1.5"
                     />
-
-                    {/* Circular black arrow button on right */}
                     <button
                       type="submit"
                       disabled={isScanning}
-                      className="w-10 h-10 rounded-full bg-[#161B22] hover:bg-[#24292F] text-white flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-sm cursor-pointer"
-                      aria-label="Scan profile"
+                      className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold border-2 border-[#D4F843] shadow-[0_0_14px_rgba(212,248,67,0.45)] flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
+                      aria-label="Scan Profile"
                     >
                       {isScanning ? (
-                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>Scanning</span>
+                        </>
                       ) : (
-                        <ArrowRight size={17} />
+                        <>
+                          <span>Scan Profile</span>
+                          <ArrowRight size={14} />
+                        </>
                       )}
                     </button>
                   </div>
                 </form>
 
                 {/* Quick-try chips */}
-                <div className="flex items-center gap-2 pt-3 pl-2">
-                  <span className="text-[#9CA3AF] text-[12px]">Try:</span>
-                  {['torvalds', 'shadcn', 'leerob', 'gaearon'].map((user) => (
+                <div className="flex items-center flex-wrap gap-2 pt-3 pl-1">
+                  <span className="text-[#57606A] text-[11.5px] font-medium mr-1">Try with:</span>
+                  {[
+                    { handle: 'torvalds', color: 'bg-[#374151]' },
+                    { handle: 'shadcn', color: 'bg-[#78350F]' },
+                    { handle: 'leerob', color: 'bg-[#1E293B]' },
+                    { handle: 'gaearon', color: 'bg-[#312E81]' },
+                  ].map((item) => (
                     <button
-                      key={user}
+                      key={item.handle}
                       type="button"
-                      onClick={() => { setUsernameInput(user); simulateProfileScan(user); }}
-                      className="px-2 py-0.5 rounded-full bg-transparent hover:bg-[#F3F4F6] text-[#656D76] hover:text-[#161B22] text-[11px] font-mono transition-colors cursor-pointer"
+                      onClick={() => { setUsernameInput(item.handle); simulateProfileScan(item.handle); }}
+                      className="inline-flex items-center gap-1.5 pl-1 pr-2.5 py-0.5 rounded-full bg-[#ECEBE4]/80 hover:bg-[#E2E0D6] border border-[#D0D7DE]/70 text-[#24292F] text-[11px] font-mono transition-colors cursor-pointer"
                     >
-                      @{user}
+                      <span className={cn("w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white uppercase", item.color)}>
+                        {item.handle[0]}
+                      </span>
+                      <span>@{item.handle}</span>
                     </button>
                   ))}
                 </div>
@@ -1173,35 +1312,77 @@ export const GitGlowHomePage: React.FC = () => {
                 )}
               </motion.div>
 
-              {/* Value Proposition Row (Guided Missions | Verified Badges | No OAuth Required) */}
+              {/* Dual CTA Buttons */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.22 }}
-                className="flex items-center flex-wrap gap-4 sm:gap-6 text-xs sm:text-[13px] font-medium text-[#161B22]"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.2 }}
+                className="flex flex-wrap items-center gap-3.5"
               >
-                <div className="flex items-center gap-2">
-                  <Rocket size={15} className="text-[#161B22]" />
-                  <span>Guided Missions</span>
-                </div>
-                <span className="text-[#D0D7DE]">|</span>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck size={15} className="text-[#161B22]" />
-                  <span>Verified Badges</span>
-                </div>
-                <span className="text-[#D0D7DE]">|</span>
-                <div className="flex items-center gap-2">
-                  <Ban size={15} className="text-[#161B22]" />
-                  <span>No OAuth Required</span>
-                </div>
+                <a
+                  href="#first-achievement"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="h-12 pl-5 pr-2.5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold inline-flex items-center gap-3 shadow-[0_8px_20px_rgba(0,0,0,0.16)] transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
+                >
+                  <Rocket size={15} />
+                  <span>Start Your First Mission</span>
+                  <span className="w-7 h-7 rounded-full bg-[#D4F843] text-[#0D1117] flex items-center justify-center shrink-0">
+                    <ChevronRight size={15} strokeWidth={2.5} />
+                  </span>
+                </a>
+
+                <a
+                  href="#achievements"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="h-12 px-5 rounded-full bg-white/85 hover:bg-white text-[#161B22] border border-[#161B22]/25 text-[13px] font-semibold inline-flex items-center gap-2 shadow-2xs transition-all duration-200 hover:-translate-y-[1px] active:scale-[0.98] cursor-pointer select-none"
+                >
+                  <Trophy size={15} className="text-[#161B22]" />
+                  <span>Explore Achievements</span>
+                </a>
               </motion.div>
             </div>
 
-            {/* ── RIGHT COLUMN: 3D Medallion Monument on Faceted Pedestal ── */}
-            <div className="w-full lg:w-[46%] xl:w-[48%] flex items-center justify-center lg:justify-end z-20">
+            {/* ── RIGHT COLUMN: 3D Medallion Monument + Orbiting Cards ── */}
+            <div className="w-full lg:w-[48%] xl:w-[50%] flex items-center justify-center lg:justify-end z-20">
               <HeroMonument3D />
             </div>
           </div>
+
+          {/* ── BOTTOM CENTER FLOATING FROSTED TRUST BAR ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.28 }}
+            className="mt-8 sm:mt-10 flex justify-center relative z-30"
+          >
+            <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-7 px-6 sm:px-8 py-3 rounded-full bg-white/80 backdrop-blur-md border border-[#E1E4E8]/90 shadow-[0_12px_32px_rgba(0,0,0,0.08)] text-[12px] sm:text-[13px] font-medium text-[#161B22]">
+              <div className="flex items-center gap-2">
+                <Compass size={15} className="text-[#161B22]" />
+                <span>Guided Missions</span>
+              </div>
+              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
+              <div className="flex items-center gap-2">
+                <Zap size={15} className="text-[#161B22]" />
+                <span>Real Pull Requests</span>
+              </div>
+              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
+              <div className="flex items-center gap-2">
+                <Award size={15} className="text-[#161B22]" />
+                <span>Verified Badges</span>
+              </div>
+              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
+              <div className="flex items-center gap-2">
+                <Shield size={15} className="text-[#161B22]" />
+                <span>No OAuth Required</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
