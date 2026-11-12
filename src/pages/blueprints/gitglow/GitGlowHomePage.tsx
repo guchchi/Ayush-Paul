@@ -729,21 +729,15 @@ const AnubiOrbitalHeroStage: React.FC<{
 // ─── 3D Monument Centerpiece with Orbiting Achievement Cards ─────────────────
 const HeroMonument3D: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[560px] xl:max-w-[640px] h-[480px] sm:h-[540px] lg:h-[600px] flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full max-w-[560px] xl:max-w-[640px] h-[440px] sm:h-[500px] lg:h-[540px] flex items-center justify-center select-none overflow-visible">
       {/* ── Background Luminous Lime Glow Bloom ── */}
       <div
         aria-hidden="true"
-        className="absolute top-[22%] right-[8%] w-[380px] sm:w-[460px] lg:w-[520px] h-[380px] sm:h-[460px] lg:h-[520px] rounded-full bg-gradient-to-br from-[#D4F843]/40 via-[#A3E635]/20 to-transparent blur-[80px] pointer-events-none"
-      />
-
-      {/* ── 3D Lime Orb Accent (Mid-Right Edge) ── */}
-      <div
-        aria-hidden="true"
-        className="hidden sm:block absolute bottom-[12%] -right-10 w-[130px] h-[130px] rounded-full bg-gradient-to-br from-[#E2FB5B] via-[#B4EE2B] to-[#7CB518] opacity-85 blur-[1px] shadow-[0_20px_50px_rgba(180,238,43,0.4)] pointer-events-none z-10"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] sm:w-[440px] lg:w-[480px] h-[360px] sm:h-[440px] lg:h-[480px] rounded-full bg-gradient-to-br from-[#D4F843]/40 via-[#A3E635]/20 to-transparent blur-[85px] pointer-events-none"
       />
 
       {/* ── Floating 4-Point Sparkle Stars ── */}
-      <div className="hidden sm:block absolute top-[54%] left-[4%] pointer-events-none select-none z-30">
+      <div className="hidden sm:block absolute top-[56%] left-[4%] pointer-events-none select-none z-30">
         <SparkleStar size={16} className="text-[#161B22]" />
       </div>
 
@@ -751,32 +745,32 @@ const HeroMonument3D: React.FC = () => {
       <motion.div
         animate={{ y: [0, -7, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative w-full h-full flex items-center justify-center"
+        className="relative w-full h-full flex items-center justify-center z-20"
       >
         {/* ── GLOWING NEON-LIME ORBITAL RINGS ── */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-15 overflow-visible"
-          viewBox="0 0 560 600"
+          className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+          viewBox="0 0 560 540"
           fill="none"
         >
           {/* Main glowing neon orbital ring */}
           <ellipse
-            cx="330"
-            cy="265"
+            cx="285"
+            cy="270"
             rx="215"
             ry="66"
-            transform="rotate(-22 330 265)"
+            transform="rotate(-22 285 270)"
             stroke="#C8FA32"
             strokeWidth="2.5"
             className="filter drop-shadow-[0_0_12px_rgba(200,250,50,0.95)]"
           />
           {/* Secondary subtle concentric orbit ring */}
           <ellipse
-            cx="335"
-            cy="260"
+            cx="285"
+            cy="270"
             rx="185"
             ry="54"
-            transform="rotate(-14 335 260)"
+            transform="rotate(-14 285 270)"
             stroke="#C8FA32"
             strokeWidth="1.2"
             strokeOpacity="0.45"
@@ -784,77 +778,12 @@ const HeroMonument3D: React.FC = () => {
           />
         </svg>
 
-        {/* ── FACETED DARK ARCHITECTURAL PEDESTAL ── */}
-        <svg
-          className="absolute -right-6 bottom-[-40px] sm:bottom-[-60px] w-[420px] sm:w-[490px] lg:w-[540px] h-[360px] sm:h-[420px] pointer-events-none z-15 overflow-visible"
-          viewBox="0 0 500 400"
-          fill="none"
-        >
-          <defs>
-            <linearGradient id="pedestalLeftFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#2B323C" />
-              <stop offset="50%" stopColor="#1A2027" />
-              <stop offset="100%" stopColor="#0E1217" />
-            </linearGradient>
-            <linearGradient id="pedestalRightFacet" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#161B22" />
-              <stop offset="60%" stopColor="#0D1117" />
-              <stop offset="100%" stopColor="#06080B" />
-            </linearGradient>
-            <linearGradient id="pedestalNeckGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1A2027" />
-              <stop offset="50%" stopColor="#3B4452" />
-              <stop offset="100%" stopColor="#13171D" />
-            </linearGradient>
-          </defs>
-
-          {/* Left Facet */}
-          <polygon
-            points="240,100 10,400 295,400 295,100"
-            fill="url(#pedestalLeftFacet)"
-          />
-          {/* Right Facet */}
-          <polygon
-            points="295,100 295,400 500,400 500,145"
-            fill="url(#pedestalRightFacet)"
-          />
-          {/* Center Specular Ridge Line */}
-          <line
-            x1="295"
-            y1="100"
-            x2="295"
-            y2="400"
-            stroke="#444F5E"
-            strokeWidth="1.5"
-            strokeOpacity="0.85"
-          />
-          {/* Left Ridge Bevel Line */}
-          <line
-            x1="240"
-            y1="100"
-            x2="10"
-            y2="400"
-            stroke="#36404E"
-            strokeWidth="1"
-            strokeOpacity="0.55"
-          />
-
-          {/* Pedestal Collar / Neck (Supporting the Medallion) */}
-          <ellipse cx="272" cy="96" rx="40" ry="13" fill="#323B47" />
-          <path d="M 232 96 L 232 128 C 232 137 312 137 312 128 L 312 96 Z" fill="url(#pedestalNeckGrad)" />
-          <ellipse cx="272" cy="128" rx="40" ry="11" fill="#181D24" />
-        </svg>
-
-        {/* ── 3D GITHUB MEDALLION / COIN ── */}
+        {/* ── 3D GITHUB MEDALLION / COIN (Centered inside Orbital Rings) ── */}
         <div
           style={{
             perspective: 1200,
-            position: 'absolute',
-            top: '9%',
-            right: '14%',
-            zIndex: 25,
           }}
-          className="cursor-pointer group"
+          className="relative z-20 cursor-pointer group"
         >
           <div
             style={{
@@ -1141,14 +1070,10 @@ export const GitGlowHomePage: React.FC = () => {
           className="absolute -top-20 -right-12 sm:-top-16 sm:right-[-40px] w-[240px] sm:w-[320px] h-[240px] sm:h-[320px] rounded-full bg-gradient-to-br from-[#E2FB5B] via-[#B4EE2B] to-[#84CC16]/30 opacity-85 blur-[2px] pointer-events-none select-none"
         />
 
-        {/* Soft Bottom-Left Ambient Glow & Dark Sphere Accent */}
+        {/* Soft Bottom-Left Ambient Glow */}
         <div
           aria-hidden="true"
           className="absolute -bottom-24 -left-24 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-[#D4F843]/25 via-[#A3E635]/15 to-transparent blur-[85px] pointer-events-none select-none"
-        />
-        <div
-          aria-hidden="true"
-          className="hidden sm:block absolute -bottom-24 -left-16 w-[200px] h-[200px] rounded-full bg-gradient-to-tr from-[#0B0E12] via-[#1C2319] to-[#A3E635]/40 opacity-90 pointer-events-none select-none"
         />
 
         <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
