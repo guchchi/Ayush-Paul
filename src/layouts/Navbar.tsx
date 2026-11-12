@@ -150,8 +150,10 @@ export const Navbar = () => {
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
               ? cn(
-                  "fixed top-0 left-0 right-0 z-[1000] transition-all duration-200 pointer-events-none",
-                  isScrolled ? "py-3" : "py-4 sm:py-6"
+                  "fixed top-0 left-0 right-0 z-[1000] transition-all duration-200",
+                  isScrolled
+                    ? "bg-[#FAF9F5]/90 backdrop-blur-md border-b border-[#E1E4E8]/70 py-3.5"
+                    : "bg-transparent py-5 sm:py-6"
                 )
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
@@ -306,83 +308,64 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* GitGlow Floating Pill Header matching Reference Screenshot */
-          <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-8 lg:px-10 flex justify-between items-center relative z-20">
-            {/* Left Edge Micro-Label */}
-            <div className="hidden xl:flex items-center gap-3 pointer-events-auto select-none">
-              <span className="w-6 h-[1.5px] bg-[#161B22]" />
-              <div className="flex flex-col text-[10px] font-mono uppercase tracking-[0.14em] leading-[1.25] text-[#57606A]">
-                <span>LEVEL UP</span>
-                <span>ON GITHUB</span>
+          /* Clean Editorial GitGlow Header */
+          <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-12 flex justify-between items-center relative z-20">
+            {/* Brand Mark */}
+            <Link
+              to="/blueprints/gitglow"
+              className="flex items-center gap-2.5 group cursor-pointer select-none"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#161B22] flex items-center justify-center text-white transition-transform duration-200 group-hover:scale-105">
+                <Github size={19} className="fill-white" />
               </div>
-            </div>
+              <span className="text-[18px] font-bold tracking-tight text-[#161B22]">
+                GitGlow
+              </span>
+            </Link>
 
-            {/* Center Floating White Pill */}
-            <div className="mx-auto pointer-events-auto flex items-center gap-4 sm:gap-6 lg:gap-7 rounded-full bg-white/95 backdrop-blur-md border border-[#E1E4E8]/90 shadow-[0_10px_32px_rgba(0,0,0,0.06),0_2px_6px_rgba(0,0,0,0.03)] px-3 sm:px-4 py-1.5">
-              {/* Brand Mark */}
-              <Link
-                to="/blueprints/gitglow"
-                className="flex items-center gap-2 group cursor-pointer select-none pl-1"
+            {/* Center Desktop Nav Links */}
+            <nav aria-label="GitGlow sections" className="hidden md:flex items-center gap-8 lg:gap-10">
+              <a
+                href="#achievements"
+                className="relative text-[13.5px] font-medium text-[#161B22] hover:text-[#4D7C0F] transition-colors cursor-pointer py-1"
               >
-                <div className="w-[28px] h-[28px] rounded-full bg-[#161B22] flex items-center justify-center text-white transition-transform duration-200 group-hover:scale-105">
-                  <span className="font-extrabold text-[14px] font-sans leading-none tracking-tight">G</span>
-                </div>
-                <span className="text-[17px] font-bold tracking-tight text-[#161B22]">
-                  GitGlow
-                </span>
-              </Link>
-
-              {/* Desktop Nav Links */}
-              <div className="hidden md:flex items-center gap-6 lg:gap-7 pl-2">
-                <a
-                  href="#achievements"
-                  className="relative text-[13px] font-medium text-[#161B22] hover:text-[#65A30D] transition-colors cursor-pointer py-1"
-                >
-                  <span>Badges</span>
-                  <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#84CC16]" />
-                </a>
-                <a
-                  href="#first-achievement"
-                  className="text-[13px] font-medium text-[#57606A] hover:text-[#161B22] transition-colors cursor-pointer py-1"
-                >
-                  Recipes
-                </a>
-                <a
-                  href="#comparison"
-                  className="text-[13px] font-medium text-[#57606A] hover:text-[#161B22] transition-colors cursor-pointer py-1"
-                >
-                  Proof
-                </a>
-                <a
-                  href="#faq"
-                  className="text-[13px] font-medium text-[#57606A] hover:text-[#161B22] transition-colors cursor-pointer py-1"
-                >
-                  FAQ
-                </a>
-              </div>
-
-              <div className="hidden md:block h-4 w-[1px] bg-[#E1E4E8]" />
-
-              {/* Claim Medallion Button */}
+                <span>Badges</span>
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#A3E635]" />
+              </a>
               <a
                 href="#first-achievement"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="h-[34px] px-4 rounded-full bg-[#D4F843] hover:bg-[#C6EE32] text-[#161B22] text-[12px] sm:text-[13px] font-semibold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-2xs cursor-pointer select-none"
-                aria-label="Claim Medallion"
+                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
               >
-                <Trophy size={13} className="text-[#161B22] fill-[#161B22]" />
-                <span>Claim Medallion</span>
-                <ArrowRight size={12} className="text-[#161B22]" />
+                Recipes
               </a>
-            </div>
+              <a
+                href="#comparison"
+                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
+              >
+                Proof
+              </a>
+              <a
+                href="#faq"
+                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
+              >
+                FAQ
+              </a>
+            </nav>
 
-            {/* Right Edge Micro-Label */}
-            <div className="hidden xl:flex items-center text-[10px] font-mono uppercase tracking-[0.16em] text-[#57606A] pointer-events-auto select-none">
-              DISCOVER · EARN · SHOWCASE
-            </div>
+            {/* Claim Medallion CTA */}
+            <a
+              href="#first-achievement"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="h-9 px-4 sm:px-5 rounded-full bg-[#D9FA54] hover:bg-[#CEF43A] text-[#161B22] text-[12.5px] sm:text-[13px] font-semibold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_2px_10px_rgba(163,230,53,0.28)] cursor-pointer select-none"
+              aria-label="Claim Medallion"
+            >
+              <Trophy size={13} className="text-[#161B22]" />
+              <span>Claim Medallion</span>
+              <ArrowRight size={12} className="text-[#161B22]" />
+            </a>
           </div>
         ) : (
           /* Standard Navbar for other pages */
