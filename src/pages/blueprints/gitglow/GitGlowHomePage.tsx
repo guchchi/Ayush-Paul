@@ -1108,11 +1108,12 @@ export const GitGlowHomePage: React.FC = () => {
                 transition={{ duration: 0.4, ease: EASING.PREMIUM }}
                 className="mb-6 inline-flex"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F4F8E8]/90 text-[#24292F] border border-[#B7CE63]/60 text-[10.5px] sm:text-[11px] font-mono font-semibold uppercase tracking-[0.12em] select-none shadow-2xs">
-                  <span className="w-4 h-4 rounded-full bg-[#D4F843] flex items-center justify-center shrink-0">
-                    <SparkleStar size={9} className="text-[#161B22]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F5F7EC] text-[#161B22] border border-[#DCE6BE] text-[12.5px] sm:text-[13px] font-medium tracking-tight select-none">
+                  <span className="relative flex items-center justify-center w-4 h-4 shrink-0">
+                    <span aria-hidden="true" className="absolute inset-0 rounded-full bg-[#C8FA32]/75 blur-[3px]" />
+                    <SparkleStar size={12} className="relative text-[#161B22]" />
                   </span>
-                  <span>GUIDED MISSIONS · REAL GITHUB ACHIEVEMENTS</span>
+                  <span>Turn your GitHub profile into an achievement hub</span>
                 </div>
               </motion.div>
 
