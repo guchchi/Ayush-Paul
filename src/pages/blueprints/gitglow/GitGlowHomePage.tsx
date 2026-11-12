@@ -1294,22 +1294,20 @@ export const GitGlowHomePage: React.FC = () => {
                 transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
                 className="mb-5 lg:mb-[clamp(14px,2vh,24px)]"
               >
-                <h1 className="text-[clamp(40px,min(5.38vw,9.4vh),90px)] font-extrabold text-[#101114] tracking-[-0.04em] leading-[0.98] select-none">
+                <h1 className="text-[clamp(40px,min(5.38vw,9.4vh),90px)] font-extrabold text-[#101114] tracking-[-0.04em] leading-[0.95] select-none">
                   Unlock official <br />
                   GitHub badges <br />
-                  <span className="relative inline-block mt-1">
-                    <span
-                      aria-hidden="true"
-                      className="absolute -inset-x-3 inset-y-0.5 bg-[#D7FF36] rounded-[4px]"
-                    />
-                    <span className="relative font-editorial-serif italic font-normal text-[#101114] px-1 text-[clamp(44px,min(5.7vw,10vh),96px)] leading-[0.95]">
-                      in minutes.
+                  <span className="relative inline-flex items-center mt-1.5 align-middle">
+                    <span className="relative inline-block bg-[#DDF748] rounded-[5px] px-2.5 sm:px-3.5 py-0.5 shadow-[0_2px_8px_rgba(215,255,54,0.18)]">
+                      <span className="relative font-editorial-serif italic font-bold text-[#101114] text-[clamp(42px,min(5.5vw,9.6vh),92px)] leading-[0.9] tracking-[-0.02em]">
+                        in minutes.
+                      </span>
                     </span>
+                    <SparkleStar
+                      size={22}
+                      className="inline-block ml-3 sm:ml-3.5 text-[#101114] shrink-0"
+                    />
                   </span>
-                  <SparkleStar
-                    size={20}
-                    className="inline-block ml-4 -mt-3 text-[#101114] align-middle"
-                  />
                 </h1>
               </motion.div>
 

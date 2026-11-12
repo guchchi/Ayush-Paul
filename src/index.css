@@ -53,7 +53,9 @@
 }
 
 @utility font-editorial-serif {
-  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-family: "Newsreader", "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 72;
 }
 
 @utility grid-pattern {
