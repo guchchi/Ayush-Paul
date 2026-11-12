@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="psOuter" x1="16" y1="8" x2="112" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#25344E"/>
+      <stop offset="50%" stop-color="#111927"/>
+      <stop offset="100%" stop-color="#070B12"/>
+    </linearGradient>
+    <linearGradient id="psInner" x1="64" y1="14" x2="64" y2="114" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0E1D34"/>
+      <stop offset="55%" stop-color="#0B2D48"/>
+      <stop offset="100%" stop-color="#0D4F73"/>
+    </linearGradient>
+    <linearGradient id="psShark" x1="42" y1="26" x2="86" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E2F1FF"/>
+      <stop offset="55%" stop-color="#84B8E6"/>
+      <stop offset="100%" stop-color="#3572A8"/>
+    </linearGradient>
+    <linearGradient id="psWaveFront" x1="20" y1="74" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <clipPath id="psHexClip">
+      <path d="M64 14L107 39V89L64 114L21 89V39L64 14Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer Dark Hexagonal Rim -->
+  <path d="M64 6L114 35V93L64 122L14 93V35L64 6Z" fill="url(#psOuter)" stroke="#334766" stroke-width="2.5"/>
+  <!-- Inner Faceted Well -->
+  <path d="M64 14L107 39V89L64 114L21 89V39L64 14Z" fill="url(#psInner)"/>
+
+  <g clip-path="url(#psHexClip)">
+    <!-- Subtle Ambient Underwater Glow -->
+    <circle cx="64" cy="48" r="34" fill="#38BDF8" opacity="0.16"/>
+
+    <!-- Back Wave Layer -->
+    <path d="M16 78C28 71 38 71 48 77C58 83 68 83 78 77C88 71 100 72 112 79V118H16V78Z" fill="#0E5A8A"/>
+
+    <!-- Dorsal Fin & Stylized Blue Shark Body -->
+    <path d="M63 26C69 27 72 34 73 41C81 48 87 58 88 72L64 80L40 72C41 56 49 45 58 40C59 33 60 26 63 26Z" fill="url(#psShark)"/>
+    <!-- Crisp Shark Underbelly Highlight -->
+    <path d="M64 43C72 47 77 56 78 72L64 78L50 72C51 56 56 47 64 43Z" fill="#FFFFFF" opacity="0.34"/>
+    <!-- Left & Right Eyes -->
+    <circle cx="55.5" cy="56" r="2.6" fill="#0B1628"/>
+    <circle cx="56.2" cy="55.2" r="0.9" fill="#FFFFFF"/>
+    <circle cx="72.5" cy="56" r="2.6" fill="#0B1628"/>
+    <circle cx="73.2" cy="55.2" r="0.9" fill="#FFFFFF"/>
+
+    <!-- Scalloped Ocean Crest Waves -->
+    <path d="M18 84C28 75 40 75 49 83C58 91 70 91 79 83C88 75 100 75 110 84V118H18V84Z" fill="url(#psWaveFront)"/>
+    <path d="M18 95C30 87 42 87 52 94C62 101 72 101 82 94C92 87 102 88 110 95V118H18V95Z" fill="#075985"/>
+    <path d="M24 83C32 77 41 78 48 83" stroke="#BAE6FD" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+    <path d="M80 83C87 78 96 77 104 83" stroke="#BAE6FD" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+  </g>
+
+  <!-- Inner Specular Bevel -->
+  <path d="M64 14L107 39V89L64 114L21 89V39L64 14Z" stroke="#93C5FD" stroke-opacity="0.28" stroke-width="1.5"/>
+</svg>
+

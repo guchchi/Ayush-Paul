@@ -149,12 +149,7 @@ export const Navbar = () => {
         isHomePage 
           ? "absolute top-10 md:top-14 left-4 md:left-6 right-4 md:right-6 z-[1000] bg-transparent border-none py-6"
           : (isGitGlow
-              ? cn(
-                  "fixed top-0 left-0 right-0 z-[1000] transition-all duration-200",
-                  isScrolled
-                    ? "bg-[#FAF9F5]/90 backdrop-blur-md border-b border-[#E1E4E8]/70 py-3.5"
-                    : "bg-transparent py-5 sm:py-6"
-                )
+              ? "fixed top-0 left-0 right-0 z-[1000] h-[72px] sm:h-[82px] lg:h-[98px] flex items-center bg-[#F7F6F0]/95 backdrop-blur-md border-b border-[#E5E3DA] transition-all duration-200"
               : "fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out"),
         !isHomePage && !isGitGlow && (isVisible ? "translate-y-0" : "-translate-y-full"),
         !isGitGlow && (isBCyber
@@ -308,63 +303,63 @@ export const Navbar = () => {
             </div>
           </div>
         ) : isGitGlow ? (
-          /* Clean Editorial GitGlow Header */
-          <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-12 flex justify-between items-center relative z-20">
+          /* Full-Width Editorial GitGlow Header (~98px, 6% horizontal inset -> ~100px at 1672px) */
+          <div className="w-full px-5 sm:px-8 lg:px-[6%] flex justify-between items-center relative z-20">
             {/* Brand Mark */}
             <Link
               to="/blueprints/gitglow"
-              className="flex items-center gap-2.5 group cursor-pointer select-none"
+              className="flex items-center gap-3 group cursor-pointer select-none shrink-0"
             >
-              <div className="w-8 h-8 rounded-full bg-[#161B22] flex items-center justify-center text-white transition-transform duration-200 group-hover:scale-105">
-                <Github size={19} className="fill-white" />
+              <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-[#101114] flex items-center justify-center text-white transition-transform duration-200 group-hover:scale-105">
+                <Github size={22} className="fill-white" />
               </div>
-              <span className="text-[18px] font-bold tracking-tight text-[#161B22]">
+              <span className="text-[20px] lg:text-[22px] font-bold tracking-tight text-[#101114]">
                 GitGlow
               </span>
             </Link>
 
             {/* Center Desktop Nav Links */}
-            <nav aria-label="GitGlow sections" className="hidden md:flex items-center gap-8 lg:gap-10">
+            <nav aria-label="GitGlow sections" className="hidden md:flex items-center gap-9 lg:gap-12">
               <a
                 href="#achievements"
-                className="relative text-[13.5px] font-medium text-[#161B22] hover:text-[#4D7C0F] transition-colors cursor-pointer py-1"
+                className="relative text-[15px] font-medium text-[#101114] hover:text-[#4D7C0F] transition-colors cursor-pointer py-1"
               >
                 <span>Badges</span>
                 <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#A3E635]" />
               </a>
               <a
                 href="#first-achievement"
-                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
+                className="text-[15px] font-medium text-[#4B5563] hover:text-[#101114] transition-colors cursor-pointer py-1"
               >
                 Recipes
               </a>
               <a
                 href="#comparison"
-                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
+                className="text-[15px] font-medium text-[#4B5563] hover:text-[#101114] transition-colors cursor-pointer py-1"
               >
                 Proof
               </a>
               <a
                 href="#faq"
-                className="text-[13.5px] font-medium text-[#4B5563] hover:text-[#161B22] transition-colors cursor-pointer py-1"
+                className="text-[15px] font-medium text-[#4B5563] hover:text-[#101114] transition-colors cursor-pointer py-1"
               >
                 FAQ
               </a>
             </nav>
 
-            {/* Claim Medallion CTA */}
+            {/* Claim Medallion CTA (~200x48px) */}
             <a
               href="#first-achievement"
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('first-achievement')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="h-9 px-4 sm:px-5 rounded-full bg-[#D9FA54] hover:bg-[#CEF43A] text-[#161B22] text-[12.5px] sm:text-[13px] font-semibold tracking-tight inline-flex items-center gap-1.5 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_2px_10px_rgba(163,230,53,0.28)] cursor-pointer select-none"
+              className="h-10 sm:h-11 lg:h-[48px] px-5 lg:px-6 lg:min-w-[200px] justify-center rounded-full bg-[#D7FF36] hover:bg-[#CEF72B] text-[#101114] text-[13.5px] lg:text-[14.5px] font-semibold tracking-tight inline-flex items-center gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_16px_rgba(215,255,54,0.38)] cursor-pointer select-none shrink-0"
               aria-label="Claim Medallion"
             >
-              <Trophy size={13} className="text-[#161B22]" />
+              <Trophy size={15} className="text-[#101114]" />
               <span>Claim Medallion</span>
-              <ArrowRight size={12} className="text-[#161B22]" />
+              <ArrowRight size={14} className="text-[#101114]" />
             </a>
           </div>
         ) : (

@@ -732,235 +732,325 @@ const HERO_ACHIEVEMENT_CARDS = [
   {
     id: 'pull-shark',
     title: 'Pull Shark',
-    badgeImage: '/images/badges/pull-shark.png',
+    badgeImage: '/images/gitglow/badge-pull-shark.svg',
     badgeAlt: 'GitHub Pull Shark Achievement Badge',
     statusText: 'Earned',
     progress: 100,
-    positionClass: 'top-[5%] left-[2%] sm:left-[4%] rotate-[-4deg]',
+    positionClass: 'top-[2%] left-[2%] lg:left-[3%] rotate-[-4.5deg]',
     floatDelay: 0,
   },
   {
     id: 'quickdraw',
     title: 'Quickdraw',
-    badgeImage: '/images/badges/quickdraw.png',
+    badgeImage: '/images/gitglow/badge-quickdraw.svg',
     badgeAlt: 'GitHub Quickdraw Achievement Badge',
     statusText: 'Earned',
     progress: 100,
-    positionClass: 'top-[13%] right-[0%] sm:right-[1%] rotate-[4deg]',
+    positionClass: 'top-[7%] right-0 lg:-right-[1%] rotate-[4.5deg]',
     floatDelay: 0.45,
   },
   {
     id: 'yolo',
     title: 'YOLO',
-    badgeImage: '/images/badges/yolo.png',
+    badgeImage: '/images/gitglow/badge-yolo.svg',
     badgeAlt: 'GitHub YOLO Achievement Badge',
     statusText: 'Earned',
     progress: 100,
-    positionClass: 'bottom-[26%] left-[0%] sm:left-[1%] rotate-[-3deg]',
+    positionClass: 'bottom-[22%] left-0 rotate-[-3.5deg]',
     floatDelay: 0.9,
   },
 ] as const;
 
 const HeroMonument3D: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[580px] xl:max-w-[620px] flex flex-col items-center justify-center select-none">
-      <div className="relative w-full h-[360px] sm:h-[470px] lg:h-[510px] flex items-center justify-center">
-        {/* ── Ambient Acid-Lime Aura Behind Medallion ── */}
+    <div className="relative w-full max-w-[780px] flex flex-col items-center justify-center select-none">
+      <div className="relative w-full h-auto sm:h-[500px] lg:h-[clamp(480px,62vh,600px)] flex items-center justify-center py-2 sm:py-0">
+        {/* ── Broad Soft Acid-Lime Backlight Behind Trophy ── */}
         <div
           aria-hidden="true"
-          className="absolute top-[14%] right-[8%] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none blur-[48px] opacity-55"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(200,250,50,0.65) 0%, rgba(163,230,53,0.18) 55%, transparent 78%)',
+            background:
+              'radial-gradient(ellipse 58% 58% at 54% 48%, rgba(223,255,131,0.72) 0%, rgba(215,255,54,0.24) 48%, transparent 76%)',
           }}
         />
 
-        {/* ── Sweeping Orbital Acid-Lime Rings + Accent Stars ── */}
+        {/* ── Back Orbital Layer (Behind Medallion, z-10) ── */}
         <svg
           aria-hidden="true"
-          className="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-20 overflow-visible"
-          viewBox="0 0 600 510"
+          className="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+          viewBox="0 0 760 600"
           fill="none"
         >
-          {/* Main swept orbital lime ellipse passing around medallion */}
+          {/* Secondary subtle pale-lime outer orbit */}
           <ellipse
-            cx="330"
-            cy="225"
-            rx="212"
-            ry="66"
-            transform="rotate(-17 330 225)"
-            stroke="#B4F83A"
-            strokeWidth="2.1"
-            strokeOpacity="0.92"
+            cx="408"
+            cy="268"
+            rx="300"
+            ry="112"
+            transform="rotate(-17 408 268)"
+            stroke="#DFFF83"
+            strokeWidth="1.5"
+            strokeOpacity="0.65"
           />
-          {/* Subtle outer echo ring */}
-          <ellipse
-            cx="330"
-            cy="225"
-            rx="244"
-            ry="88"
-            transform="rotate(-17 330 225)"
+          {/* Back half of main lime orbit passing behind medallion */}
+          <path
+            d="M 151.71 346.36 A 268 82 -17 0 1 664.29 189.64"
             stroke="#A3E635"
-            strokeWidth="1"
-            strokeOpacity="0.28"
+            strokeWidth="2"
+            strokeOpacity="0.42"
+            strokeLinecap="round"
           />
         </svg>
 
-        {/* Delicate 4-Point Floating Sparkle Stars */}
-        <SparkleStar size={14} className="hidden sm:block absolute top-[11%] right-[33%] text-[#161B22]/90 z-30" />
-        <SparkleStar size={12} className="hidden sm:block absolute top-[44%] left-[27%] text-[#161B22]/85 z-30" />
-        <SparkleStar size={11} className="hidden sm:block absolute bottom-[40%] right-[13%] text-[#161B22]/80 z-30" />
+        {/* Crisp 4-Point Sparkle Stars (exact reference positions) */}
+        <SparkleStar size={16} className="hidden sm:block absolute top-[8%] right-[32%] text-[#101114] z-30" />
+        <SparkleStar size={14} className="hidden sm:block absolute top-[35%] left-[19%] text-[#101114] z-30" />
+        <SparkleStar size={14} className="hidden sm:block absolute bottom-[40%] right-[7%] text-[#101114] z-30" />
 
-        {/* ── Centerpiece Column: Floating Octocat Medallion + Stepped Obsidian Plinth ── */}
-        <div className="relative z-20 flex flex-col items-center justify-center sm:translate-x-5">
-          {/* Floating Black 3D Octocat Medallion */}
+        {/* ── Centerpiece Column: 304px Metallic Octocat Medallion + Sculpted Physical Plinth ── */}
+        <div className="relative z-20 flex flex-col items-center justify-center sm:translate-x-[3%] lg:translate-x-[4%]">
+          {/* Floating Metallic 3D Medallion (~300–310px at 1672x941) */}
           <motion.div
             animate={{ y: [0, -7, 0] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative z-30 flex flex-col items-center"
+            className="relative z-20 flex flex-col items-center"
           >
-            <div style={{ perspective: 1100 }} className="relative cursor-pointer group">
+            <div
+              className="relative group cursor-pointer"
+              style={{
+                width: 'clamp(192px, min(18.2vw, 32.4vh), 306px)',
+                height: 'clamp(192px, min(18.2vw, 32.4vh), 306px)',
+                perspective: '1200px',
+              }}
+            >
+              {/* 3D Extruded Machined Rim Thickness Layer (Right Edge Depth) */}
               <div
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full translate-x-[12px] translate-y-[2px]"
                 style={{
-                  transform: 'rotateY(-14deg) rotateX(7deg) rotateZ(-2deg)',
-                  transformStyle: 'preserve-3d',
+                  background:
+                    'linear-gradient(175deg, #525864 0%, #1F2329 36%, #0B0C0E 68%, #9DE823 92%, #181A1F 100%)',
+                  boxShadow: '14px 20px 36px rgba(16,17,20,0.28)',
                 }}
-                className="relative w-[160px] h-[160px] sm:w-[184px] sm:h-[184px] lg:w-[198px] lg:h-[198px] rounded-full transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+
+              {/* Front Sculpted Medallion Body */}
+              <div
+                className="relative w-full h-full rounded-full transition-transform duration-300 group-hover:scale-[1.02]"
+                style={{
+                  transform: 'rotateY(-16deg) rotateX(6deg)',
+                  background:
+                    'linear-gradient(142deg, #4B515C 0%, #242830 28%, #101216 68%, #07080A 100%)',
+                  padding: '6.5%',
+                  boxShadow:
+                    'inset 2px 3px 6px rgba(255,255,255,0.42), inset -4px -8px 14px rgba(0,0,0,0.9), 0 28px 50px -12px rgba(16,17,20,0.42)',
+                }}
               >
-                {/* Outer Sculpted Metallic Black Rim */}
+                {/* Concentric Machined Inner Grooves */}
                 <div
-                  className="absolute inset-0 rounded-full"
+                  className="w-full h-full rounded-full p-[3.5%] relative"
                   style={{
-                    background: 'linear-gradient(140deg, #3D4450 0%, #1F252E 45%, #0D1117 100%)',
-                    boxShadow: `
-                      inset 0 2px 5px rgba(255,255,255,0.36),
-                      inset 0 -6px 12px rgba(0,0,0,0.9),
-                      0 24px 44px -10px rgba(22,27,34,0.32),
-                      0 10px 20px -4px rgba(180,248,58,0.18)
-                    `,
-                    padding: '13px',
+                    background: 'linear-gradient(155deg, #17191E 0%, #2E333C 48%, #0E1013 100%)',
+                    boxShadow:
+                      'inset 0 2px 6px rgba(0,0,0,0.92), 0 0 0 1px rgba(255,255,255,0.14)',
                   }}
                 >
-                  {/* Recessed Charcoal Medallion Well */}
+                  {/* Deep Satin Coin Well */}
                   <div
                     className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
                     style={{
-                      background: 'radial-gradient(circle at 36% 30%, #222831 0%, #12161C 68%, #090C10 100%)',
-                      boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.95), inset 0 0 0 1.5px #2F3642',
+                      background:
+                        'radial-gradient(circle at 38% 28%, #282D35 0%, #16191F 54%, #0B0D10 100%)',
+                      boxShadow:
+                        'inset 0 8px 20px rgba(0,0,0,0.95), inset 0 -4px 12px rgba(190,248,55,0.22)',
                     }}
                   >
+                    {/* Directional Studio Rim Sheen */}
                     <div
-                      className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-full opacity-25 pointer-events-none"
                       style={{
-                        background: 'linear-gradient(130deg, white 0%, transparent 42%, transparent 65%, rgba(255,255,255,0.1) 100%)',
+                        background:
+                          'linear-gradient(132deg, rgba(255,255,255,0.6) 0%, transparent 38%, transparent 72%, rgba(215,255,54,0.35) 100%)',
                       }}
                     />
 
-                    <div
-                      className="relative z-10 flex items-center justify-center"
-                      style={{
-                        filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.8))',
-                      }}
+                    {/* Pure Brushed Metallic Silver/White GitHub Octocat Silhouette (No Outer Ring) */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="relative z-10 w-[68%] h-[68%] translate-y-[2%] drop-shadow-[0_12px_18px_rgba(0,0,0,0.85)]"
                     >
-                      <Github
-                        size={92}
-                        className="text-[#E5E7EB] fill-[#E5E7EB]"
-                        style={{
-                          filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.55))',
-                        }}
+                      <defs>
+                        <linearGradient id="octocatSilver" x1="4" y1="3" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="#FFFFFF" />
+                          <stop offset="52%" stopColor="#DFE4EA" />
+                          <stop offset="100%" stopColor="#949CA8" />
+                        </linearGradient>
+                        <mask id="pureOctocatMask">
+                          <rect x="0" y="0" width="24" height="24" fill="black" />
+                          <circle cx="12" cy="12" r="9.75" fill="white" />
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            fill="black"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                          />
+                        </mask>
+                      </defs>
+                      <rect
+                        x="2"
+                        y="2"
+                        width="20"
+                        height="20"
+                        fill="url(#octocatSilver)"
+                        mask="url(#pureOctocatMask)"
                       />
-                    </div>
+                    </svg>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Metallic Plinth Neck Stub */}
+            {/* Cylindrical Metallic Stem Connection */}
             <div
               aria-hidden="true"
-              className="w-8 h-3 -mt-1.5 rounded-b-lg bg-gradient-to-b from-[#2A313C] to-[#0D1117] shadow-[0_6px_12px_rgba(0,0,0,0.4)]"
+              className="-mt-2 rounded-b-[45%] z-20"
+              style={{
+                width: 'clamp(42px, 3.6vw, 62px)',
+                height: 'clamp(16px, 1.5vw, 24px)',
+                background: 'linear-gradient(90deg, #101215 0%, #484E58 35%, #1E2229 68%, #090A0C 100%)',
+                boxShadow: 'inset 0 2px 3px rgba(255,255,255,0.22), 0 8px 16px rgba(0,0,0,0.45)',
+              }}
             />
           </motion.div>
 
-          {/* ── 3D Stepped Dark Obsidian Pedestal with Acid-Lime Rim Glow ── */}
-          <div aria-hidden="true" className="relative flex flex-col items-center -mt-1 z-10 pointer-events-none">
-            {/* Soft Neon Lime Halo Beneath Hovering Medallion */}
-            <div
-              className="w-[180px] sm:w-[220px] h-[22px] rounded-full blur-[10px] -mb-4 opacity-70"
-              style={{
-                background: 'radial-gradient(ellipse at center, rgba(200,250,50,0.75) 0%, transparent 72%)',
-              }}
+          {/* ── Sculpted Physical 3D Stepped Trophy Pedestal (Multi-Layer Metallic Cylinders) ── */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 460 150"
+            className="-mt-1 w-[clamp(260px,24.5vw,420px)] h-auto overflow-visible pointer-events-none z-10"
+            fill="none"
+          >
+            <defs>
+              <linearGradient id="pedWall" x1="70" y1="0" x2="390" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#14161A" />
+                <stop offset="28%" stopColor="#3B4049" />
+                <stop offset="56%" stopColor="#1D2026" />
+                <stop offset="85%" stopColor="#0D0F12" />
+                <stop offset="100%" stopColor="#262A31" />
+              </linearGradient>
+              <linearGradient id="pedTopFace" x1="230" y1="0" x2="230" y2="90" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#343841" />
+                <stop offset="100%" stopColor="#121418" />
+              </linearGradient>
+              <linearGradient id="limeBaseRim" x1="30" y1="90" x2="430" y2="115" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#99CC1F" stopOpacity="0.35" />
+                <stop offset="30%" stopColor="#D7FF36" />
+                <stop offset="70%" stopColor="#D7FF36" />
+                <stop offset="100%" stopColor="#99CC1F" stopOpacity="0.35" />
+              </linearGradient>
+              <radialGradient id="pedGroundShadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#101114" stopOpacity="0.34" />
+                <stop offset="55%" stopColor="#101114" stopOpacity="0.14" />
+                <stop offset="100%" stopColor="#101114" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="pedLimeFloorBounce" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#D7FF36" stopOpacity="0.55" />
+                <stop offset="65%" stopColor="#D7FF36" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#D7FF36" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+
+            {/* Natural Contact Shadow + Ambient Lime Reflection on Floor */}
+            <ellipse cx="230" cy="116" rx="228" ry="26" fill="url(#pedGroundShadow)" />
+            <ellipse cx="230" cy="106" rx="215" ry="22" fill="url(#pedLimeFloorBounce)" />
+
+            {/* TIER 3 (Wide Base Cylindrical Body) */}
+            <path
+              d="M42 74 L42 98 C42 114 126 124 230 124 C334 124 418 114 418 98 L418 74 Z"
+              fill="url(#pedWall)"
+            />
+            <ellipse cx="230" cy="74" rx="188" ry="24" fill="url(#pedTopFace)" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
+            {/* Controlled Acid-Lime Lower Edge Lighting */}
+            <path
+              d="M42 96 C42 112 126 123 230 123 C334 123 418 112 418 96"
+              stroke="url(#limeBaseRim)"
+              strokeWidth="3.2"
+              strokeLinecap="round"
             />
 
-            {/* Top Tier Disc */}
-            <div
-              className="relative w-[132px] sm:w-[152px] h-[24px] rounded-[50%] z-30"
-              style={{
-                background: 'linear-gradient(180deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
-                boxShadow:
-                  'inset 0 2px 4px rgba(255,255,255,0.22), 0 4px 10px rgba(0,0,0,0.45)',
-              }}
+            {/* TIER 2 (Middle Machined Step Body) */}
+            <path
+              d="M94 46 L94 68 C94 80 155 88 230 88 C305 88 366 80 366 68 L366 46 Z"
+              fill="url(#pedWall)"
             />
-            {/* Middle Tier Disc */}
-            <div
-              className="relative w-[186px] sm:w-[216px] h-[30px] rounded-[50%] -mt-[11px] z-20"
-              style={{
-                background: 'linear-gradient(180deg, #252B34 0%, #12161C 72%, #090C10 100%)',
-                boxShadow:
-                  'inset 0 2px 3px rgba(255,255,255,0.16), 0 6px 14px rgba(0,0,0,0.45)',
-              }}
+            <ellipse cx="230" cy="46" rx="136" ry="18" fill="url(#pedTopFace)" stroke="rgba(255,255,255,0.22)" strokeWidth="1" />
+
+            {/* TIER 1 (Top Pedestal Collar Cap) */}
+            <path
+              d="M150 22 L150 40 C150 49 186 55 230 55 C274 55 310 49 310 40 L310 22 Z"
+              fill="url(#pedWall)"
             />
-            {/* Wide Base Tier Disc with Acid-Lime Rim Glow */}
-            <div
-              className="relative w-[248px] sm:w-[292px] h-[38px] rounded-[50%] -mt-[14px] z-10 border-b-2 border-[#C8FA32]/90"
-              style={{
-                background: 'linear-gradient(180deg, #1E242C 0%, #0E1217 78%, #07090C 100%)',
-                boxShadow:
-                  'inset 0 2px 3px rgba(255,255,255,0.14), 0 6px 18px rgba(180,248,58,0.35), 0 18px 34px -6px rgba(22,27,34,0.38)',
-              }}
-            />
-          </div>
+            <ellipse cx="230" cy="22" rx="80" ry="12" fill="url(#pedTopFace)" stroke="rgba(255,255,255,0.28)" strokeWidth="1" />
+          </svg>
         </div>
 
-        {/* ── Floating Official Achievement Cards (Desktop / Tablet) ── */}
+        {/* ── Foreground Orbital Acid-Lime Swoosh Layer (Passes In Front of Medallion, z-30) ── */}
+        <svg
+          aria-hidden="true"
+          className="hidden sm:block absolute inset-0 w-full h-full pointer-events-none z-30 overflow-visible"
+          viewBox="0 0 760 600"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="orbitFrontGrad" x1="152" y1="346" x2="664" y2="190" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#D7FF36" stopOpacity="0.25" />
+              <stop offset="28%" stopColor="#9EE620" stopOpacity="0.98" />
+              <stop offset="72%" stopColor="#D7FF36" stopOpacity="0.98" />
+              <stop offset="100%" stopColor="#D7FF36" stopOpacity="0.22" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M 151.71 346.36 A 268 82 -17 0 0 664.29 189.64"
+            stroke="url(#orbitFrontGrad)"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+          />
+        </svg>
+
+        {/* ── Three Floating Tilted Achievement Cards ── */}
         {HERO_ACHIEVEMENT_CARDS.map((card) => (
           <motion.div
             key={card.id}
             animate={{ y: [0, card.floatDelay % 0.9 === 0 ? -5 : 5, 0] }}
             transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: card.floatDelay }}
             className={cn(
-              'hidden sm:block absolute z-30 w-[166px] lg:w-[178px] rounded-2xl bg-[#FFFFFF]/95 backdrop-blur-xs border border-[#E5E7EB]/90 p-3 shadow-[0_14px_30px_rgba(22,27,34,0.08),0_2px_6px_rgba(22,27,34,0.04)]',
+              'hidden sm:block absolute z-30 w-[clamp(182px,13.6vw,232px)] rounded-[20px] bg-white/92 backdrop-blur-md border border-[#E5E3DA] px-4 py-3.5 shadow-[0_18px_40px_rgba(16,17,20,0.08),0_2px_8px_rgba(16,17,20,0.04)]',
               card.positionClass
             )}
           >
-            <div className="flex items-center gap-2.5 mb-2">
-              <div
-                style={{
-                  background: 'linear-gradient(155deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
-                  boxShadow:
-                    'inset 0 1px 1px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.65), 0 4px 10px rgba(22,27,34,0.18)',
-                }}
-                className="w-9 h-9 rounded-full border border-[#30363D] flex items-center justify-center p-1.5 shrink-0"
-              >
-                <img
-                  src={card.badgeImage}
-                  alt={card.badgeAlt}
-                  className="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
-                />
-              </div>
+            <div className="flex items-center gap-3 mb-2.5">
+              <img
+                src={card.badgeImage}
+                alt={card.badgeAlt}
+                className="w-11 h-11 lg:w-[50px] lg:h-[50px] object-contain shrink-0 drop-shadow-[0_6px_12px_rgba(16,17,20,0.16)]"
+              />
 
               <div className="min-w-0 flex-1">
-                <div className="text-[12.5px] font-bold text-[#161B22] leading-[1.15] tracking-tight truncate">
+                <div className="text-[14px] lg:text-[16px] font-bold text-[#101114] leading-[1.15] tracking-tight truncate">
                   {card.title}
                 </div>
-                <div className="text-[11px] text-[#57606A] font-medium mt-0.5">
+                <div className="text-[12px] lg:text-[13px] text-[#65666A] font-medium mt-0.5">
                   {card.statusText}
                 </div>
               </div>
             </div>
 
-            <div className="w-full h-1.5 rounded-full bg-[#ECEEE7] overflow-hidden">
+            <div className="w-full h-[4px] rounded-full bg-[#ECEAE0] overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#A3E635]"
+                className="h-full rounded-full bg-[#A8E62E]"
                 style={{ width: `${card.progress}%` }}
               />
             </div>
@@ -969,28 +1059,21 @@ const HeroMonument3D: React.FC = () => {
       </div>
 
       {/* Compact 3-Card Row on Small Mobile Viewports */}
-      <div className="grid sm:hidden grid-cols-3 gap-2.5 mt-4 w-full max-w-[380px]">
+      <div className="grid sm:hidden grid-cols-3 gap-2.5 mt-4 w-full max-w-[390px]">
         {HERO_ACHIEVEMENT_CARDS.map((card) => (
           <div
             key={card.id}
-            className="rounded-xl bg-[#FFFFFF] border border-[#E5E7EB] p-2.5 shadow-[0_6px_16px_rgba(22,27,34,0.05)]"
+            className="rounded-xl bg-white/95 border border-[#E5E3DA] p-2.5 shadow-[0_6px_16px_rgba(16,17,20,0.05)]"
           >
             <div className="flex items-center gap-1.5 mb-1.5">
-              <div
-                style={{
-                  background: 'linear-gradient(155deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
-                }}
-                className="w-6 h-6 rounded-full border border-[#30363D] flex items-center justify-center p-1 shrink-0"
-              >
-                <img src={card.badgeImage} alt={card.badgeAlt} className="w-full h-full object-contain" />
-              </div>
+              <img src={card.badgeImage} alt={card.badgeAlt} className="w-7 h-7 object-contain shrink-0" />
               <div className="min-w-0">
-                <div className="text-[10.5px] font-bold text-[#161B22] truncate">{card.title}</div>
-                <div className="text-[9.5px] text-[#57606A]">{card.statusText}</div>
+                <div className="text-[11px] font-bold text-[#101114] truncate">{card.title}</div>
+                <div className="text-[9.5px] text-[#65666A]">{card.statusText}</div>
               </div>
             </div>
-            <div className="w-full h-1 rounded-full bg-[#ECEEE7] overflow-hidden">
-              <div className="h-full rounded-full bg-[#A3E635]" style={{ width: `${card.progress}%` }} />
+            <div className="w-full h-1 rounded-full bg-[#ECEAE0] overflow-hidden">
+              <div className="h-full rounded-full bg-[#A8E62E]" style={{ width: `${card.progress}%` }} />
             </div>
           </div>
         ))}
@@ -1123,121 +1206,136 @@ export const GitGlowHomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#161B22] overflow-x-hidden selection:bg-[#dafbe1] selection:text-[#1a7f37]">
 
-      {/* ─── SECTION 01: HERO (Airy 2-Column Editorial Layout, 3-Second Clarity) ─── */}
+      {/* ─── SECTION 01: HERO (Full-Viewport 1672x941 Editorial Reconstruction) ─── */}
       <section
         id="hero"
-        className="relative w-full pt-32 pb-14 sm:pt-36 sm:pb-16 lg:pt-40 lg:pb-20 bg-[#FAF9F5] text-[#161B22] overflow-hidden border-b border-[#E1E4E8]/60"
+        className="relative w-full pt-[72px] sm:pt-[82px] lg:pt-[98px] lg:min-h-[min(100vh,950px)] lg:flex lg:flex-col lg:justify-between bg-[#F7F6F0] text-[#101114] overflow-hidden border-b border-[#E5E3DA]"
       >
-        {/* ── Ambient Edge Accents Matching Mockup (Top-Right Sweep + Sleek Organic Bottom Curves) ── */}
+        {/* ── Phase 5: Micro-Grid Texture + Radial Lime Studio Atmosphere + Organic Curves ── */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full opacity-50 blur-[70px]"
+          className="pointer-events-none absolute inset-0 z-0 opacity-100"
           style={{
-            background: 'radial-gradient(circle, rgba(205,250,60,0.75) 0%, rgba(163,230,53,0.12) 60%, transparent 78%)',
+            backgroundImage:
+              'linear-gradient(to right, rgba(16,17,20,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(16,17,20,0.03) 1px, transparent 1px)',
+            backgroundSize: '46px 46px',
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              'radial-gradient(circle at 97% 14%, rgba(215,255,54,0.68) 0%, rgba(223,255,131,0.34) 22%, transparent 52%), radial-gradient(ellipse 46% 58% at 74% 48%, rgba(223,255,131,0.58) 0%, transparent 72%)',
           }}
         />
         <svg
           aria-hidden="true"
-          viewBox="0 0 1440 760"
+          viewBox="0 0 1672 843"
           preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-0 w-full h-full z-0"
+          className="pointer-events-none absolute inset-x-0 bottom-0 w-full h-full z-0"
           fill="none"
         >
-          {/* Soft Lime Ribbon Wash Right Edge */}
-          <path
-            d="M 1440 80 C 1220 140 1240 420 1440 520 Z"
-            fill="url(#heroLimeRightGlow)"
-            opacity="0.7"
-          />
-          {/* Smooth Obsidian + Lime Curve Tucked in Bottom-Right Corner */}
-          <path
-            d="M 1140 760 C 1210 660 1320 555 1440 510 L 1440 760 Z"
-            fill="#C8FA32"
-          />
-          <path
-            d="M 1190 760 C 1255 675 1350 580 1440 545 L 1440 760 Z"
-            fill="#0D1117"
-          />
-          {/* Subtle Bottom-Left Lime Corner Touch */}
-          <path
-            d="M 0 655 C 55 680 95 720 115 760 L 0 760 Z"
-            fill="#D9FA54"
-            opacity="0.8"
-          />
           <defs>
-            <linearGradient id="heroLimeRightGlow" x1="1240" y1="100" x2="1440" y2="500" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stopColor="#D9FA54" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#A3E635" stopOpacity="0.35" />
+            <linearGradient id="bgCurveLimeRight" x1="1260" y1="620" x2="1672" y2="843" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#D7FF36" />
+              <stop offset="100%" stopColor="#B8E91F" />
+            </linearGradient>
+            <linearGradient id="bgCurveLimeLeft" x1="0" y1="700" x2="170" y2="843" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#D7FF36" />
+              <stop offset="100%" stopColor="#DFFF83" />
             </linearGradient>
           </defs>
+          {/* Smooth Bottom-Right Sweeping Acid-Lime Ribbon Border + Near-Black Arc */}
+          <path
+            d="M 1220 843 C 1320 695 1475 565 1672 520 L 1672 843 Z"
+            fill="url(#bgCurveLimeRight)"
+          />
+          <path
+            d="M 1272 843 C 1365 708 1510 585 1672 544 L 1672 843 Z"
+            fill="#101114"
+          />
+          {/* Smooth Bottom-Left Curved Acid-Lime Accent */}
+          <path
+            d="M 0 678 C 82 702 142 762 162 843 L 0 843 Z"
+            fill="url(#bgCurveLimeLeft)"
+          />
+          <path
+            d="M 0 678 C 82 702 142 762 162 843"
+            stroke="#9FD21C"
+            strokeOpacity="0.45"
+            strokeWidth="2"
+          />
         </svg>
 
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 z-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-10 xl:gap-14">
-            {/* ── LEFT COLUMN: Eyebrow, 3-Line Headline, Value Prop, Primary Scanner ── */}
-            <div className="lg:col-span-6 text-left z-20">
+        <div className="relative w-full px-5 sm:px-8 lg:px-[6%] pt-7 sm:pt-9 lg:pt-[clamp(18px,3.2vh,38px)] pb-6 sm:pb-8 lg:pb-[clamp(18px,2.8vh,32px)] flex-1 flex flex-col justify-between z-20">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-8 my-auto">
+            {/* ── LEFT COLUMN (~48%): Eyebrow, 90px Headline, 3-line Subheadline, 712x73 Scanner, Demo Row ── */}
+            <div className="w-full lg:w-[48%] text-left z-20">
               {/* Eyebrow Pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM }}
-                className="mb-7 inline-flex"
+                className="mb-5 lg:mb-[clamp(14px,2.2vh,26px)] inline-flex"
               >
-                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#F5F7EC] text-[#161B22] border border-[#DCE6BE] text-[12px] sm:text-[12.5px] font-medium tracking-tight select-none">
-                  <span className="relative flex items-center justify-center w-4 h-4 rounded-full bg-[#D9FA54] shrink-0">
-                    <SparkleStar size={10} className="text-[#161B22]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F7F8EF] text-[#101114] border border-[#DCE89E] text-[12.5px] sm:text-[13.5px] font-medium tracking-tight select-none shadow-[0_2px_10px_rgba(215,255,54,0.14)]">
+                  <span className="relative flex items-center justify-center w-4 h-4 rounded-full bg-[#D7FF36] shrink-0">
+                    <SparkleStar size={10} className="text-[#101114]" />
                   </span>
                   <span>Official GitHub Profile Badges · Zero OAuth</span>
                 </div>
               </motion.div>
 
-              {/* Main Headline */}
+              {/* Main Headline (90px Sans ExtraBold + Serif Italic Highlight at 1672x941) */}
               <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: EASING.PREMIUM, delay: 0.06 }}
-                className="mb-6"
+                className="mb-5 lg:mb-[clamp(14px,2vh,24px)]"
               >
-                <h1 className="text-[44px] sm:text-[56px] lg:text-[62px] xl:text-[68px] font-extrabold text-[#161B22] tracking-[-0.04em] leading-[1.03] select-none">
+                <h1 className="text-[clamp(40px,min(5.38vw,9.4vh),90px)] font-extrabold text-[#101114] tracking-[-0.04em] leading-[0.98] select-none">
                   Unlock official <br />
                   GitHub badges <br />
-                  <span className="relative inline-block mt-0.5">
+                  <span className="relative inline-block mt-1">
                     <span
                       aria-hidden="true"
-                      className="absolute -inset-x-2 inset-y-0.5 bg-[#D4F843] rounded-[4px]"
+                      className="absolute -inset-x-3 inset-y-0.5 bg-[#D7FF36] rounded-[4px]"
                     />
-                    <span className="relative italic font-serif font-bold text-[#161B22] px-1">
+                    <span className="relative font-editorial-serif italic font-normal text-[#101114] px-1 text-[clamp(44px,min(5.7vw,10vh),96px)] leading-[0.95]">
                       in minutes.
                     </span>
                   </span>
                   <SparkleStar
-                    size={16}
-                    className="inline-block ml-3.5 -mt-2 text-[#161B22] align-middle"
+                    size={20}
+                    className="inline-block ml-4 -mt-3 text-[#101114] align-middle"
                   />
                 </h1>
               </motion.div>
 
-              {/* Subtitle */}
+              {/* Subheadline (~20px / 29px line height, ~660px width -> 3 clean lines at 1672x941) */}
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: EASING.PREMIUM, delay: 0.12 }}
-                className="text-[15.5px] sm:text-[16.5px] text-[#4B5563] font-normal leading-[1.6] max-w-[470px] mb-8"
+                className="text-[clamp(15px,1.2vw,20px)] text-[#65666A] font-normal leading-[1.45] max-w-[660px] mb-6 lg:mb-[clamp(18px,3vh,32px)]"
               >
                 GitHub hides the rules behind every profile badge. Scan your username for 60-second PR &amp; merge missions that earn Pull Shark, Quickdraw, and YOLO—on your real profile.
               </motion.p>
 
-              {/* Primary Search Action Block */}
+              {/* Profile Scanner (~712x73px at 1672x941) */}
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: EASING.PREMIUM, delay: 0.16 }}
-                className="max-w-[500px] w-full"
+                className="w-full max-w-[712px]"
               >
                 <form onSubmit={handleScanProfile} className="relative">
-                  <div className="relative flex items-center w-full rounded-full bg-white border border-[#D0D7DE] shadow-[0_8px_26px_rgba(22,27,34,0.06)] hover:border-[#161B22]/40 p-1.5 pl-4 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D4F843]/40">
-                    <Github size={18} className="text-[#161B22] shrink-0 mr-2.5" />
-                    <span className="text-[#57606A] text-[13px] font-mono shrink-0 select-none">
+                  <div className="relative flex items-center w-full h-[58px] sm:h-[66px] lg:h-[73px] rounded-full bg-white border border-[#DDDBD2] shadow-[0_12px_32px_rgba(16,17,20,0.06)] hover:border-[#101114]/35 pl-3.5 sm:pl-6 pr-1.5 sm:pr-2 transition-all duration-200 focus-within:border-[#84CC16] focus-within:ring-3 focus-within:ring-[#D7FF36]/45">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#101114] flex items-center justify-center text-white shrink-0 mr-2 sm:mr-3">
+                      <Github size={16} className="fill-white sm:w-[17px] sm:h-[17px]" />
+                    </div>
+                    <span className="hidden sm:inline text-[#65666A] text-[15.5px] font-mono shrink-0 select-none">
                       github.com/&nbsp;
                     </span>
                     <input
@@ -1246,12 +1344,12 @@ export const GitGlowHomePage: React.FC = () => {
                       onChange={(e) => setUsernameInput(e.target.value)}
                       placeholder="your-username"
                       aria-label="GitHub username"
-                      className="flex-1 min-w-0 bg-transparent text-[13px] font-mono italic text-[#161B22] placeholder:text-[#6B7280] focus:outline-none py-1.5"
+                      className="flex-1 min-w-0 bg-transparent text-[13.5px] sm:text-[15.5px] font-mono italic text-[#101114] placeholder:text-[#65666A] focus:outline-none py-1.5"
                     />
                     <button
                       type="submit"
                       disabled={isScanning}
-                      className="shrink-0 h-10 px-4 sm:px-5 rounded-full bg-[#0D1117] hover:bg-[#1C2128] text-white text-[13px] font-semibold border-[1.5px] border-[#B4F83A] shadow-[0_0_14px_rgba(180,248,58,0.35)] flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
+                      className="shrink-0 h-[46px] sm:h-[52px] lg:h-[57px] px-4 sm:px-7 rounded-full bg-[#101114] hover:bg-[#1C1E24] text-white text-[13px] sm:text-[15px] font-semibold border-2 border-[#D7FF36] shadow-[0_0_16px_rgba(215,255,54,0.35)] flex items-center gap-1.5 sm:gap-2 transition-transform active:scale-95 cursor-pointer"
                       aria-label="Check My Badges"
                     >
                       {isScanning ? (
@@ -1261,37 +1359,36 @@ export const GitGlowHomePage: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          <span>Check My Badges</span>
-                          <ArrowRight size={14} />
+                          <span className="sm:hidden">Scan Badges</span>
+                          <span className="hidden sm:inline">Check My Badges</span>
+                          <ArrowRight size={15} />
                         </>
                       )}
                     </button>
                   </div>
                 </form>
 
-                {/* Demo Handles + Secondary Escape Link */}
-                <div className="mt-4 px-1 flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[12px] text-[#57606A]">
-                  <span className="font-medium text-[#6B7280]">Demo:</span>
+                {/* Demo Row Horizontally Aligned */}
+                <div className="mt-4 lg:mt-5 px-1 flex flex-wrap lg:flex-nowrap items-center gap-x-2 xl:gap-x-3 gap-y-2 text-[12px] sm:text-[12.5px] xl:text-[13.5px] text-[#65666A]">
+                  <span className="font-medium text-[#65666A] shrink-0">Demo:</span>
                   {[
-                    { handle: 'torvalds', color: 'bg-[#374151]' },
-                    { handle: 'shadcn', color: 'bg-[#78350F]' },
-                    { handle: 'gaearon', color: 'bg-[#312E81]' },
+                    { handle: 'torvalds', bg: 'linear-gradient(135deg, #374151, #111827)' },
+                    { handle: 'shadcn', bg: 'linear-gradient(135deg, #9A3412, #431407)' },
+                    { handle: 'gaearon', bg: 'linear-gradient(135deg, #4338CA, #1E1B4B)' },
                   ].map((item, idx) => (
                     <React.Fragment key={item.handle}>
-                      {idx > 0 && <span aria-hidden="true" className="text-[#D0D7DE]">·</span>}
+                      {idx > 0 && <span aria-hidden="true" className="text-[#C9C6BC]">·</span>}
                       <button
                         type="button"
                         onClick={() => {
                           setUsernameInput(item.handle);
                           simulateProfileScan(item.handle);
                         }}
-                        className="inline-flex items-center gap-1.5 font-mono text-[#374151] hover:text-[#161B22] transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 font-mono text-[#101114] hover:text-[#4D7C0F] transition-colors cursor-pointer shrink-0"
                       >
                         <span
-                          className={cn(
-                            'w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white uppercase',
-                            item.color
-                          )}
+                          style={{ background: item.bg }}
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white uppercase shadow-2xs border border-white"
                         >
                           {item.handle[0]}
                         </span>
@@ -1300,7 +1397,7 @@ export const GitGlowHomePage: React.FC = () => {
                     </React.Fragment>
                   ))}
 
-                  <span aria-hidden="true" className="hidden sm:inline text-[#D0D7DE] mx-1">|</span>
+                  <span aria-hidden="true" className="hidden sm:inline text-[#D5D3CA] mx-0.5">|</span>
 
                   <a
                     href="#achievements"
@@ -1308,7 +1405,7 @@ export const GitGlowHomePage: React.FC = () => {
                       e.preventDefault();
                       document.getElementById('achievements')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="font-medium text-[#374151] hover:text-[#161B22] transition-colors whitespace-nowrap"
+                    className="font-medium text-[#101114] hover:text-[#4D7C0F] transition-colors whitespace-nowrap shrink-0"
                   >
                     Browse all 10 badge guides ↓
                   </a>
@@ -1320,7 +1417,7 @@ export const GitGlowHomePage: React.FC = () => {
                     initial={{ opacity: 0, y: 8, scale: 0.97 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-5 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
+                    className="mt-4 px-4 py-3 rounded-2xl bg-[#EAFBEE] border border-[#2DA44E]/30 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="w-2 h-2 rounded-full bg-[#2DA44E] animate-pulse shrink-0" />
@@ -1341,37 +1438,37 @@ export const GitGlowHomePage: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* ── RIGHT COLUMN: 3D GitHub Achievement Visualization ── */}
-            <div className="lg:col-span-6 flex items-center justify-center lg:justify-end z-20">
+            {/* ── RIGHT COLUMN (~52%): 3D Achievement Medallion & Pedestal Artwork ── */}
+            <div className="w-full lg:w-[52%] flex items-center justify-center lg:justify-end z-20">
               <HeroMonument3D />
             </div>
           </div>
 
-          {/* ── BOTTOM CENTER UNDERSTATED PROOF STRIP ── */}
+          {/* ── BOTTOM PROOF STRIP (~1057 x 63px Centered Within Viewport) ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.24 }}
-            className="mt-12 lg:mt-14 flex justify-center relative z-30"
+            className="mt-6 lg:mt-[clamp(14px,2.4vh,28px)] flex justify-center relative z-30"
           >
-            <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-7 px-6 sm:px-8 py-3 rounded-full bg-white/85 backdrop-blur-md border border-[#E1E4E8] shadow-[0_8px_24px_rgba(22,27,34,0.06)] text-[12px] sm:text-[12.5px] font-medium text-[#374151]">
-              <div className="flex items-center gap-2">
-                <Zap size={14} className="text-[#161B22]" />
+            <div className="w-full max-w-[1057px] min-h-[54px] lg:h-[63px] px-6 sm:px-10 py-3 rounded-full bg-white/85 backdrop-blur-md border border-[#E5E3DA] shadow-[0_12px_34px_rgba(16,17,20,0.06)] flex flex-wrap items-center justify-center sm:justify-between gap-x-6 gap-y-2 text-[13px] sm:text-[14.5px] font-medium text-[#101114]">
+              <div className="flex items-center gap-2.5">
+                <Zap size={16} className="text-[#101114] shrink-0" />
                 <span>Real GitHub Triggers</span>
               </div>
-              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
-              <div className="flex items-center gap-2">
-                <BookOpen size={14} className="text-[#161B22]" />
+              <span className="hidden sm:inline h-5 w-[1px] bg-[#E5E3DA]" />
+              <div className="flex items-center gap-2.5">
+                <BookOpen size={16} className="text-[#101114] shrink-0" />
                 <span>Step-by-Step PR Recipes</span>
               </div>
-              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={14} className="text-[#161B22]" />
+              <span className="hidden sm:inline h-5 w-[1px] bg-[#E5E3DA]" />
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck size={16} className="text-[#101114] shrink-0" />
                 <span>Verified on Your Profile</span>
               </div>
-              <span className="hidden sm:inline text-[#D0D7DE]">|</span>
-              <div className="flex items-center gap-2">
-                <Ban size={14} className="text-[#161B22]" />
+              <span className="hidden sm:inline h-5 w-[1px] bg-[#E5E3DA]" />
+              <div className="flex items-center gap-2.5">
+                <Ban size={16} className="text-[#101114] shrink-0" />
                 <span>No Login Required</span>
               </div>
             </div>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="qdOuter" x1="18" y1="8" x2="110" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#312E81"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F0D24"/>
+    </linearGradient>
+    <linearGradient id="qdFill" x1="26" y1="16" x2="104" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="52%" stop-color="#6D28D9"/>
+      <stop offset="100%" stop-color="#4338CA"/>
+    </linearGradient>
+    <linearGradient id="qdHighlight" x1="64" y1="14" x2="64" y2="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Crisp Dark Outer Hexagonal Shield -->
+  <path d="M64 6L114 35V93L64 122L14 93V35L64 6Z" fill="url(#qdOuter)" stroke="#4C1D95" stroke-opacity="0.65" stroke-width="2"/>
+  <!-- Main Vibrant Purple Beveled Hexagon -->
+  <path d="M64 14L107 39V89L64 114L21 89V39L64 14Z" fill="url(#qdFill)" stroke="#C4B5FD" stroke-opacity="0.5" stroke-width="1.5"/>
+  <!-- Upper Glassy Bevel -->
+  <path d="M64 15L106 39.5L64 60L22 39.5L64 15Z" fill="url(#qdHighlight)"/>
+
+  <!-- Bold White </> Code Brackets -->
+  <path d="M46 50L31 64L46 78" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M82 50L97 64L82 78" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M70 46L58 82" stroke="#EDE9FE" stroke-width="6" stroke-linecap="round"/>
+</svg>
+
