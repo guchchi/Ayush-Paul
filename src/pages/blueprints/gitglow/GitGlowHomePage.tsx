@@ -726,114 +726,161 @@ const AnubiOrbitalHeroStage: React.FC<{
   );
 };
 
-// ─── 3D Monument Centerpiece with Orbiting Achievement Cards ─────────────────
+// ─── 3D GitHub Achievement Medallion & Orbiting Badge Cards ──────────────────
+const HERO_ACHIEVEMENT_CARDS = [
+  {
+    id: 'pr-expert',
+    title: 'Pull Request Expert',
+    badgeImage: '/images/badges/pull-shark.png',
+    badgeAlt: 'GitHub Pull Shark Achievement Badge',
+    statusText: '95%',
+    progress: 95,
+    complete: false,
+    positionClass: 'top-[3%] left-0 sm:left-[2%]',
+    tiltClass: 'rotate-[-1.5deg]',
+    floatDelay: 0,
+  },
+  {
+    id: 'star-collector',
+    title: 'Star Collector',
+    badgeImage: '/images/badges/starstruck.png',
+    badgeAlt: 'GitHub Starstruck Achievement Badge',
+    statusText: '96%',
+    progress: 96,
+    complete: false,
+    positionClass: 'top-[8%] right-0 sm:right-[1%]',
+    tiltClass: 'rotate-[1.2deg]',
+    floatDelay: 0.4,
+  },
+  {
+    id: 'builder',
+    title: 'Builder',
+    badgeImage: '/images/badges/quickdraw.png',
+    badgeAlt: 'GitHub Quickdraw Achievement Badge',
+    statusText: '75%',
+    progress: 75,
+    complete: false,
+    positionClass: 'bottom-[10%] left-0 sm:left-[3%]',
+    tiltClass: 'rotate-[1deg]',
+    floatDelay: 0.8,
+  },
+  {
+    id: 'verified',
+    title: 'Verified',
+    badgeImage: '/images/badges/pair-extraordinaire.png',
+    badgeAlt: 'GitHub Pair Extraordinaire Achievement Badge',
+    statusText: 'Complete',
+    progress: 100,
+    complete: true,
+    positionClass: 'bottom-[5%] right-0 sm:right-[2%]',
+    tiltClass: 'rotate-[-1deg]',
+    floatDelay: 1.2,
+  },
+] as const;
+
 const HeroMonument3D: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[560px] xl:max-w-[640px] h-[440px] sm:h-[500px] lg:h-[540px] flex items-center justify-center select-none overflow-visible">
-      {/* ── Background Luminous Lime Glow Bloom ── */}
-      <div
+    <div className="relative w-full max-w-[580px] xl:max-w-[620px] h-[440px] sm:h-[490px] lg:h-[520px] flex items-center justify-center select-none">
+      {/* ── Thin Orbital Acid-Lime Connecting Lines ── */}
+      <svg
         aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] sm:w-[440px] lg:w-[480px] h-[360px] sm:h-[440px] lg:h-[480px] rounded-full bg-gradient-to-br from-[#D4F843]/40 via-[#A3E635]/20 to-transparent blur-[85px] pointer-events-none"
-      />
-
-      {/* ── Floating 4-Point Sparkle Stars ── */}
-      <div className="hidden sm:block absolute top-[56%] left-[4%] pointer-events-none select-none z-30">
-        <SparkleStar size={16} className="text-[#161B22]" />
-      </div>
-
-      {/* ── Micro-motion Container ── */}
-      <motion.div
-        animate={{ y: [0, -7, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative w-full h-full flex items-center justify-center z-20"
+        className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
+        viewBox="0 0 600 520"
+        fill="none"
       >
-        {/* ── GLOWING NEON-LIME ORBITAL RINGS ── */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible"
-          viewBox="0 0 560 540"
-          fill="none"
-        >
-          {/* Main glowing neon orbital ring */}
-          <ellipse
-            cx="285"
-            cy="270"
-            rx="215"
-            ry="66"
-            transform="rotate(-22 285 270)"
-            stroke="#C8FA32"
-            strokeWidth="2.5"
-            className="filter drop-shadow-[0_0_12px_rgba(200,250,50,0.95)]"
-          />
-          {/* Secondary subtle concentric orbit ring */}
-          <ellipse
-            cx="285"
-            cy="270"
-            rx="185"
-            ry="54"
-            transform="rotate(-14 285 270)"
-            stroke="#C8FA32"
-            strokeWidth="1.2"
-            strokeOpacity="0.45"
-            className="filter drop-shadow-[0_0_8px_rgba(200,250,50,0.6)]"
-          />
-        </svg>
+        {/* Primary orbital ellipse connecting top-right & bottom-left cards */}
+        <ellipse
+          cx="300"
+          cy="260"
+          rx="236"
+          ry="84"
+          transform="rotate(-18 300 260)"
+          stroke="#A3E635"
+          strokeWidth="1.5"
+          strokeOpacity="0.85"
+        />
+        {/* Secondary orbital ellipse connecting top-left & bottom-right cards */}
+        <ellipse
+          cx="300"
+          cy="262"
+          rx="212"
+          ry="118"
+          transform="rotate(14 300 262)"
+          stroke="#A3E635"
+          strokeWidth="1.15"
+          strokeOpacity="0.45"
+        />
+        {/* Subtle ground orbital ring beneath medallion */}
+        <ellipse
+          cx="300"
+          cy="412"
+          rx="105"
+          ry="20"
+          stroke="#A3E635"
+          strokeWidth="1.25"
+          strokeOpacity="0.55"
+        />
+      </svg>
 
-        {/* ── 3D GITHUB MEDALLION / COIN (Centered inside Orbital Rings) ── */}
+      {/* ── Floating Black GitHub Octocat Medallion (Center-Right Visual Anchor) ── */}
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative z-20 flex flex-col items-center justify-center"
+      >
         <div
-          style={{
-            perspective: 1200,
-          }}
-          className="relative z-20 cursor-pointer group"
+          style={{ perspective: 1100 }}
+          className="relative cursor-pointer group"
         >
           <div
             style={{
-              transform: 'rotateY(-20deg) rotateX(8deg) rotateZ(-2deg)',
+              transform: 'rotateY(-15deg) rotateX(7deg) rotateZ(-2deg)',
               transformStyle: 'preserve-3d',
             }}
-            className="relative w-[195px] h-[195px] sm:w-[225px] sm:h-[225px] lg:w-[255px] lg:h-[255px] rounded-full transition-transform duration-300 group-hover:scale-105"
+            className="relative w-[178px] h-[178px] sm:w-[204px] sm:h-[204px] lg:w-[218px] lg:h-[218px] rounded-full transition-transform duration-300 group-hover:scale-[1.03]"
           >
-            {/* Outer Thick Metallic Coin Edge & Rim */}
+            {/* Outer Sculpted Metallic Black Rim */}
             <div
               className="absolute inset-0 rounded-full"
               style={{
-                background: 'linear-gradient(135deg, #4B5563 0%, #242B35 45%, #0D1117 100%)',
+                background: 'linear-gradient(140deg, #3A414C 0%, #1E242C 45%, #0D1117 100%)',
                 boxShadow: `
-                  inset 0 3px 6px rgba(255,255,255,0.4),
-                  inset 0 -6px 12px rgba(0,0,0,0.85),
-                  0 24px 48px -8px rgba(0,0,0,0.65),
-                  0 12px 24px rgba(0,0,0,0.4)
+                  inset 0 2px 5px rgba(255,255,255,0.34),
+                  inset 0 -5px 10px rgba(0,0,0,0.85),
+                  0 26px 46px -10px rgba(22,27,34,0.28),
+                  0 10px 20px -4px rgba(22,27,34,0.16)
                 `,
-                padding: '14px',
+                padding: '13px',
               }}
             >
-              {/* Inner Rim Bezel & Coin Face */}
+              {/* Recessed Charcoal Medallion Well */}
               <div
                 className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden"
                 style={{
-                  background: 'radial-gradient(circle at 35% 30%, #1F262E 0%, #12161C 65%, #0B0E12 100%)',
-                  boxShadow: 'inset 0 3px 10px rgba(0,0,0,0.95), inset 0 0 0 2px #343C48',
+                  background: 'radial-gradient(circle at 36% 30%, #1F252E 0%, #12161C 68%, #090C10 100%)',
+                  boxShadow: 'inset 0 3px 9px rgba(0,0,0,0.92), inset 0 0 0 1.5px #2D343F',
                 }}
               >
-                {/* Surface Specular Reflection Sheen */}
+                {/* Subtle Editorial Metallic Sheen */}
                 <div
-                  className="absolute inset-0 rounded-full opacity-20 pointer-events-none"
+                  className="absolute inset-0 rounded-full opacity-15 pointer-events-none"
                   style={{
-                    background: 'linear-gradient(125deg, white 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.12) 100%)',
+                    background: 'linear-gradient(130deg, white 0%, transparent 42%, transparent 65%, rgba(255,255,255,0.1) 100%)',
                   }}
                 />
 
-                {/* Embossed Silver/Chrome GitHub Octocat Icon */}
+                {/* Existing GitHub Octocat Artwork Preserved */}
                 <div
                   className="relative z-10 flex items-center justify-center"
                   style={{
-                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.8)) drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+                    filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.75))',
                   }}
                 >
                   <Github
-                    size={122}
-                    className="text-[#CBD5E1] fill-[#CBD5E1]"
+                    size={104}
+                    className="text-[#E5E7EB] fill-[#E5E7EB]"
                     style={{
-                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.65))',
+                      filter: 'drop-shadow(0 -1px 1px rgba(255,255,255,0.55))',
                     }}
                   />
                 </div>
@@ -842,95 +889,81 @@ const HeroMonument3D: React.FC = () => {
           </div>
         </div>
 
-        {/* ── 4 ORBITING GLASS ACHIEVEMENT PROGRESS CARDS ── */}
-        {/* Card 1: Top-Left — Pull Request Expert (95%) */}
-        <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
-          className="hidden sm:block absolute top-[12%] left-[2%] lg:left-[0%] z-30 w-[160px] rounded-2xl bg-white/85 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 -rotate-2"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#161B22] flex items-center justify-center shrink-0">
-              <GitPullRequest size={14} className="text-[#D4F843]" />
-            </div>
-            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
-              Pull Request Expert
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
-            <span>95%</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
-            <div className="h-full w-[95%] rounded-full bg-[#A3E635]" />
-          </div>
-        </motion.div>
-
-        {/* Card 2: Middle-Right — Open Source Contributor (100%) */}
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-          className="hidden sm:block absolute top-[32%] -right-2 lg:-right-4 z-30 w-[172px] rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 rotate-1"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center shrink-0">
-              <Code2 size={14} className="text-[#161B22]" />
-            </div>
-            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
-              Open Source Contributor
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
-            <span>100%</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
-            <div className="h-full w-full rounded-full bg-[#A3E635]" />
-          </div>
-        </motion.div>
-
-        {/* Card 3: Bottom-Left — Star Collector (95%) */}
-        <motion.div
-          animate={{ y: [0, 5, 0] }}
-          transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 1.0 }}
-          className="hidden sm:block absolute bottom-[26%] left-[4%] lg:left-[2%] z-30 w-[155px] rounded-2xl bg-white/85 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 rotate-1"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#F7FEE7] border border-[#D9F99D] flex items-center justify-center shrink-0">
-              <Star size={14} className="text-[#161B22] fill-[#D4F843]" />
-            </div>
-            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
-              Star Collector
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
-            <span>95%</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
-            <div className="h-full w-[95%] rounded-full bg-[#A3E635]" />
-          </div>
-        </motion.div>
-
-        {/* Card 4: Bottom-Right — Builder (75%) */}
-        <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut', delay: 1.4 }}
-          className="hidden sm:block absolute bottom-[18%] right-[4%] lg:right-[2%] z-30 w-[140px] rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] p-3 -rotate-2"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center shrink-0">
-              <Box size={14} className="text-[#161B22]" />
-            </div>
-            <div className="text-[11px] font-bold text-[#161B22] leading-tight">
-              Builder
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-[10px] font-mono text-[#57606A] mb-1">
-            <span>75%</span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
-            <div className="h-full w-[75%] rounded-full bg-[#A3E635]" />
-          </div>
-        </motion.div>
+        {/* Soft Natural Ground Shadow Beneath Medallion */}
+        <div
+          aria-hidden="true"
+          className="mt-7 w-[140px] sm:w-[165px] h-[18px] rounded-full bg-[#161B22]/12 blur-[8px] pointer-events-none"
+        />
       </motion.div>
+
+      {/* ── ONLY FOUR Editorial Achievement Cards ── */}
+      {HERO_ACHIEVEMENT_CARDS.map((card) => (
+        <motion.div
+          key={card.id}
+          animate={{ y: [0, card.floatDelay % 0.8 === 0 ? -4 : 4, 0] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: card.floatDelay }}
+          className={cn(
+            'hidden sm:block absolute z-30 w-[192px] lg:w-[206px] rounded-2xl bg-[#FFFFFF] border border-[#E5E7EB] p-3.5 shadow-[0_14px_32px_rgba(22,27,34,0.07),0_2px_6px_rgba(22,27,34,0.03)]',
+            card.positionClass,
+            card.tiltClass
+          )}
+        >
+          <div className="flex items-center gap-3 mb-2.5">
+            {/* Actual GitHub Achievement Badge Icon in 3D Black Coin Frame */}
+            <div
+              style={{
+                perspective: 500,
+              }}
+              className="shrink-0"
+            >
+              <div
+                style={{
+                  transform: 'rotateY(-10deg) rotateX(6deg)',
+                  background: 'linear-gradient(155deg, #2B313B 0%, #161B22 65%, #0D1117 100%)',
+                  boxShadow:
+                    'inset 0 1px 1px rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.65), 0 5px 12px rgba(22,27,34,0.2)',
+                }}
+                className="w-10 h-10 rounded-full border border-[#30363D] flex items-center justify-center p-1.5"
+              >
+                <img
+                  src={card.badgeImage}
+                  alt={card.badgeAlt}
+                  className="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]"
+                />
+              </div>
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="text-[12.5px] font-bold text-[#161B22] leading-[1.25] tracking-tight">
+                {card.title}
+              </div>
+            </div>
+
+            {card.complete && (
+              <span
+                aria-label="Completed"
+                className="w-5 h-5 rounded-full bg-[#A3E635] text-[#161B22] flex items-center justify-center shrink-0 shadow-2xs"
+              >
+                <Check size={12} strokeWidth={2.75} />
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#57606A] mb-1.5">
+            <span>{card.complete ? 'Status' : 'Progress'}</span>
+            <span className={cn('font-semibold', card.complete ? 'text-[#3F6212]' : 'text-[#161B22]')}>
+              {card.statusText}
+            </span>
+          </div>
+
+          <div className="w-full h-1.5 rounded-full bg-[#ECEEE7] overflow-hidden">
+            <div
+              className="h-full rounded-full bg-[#A3E635] transition-all duration-500"
+              style={{ width: `${card.progress}%` }}
+            />
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 };
@@ -1256,8 +1289,10 @@ export const GitGlowHomePage: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* ── RIGHT COLUMN: Reserved for Visuals (Empty for now) ── */}
-            <div className="hidden lg:block w-full lg:w-[48%] xl:w-[50%] min-h-[420px]" aria-hidden="true" />
+            {/* ── RIGHT COLUMN: 3D GitHub Achievement Visualization ── */}
+            <div className="w-full lg:w-[48%] xl:w-[50%] flex items-center justify-center lg:justify-end z-20">
+              <HeroMonument3D />
+            </div>
           </div>
 
           {/* ── BOTTOM CENTER FLOATING FROSTED TRUST BAR ── */}
